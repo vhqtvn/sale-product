@@ -1,0 +1,110 @@
+﻿
+.ellipsis
+{
+	white-space: nowrap;
+	text-overflow: ellipsis; /* for internet explorer */
+	overflow: hidden;
+	display: block;
+}
+html > body .ellipsis
+{
+	clear: both;
+}
+
+
+a.imgbtn
+{
+	color: #000000;
+}
+
+.contextmenu-a img{
+	border:none;
+}
+
+.b-m-mpanel {
+	background: #F0F0F0 url(images/menu_bg.gif) left repeat-y;
+	border: 1px solid #718BB7;
+	padding: 2px 0;
+	position: absolute;
+	z-index: 99997;
+	left:0px;
+	top:0px;
+	/*font-size: 80%;*/
+}
+.b-m-split {
+	height: 6px;
+	background: url(images/m_splitLine.gif) center repeat-x;
+	font-size: 0px;
+	margin: 0 2px;
+}
+.b-m-item, .b-m-idisable
+{
+    padding: 4px 2px;
+    margin: 0 2px 0 3px;
+    cursor: normal;
+   
+    line-height: 18px;
+    display:block;
+    vertical-align: middle;
+    overflow: visible;
+}
+.b-m-idisable
+{
+    color:#808080;
+}
+.b-m-mpanel .b-m-item a span.b-m-arrow {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 14px;
+	height: 14px;
+	line-height: 14px;
+	margin-right:5px;
+	vertical-align: middle;
+	display:none
+}
+
+.b-m-mpanel .b-m-item a span.icon-arrow-right{
+	display:block;
+}
+
+.b-m-arrow {
+	background: url(images/m_arrow.gif) right  no-repeat;
+}
+.b-m-idisable .b-m-arrow
+{
+    background:none;
+}
+.b-m-item img, .b-m-ifocus img, .b-m-idisable img {
+	margin-right: 8px;
+}
+.b-m-ifocus {
+	border: 1px solid #AACCF6;
+	padding: 4px 1px ;
+    margin: 0 2px 0 3px;
+    cursor: normal;
+}
+.b-m-idisable img {
+	visibility:hidden;
+}
+
+.b-m-idisable a span{
+	color:#808080;
+}
+
+.b-m-mpanel,.b-m-item{
+	list-style: none;
+	font-size:inherit;
+}
+
+.b-m-mpanel .b-m-item a span{
+	color: #000;
+	font-size:inherit;
+	vertical-align:top;
+	overflow:visible;
+}
+
+.b-m-mpanel .b-m-ifocus a span{
+	font-size:inherit;
+	vertical-align:top;
+	overflow:visible;
+}

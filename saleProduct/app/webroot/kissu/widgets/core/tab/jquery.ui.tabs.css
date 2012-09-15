@@ -1,0 +1,81 @@
+/* Tabs
+----------------------------------*/
+.ui-tabs { position: relative; padding: .2em; zoom: 1; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+.ui-tabs .ui-tabs-nav { margin: 0; padding: .2em .2em 0; }
+.ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0 .2em 1px 0; border-bottom: 0 !important; padding: 0; white-space: nowrap; }
+.ui-tabs .ui-tabs-nav li a { float: left; padding: .5em 1em; text-decoration: none; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { margin-bottom: 0; padding-bottom: 1px; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { display: block; border: 0; padding: 0em; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }
+
+.ui-carousel { padding: .2em .2em 0; }
+.ui-carousel-item { overflow: hidden; }
+.ui-carousel-clip { overflow: hidden; position: relative; z-index: 1; left: 0px; }
+.ui-carousel-slide { margin: 0; padding: 0; position: relative; list-style-type: none; z-index: 0; }
+
+.ui-carousel-horizontal .ui-icon-triangle-1-w { 
+	position:absolute;
+	left:0px;
+	top:0px;
+	z-index: 10;
+	cursor: pointer;
+}
+.ui-carousel-horizontal .ui-icon-triangle-1-e { 
+	position:absolute;
+	right:0px;
+	top:0px;
+	z-index: 10;
+	cursor: pointer;
+}
+
+.ui-carousel-vertical .ui-carousel-item { float: none; }
+
+.ui-carousel-prev{
+	left:-1px;
+}
+
+.ui-carousel-next{
+	right:-1px;
+}
+
+.ui-carousel-prev-icon{
+	background:url(images/left.gif) no-repeat;
+	width:16px;
+	height:16px;
+	margin-top:5px;
+}
+
+.ui-carousel-next-icon{
+	background:url(images/right.gif) no-repeat;
+	width:16px;
+	height:16px;
+	margin-top:5px;
+}
+
+.ui-tab-img{
+	border:0px;
+	margin:0px;
+	padding:0px 2px 0px 0px ;
+}
+
+.ui-tab-span{
+	background: #f9f9f9;
+	position:absolute;
+	right:0px;
+	top:0px;
+	z-index: 15;
+	cursor: pointer;
+	width:20px;
+	height:30px;
+	vertical-align: middle;
+}
+.ui-tab-span img{
+	margin:9px 2px 9px 2px;
+}
+
+.ui-tab-close{
+	display:inline-table;
+	cursor: pointer;
+}

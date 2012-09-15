@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+ <title>Farbtastic</title>
+ <meta charset="UTF-8" />
+ <script type="text/javascript" src="../../../../scripts/jquery.js" class="view-source"></script>
+ <script type="text/javascript" src="../../../../scripts/jquery.utils.js" class="view-source"></script>
+
+ <link  href="../../../../themes/default/ui.css" type="text/css" rel="stylesheet"  class="view-source"/>
+<link  href="../jquery.blockui.css" type="text/css" rel="stylesheet"  class="view-source"/>
+ 
+ <script src="../jquery.blockui.js" type="text/javascript" class="view-source"></script>
+ 
+ <!-- 换肤 -->
+ <script type="text/javascript" src="../../../theme_cookie.js"></script>
+ <script src="../../../demos.js" type="text/javascript"></script>
+ <script type="text/javascript"  class="view-source noparse"> 
+
+    $(document).ready(function() { 
+        $('#pageDemo11').click(function() { 
+        	$('#postmessage').block(); 
+        	$("#pageDemo11").attr("disabled",true);
+        	$("#pageDemo12").attr("disabled",false);
+        }); 
+        
+        $('#pageDemo12').click(function() { 
+        	$('#postmessage').unblock(); 
+        	$("#pageDemo11").attr("disabled",false);
+        	$("#pageDemo12").attr("disabled",true);
+        }); 
+    }); 
+    
+</script> 
+ <body>
+	<div class="keyCode">
+ 
+ </div>
+    <input id="pageDemo11" type="submit" value="启用DIV区域遮罩层" class="view-source"/>
+    <input id="pageDemo12" type="submit" value="关闭DIV区域遮罩层" class="view-source"/>
+    <br/><br/>
+    <div style="width:440px;height:240px;border:1px solid red" id="postmessage">
+    <br/>
+    <table cellpadding="0" cellspacing="0" border="1" bordercolor="" width="100%">
+    <tr>
+    <td>名称：</td>
+    <td>
+    <input type="text" style="width:160px"/>
+    </td>
+    </tr>
+     <tr>
+   		<td>性别：</td>
+	    <td>
+	    <input type="radio" value="0" name="sex"/>男<input type="radio" value="1" name="sex"/>女
+	    </td>
+    </tr>
+    <tr>
+    	<td>兴趣：</td>
+    	<td>
+    		<input type="checkbox" value="0" name="yumao"/>羽毛球<input type="checkbox" value="1" name="ball"/>棒球
+    	</td>
+    </tr>
+    <tr>
+    	<td>地区：</td>
+    	<td>
+    		<select style="width:160px">
+			    <option>天河区</option>
+			    <option>白云区</option>
+			    <option>越秀区</option>
+			    <option>荔湾区</option>
+			    <option>海珠区</option>
+			    <option>番禺区</option>
+		   </select>
+    	</td>
+    </tr>
+     <tr>
+    	<td>描述：</td>
+    	<td>
+    		<textarea rows="5" style="width:350px">test textarea</textarea>
+    	</td>
+    </tr>
+    </table>
+    
+    </div>
+		
+</body>
+</html>
+
+	
+		<style>
+			body{
+				overflow:hidden;
+				padding:0px;
+			}
+		</style>
+		<script>
+			(function(){
+				window._setIFrameHeight = function(iframe,height){
+				   if($.browser.msie&&($.browser.version==6.0)&&!$.support.style){
+						//do nothing
+				   }else{
+						$(iframe).css("height",height+"px") ;
+				   }
+					window._agentAutoHeight() ;
+				} ;
+				
+				function agentAutoHeight(){
+					var bHeight = document.body.scrollHeight;
+					var dHeight = document.documentElement.scrollHeight;
+					var oHeight = document.body.offsetHeight;
+					var b_height =Math.max(oHeight,Math.max(bHeight,dHeight))+50;
+					
+					var b_iframe = document.getElementById("crossdomain_agent_iframe");     
+					var src = b_iframe.src.split("#")[0] ;
+					b_iframe.src = src+"#"+b_height;
+				}
+				
+				window._agentAutoHeight = agentAutoHeight ;
+			
+			
+				if(window.location.href.indexOf("/agent.html")!=-1)
+					return ;
+			
+				function getHost(){
+					var host = window.location.host ;
+					return host.split(":")[0] ;
+				}
+				
+				var baseUrl = "http://"+getHost()+":8001/bingo-ui-web" ;
+				var _crossdomain_agent_iframe_url = baseUrl+"/view/crossdomain/agent.html"  ;
+				
+				
+				if(!window.$){
+					document.write('<script src="'+baseUrl+"/statics/scripts/jquery.js"+'" onload="_loadjQuery()">\<\/script>') ;
+					
+					window._loadjQuery = function(){
+						$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}
+				}else{
+					$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+					$(function(){
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}) ;
+				}
+			})() ;
+		</script>
+	

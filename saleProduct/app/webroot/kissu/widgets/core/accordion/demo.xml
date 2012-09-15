@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Root>
+	<!--  分类 -->
+	<category>
+		<demo name="基本功能" url="demo/base_demo.html"/>
+		<demo name="鼠标移动展开" url="demo/mouse_demo.html"/>
+		<demo name="自定义图标" url="demo/icon_demo.html"/>
+	</category>
+
+</Root>

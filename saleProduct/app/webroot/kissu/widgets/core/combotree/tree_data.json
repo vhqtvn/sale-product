@@ -1,0 +1,56 @@
+{"returnCode":200,
+ "returnDesc":"success",
+ "error":"none",
+ "returnValue":
+  {
+    "OutParams":{}, 
+    "AffectedRows":-1,   
+    "ColumnNames":[],
+    "Rows":
+		[
+		  {
+			"id":1,
+			"text":"Folder1",
+			"iconCls":"icon-ok",
+			"children":
+			[
+				{
+					"id":2,
+					"text":"File1"
+				},
+				{
+					"id":3,
+					"text":"Folder2",
+					"state":"open",
+					"children":
+					[
+						{
+							"id":4,
+							"text":"File3",
+							"iconCls":"icon-reload"
+						},
+						{
+							"id": 8,
+							"text":"Async Folder",
+							"state":"closed"
+						}
+				   ]
+				}
+			]
+		},
+		{
+			"text":"Languages",
+			"state":"closed",
+			"children":
+			[
+				{
+					"text":"Java"
+				},
+				{
+					"text":"C#"
+				}
+			]
+		}
+	]
+  }
+}

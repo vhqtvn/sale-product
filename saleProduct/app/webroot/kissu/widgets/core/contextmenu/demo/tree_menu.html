@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0042)http://jscs.cloudapp.net/ControlsSample/CM -->
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <TITLE></TITLE>
+<link href="../../../../themes/default/ui.css" type="text/css" rel="stylesheet" class="view-source"/>
+<link href="../contextmenu.css" rel="stylesheet" type="text/css"  class="view-source"/>
+
+<script src="../../../../scripts/jquery.js" type="text/javascript" class="view-source"></script>
+<script type="text/javascript" src="../../../../scripts/jquery.utils.js" class="view-source"></script>
+<script src="../jquery.contextmenu.js" type="text/javascript" class="view-source"></script>
+
+<!-- 换肤 -->
+<script type="text/javascript" src="../../../theme_cookie.js"></script>
+
+<script src="../../../demos.js" type="text/javascript"></script>
+<link type="text/css" href="../../../demos.css" rel="stylesheet" />
+
+<SCRIPT type="text/javascript" class="view-source noparse">
+     function menuAction(){
+     	alert("( nodeId = " + this.data.nodeId + " ) " + " ( menu which you have hit is : " + this.data.text + " )");
+     }
+     
+     function openPage(e,jqueryObject){
+     	var nodeId = jqueryObject.get(0).getAttribute("nodeId");
+     	var nodeType = jqueryObject.get(0).getAttribute("nodeType");
+     	var menuItems = [];
+     	
+     	if(nodeType == 'application'){
+      		menuItems.push({ text: "新建应用系统", icon: "images/icon_assign_role.gif", alias: "create_application", action: menuAction, nodeId:nodeId});
+         	menuItems.push({ text: "修改应用系统", icon: "images/icon_edit.gif", alias: "edit_application", action: menuAction, nodeId:nodeId});
+     		menuItems.push({ text: "删除应用系统", icon: "images/icon_del.gif", alias: "delete_application", action: menuAction, nodeId:nodeId});
+    	}
+        else if(nodeType == 'module'){
+    		menuItems.push({ text: "新建子模块", icon: "images/icon_assign_role.gif", alias: "assign_role", action: menuAction, nodeId:nodeId});
+         	menuItems.push({ text: "修改模块", icon: "images/icon_edit.gif", alias: "edit", action: menuAction, nodeId:nodeId});
+     		menuItems.push({ text: "删除模块", icon: "images/icon_del.gif", alias: "delete", action: menuAction, nodeId:nodeId});
+     		menuItems.push({ text: "新建功能", icon: "images/ico_create.gif", alias: "delete", action: menuAction, nodeId:nodeId});
+    	} 
+    	else if(nodeType == 'page'){
+         	menuItems.push({ text: "修改功能", icon: "images/icon_edit.gif", alias: "edit", action: menuAction, nodeId:nodeId});
+     		menuItems.push({ text: "删除功能", icon: "images/icon_del.gif", alias: "delete", action: menuAction, nodeId:nodeId});
+    	}
+   	 
+    	var option = { width: 150, 
+    	       items:menuItems
+        };
+                   
+    	jqueryObject.contextmenu(option);
+    	jqueryObject.contextmenu().show(e);
+     }
+        
+    $(function(){
+         //限定某个区域不能使用右键菜单
+    	 $("#divId").bind("contextmenu", function (){return false;}) ;
+    	
+    	 $('.treenode').bind("contextmenu",function(e){
+    	 	  openPage(e,$(this));
+    	 });
+
+    	 
+    });
+</SCRIPT>
+</HEAD>
+	<BODY>
+		<div style="padding: 20px" id="divId">
+			<ul>
+				<li><div><a href="javascript:void(0);" class="treenode" nodeId="id-1" style="border:solid 1px #ffccee;" nodeType="application">应用系统</a></div>
+					<ul>
+						<li><a href="javascript:void(0);" class="treenode" nodeId="id-11" nodeType="module">系统管理</a></li>
+							<ul>
+								<li><a href="javascript:void(0);"  class="treenode" nodeId="id-111" nodeType="page">用户管理</a></li>
+								<li><a href="javascript:void(0);"  class="treenode" nodeId="id-112" nodeType="page">角色管理</a></li>
+							</ul>
+						<li><a href="javascript:void(0);" class="treenode" nodeId="id-12" nodeType="module">组件管理</a></li>
+						<li><a href="javascript:void(0);" class="treenode" nodeId="id-13" nodeType="module">指标管理</a></li>
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</BODY>
+</HTML>
+	
+		<style>
+			body{
+				overflow:hidden;
+				padding:0px;
+			}
+		</style>
+		<script>
+			(function(){
+				window._setIFrameHeight = function(iframe,height){
+				   if($.browser.msie&&($.browser.version==6.0)&&!$.support.style){
+						//do nothing
+				   }else{
+						$(iframe).css("height",height+"px") ;
+				   }
+					window._agentAutoHeight() ;
+				} ;
+				
+				function agentAutoHeight(){
+					var bHeight = document.body.scrollHeight;
+					var dHeight = document.documentElement.scrollHeight;
+					var oHeight = document.body.offsetHeight;
+					var b_height =Math.max(oHeight,Math.max(bHeight,dHeight))+50;
+					
+					var b_iframe = document.getElementById("crossdomain_agent_iframe");     
+					var src = b_iframe.src.split("#")[0] ;
+					b_iframe.src = src+"#"+b_height;
+				}
+				
+				window._agentAutoHeight = agentAutoHeight ;
+			
+			
+				if(window.location.href.indexOf("/agent.html")!=-1)
+					return ;
+			
+				function getHost(){
+					var host = window.location.host ;
+					return host.split(":")[0] ;
+				}
+				
+				var baseUrl = "http://"+getHost()+":8001/bingo-ui-web" ;
+				var _crossdomain_agent_iframe_url = baseUrl+"/view/crossdomain/agent.html"  ;
+				
+				
+				if(!window.$){
+					document.write('<script src="'+baseUrl+"/statics/scripts/jquery.js"+'" onload="_loadjQuery()">\<\/script>') ;
+					
+					window._loadjQuery = function(){
+						$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}
+				}else{
+					$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+					$(function(){
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}) ;
+				}
+			})() ;
+		</script>
+	

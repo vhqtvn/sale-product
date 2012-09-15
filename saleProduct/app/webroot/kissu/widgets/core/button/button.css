@@ -1,0 +1,126 @@
+@CHARSET "UTF-8";
+
+.z-toolbar {
+	/*border-color: #a9bfd3;*/
+	border-style: solid;
+	border-width: 0 0 1px 0;
+	display: block;
+	padding: 2px;
+	/*background: #d0def0 url(images/toolbar/bg.gif) repeat-x top left;*/
+	position: relative;
+	zoom: 1;
+}
+
+.z-btn {
+	display: inline-table;
+	*display:inline ;/*fix ie*/
+	font: normal 11px tahoma, verdana, helvetica;
+	cursor: pointer;
+	white-space: nowrap;
+	width: auto;
+}
+
+.z-btn input.z-button {
+	border: 0 none;
+	background: transparent;
+	FONT-SIZE: 12px;
+	font-family: Arial, Courier New;
+	padding-left: 0px;
+	padding-right: 0px;
+	margin: 0;
+	overflow: visible;
+	width: auto;
+	-moz-outline: 0 none;
+	outline: 0 none;
+	zoom:1;
+}
+
+.z-btn-left,.z-btn-right {
+	font-size: 1px;
+	line-height: 1px;
+}
+
+.z-btn-left {
+	width: 0px;
+	height: 25px;
+}
+
+.z-btn-right {
+	width: 0px;
+	height: 25px;
+}
+
+.z-btn-left i,.z-btn-right i {
+	display: block;
+	width: 0px;
+	overflow: hidden;
+	font-size: 1px;
+	line-height: 1px;
+}
+
+.z-btn .z-btn-center {
+	vertical-align: middle;
+	text-align: center;
+	padding: 0 6px 0 6px;
+	*padding:0 2px 0 2px !important;/*IE7*/
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.z-btn .z-btn-center input,.z-btn .z-btn-center img{
+	cursor:pointer;
+}
+
+.z-btn em {
+	font-style: normal;
+	font-weight: normal;
+}
+
+.z-btn .z-btn-center .z-btn-text {
+	background-position: 0 1px;
+	background-repeat: no-repeat;
+	padding-left: 18px;
+	padding-top: 2px;
+	padding-bottom: 0px;
+	padding-right: 0; +
+	border:0px;
+}
+
+.z-btn-over .z-btn-left {
+}
+
+.z-btn-over .z-btn-right {
+}
+
+.z-btn-over .z-btn-center {
+}
+
+.z-btn-dsb {
+	opacity: .50;
+	-moz-opacity: .50;
+	-webkit-opacity: .50;
+	-khtml-opacity: .50;
+	filter: alpha(opacity = 50);
+	cursor: default;
+	
+}
+
+.z-btn-dsb .z-btn-left {
+	opacity: .50;
+	-moz-opacity: .50;
+	-webkit-opacity: .50;
+	-khtml-opacity: .50;
+	filter: alpha(opacity = 50);
+	cursor: default;
+}
+
+.z-btn-dsb .z-btn-center,.z-btn .z-btn-center .z-btn-dsb,.z-btn .z-btn-center .z-btn-dsb{
+	cursor:default;
+}
+
+
+.z-btn-dsb .z-btn-right {
+}
+
+.z-btn-dsb .z-btn-center {
+}

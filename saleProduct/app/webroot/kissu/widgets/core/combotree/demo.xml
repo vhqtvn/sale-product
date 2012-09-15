@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Root>
+	<!--  分类 -->
+	<category>
+		<demo name="静态数据下拉树" url="demo/static_data.html"/>
+		<demo name="声明式标签" url="demo/declarative.html"/>
+		<demo name="动态数据源" url="demo/dataservice_demo.html"/>
+		
+	</category>
+
+</Root>

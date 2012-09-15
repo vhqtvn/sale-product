@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Calendar Demos</title>
+	<script src="../../../../scripts/jquery.js" type="text/javascript" class="view-source"></script>
+	<script src="../../../../scripts/jquery.utils.js" type="text/javascript" class="view-source"></script>
+	<link  href="../../../../themes/default/ui.css" type="text/css" rel="stylesheet"  class="view-source"/>
+	<!-- 换肤 -->
+	<script src="../../../demos.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../../theme_cookie.js"></script>
+	
+	<script src="../../../../scripts/jquery_ui/jquery.ui.position.js" type="text/javascript" class="view-source"></script>
+	<script src="../../calendar/WdatePicker.js" type="text/javascript" class="view-source"></script>
+	
+
+<script class="view-source noparse">
+	$(function(){
+		$("#calendar1").calendar();
+		$("#calendar2").calendar();
+	});
+</script>
+	
+</head>
+
+<body>
+	
+		<div id='content-default' class='demo'>
+		<h5><b>提示：</b>日历控件显示时，能自动根据绑定的输入域在窗口中的位置，自动计算合适的显示位置，避免日历选择框被所在窗口遮住。</h5>
+			
+			<div>
+				日历文本框(上)：<input class="Wdate" type="text" id="calendar1">
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+				
+				日历文本框(下)：<input class="Wdate" type="text" id="calendar2">
+			</div>
+	</div>
+</body>
+</html>
+	
+		<style>
+			body{
+				overflow:hidden;
+				padding:0px;
+			}
+		</style>
+		<script>
+			(function(){
+				window._setIFrameHeight = function(iframe,height){
+				   if($.browser.msie&&($.browser.version==6.0)&&!$.support.style){
+						//do nothing
+				   }else{
+						$(iframe).css("height",height+"px") ;
+				   }
+					window._agentAutoHeight() ;
+				} ;
+				
+				function agentAutoHeight(){
+					var bHeight = document.body.scrollHeight;
+					var dHeight = document.documentElement.scrollHeight;
+					var oHeight = document.body.offsetHeight;
+					var b_height =Math.max(oHeight,Math.max(bHeight,dHeight))+50;
+					
+					var b_iframe = document.getElementById("crossdomain_agent_iframe");     
+					var src = b_iframe.src.split("#")[0] ;
+					b_iframe.src = src+"#"+b_height;
+				}
+				
+				window._agentAutoHeight = agentAutoHeight ;
+			
+			
+				if(window.location.href.indexOf("/agent.html")!=-1)
+					return ;
+			
+				function getHost(){
+					var host = window.location.host ;
+					return host.split(":")[0] ;
+				}
+				
+				var baseUrl = "http://"+getHost()+":8001/bingo-ui-web" ;
+				var _crossdomain_agent_iframe_url = baseUrl+"/view/crossdomain/agent.html"  ;
+				
+				
+				if(!window.$){
+					document.write('<script src="'+baseUrl+"/statics/scripts/jquery.js"+'" onload="_loadjQuery()">\<\/script>') ;
+					
+					window._loadjQuery = function(){
+						$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}
+				}else{
+					$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+					$(function(){
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}) ;
+				}
+			})() ;
+		</script>
+	

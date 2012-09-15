@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Dialog</title>
+
+<link  href="../../../../themes/default/ui.css" type="text/css" rel="stylesheet" />
+
+<script src="../../../../scripts/jquery.js" type="text/javascript"></script>
+<script src="../../dialog/jquery.dialog.js" type="text/javascript"></script>
+<link type="text/css" href="../ui.dialog.css" rel="stylesheet" />
+
+<!-- 换肤 -->
+	<script type="text/javascript" src="../../../theme_cookie.js"></script>
+
+<script type="text/javascript">
+function open1()
+{
+	var dialog = $.dialog({
+			Title:"带有说明栏的新窗口",
+			URL:'test.html',
+			Width:500,
+			Height:200,
+			MessageTitle:"内容说明栏标题",
+			Message:"内容说明栏标题内容内容说明栏标题内容内容说明栏标题内容"
+		}).show() ;
+}
+</script>
+
+</head>
+<body>
+
+  <div class="item">
+    <input type="button" id="a" value="带有内容说明栏的新窗口" onclick="open1()"/>
+    <br/>
+</div>
+</body>
+</html>
+	
+		<style>
+			body{
+				overflow:hidden;
+				padding:0px;
+			}
+		</style>
+		<script>
+			(function(){
+				window._setIFrameHeight = function(iframe,height){
+				   if($.browser.msie&&($.browser.version==6.0)&&!$.support.style){
+						//do nothing
+				   }else{
+						$(iframe).css("height",height+"px") ;
+				   }
+					window._agentAutoHeight() ;
+				} ;
+				
+				function agentAutoHeight(){
+					var bHeight = document.body.scrollHeight;
+					var dHeight = document.documentElement.scrollHeight;
+					var oHeight = document.body.offsetHeight;
+					var b_height =Math.max(oHeight,Math.max(bHeight,dHeight))+50;
+					
+					var b_iframe = document.getElementById("crossdomain_agent_iframe");     
+					var src = b_iframe.src.split("#")[0] ;
+					b_iframe.src = src+"#"+b_height;
+				}
+				
+				window._agentAutoHeight = agentAutoHeight ;
+			
+			
+				if(window.location.href.indexOf("/agent.html")!=-1)
+					return ;
+			
+				function getHost(){
+					var host = window.location.host ;
+					return host.split(":")[0] ;
+				}
+				
+				var baseUrl = "http://"+getHost()+":8001/bingo-ui-web" ;
+				var _crossdomain_agent_iframe_url = baseUrl+"/view/crossdomain/agent.html"  ;
+				
+				
+				if(!window.$){
+					document.write('<script src="'+baseUrl+"/statics/scripts/jquery.js"+'" onload="_loadjQuery()">\<\/script>') ;
+					
+					window._loadjQuery = function(){
+						$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}
+				}else{
+					$(document.body).append('<iframe id="crossdomain_agent_iframe"  width="100%"  src="'+_crossdomain_agent_iframe_url+'" style="display:none"> ');
+					$(function(){
+						agentAutoHeight() ;
+						setTimeout(function(){
+							agentAutoHeight() ;
+						},500) ;
+					}) ;
+				}
+			})() ;
+		</script>
+	
