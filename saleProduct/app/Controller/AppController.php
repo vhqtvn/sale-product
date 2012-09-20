@@ -50,7 +50,7 @@ class AppController extends Controller {
 			$userId  = $_COOKIE["userId"] ; 
 		}
 
-		if( $url == "users/login" || $this->startsWith($url,"error") || $url == 'users/logout' ){
+		if( $url == "users/login" || $this->startsWith($url,"error") || $url == 'users/logout' || $this->startsWith($url,"cron") ){
 			//ignore
 		}else{
 			if( !empty($userId) ){

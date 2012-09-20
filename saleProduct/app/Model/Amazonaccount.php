@@ -357,6 +357,16 @@ class Amazonaccount extends AppModel {
 		return $array ;
 	}
 	
+	function getAccountProductsForLevel($accountId,$level){
+		$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN FROM sc_amazon_product_category ,
+						sc_amazon_product_category_rel AS sc_amazon_account_product
+						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id 
+				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
+		$array = $this->query($sql);
+	
+		return $array ;
+	}
+	
 	function getAccountProducts($accountId,$categoryId = null ){
 		$array = null ;
 		if(empty($categoryId)){
