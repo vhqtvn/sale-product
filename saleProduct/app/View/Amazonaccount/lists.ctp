@@ -57,9 +57,6 @@
 						var status = record.STATUS ;
 						var html = [] ;
 						html.push("<a href='#' class='edit-account' val='"+val+"'>修改</a>&nbsp;&nbsp;") ;
-						html.push("<a href='#' class='asyn-action' val='"+val+"' code='"+record.CODE+"'>产品同步产品</a>&nbsp;&nbsp;") ;
-						html.push("<a href='#' class='active-asyn-action' val='"+val+"' code='"+record.CODE+"'>类型同步产品</a>&nbsp;&nbsp;") ;
-						html.push("<a href='#' class='gather-action' val='"+val+"' code='"+record.CODE+"'>采集产品</a>&nbsp;&nbsp;") ;
 						return html.join("") ;
 					}},
 		           	{align:"center",key:"NAME",label:"账户名称",width:"35%",forzen:false,align:"left"},
@@ -76,26 +73,6 @@
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
-			$(".asyn-action").live("click",function(){
-				var id = $(this).attr("val") ;
-				var code = $(this).attr("code") ;
-				//monitor(id) ;
-				openCenterWindow("/saleProduct/index.php/amazonaccount/asynPage/common/"+id,650,530) ;
-			});
-			
-			
-			$(".active-asyn-action").live("click",function(){
-				var id = $(this).attr("val") ;
-				var code = $(this).attr("code") ;
-				//monitor(id) ;
-				openCenterWindow("/saleProduct/index.php/amazonaccount/asynPage/active/"+id,650,530) ;
-			});
-
-			$(".gather-action").live("click",function(){
-				var id = $(this).attr("val") ;
-				var code = $(this).attr("code") ;
-				openCenterWindow("/saleProduct/index.php/amazonaccount/gatherPage/"+id,450,330) ;
-			});
 
 			$(".register").click(function(){
 				openCenterWindow("/saleProduct/index.php/amazonaccount/add",650,530) ;
