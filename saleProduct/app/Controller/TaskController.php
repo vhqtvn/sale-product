@@ -740,12 +740,12 @@ class TaskController extends AppController {
 		return $this->response;
 	}
 	
-	public function gatherAmazonCompetitions($id){
+	public function gatherAmazonCompetitions($id,$categoryId = null){
 		//更新采集状态
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_COMPETE","START") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_COMPETE","START",$categoryId) ;
 		try{
 			//获取商家产品asin
-			$array = $this->Amazonaccount->getAccountProducts($id) ;
+			$array = $this->Amazonaccount->getAccountProducts($id,$categoryId) ;
 			$index = 0 ;
 			$this->Task->savelog($id, "start gather competition" );
 			foreach( $array as $arr ){
@@ -760,15 +760,15 @@ class TaskController extends AppController {
 			$this->Task->savelog($id, "error::::".$e->getMessage() );
 		}
 		
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_COMPETE","") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_COMPETE","",$categoryId) ;
 	}
 	
 	
-	public function gatherAmazonFba($id){
+	public function gatherAmazonFba($id,$categoryId = null){
 		//更新采集状态
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_FBA","START") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_FBA","START",$categoryId) ;
 		try{
-			$array = $this->Amazonaccount->getAccountProducts($id) ;
+			$array = $this->Amazonaccount->getAccountProducts($id,$categoryId) ;
 			$index = 0 ;
 			$this->Task->savelog($id, "start gather fba" );
 			foreach( $array as $arr ){
@@ -781,7 +781,7 @@ class TaskController extends AppController {
 		}catch(Exception $e){
 			$this->Task->savelog($id, "error::::".$e->getMessage() );
 		}
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_FBA","") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_FBA","",$categoryId) ;
 	}
 	
 	/**
@@ -789,15 +789,14 @@ class TaskController extends AppController {
 	 * $id 账户系统编号
 	 * $code 账户CODE
 	 */
-	public function amazonAsin($id , $code = null ){//
+	public function amazonAsin($id , $categoryId = null ){//
 		
 		//更新采集状态
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT","START") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT","START",$categoryId) ;
 		try{
-			//$this->Task->clearlog($id) ;
 		
 			$asintemplate = $this->Config->getAmazonConfig("AMAZON_ACCOUNT_PRODUCT_URL") ;
-			$asinArray = $this->Amazonaccount->getAccountProducts($id) ;
+			$asinArray = $this->Amazonaccount->getAccountProducts($id,$categoryId) ;
 			
 			//开始采集产品信息
 			$index = 0 ;
@@ -805,15 +804,17 @@ class TaskController extends AppController {
 				$asin = $_asin['sc_amazon_account_product']['ASIN'] ;
 				$index = $index + 1 ;
 				$this->Task->savelog($id, "start get product[ index: ".$index." ][".$asin."] details" );
-				//$this->fetchAmazonAsin($asin,$code,$asintemplate,$id ,$index) ;
+				echo $asin.'<br>' ;
 				$this->fetchAsin($asin,$id) ;
 			} 
 			//采集产品信息结束
 			$this->Task->savelog($id,"end!" );
 		}catch(Exception $e){
-			$this->Task->savelog($id, "error::::".$e->getMessage() );
+			try{
+				$this->Task->savelog($id, "error::::".$e->getMessage() );
+			}catch(Exception $e){}
 		}
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT","") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT","",$categoryId) ;
 
 		$this->response->type("json");
 		$this->response->body("execute complete");
@@ -823,26 +824,22 @@ class TaskController extends AppController {
 	/**
 	 * gather shipping info
 	 */
-	public function amazonShippingAsin($id , $code = null ){//
+	public function amazonShippingAsin($id , $categoryId=null ){//
 		$this->Task->clearlog($id) ;
 	
 		$account = $this->Amazonaccount->getAccount($id) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		//更新采集状态
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT_SHIPPING","START") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT_SHIPPING","START",$categoryId) ;
 		try{
 			//$this->Task->clearlog($id) ;
 		
 			$asintemplate = $this->Config->getAmazonConfig("AMAZON_ACCOUNT_PRODUCT_URL") ;
-			$asinArray = $this->Amazonaccount->getAccountProducts($id) ;
-			
-			
+			$asinArray = $this->Amazonaccount->getAccountProducts($id,$categoryId) ;
 			
 			//开始采集产品信息
 			$index = 0 ;
 			foreach($asinArray as $_asin){
-				
-				print_r( $_asin ) ;
 				
 				$asin = $_asin['sc_amazon_account_product']['ASIN'] ;
 				
@@ -859,7 +856,7 @@ class TaskController extends AppController {
 		}catch(Exception $e){
 			$this->Task->savelog($id, "error::::".$e->getMessage() );
 		}
-		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT_SHIPPING","") ;
+		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT_SHIPPING","",$categoryId) ;
 
 		$this->response->type("json");
 		$this->response->body("execute complete");

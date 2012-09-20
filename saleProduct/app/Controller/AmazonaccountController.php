@@ -1,10 +1,32 @@
 <?php
 
+App :: import('Vendor', 'Amazon');
+
 class AmazonaccountController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
     var $uses = array('Amazonaccount', 'Config');
+   
+    /**
+     * 数据采集管理
+     */
+    public function gather($accountId){
+    	$this->set("accountId",$accountId) ;
+    }
     
+    /**
+     * 价格更新
+     */
+    public function priceUpdate($accountId){
+    	$this->set("accountId",$accountId) ;
+    }
+    
+    /**
+     * 库存更新
+     */
+    public function quantityUpdate($accountId){
+    	$this->set("accountId",$accountId) ;
+    }
     
     public function category($accountId){
     	$categorys = $this->Amazonaccount->getAmazonProductCategory($accountId);  
@@ -121,6 +143,32 @@ class AmazonaccountController extends AppController {
     	$this->set("categorys",$categorys) ;
 	 }
 	 
+	 public function productListsPrice($id  ){
+	 	$account = $this->Amazonaccount->getAccount($id);  
+	 	$account = $account[0]['sc_amazon_account'] ;
+	 	
+	 	$this->set('accountId', $account["ID"]);
+		
+		$accounts = $this->Amazonaccount->getAccounts();  
+    	$this->set("accounts",$accounts) ;
+    	
+    	$categorys = $this->Amazonaccount->getAmazonProductCategory($id,null,"price");  
+    	$this->set("categorys",$categorys) ;
+	 }
+	 
+	 public function productListsQuantity($id  ){
+	 	$account = $this->Amazonaccount->getAccount($id);  
+	 	$account = $account[0]['sc_amazon_account'] ;
+	 	
+	 	$this->set('accountId', $account["ID"]);
+		
+		$accounts = $this->Amazonaccount->getAccounts();  
+    	$this->set("accounts",$accounts) ;
+    	
+    	$categorys = $this->Amazonaccount->getAmazonProductCategory($id,null,"quantity");  
+    	$this->set("categorys",$categorys) ;
+	 }
+	 
 	  
 	 /**
 	  * 配置管理
@@ -166,17 +214,27 @@ class AmazonaccountController extends AppController {
 	  * 采集操作
 	  */
 	 public function gatherPage($id=null , $code = null){
-	 	$this->set('id', $id);
+	 	$this->set('accountId', $id);
 	 	$this->set('code', $code);
 	 	
 	 	$this->set("account",$this->Amazonaccount->getAccount($id)  ) ;
 	 	
-	 	
+    	$categorys = $this->Amazonaccount->getAmazonProductCategory($id);  
+    	$this->set("categorys",$categorys) ;
+	 }
+	 
+	 public function gatherDoPage($accountId , $categoryId = null ){
+	 	$this->set('accountId', $accountId);
+	 	$this->set('categoryId', $categoryId );
+	 	$this->set("account",$this->Amazonaccount->getAccount($accountId,$categoryId)  ) ;
 	 }
 	 
 	  public function doAmazonPrice(){
 	 	$params = $this->request->data  ;
 		$accountId = $params["accountId"] ;
+		
+		$user =  $this->getCookUser() ;
+		$loginId = $user["LOGIN_ID"] ;
 		
 		$account = $this->Amazonaccount->getAccount($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
@@ -184,6 +242,8 @@ class AmazonaccountController extends AppController {
 		$products = $this->Amazonaccount->listAccountUpdatableProductForPrice( $account["ID"] ) ;
 		
 		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+		
+		$id = "UC_Price_".date('U') ;
 		
 		$_products = array() ;
 		for( $i = 0 ;$i < count($products) ;$i++  ){
@@ -197,12 +257,37 @@ class AmazonaccountController extends AppController {
 		
 		$Feed = $this->getPriceFeed($MerchantIdentifier , $_products) ;
 		
-		print_r( $Feed ) ;
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    	$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] , 
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+			 	$account['APPLICATION_NAME'] ,
+			 	$account['APPLICATION_VERSION'] ,
+			 	$account['MERCHANT_ID'] ,
+			 	$account['MARKETPLACE_ID'] ,
+			 	$account['MERCHANT_IDENTIFIER'] 
+		) ;
+		
+		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
+		
+		print_r($result) ;
+		$this->Amazonaccount->saveAccountFeed($result) ;
+
+		$this->response->type("html");
+		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
+		return $this->response;
 	 }
 	 
 	 public function doAmazonQuantity(){
+	 	
+	 	$id = "UC_Quantity_".date('U') ;
+	 	
 	 	$params = $this->request->data  ;
 		$accountId = $params["accountId"] ;
+		
+		$user =  $this->getCookUser() ;
+		$loginId = $user["LOGIN_ID"] ;
 		
 		$account = $this->Amazonaccount->getAccount($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
@@ -221,7 +306,26 @@ class AmazonaccountController extends AppController {
 		
 		$Feed = $this->getQuantityFeed($MerchantIdentifier , $_products) ;
 
-		print_r($Feed) ;
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    	$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] , 
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+			 	$account['APPLICATION_NAME'] ,
+			 	$account['APPLICATION_VERSION'] ,
+			 	$account['MERCHANT_ID'] ,
+			 	$account['MARKETPLACE_ID'] ,
+			 	$account['MERCHANT_IDENTIFIER'] 
+		) ;
+		
+		$result = $amazon->updateInventory($accountId,$Feed,$loginId) ;
+		
+		print_r($result) ;
+		$this->Amazonaccount->saveAccountFeed($result) ;
+
+		$this->response->type("html");
+		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
+		return $this->response;
 
 	 }
 	 

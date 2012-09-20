@@ -55,6 +55,7 @@
 				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
 				echo "treeData.childNodes.push( item$index ) ;" ;
 			}else{
+				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
 				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
 			}
 			$index++ ;

@@ -130,6 +130,7 @@ class Amazongrid extends AppModel {
 		$curPage =  $query["curPage"] ;
 		$start =  $query["start"] ;
 		$end =  $query["end"] ;
+		$accountId = "" ;
 		
 		$where = " where 1=1  " ;
 		
@@ -259,18 +260,22 @@ class Amazongrid extends AppModel {
 						( select min(sc_sale_fba_details.seller_price) from sc_sale_fba_details
 								where sc_sale_fba_details.asin = sc_product.asin ) as FBA_PRICE,
 		
-						(SELECT ID FROM sc_sale_competition_details 
-							WHERE sc_sale_competition_details.asin = sc_product.asin AND sc_sale_competition_details.type LIKE 'F%'
-							AND sc_sale_competition_details.seller_name = 'Cyberkin' ) AS f_index,
-						(SELECT ID FROM sc_sale_competition_details 
-							WHERE sc_sale_competition_details.asin = sc_product.asin AND sc_sale_competition_details.type LIKE 'N%'
-							AND sc_sale_competition_details.seller_name = 'Cyberkin' ) AS n_index,
-						(SELECT ID FROM sc_sale_competition_details 
-							WHERE sc_sale_competition_details.asin = sc_product.asin AND sc_sale_competition_details.type LIKE 'U%'
-							AND sc_sale_competition_details.seller_name = 'Cyberkin' ) AS u_index,
-						(SELECT ID FROM sc_sale_fba_details 
-							WHERE sc_sale_fba_details.asin = sc_product.asin 
-							AND sc_sale_fba_details.seller_name = 'Cyberkin' ) AS fba_index,
+						(SELECT sc_sale_competition_details.ID FROM sc_sale_competition_details  , sc_amazon_account
+							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'F%'
+								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS f_index,
+						(SELECT sc_sale_competition_details.ID FROM sc_sale_competition_details  , sc_amazon_account
+							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'N%'
+								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS n_index,
+						(SELECT sc_sale_competition_details.ID FROM sc_sale_competition_details  , sc_amazon_account
+							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'U%'
+								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS u_index,
+						(SELECT sc_sale_fba_details.ID FROM sc_sale_fba_details , sc_amazon_account
+							WHERE sc_sale_fba_details.asin = sc_amazon_account_product.asin
+								and sc_amazon_account.name = sc_sale_fba_details.seller_name 
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS fba_index,
 		
 		
 						( SELECT TOTAL_COST 
@@ -294,6 +299,7 @@ class Amazongrid extends AppModel {
 
 	function getProductCount($query=null , $id = null){
 		$where = " where 1=1  " ;
+		$accountId = "" ;
 		
 		if( isset( $query["title"] )  && !empty( $query["title"]  )){
 			$title = $query["title"] ;
@@ -346,7 +352,6 @@ class Amazongrid extends AppModel {
 			$isFM = $query["isFM"] ;
 			$where .= " and sc_amazon_account_product.IS_FM = '".$isFM."' " ;
 		}
-		
 		
 		if( isset( $query["type"] )  && !empty( $query["type"]  )){
 			$type = $query["type"] ;
@@ -405,18 +410,25 @@ class Amazongrid extends AppModel {
 							AND sc_sale_fba_details.ID <= t.fba_index ) AS FBA_PM
 		          from (
 		              SELECT  sc_amazon_account_product.*,
-						(SELECT ID FROM sc_sale_competition_details 
-							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'F%'
-							AND sc_sale_competition_details.seller_name = 'Cyberkin' ) AS f_index,
-						(SELECT ID FROM sc_sale_competition_details 
-							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'N%'
-							AND sc_sale_competition_details.seller_name = 'Cyberkin' ) AS n_index,
-						(SELECT ID FROM sc_sale_competition_details 
-							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'U%'
-							AND sc_sale_competition_details.seller_name = 'Cyberkin' ) AS u_index,
-						(SELECT ID FROM sc_sale_fba_details 
-							WHERE sc_sale_fba_details.asin = sc_amazon_account_product.asin 
-							AND sc_sale_fba_details.seller_name = 'Cyberkin' ) AS fba_index
+						(SELECT sc_sale_competition_details.ID FROM sc_sale_competition_details  , sc_amazon_account
+							WHERE sc_sale_competition_details.type LIKE 'F%'
+								AND sc_sale_competition_details.asin = sc_amazon_account_product.asin
+								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS f_index,
+						(SELECT sc_sale_competition_details.ID FROM sc_sale_competition_details  , sc_amazon_account
+							WHERE  sc_sale_competition_details.type LIKE 'N%'
+								AND sc_sale_competition_details.asin = sc_amazon_account_product.asin
+								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS n_index,
+						(SELECT sc_sale_competition_details.ID FROM sc_sale_competition_details  , sc_amazon_account
+							WHERE  sc_sale_competition_details.type LIKE 'U%'
+								AND sc_sale_competition_details.asin = sc_amazon_account_product.asin
+								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS u_index,
+						(SELECT sc_sale_fba_details.ID FROM sc_sale_fba_details , sc_amazon_account
+							WHERE  sc_amazon_account.name = sc_sale_fba_details.seller_name 
+								AND sc_sale_fba_details.asin = sc_amazon_account_product.asin
+							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS fba_index
 		
 						FROM sc_amazon_account_product
 					$where 

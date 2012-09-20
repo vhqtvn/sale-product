@@ -41,6 +41,7 @@
 			echo " treeMap['id_$id'] = item$index  ;" ;
 			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
 			if(empty($pid)){
+	
 				echo "treeData.childNodes.push( item$index ) ;" ;
 			}else{
 				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
@@ -91,29 +92,19 @@
 				}
 	       }) ;
 			setTimeout(function(){
+				
+				var querys = getQueryCondition() ;
+				querys.type = "price" ;
+				querys.accountId = accountId ;
+				
 				$(".grid-content").llygrid({
 					columns:[
-						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
-							var status = record.STATUS ;
-							var html = [] ;
-							html.push("<a href='#' class='edit-account-product' val='"+val+"'>修改</a>&nbsp;") ;
-							return html.join("") ;
-						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
-			           	}},
-			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
-			           		if(val){
-			           			val = val.replace(/%/g,'%25') ;
-			           		}else{
-			           			return "" ;
-			           		}
-			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
 			           	}},
-			           	
 			           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
 			           		if(!val) return '-' ;
 			           		return Math.round(val) ;
@@ -127,8 +118,7 @@
 			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
 			           	{align:"center",key:"SKU",label:"SKU",width:"8%"},
 			           	{align:"center",key:"QUANTITY",label:"库存",width:"6%"},
-			           	{align:"center",key:"FEED_QUANTITY",label:'库存<?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?>',width:"6%",format:{type:'editor',fields:['SKU']}},
-			            {align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
+			           	{align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
 			            {align:"center",key:"FEED_PRICE",label:'Price<?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?>',group:'价格',width:"6%",format:{type:'editor',fields:['SKU']}},
 			           	{align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
 			           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"8%",format:function(val,record){
@@ -147,55 +137,28 @@
 			           		if( record.IS_FM == 'NEW' ) return  record.FBM_N_PRICE ;
 			           		return "" ;
 			           	}},
-			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"},
-			           	{align:"center",key:"STRATEGY_LABEL",label:"策略",group:"价格",width:"11%",format:function(val){
-			           		return val||"-" ;
-			           	}}//,
-			           	//{align:"center",key:"EXEC_PRICE",label:"执行价格",group:"价格",width:"8%"}
-			           	/*,
-			           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%"},
-			           	{align:"center",key:"FBM_COST",label:"总成本",group:"FBM",width:"6%"},
-			           	//{align:"center",key:"FBM_LOWER",label:"最低销售价",group:"FBM",width:"10%"},
-			           	{align:"center",key:"FBA_PRICE",label:"最低价",group:"FBA",width:"6%"},
-			           	{align:"center",key:"FBA_COST",label:"总成本",group:"FBA",width:"6%"}//,
-			           	//{align:"center",key:"FBA_LOWER",label:"最低销售价",group:"FBA",width:"10%"}*/
+			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"}
 			         ],
 			         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
-					 height:420,
+					 height:350,
 					 title:"",
 					 indexColumn:false,
-					 querys:{accountId:accountId},
+					 querys:querys,
 					 loadMsg:"数据加载中，请稍候......"
 				}) ;
 			},200) ;
-			
-			$(".edit-account-product").live("click",function(){
-				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/amazonaccount/editAccountProduct/"+val,600,480) ;
-			}) ;
-				
-			
+		
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId,950,650) ;
 			}) ;
-			
+		
 			$(".query-btn").click(function(){
-				$(".grid-content").llygrid("reload",getQueryCondition() ) ;	
-			}) ;
-			
-			
-			$(".price-update-btn").click(function(){
 				var querys = getQueryCondition() ;
 				querys.type = "price" ;
-				$(".grid-content").llygrid("reload",querys ) ;	
-			}) ;
-			
-			$(".quantity-update-btn").click(function(){
-				var querys = getQueryCondition() ;
-				querys.type = "quantity" ;
+				querys.accountId = accountId ;
 				$(".grid-content").llygrid("reload",querys ) ;	
 			}) ;
 			
@@ -237,6 +200,22 @@
 						
 					}
 				}); 
+			}) ;
+			
+			$(".price-update").click(function(){
+				if( window.confirm("是否确认提交价格更新?") ){
+					$.ajax({
+						type:"post",
+						url:"/saleProduct/index.php/amazonaccount/doAmazonPrice",
+						data:{accountId:currentAccountId},
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							alert("更新请求提交完成！") ;
+						}
+					}); 
+				}
+				
 			}) ;
    	 });
    </script>
@@ -282,7 +261,6 @@
 			   <ul>
 			   	 <li><label>ASIN:</label><input type="text" name="asin" style="width:100px"/></li>
 			   	 <li><label>名称:</label><input type="text" name="title" style="width:100px"/></li>
-			   	 <li><label>库存:</label>从<input type="text" name="quantity1" style="width:50px"/>到<input type="text" name="quantity2" style="width:50px"/></li>
 			   	 <li><label>价格:</label>从<input type="text" name="price1" style="width:50px"/>到<input type="text" name="price2" style="width:50px"/></li>
 			   	 <li><label>销售渠道:</label><select name='fulfillmentChannel'>
 					<option value=''>全部</option>
@@ -321,12 +299,7 @@
 			<div style="clear:both;height:5px;"></div>
 			<div class="grid-content" style="width:99%;">
 			</div>
-			
-			<div>
-				
-				<button class="price-update-btn">显示价格待更新列表</button>
-				<button class="quantity-update-btn">显示库存待更新列表</button>
-			</div>
+			<button class="price-update">更新价格到AMAZON</button>
 		</div>
 		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:150px;">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>

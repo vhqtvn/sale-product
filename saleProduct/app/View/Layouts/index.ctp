@@ -8,142 +8,131 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../ligerUI/lib/ligerUI/skins/Aqua/css/ligerui-all');
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('../grid/grid');
 		echo $this->Html->script('../ligerUI/lib/ligerUI/js/ligerui.min');
 		
+		$userModel  = ClassRegistry::init("User") ;
+		$funs = $userModel->getSecurityFunctions( $User["GROUP_CODE"] ); 
+		//print_r($funs) ;
+		
 		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
 		$accounts = $amazonAccount->getAccounts();  
+		
+		$Functions = $funs['functions'] ;
+		$accounts  = $funs['accounts'] ;
+		$accountSecuritys = $funs['accountSecuritys'] ;
+		
 	?>
 
         <script type="text/javascript">
           var accounts = [] ;
-          var accountsCategory = [] ;
-        
-      <?php  
-		foreach( $accounts as $Record ){
-			$sfs = $Record['sc_amazon_account']  ;
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME']  ;
-			$pid = null ;
-			echo " accounts.push({id:'a_$id',accountId:'$id',text:'$name',isExpand:true,url:'/saleProduct/index.php/amazonaccount/productLists/$id'}) ;" ;
-			echo " accountsCategory.push({id:'c_$id',accountId:'$id',text:'$name',isExpand:true,url:'/saleProduct/index.php/amazonaccount/category/$id'}) ;" ;
-		} ;
-	?>
-        var indexdata = [] ;
-        var map = {} ;
-        var scripts = null ;
-        $.ajax({
-			type:"get",
-			url:"/saleProduct/index.php/grid/functionItems",
-			data:{start:0,limit:100,curPage:0,end:0},
-			cache:false,
-			dataType:"text",
-			success:function(result,status,xhr){
+          var indexdata = [] ;
+          var map = {} ;
+          var itemCache = [] ;
+          var treeMap = {} ;
+          
+          <?php
+          $index = 0 ;
+          foreach( $Functions as $Record ){
+				$sfs = $Record['sc_security_function']  ;
 				
-				if(typeof result == 'string'){
-					eval("result = " +result) ;
+				$id   = $sfs['ID'] ;
+				$code = $sfs['CODE'] ;
+				$name = $sfs['NAME'] ;
+				$pid  = $sfs['PARENT_ID'] ;
+				$url  = $sfs['URL'] ;
+				echo " var item$index = {id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} ;" ;
+				
+				echo " itemCache.push( item$index ) ;" ;
+				
+				echo " treeMap['id_$id'] = item$index  ;" ;
+				if(empty($pid)){
+					echo "indexdata.push( item$index ) ;" ;
 				}
-				var formatDate = window.formatGridData||function(data){ return data } ;
-				result = formatDate(result) ;
+				$index++ ;
+			} ;
+			
+			foreach( $accounts as $Record ){
+				$sfs = $Record['sc_amazon_account']  ;
+				$aid   = $sfs['ID'] ;
+				$name  = $sfs["NAME"] ;
+				$aname = $name ;
+				$security = $accountSecuritys[$aid] ;
+				
+				echo " var account_$aid = {id:'a___$aid',accountId:'$aid',text:'$name',children:[],isexpand:false} ;" ;
+				echo " accounts.push(account_$aid ) ;" ;
+				
+				foreach( $security as $Record1 ){
+					$sfs1 = $Record1['sc_security_function']  ;
 
-				var cacheItem = [] ;
-				$(result.records).each(function(){
-					var item = {isexpand:false,text:this.NAME,pid:this.PARENT_ID} ;
-					if(this.URL) item.url = this.URL ;
-					map["P"+this.ID] = item ;
-					if(this.CODE == 'filter_rule'){
-						item.children = [] ;
-						scripts = item ;
+					$id   = $sfs1['ID'] ;
+					$code = $sfs1['CODE'] ;
+					$name = $sfs1['NAME'] ;
+					$pid  = $sfs1['PARENT_ID'] ;
+					$url  = $sfs1['URL'] ;
+					if(!empty($url)){
+						$url = $url."/".$aid ;
 					}
 					
-					if(this.CODE == "amazon_account_lists"){
-						item.children = accounts ;
-					}
+					echo " account_$aid.children.push({id:'a___$aid"."_"."$code',url:'$url',text:'$name',pid:'a___$aid'});" ;
 					
-					if(this.CODE == "amazon_product_categorys"){
-						item.children = accountsCategory ;
-					}
-					
-					cacheItem.push(item) ;
-					
-					/*
-					if( !this.PARENT_ID ){
-						indexdata.push(item) ;
-					}else{
-						var pItem = map["P"+this.PARENT_ID] ;
-						pItem.children = pItem.children||[] ;
-						pItem.children.push(item) ;
-					}*/
-					
-				}) ;
-				
-				$(cacheItem).each(function(){
-					if( !this.pid ){
-						indexdata.push(this) ;
-					}else{
-						var pItem = map["P"+this.pid] ;
-						pItem.children = pItem.children||[] ;
-						pItem.children.push(this) ;
-					}
-				}) ;
-				
-				$.ajax({
-					type:"get",
-					url:"/saleProduct/index.php/grid/scriptitem",
-					data:{start:0,limit:100},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						
-						if(typeof result == 'string'){
-							eval("result = " +result) ;
-						}
-						var formatDate = window.formatGridData||function(data){ return data } ;
-						result = formatDate(result) ;
-		
-						if(scripts){
-							$(result.records).each(function(){
-								scripts.children.push({isexpand:false,text:this.NAME,url:"/saleProduct/index.php/product/rule/"+this.ID}) ;
-							}) ;
-						}
-		
-						 //树
-						$("#tree1").ligerTree({
-						    data : indexdata,
-						    checkbox: false,
-						    slide: false,
-						    nodeWidth: 120,
-						    attribute: ['nodename', 'url'],
-						    onSelect: function (node)
-						    {
-							if (!node.data.url) return;
-							var tabid = $(node.target).attr("tabid");
-							if (!tabid)
-							{
-							    tabid = new Date().getTime();
-							    $(node.target).attr("tabid", tabid)
-							} 
-							f_addTab(tabid, node.data.text, node.data.url);
-						    }
-						});
-					}
-				}); 
-				
+				} ;
+			} ;
+          ?>
+          
+         $(itemCache).each(function(){
+			if( this.pid && treeMap['id_'+this.pid]){
+				treeMap['id_'+this.pid].children = treeMap['id_'+this.pid].children||[] ;
+				treeMap['id_'+this.pid].children.push(this) ;
 			}
-        }) ;
-	
+			
+			if(this.code == "marketing_manage"){
+				this.children = this.children||[] ;
+				var me = this ;
+				$(accounts).each(function(){
+					me.children.push(this) ;
+				}) ;
+			}
+		}) ;
 		
+		$(function(){
+			$("#tree1").ligerTree({
+			    data : indexdata,
+			    checkbox: false,
+			    slide: false,
+			    nodeWidth: 120,
+			    attribute: ['nodename', 'url'],
+			    onSelect: function (node)
+			    {
+					if (!node.data.url) return;
+					var tabid = $(node.target).attr("tabid");
+					if (!tabid){
+					    tabid = new Date().getTime();
+					    $(node.target).attr("tabid", tabid)
+					} 
+					
+					var prevText = $(node.target).parents("ul:first").prev().text() ;
+					if( prevText && $.trim(prevText) ){
+						prevText = prevText+" 》" ;
+					}
+
+					f_addTab(tabid,prevText+ node.data.text, node.data.url);
+			    }
+			});
+		})
+		
+		///saleProduct/index.php/grid/scriptitem
+		///saleProduct/index.php/product/rule/"+this.ID
+
             var tab = null;
             var accordion = null;
             var tree = null;
-            $(function ()
-            {
-
+            $(function (){
                 //布局
                 $("#layout1").ligerLayout({ leftWidth: 190, height: '100%',heightDiff:-34,space:4, onHeightChanged: f_heightChanged });
 
                 var height = $(".l-layout-center").height();
-
                 //Tab
                 $("#framecenter").ligerTab({ 
                 	height: height/*,
@@ -153,7 +142,6 @@
                 		//document.getElementById(tabId).window.location.reload() ;
                 		return true ;
                 	}*/
-                	
                  });
 
                 //面板

@@ -64,7 +64,7 @@ class DATABASE_CONFIG {
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'root',
-		'password' => 'root',
+		'password' => '',
 		'database' => 'sale_product1',
 		'prefix' => '',
 		'encoding' => 'utf8'
@@ -75,7 +75,7 @@ class DATABASE_CONFIG {
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'root',
-		'password' => 'root',
+		'password' => '',
 		'database' => 'sale_product',
 		'prefix' => '',
 		'encoding' => 'utf8',

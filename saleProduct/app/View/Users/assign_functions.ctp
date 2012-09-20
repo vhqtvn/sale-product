@@ -36,6 +36,7 @@
    <script>
     var treeData = {id:"root",text:"功能树",isExpand:true,childNodes:[]} ;
     var treeMap  = {} ;
+    var itemCache = [] ;
     var code     = '<?php echo $GroupCode;?>'
     <?php
     	$index = 0 ;
@@ -47,22 +48,84 @@
 			$code = $sfs['CODE'] ;
 			$name = $sfs['NAME'] ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$code',text:'$name'} ;" ;
+			echo " var item$index = {id:'$code',text:'$name',pid:'$pid'} ;" ;
 			
 			if( !empty($selected) ){
 				echo " item$index ['checkstate'] = 1 ;" ;
 			}
+			echo " itemCache.push( item$index ) ;" ;
 			
 			echo " treeMap['id_$id'] = item$index  ;" ;
 			if(empty($pid)){
 				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
 				echo "treeData.childNodes.push( item$index ) ;" ;
 			}else{
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
+				//echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
 			}
 			$index++ ;
 		} ;
+		
+		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+		$accounts = $amazonAccount->getAllAccounts(); 
 	?>
+	 var accounts = [] ;
+    <?php 
+    	
+		foreach( $accounts as $Record ){
+			$sfs = $Record['sc_amazon_account']  ;
+			$aid   = $sfs['ID'] ;
+			$name  = $sfs["NAME"] ;
+			$security = $accountSecuritys[$aid] ;
+			$security1 = $accountSecuritys1[$aid] ;
+			
+			$selected1 = '0' ;
+			if( !empty($security1) ){
+				$selected1 = '1' ;
+			}
+			
+			echo " var account_$aid = {id:'a___$aid',accountId:'$aid',text:'$name',checkstate:$selected1,childNodes:[]} ;" ;
+			echo " accounts.push(account_$aid ) ;" ;
+			
+			foreach( $security as $Record1 ){
+				$sfs1 = $Record1['sc_security_function']  ;
+				$selected =  $Record1[0]['selected'] ;
+				if(empty($selected))
+					$selected = '0' ;
+				
+				$id   = $sfs1['ID'] ;
+				$code = $sfs1['CODE'] ;
+				$name = $sfs1['NAME'] ;
+				$pid  = $sfs1['PARENT_ID'] ;
+				
+				echo " account_$aid.childNodes.push({id:'a___$aid"."_"."$code',text:'$name',pid:'$pid',checkstate:$selected});" ;
+				
+			} ;
+		} ;
+	?>
+	
+	$(itemCache).each(function(){
+		if( this.pid && treeMap['id_'+this.pid]){
+			treeMap['id_'+this.pid].childNodes = treeMap['id_'+this.pid].childNodes||[] ;
+			treeMap['id_'+this.pid].childNodes.push(this) ;
+		}
+		
+		if(this.id == "marketing_manage"){
+			this.childNodes = this.childNodes||[] ;
+			var me = this ;
+			$(accounts).each(function(){
+				me.childNodes.push(this) ;
+			}) ;
+		}
+		
+		/*if( this.pid =="account" ){
+			var me = this ;
+			$(accounts).each(function(){
+				this.childNodes = this.childNodes||[] ;
+				me.id = this.id+"_"+me.id
+				this.childNodes.push(me) ;
+			}) ;
+		}*/
+	}) ;
    
 	$(function(){
 

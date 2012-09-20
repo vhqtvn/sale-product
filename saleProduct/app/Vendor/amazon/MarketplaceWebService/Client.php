@@ -282,6 +282,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
     require_once (VENDOR_PATH.'/amazon/MarketplaceWebService/Model/GetReportResponse.php');
 
     $httpResponse = $this->invoke($this->convertGetReport($request), $request->getReport(),null , $account ,$reportType );
+    
     $response = MarketplaceWebService_Model_GetReportResponse::fromXML($httpResponse['ResponseBody']);
     $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
     return $response;
@@ -977,7 +978,6 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 		        	$quantity  	= $productItem['quantity'] ;
 		        	$price  	= $productItem['price'] ;
 
-	        	
 	        		$amazonAccount->saveAccountProductByAsyn(array(
 						'ASIN'=>$asin,
 						'SKU'=>$sku,
@@ -1018,7 +1018,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	    if( !empty( $reportType ) ){
 	    	//$amazonAccount->updateAccountAsyn3($accountId,array("reportType"=>$reportType)) ;
 	    }
-	    
+	    $html = $this->getDownloadResponseDocumentForGet( $action ) ;
 	    fclose($handle);
     }else{
     	$html = file_get_contents($U1002."?".$U1005);
@@ -1296,6 +1296,26 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
     
     return $response;
   }
+  
+  private function getDownloadResponseDocumentForGet($responseType) {
+
+    $response = '<' . $responseType . 'Response xmlns="http://mws.amazonaws.com/doc/2009-01-01/">';
+
+    $response .= '<' . $responseType . 'Result>';
+    $response .= '<ContentMd5>';
+    $response .= "";
+    $response .= '</ContentMd5>';
+    $response .= '</' . $responseType . 'Result>';
+    $response .= '<ResponseMetadata>';
+    $response .= '<RequestId>';
+    $response .= "";
+    $response .= '</RequestId>';
+    $response .= '</ResponseMetadata>';
+    $response .= '</' . $responseType . 'Response>';
+    
+    return $response;
+  }
+  
 
   /**
    * Exponential sleep on failed request

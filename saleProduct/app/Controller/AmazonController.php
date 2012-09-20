@@ -80,7 +80,18 @@ class AmazonController extends AppController {
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
 		$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
-		$amazon->getProductReport3($accountId , $accountAsyn[0]['sc_amazon_account_asyn']['REPORT_ID'] ) ;
+		$reportId = $accountAsyn[0]['sc_amazon_account_asyn']['REPORT_ID'] ;
+		$request = $amazon->getProductReport3($accountId , $reportId ) ;
+		
+		//if( !empty($request) ){
+			$user =  $this->getCookUser() ;
+			$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") , $user) ;
+		//}
+		
+		$this->response->type("json") ;
+		$this->response->body( "success")   ;
+
+		return $this->response ;
     }
     
     public function getProductActiveReport1($accountId){
@@ -125,7 +136,6 @@ class AmazonController extends AppController {
 		
 		$request = $amazon->getProductActiveReport2($accountId,$accountAsyn[0]['sc_amazon_account_asyn']['REPORT_REQUEST_ID']) ;
 		if( !empty($request) ){
-			
 			$user =  $this->getCookUser() ;
 			$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
 		}
@@ -149,7 +159,18 @@ class AmazonController extends AppController {
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
 		$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_MERCHANT_LISTINGS_DATA_") ;
-		$amazon->getProductActiveReport3($accountId , $accountAsyn[0]['sc_amazon_account_asyn']['REPORT_ID'] ) ;
+		$reportId = $accountAsyn[0]['sc_amazon_account_asyn']['REPORT_ID'] ;
+		$request = $amazon->getProductActiveReport3($accountId ,$reportId ) ;
+		
+		//if( !empty($request) ){
+			$user =  $this->getCookUser() ;
+			$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_MERCHANT_LISTINGS_DATA_") , $user) ;
+		//}
+		
+		$this->response->type("json") ;
+		$this->response->body( "success")   ;
+
+		return $this->response ;
     }
     
     public function getFeedSubmissionResult($accountId,$feedSubmissionId){

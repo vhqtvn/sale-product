@@ -2,24 +2,30 @@
 class Amazonaccount extends AppModel {
 	var $useTable = "sc_election_rule" ;
 	
-	function getAmazonProductCategory($accountId,$asin = null ){
+	function getAmazonProductCategory($accountId,$asin = null,$type = null ){
 		if( !empty($asin) ){
 			$sql = "select sc_amazon_product_category.* ,
 			(select count(*) from sc_amazon_product_category_rel
 					where sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
 					 and sc_amazon_product_category_rel.asin in (
-						select sc_amazon_account_product.asin from sc_amazon_account_product
+						select sc_amazon_account_product.asin from sc_amazon_account_product 
 					) and
 			sc_amazon_product_category_rel.asin = '$asin' ) as selected
 			 from sc_amazon_product_category where account_id = '$accountId' and account_id is not null " ;
 			
 			return $this->query($sql) ;
 		}else{
+			$sqlcause = "" ;
+			if( !empty($type) ){
+				$sqlcause = " and ( sc_amazon_account_product.feed_$type is not null and sc_amazon_account_product.feed_$type <> '') " ;
+			}
+			
 			$sql = "select sc_amazon_product_category.*,
               (select count(*) from sc_amazon_product_category_rel
 					where sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
 					and sc_amazon_product_category_rel.asin in (
-						select sc_amazon_account_product.asin from sc_amazon_account_product where sc_amazon_account_product.account_id = '$accountId'
+						select sc_amazon_account_product.asin from sc_amazon_account_product
+							where sc_amazon_account_product.account_id = '$accountId' $sqlcause
 					)) as TOTAL
               from sc_amazon_product_category where account_id = '$accountId' and account_id is not null " ;
 			
@@ -270,11 +276,18 @@ class Amazonaccount extends AppModel {
 		
 	}
 	
-	function getAccount($id){
-		$domain = $_SERVER['SERVER_NAME'] ;
-		$sql = "SELECT * FROM sc_amazon_account where id = '$id' and domain = '$domain'";
-		$array = $this->query($sql);
-		return $array ;
+	function getAccount($id,$categoryId=null){
+		if(empty($categoryId)){
+			$domain = $_SERVER['SERVER_NAME'] ;
+			$sql = "SELECT * FROM sc_amazon_account where id = '$id' and domain = '$domain'";
+			$array = $this->query($sql);
+			return $array ;
+		}else{
+			$sql = "SELECT sc_amazon_account.* FROM sc_amazon_product_category as sc_amazon_account
+				where sc_amazon_account.id = '$categoryId' and sc_amazon_account.account_id = '$id'";
+			$array = $this->query($sql);
+			return $array ;
+		}
 	}
 	
 	function getAccountAsyn($accountId,$reportType){
@@ -330,6 +343,12 @@ class Amazonaccount extends AppModel {
 		return $array ;
 	}
 	
+	function getAllAccounts(){
+		$sql = "SELECT * FROM sc_amazon_account";
+		$array = $this->query($sql);
+		return $array ;
+	}
+	
 	function getAccountProduct($id){
 		$sql = "SELECT sc_amazon_account_product.* , sc_product.TITLE,sc_product.ASIN
 			FROM sc_amazon_account_product , sc_product where sc_amazon_account_product.asin = sc_product.asin
@@ -338,21 +357,49 @@ class Amazonaccount extends AppModel {
 		return $array ;
 	}
 	
-	function getAccountProducts($accountId){
-		$sql = "SELECT sc_amazon_account_product.*
+	function getAccountProducts($accountId,$categoryId = null ){
+		$array = null ;
+		if(empty($categoryId)){
+			$sql = "SELECT distinct sc_amazon_account_product.ASIN FROM sc_amazon_account_product 
+			where account_id = '$accountId'";
+			$array = $this->query($sql);
+		}else{
+			$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN FROM sc_amazon_product_category ,
+						sc_amazon_product_category_rel AS sc_amazon_account_product
+						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id 
+				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.id='$categoryId'";
+			$array = $this->query($sql);
+		}
+		
+		
+		return $array ;
+	}
+	
+	function getAccountProductsForGather($accountId){
+		$sql = "SELECT distinct sc_amazon_account_product.ASIN
 			FROM sc_amazon_account_product 
 			where account_id = '$accountId'";
 		$array = $this->query($sql);
 		return $array ;
 	}
 	
-	function updateAccountGatherStatus($accountId,$key , $val){
+	function updateAccountGatherStatus($accountId,$key , $val,$categoryId=null){
+		$tableName = "" ;
+		$id = "" ;
+		if(empty($categoryId)){
+			$id = $accountId ;
+			$tableName = "sc_amazon_account" ;
+		}else{
+			$id = $categoryId ;
+			$tableName = "sc_amazon_product_category" ;
+		}
+		
 		if( empty($val) ){
 			$gtimeKey = $key.'_time' ;
-			$sql = "update sc_amazon_account set $key = '' ,$gtimeKey = NOW()  where id = '$accountId'";
+			$sql = "update $tableName set $key = '' ,$gtimeKey = NOW()  where id = '$id'";
 			$this->query($sql);
 		}else{
-			$sql = "update sc_amazon_account set $key = '$val' where id = '$accountId'";
+			$sql = "update $tableName set $key = '$val' where id = '$id'";
 			$this->query($sql);
 		}
 	}

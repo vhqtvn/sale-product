@@ -85,10 +85,35 @@ class User extends AppModel {
 		  sc_security_function.* ,
 		 ( SELECT 1 FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
 		   = sc_security_function.code AND sc_security_group_function.GROUP_CODE = '$code' ) AS selected
-		
-		 FROM sc_security_function " ;
+		 FROM sc_security_function where ( parent_id <> 'account' || parent_id IS NULL) order by  parent_id" ;
+		 
 		 return $this->query($sql) ; 
 	}
+	
+	function getFunctionForAccount($code,$accountId){
+		$sql = " SELECT 
+		  sc_security_function.* ,'$accountId' as ACCOUNT_ID,
+		 ( SELECT 1 FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
+		   = CONCAT('a___',$accountId,'_',sc_security_function.code) AND sc_security_group_function.GROUP_CODE = '$code' ) AS selected
+		 FROM sc_security_function 
+		 WHERE ( parent_id = 'account') ORDER BY  parent_id" ;
+		 
+		 return $this->query($sql) ; 
+	}
+	
+	function getAccountSecurity($code,$accountId){
+		$sql = " SELECT 1 as selected FROM sc_security_group_function WHERE group_code = '$code' and function_code = CONCAT('a___',$accountId) " ;
+		 
+		return $this->query($sql) ; 
+	}
+	
+	function getAmazonaccountSecurity($accountId , $groupCode){
+		$sql = "SELECT * FROM sc_security_group_function WHERE group_code = '$groupCode' AND function_code LIKE 'a___$accountId%'" ;
+		 
+		 
+		 return $this->query($sql) ; 
+	}
+
 	
 	function saveAssignFunctions($ids , $code ){
 		//删除所有
@@ -99,5 +124,69 @@ class User extends AppModel {
 			$sql = "insert into sc_security_group_function(group_code,function_code) values('$code','$id')" ;
 			$this->query($sql) ; 
 		}
+	}
+	
+		
+	/**
+	 * 根据角色获取功能
+	 */
+	function getSecurityFunctions( $code ){
+		$functions = $this->getFunctionRelGroupsFront($code);  
+
+    	//getAccount Info
+		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+		$accounts = $amazonAccount->getAccounts(); 
+		
+		$accountSecuritys = array() ;
+		$accountArray = array() ;
+		foreach( $accounts as $Record ){
+			
+			$sfs = $Record['sc_amazon_account']  ;
+			$id   = $sfs['ID'] ;
+			$name = $sfs['NAME']  ;
+			$securitys1 = $this->getAccountSecurityFront( $code , $id ) ;
+
+			if( empty( $securitys1 ) || empty( $securitys1[0] ) ){
+				continue ;
+			}
+			
+			$securitys = $this->getFunctionForAccountFront( $code , $id ) ;
+			
+			$accountArray[] = $Record ;
+			$accountSecuritys[$id] = $securitys ;
+		} ;
+		
+		return array("functions"=>$functions,"accounts"=>$accountArray,"accountSecuritys"=>$accountSecuritys) ;
+	}
+	
+	function getFunctionRelGroupsFront($code){
+		$sql = " SELECT 
+		  sc_security_function.* 
+		 FROM sc_security_function where ( parent_id <> 'account' || parent_id IS NULL)
+		 and code in (
+       		SELECT sc_security_group_function.function_code FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
+		   = sc_security_function.code AND sc_security_group_function.GROUP_CODE = '$code'
+		)
+		order by  parent_id" ;
+		 
+		 return $this->query($sql) ; 
+	}
+	
+	function getFunctionForAccountFront($code,$accountId){
+		$sql = " SELECT 
+		  sc_security_function.*
+		 FROM sc_security_function 
+		 WHERE ( parent_id = 'account')
+			and CONCAT('a___',$accountId,'_',sc_security_function.code) in (
+       		SELECT sc_security_group_function.function_code FROM sc_security_group_function
+			WHERE sc_security_group_function.FUNCTION_CODE
+		   = CONCAT('a___',$accountId,'_',sc_security_function.code) AND sc_security_group_function.GROUP_CODE = '$code'
+		) " ;
+		 return $this->query($sql) ; 
+	}
+	
+	function getAccountSecurityFront($code,$accountId){
+		$sql = " SELECT 1 as selected FROM sc_security_group_function WHERE group_code = '$code' and function_code = CONCAT('a___',$accountId) " ;
+		return $this->query($sql) ; 
 	}
 }

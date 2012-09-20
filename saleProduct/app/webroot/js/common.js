@@ -10,7 +10,6 @@ function getContextPath() {
     	return window.location.protocol+"//"+result;
     }
     return result ;
-    
 }
 
 window.Config = window.Config || {contextPath:getContextPath()} ;
@@ -59,6 +58,7 @@ jQuery.open = function(url,width,height,params,callback,fixParams){
 		
 		opts = $.extend({},opts,params,fixParams) ;
 		var _dialog = jQuery.dialog(opts) ;
+		return _dialog ;
 		
 	}else if(!$.browser.msie || params.showType == 'open'){
 		
@@ -368,7 +368,7 @@ jQuery.request = function(params){
  }
  
 jQuery.request.defaultErrorHandler = function(xhr, textStatus, errorThrown,url){
-	 //$.open(Global.contextPath+"/common/error/report500.jsp",570,410,errorThrown ,null , {title:"提示信息"} ) ;
+	 $.open(Global.contextPath+"/common/error/report500.jsp",570,410,errorThrown ,null , {title:"提示信息"} ) ;
 }
 
 
@@ -425,6 +425,11 @@ String.prototype.endWith=function(str){
       var reg=new RegExp(str+"$");     
       return reg.test(this);        
 } 
+
+String.prototype.getQueryString = function(name){ //name 是URL的参数名字 
+	var reg = new RegExp("(^|&|\\?)"+ name +"=([^&]*)(&|$)"), r; 
+	if (r=this.match(reg)) return (unescape(r[2])||"").split("#")[0]; return null; 
+}; 
 
 
 /* fix 表单点击回车提交问题 */
@@ -744,5 +749,20 @@ var bui = {
 				$panel.removeClass('panel-collapsed').find('.panel-content').show();
 				return false; 
 		 });
+	}
+}
+
+/*IE6下浏览器执行resize时死掉问题*/
+$.execResize = function(flag , func ){//执行resize
+	var version = parseInt( $.browser.version, 10 );  
+	if(version < 7 ){
+		window[flag] = window[flag]||0 ;
+        var now = new Date().getTime();
+		if (now - window[flag] > 300) { 
+			window[flag] = now;  
+			func() ;
+		}
+	}else{
+		func() ;
 	}
 }

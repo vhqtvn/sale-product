@@ -37,20 +37,17 @@ class UsersController extends AppController
     {   
         // Redirect users to this action if they click on a Logout button.   
         // All we need to do here is trash the session information:   
-       //$this->Session->delete('User'); 
+        //$this->Session->delete('User'); 
         setcookie("userId", "", time() - 3600,"/");  
         
         print_r($_COOKIE) ;
         // And we should probably forward them somewhere, too...   
         $this->redirect('/');   
-    }  
-    
-    function listUsers(){
-    } 
-    
-    function selectUsers(){
-    	
     }
+    
+    function listUsers(){} 
+    
+    function selectUsers(){}
     
     function listGroups(){
     }
@@ -75,13 +72,33 @@ class UsersController extends AppController
     		$someone = $this->User->getFunctionById($id);  
     	$this->set("function",$someone) ;
     	}
-    	
     }
     
     function assignFunctions( $code ){
 		$someone = $this->User->getFunctionRelGroups($code);  
     	$this->set("Functions",$someone) ;
     	$this->set("GroupCode",$code) ;
+    	
+    	//getAccount Info
+		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+		$accounts = $amazonAccount->getAllAccounts(); 
+		
+		$accountSecuritys = array() ;
+		$accountSecuritys1 = array() ;
+		foreach( $accounts as $Record ){
+			$sfs = $Record['sc_amazon_account']  ;
+			$id   = $sfs['ID'] ;
+			$name = $sfs['NAME']  ;
+			$securitys = $this->User->getFunctionForAccount( $code , $id ) ;
+			$securitys1 = $this->User->getAccountSecurity( $code , $id ) ;
+			
+			$accountSecuritys1[$id] = $securitys1 ;
+			$accountSecuritys[$id] = $securitys ;
+		} ;
+		$this->set("accountSecuritys",$accountSecuritys) ;
+		$this->set("accountSecuritys1",$accountSecuritys1) ;
+		//get Account Security
+		 
 	}
 	
 	function saveAssignFunctions($code , $ids ){
