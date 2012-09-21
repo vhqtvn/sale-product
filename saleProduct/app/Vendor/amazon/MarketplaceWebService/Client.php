@@ -962,6 +962,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	    $content = '';
 	   
 	    $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+	  
 	    while(!feof($handle)){
 	        $row =  fgets($handle, 1024);
 	        if($HeadArray == null){
