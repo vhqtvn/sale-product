@@ -445,7 +445,7 @@
 			}
 		}*/
 		var handle = $.llygrid.dsHandle[ ds.type ] ;
-		
+	
 		handle( ds , p , options , function(records , totalRecord){
 			if( !cacheDs ){
 				target.data("cacheDs" , { records:records , totalRecord:totalRecord , p:p} ) ;
@@ -526,7 +526,7 @@
 	}
 	
 	//Grid 控件
-	$.fn.llygrid = function(options,params){
+	$.fn.llygrid = function(options,params,_options){
 		var me = $(this) ;
 		if( typeof options == 'string' ){
 			var opts = options ;
@@ -535,6 +535,8 @@
 			if(events[opts]){
 				return events[opts](params) ;
 			}
+			
+			options = $.extend(options,_options) ;
 			
 			//owner
 			switch(opts){
