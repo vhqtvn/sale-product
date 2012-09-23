@@ -394,11 +394,8 @@ class Amazongrid extends AppModel {
 		         
 		          select t.*
 		          from (
-		              SELECT  sc_amazon_account_product.*,
-						 sc_product.TITLE ,
-						( SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL
+		              SELECT  sc_amazon_account_product.*
 						FROM sc_amazon_account_product
-						LEFT JOIN sc_product on sc_product.asin = sc_amazon_account_product.asin
 						$where  and sc_amazon_account_product.asin in (
 						 SELECT ASIN FROM ( SELECT COUNT(sku) AS c,ASIN FROM sc_amazon_account_product
 							WHERE account_id = '$accountId'  GROUP BY ASIN 

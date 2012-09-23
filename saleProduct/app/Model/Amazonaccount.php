@@ -387,9 +387,11 @@ class Amazonaccount extends AppModel {
 	}
 	
 	function getAccountProductsForLevel($accountId,$level){
-		$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN FROM sc_amazon_product_category ,
+		$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
+						FROM sc_amazon_product_category ,
 						sc_amazon_product_category_rel AS sc_amazon_account_product
-						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id 
+						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id   and status = 'Y'
+						 and ( cast(quantity as signed) > 0 or fulfillment_channel like 'AMAZON%' )
 				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
 		$array = $this->query($sql);
 	
@@ -398,14 +400,18 @@ class Amazonaccount extends AppModel {
 	
 	function getAccountProducts($accountId,$categoryId = null ){
 		$array = null ;
-		if(empty($categoryId)){
-			$sql = "SELECT distinct sc_amazon_account_product.ASIN FROM sc_amazon_account_product 
-			where account_id = '$accountId'";
+		if(empty($categoryId)){ 
+			$sql = "SELECT distinct sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
+				FROM sc_amazon_account_product 
+			where account_id = '$accountId' and status = 'Y' 
+						 and ( cast(quantity as signed) > 0 or fulfillment_channel like 'AMAZON%' )";
 			$array = $this->query($sql);
 		}else{
-			$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN FROM sc_amazon_product_category ,
+			$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
+						FROM sc_amazon_product_category ,
 						sc_amazon_product_category_rel AS sc_amazon_account_product
-						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id 
+						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id   and status = 'Y'
+						 and ( cast(quantity as signed) > 0 or fulfillment_channel like 'AMAZON%' )
 				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.id='$categoryId'";
 			$array = $this->query($sql);
 		}

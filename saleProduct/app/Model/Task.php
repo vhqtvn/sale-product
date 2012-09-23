@@ -98,26 +98,70 @@ class Task extends AppModel {
 		
 	}
 	
-	function updateAmazonProductShipping($array,$code,$id){
-		$sku = $array['sku'] ;
+	function updateAmazonProductShipping($asin,$id,$records){
+		$renderType = "" ;
+		$index = 0 ;
 		
-		$plusShippingText = htmlentities( $array['plusShippingText'], ENT_QUOTES) ;
-		$isFM =  $array['isFM']  ;
-		$price = htmlentities( $array['priceText'], ENT_QUOTES) ;
+		$sql = "select * from sc_amazon_account_product where ACCOUNT_ID = '$id' and fulfillment_channel = 'Merchant'
+			and ASIN = '$asin' and item_condition='11' " ;
+		$items = $this->query($sql) ;
 		
-		if( !empty($sku) && ( !empty($isFM) || !empty($plusShippingText)) ){
-			$sql = "
-				UPDATE sc_amazon_account_product 
-					SET 
-					SHIPPING_PRICE = '$plusShippingText' ,
-					PRICE = '$price',
-					IS_FM = '$isFM'
-					WHERE
-					ACCOUNT_ID = '$id' and
-					SKU = '$sku' " ;
+		foreach($records as $record){
+			$isFBA =  $record['isFBA'] ;
+			$plusShippingText = $record['plusShippingText'] ;
+			$price = $record['priceText'] ;
 			
-			 $this->query($sql) ;
-		}
+			$where = "" ;
+			if($isFBA == 'fba'){
+				$renderType = "fba" ;
+				$where .= " fulfillment_channel like 'AMAZON%' and " ;
+			}else{
+				if($renderType == 'common') $index++ ;
+				$renderType = "common" ;
+				$where .= " fulfillment_channel = 'Merchant' and " ;
+			}
+			
+			$isFM =  $record['isFM'] ;
+			$condition = $record['condition'] ;
+			
+			if( $index == 0 ){
+				$sql = "
+					UPDATE sc_amazon_account_product 
+						SET 
+						SHIPPING_PRICE = '$plusShippingText' ,
+						PRICE = '$price',
+						IS_FM = '$isFM'
+						WHERE $where
+						ACCOUNT_ID = '$id' and
+						ASIN = '$asin' and
+						item_condition='$condition'" ;
+				 $this->query($sql) ;
+			}else if($index == 1 ){
+				if( count($items) >=2 ){
+					$item = $items[1]['sc_amazon_account_product'] ;
+					$sql = "
+						UPDATE sc_amazon_account_product 
+							SET 
+							SHIPPING_PRICE = '$plusShippingText' ,
+							PRICE = '$price',
+							IS_FM = '$isFM'
+							WHERE ID = '".$item["ID"]."'" ;
+					 $this->query($sql) ;
+				}
+			}else if($index == 2 ){
+				if( count($items) >=3 ){
+					$item = $items[2]['sc_amazon_account_product'] ;
+					$sql = "
+						UPDATE sc_amazon_account_product 
+							SET 
+							SHIPPING_PRICE = '$plusShippingText' ,
+							PRICE = '$price',
+							IS_FM = '$isFM'
+							WHERE ID = '".$item["ID"]."'" ;
+					 $this->query($sql) ;
+				}
+			}
+		} ;
 	}
 	
 	
