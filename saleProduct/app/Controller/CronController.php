@@ -904,7 +904,7 @@ $this->response->type("json");
 				
 				$index = $index + 1 ;
 				$this->Task->savelog($id, "start get product[ index: ".$index." ][".$asin."] price" );
-				$this->fetchAmazonAsin($_asin['sc_amazon_account_product']['SKU'],$asin,$account['CODE'],$condition,$asintemplate,$id ,$index) ;
+				$this->fetchAmazonAsin($asin,$account['CODE'],$condition,$asintemplate,$id ,$index) ;
 				
 			} 
 			//采集产品信息结束
@@ -917,7 +917,7 @@ $this->response->type("json");
 			return $this->response;
 	}
 	
-	public function fetchAmazonAsin($sku,$asin,$code,$condition,$asintemplate=null,$id=null,$index = null) {
+	public function fetchAmazonAsin($asin,$code,$condition,$asintemplate=null,$id=null,$index = null) {
 		try{
 				$url = str_replace("{code}",$code,$asintemplate) ;
 			    $url = str_replace("{asin}",$asin,$url) ;
@@ -940,43 +940,130 @@ $this->response->type("json");
 				$html->load( $Result  ,true ,false );
 				
 				try{
-					$array['asin'] = $asin ;
-					$array['sku'] = $sku ;
-			
-					$isFM = "" ;
-					if($condition == "new"){
-						if( $html->find(".buckettitle h2",0) != null ){
-							$isFM = trim($html->find(".buckettitle h2",0)->plaintext) ;
-							if( $isFM == "Featured Merchants" ){
-								$isFM = "FM" ;
-							}else{
-								$isFM = "NEW" ;
+					//////////////////////////////////////////////////////////////////////////////////////////
+					$arrays = array() ;
+					foreach(  $html->find("h2") as $e){ 
+						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
+							$detailTables = $e->parent ;
+							while(true){
+								if( $detailTables->class == "resultsheader" ){
+									break ;
+								}
+								$detailTables = $detailTables->parent ;
+							}
+							
+							$index = 0 ;
+							foreach( $detailTables->next_sibling()->find(".result") as $table ){
+								$plusShippingText = "" ;
+								if( $table->find(".price_shipping",0) != null ){
+									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
+								}
+								
+								$priceText = "" ;
+								if( $table->find(".price",0) != null ){
+									$priceText = trim($table->find(".price",0)->plaintext) ;
+								}
+								
+								$isFBA = "" ;
+								if($table->find(".linkfba",0) != null ){
+									$isFBA = "fba" ;
+								}
+								
+								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
+								
+								$record = array() ;
+								$record["isFM"] = "FM" ;
+								$record["isFBA"] = $isFBA ;
+								$record['plusShippingText'] = $plusShippingText ;
+								$record['priceText'] = $priceText ;
+								$record['condition'] = '11' ;
+								$arrays[] = $record ;
+							}
+							
+						}else if( $e->plaintext == 'New' ) {
+							$detailTables = $e->parent ;
+							while(true){
+								if( $detailTables->class == "resultsheader" ){
+									break ;
+								}
+								$detailTables = $detailTables->parent ;
+							}
+							
+							$index = 0 ;
+							foreach( $detailTables->next_sibling()->find(".result") as $table ){
+								$plusShippingText = "" ;
+								if( $table->find(".price_shipping",0) != null ){
+									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
+								}
+								
+								$priceText = "" ;
+								if( $table->find(".price",0) != null ){
+									$priceText = trim($table->find(".price",0)->plaintext) ;
+								}
+								
+								$isFBA = "" ;
+								if($table->find(".linkfba",0) != null ){
+									$isFBA = "fba" ;
+								}
+								
+								
+								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
+								
+								$record = array() ;
+								$record["isFM"] = "NEW" ;
+								$record["isFBA"] = $isFBA ;
+								$record['plusShippingText'] = $plusShippingText ;
+								$record['priceText'] = $priceText ;
+								$record['condition'] = '11' ;
+								$arrays[] = $record ;
+							}
+						}else if( $e->plaintext == 'Used' ) {
+							$detailTables = $e->parent ;
+							while(true){
+								if( $detailTables->class == "resultsheader" ){
+									break ;
+								}
+								$detailTables = $detailTables->parent ;
+							}
+							
+							$index = 0 ;
+							foreach( $detailTables->next_sibling()->find(".result") as $table ){
+								$plusShippingText = "" ;
+								if( $table->find(".price_shipping",0) != null ){
+									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
+								}
+								
+								$priceText = "" ;
+								if( $table->find(".price",0) != null ){
+									$priceText = trim($table->find(".price",0)->plaintext) ;
+								}
+								
+								$isFBA = "" ;
+								if($table->find(".linkfba",0) != null ){
+									$isFBA = "fba" ;
+								}
+								
+								
+								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
+								
+								$record = array() ;
+								$record["isFM"] = "" ;
+								$record["isFBA"] = $isFBA ;
+								$record['plusShippingText'] = $plusShippingText ;
+								$record['priceText'] = $priceText ;
+								$record['condition'] = '1' ;
+								$arrays[] = $record ;
 							}
 						}
-					}
-	
-					$plusShippingText = "" ;
-					if( $html->find(".result .price_shipping",0) != null ){
-						$plusShippingText = trim($html->find(".result .price_shipping",0)->plaintext) ;
-					}
-					
-					$priceText = "" ;
-					if( $html->find(".result .price",0) != null ){
-						$priceText = trim($html->find(".result .price",0)->plaintext) ;
-					}
-					
-					$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+			        }  
+					//////////////////////////////////////////////////////////////////////////////////////////
 					
 					
-					$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
-					
-					$array['plusShippingText'] = $plusShippingText ;
-					$array['priceText'] = $priceText ;
-					$array['isFM'] = $isFM ;
-		
-					$this->Task->savelog($id," $isFM [$asin:$url]>>>>>"." $plusShippingText") ;	
 					//更新产品基本信息
-					$this->Task->updateAmazonProductShipping($array,$code,$id);
+					$this->Task->updateAmazonProductShipping($asin,$id,$arrays);
 				}catch(Exception $e){
 					pirnt_r($e) ;
 					$this->Task->savelog($id,"get product[".$asin."] price failed:::: ".$e->getMessage()) ;	
@@ -992,7 +1079,7 @@ $this->response->type("json");
 			pirnt_r($e) ;
 			$this->Task->savelog($id,"get product[".$asin."] price error:::".$e->getMessage()) ;	
 		}
-		
+
 		/*if($id == null ){
 			$this->response->type("json");
 			$this->response->body("execute complete");

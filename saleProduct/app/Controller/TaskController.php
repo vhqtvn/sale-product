@@ -847,9 +847,13 @@ class TaskController extends AppController {
 				$condition = $condition == 1?"used":"new" ;
 				
 				$index = $index + 1 ;
-				$this->Task->savelog($id, "start get product[ index: ".$index." ][".$asin."] price" );
-				$this->fetchAmazonAsin($_asin['sc_amazon_account_product']['SKU'],$asin,$account['CODE'],$condition,$asintemplate,$id ,$index) ;
 				
+				//if($index < 2000 )continue ;
+				
+				$this->Task->savelog($id, "start get product[ index: ".$index." ][".$asin."] price" );
+				$this->fetchAmazonAsin($asin,$account['CODE'],$condition,$asintemplate,$id ,$index) ;
+				
+				//if($index >= 10 )break ;
 			} 
 			//采集产品信息结束
 			$this->Task->savelog($id,"end!" );
@@ -863,68 +867,169 @@ class TaskController extends AppController {
 		return $this->response;
 	}
 	
-	public function fetchAmazonAsin($sku,$asin,$code,$condition,$asintemplate=null,$id=null,$index = null) {
+	public function fetchAmazonAsin($asin,$code,$condition,$asintemplate=null,$id=null,$index = null) {
 		try{
 				$url = str_replace("{code}",$code,$asintemplate) ;
 			    $url = str_replace("{asin}",$asin,$url) ;
 			    $url = str_replace("{condition}",$condition,$url) ;
 
 				$d = date("U") ;
-				$url = $url."&dd=$d" ;
+				$url = $url."&ddd=$d" ;
+				
+			$agents = array() ;
+			$agents[] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.83 Safari/535.11" ;
+			$agents[] = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)" ;
 				
 			$snoopy = new Snoopy;
-			
-			$snoopy->agent = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)";
-			$snoopy->referer = "http://www.amazon.com/";
-			$snoopy->rawheaders['Pragma'] = 'no-cache' ;
+			$snoopy->agent =  $agents[ $index % 2 ] ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
 			if( $snoopy->fetch($url) ){
-			
 				$Result = $snoopy->results ;
-
+				//print_r($Result) ;
+				//$htmlStr = file_get_html($url); 
+				//print_r($htmlStr) ;
 				$html = new simple_html_dom();
 				$html->load( $Result  ,true ,false );
 				
+				//fopen() ;
+				
 				try{
-					$array['asin'] = $asin ;
-					$array['sku'] = $sku ;
-			
-					$isFM = "" ;
-					if($condition == "new"){
-						if( $html->find(".buckettitle h2",0) != null ){
-							$isFM = trim($html->find(".buckettitle h2",0)->plaintext) ;
-							if( $isFM == "Featured Merchants" ){
-								$isFM = "FM" ;
-							}else{
-								$isFM = "NEW" ;
+					//////////////////////////////////////////////////////////////////////////////////////////
+					$arrays = array() ;
+					foreach(  $html->find("h2") as $e){ 
+						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
+							$detailTables = $e->parent ;
+							while(true){
+								if( $detailTables->class == "resultsheader" ){
+									break ;
+								}
+								$detailTables = $detailTables->parent ;
+							}
+							
+							$index = 0 ;
+							foreach( $detailTables->next_sibling()->find(".result") as $table ){
+								$plusShippingText = "" ;
+								if( $table->find(".price_shipping",0) != null ){
+									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
+								}
+								
+								$priceText = "" ;
+								if( $table->find(".price",0) != null ){
+									$priceText = trim($table->find(".price",0)->plaintext) ;
+								}
+								
+								$isFBA = "" ;
+								if($table->find(".fba_link",0) != null ){
+									$isFBA = "fba" ;
+								}
+								
+								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
+								
+								$record = array() ;
+								$record["isFM"] = "FM" ;
+								$record["isFBA"] = $isFBA ;
+								$record['plusShippingText'] = $plusShippingText ;
+								$record['priceText'] = $priceText ;
+								$record['condition'] = '11' ;
+								$arrays[] = $record ;
+								
+								$this->Task->savelog($id,"FM:FM FBA:$isFBA plusShippingText:$plusShippingText priceText:$priceText  condition:11") ;	
+							}
+							
+						}else if( $e->plaintext == 'New' ) {
+							$detailTables = $e->parent ;
+							while(true){
+								if( $detailTables->class == "resultsheader" ){
+									break ;
+								}
+								$detailTables = $detailTables->parent ;
+							}
+							
+							$index = 0 ;
+							foreach( $detailTables->next_sibling()->find(".result") as $table ){
+								$plusShippingText = "" ;
+								if( $table->find(".price_shipping",0) != null ){
+									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
+								}
+								
+								$priceText = "" ;
+								if( $table->find(".price",0) != null ){
+									$priceText = trim($table->find(".price",0)->plaintext) ;
+								}
+								
+								$isFBA = "" ;
+								if($table->find(".fba_link",0) != null ){
+									$isFBA = "fba" ;
+								}
+								
+								
+								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
+								
+								$record = array() ;
+								$record["isFM"] = "NEW" ;
+								$record["isFBA"] = $isFBA ;
+								$record['plusShippingText'] = $plusShippingText ;
+								$record['priceText'] = $priceText ;
+								$record['condition'] = '11' ;
+								$arrays[] = $record ;
+								
+								$this->Task->savelog($id,"FM:NEW FBA:$isFBA plusShippingText:$plusShippingText priceText:$priceText  condition:11") ;	
+							}
+						}else if( $e->plaintext == 'Used' ) {
+							$detailTables = $e->parent ;
+							while(true){
+								if( $detailTables->class == "resultsheader" ){
+									break ;
+								}
+								$detailTables = $detailTables->parent ;
+							}
+							
+							$index = 0 ;
+							foreach( $detailTables->next_sibling()->find(".result") as $table ){
+								$plusShippingText = "" ;
+								if( $table->find(".price_shipping",0) != null ){
+									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
+								}
+								
+								$priceText = "" ;
+								if( $table->find(".price",0) != null ){
+									$priceText = trim($table->find(".price",0)->plaintext) ;
+								}
+								
+								$isFBA = "" ;
+								if($table->find(".fba_link",0) != null ){
+									$isFBA = "fba" ;
+								}
+								
+								
+								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
+								
+								$record = array() ;
+								$record["isFM"] = "" ;
+								$record["isFBA"] = $isFBA ;
+								$record['plusShippingText'] = $plusShippingText ;
+								$record['priceText'] = $priceText ;
+								$record['condition'] = '1' ;
+								$arrays[] = $record ;
+								
+								$this->Task->savelog($id,"FM: FBA:$isFBA plusShippingText:$plusShippingText priceText:$priceText  condition:1") ;	
 							}
 						}
-					}
-	
-					$plusShippingText = "" ;
-					if( $html->find(".result .price_shipping",0) != null ){
-						$plusShippingText = trim($html->find(".result .price_shipping",0)->plaintext) ;
-					}
-					
-					$priceText = "" ;
-					if( $html->find(".result .price",0) != null ){
-						$priceText = trim($html->find(".result .price",0)->plaintext) ;
-					}
-					
-					$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+			        }  
+					//////////////////////////////////////////////////////////////////////////////////////////
 					
 					
-					$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
-					
-					$array['plusShippingText'] = $plusShippingText ;
-					$array['priceText'] = $priceText ;
-					$array['isFM'] = $isFM ;
-		
-					$this->Task->savelog($id," $isFM [$asin:$url]>>>>>"." $plusShippingText") ;	
 					//更新产品基本信息
-					$this->Task->updateAmazonProductShipping($array,$code,$id);
+					$this->Task->updateAmazonProductShipping($asin,$id,$arrays);
+					
+					unset($arrays) ;
+					
 				}catch(Exception $e){
-					pirnt_r($e) ;
 					$this->Task->savelog($id,"get product[".$asin."] price failed:::: ".$e->getMessage()) ;	
 				}
 				$html->clear() ;
@@ -935,7 +1040,7 @@ class TaskController extends AppController {
 			}
 			unset($snoopy) ;
 		}catch( Exception $e){
-			pirnt_r($e) ;
+			//pirnt_r($e) ;
 			$this->Task->savelog($id,"get product[".$asin."] price error:::".$e->getMessage()) ;	
 		}
 		
