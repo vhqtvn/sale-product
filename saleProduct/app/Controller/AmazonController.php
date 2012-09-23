@@ -10,7 +10,15 @@ class AmazonController extends AppController {
     	$this->set("accountId",$accountId) ;
     }
     
+    public function priceimportLog($accountId){
+    	$this->set("accountId",$accountId) ;
+    }
+    
     public function quantityimportPage($accountId){
+    	$this->set("accountId",$accountId) ;
+    }
+    
+     public function quantityimportLog($accountId){
     	$this->set("accountId",$accountId) ;
     }
 

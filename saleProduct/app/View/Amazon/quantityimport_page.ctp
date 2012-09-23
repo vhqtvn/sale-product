@@ -41,56 +41,10 @@
    </style>
 
    <script>
-    function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
+    
    
    		var accountId = '<?php echo $accountId;?>' ;
-		$(function(){
-			$(".grid-content").llygrid({
-				columns:[
-					{align:"center",key:"ID",label:"编号", width:"5%"},
-					{align:"left",key:"CREATE_TIME",label:"同步时间",width:"20%",forzen:false},
-		           	{align:"left",key:"USERNAME",label:"操作用户",width:"10%",forzen:false},
-		           	{align:"left",key:"FEEDSUBMISSION_ID",label:"请求标志",width:"15%"},
-		           	{align:"left",key:"STATUS",label:"状态",width:"18%"},
-		           	{align:"left",key:"SUCCESS_NUM",label:"成功",width:"10%"},
-		           	{align:"left",key:"FAIL_NUM",label:"失败",width:"10%"},
-		           	{align:"center",key:"STATUS",label:"操作",width:"10%",format:function(val,record){
-		           		if(val == 'Complete') return "" ;
-		           		return "<a href='#' class='update-state' feedSubmissionId='"+record.FEEDSUBMISSION_ID+"'>更新<a>" ;
-		           	}}
-					
-		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/productFeedQuantityHistory/"+accountId},
-				 limit:10,
-				 pageSizes:[10,20,30,40],
-				 height:250,
-				 title:"价格更新历史",
-				 indexColumn:false,
-				 querys:{name:"hello",name2:"world"},
-				 loadMsg:"数据加载中，请稍候......"
-			}) ;
-		}) ;
+	
 		
 		$(".update-state").live("click",function(){
 			$(this).addClass("disabled").html("状态获取中.....") ;

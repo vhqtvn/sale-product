@@ -47,7 +47,7 @@
 			$id   = $sfs['ID'] ;
 			$name = $sfs['NAME'] ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
+			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',gatherLevel:'".$sfs['GATHER_LEVEL']."',isExpand:true} ;" ;
 			
 			
 			echo " treeMap['id_$id'] = item$index  ;" ;
@@ -69,6 +69,7 @@
 				source:'array',
 				data:treeData ,
 				onNodeClick:function(id, text, record,node){
+					
 					if(id == 'root'){
 						$(".parentName").val("") ;
 						$(".parentId").val("") ;
@@ -79,6 +80,7 @@
 					$("#up-category .id").val(id) ;
 					$("#up-category .name").val(text) ;
 					$("#up-category .memo").val(record.memo) ;
+					$("#up-category input:radio[value='"+record.gatherLevel+"']").attr("checked",true) ;
 				}
            }) ;
            
@@ -104,7 +106,6 @@
         
         $(".update-category").click(function(){
         	var ids = $('#up-category').toJson() ;
-        	
         	if(!ids.name){
         		alert("分类名称不能为空");
         		return ;
@@ -143,6 +144,14 @@
 				
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>
+				
+				<label>采集类别</label>
+				<input type="radio" name="gatherLevel" value="" />不采集
+				<input type="radio" name="gatherLevel" value="A" />A
+				<input type="radio" name="gatherLevel" value="B" />B
+				<input type="radio" name="gatherLevel" value="C" />C
+				<input type="radio" name="gatherLevel" value="D" />D
+				
 				<br/><br/>
 				<button class="btn save-category">保存分类</button>
 				
@@ -160,6 +169,12 @@
 				
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>
+				<label>采集类别</label>
+				<input type="radio" name="gatherLevel" value="" />不采集
+				<input type="radio" name="gatherLevel" value="A" />A
+				<input type="radio" name="gatherLevel" value="B" />B
+				<input type="radio" name="gatherLevel" value="C" />C
+				<input type="radio" name="gatherLevel" value="D" />D
 				<br/><br/>
 				<button class="btn update-category">修改分类</button>
 				

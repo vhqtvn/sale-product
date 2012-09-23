@@ -16,7 +16,6 @@
 		echo $this->Html->script('../kissu/scripts/jquery.utils');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
-
 	?>	
   
    <style>
@@ -52,8 +51,8 @@
 			}
 			
 			echo " treeMap['id_$id'] = item$index  ;" ;
+			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
 			if(empty($pid)){
-				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
 				echo "treeData.childNodes.push( item$index ) ;" ;
 			}else{
 				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;

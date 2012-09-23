@@ -109,7 +109,7 @@
 			<iframe src="/saleProduct/index.php/amazon/quantityimportPage/<?php echo $accountId?>" style="width:98%;height:580px;"></iframe>
 		</div>
 		<div id="tagher-tab" class="ui-tabs-panel" style="display: none; padding:12px 3px;">
-			<iframe src="/saleProduct/index.php/amazonaccount/quantityUpdateLog/<?php echo $accountId?>" style="width:100%;height:580px;"></iframe>
+			<iframe src="/saleProduct/index.php/amazon/quantityimportLog/<?php echo $accountId?>" style="width:100%;height:580px;"></iframe>
 		</div>
 	</div>
 	

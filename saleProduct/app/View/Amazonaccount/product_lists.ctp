@@ -6,7 +6,7 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
-   <?php
+    <?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
@@ -20,9 +20,16 @@
 		echo $this->Html->script('../grid/grid');
 		echo $this->Html->script('../kissu/widgets/core/layout/jquery.layout');
 		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		
+		$userId  = $_COOKIE["userId"] ; 
+		App::import('Model', 'User') ;
+		$u = new User() ;
+		$user1 = $u->queryUserByUserName($userId) ;
+		$user = $user1[0]['sc_user'] ;
+		$group=  $user["GROUP_CODE"] ;
 	?>
 	
-   <script type="text/javascript">
+    <script type="text/javascript">
 	
 	var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
     var treeMap  = {} ;
@@ -84,19 +91,22 @@
 				data:treeData ,
 				onNodeClick:function(id,text,record){
 					if( id == 'root' ){
-						$(".grid-content").llygrid("reload",{categoryId:"",accountId:accountId}) ;
+						$(".grid-content").llygrid("reload",{categoryId:"",accountId:accountId},
+							{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
 					}else{
-						$(".grid-content").llygrid("reload",{categoryId:id,accountId:accountId}) ;
+						$(".grid-content").llygrid("reload",{categoryId:id,accountId:accountId},
+							{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
 					}
 				}
 	       }) ;
-			setTimeout(function(){
-				$(".grid-content").llygrid({
+	       
+	       var gridConfig = {
 					columns:[
 						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
-							html.push("<a href='#' class='edit-account-product' val='"+val+"'>修改</a>&nbsp;") ;
+							html.push('<a href="#" class="edit-account-product" val="'+val+'"><?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?></a>&nbsp;') ;
+							
 							return html.join("") ;
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
@@ -168,7 +178,10 @@
 					 indexColumn:false,
 					 querys:{accountId:accountId},
 					 loadMsg:"数据加载中，请稍候......"
-				}) ;
+				} ;
+	       
+			setTimeout(function(){
+				$(".grid-content").llygrid(gridConfig) ;
 			},200) ;
 			
 			$(".edit-account-product").live("click",function(){
@@ -183,7 +196,13 @@
 			}) ;
 			
 			$(".query-btn").click(function(){
-				$(".grid-content").llygrid("reload",getQueryCondition() ) ;	
+				$(".grid-content").llygrid("reload",getQueryCondition(),
+					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
+			}) ;
+			
+			$(".query-reply-btn").click(function(){
+				$(".grid-content").llygrid("reload",{accountId:currentAccountId,reply:'1'},
+					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/productReply/"+accountId}} ) ;	
 			}) ;
 			
 			
@@ -203,7 +222,7 @@
 				var asin = $("[name='asin']").val() ;
 				var title = $("[name='title']").val() ;
 				var querys = {} ;
-
+				querys.reply = 0 ;
 				querys.accountId = currentAccountId||'-----';
 				querys.asin = asin ;
 				querys.title = title ;
@@ -313,7 +332,8 @@
 				</select>
 				 </li>
 				 <li>
-				 <button class="query-btn">查询</button>
+				 	<button class="query-btn">查询</button>
+				 	<button class="query-reply-btn">重复产品过滤</button>
 				 </li>
 			   </ul>
 			

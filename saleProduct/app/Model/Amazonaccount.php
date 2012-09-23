@@ -47,14 +47,15 @@ class Amazonaccount extends AppModel {
 	function saveCategory($category,$user,$accountId){
 		$memo = $category['memo'] ;
 		$name = $category['name'] ;
+		$gatherLevel = $category['gatherLevel'] ;
 		
 		if( isset( $category['id'] )  ){//update
 			$sql = "
 				UPDATE  sc_amazon_product_category 
 					SET
 					NAME = '$name' , 
-					MEMO = '$memo'
-					
+					MEMO = '$memo' ,
+					GATHER_LEVEL = '$gatherLevel'
 					WHERE
 					ID = '".$category['id']."'" ;
 					
@@ -64,12 +65,12 @@ class Amazonaccount extends AppModel {
 				INSERT INTO sc_amazon_product_category 
 					( NAME, 
 					PARENT_ID, 
-					MEMO,creator,create_time,account_id
+					MEMO,creator,create_time,account_id,gather_level
 					)
 					VALUES
 					( '$name', 
 					'".$category['parentId']."', 
-					'$memo','".$user['LOGIN_ID']."',NOW(),'$accountId'
+					'$memo','".$user['LOGIN_ID']."',NOW(),'$accountId','$gatherLevel'
 					)" ;
 					
 					$this->query($sql) ;
@@ -182,17 +183,30 @@ class Amazonaccount extends AppModel {
 		$sql = "select * from sc_amazon_account_product where sku = '".$data['SKU']."' and account_id = '".$data['accountId']."'" ;
 		$tt = $this->query($sql) ;
 		
+		$listingId = "" ;
+		$fulfillment = "" ;
+		$pendingQuantity = "" ;
+		
+		if(isset($data['listingId']))
+			$listingId = $data['listingId'] ;
+		if(isset($data['fulfillment']))
+			$fulfillment = $data['fulfillment'] ;
+		if(isset($data['pendingQuantity']))
+			$pendingQuantity = $data['pendingQuantity'] ;
+		
+		
 		if( !empty($tt) && count($tt) >= 1){
 			if($type == 2){
 				$sql = " UPDATE sc_amazon_account_product 
 					SET 
 					ASIN = '".$data['ASIN']."' ,
 					PRICE = '".$data['price']."' ,
-					LIST_ID = '".$data['listingId']."' , 
-					FULFILLMENT_CHANNEL = '".$data['fulfillment']."' , 
-					PADDENT_QUANTITY = '".$data['pendingQuantity']."' , 
+					LIST_ID = '$listingId' , 
+					FULFILLMENT_CHANNEL = '$fulfillment' , 
+					PADDENT_QUANTITY = '$pendingQuantity' , 
 					QUANTITY = '".$data['quantity']."',
-					ITEM_CONDITION = '".$data['itemCondition']."'
+					ITEM_CONDITION = '".$data['itemCondition']."',
+					STATUS = 'Y'
 					WHERE
 					account_id = '".$data['accountId']."' and SKU = '".$data['SKU']."' " ;
 			}else{
@@ -200,7 +214,8 @@ class Amazonaccount extends AppModel {
 					SET 
 					ASIN = '".$data['ASIN']."' ,
 					PRICE = '".$data['price']."' ,
-					QUANTITY = '".$data['quantity']."'
+					QUANTITY = '".$data['quantity']."',
+					STATUS = 'Y'
 					WHERE
 					account_id = '".$data['accountId']."' and SKU = '".$data['SKU']."' " ;
 			}
@@ -217,7 +232,8 @@ class Amazonaccount extends AppModel {
 						LIST_ID, 
 						FULFILLMENT_CHANNEL, 
 						PADDENT_QUANTITY, 
-						QUANTITY
+						QUANTITY,
+						STATUS
 						)
 						VALUES
 						(
@@ -226,10 +242,11 @@ class Amazonaccount extends AppModel {
 						'".$data['price']."', 
 						NOW(),  
 						'".$data['SKU']."', 
-						'".$data['listingId']."', 
-						'".$data['fulfillment']."', 
-						'".$data['pendingQuantity']."', 
-						'".$data['quantity']."'
+						'$listingId', 
+						'$fulfillment', 
+						'$pendingQuantity',
+						'".$data['quantity']."', 
+						'Y'
 						)
 					 " ;
 				$this->query($sql) ;
@@ -334,6 +351,18 @@ class Amazonaccount extends AppModel {
 					WHERE
 					ACCOUNT_ID = '$accountId' and REPORT_TYPE = '".$request['reportType']."' and  ( status is null or status = '')" ;
 		 $array = $this->query($sql);
+		 
+		 //处理产品状态
+		 if( $request['reportType'] == '_GET_FLAT_FILE_OPEN_LISTINGS_DATA_' ){
+		 	$sql = "select count(*) c from sc_amazon_account_product where account_id = '$accountId' and status='Y'" ;
+		 	$array = $this->query($sql);
+		 	$count = $array[0][0]['c'] ;
+		 	if( $count > 0  ){
+		 		$sql = "update sc_amazon_account_product set status = 'deleted' where account_id='$accountId' and
+					( status != 'Y' || status is null || status='') " ;
+		 		$this->query($sql);
+		 	}
+		 }
 	}
 	
 	function getAccounts(){

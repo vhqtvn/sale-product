@@ -86,7 +86,6 @@
  		font-weight:bold;
  	}
  </style>
-
 </head>
 <body style="overflow-y:auto;padding:2px;">
 	<div data-widget="tab" data-options="{select:function(event,ui){}}" class="ui-tabs">
@@ -109,7 +108,7 @@
 			<iframe src="/saleProduct/index.php/amazon/priceimportPage/<?php echo $accountId?>" style="width:98%;height:580px;"></iframe>
 		</div>
 		<div id="tagher-tab" class="ui-tabs-panel" style="display: none; padding:12px 3px;">
-			<iframe src="/saleProduct/index.php/amazonaccount/priceUpdateLog/<?php echo $accountId?>" style="width:100%;height:580px;"></iframe>
+			<iframe src="/saleProduct/index.php/amazon/priceimportLog/<?php echo $accountId?>" style="width:100%;height:580px;"></iframe>
 		</div>
 	</div>
 	

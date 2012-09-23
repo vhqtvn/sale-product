@@ -29,6 +29,16 @@ class AmazongridController extends AppController {
 		return $this->response ;
 	}
 	
+	public function productReply(){
+		 $records=  $this->Amazongrid->getProductReplyRecords( $this->request->query ) ;
+		 $count   =  $this->Amazongrid->getProductReplyCount( $this->request->query ) ;
+
+		$this->response->type("json") ;
+		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
+
+		return $this->response ;
+	}
+	
 	/**
 	 * amazon配置列表
 	 */

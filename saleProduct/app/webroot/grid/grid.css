@@ -191,8 +191,13 @@ div.lly-grid-content{
 	height:20px;
 }
 
+._numpage_ span{
+	padding:0px 3px;
+}
+
 ._numpage_{
-	width:15px;
+	width:auto;
+	
 }
 
 .cell-div{
