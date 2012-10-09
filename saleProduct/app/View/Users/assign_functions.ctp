@@ -65,6 +65,31 @@
 			$index++ ;
 		} ;
 		
+		foreach( $filterRules as $Record  ){
+			$sfs = $Record['sc_security_function']  ;
+			$selected =  $Record[0]['selected'] ;
+			
+			$id   = $sfs['ID'] ;
+			$code = $sfs['CODE'] ;
+			$name = $sfs['NAME'] ;
+			$pid  = $sfs['PARENT_ID'] ;
+			echo " var item$index = {id:'r___$code',text:'$name',pid:'$pid'} ;" ;
+			
+			if( !empty($selected) ){
+				echo " item$index ['checkstate'] = 1 ;" ;
+			}
+			echo " itemCache.push( item$index ) ;" ;
+			
+			echo " treeMap['id_r___$id'] = item$index  ;" ;
+			if(empty($pid)){
+				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+				echo "treeData.childNodes.push( item$index ) ;" ;
+			}else{
+				//echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
+			}
+			$index++ ;
+		}
+		
 		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
 		$accounts = $amazonAccount->getAllAccounts(); 
 	?>
@@ -101,6 +126,7 @@
 				
 			} ;
 		} ;
+		
 	?>
 	
 	$(itemCache).each(function(){

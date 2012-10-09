@@ -52,9 +52,20 @@
 			
 			echo " treeMap['id_$id'] = item$index  ;" ;
 			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+			$index++ ;
+		} ;
+		
+		$index = 0 ;
+		foreach( $categorys as $Record ){
+			$sfs = $Record['sc_amazon_product_category']  ;
+			$selected =  $Record[0]['selected'] ;
+			$id   = $sfs['ID'] ;
+			$name = $sfs['NAME'] ;
+			$pid  = $sfs['PARENT_ID'] ;
 			if(empty($pid)){
 				echo "treeData.childNodes.push( item$index ) ;" ;
 			}else{
+				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
 				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
 			}
 			$index++ ;

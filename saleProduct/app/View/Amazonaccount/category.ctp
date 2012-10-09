@@ -43,19 +43,27 @@
     	$index = 0 ;
 		foreach( $categorys as $Record ){
 			$sfs = $Record['sc_amazon_product_category']  ;
-			
 			$id   = $sfs['ID'] ;
 			$name = $sfs['NAME'] ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',gatherLevel:'".$sfs['GATHER_LEVEL']."',isExpand:true} ;" ;
-			
-			
+			echo " var item$index = {id:'$id',pid:'$pid',text:'$name',memo:'".$sfs['MEMO']."',gatherLevel:'".$sfs['GATHER_LEVEL']."',isExpand:true} ;" ;
 			echo " treeMap['id_$id'] = item$index  ;" ;
+			$index++ ;
+		} ;
+		
+		$index = 0 ;
+		foreach( $categorys as $Record ){
+			$sfs = $Record['sc_amazon_product_category']  ;
+			$id   = $sfs['ID'] ;
+			$name = $sfs['NAME'] ;
+			$pid  = $sfs['PARENT_ID'] ;
+			
 			if(empty($pid)){
 				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
 				echo "treeData.childNodes.push( item$index ) ;" ;
 			}else{
 				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
 				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
 			}
 			$index++ ;
@@ -64,23 +72,46 @@
 	?>
    
 	$(function(){
+		$(".update-category-tree").tree({//tree为容器ID
+				source:'array',
+				data:treeData ,
+				onNodeClick:function(id, text, record,node){
+					if(id == 'root'){
+						id = "" ;
+						text = "" ;
+					}
+					$("#up-category .parentName").val(text) ;
+					$("#up-category .parentId").val(id) ;
+				}
+        }) ;
 
 		$('#default-tree').tree({//tree为容器ID
 				source:'array',
 				data:treeData ,
 				onNodeClick:function(id, text, record,node){
-					
-					if(id == 'root'){
-						$(".parentName").val("") ;
-						$(".parentId").val("") ;
-					}else{
-						$(".parentName").val(text) ;
-						$(".parentId").val(id) ;
+					var pid =record.pid ;
+					var pname = "" ;
+					if(pid){
+						var pRecord = treeMap['id_'+pid] ;
+						pname = pRecord.text;
 					}
+					if(id == 'root'){
+						$("#xj-category .parentName").val("") ;
+						$("#xj-category .parentId").val("") ;
+					}else{
+						$("#xj-category .parentName").val(text) ;
+						$("#xj-category .parentId").val(id) ;
+					}
+					$("#up-category .parentName").val(pname) ;
+					$("#up-category .parentId").val(pid) ;
 					$("#up-category .id").val(id) ;
 					$("#up-category .name").val(text) ;
 					$("#up-category .memo").val(record.memo) ;
 					$("#up-category input:radio[value='"+record.gatherLevel+"']").attr("checked",true) ;
+					
+					//不能选择自己的下级节点作为父节点
+					$("[nodeid]",".update-category-tree").parent().show() ;
+					$("[nodeid='"+id+"']",".update-category-tree").parent().hide() ;
 				}
            }) ;
            
@@ -102,6 +133,12 @@
 					window.location.reload() ;
 				}
 			}); 
+        }) ;
+        
+        $(".update-category-btn").toggle(function(){
+        	$(".update-category-tree").show() ;
+        },function(){
+        	$(".update-category-tree").hide() ;
         }) ;
         
         $(".update-category").click(function(){
@@ -163,6 +200,12 @@
 			<fieldset id="up-category">
 				<legend>修改当前分类</legend>
 				<input type="hidden" class="id" id="id"/>
+				
+				<label>上级分类:<button class="update-category-btn">修改上级分类</button></label>
+				<div class="update-category-tree" style="overflow:auto;max-height:100px;display:none;border:1px solid #CCC;margin-bottom:3px;">
+				</div>
+				<input type="text" readonly class="parentName" id="parentName"/>
+				<input type="hidden" class="parentId" id="parentId"/>
 			
 				<label>分类名称:</label>
 				<input type="text" class="name" id="name" class="span4"/>
@@ -183,5 +226,7 @@
 	</div>
 	
 </div>
+
+
 
 </html>

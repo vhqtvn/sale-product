@@ -21,7 +21,8 @@
 		$Functions = $funs['functions'] ;
 		$accounts  = $funs['accounts'] ;
 		$accountSecuritys = $funs['accountSecuritys'] ;
-		
+		$filterRules = $funs['filterRules'] ;
+
 	?>
 
         <script type="text/javascript">
@@ -46,6 +47,25 @@
 				echo " itemCache.push( item$index ) ;" ;
 				
 				echo " treeMap['id_$id'] = item$index  ;" ;
+				if(empty($pid)){
+					echo "indexdata.push( item$index ) ;" ;
+				}
+				$index++ ;
+			} ;
+			
+			foreach( $filterRules as $Record ){
+				$sfs = $Record['sc_security_function']  ;
+				
+				$id   = $sfs['ID'] ;
+				$code = $sfs['CODE'] ;
+				$name = $sfs['NAME'] ;
+				$pid  = $sfs['PARENT_ID'] ;
+				$url  = "/saleProduct/index.php/product/rule/$id" ;
+				echo " var item$index = {id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} ;" ;
+				
+				echo " itemCache.push( item$index ) ;" ;
+				
+				echo " treeMap['id_r$id'] = item$index  ;" ;
 				if(empty($pid)){
 					echo "indexdata.push( item$index ) ;" ;
 				}

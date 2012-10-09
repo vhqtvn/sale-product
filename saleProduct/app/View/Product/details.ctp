@@ -143,14 +143,14 @@
  </style>
  
  <script>
- 	var asin = '<?php echo $product['ASIN'];?>' ;
+ 	var asin = '<?php echo $asin;?>' ;
 
  	
  	$(function(){
 			$(".base-gather").click(function(){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/fetchAsin/<?php echo $product["ASIN"]?>",
+					url:"/saleProduct/index.php/task/fetchAsin/<?php echo $asin?>",
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -163,7 +163,7 @@
 			$(".competition-gather").click(function(){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/fetchCompetions/<?php echo $product["ASIN"]?>",
+					url:"/saleProduct/index.php/task/fetchCompetions/<?php echo $asin?>",
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -176,7 +176,7 @@
 			$(".fba-gather").click(function(){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/fetchFba/<?php echo $product["ASIN"]?>",
+					url:"/saleProduct/index.php/task/fetchFba/<?php echo $asin?>",
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -188,17 +188,17 @@
 			}) ;
 			
 			$(".supplier").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/listsSelect/<?php echo $product["ASIN"]?>",800,600) ;
+				openCenterWindow("/saleProduct/index.php/supplier/listsSelect/<?php echo $asin?>",800,600) ;
 			}) ;
 			
 			
 			$(".category").click(function(){
-				openCenterWindow("/saleProduct/index.php/product/assignCategory/<?php echo $product["ASIN"]?>",400,500) ;
+				openCenterWindow("/saleProduct/index.php/product/assignCategory/<?php echo $asin?>",400,500) ;
 			}) ;
 			
 			$(".update-supplier").click(function(){
 				var supplierId = $(this).attr("supplierId") ;
-				openCenterWindow("/saleProduct/index.php/supplier/updateProductSupplierPage/<?php echo $product["ASIN"]?>/"+supplierId,650,600) ;
+				openCenterWindow("/saleProduct/index.php/supplier/updateProductSupplierPage/<?php echo $asin?>/"+supplierId,650,600) ;
 				return false;
 			}) ;
 			
@@ -492,7 +492,7 @@
 			<table class="table table-bordered">
 				<tr>
 					<th>标题：</th>
-					<td><?php echo $product["TITLE"]?>(<?php echo $product["ASIN"]?>) </td>
+					<td><?php echo $product["TITLE"]?>(<?php echo $asin?>) </td>
 					<td rowspan="8">
 						<?php
 							foreach( $imgs as $img ){
@@ -687,17 +687,17 @@
 			</table>
 		</div>
 		<div id="category-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<iframe src="/saleProduct/index.php/product/assignCategory/<?php echo $product["ASIN"]?>" style="width:98%;height:400px;"></iframe>
+			<iframe src="/saleProduct/index.php/product/assignCategory/<?php echo $asin?>" style="width:98%;height:400px;"></iframe>
 		</div>
 		<?php  if( isset($accountId) && !empty($accountId) ){
 		?>
 		<div id="amazon-category-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<iframe src="/saleProduct/index.php/amazonaccount/assignCategory/<?php echo $product["ASIN"];?>/<?php echo $accountId;?>" style="width:98%;height:400px;"></iframe>
+			<iframe src="/saleProduct/index.php/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>" style="width:98%;height:400px;"></iframe>
 		</div>
 		<?php	
 		} ?>
 		<div id="cost-tab" class="ui-tabs-panel" style="height: 100px; display: block; padding:12px 3px;">
-			<iframe src="/saleProduct/index.php/cost/listAsin/<?php echo $product["ASIN"]?>" style="width:100%;height:400px;"></iframe>
+			<iframe src="/saleProduct/index.php/cost/listAsin/<?php echo $asin?>" style="width:100%;height:400px;"></iframe>
 		</div>
 	</div>
 	
