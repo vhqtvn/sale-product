@@ -396,10 +396,13 @@ class Amazongrid extends AppModel {
 		          from (
 		              SELECT  sc_amazon_account_product.*
 						FROM sc_amazon_account_product
-						$where  and sc_amazon_account_product.asin in (
-						 SELECT ASIN FROM ( SELECT COUNT(sku) AS c,ASIN FROM sc_amazon_account_product
-							WHERE account_id = '$accountId'  GROUP BY ASIN 
-							) g1 WHERE g1.c > 1
+						$where  and exists (
+							SELECT g1.ASIN FROM ( 
+						        SELECT COUNT(sku) AS c,ASIN,fulfillment_channel FROM sc_amazon_account_product
+						       WHERE account_id = '$accountId' AND STATUS = 'Y' GROUP BY ASIN ,FULFILLMENT_CHANNEL 
+						       ) g1 WHERE g1.c > 1  
+						  AND g1.asin = sc_amazon_account_product.asin AND 
+						 sc_amazon_account_product.fulfillment_channel = g1.fulfillment_channel
 					)
 		           ) t order by t.asin
 			  ) t1
@@ -426,11 +429,14 @@ class Amazongrid extends AppModel {
 		          select t.*
 		          from (
 		              SELECT  sc_amazon_account_product.*	FROM sc_amazon_account_product
-					$where  and sc_amazon_account_product.asin in (
-						 SELECT ASIN FROM ( SELECT COUNT(sku) AS c,ASIN FROM sc_amazon_account_product
-							WHERE account_id = '$accountId'  GROUP BY ASIN 
-							) g1 WHERE g1.c > 1 )
-		           ) t 
+					$where  and exists (
+						SELECT g1.ASIN FROM ( 
+						        SELECT COUNT(sku) AS c,ASIN,fulfillment_channel FROM sc_amazon_account_product
+						       WHERE account_id = '$accountId' AND STATUS = 'Y' GROUP BY ASIN ,FULFILLMENT_CHANNEL 
+						       ) g1 WHERE g1.c > 1  
+						  AND g1.asin = sc_amazon_account_product.asin AND 
+						 sc_amazon_account_product.fulfillment_channel = g1.fulfillment_channel
+		         )  ) t 
 			  ) t1
              $where1 " ;
 		$array = $this->query($sql);

@@ -8,7 +8,8 @@ class Amazonaccount extends AppModel {
 			(select count(*) from sc_amazon_product_category_rel
 					where sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
 					 and sc_amazon_product_category_rel.asin in (
-						select sc_amazon_account_product.asin from sc_amazon_account_product 
+						select sc_amazon_account_product.asin from
+								sc_amazon_account_product where account_id = '$accountId' and status = 'Y'
 					) and
 			sc_amazon_product_category_rel.asin = '$asin' ) as selected
 			 from sc_amazon_product_category where account_id = '$accountId' and account_id is not null " ;
@@ -25,7 +26,7 @@ class Amazonaccount extends AppModel {
 					where sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
 					and sc_amazon_product_category_rel.asin in (
 						select sc_amazon_account_product.asin from sc_amazon_account_product
-							where sc_amazon_account_product.account_id = '$accountId' $sqlcause
+							where sc_amazon_account_product.account_id = '$accountId' and status='Y' $sqlcause
 					)) as TOTAL
               from sc_amazon_product_category where account_id = '$accountId' and account_id is not null " ;
 			
@@ -55,7 +56,8 @@ class Amazonaccount extends AppModel {
 					SET
 					NAME = '$name' , 
 					MEMO = '$memo' ,
-					GATHER_LEVEL = '$gatherLevel'
+					GATHER_LEVEL = '$gatherLevel',
+					PARENT_ID = '".$category['parentId']."'
 					WHERE
 					ID = '".$category['id']."'" ;
 					
@@ -206,7 +208,8 @@ class Amazonaccount extends AppModel {
 					PADDENT_QUANTITY = '$pendingQuantity' , 
 					QUANTITY = '".$data['quantity']."',
 					ITEM_CONDITION = '".$data['itemCondition']."',
-					STATUS = 'Y'
+					STATUS = 'Y',
+					ASYN_STATUS = 'Y'
 					WHERE
 					account_id = '".$data['accountId']."' and SKU = '".$data['SKU']."' " ;
 			}else{
@@ -215,7 +218,8 @@ class Amazonaccount extends AppModel {
 					ASIN = '".$data['ASIN']."' ,
 					PRICE = '".$data['price']."' ,
 					QUANTITY = '".$data['quantity']."',
-					STATUS = 'Y'
+					STATUS = 'Y',
+					ASYN_STATUS = 'Y'
 					WHERE
 					account_id = '".$data['accountId']."' and SKU = '".$data['SKU']."' " ;
 			}
@@ -233,7 +237,8 @@ class Amazonaccount extends AppModel {
 						FULFILLMENT_CHANNEL, 
 						PADDENT_QUANTITY, 
 						QUANTITY,
-						STATUS
+						STATUS,
+						ASYN_STATUS
 						)
 						VALUES
 						(
@@ -246,11 +251,29 @@ class Amazonaccount extends AppModel {
 						'$fulfillment', 
 						'$pendingQuantity',
 						'".$data['quantity']."', 
-						'Y'
+						'Y','Y'
 						)
 					 " ;
 				$this->query($sql) ;
 		}
+	}
+	
+	function asynProductStatusStart($accountId,$reportType){
+		//clear status
+		$sql = "update sc_amazon_account_product set asyn_status = '' where account_id = '$accountId'" ;
+		$this->query($sql) ;
+	}
+	
+	function asynProductStatusEnd($accountId,$reportType){
+		$sql = "select count(*) c from sc_amazon_account_product where account_id= '$accountId' and asyn_status = 'Y'" ;
+		$result = $this->query($sql) ;
+		if( $result[0][0]['c'] > 0 ){
+			$sql = "update sc_amazon_account_product set status = 'deleted' where asyn_status != 'Y' or asyn_status is null or asyn_status = ''" ;
+			$this->query($sql) ;
+			$sql = "update sc_amazon_account_product set status = 'Y' where asyn_status = 'Y'" ;
+			$this->query($sql) ;
+		}
+		//|| status is null || status=''
 	}
 	
 	function saveConfigItem($data,$user){
@@ -351,18 +374,6 @@ class Amazonaccount extends AppModel {
 					WHERE
 					ACCOUNT_ID = '$accountId' and REPORT_TYPE = '".$request['reportType']."' and  ( status is null or status = '')" ;
 		 $array = $this->query($sql);
-		 
-		 //处理产品状态
-		 if( $request['reportType'] == '_GET_FLAT_FILE_OPEN_LISTINGS_DATA_' ){
-		 	$sql = "select count(*) c from sc_amazon_account_product where account_id = '$accountId' and status='Y'" ;
-		 	$array = $this->query($sql);
-		 	$count = $array[0][0]['c'] ;
-		 	if( $count > 0  ){
-		 		$sql = "update sc_amazon_account_product set status = 'deleted' where account_id='$accountId' and
-					( status != 'Y' || status is null || status='') " ;
-		 		$this->query($sql);
-		 	}
-		 }
 	}
 	
 	function getAccounts(){
@@ -390,13 +401,29 @@ class Amazonaccount extends AppModel {
 		$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
 						FROM sc_amazon_product_category ,
 						sc_amazon_product_category_rel AS sc_amazon_account_product
-						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id   and status = 'Y'
-						 and ( cast(quantity as signed) > 0 or fulfillment_channel like 'AMAZON%' )
+						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id
 				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
 		$array = $this->query($sql);
 	
 		return $array ;
 	}
+	
+	function getAccountProductsForLevelSale($accountId,$level){
+		$sql = "SELECT sc_amazon_account_product.*
+						FROM sc_amazon_product_category ,
+						sc_amazon_product_category_rel ,
+						sc_amazon_account_product
+						WHERE sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
+							and sc_amazon_account_product.asin = sc_amazon_product_category_rel.asin
+                            and sc_amazon_account_product.account_id = '$accountId'
+				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
+		$array = $this->query($sql);
+		
+		//print_r($array) ; 
+	
+		return $array ;
+	}
+	
 	
 	function getAccountProducts($accountId,$categoryId = null ){
 		$array = null ;
@@ -506,5 +533,115 @@ class Amazonaccount extends AppModel {
 		$sql = "select * from sc_amazon_account_product where account_id = '$accountId' and feed_quantity is not null and feed_quantity <> '' " ;	
 		return $this->query($sql);	
 	}
+	
+	////////////////////////////////////////////////
+		
+	function getQuantityFeed($MerchantIdentifier , $products){
+		////////////////////////////////////////////////////////////////////////////		
+$Feed = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amzn-envelope.xsd">
+	<Header>
+		<DocumentVersion>1.01</DocumentVersion>
+		<MerchantIdentifier>$MerchantIdentifier</MerchantIdentifier>
+	</Header>
+	<MessageType>Inventory</MessageType>
+EOD;
+////////////////////////////////////////////////////////////////////////////
+		
+		$index = 0 ;
+		
+		for( $i = 0 ;$i < count($products) ;$i++  ){
+			$index++ ;
+			$product = $products[$i] ;
+
+			$sku = $product["SKU"] ;
+			$quantity = $product["FEED_QUANTITY"] ;
+	   		
+////////////////////////////////////////////////////////////////////////////
+$Feed .= <<<EOD
+	<Message>
+		<MessageID>$index</MessageID>
+		<Inventory>
+			<SKU>$sku</SKU>
+			<Quantity>$quantity</Quantity>
+		</Inventory>
+	</Message>
+EOD;
+	
+		}
+$Feed .= <<<EOD
+</AmazonEnvelope>
+EOD;
+		return $Feed ;
+	}	
+		
+	/**
+	 $feed = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amznenvelope.xsd">
+	<Header>
+		<DocumentVersion>1.01</DocumentVersion>
+		<MerchantIdentifier>M_CYBERKIN_107805233</MerchantIdentifier>
+	</Header>
+	<MessageType>Price</MessageType>
+	<Message>
+		<MessageID>1</MessageID>
+		<Price>
+			<SKU>B003D8GAA0</SKU>
+			<StandardPrice currency="USD">16.01</StandardPrice>
+		</Price>
+	</Message>
+</AmazonEnvelope>
+EOD;
+	 */
+	function getPriceFeed($MerchantIdentifier , $products){
+////////////////////////////////////////////////////////////////////////////		
+$Feed = <<<EOD
+<?xml version="1.0" encoding="utf-8"?>
+<AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amznenvelope.xsd">
+	<Header>
+		<DocumentVersion>1.01</DocumentVersion>
+		<MerchantIdentifier>$MerchantIdentifier</MerchantIdentifier>
+	</Header>
+	<MessageType>Price</MessageType>
+EOD;
+////////////////////////////////////////////////////////////////////////////
+		
+		$index = 0 ;
+		
+		for( $i = 0 ;$i < count($products) ;$i++  ){
+			$index++ ;
+			$product = $products[$i] ;
+
+			$sku = $product["SKU"] ;
+			$price = $product["FEED_PRICE"] ;
+		   		
+/*
+<StandardPrice currency="USD">80.00</StandardPrice>
+<Sale>
+<StartDate>2009-05-15T00:00:01-08:00</StartDate>
+<EndDate>2009-05-17T00:00:01-08:00</EndDate>
+<SalePrice currency="USD">77.00</SalePrice>
+</Sale>*/		   		
+////////////////////////////////////////////////////////////////////////////
+$Feed .= <<<EOD
+	<Message>
+		<MessageID>$index</MessageID>
+		<Price>
+			<SKU>$sku</SKU>
+			<StandardPrice currency="USD">$price</StandardPrice>
+		</Price>
+	</Message>
+EOD;
+////////////////////////////////////////////////////////////////////////////
+
+		}
+////////////////////////////////////////////////////////////////////////////
+$Feed .= <<<EOD
+</AmazonEnvelope>
+EOD;
+		return $Feed ;
+	}	
 	
 }

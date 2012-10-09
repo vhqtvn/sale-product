@@ -103,9 +103,21 @@ class User extends AppModel {
 	
 	function getAccountSecurity($code,$accountId){
 		$sql = " SELECT 1 as selected FROM sc_security_group_function WHERE group_code = '$code' and function_code = CONCAT('a___',$accountId) " ;
-		 
+		
 		return $this->query($sql) ; 
 	}
+	
+	function getFilterRules($code){
+		$sql = "select sc_security_function.* ,
+		 ( SELECT 1 FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
+		   = CONCAT('r___',sc_security_function.CODE) AND sc_security_group_function.GROUP_CODE = '$code' ) AS selected
+		  from  (
+			SELECT ID,NAME,ID AS CODE , (SELECT ID FROM sc_security_function WHERE CODE = 'filter_rule') AS PARENT_ID FROM sc_election_rule
+			) sc_security_function" ;
+		  
+		  return $this->query($sql) ;
+	}
+
 	
 	function getAmazonaccountSecurity($accountId , $groupCode){
 		$sql = "SELECT * FROM sc_security_group_function WHERE group_code = '$groupCode' AND function_code LIKE 'a___$accountId%'" ;
@@ -132,6 +144,8 @@ class User extends AppModel {
 	 */
 	function getSecurityFunctions( $code ){
 		$functions = $this->getFunctionRelGroupsFront($code);  
+		
+		$filterRules = $this->getFilterRulesFront($code) ;
 
     	//getAccount Info
 		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
@@ -156,7 +170,7 @@ class User extends AppModel {
 			$accountSecuritys[$id] = $securitys ;
 		} ;
 		
-		return array("functions"=>$functions,"accounts"=>$accountArray,"accountSecuritys"=>$accountSecuritys) ;
+		return array("functions"=>$functions,"accounts"=>$accountArray,"accountSecuritys"=>$accountSecuritys,"filterRules"=>$filterRules) ;
 	}
 	
 	function getFunctionRelGroupsFront($code){
@@ -170,6 +184,22 @@ class User extends AppModel {
 		order by  parent_id" ;
 		 
 		 return $this->query($sql) ; 
+	}
+	
+		
+	function getFilterRulesFront($code){
+		$sql = "select sc_security_function.* ,
+		 ( SELECT 1 FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
+		   = CONCAT('r___',sc_security_function.CODE) AND sc_security_group_function.GROUP_CODE = '$code' ) AS selected
+		  from  (
+			SELECT ID,NAME,ID AS CODE , (SELECT ID FROM sc_security_function WHERE CODE = 'filter_rule') AS PARENT_ID FROM sc_election_rule
+			) sc_security_function where CONCAT('r___',code) in ( 
+       		SELECT sc_security_group_function.function_code FROM sc_security_group_function
+			WHERE sc_security_group_function.FUNCTION_CODE
+		   = CONCAT('r___',sc_security_function.code) AND sc_security_group_function.GROUP_CODE = '$code' )" ;
+		  
+		  return $this->query($sql) ; 
+		
 	}
 	
 	function getFunctionForAccountFront($code,$accountId){
