@@ -143,7 +143,10 @@ class TaskController extends AppController {
 			$url = "http://www.amazon.com/dp/" . $asin;
 			//$url = "http://www.amazon.com/gp/offer-listing/".$asin ;
 			
-			$snoopy = new Snoopy;
+			$snoopy = new Snoopy ;
+			$snoopy->agent =  $this->getAgent($index) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 			
 			if( $snoopy->fetch($url) ){
 				//http://www.amazon.com/gp/offer-listing/B00005NPOB
@@ -220,9 +223,11 @@ class TaskController extends AppController {
 						$title = $images->alt ;
 						try{
 							$localUrl = "images/amazon/".$asin."/".basename($src) ;
-							$this->Task->addImage($asin,$src,$title,$localUrl) ;
 							$this->Task->downloads($src,$asin) ;
-						}catch(Exception $e){}
+							$this->Task->addImage($asin,$src,$title,$localUrl) ;
+						}catch(Exception $e){
+							//print_r($e) ;
+						}
 					}
 					//保存竞争信息
 					$this->saveProductPotential($asin , $html) ;
@@ -363,10 +368,10 @@ class TaskController extends AppController {
 			$url = "http://www.amazon.com/gp/offer-listing/$asin?shipPromoFilter=1&dd=$d" ;
 			
 			//echo $url ;
-			$snoopy = new Snoopy;
-			
-			$snoopy->agent = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)";
-			$snoopy->referer = "http://www.amazon.com/";
+			$snoopy = new Snoopy ;
+			$snoopy->agent =  $this->getAgent(1) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
 			if( $snoopy->fetch($url) ){
 				
@@ -468,10 +473,10 @@ class TaskController extends AppController {
 			$url =  "http://www.amazon.com/gp/offer-listing/".$asin."?dd=$d"  ;
 			
 			//echo $url ;
-			$snoopy = new Snoopy;
-			
-			$snoopy->agent = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)";
-			$snoopy->referer = "http://www.amazon.com/";
+			$snoopy = new Snoopy ;
+			$snoopy->agent =  $this->getAgent(0) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
 			if( $snoopy->fetch($url) ){
 				
@@ -876,12 +881,8 @@ class TaskController extends AppController {
 				$d = date("U") ;
 				$url = $url."&ddd=$d" ;
 				
-			$agents = array() ;
-			$agents[] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.83 Safari/535.11" ;
-			$agents[] = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)" ;
-				
 			$snoopy = new Snoopy;
-			$snoopy->agent =  $agents[ $index % 2 ] ;
+			$snoopy->agent =  $this->getAgent($index) ;
 			$snoopy->referer = $url ;
 			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 

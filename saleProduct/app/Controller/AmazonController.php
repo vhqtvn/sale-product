@@ -89,7 +89,10 @@ class AmazonController extends AppController {
 		) ;
 		$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
 		$reportId = $accountAsyn[0]['sc_amazon_account_asyn']['REPORT_ID'] ;
+		
+		$this->Amazonaccount->asynProductStatusStart($accountId , "_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
 		$request = $amazon->getProductReport3($accountId , $reportId ) ;
+		$this->Amazonaccount->asynProductStatusEnd($accountId , "_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
 		
 		//if( !empty($request) ){
 			$user =  $this->getCookUser() ;

@@ -255,7 +255,7 @@ class AmazonaccountController extends AppController {
 			$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price) ;
 		}
 		
-		$Feed = $this->getPriceFeed($MerchantIdentifier , $_products) ;
+		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
 		
 		$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
@@ -304,7 +304,7 @@ class AmazonaccountController extends AppController {
 			$_products[] = array("SKU"=>$sku,"FEED_QUANTITY"=>$quantity) ;
 		}
 		
-		$Feed = $this->getQuantityFeed($MerchantIdentifier , $_products) ;
+		$Feed = $this->Amazonaccount->getQuantityFeed($MerchantIdentifier , $_products) ;
 
 		$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
@@ -368,7 +368,7 @@ class AmazonaccountController extends AppController {
 		}
 		fclose($file_handle);
 		
-		$Feed = $this->getQuantityFeed($MerchantIdentifier , $_products) ;
+		$Feed = $this->Amazonaccount->getQuantityFeed($MerchantIdentifier , $_products) ;
 
 		$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
@@ -428,7 +428,7 @@ class AmazonaccountController extends AppController {
 		}
 		fclose($file_handle);
 		
-		$Feed = $this->getPriceFeed($MerchantIdentifier , $_products) ;
+		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
 
 		$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
@@ -444,7 +444,6 @@ class AmazonaccountController extends AppController {
 		
 		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
 		
-		print_r($result) ;
 		$this->Amazonaccount->saveAccountFeed($result) ;
 
 		$this->response->type("html");
@@ -452,112 +451,4 @@ class AmazonaccountController extends AppController {
 		return $this->response;
 	}
 	
-	
-	function getQuantityFeed($MerchantIdentifier , $products){
-		////////////////////////////////////////////////////////////////////////////		
-$Feed = <<<EOD
-<?xml version="1.0" encoding="utf-8"?>
-<AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amzn-envelope.xsd">
-	<Header>
-		<DocumentVersion>1.01</DocumentVersion>
-		<MerchantIdentifier>$MerchantIdentifier</MerchantIdentifier>
-	</Header>
-	<MessageType>Inventory</MessageType>
-EOD;
-////////////////////////////////////////////////////////////////////////////
-		
-		$index = 0 ;
-		
-		for( $i = 0 ;$i < count($products) ;$i++  ){
-			$index++ ;
-			$product = $products[$i] ;
-
-			$sku = $product["SKU"] ;
-			$quantity = $product["FEED_QUANTITY"] ;
-	   		
-////////////////////////////////////////////////////////////////////////////
-$Feed .= <<<EOD
-	<Message>
-		<MessageID>$index</MessageID>
-		<Inventory>
-			<SKU>$sku</SKU>
-			<Quantity>$quantity</Quantity>
-		</Inventory>
-	</Message>
-EOD;
-	
-		}
-$Feed .= <<<EOD
-</AmazonEnvelope>
-EOD;
-		return $Feed ;
-	}	
-		
-	/**
-	 $feed = <<<EOD
-<?xml version="1.0" encoding="utf-8"?>
-<AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amznenvelope.xsd">
-	<Header>
-		<DocumentVersion>1.01</DocumentVersion>
-		<MerchantIdentifier>M_CYBERKIN_107805233</MerchantIdentifier>
-	</Header>
-	<MessageType>Price</MessageType>
-	<Message>
-		<MessageID>1</MessageID>
-		<Price>
-			<SKU>B003D8GAA0</SKU>
-			<StandardPrice currency="USD">16.01</StandardPrice>
-		</Price>
-	</Message>
-</AmazonEnvelope>
-EOD;
-	 */
-	function getPriceFeed($MerchantIdentifier , $products){
-////////////////////////////////////////////////////////////////////////////		
-$Feed = <<<EOD
-<?xml version="1.0" encoding="utf-8"?>
-<AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amznenvelope.xsd">
-	<Header>
-		<DocumentVersion>1.01</DocumentVersion>
-		<MerchantIdentifier>$MerchantIdentifier</MerchantIdentifier>
-	</Header>
-	<MessageType>Price</MessageType>
-EOD;
-////////////////////////////////////////////////////////////////////////////
-		
-		$index = 0 ;
-		
-		for( $i = 0 ;$i < count($products) ;$i++  ){
-			$index++ ;
-			$product = $products[$i] ;
-
-			$sku = $product["SKU"] ;
-			$price = $product["FEED_PRICE"] ;
-		   		
-/*
-<StandardPrice currency="USD">80.00</StandardPrice>
-<Sale>
-<StartDate>2009-05-15T00:00:01-08:00</StartDate>
-<EndDate>2009-05-17T00:00:01-08:00</EndDate>
-<SalePrice currency="USD">77.00</SalePrice>
-</Sale>*/		   		
-////////////////////////////////////////////////////////////////////////////
-$Feed .= <<<EOD
-	<Message>
-		<MessageID>$index</MessageID>
-		<Price>
-			<SKU>$sku</SKU>
-			<StandardPrice currency="USD">$price</StandardPrice>
-		</Price>
-	</Message>
-EOD;
-////////////////////////////////////////////////////////////////////////////
-
-		}
-////////////////////////////////////////////////////////////////////////////
-$Feed .= <<<EOD
-</AmazonEnvelope>
-EOD;
-		return $Feed ;
-	}	
 }

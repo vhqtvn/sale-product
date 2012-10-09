@@ -237,7 +237,10 @@ class CronController extends AppController {
 						$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
 					}
 				}else if(empty($status)){//获取产品数据
+					$this->Amazonaccount->asynProductStatusStart($accountId , "_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
 					$request = $amazon->getProductReport3($accountId , $reportId ) ;
+					$this->Amazonaccount->asynProductStatusEnd($accountId  , "_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
+					
 					$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") , $user) ;
 				}
 			}
@@ -335,7 +338,10 @@ class CronController extends AppController {
 			$url = "http://www.amazon.com/dp/" . $asin;
 			//$url = "http://www.amazon.com/gp/offer-listing/".$asin ;
 			
-			$snoopy = new Snoopy;
+			$snoopy = new Snoopy ;
+			$snoopy->agent =  $this->getAgent($index) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 			
 			if( $snoopy->fetch($url) ){
 				//http://www.amazon.com/gp/offer-listing/B00005NPOB
@@ -499,10 +505,10 @@ class CronController extends AppController {
 			$url = "http://www.amazon.com/gp/offer-listing/$asin?shipPromoFilter=1&dd=$d" ;
 			
 			//echo $url ;
-			$snoopy = new Snoopy;
-			
-			$snoopy->agent = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)";
-			$snoopy->referer = "http://www.amazon.com/";
+			$snoopy = new Snoopy ;
+			$snoopy->agent =  $this->getAgent(0) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
 			if( $snoopy->fetch($url) ){
 				
@@ -604,10 +610,10 @@ class CronController extends AppController {
 			$url =  "http://www.amazon.com/gp/offer-listing/".$asin."?dd=$d"  ;
 			
 			//echo $url ;
-			$snoopy = new Snoopy;
-			
-			$snoopy->agent = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)";
-			$snoopy->referer = "http://www.amazon.com/";
+			$snoopy = new Snoopy ;
+			$snoopy->agent =  $this->getAgent(0) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
 			if( $snoopy->fetch($url) ){
 				
@@ -926,11 +932,10 @@ $this->response->type("json");
 				$d = date("U") ;
 				$url = $url."&dd=$d" ;
 				
-			$snoopy = new Snoopy;
-			
-			$snoopy->agent = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)";
-			$snoopy->referer = "http://www.amazon.com/";
-			$snoopy->rawheaders['Pragma'] = 'no-cache' ;
+			$snoopy = new Snoopy ;
+			$snoopy->agent =  $this->getAgent($index) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
 			if( $snoopy->fetch($url) ){
 			

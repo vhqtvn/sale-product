@@ -75,6 +75,8 @@ class UsersController extends AppController
     }
     
     function assignFunctions( $code ){
+    	
+    	//获取正常的菜单信息
 		$someone = $this->User->getFunctionRelGroups($code);  
     	$this->set("Functions",$someone) ;
     	$this->set("GroupCode",$code) ;
@@ -89,14 +91,24 @@ class UsersController extends AppController
 			$sfs = $Record['sc_amazon_account']  ;
 			$id   = $sfs['ID'] ;
 			$name = $sfs['NAME']  ;
+			//获取账号对应的菜单信息
 			$securitys = $this->User->getFunctionForAccount( $code , $id ) ;
+			
+			//获取账号对应的权限分配信息
 			$securitys1 = $this->User->getAccountSecurity( $code , $id ) ;
+			
+			
 			
 			$accountSecuritys1[$id] = $securitys1 ;
 			$accountSecuritys[$id] = $securitys ;
 		} ;
+		
+		//获取过滤规则信息
+		$securitys2 = $this->User->getFilterRules( $code , $id ) ;  
+		
 		$this->set("accountSecuritys",$accountSecuritys) ;
 		$this->set("accountSecuritys1",$accountSecuritys1) ;
+		$this->set("filterRules",$securitys2) ;
 		//get Account Security
 		 
 	}

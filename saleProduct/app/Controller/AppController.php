@@ -102,6 +102,13 @@ class AppController extends Controller {
 		return $user ;
 	}
 	
+	function getAgent($index){
+		$agents = array() ;
+		$agents[] = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.83 Safari/535.11" ;
+		$agents[] = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)" ;
+		return $agents[ $index % 2 ]  ;		
+	}
+	
 	
 	function array2json($arr) { 
 			if(function_exists('json_encode')) return json_encode($arr); //Lastest versions of PHP already has this functionality.

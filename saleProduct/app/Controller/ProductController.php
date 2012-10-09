@@ -111,6 +111,7 @@ class ProductController extends AppController {
 		$strategys  = $this->Product->getProductStrategy() ;
 		$suppliers  = $this->Product->getProductSupplier($asin) ;
 		
+		$this->set('asin', $asin);
 		$this->set('accountId', $accountId);
 		$this->set('details', $details);
 		$this->set('images', $images);
