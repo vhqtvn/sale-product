@@ -70,6 +70,12 @@ class Grid extends AppModel {
 		$end =  $query["end"] ;
 		
 		$scope =  $query["scope"] ;
+		$accounts = $query['accounts'] ;
+		
+		$accountWhere = "" ;
+		if( !empty($accounts) ){
+			$accountWhere = " and sc_product.asin in ( select asin from sc_amazon_account_product where account_id in ($accounts) and status = 'Y') " ;
+		}
 		
 		if( trim($scope)== ""){
 			$sql = 'SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
@@ -84,7 +90,7 @@ class Grid extends AppModel {
 				LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
                 LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 				WHERE 1 = 1 and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
-				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) ';
+				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) '.$accountWhere;
 	
 	
 			foreach ($query["querys"] as $value) {  
@@ -125,7 +131,7 @@ class Grid extends AppModel {
 				LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 				WHERE sc_product.asin = sc_gather_asin.asin and sc_gather_asin.task_id in (".$scopes.")
                  and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
-				and sc_product.asin not in (select sc_product_black.asin from sc_product_black)  ";
+				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) $accountWhere ";
 	
 			foreach ($query["querys"] as $value) {  
 					if( gettype($value) == "array" ){
@@ -159,6 +165,12 @@ class Grid extends AppModel {
 		$end =  $query["end"] ;
 		
 		$scope =  $query["scope"] ;
+		$accounts = $query['accounts'] ;
+		
+		$accountWhere = "" ;
+		if( !empty($accounts) ){
+			$accountWhere = " and sc_product.asin in ( select asin from sc_amazon_account_product where account_id in ($accounts) and status = 'Y' ) " ;
+		}
 		
 		if( trim($scope)== ""){
 			$sql = 'SELECT DISTINCT sc_product.* FROM sc_product
@@ -168,7 +180,7 @@ class Grid extends AppModel {
 							LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
 							LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 							where 1 = 1 and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd ) 
-							 and sc_product.asin not in (select sc_product_black.asin from sc_product_black)  ' ;
+							 and sc_product.asin not in (select sc_product_black.asin from sc_product_black) '.$accountWhere ;
 	
 			foreach ($query["querys"] as $value) {  
 					if( gettype($value) == "array" ){
@@ -202,7 +214,7 @@ class Grid extends AppModel {
 				LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 				WHERE sc_product.asin = sc_gather_asin.asin and sc_gather_asin.task_id in (".$scopes.")
 				 and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd ) 
-				and sc_product.asin not in (select sc_product_black.asin from sc_product_black)  ";
+				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) $accountWhere";
 	
 			foreach ($query["querys"] as $value) {  
 					if( gettype($value) == "array" ){
@@ -241,6 +253,14 @@ class Grid extends AppModel {
 		$this->query($sql);
 		
 		$scope =  $query["scope"] ;
+		$accounts = $query['accounts'] ;
+		
+		$accountWhere = "" ;
+		if( !empty($accounts) ){
+			$accountWhere = " and sc_product.asin in ( select asin from sc_amazon_account_product where account_id in ($accounts) and status = 'Y' ) " ;
+		}
+		
+		
 		$sql = '' ;
 		if( trim($scope)== ""){
 			$sql = 'SELECT DISTINCT sc_product.asin FROM sc_product
@@ -250,7 +270,7 @@ class Grid extends AppModel {
 				LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
 				LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 				WHERE 1 = 1  and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
-                 and sc_product.asin not in (select sc_product_black.asin from sc_product_black) ' ;
+                 and sc_product.asin not in (select sc_product_black.asin from sc_product_black) '.$accountWhere ;
 			
 	
 			foreach ($query["querys"] as $value) {  
@@ -281,7 +301,7 @@ class Grid extends AppModel {
 				LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
 				LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 				WHERE sc_product.asin = sc_gather_asin.asin and sc_gather_asin.task_id in  ( $scopes )
-				and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd ) " ;
+				and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd ) $accountWhere" ;
 	
 			foreach ($query["querys"] as $value) {  
 					if( gettype($value) == "array" ){

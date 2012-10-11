@@ -376,6 +376,13 @@ class Amazonaccount extends AppModel {
 		 $array = $this->query($sql);
 	}
 	
+	function getAccountsFront(){
+		$domain = $_SERVER['SERVER_NAME'] ;
+		$sql = "SELECT ID,NAME FROM sc_amazon_account where domain='$domain'";
+		$array = $this->query($sql);
+		return $array ;
+	}
+	
 	function getAccounts(){
 		$domain = $_SERVER['SERVER_NAME'] ;
 		$sql = "SELECT * FROM sc_amazon_account where domain='$domain'";
