@@ -3,6 +3,8 @@
 class ProductController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
+     var $uses = array('Sale', 'Product','Amazonaccount');
+    
     function beforeFilter() {
 		parent::beforeFilter();
 		//$this->Auth->allow('*');
@@ -32,6 +34,9 @@ class ProductController extends AppController {
 				$rule = $this->Product->findById($id) ;
 				$this->set('rule', $rule);
 		 }
+		 
+		$accounts = $this->Amazonaccount->getAccountsFront() ;
+		$this->set('accounts', $accounts);
     }
 
 	public function script() {
