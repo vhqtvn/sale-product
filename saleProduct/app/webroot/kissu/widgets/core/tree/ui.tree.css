@@ -128,11 +128,18 @@
 .ie ul.bbit-tree-node-ct {
 	font-size: 0px; line-height: 0; zoom: 1
 }
-.bbit-tree-node {
-	white-space: nowrap
+li.bbit-tree-node {
+	white-space: nowrap ;
+	line-height:18px;
 }
-.bbit-tree-node-el {
-	cursor: default; line-height: 18px;
+div.bbit-tree-node-el {
+	cursor: default; 
+	line-height: 18px;
+	height:18px;
+}
+
+img{
+	border:none;
 }
 
 .bbit-tree-node-el a{
