@@ -15,6 +15,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('../grid/grid');
 		echo $this->Html->script('../grid/query');
+		
 	?>
   
    <script type="text/javascript">
@@ -22,11 +23,10 @@
 
 	$(function(){
 		var query = new Query(ruleScripts, $(".grid-query")).render() ;
-		var querys = {querys:query.fetch()||{},scope:"---"} ;
+		var querys = {querys:query.fetch()||{},scope:"---",accounts:''} ;
 		$(".grid-query-button .query-action").click(function(){
 			querys = query.fetch()||{} ;
-			//alert( $.json.encode(querys) );
-			$(".grid-content").llygrid("reload",{querys:querys,scope:$(".select-scope-input").val() }) ;
+			$(".grid-content").llygrid("reload",{querys:querys,scope:$(".select-scope-input").val(),accounts:getAccounts() }) ;
 			return false ;
 		}) ;
 		
@@ -39,11 +39,9 @@
 			if(val && $.trim(val)){
 				querys = query.fetch() ;
 				//querys.filterName = val ;
-				//alert( $.json.encode(querys) );
-				//return ;
-				var params = {querys:querys,filterName:val,scope:$(".select-scope-input").val()} ;
-				//alert( $.json.encode(params) );
-				//return ;
+				
+				var params = {querys:querys,filterName:val,scope:$(".select-scope-input").val(),accounts:getAccounts()} ;
+
 				$.ajax({
 					type:"post",
 					url:"/saleProduct/index.php/grid/saveFilterResult",
@@ -95,6 +93,14 @@
 			 loadMsg:"数据加载中，请稍候......"
 		}) ;
 	}) ;
+	
+	function getAccounts(){
+		var accountIds = [] ;
+		$("[name='accountId']:checked").each(function(){
+			accountIds.push( this.value ) ;
+		}) ;
+		return accountIds.join(",") ;
+	}
 	
 	function refreshGrid(){
 		$(".grid-query-button .query-action").click() ;
@@ -170,7 +176,18 @@
 	<div class="grid-query-button">
 		<button class="query-action">查询</button>
 		<button class="save-result">保存筛选结果</button>
-		&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" class="select-scope-input" /><button class="select-scope">选择筛选范围</button>
+		<br/>
+		<button class="select-scope">选择筛选范围</button><input type="text" class="select-scope-input" />
+		&nbsp;在账户产品中筛选:
+		<?php
+			$index = 0 ;
+			foreach($accounts as $account){
+				$account = $account['sc_amazon_account'] ;
+				echo "<input type='checkbox' id='accountId_$index' name='accountId' value='".$account['ID']."' /> <label for='accountId_$index'>".$account['NAME']."</label>" ;
+				$index++ ;
+			} ;
+		?>
+		
 	</div>
 	
 	<div class="grid-content">
