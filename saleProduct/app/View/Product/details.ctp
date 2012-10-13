@@ -477,9 +477,9 @@
 			</li>
 		<?php  if( isset($accountId) && !empty($accountId) ){
 		?>
-			<li>
+			<!--li>
 				<a href="#amazon-category-tab">营销产品分类 </a>
-			</li>
+			</li-->
 		<?php	
 		} ?>
 			<li>
@@ -691,9 +691,9 @@
 		</div>
 		<?php  if( isset($accountId) && !empty($accountId) ){
 		?>
-		<div id="amazon-category-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<iframe src="/saleProduct/index.php/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>" style="width:98%;height:400px;"></iframe>
-		</div>
+		<!--div id="amazon-category-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
+			<iframe src="/saleProduct/index.php/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>/<?php echo $sku;?>" style="width:98%;height:400px;"></iframe>
+		</div-->
 		<?php	
 		} ?>
 		<div id="cost-tab" class="ui-tabs-panel" style="height: 100px; display: block; padding:12px 3px;">

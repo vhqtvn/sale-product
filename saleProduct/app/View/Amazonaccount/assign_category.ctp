@@ -36,6 +36,8 @@
     var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
     var treeMap  = {} ;
     var asin = '<?php echo $asin;?>' ;
+	var sku = '<?php echo $sku;?>' ;
+	var accountId = '<?php echo $accountId;?>' ;
 
     <?php
     	$index = 0 ;
@@ -85,7 +87,7 @@
         	var ids = $('#default-tree').tree().getSelectedIds() ;
         	$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/amazonaccount/saveProductCategory/"+asin+"/"+ids,
+				url:"/saleProduct/index.php/amazonaccount/saveProductCategory/"+accountId+"/"+sku+"/"+ids,
 				data:{},
 				cache:false,
 				dataType:"text",
@@ -94,7 +96,6 @@
 				}
 			}); 
         }) ;
-		
 	})
    </script>
 

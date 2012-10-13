@@ -30,48 +30,11 @@
 	?>
 	
     <script type="text/javascript">
-	
-	var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
-    var treeMap  = {} ;
 
-    <?php
-    	$index = 0 ;
-		foreach( $categorys as $Record ){
-			$sfs = $Record['sc_amazon_product_category']  ;
-			
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
-			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
-			
-			
-			echo " treeMap['id_$id'] = item$index  ;" ;
-			$index++ ;
-		} ;
-		$index = 0 ;
-		foreach( $categorys as $Record ){
-			$sfs = $Record['sc_amazon_product_category']  ;
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
-			$pid  = $sfs['PARENT_ID'] ;
-			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-			if(empty($pid)){
-				echo "treeData.childNodes.push( item$index ) ;" ;
-			}else{
-				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-			}
-			$index++ ;
-		} ;
-		
-		echo " treeMap['id_-'] = {id:'-',text:'未分类产品',memo:'',isExpand:true} ;" ;
-		echo " treeData.childNodes.push( treeMap['id_-']  ) ;" ;
-	?>
-   
    var accountId = '<?php echo $accountId ;?>' ;
    
    //result.records , result.totalRecord
- 	function formatGridData(data){
+   function formatGridData(data){
  		var records = data.record ;
  		var count   = data.count ;
  		
@@ -94,38 +57,19 @@
 		return ret ;
    }
 	var currentAccountId = accountId ;
-	var currentCategoryId = "" ;
-	var currentCategoryText = "" ;
+	var currentCategoryId = "<?php echo $categoryId ;?>" ;
 	$(function(){
-			$('#default-tree').tree({//tree为容器ID
-				source:'array',
-				data:treeData ,
-				onNodeClick:function(id,text,record){
-					if( id == 'root' ){
-						currentCategoryId = "" ;
-						currentCategoryText = "" ;
-						$(".grid-content").llygrid("reload",{categoryId:"",accountId:accountId},
-							{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
-					}else{
-						currentCategoryId = id ;
-						currentCategoryText = text ;
-						$(".grid-content").llygrid("reload",{categoryId:id,accountId:accountId},
-							{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
-					}
-				}
-	       }) ;
-	       
+			
+		
 	       var gridConfig = {
 					columns:[
-						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
-							var status = record.STATUS ;
-							var html = [] ;
-							html.push('<a href="#" class="edit-account-product" val="'+val+'"><?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?></a>&nbsp;') ;
-							
-							return html.join("") ;
-						}},
+						{align:"center",key:"SKU",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
+							if(record.checked >=1){
+								$(this).attr("checked",true) ;
+							}
+						}}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
-			           		return "<a href='#' class='product-detail' asin='"+val+"' sku='"+record.SKU+"'>"+val+"</a>" ;
+			           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
 			           	}},
 			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
 			           		if(val){
@@ -152,10 +96,8 @@
 			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
 			           	{align:"center",key:"SKU",label:"SKU",width:"8%"},
 			           	{align:"center",key:"QUANTITY",label:"库存",width:"6%"},
-			           	{align:"center",key:"FEED_QUANTITY",label:'库存<?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?>',width:"6%",format:{type:'editor',fields:['SKU']}},
-			            {align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
-			            {align:"center",key:"FEED_PRICE",label:'Price<?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?>',group:'价格',width:"6%",format:{type:'editor',fields:['SKU']}},
-			           	{align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
+			           	{align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
+			            {align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
 			           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"8%",format:function(val,record){
 			           		var pm = '' ;
 			           		if(record.FULFILLMENT_CHANNEL != 'Merchant') pm = record.FBA_PM  ;
@@ -175,17 +117,9 @@
 			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"},
 			           	{align:"center",key:"STRATEGY_LABEL",label:"策略",group:"价格",width:"11%",format:function(val){
 			           		return val||"-" ;
-			           	}}//,
-			           	//{align:"center",key:"EXEC_PRICE",label:"执行价格",group:"价格",width:"8%"}
-			           	/*,
-			           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%"},
-			           	{align:"center",key:"FBM_COST",label:"总成本",group:"FBM",width:"6%"},
-			           	//{align:"center",key:"FBM_LOWER",label:"最低销售价",group:"FBM",width:"10%"},
-			           	{align:"center",key:"FBA_PRICE",label:"最低价",group:"FBA",width:"6%"},
-			           	{align:"center",key:"FBA_COST",label:"总成本",group:"FBA",width:"6%"}//,
-			           	//{align:"center",key:"FBA_LOWER",label:"最低销售价",group:"FBA",width:"10%"}*/
+			           	}}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId},
+			         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
@@ -196,19 +130,13 @@
 				} ;
 	       
 			setTimeout(function(){
+				gridConfig.querys = getQueryCondition() ;
 				$(".grid-content").llygrid(gridConfig) ;
-			},200) ;
-			
-			$(".edit-account-product").live("click",function(){
-				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/amazonaccount/editAccountProduct/"+val,600,480) ;
-			}) ;
-				
+			},200) ;	
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				var sku = $(this).attr("sku") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
+				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId,950,650) ;
 			}) ;
 			
 			$(".query-btn").click(function(){
@@ -216,15 +144,22 @@
 					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
 			}) ;
 			
-			$(".query-reply-btn").click(function(){
-				$(".grid-content").llygrid("reload",{accountId:currentAccountId,reply:'1'},
-					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/productReply/"+accountId}} ) ;	
-			}) ;
 			
-			$(".product-category-btn").click(function(){
-				if( currentCategoryId ){
-					openCenterWindow("/saleProduct/index.php/amazonaccount/assignCategoryProduct/"+accountId+"/"+currentCategoryId,950,650) ;
-				}
+			
+			$(".save-btn").click(function(){
+				var checked = $(".grid-content").llygrid("getSelectedValue",{key:"SKU",checked:true},true) ;
+				var nochecked = $(".grid-content").llygrid("getSelectedValue",{key:"SKU",checked:false},true) ;
+				
+				$.ajax({
+					type:"post",
+					url:"/saleProduct/index.php/amazonaccount/saveCategoryProducts" ,
+					data:{checked_skus:checked.join(","),unchecked_skus:nochecked.join(","),accountId:currentAccountId,categoryId:currentCategoryId},
+					cache:false,
+					dataType:"text",
+					success:function(result,status,xhr){
+						alert(11);
+					}
+				});
 			}) ;
 			
 			
@@ -234,7 +169,8 @@
 				var title = $("[name='title']").val() ;
 				var querys = {} ;
 				querys.reply = 0 ;
-				querys.accountId = currentAccountId||'-----';
+				querys.accountId = currentAccountId;
+				querys.categoryId = currentCategoryId ; 
 				querys.asin = asin ;
 				querys.title = title ;
 				querys.quantity1 = $("[name='quantity1']").val() ;
@@ -250,24 +186,6 @@
 				return querys ;
 			}
 			
-			$(".lly-grid-cell-input").live("blur",function(){
-				var sku = $(this).attr("SKU")||$(this).attr("sku") ;
-				var price = "" ;
-				var quantity = "" ;
-				var key = $(this).attr("key") ;
-				var val = $(this).val() ;
-					
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/amazonaccount/saveAccountProductFeed",
-					data:{type:key,sku:sku,value:val,accountId:currentAccountId},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						
-					}
-				}); 
-			}) ;
    	 });
    </script>
    
@@ -344,23 +262,13 @@
 				 </li>
 				 <li>
 				 	<button class="query-btn">查询</button>
-				 	<button class="query-reply-btn">重复产品过滤</button>
-				 	<button class="product-category-btn">编辑分类产品</button>
+				 	<button class="save-btn">保存</button>
 				 </li>
 			   </ul>
-			
 			</div>
 			<div style="clear:both;height:5px;"></div>
 			<div class="grid-content" style="width:99%;">
 			</div>
-			
-			<div>
-				<button class="price-update-btn">显示价格待更新列表</button>
-				<button class="quantity-update-btn">显示库存待更新列表</button>
-			</div>
-		</div>
-		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:150px;">
-			<div id="default-tree" class="tree" style="padding: 5px; "></div>
 		</div>
    </div>
 	

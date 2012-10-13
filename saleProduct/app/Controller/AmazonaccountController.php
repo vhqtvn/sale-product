@@ -34,9 +34,11 @@ class AmazonaccountController extends AppController {
     	$this->set("accountId",$accountId) ;
     }
     
-    public function assignCategory($asin,$accountId){
+    public function assignCategory($asin,$accountId,$sku=null){
     	$this->set("asin",$asin) ;
-    	$categorys = $this->Amazonaccount->getAmazonProductCategory($accountId,$asin);  
+    	$this->set("sku",$sku) ;
+    	$this->set("accountId",$accountId) ;
+    	$categorys = $this->Amazonaccount->getAmazonProductCategory($accountId,$asin,null,$sku);  
     	$this->set("categorys",$categorys) ;
     }
     
@@ -51,9 +53,9 @@ class AmazonaccountController extends AppController {
 		return $this->response ;
     }
     
-    public function saveProductCategory($asin , $ids){
+    public function saveProductCategory($accountId , $sku , $ids){
     	//$ids = $this->request->data['id'] ;
-		$someone = $this->Amazonaccount->saveAmazonProductCategory($ids , $asin ); 
+		$someone = $this->Amazonaccount->saveAmazonProductCategory($ids , $sku ,$accountId); 
 		
 		//$this->Product->save( $params ) ;
 		$this->response->type("json") ;
@@ -61,6 +63,20 @@ class AmazonaccountController extends AppController {
 
 		return $this->response ; 
     }
+    
+     public function saveCategoryProducts(){
+     	$someone = $this->Amazonaccount->saveAmazonProductsCategory($this->request->data); 
+		
+		$this->response->type("json") ;
+		$this->response->body( "Save Success" )   ;
+
+		return $this->response ; 
+     }
+    
+     public function assignCategoryProduct($accountId,$categoryId){
+     	$this->set("categoryId",$categoryId ) ;
+     	$this->set("accountId",$accountId ) ;
+     }
     
     
 	 /**

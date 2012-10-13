@@ -46,7 +46,8 @@
 			$id   = $sfs['ID'] ;
 			$name = $sfs['NAME'] ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$id',pid:'$pid',text:'$name',memo:'".$sfs['MEMO']."',gatherLevel:'".$sfs['GATHER_LEVEL']."',isExpand:true} ;" ;
+			$isVip = $sfs['PRICE_STRATERY'] ;
+			echo " var item$index = {id:'$id',priceStratery:'$isVip',pid:'$pid',text:'$name',memo:'".$sfs['MEMO']."',gatherLevel:'".$sfs['GATHER_LEVEL']."',isExpand:true} ;" ;
 			echo " treeMap['id_$id'] = item$index  ;" ;
 			$index++ ;
 		} ;
@@ -107,7 +108,8 @@
 					$("#up-category .id").val(id) ;
 					$("#up-category .name").val(text) ;
 					$("#up-category .memo").val(record.memo) ;
-					$("#up-category input:radio[value='"+record.gatherLevel+"']").attr("checked",true) ;
+					$("#up-category input:radio[name='gatherLevel'][value='"+record.gatherLevel+"']").attr("checked",true) ;
+					$("#up-category input:radio[name='priceStratery'][value='"+record.priceStratery+"']").attr("checked",true) ;
 					
 					//不能选择自己的下级节点作为父节点
 					$("[nodeid]",".update-category-tree").parent().show() ;
@@ -189,6 +191,12 @@
 				<input type="radio" name="gatherLevel" value="C" />C
 				<input type="radio" name="gatherLevel" value="D" />D
 				
+				<label>竞价策略</label>
+				<input type="radio" name="priceStratery" value="" />无策略
+				<input type="radio" name="priceStratery" value="jjfxs" />竞价非销售
+				<input type="radio" name="priceStratery" value="fjjxs" />非竞价销售
+				<input type="radio" name="priceStratery" value="jjxs" />竞价销售
+				<input type="radio" name="priceStratery" value="VIP" /> VIP自主定价				
 				<br/><br/>
 				<button class="btn save-category">保存分类</button>
 				
@@ -218,6 +226,12 @@
 				<input type="radio" name="gatherLevel" value="B" />B
 				<input type="radio" name="gatherLevel" value="C" />C
 				<input type="radio" name="gatherLevel" value="D" />D
+				<label>竞价策略</label>
+				<input type="radio" name="priceStratery" value="" />无策略
+				<input type="radio" name="priceStratery" value="jjfxs" />竞价非销售
+				<input type="radio" name="priceStratery" value="fjjxs" />非竞价销售
+				<input type="radio" name="priceStratery" value="jjxs" />竞价销售
+				<input type="radio" name="priceStratery" value="VIP" /> VIP自主定价		
 				<br/><br/>
 				<button class="btn update-category">修改分类</button>
 				

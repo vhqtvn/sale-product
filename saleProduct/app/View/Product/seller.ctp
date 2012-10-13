@@ -48,8 +48,8 @@
 				columns:[
 		           	{align:"center",key:"ID",label:"编号", width:"8%"},
 		           	{align:"center",key:"NAME",label:"商家名称",width:"20%",forzen:false,align:"left",format:function(val,record){
-		           		var val = record.ID ;
-		           		return "<a href='#' class='show-products' val='"+val+"'>"+val+"</a>" ;
+		           		var val1 = record.ID ;
+		           		return "<a href='#' class='show-products' val='"+val1+"'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"URL",label:"商家地址",width:"30%"},
 		           	{align:"center",key:"TOTAL",label:"产品总数",width:"8%"},

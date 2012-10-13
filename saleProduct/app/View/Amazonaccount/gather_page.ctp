@@ -40,6 +40,16 @@
 			
 			echo " treeMap['id_$id'] = item$index  ;" ;
 			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+			
+			$index++ ;
+		} ;
+		$index = 0 ;
+		foreach( $categorys as $Record ){
+			$sfs = $Record['sc_amazon_product_category']  ;
+			
+			$id   = $sfs['ID'] ;
+			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
+			$pid  = $sfs['PARENT_ID'] ;
 			if(empty($pid)){
 				echo "treeData.childNodes.push( item$index ) ;" ;
 			}else{

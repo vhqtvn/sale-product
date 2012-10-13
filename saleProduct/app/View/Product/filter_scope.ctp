@@ -78,14 +78,14 @@
    	 });
    	 
    	 $(".grid-content [type='checkbox']").live("click",function(){
-   	 	var vals1 = $(".seller-grid-content").llygrid("getSelectedValue","ID")   ;
-   	 	var vals2 = $(".grid-content").llygrid("getSelectedValue","ID")   ;
+   	 	var vals1 = $(".seller-grid-content").llygrid("getSelectedValue",{key:"ID"})   ;
+   	 	var vals2 = $(".grid-content").llygrid("getSelectedValue",{key:"ID"})   ;
    	 	var split = vals1.join(",")?(vals2.join(",")?",":""):"" ;
    	 	$("textarea").val( vals1.join(",")+split+vals2.join(",") ) ;
    	 }) ;
    	 $(".seller-grid-content [type='checkbox']").live("click",function(){
-   	 	var vals1 = $(".seller-grid-content").llygrid("getSelectedValue","ID")   ;
-   	 	var vals2 = $(".grid-content").llygrid("getSelectedValue","ID")   ;
+   	 	var vals1 = $(".seller-grid-content").llygrid("getSelectedValue",{key:"ID"})   ;
+   	 	var vals2 = $(".grid-content").llygrid("getSelectedValue",{key:"ID"})   ;
    	 	var split = vals1.join(",")?(vals2.join(",")?",":""):"" ;
    	 	$("textarea").val( vals1.join(",")+split+vals2.join(",") ) ;
    	 }) ;

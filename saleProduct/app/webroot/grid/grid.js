@@ -634,6 +634,17 @@
 				},
 				bindEvent:function(col,grid){
 					var callback = col.format.callback||function(){} ;
+					var render = col.format.render||function(){} ;
+					
+					grid.find("input[name='cb_"+col.key+"']").each(function(){
+						var row = $(this).parents("tr:first").get(0) ;
+						/*if( checked ){
+							getRow(grid,row).find("td").addClass("ui-state-checked") ;
+						}else{
+							getRow(grid,row).find("td").removeClass("ui-state-checked ui-state-highlight") ;
+						}*/
+						render.call(this,$(row).data("record")) ;
+					});
 					
 					grid.find("input[name='cb_"+col.key+"_head']").unbind("click").bind("click",function(){
 						grid.find("input[name='cb_"+col.key+"']")
@@ -664,11 +675,20 @@
 					
 					grid.llygrid("addEvent" , {
 						eventName:"getSelectedValue",
-						func:function(key){
+						func:function(params){
+							var key = params.key ;
+							var checked = params.checked ;
+							
 							var vals = [] ;
-							grid.find(":input[name='cb_"+key+"'][checked]").each(function(){
-								vals.push( $(this).val() ) ;
-							}) ;
+							if(checked || typeof checked == 'undefined'){
+								grid.find(":input[name='cb_"+key+"'][checked]").each(function(){
+									vals.push( $(this).val() ) ;
+								}) ;
+							}else{
+								grid.find(":input[name='cb_"+key+"']:not([checked])").each(function(){
+									vals.push( $(this).val() ) ;
+								}) ;
+							}
 							return vals ;
 						}
 					}) ;

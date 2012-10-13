@@ -20,8 +20,11 @@ class CronSaleController extends AppController {
 	 * 价格营销
 	 */
 	public function priceSale($accountId , $level){
-		$products = $this->Amazonaccount->getAccountProductsForLevelSale( $accountId , $level ) ;
 		
+		//获取分类产品信息
+		$products = $this->Amazonaccount->getAccountProductsForLevelSale( $accountId , $level ) ;
+	
+		//获取账号相关信息
 		$account = $this->Amazonaccount->getAccount($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		$accountName = $account['NAME'] ;
@@ -30,25 +33,35 @@ class CronSaleController extends AppController {
 		
 		$_products = array() ;
 		for( $i = 0 ;$i < count($products) ;$i++  ){
-			$product = $products[$i]['sc_amazon_account_product'] ;
-
-			$sku = $product["SKU"] ;
-			$oriPrice = $product["PRICE"] ;
 			
-			$shipPrice = $product["SHIPPING_PRICE"] ;
-			$channel = $product["FULFILLMENT_CHANNEL"] ;
-			if( (!empty($channel)) &&  strpos($channel,"AMAZON") === 0 ){
-				$shipPrice = 0.00 ;
+			//获取单个产品
+			$product = $products[$i]['sc_amazon_account_product'] ;
+			//单个产品所属分类
+			$productCategory = $products[$i]['sc_amazon_product_category'] ;
+			
+			$sku = $product['SKU'] ;
+			
+			//当前价格
+			$price = $product['PRICE'] + $product['SHIPPING_PRICE'] ;
+			//最低限价
+			$execPrice = $product['EXEC_PRICE']  ;
+			if( empty( $product['EXEC_PRICE'] ) )
+				$product['EXEC_PRICE'] = $price ;
+				
+			$processPrice = $this->_processStratery($product , $productCategory,$accountName) ;
+			
+			if(empty($processPrice)) continue ;
+			
+			if( $processPrice < $execPrice ){
+				$processPrice = $execPrice ;
 			}
 			
-			//////////////////根据策略生成价格///////////////////
-			$price = $this->getPriceForStatery($product,$accountName) ;
-			///////////////////////////////////////////////////
-			if( empty($price) || $price == "" ) continue ;
-			
-			$price = $price - $shipPrice ;
-			
-			$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price,'ORI_PRICE'=>$oriPrice) ;
+			if($execPrice == $price){
+				//do nothing
+			}else{
+				$price = $processPrice - $product['SHIPPING_PRICE'] ;
+				$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price,'ORI_PRICE'=>$product['PRICE']) ;
+			}
 		}
 		
 		if( count($_products) <=0 ){
@@ -76,145 +89,300 @@ class CronSaleController extends AppController {
 		$this->response->type("html");
 		$this->response->body("update price for sale cron complete");
 		return $this->response;
+
 	}
 	
-	public function getPriceForStatery($product,$accountName){
-		$asin = $product["ASIN"] ;
+	public function _processStratery($product ,$productCategory ,$accountName){
+		//获取产品个性化竞争策略
+		$productStratery = $product["STRATEGY"] ;
+		//获取分类竞价策略
+		$categoryStratery = $productCategory['PRICE_STRATERY'] ;
+		//jjfxs  fjjxs jjxs VIP 
+		if( empty($categoryStratery) ) {//无策略，执行默认策略
+			return $this->_processStrateryForDEFAULT( $product ,$productCategory,$accountName ) ;
+		} ;
 		
-		//当前价格
-		$price = $product['PRICE'] ;
+		if($categoryStratery == "jjfxs"){
+			return $this->_processStrateryForJJFXS( $product ,$productCategory,$accountName ) ;
+		}
 		
-		//最低限价
-		$lowerPrice = $product['EXEC_PRICE'] ;
+		if($categoryStratery == "fjjxs"){
+			return $this->_processStrateryForFJJXS( $product ,$productCategory,$accountName ) ;
+		}
 		
-		//如果没有设置最低限价，则不更新
-		$auto = $this->Config->getAmazonConfig("AUTO_LOWEST_PRICE_STRATERY") ;
+		if($categoryStratery == "jjxs"){
+			return $this->_processStrateryForJJXS( $product ,$productCategory ,$accountName) ;
+		}
 		
+		if($categoryStratery == "VIP"){
+			return $this->_processStrateryForVIP( $product ,$productCategory,$accountName ) ;
+		}
+		
+	}
+	
+	public function _processStrateryForDEFAULT($product ,$productCategory,$accountName){
+		//do nothing
+		return null;
+	}
+	
+	/**
+	 * 竞价非销售
+	 */
+	public function _processStrateryForJJFXS($product ,$productCategory,$accountName){
+		$asin = $product['ASIN'] ;
 		$shipPrice = $product["SHIPPING_PRICE"] ;
 		$channel = $product["FULFILLMENT_CHANNEL"] ;
-		if( (!empty($channel)) &&  strpos($channel,"AMAZON") === 0 ){
-			$shipPrice = 0.00 ;
-		}
+		$itemCondition    = $product['ITEM_CONDITION'] ;
 		
-		$price = $price+$shipPrice ;
-		$oriPrice = $price ;
-		
-		//如果当前价格小于最低限价，则调整当前价格为最低限价
-		if( $price < $lowerPrice ){
-			$price = $lowerPrice ;
-		}
-		
-		//产品是否为FBA产品
-		
-		if( (!empty($channel)) &&  strpos($channel,"AMAZON") === 0 ){
-			//是fba产品，只与FBA产品比较价格
-			$fbas  = $this->Product->getProductFbaDetails($asin) ;
-			$allPrices = array() ;
-			$lowestPrice = 0 ;
-			foreach($fbas as $com){
-				$com = $com['sc_sale_fba_details'] ;
+		if( (!empty($channel)) &&  strpos($channel,"AMAZON") === 0 ){//fba产品
+			//$fbas  = $this->Product->getProductFbaDetails($asin) ;
+			return null ;
+		}else{
+			$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+			
+			$prices = array() ;
+			$count = 0 ;
+			foreach($competitions as $com){
+				$com = $com['sc_sale_competition_details'] ;
 				
+				$type = $com['TYPE'] ;
 				$_price = $com['SELLER_PRICE'] + $com['SELLER_SHIP_PRICE'] ;
 				
-				if( $com['SELLER_NAME'] == $accountName ){
+				if( $com['SELLER_NAME'] == $accountName ){//owner
 					continue ;
 				}
 				
-				if($lowestPrice === 0)
-					$lowestPrice = $_price ;
-				else
-					$lowestPrice = min($lowestPrice,$_price) ;
-				
-				$allPrices[] = $_price ;
-			}
-			$price = $this->comparePrice($allPrices,$lowestPrice , $price ,$lowerPrice ) ;
-			if($price > $oriPrice){
-				return $price ;
-			}else{
-				if( !empty($auto) && $auto == "true" ){
-					//
-				}else{
-					if(empty($lowerPrice) || $lowerPrice == "") return "" ;
+				if( $itemCondition == 11 ){//new
+					$count++ ;
+					$prices[] = $_price ;
+				}else  if($itemCondition == 1){//used
+					$count++ ;
+					$prices[] = $_price ;
 				}
 			}
-			return $price ;
+			//****************************************************************
+			//应用定价策略，暂时硬编码
+			//****************************************************************
+			$doPrice = $prices[$count-1] ;
+			if( $count<=4 ){//如果竞争对手小于或等于4个
+				$doPrice = $prices[$count - 1] * 1.15 ;
+			}else{
+				$doPrice = $prices[3] * 1.15 ;
+			}
+			return $doPrice ;
+		}
+	}
+	
+	/**
+	 * 非竞价销售
+	 */
+	public function _processStrateryForFJJXS($product ,$productCategory,$accountName){
+		return null ;
+	}
+	
+	public function _processStrateryForVIP($product ,$productCategory ,$accountName){
+		$artPrice = $product['ART_PRICE'] ;//手工价格
+		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
+		if( empty($artPrice) ){
+			return null ;
+		}else{
+			if( $artPrice < $execPrice  ){
+				$artPrice = $execPrice ;
+			}
 		}
 		
-		///////////////////////////////////////////
-		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+		return $artPrice ;
+	}
+	
+	/**
+	 * 竞价销售
+	 */
+	public function _processStrateryForJJXS($product ,$productCategory,$accountName){
+		$channel = $product["FULFILLMENT_CHANNEL"] ;
+		$itemCondition    = $product['ITEM_CONDITION'] ;
+		$isFM = $product['IS_FM'] ;
+
+		if( (!empty($channel)) &&  strpos($channel,"AMAZON") === 0 ){//fba产品
+			return $this->_processStrateryForJJXS_FBA($product ,$productCategory ,$accountName) ;
+		}else if($isFM == "FM"){//FM产品
+			return $this->_processStrateryForJJXS_FM($product ,$productCategory ,$accountName) ;
+		}else if($isFM == "NEW"){//New产品
+			return $this->_processStrateryForJJXS_NEW($product ,$productCategory ,$accountName) ;
+		}else if($itemCondition == 1){//Used产品
+			return $this->_processStrateryForJJXS_USED($product ,$productCategory ,$accountName) ;
+		}
 		
-		$allPrices = array() ;
-		$fmPrices  = array() ;
-		$lowestPrice = 0 ;
+		return null ;
+	}
+	
+	public function _processStrateryForJJXS_FBA($product ,$productCategory ,$accountName){
+		$asin = $product['ASIN'] ;
+		$artPrice = $product['ART_PRICE'] ;//手工价格
+		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
+		$itemCondition    = $product['ITEM_CONDITION'] ;
+		
+		//全区域排名1-4竞价排名
+		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+		$prices = array() ;
 		foreach($competitions as $com){
 			$com = $com['sc_sale_competition_details'] ;
 			
 			$type = $com['TYPE'] ;
 			$_price = $com['SELLER_PRICE'] + $com['SELLER_SHIP_PRICE'] ;
 			
-			if(strpos($type,"U")===0 || $com['SELLER_NAME'] == $accountName ){
+			if( $com['SELLER_NAME'] == $accountName ){//owner
 				continue ;
 			}
 			
-			if($lowestPrice === 0)
-				$lowestPrice = $_price ;
-			else
-				$lowestPrice = min($lowestPrice,$_price) ;
-			
-			$allPrices[] = $_price ;
-			
-			if(strpos($type,"F")===0){
-				$fmPrices[] = $_price ;
+			if( $itemCondition == 11 ){//new
+				$prices[] = $_price ;
+			}else  if($itemCondition == 1){//used
+				$prices[] = $_price ;
 			}
 		}
 		
-		//获取当前产品是否为FM产品
-		$isFM = $product['IS_FM'] ;
-		if( $isFM == "FM" ){
-			//是否FM产品，则只需要跟FM里面的产品进行价格比较
-			$price = $this->comparePrice($fmPrices,$lowestPrice , $price ,$lowerPrice ) ;
-			if($price > $oriPrice){
-				return $price ;
-			}else{
-				if( !empty($auto) && $auto == "true" ){
-					//
-				}else{
-					if(empty($lowerPrice) || $lowerPrice == "") return "" ;
-				}
+		$index = 0 ;
+		foreach( $prices as $p ){
+			$index++ ;
+			if( $p > $execPrice  ){//找到离最低限价最近的那个产品，设置价格
+				return $p - 0.01 ;
 			}
-			return $price ;
-		}else if($product['ITEM_CONDITION'] == 1){
-			//不执行价格更新
-			return "" ;
-		}else{
-			//是NEW产品，需要跟所有产品进行价格比较
-			$price = $this->comparePrice($allPrices,$lowestPrice , $price ,$lowerPrice ) ;
-			if($price > $oriPrice){
-				return $price ;
-			}else{
-				if( !empty($auto) && $auto == "true" ){
-					//
-				}else{
-					if(empty($lowerPrice) || $lowerPrice == "") return "" ;
-				}
-			}
-			return $price ;
+			if($index>=4) break ;//只处理排名1-4的情况
 		}
 		
+		//执行FBA1-3区域竞价排名
+		$fbas  = $this->Product->getProductFbaDetails($asin) ;
+		$prices = array() ;
+		foreach($competitions as $com){
+			$com = $com['sc_sale_fba_details'] ;
+			
+			$_price = $com['SELLER_PRICE'] + $com['SELLER_SHIP_PRICE'] ;
+			
+			if( $com['SELLER_NAME'] == $accountName ){//owner
+				continue ;
+			}
+			
+			if( $itemCondition == 11 ){//new
+				$prices[] = $_price ;
+			}else  if($itemCondition == 1){//used
+				$prices[] = $_price ;
+			}
+		}
+		
+		$index = 0 ;
+		foreach( $prices as $p ){
+			$index++ ;
+			if( $p > $execPrice  ){//找到离最低限价最近的那个产品，设置价格
+				return $p - 0.01 ;
+			}
+			if($index>=3) break ;//只处理排名1-3的情况
+		}
+		
+		//执行最低限价策略
+		return $execPrice ;
 	}
 	
-	public function comparePrice($array,$lowestPrice,$price,$limitPrice){
+	public function _processStrateryForJJXS_FM($product ,$productCategory ,$accountName){
+		$asin = $product['ASIN'] ;
+		$artPrice = $product['ART_PRICE'] ;//手工价格
+		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
+		$itemCondition    = $product['ITEM_CONDITION'] ;
 		
-		if( count($array) >= 1 ){
-			//$lowestPrice = 	$array[0] ;
-			if( $price < $lowestPrice ){
-				$price = max($lowestPrice - 0.01,$limitPrice) ;
-			}else if($limitPrice < $lowestPrice ){
-				$price = max($lowestPrice - 0.01,$limitPrice) ;
-			}else{
-				$price = $limitPrice ;
+		//全区域排名1-4竞价排名
+		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+		$prices = array() ;
+		foreach($competitions as $com){
+			$com = $com['sc_sale_competition_details'] ;
+			
+			$type = $com['TYPE'] ;
+			$_price = $com['SELLER_PRICE'] + $com['SELLER_SHIP_PRICE'] ;
+			$country = $com['COUNTRY'] ;
+			
+			$auto = $this->Config->getAmazonConfig("EXCLUDE_OUTOF_AMERI") ;//排除中国卖家
+			if( $com['SELLER_NAME'] == $accountName || ( !empty($country) && $country=='china'  )){//owner
+				continue ;
+			}
+			
+			if( $itemCondition == 11 ){//new
+				$prices[] = $_price ;
+			}else  if($itemCondition == 1){//used
+				$prices[] = $_price ;
 			}
 		}
-		return $price ;
+		
+		$count = count($prices) ;
+		if( $count <=1 ){//竞价有效人数小于或等于1个
+			return null ;//当前价格，不处理 
+		}
+		
+		$index = 0 ;
+		foreach( $prices as $p ){
+			$index++ ;
+			if( $p > $execPrice  ){//找到离最低限价最近的那个产品，设置价格
+				return $p - 0.01 ;
+			}
+			if($index>=4) break ;//只处理排名1-4的情况
+		}
+		
+		//执行最低限价策略
+		return $execPrice ;
+	}
+	
+	public function _processStrateryForJJXS_NEW($product ,$productCategory ,$accountName){
+		$asin = $product['ASIN'] ;
+		$artPrice = $product['ART_PRICE'] ;//手工价格
+		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
+		$itemCondition    = $product['ITEM_CONDITION'] ;
+		
+		//全区域排名1-4竞价排名
+		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+		$prices = array() ;
+		foreach($competitions as $com){
+			$com = $com['sc_sale_competition_details'] ;
+			
+			$type = $com['TYPE'] ;
+			$_price = $com['SELLER_PRICE'] + $com['SELLER_SHIP_PRICE'] ;
+			
+			if( $com['SELLER_NAME'] == $accountName ){//owner
+				continue ;
+			}
+			
+			if( $itemCondition == 11 ){//new
+				$prices[] = $_price ;
+			}else  if($itemCondition == 1){//used
+				$prices[] = $_price ;
+			}
+		}
+		
+		$count = count($prices) ;
+		if( $count <=1 ){//竞价有效人数小于或等于1个
+			return null ;//当前价格，不处理 
+		}
+		
+		$index = 0 ;
+		foreach( $prices as $p ){
+			$index++ ;
+			if( $p > $execPrice  ){//找到离最低限价最近的那个产品，设置价格
+				return $p - 0.01 ;
+			}
+			if($index>=4) break ;//只处理排名1-4的情况
+		}
+		
+		//执行最低限价策略
+		return $execPrice ;
+	}
+	
+	public function _processStrateryForJJXS_USED($product ,$productCategory ,$accountName){
+		$artPrice = $product['ART_PRICE'] ;//手工价格
+		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
+		if( empty($artPrice) ){
+			return null ;
+		}else{
+			if( $artPrice < $execPrice  ){
+				$artPrice = $execPrice ;
+			}
+		}
+		
+		return $artPrice ;
 	}
 }

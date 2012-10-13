@@ -524,69 +524,12 @@ class CronController extends AppController {
 					$base = array() ;
 					$details = array() ;
 			
-					foreach(  $html->find("h2") as $e){ 
+					foreach(  $html->find("h2") as $e){
 						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
-							$numberofresults =  $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$fmNum = trim( $_ ) ;
-							$base["FBA_NUM"] = $fmNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShippingEl = $table->find(".price_shipping",0) ;
-								
-								$priceShipping = "0.00" ;
-								if( $priceShippingEl!= null ){
-									$priceShipping =  $priceShippingEl->plaintext ;
-								}
-								
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->first_child() ;
-									if($baseInfo->href !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}else if($baseInfo->src != null){
-										$sellerImg = $baseInfo->src ;
-										$sellerName = $baseInfo->alt ;
-									}
-								}
-								
-								if($index == 0){
-									$base["TARGET_PRICE"] = $price ;
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "FBA".$index
-								) ;
-							}
-						}
-			        }  
+							$returns = $this->_processRowCompetetion($e,$details,"FBA" ,$base , 'FBA_NUM') ;
+							$details = $returns[0] ;
+							$base = $returns[1] ;						}
+					}  
 			        
 			        $this->Task->saveFba($asin , $base , $details) ;
 				}catch(Exception $e){}
@@ -631,160 +574,17 @@ class CronController extends AppController {
 					
 					foreach(  $html->find("h2") as $e){ 
 						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
-							$numberofresults =  $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$fmNum = trim( $_ ) ;
-							$base["FM_NUM"] = $fmNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShippingEl = $table->find(".price_shipping",0) ;
-								
-								$priceShipping = "0.00" ;
-								if( $priceShippingEl!= null ){
-									$priceShipping =  $priceShippingEl->plaintext ;
-								}
-								
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->first_child() ;
-									if($baseInfo->href !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}else if($baseInfo->src != null){
-										$sellerImg = $baseInfo->src ;
-										$sellerName = $baseInfo->alt ;
-									}
-								}
-								
-								if($index == 0){
-									$base["TARGET_PRICE"] = $price ;
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "F".$index
-									) ;
-							}
-							
+							$returns = $this->_processRowCompetetion($e,$details,"F" ,$base , 'FM_NUM') ;
+							$details = $returns[0] ;
+							$base = $returns[1] ;
 						}else if( $e->plaintext == 'New' ) {
-							$numberofresults =  $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$nmNum = trim( $_ ) ;
-							$base["NM_NUM"] = $nmNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShipping =  $table->find(".price_shipping",0)->plaintext ;
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->find("a",0) ;
-									if($baseInfo !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "N".$index
-									) ;
-								
-							}
-							
+							$returns = $this->_processRowCompetetion($e,$details,"N" ,$base , 'NM_NUM') ;
+							$details = $returns[0] ;
+							$base = $returns[1] ;
 						}else if( $e->plaintext == 'Used' ) {
-							$numberofresults   = $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$umNum = trim( $_ ) ;
-							$base["UM_NUM"] = $umNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShipping =  $table->find(".price_shipping",0)->plaintext ;
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->find("a",0) ;
-									if($baseInfo !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "U".$index
-									) ;
-							}
+							$returns = $this->_processRowCompetetion($e,$details,"U" ,$base , 'UM_NUM') ;
+							$details = $returns[0] ;
+							$base = $returns[1] ;
 						}
 			        }  
 			        
@@ -804,11 +604,112 @@ class CronController extends AppController {
 		}
 	}
 	
+	public function _processRowCompetetion($e , $details ,$type , $base , $numType){
+		
+			$numberofresults   = $e->next_sibling ()->plaintext ;
+			$ary = explode("of",$numberofresults) ;
+			$_ = str_replace("offers","",$ary[1] ) ;
+			$umNum = trim( $_ ) ;
+			$base[$numType] = $umNum ;
+			
+			$detailTables = $e->parent ;
+			while(true){
+				if( $detailTables->class == "resultsheader" ){
+					break ;
+				}
+				$detailTables = $detailTables->parent ;
+			}
+			$index = 0 ;
+			foreach( $detailTables->next_sibling()->find(".result") as $table ){
+				$price = $table->find(".price",0)->plaintext ;
+				
+				$priceShipping =  $table->find(".price_shipping",0) ;
+				if($priceShipping != null){
+					$priceShipping = $priceShipping->plaintext ;
+				}else {
+					$priceShipping = "" ;
+				}
+				
+				$sellerInformation = $table->find(".sellerInformation",0)  ;
+				
+				$baseInfo = $sellerInformation->find(".seller a",0) ;
+				$sellerUrl= '' ;
+				$sellerName = '' ;
+				$sellerImg = '' ;
+				$prePositive = '' ;
+				$totalRating = '' ;
+				$country = '' ;
+				if($baseInfo != null){
+					$sellerUrl = $baseInfo->href ;
+					$sellerName = $baseInfo->plaintext ;
+				}else {
+					$baseInfo = $sellerInformation->find("a",0) ;
+					if($baseInfo !=null){
+						$sellerUrl = $baseInfo->href ;
+						$baseImage = $baseInfo->find("img",0) ;
+						if($baseImage!=null){
+							$sellerImg = $baseImage->src ;
+							$sellerName = $baseImage->alt ;
+						}
+					}
+				}
+				
+				$positiveInfo = $sellerInformation->find(".rating a b",0) ;
+				if($positiveInfo != null){
+					$prePositive = $positiveInfo->plaintext ;
+					$prePositive = trim( str_replace(array("positive",'%'),"",$prePositive) ) ;
+				}
+				
+				$totalRatingInfo = $sellerInformation->find(".rating",0) ;
+				if($totalRatingInfo != null){
+					$totalRating = $totalRatingInfo->plaintext ;
+					$totalRating = explode("(" ,$totalRating ) ;
+					if( count($totalRating) >=2 ){
+						$totalRating = $totalRating[1] ;
+						$totalRating = explode("total ratings" ,$totalRating ) ;
+						$totalRating = $totalRating[0] ;
+						$totalRating = trim( str_replace(array(",",'%'),"",$totalRating) ) ;
+					}else{
+						$totalRating = "" ;
+					}
+				}
+				
+				$countryInfo = $sellerInformation->find(".availability",0) ;
+				if($countryInfo != null){
+					$country = strtolower( $countryInfo->plaintext ) ;
+					$pos = strpos($country, "china");
+					if( $pos === false ){
+						$country = "" ;
+					}else{
+						$country = "china" ;
+					}
+					
+				}
+				
+				
+				$index++ ;
+				$details[] = array("SELLER_NAME"=>$sellerName,
+					"SELLER_URL"=>$sellerUrl,
+					"SELLER_PRICE"=>$price,
+					"SELLER_IMG"=>$sellerImg,
+					"SELLER_SHIP_PRICE"=>$priceShipping,
+					"TYPE"=> $type.$index,
+					"PER_POSITIVE"=>$prePositive,
+					"TOTAL_RATING"=>$totalRating,
+					"COUNTRY"=>$country
+					) ;
+			}
+			return array($details,$base) ;
+					
+	}
+	
+	
 	public function gatherAmazonCompetitions($id,$level){
 		
 		try{
 			//获取商家产品asin
 			$array = $this->Amazonaccount->getAccountProductsForLevel($id,$level) ;
+			print_r($array) ;
 			$index = 0 ;
 			$this->Task->savelog($id, "start gather competition" );
 			foreach( $array as $arr ){
@@ -820,6 +721,7 @@ class CronController extends AppController {
 			$this->Task->savelog($id, "end!" );
 		
 		}catch(Exception $e){
+			print_r($e) ;
 			$this->Task->savelog($id, "error::::".$e->getMessage() );
 		}
 		
@@ -947,123 +849,15 @@ $this->response->type("json");
 				try{
 					//////////////////////////////////////////////////////////////////////////////////////////
 					$arrays = array() ;
-					foreach(  $html->find("h2") as $e){ 
+					foreach(  $html->find("h2") as $e){
 						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$plusShippingText = "" ;
-								if( $table->find(".price_shipping",0) != null ){
-									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
-								}
-								
-								$priceText = "" ;
-								if( $table->find(".price",0) != null ){
-									$priceText = trim($table->find(".price",0)->plaintext) ;
-								}
-								
-								$isFBA = "" ;
-								if($table->find(".linkfba",0) != null ){
-									$isFBA = "fba" ;
-								}
-								
-								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
-								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
-								
-								$record = array() ;
-								$record["isFM"] = "FM" ;
-								$record["isFBA"] = $isFBA ;
-								$record['plusShippingText'] = $plusShippingText ;
-								$record['priceText'] = $priceText ;
-								$record['condition'] = '11' ;
-								$arrays[] = $record ;
-							}
-							
+							$arrays = $this->_processRowPrice($id,$e,'11',$arrays,"FM") ;
 						}else if( $e->plaintext == 'New' ) {
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$plusShippingText = "" ;
-								if( $table->find(".price_shipping",0) != null ){
-									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
-								}
-								
-								$priceText = "" ;
-								if( $table->find(".price",0) != null ){
-									$priceText = trim($table->find(".price",0)->plaintext) ;
-								}
-								
-								$isFBA = "" ;
-								if($table->find(".linkfba",0) != null ){
-									$isFBA = "fba" ;
-								}
-								
-								
-								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
-								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
-								
-								$record = array() ;
-								$record["isFM"] = "NEW" ;
-								$record["isFBA"] = $isFBA ;
-								$record['plusShippingText'] = $plusShippingText ;
-								$record['priceText'] = $priceText ;
-								$record['condition'] = '11' ;
-								$arrays[] = $record ;
-							}
+							$arrays = $this->_processRowPrice($id,$e,'11',$arrays,"NEW") ;
 						}else if( $e->plaintext == 'Used' ) {
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$plusShippingText = "" ;
-								if( $table->find(".price_shipping",0) != null ){
-									$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
-								}
-								
-								$priceText = "" ;
-								if( $table->find(".price",0) != null ){
-									$priceText = trim($table->find(".price",0)->plaintext) ;
-								}
-								
-								$isFBA = "" ;
-								if($table->find(".linkfba",0) != null ){
-									$isFBA = "fba" ;
-								}
-								
-								
-								$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
-								$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
-								
-								$record = array() ;
-								$record["isFM"] = "" ;
-								$record["isFBA"] = $isFBA ;
-								$record['plusShippingText'] = $plusShippingText ;
-								$record['priceText'] = $priceText ;
-								$record['condition'] = '1' ;
-								$arrays[] = $record ;
-							}
+							$arrays = $this->_processRowPrice($id,$e,'1',$arrays,"") ;
 						}
-			        }  
+					}  
 					//////////////////////////////////////////////////////////////////////////////////////////
 					
 					
@@ -1091,6 +885,51 @@ $this->response->type("json");
 			return $this->response;
 		}*/
 	}
+	
+	function _processRowPrice($id , $e , $condition,$arrays , $isFM){
+			$detailTables = $e->parent ;
+			while(true){
+				if( $detailTables->class == "resultsheader" ){
+					break ;
+				}
+				$detailTables = $detailTables->parent ;
+			}
+			
+			$index = 0 ;
+			foreach( $detailTables->next_sibling()->find(".result") as $table ){
+				$plusShippingText = "" ;
+				if( $table->find(".price_shipping",0) != null ){
+					$plusShippingText = trim($table->find(".price_shipping",0)->plaintext) ;
+				}
+				
+				$priceText = "" ;
+				if( $table->find(".price",0) != null ){
+					$priceText = trim($table->find(".price",0)->plaintext) ;
+				}
+				
+				$isFBA = "" ;
+				if($table->find(".fba_link",0) != null ){
+					$isFBA = "fba" ;
+				}
+				
+				
+				$priceText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$priceText) ) ;
+				$plusShippingText = trim( str_replace(array("&nbsp;","+","Shipping","Free","shipping",'$'),"",$plusShippingText) ) ;
+				
+				$record = array() ;
+				$record["isFM"] = $isFM ;
+				$record["isFBA"] = $isFBA ;
+				$record['plusShippingText'] = $plusShippingText ;
+				$record['priceText'] = $priceText ;
+				$record['condition'] = $condition ;
+				$arrays[] = $record ;
+				
+				$this->Task->savelog($id,"FM:$isFM FBA:$isFBA plusShippingText:$plusShippingText priceText:$priceText  condition:$condition") ;	
+			}
+			return $arrays ;			
+		
+	}
+	
 	
 	/////////////////////////////////////////////////////
 	function endsWith($haystack, $needle)

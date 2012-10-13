@@ -106,7 +106,7 @@ class ProductController extends AppController {
 		return $this->response ;
 	}
 
-	public function details($asin,$accountId = null){
+	public function details($asin,$accountId = null,$sku = null){
 		$details = $this->Product->getProductDetails($asin) ;
 		$images   = $this->Product->getProductImages($asin) ;
 		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
@@ -117,6 +117,7 @@ class ProductController extends AppController {
 		$suppliers  = $this->Product->getProductSupplier($asin) ;
 		
 		$this->set('asin', $asin);
+		$this->set('sku', $sku);
 		$this->set('accountId', $accountId);
 		$this->set('details', $details);
 		$this->set('images', $images);
