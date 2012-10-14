@@ -5,7 +5,6 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
-
     <?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');

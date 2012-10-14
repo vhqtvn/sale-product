@@ -344,67 +344,9 @@ class CronGather extends AppModel {
 			
 					foreach(  $html->find("h2") as $e){ 
 						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
-							$numberofresults =  $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$fmNum = trim( $_ ) ;
-							$base["FBA_NUM"] = $fmNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShippingEl = $table->find(".price_shipping",0) ;
-								
-								$priceShipping = "0.00" ;
-								if( $priceShippingEl!= null ){
-									$priceShipping =  $priceShippingEl->plaintext ;
-								}
-								
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->first_child() ;
-									if($baseInfo->href !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}else if($baseInfo->src != null){
-										$sellerImg = $baseInfo->src ;
-										$sellerName = $baseInfo->alt ;
-									}
-								}
-								
-								if($index == 0){
-									$base["TARGET_PRICE"] = $price ;
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "FBA".$index
-								) ;
-							}
+							$this->_processRowCompetetion($e,$details,"FBA" ,$base , 'FBA_NUM') ;
 						}
-			        }  
+					}  
 			        
 			        $Task->saveFba($asin , $base , $details) ;
 				}catch(Exception $e){}
@@ -448,162 +390,15 @@ class CronGather extends AppModel {
 					
 					foreach(  $html->find("h2") as $e){ 
 						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
-							$numberofresults =  $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$fmNum = trim( $_ ) ;
-							$base["FM_NUM"] = $fmNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShippingEl = $table->find(".price_shipping",0) ;
-								
-								$priceShipping = "0.00" ;
-								if( $priceShippingEl!= null ){
-									$priceShipping =  $priceShippingEl->plaintext ;
-								}
-								
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->first_child() ;
-									if($baseInfo->href !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}else if($baseInfo->src != null){
-										$sellerImg = $baseInfo->src ;
-										$sellerName = $baseInfo->alt ;
-									}
-								}
-								
-								if($index == 0){
-									$base["TARGET_PRICE"] = $price ;
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "F".$index
-									) ;
-							}
+							$this->_processRowCompetetion($e,$details,"F" ,$base , 'FM_NUM') ;
 							
 						}else if( $e->plaintext == 'New' ) {
-							$numberofresults =  $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$nmNum = trim( $_ ) ;
-							$base["NM_NUM"] = $nmNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShipping =  $table->find(".price_shipping",0)->plaintext ;
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->find("a",0) ;
-									if($baseInfo !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "N".$index
-									) ;
-								
-							}
+							$this->_processRowCompetetion($e,$details,"N" ,$base , 'NM_NUM') ;
 							
 						}else if( $e->plaintext == 'Used' ) {
-							$numberofresults   = $e->next_sibling ()->plaintext ;
-							$ary = explode("of",$numberofresults) ;
-							$_ = str_replace("offers","",$ary[1] ) ;
-							$umNum = trim( $_ ) ;
-							$base["UM_NUM"] = $umNum ;
-							
-							$detailTables = $e->parent ;
-							while(true){
-								if( $detailTables->class == "resultsheader" ){
-									break ;
-								}
-								$detailTables = $detailTables->parent ;
-							}
-							$index = 0 ;
-							foreach( $detailTables->next_sibling()->find(".result") as $table ){
-								$price = $table->find(".price",0)->plaintext ;
-								$priceShipping =  $table->find(".price_shipping",0)->plaintext ;
-								$sellerInformation = $table->find(".sellerInformation",0)  ;
-								
-								$baseInfo = $sellerInformation->find(".seller a",0) ;
-								$sellerUrl= '' ;
-								$sellerName = '' ;
-								$sellerImg = '' ;
-								if($baseInfo != null){
-									$sellerUrl = $baseInfo->href ;
-									$sellerName = $baseInfo->plaintext ;
-								}else {
-									$baseInfo = $sellerInformation->find("a",0) ;
-									if($baseInfo !=null){
-										$sellerUrl = $baseInfo->href ;
-										$baseImage = $baseInfo->find("img",0) ;
-										$sellerImg = $baseImage->src ;
-										$sellerName = $baseImage->alt ;
-									}
-								}
-								
-								$index++ ;
-								$details[] = array("SELLER_NAME"=>$sellerName,
-									"SELLER_URL"=>$sellerUrl,
-									"SELLER_PRICE"=>$price,
-									"SELLER_IMG"=>$sellerImg,
-									"SELLER_SHIP_PRICE"=>$priceShipping,
-									"TYPE"=> "U".$index
-									) ;
-							}
+							$this->_processRowCompetetion($e,$details,"U" ,$base , 'UM_NUM') ;
 						}
-			        }  
+			        }   
 			        
 			        $Task->saveCompetions($asin , $base , $details) ;
 				}catch(Exception $e){}
@@ -615,6 +410,97 @@ class CronGather extends AppModel {
 		//	$this->Task->savelog($id,"get product[".$asin."] error:::".$e->getMessage()) ;	
 		//}
 	}
+	
+	
+	public function _processRowCompetetion($e , $details ,$type , $base , $numType){
+		
+			$numberofresults   = $e->next_sibling ()->plaintext ;
+			$ary = explode("of",$numberofresults) ;
+			$_ = str_replace("offers","",$ary[1] ) ;
+			$umNum = trim( $_ ) ;
+			$base[$numType] = $umNum ;
+			
+			$detailTables = $e->parent ;
+			while(true){
+				if( $detailTables->class == "resultsheader" ){
+					break ;
+				}
+				$detailTables = $detailTables->parent ;
+			}
+			$index = 0 ;
+			foreach( $detailTables->next_sibling()->find(".result") as $table ){
+				$price = $table->find(".price",0)->plaintext ;
+				$priceShipping =  $table->find(".price_shipping",0)->plaintext ;
+				$sellerInformation = $table->find(".sellerInformation",0)  ;
+				
+				$baseInfo = $sellerInformation->find(".seller a",0) ;
+				$sellerUrl= '' ;
+				$sellerName = '' ;
+				$sellerImg = '' ;
+				$prePositive = '' ;
+				$totalRating = '' ;
+				$country = '' ;
+				if($baseInfo != null){
+					$sellerUrl = $baseInfo->href ;
+					$sellerName = $baseInfo->plaintext ;
+				}else {
+					$baseInfo = $sellerInformation->find("a",0) ;
+					if($baseInfo !=null){
+						$sellerUrl = $baseInfo->href ;
+						$baseImage = $baseInfo->find("img",0) ;
+						$sellerImg = $baseImage->src ;
+						$sellerName = $baseImage->alt ;
+					}
+				}
+				
+				$positiveInfo = $sellerInformation->find(".rating a b",0) ;
+				if($positiveInfo != null){
+					$prePositive = $positiveInfo->plaintext ;
+					$prePositive = trim( str_replace(array("positive",'%'),"",$prePositive) ) ;
+				}
+				
+				$totalRatingInfo = $sellerInformation->find(".rating",0) ;
+				if($totalRatingInfo != null){
+					$totalRating = $totalRatingInfo->plaintext ;
+					$totalRating = explode("(" ,$totalRating ) ;
+					if( count($totalRating) >=2 ){
+						$totalRating = $totalRating[1] ;
+						$totalRating = explode("total ratings" ,$totalRating ) ;
+						$totalRating = $totalRating[0] ;
+						$totalRating = trim( str_replace(array(",",'%'),"",$totalRating) ) ;
+					}else{
+						$totalRating = "" ;
+					}
+				}
+				
+				$countryInfo = $sellerInformation->find(".availability",0) ;
+				if($countryInfo != null){
+					$country = strtolower( $countryInfo->plaintext ) ;
+					$pos = strpos($country, "china");
+					if( $pos === false ){
+						$country = "" ;
+					}else{
+						$country = "china" ;
+					}
+					
+				}
+				
+				
+				$index++ ;
+				$details[] = array("SELLER_NAME"=>$sellerName,
+					"SELLER_URL"=>$sellerUrl,
+					"SELLER_PRICE"=>$price,
+					"SELLER_IMG"=>$sellerImg,
+					"SELLER_SHIP_PRICE"=>$priceShipping,
+					"TYPE"=> $type.$index,
+					"PRE_POSITIVE"=>$prePositive,
+					"TOTAL_RATING"=>$totalRating,
+					"COUNTRY"=>$country
+					) ;
+			}
+					
+	}
+	
 	
 	public function saveProductPotential($asin ,$html=null,$url=null){
 	

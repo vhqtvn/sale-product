@@ -396,6 +396,10 @@ class Task extends AppModel {
 	 		$su = $detail["SELLER_URL"] ;
 	 		$si = $detail["SELLER_IMG"] ;
 	 		
+	 		$per_positive = $detail["PER_POSITIVE"] ;
+	 		$total_rating = $detail["TOTAL_RATING"] ;
+	 		$country = $detail["COUNTRY"] ;
+	 		
 	 		$localUrl = "" ;
 	 		if( $si == null || $si == "" ){
 	 			
@@ -403,8 +407,10 @@ class Task extends AppModel {
 	 			$localUrl = "images/seller/".basename($si) ;
 	 		
 	 		$sql = "insert into sc_sale_competition_details(
-						asin,seller_name,seller_price,seller_ship_price,seller_url,seller_img,competition_id,type
-				) values('".$asin."','".$sn."','".$sp."','".$ssp."','".$su."','".$localUrl."','".$id."','".$type."')" ;
+						asin,seller_name,seller_price,seller_ship_price,seller_url,seller_img,competition_id,type,
+						per_positive,total_rating,country
+				) values('".$asin."','".$sn."','".$sp."','".$ssp."','".$su."','".$localUrl."'
+					,'".$id."','".$type."','".$per_positive."','".$total_rating."','".$country."')" ;
 			
 			$this->downloads($si,"seller","images/seller") ;
 				

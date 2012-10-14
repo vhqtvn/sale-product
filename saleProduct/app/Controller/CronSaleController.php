@@ -45,18 +45,22 @@ class CronSaleController extends AppController {
 			$price = $product['PRICE'] + $product['SHIPPING_PRICE'] ;
 			//最低限价
 			$execPrice = $product['EXEC_PRICE']  ;
-			if( empty( $product['EXEC_PRICE'] ) )
+			if( empty( $product['EXEC_PRICE'] ) ){
 				$product['EXEC_PRICE'] = $price ;
-				
+				$execPrice = $price ;
+			}
+			
 			$processPrice = $this->_processStratery($product , $productCategory,$accountName) ;
 			
-			if(empty($processPrice)) continue ;
+			if(empty($processPrice)) {
+				$processPrice = $execPrice;
+			} ;
 			
 			if( $processPrice < $execPrice ){
 				$processPrice = $execPrice ;
 			}
 			
-			if($execPrice == $price){
+			if($processPrice == $price){
 				//do nothing
 			}else{
 				$price = $processPrice - $product['SHIPPING_PRICE'] ;
@@ -93,10 +97,14 @@ class CronSaleController extends AppController {
 	}
 	
 	public function _processStratery($product ,$productCategory ,$accountName){
+		
 		//获取产品个性化竞争策略
 		$productStratery = $product["STRATEGY"] ;
+		
 		//获取分类竞价策略
-		$categoryStratery = $productCategory['PRICE_STRATERY'] ;
+		//$categoryStratery = $productCategory['PRICE_STRATERY'] ;
+		$categoryStratery = $this->Amazonaccount->getAmazonProductCategoryStratery($productCategory) ;
+		
 		//jjfxs  fjjxs jjxs VIP 
 		if( empty($categoryStratery) ) {//无策略，执行默认策略
 			return $this->_processStrateryForDEFAULT( $product ,$productCategory,$accountName ) ;

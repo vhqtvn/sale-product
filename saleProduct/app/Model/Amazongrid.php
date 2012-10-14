@@ -498,12 +498,11 @@ class Amazongrid extends AppModel {
 		$accountId = $query["accountId"] ;
 		$where .= " and  sc_amazon_account_product.account_id = '$accountId' " ;
 			
-		$categoryId =  $query["categoryId"] ;
-		$where .= " and sc_amazon_account_product.sku not in (
-					select sku from sc_amazon_product_category_rel where category_id in (
-						select id from sc_amazon_product_category where account_id = '$accountId'
-						and  id <> '$categoryId'
-					) and SKU IS NOT NULL
+		$categoryId =  $query["categoryId"] ;//sc_amazon_account_product.sku not in
+		$where .= " and  not exists (
+					select sku from sc_amazon_product_category_rel where  account_id = '$accountId'
+						and category_id <> '$categoryId'
+						and SKU IS NOT NULL and sc_amazon_account_product.sku = sku
 		) " ;
 		
 		if( isset( $query["fulfillmentChannel"] )  && !empty( $query["fulfillmentChannel"]  )){
@@ -615,11 +614,10 @@ class Amazongrid extends AppModel {
 		
 		//and gather_level in ('A','B','C','D') and id <> '$categoryId'
 		$categoryId =  $query["categoryId"] ;
-		$where .= " and sc_amazon_account_product.sku not in (
-					select sku from sc_amazon_product_category_rel where category_id  in (
-						select id from sc_amazon_product_category where account_id = '$accountId'
-						and  id <> '$categoryId'
-					)  and SKU IS NOT NULL
+		$where .= " and  not exists (
+					select sku from sc_amazon_product_category_rel where  account_id = '$accountId'
+						and category_id <> '$categoryId'
+						and SKU IS NOT NULL and sc_amazon_account_product.sku = sku
 		) " ;
 		
 		if( isset( $query["fulfillmentChannel"] )  && !empty( $query["fulfillmentChannel"]  )){

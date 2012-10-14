@@ -2,13 +2,25 @@
 class Amazonaccount extends AppModel {
 	var $useTable = "sc_election_rule" ;
 	
-	function getAmazonProductCategory($accountId,$asin = null,$type = null ){
-		if( !empty($asin) ){
+	function getAmazonProductCategory($accountId,$asin = null,$type = null,$sku = null ){
+		if( !empty($sku) ){
 			$sql = "select sc_amazon_product_category.* ,
 			(select count(*) from sc_amazon_product_category_rel
 					where sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
-					 and sc_amazon_product_category_rel.asin in (
-						select sc_amazon_account_product.asin from
+					 and sc_amazon_product_category_rel.sku in (
+						select sc_amazon_account_product.sku from
+								sc_amazon_account_product where account_id = '$accountId' and status = 'Y'
+					) and
+			sc_amazon_product_category_rel.sku = '$sku' ) as selected
+			 from sc_amazon_product_category where account_id = '$accountId' and account_id is not null " ;
+			
+			return $this->query($sql) ;
+		}else if( !empty($asin) ){
+			$sql = "select sc_amazon_product_category.* ,
+			(select count(*) from sc_amazon_product_category_rel
+					where sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
+					 and sc_amazon_product_category_rel.sku in (
+						select sc_amazon_account_product.sku from
 								sc_amazon_account_product where account_id = '$accountId' and status = 'Y'
 					) and
 			sc_amazon_product_category_rel.asin = '$asin' ) as selected
@@ -24,8 +36,8 @@ class Amazonaccount extends AppModel {
 			$sql = "select sc_amazon_product_category.*,
               (select count(*) from sc_amazon_product_category_rel
 					where sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
-					and sc_amazon_product_category_rel.asin in (
-						select sc_amazon_account_product.asin from sc_amazon_account_product
+					and sc_amazon_product_category_rel.sku in (
+						select sc_amazon_account_product.sku from sc_amazon_account_product
 							where sc_amazon_account_product.account_id = '$accountId' and status='Y' $sqlcause
 					)) as TOTAL
               from sc_amazon_product_category where account_id = '$accountId' and account_id is not null " ;
@@ -34,14 +46,70 @@ class Amazonaccount extends AppModel {
 		}
 	}
 	
-	function saveAmazonProductCategory($ids , $asin ){
+	function saveAmazonProductCategory($ids , $sku ,$accountId ){
 		//删除所有
-		$sql = "delete from sc_amazon_product_category_rel where asin = '$asin'" ;
+		$sql = "delete from sc_amazon_product_category_rel where sku = '$sku' and category_id  in (
+			select id from sc_amazon_product_category where account_id = '$accountId'
+		)" ;
 		$this->query($sql) ; 
 		
 		foreach( explode(",",$ids) as $id ){
-			$sql = "insert into sc_amazon_product_category_rel(asin,category_id) values('$asin','$id')" ;
+			$sql = "insert into sc_amazon_product_category_rel(sku,category_id,account_id) values('$sku','$id','$accountId')" ;
 			$this->query($sql) ; 
+		}
+	}
+	
+	/**
+	 * 给分类添加产品，多个差评
+	 */
+	function saveAmazonProductsCategory($params ){
+		
+		print_r($params) ; 
+		$skus = $params['checked_skus'] ;
+		$unskus = $params['unchecked_skus'] ;
+		$categoryId = $params['categoryId'] ;
+		$accountId = $params['accountId'] ;
+		
+		foreach( explode(",",$skus) as $sku ){
+			try{
+				$sql = "insert into sc_amazon_product_category_rel(sku,category_id,account_id) values('$sku','$categoryId','$accountId')" ;
+				$this->query($sql) ; 
+			}catch(Exception $e){}
+		}
+		
+		foreach( explode(",",$unskus) as $sku ){
+			$sql = "delete from sc_amazon_product_category_rel where sku='$sku' and account_id = '$accountId' and category_id = '$categoryId'" ;
+			$this->query($sql) ;
+		}
+	}
+	
+	/**
+	 * 获取分类策略
+	 */
+	function getAmazonProductCategoryStratery($productCategory){
+		$str = $productCategory['PRICE_STRATERY'] ;
+		if( empty($str) ){
+			//获取上级策略
+			$parentCategory = $this->getAmazonProductParentCategory($productCategory) ;
+			if($productCategory == null){
+				return $str ;
+			}
+			return $this->getAmazonProductCategoryStratery($parentCategory) ;	
+		}else{
+			return $str ;
+		}
+	}
+	
+	function getAmazonProductParentCategory($productCategory){
+		$str = $productCategory['PRICE_STRATERY'] ;
+		$parentId = $productCategory['PARENT_ID'] ;
+		if( empty($parentId) ){
+			return null ;
+		}else{
+			$sql = "select * from sc_amazon_product_category where id = '$parentId' " ;
+			$result = $this->query($sql) ; 
+			$result = $result[0]['sc_amazon_product_category'] ;
+			return $result ;
 		}
 	}
 	
@@ -49,6 +117,7 @@ class Amazonaccount extends AppModel {
 		$memo = $category['memo'] ;
 		$name = $category['name'] ;
 		$gatherLevel = $category['gatherLevel'] ;
+		$priceStratery = $category['priceStratery'] ;
 		
 		if( isset( $category['id'] )  ){//update
 			$sql = "
@@ -56,6 +125,7 @@ class Amazonaccount extends AppModel {
 					SET
 					NAME = '$name' , 
 					MEMO = '$memo' ,
+					PRICE_STRATERY = '$priceStratery',
 					GATHER_LEVEL = '$gatherLevel',
 					PARENT_ID = '".$category['parentId']."'
 					WHERE
@@ -67,12 +137,12 @@ class Amazonaccount extends AppModel {
 				INSERT INTO sc_amazon_product_category 
 					( NAME, 
 					PARENT_ID, 
-					MEMO,creator,create_time,account_id,gather_level
+					MEMO,creator,create_time,account_id,gather_level,PRICE_STRATERY
 					)
 					VALUES
 					( '$name', 
 					'".$category['parentId']."', 
-					'$memo','".$user['LOGIN_ID']."',NOW(),'$accountId','$gatherLevel'
+					'$memo','".$user['LOGIN_ID']."',NOW(),'$accountId','$gatherLevel','$priceStratery'
 					)" ;
 					
 					$this->query($sql) ;
@@ -407,8 +477,12 @@ class Amazonaccount extends AppModel {
 	function getAccountProductsForLevel($accountId,$level){
 		$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
 						FROM sc_amazon_product_category ,
-						sc_amazon_product_category_rel AS sc_amazon_account_product
-						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id
+						sc_amazon_product_category_rel ,
+						sc_amazon_account_product
+						WHERE
+				sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
+				and sc_amazon_account_product.account_id = '$accountId'
+				and sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
 				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
 		$array = $this->query($sql);
 	
@@ -416,12 +490,12 @@ class Amazonaccount extends AppModel {
 	}
 	
 	function getAccountProductsForLevelSale($accountId,$level){
-		$sql = "SELECT sc_amazon_account_product.*
+		$sql = "SELECT sc_amazon_account_product.*,sc_amazon_product_category.*
 						FROM sc_amazon_product_category ,
 						sc_amazon_product_category_rel ,
 						sc_amazon_account_product
 						WHERE sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
-							and sc_amazon_account_product.asin = sc_amazon_product_category_rel.asin
+							and sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
                             and sc_amazon_account_product.account_id = '$accountId'
 				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
 		$array = $this->query($sql);

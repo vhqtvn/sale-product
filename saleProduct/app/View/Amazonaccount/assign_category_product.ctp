@@ -141,9 +141,22 @@
 			
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
-					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
+					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId}}) ;	
 			}) ;
 			
+			$(".checked-btn").click(function(){
+				var querys = getQueryCondition() ;
+				querys.checked = 1 ;
+				$(".grid-content").llygrid("reload",querys,
+					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId}}) ;	
+			}) ;
+			
+			$(".unchecked-btn").click(function(){
+				var querys = getQueryCondition() ;
+				querys.checked = 2 ;
+				$(".grid-content").llygrid("reload",querys,
+					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId}}) ;	
+			}) ;
 			
 			
 			$(".save-btn").click(function(){
@@ -262,6 +275,8 @@
 				 </li>
 				 <li>
 				 	<button class="query-btn">查询</button>
+				 	<button class="checked-btn">已选择</button>
+				 	<button class="unchecked-btn">未选择</button>
 				 	<button class="save-btn">保存</button>
 				 </li>
 			   </ul>

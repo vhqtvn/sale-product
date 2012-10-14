@@ -37,7 +37,10 @@ class Config extends AppModel {
 	public function getAmazonConfig($key){
 		$sql = " select * from sc_amazon_config where name = '$key'" ;
 		$rows =  $this->query($sql) ;
-		return $rows[0]['sc_amazon_config']['VALUE'] ;
+		if(isset($rows[0]['sc_amazon_config']['VALUE'])){
+			return $rows[0]['sc_amazon_config']['VALUE'];
+		}
+		return null ;
 	}
 
 	public function getAmazonConfigById($id){
