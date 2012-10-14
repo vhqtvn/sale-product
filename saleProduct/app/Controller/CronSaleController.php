@@ -107,7 +107,7 @@ class CronSaleController extends AppController {
 		
 		//jjfxs  fjjxs jjxs VIP 
 		if( empty($categoryStratery) ) {//无策略，执行默认策略
-			return $this->_processStrateryForDEFAULT( $product ,$productCategory,$accountName ) ;
+			return $this->_processStrateryForJJFXS( $product ,$productCategory,$accountName ) ;
 		} ;
 		
 		if($categoryStratery == "jjfxs"){
@@ -173,10 +173,21 @@ class CronSaleController extends AppController {
 			//****************************************************************
 			$doPrice = $prices[$count-1] ;
 			if( $count<=4 ){//如果竞争对手小于或等于4个
-				$doPrice = $prices[$count - 1] * 1.15 ;
+				$_ = $prices[$count - 1]  ;
+				if( $_ < 2 ){
+					$doPrice = $_ + 2 ;
+				}else{
+					$doPrice = $_ * 1.15 ;
+				}
 			}else{
-				$doPrice = $prices[3] * 1.15 ;
+				$_ = $prices[3] ;
+				if( $_ < 2 ){
+					$doPrice = $_ + 2 ;
+				}else{
+					$doPrice = $_ * 1.15 ;
+				}
 			}
+			
 			return $doPrice ;
 		}
 	}

@@ -53,7 +53,7 @@ class AmazonaccountController extends AppController {
 		return $this->response ;
     }
     
-    public function saveProductCategory($accountId , $sku , $ids){
+    public function saveProductCategory($accountId , $sku , $ids = null){
     	//$ids = $this->request->data['id'] ;
 		$someone = $this->Amazonaccount->saveAmazonProductCategory($ids , $sku ,$accountId); 
 		

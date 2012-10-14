@@ -69,7 +69,7 @@
 							}
 						}}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
-			           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
+			           		return "<a href='#' class='product-detail' asin='"+val+"' sku='"+record.SKU+"'>"+val+"</a>" ;
 			           	}},
 			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
 			           		if(val){
@@ -136,7 +136,8 @@
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId,950,650) ;
+				var sku = $(this).attr("sku") ;
+				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
 			}) ;
 			
 			$(".query-btn").click(function(){
@@ -170,7 +171,7 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						alert(11);
+						alert("保存成功!");
 					}
 				});
 			}) ;

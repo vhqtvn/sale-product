@@ -190,11 +190,12 @@ class Amazongrid extends AppModel {
 				$categoryId =  $query["categoryId"] ;
 				if($categoryId == '-'){
 					$where .= " and sc_amazon_account_product.sku not in (
-								select sku from sc_amazon_product_category_rel
+								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '$accountId'
 					) " ;
 				}else{
 					$where .= " and sc_amazon_account_product.sku in (
 								select sku from sc_amazon_product_category_rel where category_id = '$categoryId'
+								and sku is not null and account_id = '$accountId'
 					) " ;
 				}
 			}
@@ -312,11 +313,12 @@ class Amazongrid extends AppModel {
 				$categoryId =  $query["categoryId"] ;
 				if($categoryId == '-'){
 					$where .= " and sc_amazon_account_product.sku not in (
-								select sku from sc_amazon_product_category_rel
+								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '$accountId'
 					) " ;
 				}else{
 					$where .= " and sc_amazon_account_product.sku in (
 								select sku from sc_amazon_product_category_rel where category_id = '$categoryId'
+								and sku is not null and account_id = '$accountId'
 					) " ;
 				}
 			}

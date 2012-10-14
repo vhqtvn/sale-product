@@ -1033,7 +1033,8 @@
             },checkNode:function(item , state){
             	var temp = item ;
             	item = typeof(item) == 'string'?getItemById(item) : item ;
-            	
+            	//alert(item)
+            	//return ;
             	if( !item ){
             		item = searchNode(temp)  ;
             		item && ( item.node.checkstate = (state===true||state===1)?1:0 );

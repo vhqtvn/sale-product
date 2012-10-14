@@ -668,6 +668,7 @@ class TaskController extends AppController {
 			//采集产品信息结束
 			$this->Task->savelog($id,"end!" );
 		}catch(Exception $e){
+			print_r($e->getMessage()) ;
 			$this->Task->savelog($id, "error::::".$e->getMessage() );
 		}
 		$this->Amazonaccount->updateAccountGatherStatus($id,"GATHER_STATUS_PRODUCT_SHIPPING","",$categoryId) ;

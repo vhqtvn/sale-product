@@ -38,7 +38,7 @@
     var asin = '<?php echo $asin;?>' ;
 	var sku = '<?php echo $sku;?>' ;
 	var accountId = '<?php echo $accountId;?>' ;
-
+    var selectedCategory = {} ;
     <?php
     	$index = 0 ;
 		foreach( $categorys as $Record ){
@@ -50,6 +50,7 @@
 			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
 			if( !empty($selected) ){
 				echo " item$index ['checkstate'] = 1 ;" ;
+				echo " selectedCategory = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
 			}
 			
 			echo " treeMap['id_$id'] = item$index  ;" ;
@@ -76,15 +77,31 @@
    
 	$(function(){
 
-		$('#default-tree').tree({//tree为容器ID
+		var tree = $('#default-tree').tree({//tree为容器ID
 				source:'array',
 				data:treeData ,
-				showCheck:true,
-				cascadeCheck:false
+				//showCheck:true,
+				cascadeCheck:false,
+				onNodeClick:function(id,text , item){
+					if(id && id !='root'){
+						$(".currentCategory").html( text ) ;
+						selectedCategory.id = id ;
+						selectedCategory.text = text ;
+					}else{
+						$(".currentCategory").html( "" ) ;
+						selectedCategory.id = "" ;
+						selectedCategory.text = "" ;
+					}
+				}
            }) ;
            
          $("button").click(function(){
-        	var ids = $('#default-tree').tree().getSelectedIds() ;
+        	var ids = [] ;
+        	if( selectedCategory.id ){
+        		ids.push(selectedCategory.id) ;
+        	}
+        	ids = ids.join(",") ;
+        	
         	$.ajax({
 				type:"post",
 				url:"/saleProduct/index.php/amazonaccount/saveProductCategory/"+accountId+"/"+sku+"/"+ids,
@@ -96,6 +113,8 @@
 				}
 			}); 
         }) ;
+        
+        $(".currentCategory").html( selectedCategory.text||"" ) ;
 	})
    </script>
 
@@ -104,6 +123,10 @@
 <div id='content-default' class='demo' style="padding:10px;">
 	<div class="row-fluid">
 		<div id="default-tree" class="tree span10" style="padding: 5px; "></div>
+		<div class="span3 alert alert-info">
+			<strong>当前分类：</strong>
+			<span class="currentCategory"></span>
+		</div>
 	</div>
 	<button class="btn"> 保存产品分类 </button>
 </div>

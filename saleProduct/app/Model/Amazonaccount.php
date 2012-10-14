@@ -475,6 +475,11 @@ class Amazonaccount extends AppModel {
 	}
 	
 	function getAccountProductsForLevel($accountId,$level){
+		
+		$where = " AND sc_amazon_product_category.gather_level='$level' " ;
+		if($level == '-'){
+			$where = " AND sc_amazon_product_category.gather_level not in ('A','B','C','D') " ;
+		}
 		$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
 						FROM sc_amazon_product_category ,
 						sc_amazon_product_category_rel ,
@@ -483,13 +488,19 @@ class Amazonaccount extends AppModel {
 				sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
 				and sc_amazon_account_product.account_id = '$accountId'
 				and sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
-				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
+				AND sc_amazon_product_category.account_id = '$accountId' $where ";
+			
 		$array = $this->query($sql);
 	
 		return $array ;
 	}
 	
 	function getAccountProductsForLevelSale($accountId,$level){
+		$where = " AND sc_amazon_product_category.gather_level='$level' " ;
+		if($level == '-'){
+			$where = " AND sc_amazon_product_category.gather_level not in ('A','B','C','D') " ;
+		}
+		
 		$sql = "SELECT sc_amazon_account_product.*,sc_amazon_product_category.*
 						FROM sc_amazon_product_category ,
 						sc_amazon_product_category_rel ,
@@ -497,11 +508,10 @@ class Amazonaccount extends AppModel {
 						WHERE sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
 							and sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
                             and sc_amazon_account_product.account_id = '$accountId'
-				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.gather_level='$level'";
+				AND sc_amazon_product_category.account_id = '$accountId' $where ";
 		$array = $this->query($sql);
 		
 		//print_r($array) ; 
-	
 		return $array ;
 	}
 	
@@ -517,8 +527,11 @@ class Amazonaccount extends AppModel {
 		}else{
 			$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
 						FROM sc_amazon_product_category ,
-						sc_amazon_product_category_rel AS sc_amazon_account_product
-						WHERE sc_amazon_account_product.category_id = sc_amazon_product_category.id   and status = 'Y'
+						sc_amazon_product_category_rel ,
+						sc_amazon_account_product
+						WHERE sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
+						 and sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
+						 and sc_amazon_account_product.status = 'Y'
 						 and ( cast(quantity as signed) > 0 or fulfillment_channel like 'AMAZON%' )
 				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.id='$categoryId'";
 			$array = $this->query($sql);

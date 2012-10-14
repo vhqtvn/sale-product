@@ -607,8 +607,6 @@ class CronController extends AppController {
 		}
 	}
 	
-	
-	
 	public function gatherAmazonCompetitions($id,$level){
 		
 		try{
@@ -676,7 +674,7 @@ class CronController extends AppController {
 				$asin = $_asin['sc_amazon_account_product']['ASIN'] ;
 				$index = $index + 1 ;
 				$this->Task->savelog($id, "start get product[ index: ".$index." ][".$asin."] details" );
-				echo $asin.'<br>' ;
+				//echo $asin.'<br>' ;
 				$this->fetchAsin($asin,$id) ;
 			} 
 			//采集产品信息结束

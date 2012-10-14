@@ -371,7 +371,7 @@
 				<button class="quantity-update-btn">显示库存待更新列表</button>
 			</div>
 		</div>
-		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:150px;">
+		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:200px;">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>
 		</div>
    </div>
