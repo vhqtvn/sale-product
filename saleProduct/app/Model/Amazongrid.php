@@ -144,6 +144,15 @@ class Amazongrid extends AppModel {
 			$where .= " and sc_amazon_account_product.asin = '".$asin."' " ;
 		}
 		
+		if( isset( $query["limitArea"] )  && !empty( $query["limitArea"]  )){
+			$limitArea = $query["limitArea"] ;
+			if( $limitArea == 1  ){//包含美国之外地区
+				$where .= " and sc_amazon_account_product.country >= 1 " ;
+			}else if( $limitArea == 2  ){
+				$where .= " and sc_amazon_account_product.country = 0 " ;
+			}
+		}
+		
 		if( isset( $query["quantity1"] )  && !empty( $query["quantity1"]  )){
 			$quantity1 = $query["quantity1"] ;
 			$where .= " and sc_amazon_account_product.quantity >= ".$quantity1." " ;
@@ -255,6 +264,15 @@ class Amazongrid extends AppModel {
 		if( isset( $query["asin"] )  && !empty( $query["asin"]  )){
 			$asin = $query["asin"] ;
 			$where .= " and sc_amazon_account_product.asin = '".$asin."' " ;
+		}
+		
+		if( isset( $query["limitArea"] )  && !empty( $query["limitArea"]  )){
+			$limitArea = $query["limitArea"] ;
+			if( $limitArea == 1  ){//包含美国之外地区
+				$where .= " and sc_amazon_account_product.country >= 1 " ;
+			}else if( $limitArea == 2  ){
+				$where .= " and sc_amazon_account_product.country = 0 " ;
+			}
 		}
 		
 		if( isset( $query["quantity1"] )  && !empty( $query["quantity1"]  )){
