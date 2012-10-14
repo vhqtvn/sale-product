@@ -46,7 +46,7 @@ class CronController extends AppController {
 		              	SELECT  sc_amazon_account_product.ID,sc_amazon_account_product.ASIN,sc_amazon_account_product.SKU,
 						 sc_product.TITLE as TITLE , sc_product_flow_details.DAY_PAGEVIEWS as DAY_PAGEVIEWS,
 						( SELECT COUNT(1) FROM sc_sale_competition_details WHERE ASIN = sc_amazon_account_product.asin
-								WHERE country <> '' AND country IS NOT NULL  ) AS COUNTRY ,
+								and country <> '' AND country IS NOT NULL  ) AS COUNTRY ,
 						(select sc_amazon_config.label from sc_amazon_config where sc_amazon_account_product.strategy = sc_amazon_config.name ) as STRATEGY_LABEL  ,
 		                ( SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL,
 						( SELECT TOTAL_COST 
@@ -118,7 +118,8 @@ class CronController extends AppController {
 						F_PM = '".$record['F_PM']."' , 
 						N_PM = '".$record['N_PM']."' , 
 						U_PM = '".$record['U_PM']."' , 
-						FBA_PM = '".$record['FBA_PM']."'
+						FBA_PM = '".$record['FBA_PM']."',
+						COUNTRY = '".$record['COUNTRY']."'
 						
 						WHERE
 						ID = '".$record['ID']."' 
