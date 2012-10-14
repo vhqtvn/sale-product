@@ -119,8 +119,10 @@
 						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
+							if(record.COUNTRY >= 1){
+								html.push("<span class='country-area-flag'></span>") ;	
+							}
 							html.push('<a href="#" class="edit-account-product" val="'+val+'"><?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?></a>&nbsp;') ;
-							
 							return html.join("") ;
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
@@ -191,7 +193,10 @@
 					 title:"",
 					 indexColumn:false,
 					 querys:{accountId:accountId},
-					 loadMsg:"数据加载中，请稍候......"
+					 loadMsg:"数据加载中，请稍候......",
+					 loadAfter:function(){
+						$(".country-area-flag").parents("tr").css("background","#EEE") ;
+					 }
 				} ;
 	       
 			setTimeout(function(){
@@ -246,6 +251,7 @@
 				querys.pm = $("[name='pm']").val() ;
 				querys.type = '' ;
 				querys.test_status = $("[name='test_status']").val()||"" ;
+				querys.limitArea = $("[name='limitArea']").val()||"" ;
 				return querys ;
 			}
 			
@@ -263,7 +269,6 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						
 					}
 				}); 
 			}) ;
@@ -339,6 +344,14 @@
 					<option value="4">4</option>
 					<option value="5">5</option>
 					<option value="other">其他</option>
+				</select>
+				 </li>
+				 <li>
+				 <label>地区限制:</label>
+				 <select name='limitArea'>
+					<option value=''>全部</option>
+					<option value="1">包括非美国地区</option>
+					<option value="2">限美国</option>
 				</select>
 				 </li>
 				 <li>
