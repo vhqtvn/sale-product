@@ -180,12 +180,12 @@ class Amazongrid extends AppModel {
 			if( isset( $query["categoryId"] )  && !empty( $query["categoryId"]  )){
 				$categoryId =  $query["categoryId"] ;
 				if($categoryId == '-'){
-					$where .= " and sc_amazon_account_product.asin not in (
-								select asin from sc_amazon_product_category_rel
+					$where .= " and sc_amazon_account_product.sku not in (
+								select sku from sc_amazon_product_category_rel
 					) " ;
 				}else{
-					$where .= " and sc_amazon_account_product.asin in (
-								select asin from sc_amazon_product_category_rel where category_id = '$categoryId'
+					$where .= " and sc_amazon_account_product.sku in (
+								select sku from sc_amazon_product_category_rel where category_id = '$categoryId'
 					) " ;
 				}
 			}
@@ -293,12 +293,12 @@ class Amazongrid extends AppModel {
 			if( isset( $query["categoryId"] )  && !empty( $query["categoryId"]  )){
 				$categoryId =  $query["categoryId"] ;
 				if($categoryId == '-'){
-					$where .= " and sc_amazon_account_product.asin not in (
-								select asin from sc_amazon_product_category_rel
+					$where .= " and sc_amazon_account_product.sku not in (
+								select sku from sc_amazon_product_category_rel
 					) " ;
 				}else{
-					$where .= " and sc_amazon_account_product.asin in (
-								select asin from sc_amazon_product_category_rel where category_id = '$categoryId'
+					$where .= " and sc_amazon_account_product.sku in (
+								select sku from sc_amazon_product_category_rel where category_id = '$categoryId'
 					) " ;
 				}
 			}
@@ -442,4 +442,240 @@ class Amazongrid extends AppModel {
 		$array = $this->query($sql);
 		return $array ;
 	}
+	
+	//categoryId  product
+	function getCategoryProductRecords($query=null , $id = null ){
+		$limit =  $query["limit"] ;
+		$curPage =  $query["curPage"] ;
+		$start =  $query["start"] ;
+		$end =  $query["end"] ;
+		$accountId = "" ;
+		$categoryId = $query['categoryId'] ;
+		$checked = isset($query['checked']) ? $query['checked']:null ;
+		
+		$where = " where sc_amazon_account_product.status = 'Y'  " ;
+		
+		if( isset( $query["title"] )  && !empty( $query["title"]  )){
+			$title = $query["title"] ;
+			$where .= " and sc_amazon_account_product.title like '%".$title."%' " ;
+		}
+		
+		if( isset( $query["asin"] )  && !empty( $query["asin"]  )){
+			$asin = $query["asin"] ;
+			$where .= " and sc_amazon_account_product.asin = '".$asin."' " ;
+		}
+		
+		if( isset( $query["quantity1"] )  && !empty( $query["quantity1"]  )){
+			$quantity1 = $query["quantity1"] ;
+			$where .= " and sc_amazon_account_product.quantity >= ".$quantity1." " ;
+		}
+		
+		if( isset( $query["quantity2"] )  && !empty( $query["quantity2"]  )){
+			$quantity2 = $query["quantity2"] ;
+			$where .= " and sc_amazon_account_product.quantity <= ".$quantity2." " ;
+		}
+		
+		if( isset( $query["price1"] )  && !empty( $query["price1"]  )){
+			$price1 = $query["price1"] ;
+			$where .= " and sc_amazon_account_product.price >= ".price1." " ;
+		}
+		
+		if( isset( $query["price2"] )  && !empty( $query["price2"]  )){
+			$price2 = $query["price2"] ;
+			$where .= " and sc_amazon_account_product.price <= ".$price2." " ;
+		}
+		
+		if( isset( $query["itemCondition"] )  && !empty( $query["itemCondition"]  )){
+			$itemCondition = $query["itemCondition"] ;
+			if($itemCondition == '-'){
+				$where .= " and ( sc_amazon_account_product.item_condition is null or sc_amazon_account_product.item_condition = '' )" ;
+			}else{
+				$where .= " and sc_amazon_account_product.item_condition = '".$itemCondition."' " ;
+			}
+		}
+		
+		
+		$accountId = $query["accountId"] ;
+		$where .= " and  sc_amazon_account_product.account_id = '$accountId' " ;
+			
+		$categoryId =  $query["categoryId"] ;
+		$where .= " and sc_amazon_account_product.sku not in (
+					select sku from sc_amazon_product_category_rel where category_id in (
+						select id from sc_amazon_product_category where account_id = '$accountId'
+						and  id <> '$categoryId'
+					) and SKU IS NOT NULL
+		) " ;
+		
+		if( isset( $query["fulfillmentChannel"] )  && !empty( $query["fulfillmentChannel"]  )){
+			$fulfillmentChannel = $query["fulfillmentChannel"] ;
+			if($fulfillmentChannel == '-'){
+				$where .= " and ( sc_amazon_account_product.fulfillment_channel is null or sc_amazon_account_product.fulfillment_channel = '' )" ;
+			}else{
+				$where .= " and sc_amazon_account_product.fulfillment_channel  like '%".$fulfillmentChannel."%' " ;
+			}
+		}
+		
+		if( isset( $query["isFM"] )  && !empty( $query["isFM"]  )){
+			$isFM = $query["isFM"] ;
+			$where .= " and sc_amazon_account_product.IS_FM = '".$isFM."' " ;
+		}
+		
+		if( isset( $query["type"] )  && !empty( $query["type"]  )){
+			$type = $query["type"] ;
+			if($type == "price" ){
+				$where .= " and ( sc_amazon_account_product.feed_price <> '' and sc_amazon_account_product.feed_price is not null ) " ;
+			}else if($type == "quantity" ){
+				$where .= " and ( sc_amazon_account_product.feed_quantity <> '' and sc_amazon_account_product.feed_quantity is not null ) " ;
+			}
+		}
+		
+		
+		if( isset( $query["pm"] )  && !empty( $query["pm"]  )){
+			$pm = $query["pm"] ;
+			if($pm == 'other'){
+				$where .= " and ( sc_amazon_account_product.F_PM = '0' and sc_amazon_account_product.N_PM = '0'
+					 and sc_amazon_account_product.U_PM = '0'  and sc_amazon_account_product.FBA_PM = '0' ) " ;
+			}else{
+				$where .= " and ( sc_amazon_account_product.F_PM = '".$pm."' or sc_amazon_account_product.N_PM = '".$pm."'
+					 or sc_amazon_account_product.U_PM = '".$pm."'  or sc_amazon_account_product.FBA_PM = '".$pm."' ) " ;
+			}
+		}
+		
+		$where1 = " where 1=1 " ; 
+		if($checked == 1){
+			$where1 .= " and t1.checked >= 1" ;
+		}else if($checked == 2){
+			$where1 .= " and t1.checked = 0" ;
+		}
+		
+		//询价状态  最低价 FBM TARGET_PRICE ， FBA最低价
+		$sql = "
+		      select t1.* from ( 
+		              SELECT  sc_amazon_account_product.* ,
+						( select count(1) from sc_amazon_product_category_rel
+							where category_id = '$categoryId' and sku = sc_amazon_account_product.sku ) as checked
+						FROM sc_amazon_account_product
+					$where
+		            order by cast(sc_amazon_account_product.DAY_PAGEVIEWS as signed) desc
+			  ) t1 $where1
+			limit ".$start.",".$limit;
+	
+		$array = $this->query($sql);
+		return $array ;
+	}
+
+	function getCategoryProductCount($query=null , $id = null){
+		$accountId = "" ;
+		$categoryId = $query['categoryId'] ;
+		$checked = isset($query['checked']) ? $query['checked']:null ;
+		
+		$where = " where sc_amazon_account_product.status = 'Y'  " ;
+		
+		if( isset( $query["title"] )  && !empty( $query["title"]  )){
+			$title = $query["title"] ;
+			$where .= " and sc_amazon_account_product.title like '%".$title."%' " ;
+		}
+		
+		if( isset( $query["asin"] )  && !empty( $query["asin"]  )){
+			$asin = $query["asin"] ;
+			$where .= " and sc_amazon_account_product.asin = '".$asin."' " ;
+		}
+		
+		if( isset( $query["quantity1"] )  && !empty( $query["quantity1"]  )){
+			$quantity1 = $query["quantity1"] ;
+			$where .= " and sc_amazon_account_product.quantity >= ".$quantity1." " ;
+		}
+		
+		if( isset( $query["quantity2"] )  && !empty( $query["quantity2"]  )){
+			$quantity2 = $query["quantity2"] ;
+			$where .= " and sc_amazon_account_product.quantity <= ".$quantity2." " ;
+		}
+		
+		if( isset( $query["price1"] )  && !empty( $query["price1"]  )){
+			$price1 = $query["price1"] ;
+			$where .= " and sc_amazon_account_product.price >= ".price1." " ;
+		}
+		
+		if( isset( $query["price2"] )  && !empty( $query["price2"]  )){
+			$price2 = $query["price2"] ;
+			$where .= " and sc_amazon_account_product.price <= ".$price2." " ;
+		}
+		
+		if( isset( $query["itemCondition"] )  && !empty( $query["itemCondition"]  )){
+			$itemCondition = $query["itemCondition"] ;
+			if($itemCondition == '-'){
+				$where .= " and ( sc_amazon_account_product.item_condition is null or sc_amazon_account_product.item_condition = '' )" ;
+			}else{
+				$where .= " and sc_amazon_account_product.item_condition = '".$itemCondition."' " ;
+			}
+		}
+		
+		$accountId = $query["accountId"] ;
+		$where .= " and  sc_amazon_account_product.account_id = '$accountId' " ;
+		
+		//and gather_level in ('A','B','C','D') and id <> '$categoryId'
+		$categoryId =  $query["categoryId"] ;
+		$where .= " and sc_amazon_account_product.sku not in (
+					select sku from sc_amazon_product_category_rel where category_id  in (
+						select id from sc_amazon_product_category where account_id = '$accountId'
+						and  id <> '$categoryId'
+					)  and SKU IS NOT NULL
+		) " ;
+		
+		if( isset( $query["fulfillmentChannel"] )  && !empty( $query["fulfillmentChannel"]  )){
+			$fulfillmentChannel = $query["fulfillmentChannel"] ;
+			if($fulfillmentChannel == '-'){
+				$where .= " and ( sc_amazon_account_product.fulfillment_channel is null or sc_amazon_account_product.fulfillment_channel = '' )" ;
+			}else{
+				$where .= " and sc_amazon_account_product.fulfillment_channel  like '%".$fulfillmentChannel."%' " ;
+			}
+		}
+		
+		if( isset( $query["isFM"] )  && !empty( $query["isFM"]  )){
+			$isFM = $query["isFM"] ;
+			$where .= " and sc_amazon_account_product.IS_FM = '".$isFM."' " ;
+		}
+		
+		if( isset( $query["type"] )  && !empty( $query["type"]  )){
+			$type = $query["type"] ;
+			if($type == "price" ){
+				$where .= " and ( sc_amazon_account_product.feed_price <> '' and sc_amazon_account_product.feed_price is not null ) " ;
+			}else if($type == "quantity" ){
+				$where .= " and ( sc_amazon_account_product.feed_quantity <> '' and sc_amazon_account_product.feed_quantity is not null ) " ;
+			}
+		}
+		
+		
+		if( isset( $query["pm"] )  && !empty( $query["pm"]  )){
+			$pm = $query["pm"] ;
+			if($pm == 'other'){
+				$where .= " and ( sc_amazon_account_product.F_PM = '0' and sc_amazon_account_product.N_PM = '0'
+					 and sc_amazon_account_product.U_PM = '0'  and sc_amazon_account_product.FBA_PM = '0' ) " ;
+			}else{
+				$where .= " and ( sc_amazon_account_product.F_PM = '".$pm."' or sc_amazon_account_product.N_PM = '".$pm."'
+					 or sc_amazon_account_product.U_PM = '".$pm."'  or sc_amazon_account_product.FBA_PM = '".$pm."' ) " ;
+			}
+		}
+		
+		
+		$where1 = " where 1=1 " ; 
+		if($checked == 1){
+			$where1 .= " and t1.checked >= 1" ;
+		}else if($checked ==2){
+			$where1 .= " and t1.checked = 0" ;
+		}
+		
+		$sql = "
+		      select count(*) from ( 
+		              SELECT  sc_amazon_account_product.*,
+						( select count(1) from sc_amazon_product_category_rel
+							where category_id = '$categoryId' and sku = sc_amazon_account_product.sku ) as checked
+						FROM sc_amazon_account_product
+					$where
+			  ) t1 $where1";
+	
+		$array = $this->query($sql);
+		return $array ;
+	}
+	
 }
