@@ -127,6 +127,20 @@
 					}
 				}); 
 			}) ;
+			
+			$(".step5").click(function(){//发
+				$(this).html("正在采集中......").attr("disabled",true) ;
+				$.ajax({
+					type:"post",
+					url:"/saleProduct/index.php/cronSale/priceSaleForCategory/"+accountId+"/"+ categoryId,
+					data:{},
+					cache:false,
+					dataType:"text",
+					success:function(result,status,xhr){
+						//window.location.reload() ;
+					}
+				}); 
+			}) ;
 		
 		}) ;
 		
@@ -142,7 +156,7 @@
 		当前采集分类为：<span class="current-cateogry"></span>
 	</div>
 	<table class="table table-bordered">
-		<caption>产品采集操作</caption>
+		<caption>产品采集操作（分部操作）</caption>
 		<tr>
 			<td style="width:150px;">产品基本信息采集</td>
 			<td><?php
@@ -202,10 +216,12 @@
 			?>
 			 </td>
 		</tr>
+		<tr>
+			<td>营销策略执行</td>
+			<td><?php
+					echo '<button class="step5 btn btn-primary">营销策略执行</button>' ;
+			?></td>
+		</tr>
 	</table>
-	
-	<div class="grid-content" style="width:98%;">
-	
-	</div>
 </form>
 </html>
