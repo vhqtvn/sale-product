@@ -515,6 +515,22 @@ class Amazonaccount extends AppModel {
 		return $array ;
 	}
 	
+	function getAccountProductsForCategorySale($accountId,$categoryId){
+		$where = " AND sc_amazon_product_category.id='$categoryId' " ;
+		
+		$sql = "SELECT sc_amazon_account_product.*,sc_amazon_product_category.*
+						FROM sc_amazon_product_category ,
+						sc_amazon_product_category_rel ,
+						sc_amazon_account_product
+						WHERE sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
+							and sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
+                            and sc_amazon_account_product.account_id = '$accountId'
+				AND sc_amazon_product_category.account_id = '$accountId' $where ";
+		$array = $this->query($sql);
+		
+		//print_r($array) ; 
+		return $array ;
+	}
 	
 	function getAccountProducts($accountId,$categoryId = null ){
 		$array = null ;
