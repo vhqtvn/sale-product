@@ -1,3 +1,3 @@
 <?php
 	 $random = date("U") ;
-	 file_get_contents("http://www.smarteseller.com/saleProduct/index.php/cron/startAsynAmazonActiveProducts/5?".$random);
+	 file_get_contents("http://www.smarteseller.com/saleProduct/index.php/taskAsynAmazon/startAsynAmazonActiveProducts/5?".$random);
