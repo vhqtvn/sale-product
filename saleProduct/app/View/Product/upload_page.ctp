@@ -90,7 +90,7 @@
   </div>
  <div style="clear:both;"></div>
   <div class="attachment-area tab-content" style="display:block">
-	  <form action="/saleProduct/index.php/task/doUpload" method="post" target="form-target" enctype="multipart/form-data">
+	  <form action="/saleProduct/index.php/gatherUpload/uploadAsins" method="post" target="form-target" enctype="multipart/form-data">
 	  	<input name="groupId" value='<?php echo $id ;?>' type="hidden"/>
 	   <table border=0 cellPadding=3 cellSpacing=4 width=80%>
 	    <tr>
@@ -110,7 +110,7 @@
    </div>
    
    <div class="inputin-area tab-content">
-	  <form action="/saleProduct/index.php/task/doUploadForInput" method="post" target="form-target">
+	  <form action="/saleProduct/index.php/gatherUpload/inputAsins" method="post" target="form-target">
 	   <input name="groupId" value='<?php echo $id ;?>' type="hidden"/>
 	   <table border=0 cellPadding=3 cellSpacing=4 width=80%>
 	    <tr>

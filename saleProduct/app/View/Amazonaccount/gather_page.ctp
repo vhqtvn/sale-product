@@ -117,9 +117,9 @@
 <body style="magin:0px;padding:0px;">
 	<div class="widget-class" widget="layout" style="width:100%;height:100%;">
 		<div region="center" split="true" border="true" title="产品采集" style="padding:2px;">
-			<iframe id="gatherIfr" name="gatherIfr" src="/saleProduct/index.php/amazonaccount/gatherDoPage/<?php echo $accountId;?>" style="width:100%;height:400px;" frameborder=0></iframe>
+			<iframe id="gatherIfr" name="gatherIfr" src="/saleProduct/index.php/amazonaccount/gatherDoPage/<?php echo $accountId;?>" style="width:100%;height:500px;" frameborder=0></iframe>
 		</div>
-		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:150px;">
+		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:200px;">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>
 		</div>
    </div>

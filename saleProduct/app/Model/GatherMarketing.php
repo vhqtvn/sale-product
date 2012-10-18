@@ -1,109 +1,24 @@
 <?php
-ignore_user_abort(1);
-set_time_limit(0);
 
-ini_set("memory_limit", "62M");
-ini_set("post_max_size", "24M");
+App::import('Model', 'Amazonaccount') ;
+App::import('Model', 'Product') ;
+App::import('Model', 'Config') ;
 
-App :: import('Vendor', 'Amazon');
-
-class CronSaleController extends AppController {
+/**
+ * 采集营销
+ */
+class GatherMarketing extends AppModel {
+	var $useTable = "sc_product_cost" ;
 	
-	public $helpers = array (
-		'Html',
-		'Form'
-	); //,'Ajax','Javascript
-	
-	var $uses = array('Task', 'Config','Amazonaccount',"Product");
-	
-	/**
-	 * 价格营销
-	 */
-	public function priceSale($accountId , $level){
 		
-		//获取分类产品信息
-		$products = $this->Amazonaccount->getAccountProductsForLevelSale( $accountId , $level ) ;
-	
-		//获取账号相关信息
-		$account = $this->Amazonaccount->getAccount($accountId) ;
-		$account = $account[0]['sc_amazon_account'] ;
-		$accountName = $account['NAME'] ;
-		
-		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-		
-		$_products = array() ;
-		for( $i = 0 ;$i < count($products) ;$i++  ){
-			
-			//获取单个产品
-			$product = $products[$i]['sc_amazon_account_product'] ;
-			//单个产品所属分类
-			$productCategory = $products[$i]['sc_amazon_product_category'] ;
-			
-			$sku = $product['SKU'] ;
-			
-			//当前价格
-			$price = $product['PRICE'] + $product['SHIPPING_PRICE'] ;
-			//最低限价
-			$execPrice = $product['EXEC_PRICE']  ;
-			if( empty( $product['EXEC_PRICE'] ) ){
-				$product['EXEC_PRICE'] = $price ;
-				$execPrice = $price ;
-			}
-			
-			$processPrice = $this->_processStratery($product , $productCategory,$accountName) ;
-			
-			if(empty($processPrice)) {
-				$processPrice = $execPrice;
-			} ;
-			
-			if( $processPrice < $execPrice ){
-				$processPrice = $execPrice ;
-			}
-			
-			if($processPrice == $price){
-				//do nothing
-			}else{
-				$price = $processPrice - $product['SHIPPING_PRICE'] ;
-				$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price,'ORI_PRICE'=>$product['PRICE']) ;
-			}
-		}
-		
-		if( count($_products) <=0 ){
-			$this->response->type("html");
-			$this->response->body("nothing to update");
-			return $this->response;
-		}
-		
-		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
-		
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
-		
-		$result = $amazon->updatePrice($accountId,$Feed,"cron") ;
-		
-		$this->Amazonaccount->saveAccountFeed($result) ;
-
-		$this->response->type("html");
-		$this->response->body("update price for sale cron complete");
-		return $this->response;
-
-	}
-	
 	public function _processStratery($product ,$productCategory ,$accountName){
+		$amazonAccount = new Amazonaccount() ;
 		
 		//获取产品个性化竞争策略
 		$productStratery = $product["STRATEGY"] ;
 		
 		//获取分类竞价策略
-		//$categoryStratery = $productCategory['PRICE_STRATERY'] ;
-		$categoryStratery = $this->Amazonaccount->getAmazonProductCategoryStratery($productCategory) ;
+		$categoryStratery = $amazonAccount->getAmazonProductCategoryStratery($productCategory) ;
 		
 		//jjfxs  fjjxs jjxs VIP 
 		if( empty($categoryStratery) ) {//无策略，执行默认策略
@@ -137,6 +52,9 @@ class CronSaleController extends AppController {
 	 * 竞价非销售
 	 */
 	public function _processStrateryForJJFXS($product ,$productCategory,$accountName){
+		$productModel = new Product() ;
+		$config = new Config() ;
+		
 		$asin = $product['ASIN'] ;
 		$shipPrice = $product["SHIPPING_PRICE"] ;
 		$channel = $product["FULFILLMENT_CHANNEL"] ;
@@ -146,7 +64,7 @@ class CronSaleController extends AppController {
 			//$fbas  = $this->Product->getProductFbaDetails($asin) ;
 			return null ;
 		}else{
-			$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+			$competitions  = $productModel->getProductCompetitionDetails($asin) ;
 			
 			$prices = array() ;
 			$count = 0 ;
@@ -174,14 +92,14 @@ class CronSaleController extends AppController {
 			$doPrice = $prices[$count-1] ;
 			if( $count<=4 ){//如果竞争对手小于或等于4个
 				$_ = $prices[$count - 1]  ;
-				if( $_ < 2 ){
+				if( $_*0.15 < 2 ){
 					$doPrice = $_ + 2 ;
 				}else{
 					$doPrice = $_ * 1.15 ;
 				}
 			}else{
 				$_ = $prices[3] ;
-				if( $_ < 2 ){
+				if( $_*0.15 < 2 ){
 					$doPrice = $_ + 2 ;
 				}else{
 					$doPrice = $_ * 1.15 ;
@@ -235,13 +153,16 @@ class CronSaleController extends AppController {
 	}
 	
 	public function _processStrateryForJJXS_FBA($product ,$productCategory ,$accountName){
+		$productModel = new Product() ;
+		$config = new Config() ;
+		
 		$asin = $product['ASIN'] ;
 		$artPrice = $product['ART_PRICE'] ;//手工价格
 		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
 		$itemCondition    = $product['ITEM_CONDITION'] ;
 		
 		//全区域排名1-4竞价排名
-		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+		$competitions  = $productModel->getProductCompetitionDetails($asin) ;
 		$prices = array() ;
 		foreach($competitions as $com){
 			$com = $com['sc_sale_competition_details'] ;
@@ -270,7 +191,7 @@ class CronSaleController extends AppController {
 		}
 		
 		//执行FBA1-3区域竞价排名
-		$fbas  = $this->Product->getProductFbaDetails($asin) ;
+		$fbas  = $productModel->getProductFbaDetails($asin) ;
 		$prices = array() ;
 		foreach($competitions as $com){
 			$com = $com['sc_sale_fba_details'] ;
@@ -302,13 +223,16 @@ class CronSaleController extends AppController {
 	}
 	
 	public function _processStrateryForJJXS_FM($product ,$productCategory ,$accountName){
+		$productModel = new Product() ;
+		$config = new Config() ;
+		
 		$asin = $product['ASIN'] ;
 		$artPrice = $product['ART_PRICE'] ;//手工价格
 		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
 		$itemCondition    = $product['ITEM_CONDITION'] ;
 		
 		//全区域排名1-4竞价排名
-		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+		$competitions  = $productModel->getProductCompetitionDetails($asin) ;
 		$prices = array() ;
 		foreach($competitions as $com){
 			$com = $com['sc_sale_competition_details'] ;
@@ -317,7 +241,7 @@ class CronSaleController extends AppController {
 			$_price = $com['SELLER_PRICE'] + $com['SELLER_SHIP_PRICE'] ;
 			$country = $com['COUNTRY'] ;
 			
-			$auto = $this->Config->getAmazonConfig("EXCLUDE_OUTOF_AMERI") ;//排除中国卖家
+			$auto = $config->getAmazonConfig("EXCLUDE_OUTOF_AMERI") ;//排除中国卖家
 			if( $com['SELLER_NAME'] == $accountName || ( !empty($country) && $country=='china'  )){//owner
 				continue ;
 			}
@@ -348,13 +272,16 @@ class CronSaleController extends AppController {
 	}
 	
 	public function _processStrateryForJJXS_NEW($product ,$productCategory ,$accountName){
+		$productModel = new Product() ;
+		$config = new Config() ;
+		
 		$asin = $product['ASIN'] ;
 		$artPrice = $product['ART_PRICE'] ;//手工价格
 		$execPrice =  $product['EXEC_PRICE'] ;//最低限价
 		$itemCondition    = $product['ITEM_CONDITION'] ;
 		
 		//全区域排名1-4竞价排名
-		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
+		$competitions  = $productModel->getProductCompetitionDetails($asin) ;
 		$prices = array() ;
 		foreach($competitions as $com){
 			$com = $com['sc_sale_competition_details'] ;
@@ -404,4 +331,5 @@ class CronSaleController extends AppController {
 		
 		return $artPrice ;
 	}
+	
 }

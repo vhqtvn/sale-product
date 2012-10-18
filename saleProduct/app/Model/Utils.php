@@ -3,7 +3,7 @@ class Utils extends AppModel {
 	var $useTable = false;
 	
 	public function _processRowCompetetion($e , $details ,$type , $base , $numType){
-		
+
 			$numberofresults   = $e->next_sibling ()->plaintext ;
 			$ary = explode("of",$numberofresults) ;
 			$_ = str_replace("offers","",$ary[1] ) ;
@@ -76,23 +76,28 @@ class Utils extends AppModel {
 				if($countryInfo != null){
 					$country = strtolower( $countryInfo->plaintext ) ;
 					$pos = strpos($country, "china");
-					if( $pos === false ){
+					if( $pos === false ){//不是中国
+						$pos = strpos($country, "hongkong");
+						if( $pos === false ){
+							$country = "" ;
+						}else{
+							$country = "hongkong" ;
+						}
 					}else{
 						$country = "china" ;
 					}
-					
-					$pos = strpos($country, "hongkong");
-					if( $pos === false ){
-						$country = "" ;
-					}else{
-						$country = "hongkong" ;
-					}
-					
 				}
 				
+				if(!is_numeric($totalRating)){
+					$totalRating = "" ;
+				}
+				
+				$sellerName = trim($sellerName) ;
+				$sellerName = iconv( 'ASCII' ,'utf-8//IGNORE' ,$sellerName ) ;
 				
 				$index++ ;
-				$details[] = array("SELLER_NAME"=>$sellerName,
+				$details[] = array(
+					"SELLER_NAME"=>$sellerName,
 					"SELLER_URL"=>$sellerUrl,
 					"SELLER_PRICE"=>$price,
 					"SELLER_IMG"=>$sellerImg,
@@ -147,6 +152,65 @@ class Utils extends AppModel {
 			}
 			return $arrays ;			
 		
+	}
+	
+	function getProp($html , $selector){
+		$dom = $html->find($selector,0) ;
+		if($dom == null)
+			return "" ;
+		return trim($dom->plaintext) ;
+	}
+	
+	/**
+	 * 下载图片
+	 */
+	function downloads( $url =null , $asin=null , $local = null  ){
+		
+		if( $url == null || $url == "" ) return ;
+		
+		ini_set('user_agent','MSIE 4\.0b2;'); 
+		ini_set('user_agent','Mozilla: (compatible; Windows XP)');
+		
+		$file =  fopen ($url, "rb");
+		
+		$path = dirname(dirname(dirname(__FILE__)))."/images/amazon/".$asin;
+		if($local != null ){
+			$path = dirname(dirname(dirname(__FILE__)))."/".$local;
+		}
+		
+		$fullPath =  $path."/".basename($url) ; 
+		if( file_exists($fullPath) ) return ;
+		
+		$this->creatdir($path) ;
+		$path = $fullPath ;
+		 
+		if (!$file) { 
+			echo "文件找不到"; 
+		} else { 
+			//Header("Content-type: application/octet-stream"); 
+			//Header("Content-Disposition: attachment; filename=" .basename($url)); 
+			//Header("content-Type: text/html; charset=utf-8"); 
+			$newf = fopen ($path, "wb");
+		    $downlen=0;
+		    if ($newf)
+				while(!feof($file)) {
+			        $data=fread($file, 1024 * 8 );	//默认获取8K
+			        $downlen+=strlen($data);	// 累计已经下载的字节数
+			        fwrite($newf, $data, 1024 * 8 );
+			        ob_flush();
+			        flush();
+			    }
+			    
+			if ($file) 
+			{
+			  fclose($file);
+			}
+			
+			if ($newf) 
+			{
+			  fclose($newf);
+			}
+		} 
 	}
 	
 	function endsWith($haystack, $needle)

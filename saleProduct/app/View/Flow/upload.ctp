@@ -126,7 +126,7 @@
 <body>
 
    <div style="border:1px solid #CCC;margin:3px;">
-	    <form action="/saleProduct/index.php/task/doFlowUpload" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
+	    <form action="/saleProduct/index.php/taskUpload/doFlowUpload" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
 		   <table border=0 cellPadding=3 cellSpacing=4 >
 		    <tr>
 		     <td>流量文件：</td>

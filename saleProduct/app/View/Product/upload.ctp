@@ -81,9 +81,7 @@
 		           		{align:"center",key:"TOTAL",label:"产品总数",width:"10%"},
 					{align:"center",key:"ID",label:"采集操作",width:"25%",format:function(val,record){
 						var html = [] ;
-					html.push("<a href='#' class='gather-action' val='"+val+"'>基本信息</a>&nbsp;&nbsp;") ;
-					html.push("<a href='#' class='gather-com-action' val='"+val+"'>竞争信息</a>&nbsp;&nbsp;") ;
-					html.push("<a href='#' class='gather-fba-action' val='"+val+"'>FBA信息</a>") ;
+					html.push("<a href='#' class='gather-action' val='"+val+"'>信息采集</a>&nbsp;&nbsp;") ;
 					return html.join("") ;
 					}}
 		         ],
@@ -110,10 +108,9 @@
 			var currentGather = null ;
 			$(".gather-action").live("click",function(){
 				var id = $(this).attr("val") ;
-				monitor(id) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/fetchAsins/"+id,
+					url:"/saleProduct/index.php/gatherUpload/taskAll/"+id,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -127,74 +124,12 @@
 				var val = $(this).attr("val") ;
 				openCenterWindow("/saleProduct/index.php/product/index/"+val,900,600) ;
 			}) ;
-			
-			$(".gather-com-action").live("click",function(){
-				var id = $(this).attr("val") ;
-				monitor(id) ;
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/task/gatherCompetitions/"+id,
-					data:{},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						
-						//alert(result);
-					}
-				}); 
-			});
-			
-			$(".gather-fba-action").live("click",function(){
-				var id = $(this).attr("val") ;
-				monitor(id) ;
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/task/gatherFba/"+id,
-					data:{},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						
-						//alert(result);
-					}
-				}); 
-			});
    	 });
    	 
-   	 function monitor(id){
-   	 	$(".message,.loading").show() ;
-   	 	var interval = window.setInterval(function(){
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/task/getLog/"+id,
-					data:{},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						var result = jQuery.parseJSON(result) ;
-						if(result && result.length >0 ){
-							$(result).each(function(){
-								var message = this['sc_exe_log'].MESSAGE ;
-								if(message == "end!"){
-									setTimeout(function(){
-										$(".message,.loading").hide() ;
-									},2000) ;
-									window.clearInterval(interval) ;
-								}
-								$(".message").append(message+"<br>") ;
-								$(".message")[0].scrollTop = $(".message")[0].scrollHeight; 
-							}) ;
-						}
-					}
-				}); 
-			},2000) ;
-   	 }
-   	 
-   	 function startGather(taskId){
-   	 	monitor(taskId) ;
+   	 function uploadSuccess(id){
    	 	$.ajax({
 			type:"post",
-			url:"/saleProduct/index.php/task/fetchAsins/"+taskId,
+			url:"/saleProduct/index.php/gatherUpload/taskAll/"+taskId,
 			data:{},
 			cache:false,
 			dataType:"text",
@@ -204,6 +139,7 @@
 			}
 		}); 
    	 }
+   	 
 
  function formatGridData(data){
 	var records = data.record ;

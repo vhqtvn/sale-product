@@ -221,33 +221,7 @@
 			$(".base-gather").click(function(){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/fetchAsin/<?php echo $product["ASIN"]?>",
-					data:{},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						alert("采集完成");
-						window.location.reload() ;
-					}
-				}); 
-			}) ;
-			$(".competition-gather").click(function(){
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/task/fetchCompetions/<?php echo $product["ASIN"]?>",
-					data:{},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						alert("采集完成");
-						window.location.reload() ;
-					}
-				}); 
-			}) ;
-			$(".fba-gather").click(function(){
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/task/fetchFba/<?php echo $product["ASIN"]?>",
+					url:"/saleProduct/index.php/gatherProduct/execute/<?php echo $product["ASIN"]?>",
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -343,10 +317,8 @@
 		<div class="span11">
 			<div class="toolbar">
 				<div class="row-fluid" style="margin:5px;">
-					<div class="span5">
-						<button class="base-gather btn">基本信息采集</button>
-						<button class="competition-gather btn">竞争信息采集</button>
-						<button class="fba-gather btn">FBA信息采集</button>
+					<div class="span2">
+						<button class="base-gather btn">信息采集</button>
 					</div>
 					<div class="span7 toobar-btns">
 					</div>

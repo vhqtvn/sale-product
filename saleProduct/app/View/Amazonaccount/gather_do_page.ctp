@@ -76,7 +76,7 @@
 				$(this).html("正在采集中......").attr("disabled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/amazonAsin/"+accountId+"/"+ categoryId,
+					url:"/saleProduct/index.php/gatherCategory/baseInfo/"+accountId+"/"+ categoryId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -90,7 +90,7 @@
 				$(this).html("正在采集中......").attr("disabled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/gatherAmazonCompetitions/"+accountId+"/"+ categoryId,
+					url:"/saleProduct/index.php/gatherCategory/competition/"+accountId+"/"+ categoryId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -104,7 +104,7 @@
 				$(this).html("正在采集中......").attr("disabled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/gatherAmazonFba/"+accountId+"/"+ categoryId,
+					url:"/saleProduct/index.php/gatherCategory/fba/"+accountId+"/"+ categoryId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -118,7 +118,21 @@
 				$(this).html("正在采集中......").attr("disabled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/task/amazonShippingAsin/"+accountId+"/"+ categoryId,
+					url:"/saleProduct/index.php/gatherCategory/price/"+accountId+"/"+ categoryId,
+					data:{},
+					cache:false,
+					dataType:"text",
+					success:function(result,status,xhr){
+						window.location.reload() ;
+					}
+				}); 
+			}) ;
+			
+			$(".step5").click(function(){//发
+				$(this).html("正在处理中......").attr("disabled",true) ;
+				$.ajax({
+					type:"post",
+					url:"/saleProduct/index.php/gatherCategory/marketing/"+accountId+"/"+ categoryId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -128,11 +142,11 @@
 				}); 
 			}) ;
 			
-			$(".step5").click(function(){//发
-				$(this).html("正在采集中......").attr("disabled",true) ;
+			$(".stepall").click(function(){//发
+				$(this).html("正在处理中......").attr("disabled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/cronSale/priceSaleForCategory/"+accountId+"/"+ categoryId,
+					url:"/saleProduct/index.php/gatherCategory/execute/"+accountId+"/"+ categoryId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -155,6 +169,15 @@
 	<div style="margin:5px 3px;padding:10px;" class="alert alert-info">
 		当前采集分类为：<span class="current-cateogry"></span>
 	</div>
+	<table class="table table-bordered">
+		<caption>采集&营销策略执行（集中操作）</caption>
+		<tr>
+			<td style="width:150px;">采集&营销策略执行</td>
+			<td><?php
+					echo '<button class="stepall btn btn-primary">采集&营销策略执行</button>' ;
+			?></td>
+		</tr>
+	</table>
 	<table class="table table-bordered">
 		<caption>产品采集操作（分部操作）</caption>
 		<tr>
