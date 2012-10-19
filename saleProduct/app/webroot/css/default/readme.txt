@@ -1,0 +1,1 @@
+如果使用UI控件的为旧框架或其他框架，需要将style.css中的bootstrap.css修改为bootstrap-simple.css

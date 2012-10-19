@@ -96,6 +96,24 @@
  	}
  </style>
  
+ <script>
+ 	$(function(){
+ 		$("[taskingId]").click(function(){
+ 			$taskId = $(this).attr("taskingId") ;
+ 			$.ajax({
+				type:"post",
+				url:"/saleProduct/index.php/tasking/stop/"+ $taskId,
+				data:{},
+				cache:false,
+				dataType:"text",
+				success:function(result,status,xhr){
+					window.location.reload() ;
+				}
+			}); 
+ 		})
+ 	}) ;
+ </script>
+ 
 </head>
 <body style="overflow-y:auto;padding:2px;">
 	
@@ -104,17 +122,35 @@
 			<th>任务类型</th>
 			<th>开始时间</th>
 			<th></th>
+			<th>执行进度</th>
+			<th>状态</th>
+			<th>操作</th>
 		</tr>
 		<?php foreach( $taskings as $tasking ){
 			
 			$tasking1 = $tasking['sc_tasking'] ;
 			$taskingType = $tasking['sc_tasking_type'] ;
 			$type = $taskingType['NAME'] ;
+			$id = $tasking1['ID'] ;
+			$startTime = $tasking1['START_TIME'] ;
+			$asin = $tasking1['ASIN'] ;
+			$forceStop = $tasking1['FORCE_STOP'] ;
+			$message   = $tasking1['MESSAGE'] ;
+			
+			$status = "运行中" ;
+			$btns = "<button taskingId='$id' class='btn btn-mini'>中止</button>" ;
+			if($forceStop==1){
+				$status = "等待终止" ;
+				$btns = "" ;
+			}
 			
 			echo "<tr>
-				<td>".$type."</td>
-				<td>".$tasking1['START_TIME']."</td>
-				<td>".$tasking1['ASIN']."</td>
+				<td>$type</td>
+				<td>$startTime</td>
+				<td>$asin</td>
+				<td>$message</td>
+				<td>$status</td>
+				<td>$btns</td>
 			</tr> " ;
 		}?>
 		

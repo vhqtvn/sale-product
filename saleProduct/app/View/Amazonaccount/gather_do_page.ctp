@@ -8,18 +8,11 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/jquery.llygrid');
-		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('../js/tree/jquery.tree');
-		echo $this->Html->css('style-all');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
-		echo $this->Html->script('../grid/query');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/jquery.llygrid');
-		echo $this->Html->script('validator/jquery.validation');
-		echo $this->Html->script('tree/jquery.tree');
 	?>
 	
    <style>
@@ -151,9 +144,9 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						//window.location.reload() ;
+						window.location.reload() ;
 					}
-				}); 
+				});
 			}) ;
 		
 		}) ;
@@ -168,14 +161,29 @@
 <form id="personForm" action="#" data-widget="validator,ajaxform">
 	<div style="margin:5px 3px;padding:10px;" class="alert alert-info">
 		当前采集分类为：<span class="current-cateogry"></span>
+		
+		&nbsp;&nbsp;&nbsp;&nbsp;  当前时间：<?php echo  date("Y-m-d H:i:s");?>
 	</div>
 	<table class="table table-bordered">
 		<caption>采集&营销策略执行（集中操作）</caption>
 		<tr>
 			<td style="width:150px;">采集&营销策略执行</td>
-			<td><?php
-					echo '<button class="stepall btn btn-primary">采集&营销策略执行</button>' ;
-			?></td>
+			<td style="height:auto;">
+			<div>
+			<?php
+					if(!empty($tasking)){
+						echo '<button disabled class="btn btn-primary">采集进行中 ( '.$tasking['START_TIME'].' ) </button>' ;
+					}else{
+						echo '<button class="stepall btn btn-primary">采集&营销策略执行</button>' ;
+					}
+					
+					if(!empty($lastGatherTask)){
+						echo "<br/><br/><span class='alert alert-info'>【最近一次采集】 开始时间：".$lastGatherTask['START_TIME'];
+						echo " 结束时间：".$lastGatherTask['END_TIME']."</span>";
+					}
+			?>
+			</div>
+			</td>
 		</tr>
 	</table>
 	<table class="table table-bordered">

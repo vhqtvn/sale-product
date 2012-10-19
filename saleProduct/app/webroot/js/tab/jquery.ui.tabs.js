@@ -34,6 +34,7 @@ $.widget("ui.__tabs", {
 		remove: null,
 		select: null,
 		show: null,
+		deleteLast:false,
 		spinner: '<em>加载中&#8230;</em>',
 		tabTemplate: '<li><a href="#{href}" tabId="#{tabId}">#{img}<span>#{label}</span></a></li>',
 		closeTabTemplate:'<li><a href="#{href}" tabId="#{tabId}">#{img}<span>#{label}</span><b class="ui-icon ui-icon-close ui-tab-close"></b></a></li>'
@@ -99,7 +100,7 @@ $.widget("ui.__tabs", {
 		}
 
 		this.element.find('.ui-icon-close').bind('click.tabs', function() {
-			var index = $('li',self.element).index($(this).parent());
+			var index = $('li',self.element).index($(this).parents("li:first"));
 			self.remove(index) ;
 			return false ;
 		});
@@ -113,7 +114,9 @@ $.widget("ui.__tabs", {
 		//if (!$.browser.webkit  ){
 			this.element.carousel() ;//chrome bug， exclude
 			$(window).resize(function(){
-			    self.element.carousel('rebuild') ;
+				$.execResize("__tabResize",function(){
+					self.element.carousel('rebuild') ;
+				});
 			});
 		//}
 	},
@@ -497,6 +500,10 @@ $.widget("ui.__tabs", {
 		// disable click in any case
 		this.anchors.bind('click.tabs', function(){return false;});
 
+		if ( this.lis.length == 1 ){ // 如果只存在一个tab,则隐藏最后一个tab的删除按钮
+			if(!o.deleteLast)this.lis.parent().find('.ui-tab-close').hide() ;
+		}
+		
 	},
 
 	destroy: function() {
@@ -565,10 +572,15 @@ $.widget("ui.__tabs", {
 		var self = this, o = this.options,
 			$li = $(o.tabTemplate.replace(/#\{href\}/g, url).replace(/#\{label\}/g, label).replace(/#\{img\}/g, _img).replace(/#\{tabId\}/g, (params.id||""))),
 			id = (url&&!url.indexOf('#')) ? url.replace('#', '') : this._tabId($('a', $li)[0]);
-			
-		url = params.url = (url&&!url.indexOf('#'))?url:"#"+id ;
-		$li.find("a").attr("href",url);
-			
+		
+		if( url ){
+			$li.find("a").attr("href",url);
+			url = params.url = (url&&!url.indexOf('#'))?url:"#"+id ;
+		}else{
+			url = params.url = (url&&!url.indexOf('#'))?url:"#"+id ;
+			$li.find("a").attr("href",url);
+		}
+		
 		$li.addClass('ui-state-default ui-corner-top').data('destroy.tabs', true);
 
 		// try to find an existing element before creating a new one
@@ -615,16 +627,18 @@ $.widget("ui.__tabs", {
 		
 		$panel.append(panel) ;
 		
-		self.element.carousel('rebuild') ;
-
+		
 		// callback
 		this._trigger('add', null, this._ui(this.anchors[index], this.panels[index]));
 		
 		self.element.find('.ui-icon-close').unbind("click.tabs").bind('click.tabs', function() {
-			var index = $('li',self.element).index($(this).parent());
+			var index = $('li',self.element).index($(this).parents("li:first"));
 			self.remove(index) ;
 			return false ;
 		});
+		
+		self.element.carousel('rebuild') ;
+
 		
 		return this;
 	},
@@ -659,7 +673,7 @@ $.widget("ui.__tabs", {
 		
 		//删除完成 
 		if ( this.lis.length == 1 ){ // 如果只存在一个tab,则隐藏最后一个tab的删除按钮
-			this.lis.parent().find('.ui-tab-close').hide() ;
+			if(!o.deleteLast)this.lis.parent().find('.ui-tab-close').hide() ;
 		}
 		
 		this.element.carousel('rebuild') ;
@@ -740,10 +754,11 @@ $.widget("ui.__tabs", {
 				index = -1 ;
 		}else if (typeof index == 'string') {
 			index = this.anchors.index(this.anchors.filter("[tabId='" + index + "']"));
-			if(index === 0){
+
+			if(index >= 0 ){
 				//do nothing
-			}else if(!index){
-				index = this.anchors.index(this.anchors.filter("[href$='" + index + "']"));
+			}else {
+				index = this.anchors.index(this.anchors.filter("[href$='" + t + "']"));
 				if(index === 0) ;else if(!index) index = t ;
 			}
 		}
@@ -857,6 +872,7 @@ $.widget("ui.__tabs", {
 
 	url: function(index, url) {
 		index = this.getIndex(index);
+
 		this.anchors.eq(index).removeData('cache.tabs').data('load.tabs', url);
 		return this;
 	},
@@ -1170,21 +1186,24 @@ $.widget('ui.carousel', {
 
         // Make sure we actually want to go somewhere.
         if (!(this.running || to == this.curr)) {
+        	
             var prev = this.curr,
                 e = this.element,
                 l = this.itemLength,
                 b = this.offset, // buffer size.
                 self = this;
             this.running = true;
-
+           
             this.curr = to; // reset internal pointer.
             to += b;        // adjust to with offset(buffer size).
 
             o.beforeStart.call(e, this.visible(this.curr), this.visible(to));
 
+            var maxLeft = Math.min( this.element.find("ul:first").outerWidth(true) - this.element.width() ,to * this.liSize) ;
+            
             this.slide.animate(
                 this.animCss == "left" ?
-                    { left: -(to * this.liSize) } :
+                    { left: -(maxLeft) } :
                     { top: -(to * this.liSize) },
                 o.speed, o.easing,
                 function() {
@@ -1204,25 +1223,33 @@ $.widget('ui.carousel', {
         // Set the internal pointer.
         this.curr = p;
         // make sure the slider is in the correct position.
-        this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
+        var pos = (p + this.offset) * this.liSize ;
+       if( this.animCss == "left"){
+       	 pos = Math.min( this.element.find("ul:first").outerWidth(true) - this.element.width() ,(p + this.offset) * this.liSize) ;
+       }
+        
+       this.slide.css(this.animCss, -(pos + "px"));
     },
 
     // Update nav links, enabling/disabling as needed.
     _updateNav: function() {
         var o = this.options;
         if (!o.circular) {
-        	var nextWidth = this.li.parent().find('li:last').offset().left + this.li.parent().find('li:last').width() ;
+        	var lastLi = this.li.parent().find('li:last') ;
+        	if( lastLi.length ){
+        		var nextWidth = this.li.parent().find('li:last').offset().left + this.li.parent().find('li:last').width() ;
         	
-        	var conWidth  = this.li.parent().parent().width() ;
-            var prev = this.visible(this.curr - 1).length === 0,
-                next = nextWidth < conWidth;  //this.visible(this.curr + o.visible).length === 0;
-            
-            prev = this.li.parent().find('li:first').offset().left >= 0 ;
-                
-            // If the first element is visible, disable the previous button.
-            _setDisabled(this.nav.prev, prev);
-            // If the last element is visible or the carousel is small, disable the next button.
-            _setDisabled(this.nav.next, next);
+	        	var conWidth  = this.li.parent().parent().width() ;
+	            var prev = this.visible(this.curr - 1).length === 0,
+	                next = nextWidth < conWidth;  //this.visible(this.curr + o.visible).length === 0;
+	            
+	            prev = this.li.parent().find('li:first').offset().left > 0 ;
+
+	            // If the first element is visible, disable the previous button.
+	            _setDisabled(this.nav.prev, prev);
+	            // If the last element is visible or the carousel is small, disable the next button.
+	            _setDisabled(this.nav.next, next);
+        	}
         }
         this._detectNavigation('css') ;
     },
@@ -1366,6 +1393,14 @@ $.fn.tabs = function(json_obj){
 		this.load = function(json_obj){
 			return this.$.__tabs('load',json_obj.index||json_obj.id);
 		};
+		
+		this.getSelectedId = function(){
+			return this.$.__tabs().find(".ui-tabs-panel:not(.ui-tabs-hide)").attr("id") ;
+		}
+		
+		this.getSelectedIndex = function(){
+			return this.$.__tabs("option","selected")  ;
+		}
 		
 		this.active = function(json_obj){
 			return this.$.__tabs('active',json_obj.index||json_obj.id);

@@ -7,18 +7,18 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../kissu/widgets/core/layout/layout');
-		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/layout/jquery.layout');
+		echo $this->Html->css('../js/tree/jquery.tree');
+		
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../kissu/scripts/jquery.utils');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-		echo $this->Html->script('../kissu/widgets/core/layout/jquery.layout');
-		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('layout/jquery.layout');
+		echo $this->Html->script('tree/jquery.tree');
 		
 		$userId  = $_COOKIE["userId"] ; 
 		App::import('Model', 'User') ;
@@ -293,24 +293,28 @@
    		.query-bar ul li{
    			list-style-type:none;
    			float:left;
-   			padding:5px 5px;
-   			display:block;
-   			height:20px;
-   			line-height:20px;
+   			padding:3px 0px;
    		}
    		
    		.query-bar ul li label{
-   			font-weight:bold;
+   			float:left;
+   			margin:0px 0px;
+   			margin-left:15px;
    		}
    		
    		.query-bar{
    			clear:both;
    		}
+   		
+   		li select,li input{
+   			width:auto;
+   			padding:0px;
+   		}
    </style>
 
 </head>
 <body style="magin:0px;padding:0px;">
-	<div class="widget-class" widget="layout" style="width:100%;height:100%;">
+	<div data-widget="layout" style="width:100%;height:100%;">
 		<div region="center" split="true" border="true" title="产品列表" style="padding:2px;">
 			<div class="query-bar">
 			   <ul>
@@ -355,9 +359,9 @@
 				</select>
 				 </li>
 				 <li>
-				 	<button class="query-btn">查询</button>
-				 	<button class="query-reply-btn">重复产品过滤</button>
-				 	<button class="product-category-btn">编辑分类产品</button>
+				 	<button class="btn btn-primary btn-mini query-btn">查询</button>
+				 	<button class="btn btn-primary btn-mini query-reply-btn">重复产品过滤</button>
+				 	<button class="btn btn-primary btn-mini product-category-btn">编辑分类产品</button>
 				 </li>
 			   </ul>
 			
@@ -366,10 +370,6 @@
 			<div class="grid-content" style="width:99%;">
 			</div>
 			
-			<div>
-				<button class="price-update-btn">显示价格待更新列表</button>
-				<button class="quantity-update-btn">显示库存待更新列表</button>
-			</div>
 		</div>
 		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:200px;">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>

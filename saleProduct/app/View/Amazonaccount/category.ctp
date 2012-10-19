@@ -8,14 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
+		echo $this->Html->css('../js/tree/jquery.tree');
 		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('style-all');
-		echo $this->Html->script('../kissu/scripts/jquery');
-		echo $this->Html->script('../kissu/scripts/jquery.utils');
+		echo $this->Html->css('default/style');
+		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		echo $this->Html->script('tree/jquery.tree');
 
 	?>	
 	

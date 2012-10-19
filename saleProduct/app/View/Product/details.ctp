@@ -8,21 +8,14 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('style-all');
-		echo $this->Html->css('tab/jquery.ui.tabs');
+		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery-ui');
-		echo $this->Html->script('../grid/grid');
-		echo $this->Html->script('../grid/query');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
-		
-		//$this->set('details', $details);
-		//$this->set('images', $images);
-		//$this->set('competitions', $competitions);
-		//$this->set('rankings', $rankings);
 		
 		$userId  = $_COOKIE["userId"] ; 
 		App::import('Model', 'User') ;
@@ -432,39 +425,32 @@
 		?>
 		</div>
 	</div>
-		
 	
-	<div data-widget="tab" data-options="{select:function(event,ui){}}" class="ui-tabs">
-		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix">
-			<li>
-				<a href="#baseinfo-tab">基本信息</a>
-			</li>
-			<li>
-				<a href="#competetion-tab">竞争信息</a>
-			</li>
-			<li>
-				<a href="#supplier-tab">供应商 （询价）</a>
-			</li>
-			<li>
-				<a href="#category-tab">产品分类 </a>
-			</li>
-		<?php  if( isset($sku) && !empty($sku) ){
-		?>
-			<li>
-				<a href="#amazon-category-tab">营销产品分类 </a>
-			</li>
-		<?php	
-		} ?>
-			<li>
-				<a href="#cost-tab">产品成本 </a>
-			</li>
-		</ul>
-		
-			
+	<script type="text/javascript">
+		$(function(){
+			var tab = $('#details_tab').tabs( {
+				tabs:[
+					{label:'基本信息',content:"baseinfo-tab"},
+					{label:'竞争信息',content:"competetion-tab"},
+					{label:'供应商(询价)',content:"supplier-tab",iframe:true},
+					{label:'产品分类',url:"/saleProduct/index.php/product/assignCategory/<?php echo $asin?>",iframe:true},
+					<?php  if( isset($sku) && !empty($sku) ){ ?>
+					{label:'营销产品分类',url:"/saleProduct/index.php/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>/<?php echo $sku;?>",iframe:true},
+					<?php } ?>
+					{label:'产品成本',url:"/saleProduct/index.php/cost/listAsin/<?php echo $asin?>",iframe:true}
+				] ,
+				height:'500px'
+			} ) ;
+		}) ;
+	</script>
+	<div id="details_tab">
+	</div>	
+	
+	<div>
 		<div id="baseinfo-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
 			<table class="table table-bordered">
 				<tr>
-					<th>标题：</th>
+					<th style="width:100px;">标题：</th>
 					<td><?php echo $product["TITLE"]?>(<?php echo $asin?>) </td>
 					<td rowspan="8">
 						<?php
@@ -659,19 +645,7 @@
 				
 			</table>
 		</div>
-		<div id="category-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<iframe src="/saleProduct/index.php/product/assignCategory/<?php echo $asin?>" style="width:98%;height:400px;"></iframe>
-		</div>
-		<?php  if( isset($sku) && !empty($sku) ){
-		?>
-		<div id="amazon-category-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<iframe src="/saleProduct/index.php/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>/<?php echo $sku;?>" style="width:98%;height:400px;"></iframe>
-		</div>
-		<?php	
-		} ?>
-		<div id="cost-tab" class="ui-tabs-panel" style="height: 100px; display: block; padding:12px 3px;">
-			<iframe src="/saleProduct/index.php/cost/listAsin/<?php echo $asin?>" style="width:100%;height:400px;"></iframe>
-		</div>
+		
 	</div>
 	
 </body>
