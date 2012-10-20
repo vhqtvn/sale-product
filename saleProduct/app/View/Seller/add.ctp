@@ -8,11 +8,11 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
 	?>
 
 	<script>
@@ -48,11 +48,47 @@
    </style>
 
 </head>
-<body>
-	商家名称：<br/>
-	<input type="text" name="name" style="width:100%;"><br/>
-	商家地址：<br/>
-	<input type="text" name="url" style="width:100%;"><br/>
-	<button>保存</button><br/>
+<body class="container-body">
+	<!-- apply 主场景 -->
+	<div class="apply-page">
+		<!-- 页面标题 -->
+		<div class="page-title">
+			<h2>商家信息</h2>
+		</div>
+		<div class="container-fluid">
+
+	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+				<!-- panel 头部内容  此场景下是隐藏的-->
+				<div class="panel apply-panel">
+					<!-- panel 中间内容-->
+					<div class="panel-content">
+						<!-- 数据列表样式 -->
+						<table class="form-table col2" >
+							<caption>商家信息</caption>
+							<tbody>										   
+								<tr>
+									<th><label>商家名称：</label></th>
+									<td>
+									<input type="text" name="name" class="input-large">
+									</td>
+                                </tr>
+                                <tr>
+									<th><label>商家地址：</label></th>
+									<td><input type="text" name="url" class="input-large"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<!-- panel脚部内容-->
+                    <div class="panel-foot">
+						<div class="form-actions col2">
+							<button type="button" class="btn btn-primary">提&nbsp;交</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </body>
 </html>

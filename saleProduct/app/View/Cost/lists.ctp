@@ -8,12 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('grid/jquery.llygrid');
 		
 		$loginId = $user["GROUP_CODE"] ;//transfer_specialist cashier purchasing_officer general_manager product_specialist
 	?>
@@ -201,16 +202,33 @@
 
 </head>
 <body>
-	<div class="query-bar">
-		<label>ASIN:</label><input type="text" name="asin"/>
-		<label>TITLE:</label><input type="text" name="title"/>
-		
-		<button class="query-btn">查询</button>
-	</div>
+	<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<th>
+					ASIN:
+				</th>
+				<td>
+					<input type="text" name="asin"/>
+				</td>
+				<th>
+					名称:
+				</th>
+				<td>
+					<input type="text" name="title"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary">查询</button>
+				</td>
+			</tr>						
+		</table>					
+
+	</div>	
+	
 	<div class="grid-content">
 	</div>
 	<div class="query-bar">
-		<button class="add-cost">添加成本</button>
+		<button class="add-cost btn btn-primary">添加成本</button>
 	</div>
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>

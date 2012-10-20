@@ -176,6 +176,7 @@
 				var row = $(html.join("")).appendTo($(".lly-grid-1-body table tbody",target)).data("record",record) ;
 				if(options.rowClick){
 					row.bind("click",function(){
+						alert(options.rowClick);
 						var _record = $(this).data("record") ;
 						options.rowClick(null,_record) ;
 					})

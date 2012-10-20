@@ -7,20 +7,15 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+		
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
 		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('../js/tree/jquery.tree');
-		echo $this->Html->css('style-all');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
-		echo $this->Html->script('../grid/query');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
 		echo $this->Html->script('validator/jquery.validation');
-		echo $this->Html->script('tree/jquery.tree');
 		
 	?>
 	

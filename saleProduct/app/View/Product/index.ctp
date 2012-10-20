@@ -8,18 +8,18 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../kissu/widgets/core/layout/layout');
-		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/layout/jquery.layout');
+		echo $this->Html->css('../js/tree/jquery.tree');
+		
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../kissu/scripts/jquery.utils');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-		echo $this->Html->script('../kissu/widgets/core/layout/jquery.layout');
-		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('layout/jquery.layout');
+		echo $this->Html->script('tree/jquery.tree');
 	?>
 	
    <script type="text/javascript">
@@ -153,25 +153,46 @@
 
 </head>
 <body style="magin:0px;padding:0px;">
-	<div class="widget-class" widget="layout" style="width:100%;height:90%;">
+	<div data-widget="layout" style="width:100%;height:100%;">
+	
 		<div region="center" split="true" border="true" title="产品列表" style="padding:2px;">
-			<div class="query-bar">
-				<label>ASIN:</label><input type="text" name="asin"/>
-				<label>名称:</label><input type="text" name="title"/>
-				<label>状态:</label>
-				<select name="test_status">
-					<option value="">--状态--</option>
-					<option value="testing">试销中</option>
-					<option value="formal">正式销售</option>
-					<option value="uninstall">下架</option>
-					<option value="focus">异常关注</option>
-				</select>
-				
-				<button class="query-btn">查询</button>
-			</div>
-			<div class="grid-content" style="width:98%;">
-			
-			</div>
+		
+			<div class="toolbar toolbar-auto">
+						<table>
+							<tr>
+								<th>ASIN：
+								</th>
+								<td>
+									<input type="text" name="asin" class="input-medium"/>
+								</td>
+								<th>
+									名称:
+								</th>
+								<td>
+									<input type="text" name="title" class="input-medium"/>
+								</td>
+								<th>
+									状态:
+								</th>
+								<td>
+									<select name="test_status" class="input-medium">
+										<option value="">--状态--</option>
+										<option value="testing">试销中</option>
+										<option value="formal">正式销售</option>
+										<option value="uninstall">下架</option>
+										<option value="focus">异常关注</option>
+									</select>
+								</td>								
+								<td class="toolbar-btns" rowspan="3">
+									<button class="query-btn btn btn-primary">查询</button>
+								</td>
+							</tr>						
+						</table>					
+
+					</div>	
+					<div class="panel grid-panel">
+						<div class="grid-content" style="width:100%;"></div>
+					</div>
 		</div>
 		<div region="west" icon="icon-edit" split="true" border="true" title="产品分类" style="width:180px;">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>

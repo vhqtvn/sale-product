@@ -213,14 +213,14 @@
 				if(options.rowClick){
 					row.bind("click",function(){
 						var _record = $(this).data("record") ;
-						options.rowClick(_record) ;
+						options.rowClick(null,_record) ;
 					})
 				}
 				
 				if(options.rowDblClick){
 					row.bind("dblclick",function(){
 						var _record = $(this).data("record") ;
-						options.rowDblClick(_record) ;
+						options.rowDblClick(null,_record) ;
 					})
 				}
 			}) ;
@@ -244,13 +244,13 @@
 			if(options.rowClick){
 				row.bind("click",function(){
 					var _record = $(this).data("record") ;
-					options.rowClick(_record) ;
+					options.rowClick(null,_record) ;
 				})
 			}
 			if(options.rowDblClick){
 				row.bind("dblclick",function(){
 					var _record = $(this).data("record") ;
-					options.rowDblClick(_record) ;
+					options.rowDblClick(null,_record) ;
 				})
 			};
 		}) ;

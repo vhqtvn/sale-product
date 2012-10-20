@@ -8,12 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('grid/jquery.llygrid');
 		
 		$userId  = $_COOKIE["userId"] ; 
 		App::import('Model', 'User') ;
@@ -142,13 +143,23 @@
 
 </head>
 <body>
-	<div class="query-bar">
-		<label>供应商名称:</label><input type="text" name="name"/>
-		<button class="query-btn">查询</button>
-		<button class="add-btn">添加供应商</button>
+<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<th>
+					供应商名称:
+				</th>
+				<td>
+					<input type="text" name="name"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary">查询</button>
+					<button class="add-btn btn">添加供应商</button>
+				</td>
+			</tr>						
+		</table>					
+
 	</div>
-	<div class="grid-content">
-	
-	</div>
+	<div class="grid-content"></div>
 </body>
 </html>

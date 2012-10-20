@@ -8,13 +8,12 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/query');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
+		
 		$login_id = '' ;
 		$name = '' ;
 		$id  ="" ;
@@ -91,44 +90,71 @@
    </script>
 
 </head>
-<body>
-<input type="hidden" id="id" value="<?php echo $id;?>"/>
-	<table>
-		<tr>
-			<td>登录名：</td><td><input type="text" id="login_id" value="<?php echo $login_id;?>"/></td>
-		</tr>
-		<tr>
-			<td>用户名：</td><td><input type="text" id="name" value="<?php echo $name;?>"/></td>
-		</tr>
-		<tr>
-			<td>用户组：</td><td>
-				<select id="group">
-					<option value=''>--</option>
-					<?php
-						foreach( $Groups as $group ){
-							$code = $group['sc_security_groups']["CODE"] ;
-							$name = $group['sc_security_groups']["NAME"] ;
-							if( $groupCode == $code ){
-								echo "<option selected value='$code'>$name</option>" ;
-							}else{
-								echo "<option value='$code'>$name</option>" ;
-							}
-							
-						}
-					?>
-					
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>密码：</td><td><input type="password" id="password"/></td>
-		</tr>
-		<tr>
-			<td>确认密码：</td><td><input type="password" id="repassword"/></td>
-		</tr>
-		<tr>
-			<td></td><td><button>保存</button></td>
-		</tr>
-	</table>
 
+<body class="container-popup">
+	<!-- apply 主场景 -->
+	<div class="apply-page">
+		<!-- 页面标题 -->
+		<div class="page-title">
+			<h2>用户信息</h2>
+		</div>
+		<div class="container-fluid">
+
+	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+	        <input type="hidden" id="id" value="<?php echo $id;?>"/>
+				<!-- panel 头部内容  此场景下是隐藏的-->
+				<div class="panel apply-panel">
+					<!-- panel 中间内容-->
+					<div class="panel-content">
+						<!-- 数据列表样式 -->
+						<table class="form-table col2" >
+							<caption>基本信息</caption>
+							<tbody>										   
+								<tr>
+									<th>登录名：</th><td><input type="text" id="login_id" value="<?php echo $login_id;?>"/></td>
+								</tr>
+								<tr>
+									<th>用户名：</th><td><input type="text" id="name" value="<?php echo $name;?>"/></td>
+								</tr>
+								<tr>
+									<th>用户组：</th><td>
+										<select id="group">
+											<option value=''>--</option>
+											<?php
+												foreach( $Groups as $group ){
+													$code = $group['sc_security_groups']["CODE"] ;
+													$name = $group['sc_security_groups']["NAME"] ;
+													if( $groupCode == $code ){
+														echo "<option selected value='$code'>$name</option>" ;
+													}else{
+														echo "<option value='$code'>$name</option>" ;
+													}
+													
+												}
+											?>
+											
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th>密码：</th><td><input type="password" id="password"/></td>
+								</tr>
+								<tr>
+									<th>确认密码：</th><td><input type="password" id="repassword"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<!-- panel脚部内容-->
+                    <div class="panel-foot">
+						<div class="form-actions col2">
+							<button type="button" class="btn btn-primary">提&nbsp;交</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
 </html>

@@ -8,13 +8,17 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/query');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('grid/query');
+		
+		
+		
 		$id = '' ;
 		$name = '' ;
 		$scripts = '[]' ;
@@ -171,13 +175,25 @@
 
 </head>
 <body>
-	<div>
-		<button class="add-condition">添加条件</button>
-		<button class="save-config">保存设置</button>
-	</div>
-	<hr>
-	规则名称：<input type="text" id="ruleName"  value="<?php echo $name;?>"/>
-	<input type="hidden" id="ruleId" value="<?php echo $id;?>"/>
+	<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<th>
+					规则名称：
+				</th>
+				<td>
+					<input type="text" id="ruleName"  value="<?php echo $name;?>"/>
+					<input type="hidden" id="ruleId" value="<?php echo $id;?>"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="add-condition btn btn-primary">添加条件</button>
+					<button class="save-config btn btn-primary">保存设置</button>
+				</td>
+			</tr>						
+		</table>					
+
+	</div>	
+	
 	<div class="rule-content">
 	</div>
 </body>

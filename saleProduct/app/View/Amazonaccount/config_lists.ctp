@@ -7,12 +7,15 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+			echo $this->Html->meta('icon');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('grid/query');
 	?>
   
    <script type="text/javascript">
@@ -123,18 +126,31 @@
 
 </head>
 <body>
-	<div class="query-bar">
-				<label>类型:</label>
-				<select id="type">
+
+	<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<th>
+					类型:
+				</th>
+				<td>
+					<select id="type">
 					<option value="">--选择--</option>
 					<option value="strategy">策略</option>
 					<option value="relation">关系</option>
 					<option value="field" >字段</option>
 				</select>
-				
-				<button class="query-btn">查询</button>
-				<button class="add-config">添加配置项</button>
-	</div>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary">查询</button>
+				<button class="add-config btn btn-primary">添加配置项</button>
+	
+				</td>
+			</tr>						
+		</table>					
+
+	</div>	
+
 	
 	<div class="grid-content">
 	

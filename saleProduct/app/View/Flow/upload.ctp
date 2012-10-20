@@ -8,12 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('jquery-ui');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
 	?>
   
    <script type="text/javascript">
@@ -55,7 +56,7 @@
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/flow"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:200,
+				 height:400,
 				 title:"上传列表",
 				 indexColumn:true,
 				 querys:{name:"hello",name2:"world"},

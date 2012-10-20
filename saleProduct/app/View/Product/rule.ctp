@@ -8,13 +8,14 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-		echo $this->Html->script('../grid/query');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('grid/query');
 		
 	?>
   
@@ -173,17 +174,18 @@
 	<div class="grid-query">
 	</div>
 	
-	<div class="grid-query-button">
-		<button class="query-action">查询</button>
-		<button class="save-result">保存筛选结果</button>
+	<div class="grid-query-button" style="clear:both;">
+		<button class="query-action btn">查询</button>
+		<button class="save-result btn">保存筛选结果</button>
 		<br/>
-		<button class="select-scope">选择筛选范围</button><input type="text" class="select-scope-input" />
+		<button class="select-scope btn">选择筛选范围</button>
+		<input type="text" class="select-scope-input" />
 		&nbsp;在账户产品中筛选:
 		<?php
 			$index = 0 ;
 			foreach($accounts as $account){
 				$account = $account['sc_amazon_account'] ;
-				echo "<input type='checkbox' id='accountId_$index' name='accountId' value='".$account['ID']."' /> <label for='accountId_$index'>".$account['NAME']."</label>" ;
+				echo "<input type='checkbox' id='accountId_$index' name='accountId' value='".$account['ID']."' /> <label for='accountId_$index' style='display:inline;'>".$account['NAME']."</label>" ;
 				$index++ ;
 			} ;
 		?>

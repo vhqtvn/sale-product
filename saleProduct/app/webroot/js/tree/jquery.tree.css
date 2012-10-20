@@ -1,27 +1,9 @@
 .ie .bbit-tree .bbit-tree-bwrap {
 }
 
-div.bbit-tree{
+.bbit-tree{
 	/*border:none;background:none;*/
-	border:none;
 }
-
-/*bootstrap*/
-.bbit-tree .bbit-tree-node .bbit-tree-node-el:hover{
-	text-decoration: none;
-	background-color: #EEE;
-	color:#212121;
-}
-
-.bbit-tree .bbit-tree-node .active{
-   color: #ffffff;
-   background-color: #0088cc;
-}
-
-.bbit-tree .bbit-tree-node .active a{
-	color:#ffffff;
-}
-/*bootstrap*/
 
 .bbit-tree ul {
 	padding-right: 0px; padding-left: 0px; padding-bottom: 0px; margin: 0px; padding-top: 0px; list-style-type: none
@@ -146,11 +128,18 @@ div.bbit-tree{
 .ie ul.bbit-tree-node-ct {
 	font-size: 0px; line-height: 0; zoom: 1
 }
-.bbit-tree-node {
-	white-space: nowrap
+li.bbit-tree-node {
+	white-space: nowrap ;
+	line-height:18px;
 }
-.bbit-tree-node-el {
-	cursor: default; line-height: 18px;
+div.bbit-tree-node-el {
+	cursor: default; 
+	line-height: 18px;
+	height:18px;
+}
+
+img{
+	border:none;
 }
 
 .bbit-tree-node-el a{
@@ -273,6 +262,7 @@ div.bbit-tree{
 	border:none;
 }
 
+
 .bbit-tree-node .bbit-tree-checkbox0{
 	background-image: url(images/checkbox_0.gif);
 }
@@ -288,7 +278,6 @@ div.bbit-tree{
 .bbit-tree-root{
 	background-image: url(images/root.gif);
 	display:inline;
-	background-repeat: no-repeat;
 }
 
 .bbit-tree-folderopen{

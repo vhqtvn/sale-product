@@ -12,6 +12,7 @@ body {
 	font-family:"微软雅黑",Verdana, Microsoft YaHei, Simsun, Arial Unicode MS, Mingliu, Arial, Helvetica;
 	line-height:18px;
 	zoom: 1;
+	padding:2px;
 }
 a:link{
 	color: #0088cc;

@@ -43,8 +43,8 @@ Query.prototype = {
 		html.push('		<label>'+options.label+'</label>') ;
 		html.push('	</div>') ;
 		html.push('	<div class="query-content">') ;
-		html.push('	<input type="input" name="min" value="'+(options.min||'')+'"/> to ') ;
-		html.push('	<input type="input" name="max" value="'+(options.max||'')+'"/>') ;
+		html.push('	<input type="input" name="min"  class="input-small" value="'+(options.min||'')+'"/> to ') ;
+		html.push('	<input type="input" name="max" class="input-small"  value="'+(options.max||'')+'"/>') ;
 
 		html.push('	</div>') ;
 		html.push('</div>') ;
@@ -70,7 +70,7 @@ Query.prototype = {
 
 function getRenderInput(relation,val){
 		if( relation == '>' || relation== '<' || relation =='=' || relation == '<=' || relation == '>=' || relation == "like"){
-				return "<input type='text' class='value' value='"+val+"'>"
+				return "<input type='text'  class='input-small value' value='"+val+"'>"
 		}
 
 		return "" ;

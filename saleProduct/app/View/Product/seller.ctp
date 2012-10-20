@@ -8,11 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
 	?>
   
    <script type="text/javascript">
@@ -125,13 +127,13 @@
 
 </head>
 <body>
-	<div>
+	<div class="alert alert-info">
 		从商家采集：
 		第一步，注册商家（地址格式如：http://www.amazon.com/s/?me=A1L3WBCG312F8S）；第二步，采集
 	</div>
 
-	<button class="register">注册商家</button>
-	<div class="grid-content">
+	<button class="register btn btn-primary">注册商家</button>
+	<div class="grid-content" style="width:99.5%">
 	
 	</div>
 	

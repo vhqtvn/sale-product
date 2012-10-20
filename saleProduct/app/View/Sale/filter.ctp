@@ -8,11 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
 	?>
   
    <script type="text/javascript">
@@ -206,57 +208,52 @@
    }
    	 
    </script>
-   
-   <style>
-   		*{
-   			font:12px "微软雅黑";
-   		}
-   		
-   		.message{
-   			width:600px;
-   			border:1px solid #CCC;
-   			overflow:auto;
-   			margin:5px;
-   			height:200px;
-   			background:#000;
-   			color:#FFF;
-   			margin-bottom:0px;
-   		}
-   		
-   		.loading{
-   			width:600px;
-   			background:#000;
-   			color:#FFF;
-   			margin-top:-1px;
-   			display:hidden;
-   			margin-left:6px;
-   		}
-   </style>
+
 
 </head>
 <body>
 
-	<div class="grid-content">
+	<div class="grid-content" style="width:99.5%">
 	</div>
-	<div class="query-bar">
-		<label>ASIN:</label><input type="text" name="asin"/>
-		<label>标题:</label><input type="text" name="title"/>
-		<label>状态:</label>
-		<select name="status" onchange="$('.query-btn').click()">
-			<option value="">-</option>
-			<option value="1,2,3,4,5,6,7" selected>全部</option>
-			<option value="5,7" selected>审批完成</option>
-			<option value="1,2" selected>产品专员待处理</option>
-			<option value="4">产品经理待审批</option>
-			<option value="5">产品经理审批完成</option>
-			<option value="6">总经理待审批</option>
-			<option value="7">总经理审批完成</option>
-			<option value="3">已废弃</option>
-		</select>
-		
-		<button class="query-btn btn">查询</button>
-	</div>
-	<div class="grid-content-details">
+	<br/>
+	<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<th>ASIN：
+				</th>
+				<td>
+					<input type="text" name="asin" class="input-medium"/>
+				</td>
+				<th>
+					名称:
+				</th>
+				<td>
+					<input type="text" name="title" class="input-medium"/>
+				</td>
+				<th>
+					状态:
+				</th>
+				<td>
+					<select name="status" onchange="$('.query-btn').click()">
+						<option value="">-</option>
+						<option value="1,2,3,4,5,6,7" selected>全部</option>
+						<option value="5,7" selected>审批完成</option>
+						<option value="1,2" selected>产品专员待处理</option>
+						<option value="4">产品经理待审批</option>
+						<option value="5">产品经理审批完成</option>
+						<option value="6">总经理待审批</option>
+						<option value="7">总经理审批完成</option>
+						<option value="3">已废弃</option>
+					</select>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary">查询</button>
+				</td>
+			</tr>						
+		</table>					
+
+	</div>	
+	<div class="grid-content-details" style="width:99.5%">
 	</div>
 </body>
 </html>

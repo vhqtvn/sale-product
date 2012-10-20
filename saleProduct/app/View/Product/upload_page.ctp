@@ -8,15 +8,14 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('style-all');
+		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/query');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-
+		echo $this->Html->script('tab/jquery.ui.tabs');
 	?>
   
    <style>
@@ -79,26 +78,36 @@
    				$(this).parents("form").submit();
    			}
    		});
+   		
+   $(function(){
+  		var tab = $('#tabs-default').tabs( {
+			tabs:[
+				{label:'附件上传',content:"attachment"},
+				{label:'文本输入',content:"inputs"}
+			] ,
+			height:'200px'
+		} ) ;
+  	})
+   		
    </script>
+   
 
    
 </head>
 <body>
-  <div class="tab">
-  	<div class="attachment active">附件上传</div>
-  	<div class="inputin">文本输入</div>
-  </div>
- <div style="clear:both;"></div>
-  <div class="attachment-area tab-content" style="display:block">
+<div id="tabs-default" class="view-source">
+	</div>
+	
+  <div id="attachment" class="attachment-area tab-content" style="display:block">
 	  <form action="/saleProduct/index.php/gatherUpload/uploadAsins" method="post" target="form-target" enctype="multipart/form-data">
 	  	<input name="groupId" value='<?php echo $id ;?>' type="hidden"/>
-	   <table border=0 cellPadding=3 cellSpacing=4 width=80%>
+	   <table class="table table-bordered">
 	    <tr>
-	     <td width=10% nowrap>任务组</td>
+	     <th width=10% nowrap>任务组</th>
 	     <td><?php echo $text ;?></td>
 	    </tr>
 	    <tr>
-	     <td width=10% nowrap>产品附件</td>
+	     <th width=10% nowrap>产品附件</th>
 	     <td><input name="productFile" type="file"/></td>
 	    </tr>
 	    <tr> 
@@ -109,20 +118,20 @@
 	   <iframe style="width:0; height:0; border:0;display:none;" name="form-target"></iframe>
    </div>
    
-   <div class="inputin-area tab-content">
+   <div id="inputs" class="inputin-area tab-content">
 	  <form action="/saleProduct/index.php/gatherUpload/inputAsins" method="post" target="form-target">
 	   <input name="groupId" value='<?php echo $id ;?>' type="hidden"/>
-	   <table border=0 cellPadding=3 cellSpacing=4 width=80%>
+	   <table class="table table-bordered">
 	    <tr>
-	     <td width=10% nowrap>任务组</td>
+	     <th width=10% nowrap>任务组</th>
 	     <td><?php echo $text ;?></td>
 	    </tr>
 	    <tr>
-	     <td width=10% nowrap>产品名称</td>
+	     <th width=10% nowrap>产品名称</th>
 	     <td><input name="name" type="text"/></td>
 	    </tr>
 	    <tr>
-	     <td width=10% nowrap>产品ASIN(逗号分隔):</td>
+	     <th width=10% nowrap>产品ASIN(逗号分隔):</th>
 	     <td><textarea style="width:350px;height:200px;" name="asins"></textarea></td>
 	    </tr>
 	    <tr> 

@@ -8,18 +8,18 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../kissu/widgets/core/layout/layout');
-		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/layout/jquery.layout');
+		echo $this->Html->css('../js/tree/jquery.tree');
+		
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../kissu/scripts/jquery.utils');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-		echo $this->Html->script('../kissu/widgets/core/layout/jquery.layout');
-		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('layout/jquery.layout');
+		echo $this->Html->script('tree/jquery.tree');
 	?>
   
    <script type="text/javascript">
@@ -195,9 +195,9 @@
 
 
 <body style="magin:0px;padding:0px;">
-	<div class="widget-class" widget="layout" style="width:100%;height:90%;">
+	<div data-widget="layout" style="width:100%;height:90%;">
 		<div region="center" split="true" border="true" title="上传任务" style="padding:2px;">
-			<button class="upload-product">添加产品</button>
+			<button class="upload-product btn btn-primary">添加产品</button>
 			<div class="grid-content" style="width:99%;">
 			
 			</div>

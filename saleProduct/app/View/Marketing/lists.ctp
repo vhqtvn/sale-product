@@ -8,11 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
 	?>
   
    <script type="text/javascript">
@@ -204,7 +206,7 @@
 
 </head>
 <body>
-	<button class="create-plan">创建试销计划</button>
+	<button class="create-plan btn btn-primary">创建试销计划</button>
 	<div class="grid-content">
 	</div>
 	<div class="grid-content-details" style="margin-top:5px;">

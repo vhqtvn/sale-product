@@ -8,11 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
+
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
 		
 		$userId  = $_COOKIE["userId"] ; 
 		App::import('Model', 'User') ;
@@ -495,20 +497,38 @@
 
 </head>
 <body>
-	<div class="query-bar">
-		<label>计划名称:</label><input type="text" id="name"/>
-		<label>类型:</label><select id="type">
-			<option value="">--</option>
-			<option value='1'>产品试销</option>
-			<option value='2'>产品采购</option>
-		</select>
-		<button class="query-btn">查询</button>
-		<?php if( $flag == 1 ){
-		?>
-		<button class="create-plan">创建采购/试销计划</button>
-		<?php
-		} ?>
-	</div>
+	
+	<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<th>
+					计划名称:
+				</th>
+				<td>
+					<input type="text" id="name"/>
+				</td>
+				<th>
+					类型:
+				</th>
+				<td>
+					<select id="type">
+						<option value="">--</option>
+						<option value='1'>产品试销</option>
+						<option value='2'>产品采购</option>
+					</select>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary">查询</button>
+					<?php if( $flag == 1 ){
+					?>
+					<button class="create-plan btn">创建采购/试销计划</button>
+					<?php
+					} ?>
+				</td>
+			</tr>						
+		</table>					
+
+	</div>	
 	
 	<div class="grid-content">
 	</div>
