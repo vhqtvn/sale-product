@@ -962,6 +962,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	    $content = '';
 	   
 	    $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+	    $log  = ClassRegistry::init("Log") ;
 	  
 	    while(!feof($handle)){
 	        $row =  fgets($handle, 1024);
@@ -978,6 +979,10 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 		        	$sku  		= $productItem['sku'] ;
 		        	$quantity  	= $productItem['quantity'] ;
 		        	$price  	= $productItem['price'] ;
+		        	
+		        	if(empty($asin)){
+		        		$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+		        	}
 
 	        		$amazonAccount->saveAccountProductByAsyn(array(
 						'ASIN'=>$asin,
@@ -998,6 +1003,10 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 		    
 		        	if( trim($fulfillment) == 'DEFAULT' )
 		        		$fulfillment = "Merchant" ;
+		        		
+		        	if(empty($asin)){
+		        		$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+		        	}
  			
 		        	$amazonAccount->saveAccountProductByAsyn(array(
 						'ASIN'=>$asin,
