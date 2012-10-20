@@ -21,6 +21,7 @@
 		$user1 = $u->queryUserByUserName($userId) ;
 		$user = $user1[0]['sc_user'] ;
 		$group=  $user["GROUP_CODE"] ;
+		$currentDate = date("Y-m-d H:i:s");
 	?>
 	
     <script type="text/javascript">
@@ -57,7 +58,7 @@
 	       
 	       var gridConfig = {
 					columns:[
-			           	{align:"center",key:"TASK_TYPE",label:"任务类型",width:"8%" },
+			           	{align:"center",key:"NAME",label:"任务类型",width:"8%" },
 			           	{align:"center",key:"ASIN",label:"任务标识",width:"5%"},
 			           	{align:"center",key:"ACCOUNT_ID",label:"账号ID",width:"5%"},
 			           	{align:"center",key:"START_TIME",label:"开始时间",width:"6%"},
@@ -67,10 +68,27 @@
 			            	return "运行中..." ;
 			            }},
 			            {align:"center",key:"FEED_PRICE",label:'操作',width:"6%",format:function(val , record){
+			            	
+			            	var currentDate = '<?php echo $currentDate;?>' ;
+			            	var startTime   = record.START_TIME ;
+			            	
+			            	var cd=Date.parse(currentDate.replace(/-/g,"/"));
+			            	var st=Date.parse(startTime.replace(/-/g,"/"));
+			            	var waste = (cd - st)/(3600*1000)  ;
+			            	
+			            	if(waste >= 2){
+			            		waste = Math.round(waste) ;
+			            		return "<div style='white-space:normal;margin:0px;padding:2px;;' class='alert alert-error'>该任务已经执行大约"+waste+"个小时，任务可能已经执行结束或发生异常</div><button taskingId='"+record.ID+"' class='btn btn-mini btn-danger'>删除</button>" ;
+			            	}
+			            	
 			            	if(record.FORCE_STOP == 1){
 			            		return "" ;
 			            	}
+			            	
 			            	return "<button taskingId='"+record.ID+"' class='btn btn-mini'>中止</button>" ;
+			            }},
+			            {align:"center",key:"ID",label:"详细日志",width:"3%",format:function(val,record){
+			            	return "<a href='#' taskId='"+val+"'>查看</a>" ;
 			            }}
 			         ],
 			         ds:{type:"url",content:"/saleProduct/index.php/tasking/taskingGrid/"+accountId},
@@ -90,10 +108,15 @@
 			$(".grid-content").llygrid(gridConfig) ;
 			
 			$("[taskingId]").live('click',function(){
-	 			$taskId = $(this).attr("taskingId") ;
+				$taskId = $(this).attr("taskingId") ;
+				var url = "/saleProduct/index.php/tasking/stop/"+ $taskId ;
+				if($(this).hasClass("btn-danger")){
+					url = "/saleProduct/index.php/tasking/stop/"+ $taskId+"/1" ;
+				}
+				
 	 			$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/tasking/stop/"+ $taskId,
+					url:url,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -102,6 +125,12 @@
 					}
 				}); 
 	 		}) ;	
+	 		
+	 		$("[taskId]").live("click",function(){
+				var taskId = $(this).attr("taskId") ;
+				openCenterWindow("/saleProduct/index.php/log/taskLog/"+taskId,600,480) ;
+				return false ;
+			})
 			
    	 });
    </script>

@@ -7,6 +7,9 @@ class Log extends AppModel {
 	 * 日志操作
 	 */
 	public function savelog($taskId, $message){
+		if(empty($taskId)){
+			$taskId = "anomys" ;
+		}
 		$message = $this->formatSqlParams($message) ;
 		$sql = "insert into sc_exe_log(task_id,message) values('".$taskId."','".$message."')" ;
 		$this->query($sql) ;
@@ -27,5 +30,24 @@ class Log extends AppModel {
 		
 		$sql = "select * from sc_exe_log where task_id = '".$taskId."' and status = 'read'" ;
 		return $this->query($sql) ;
+	}
+	
+	function getTaskLogGridRecords($taskid,$query=null){
+		$limit =  $query["limit"] ;
+		$curPage =  $query["curPage"] ;
+		$start =  $query["start"] ;
+		$end =  $query["end"] ;
+		
+		$sql = "SELECT *
+		FROM sc_exe_log where task_id = '$taskid'
+		limit ".$start.",".$limit;
+		$array = $this->query($sql);
+		return $array ;
+	}
+
+	function getTaskLogGridCount($taskid,$query=null){
+		$sql = "SELECT count(*) FROM sc_exe_log where task_id = '$taskid'";
+		$array = $this->query($sql);
+		return $array ;
 	}
 }

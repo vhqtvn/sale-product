@@ -16,13 +16,14 @@ class GatherProductController extends AppController {
 	); //,'Ajax','Javascript
 	
 	var $uses = array('Utils', 'Config','GatherData','GatherMarketing',"Amazonaccount","Log","Tasking");
+	public $taskId = null ;
 	
 	public function execute($asin , $accountId = null , $productId = null ){
 		$status = $this->Tasking->status("gather_product",$asin,$accountId) ;
 		if( $status ){//执行中
 			return ;
 		}else{
-			$this->Tasking->start("gather_product",$asin,$accountId) ;
+			$this->taskId = $this->Tasking->start("gather_product",$asin,$accountId) ;
 		}
 		
 		try{
@@ -36,6 +37,7 @@ class GatherProductController extends AppController {
 			}
 			$this->Tasking->stop("gather_product",$asin,$accountId) ;
 		}catch(Exception $e){
+			$this->Log->saveLog($this->taskId,"error::::::".$e->getMessage()) ;
 			$this->Tasking->stop("gather_product",$asin,$accountId) ;
 		}
 	}

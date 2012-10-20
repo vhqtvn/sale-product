@@ -18,6 +18,7 @@ class GatherCategoryController extends AppController {
 	
 	var $uses = array('Utils', 'Config','GatherData',
 						'GatherMarketing',"Amazonaccount","Log","Tasking");
+	public $taskId = null ;
 	
 	/**
 	 * 执营销集分类采集
@@ -27,7 +28,8 @@ class GatherCategoryController extends AppController {
 		if( $status ){//执行中
 			return ;
 		}else{
-			$this->Tasking->start("gather_category",$categoryId,$accountId) ;
+			$_id = $this->Tasking->start("gather_category",$categoryId,$accountId) ;
+			$this->taskId = $_id ;
 		}
 		try{
 			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集基本信息..") ;
@@ -43,6 +45,7 @@ class GatherCategoryController extends AppController {
 			
 			$this->Tasking->stop("gather_category",$categoryId,$accountId) ;
 		}catch(Exception $e){
+			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
 			$this->Tasking->stop("gather_category",$categoryId,$accountId) ;
 		}
 	}
@@ -66,15 +69,14 @@ class GatherCategoryController extends AppController {
 				}
 				
 				$index = $index + 1 ;
-				$this->Log->savelog($accountId, "start get product[ index: ".$index." ][".$asin."] details  " );
-				//echo $asin.'<br>' ;
-				$this->GatherData->asinInfo($asin,$accountId) ;
+				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] details  " );
+				$this->GatherData->asinInfo($asin,$accountId,$index,$this->taskId) ;
 			} 
 			//采集产品信息结束
-			$this->Log->savelog($accountId,"end!" );
+			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
 			try{
-				$this->Log->savelog($accountId, "error::::".$e->getMessage() );
+				$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
 			}catch(Exception $e){}
 		}
 	}
@@ -88,7 +90,7 @@ class GatherCategoryController extends AppController {
 			$array = $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 
 			$index = 0 ;
-			$this->Log->savelog($accountId, "start gather competition" );
+			$this->Log->savelog($this->taskId, "start gather competition" );
 			foreach( $array as $arr ){
 				if( $this->Tasking->isStop("gather_category",$categoryId,$accountId) ){
 					$this->Tasking->stop("gather_category",$categoryId,$accountId) ;
@@ -97,13 +99,13 @@ class GatherCategoryController extends AppController {
 				
 				$index = $index + 1 ;
 				$asin = $arr['sc_amazon_account_product']['ASIN'] ;
-				$this->Log->savelog($accountId, "start get product[ index: ".$index." ][".$asin."] competitions" );
-				$this->GatherData->asinCompetition($asin,$accountId ) ;
+				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] competitions" );
+				$this->GatherData->asinCompetition($asin,$accountId,$index,$this->taskId ) ;
 			}
-			$this->Log->savelog($accountId, "end!" );
+			$this->Log->savelog($this->taskId, "end!" );
 		
 		}catch(Exception $e){
-			$this->Log->savelog($accountId, "error::::".$e->getMessage() );
+			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
 		}
 	}
 	
@@ -115,7 +117,7 @@ class GatherCategoryController extends AppController {
 		try{
 			$array =  $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 			$index = 0 ;
-			$this->Log->savelog($accountId, "start gather fba" );
+			$this->Log->savelog($this->taskId, "start gather fba" );
 			foreach( $array as $arr ){
 				
 				if( $this->Tasking->isStop("gather_category",$categoryId,$accountId) ){
@@ -125,12 +127,12 @@ class GatherCategoryController extends AppController {
 				
 				$index = $index + 1 ;
 				$asin = $arr['sc_amazon_account_product']['ASIN'] ;
-				$this->Log->savelog($accountId, "start get product[ index: ".$index." ][".$asin."] fba" );
-				$this->GatherData->asinFbas($asin,$accountId ) ;
+				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] fba" );
+				$this->GatherData->asinFbas($asin,$accountId,$index,$this->taskId ) ;
 			}
-			$this->Log->savelog($accountId, "end!" );
+			$this->Log->savelog($this->taskId, "end!" );
 		}catch(Exception $e){
-			$this->Log->savelog($accountId, "error::::".$e->getMessage() );
+			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
 		}
 	}
 	
@@ -159,14 +161,14 @@ class GatherCategoryController extends AppController {
 				$condition = $condition == 1?"used":"new" ;
 				
 				$index = $index + 1 ;
-				$this->Log->savelog($accountId, "start get product[ index: ".$index." ][".$asin."] price" );
-				$this->GatherData->asinPrice($asin,$account['CODE'],$condition,$accountId ,$index) ;
+				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] price" );
+				$this->GatherData->asinPrice($asin,$account['CODE'],$condition,$accountId ,$index,$this->taskId) ;
 				
 			} 
 			//采集产品信息结束
-			$this->Log->savelog($accountId,"end!" );
+			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
-			$this->Log->savelog($accountId, "error::::".$e->getMessage() );
+			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
 		}
 	}
 	
@@ -222,9 +224,11 @@ class GatherCategoryController extends AppController {
 				//do nothing
 			}else{
 				$price = $processPrice - $product['SHIPPING_PRICE'] ;
-				$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price,'ORI_PRICE'=>$product['PRICE']) ;
+				$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>round($price,2),'ORI_PRICE'=>$product['PRICE']) ;
 			}
 		}
+		
+		$this->Log->savelog($this->taskId, "执行价格更新记录=>".json_encode($_products) );
 		
 		if( count($_products) <=0 ){
 			$this->response->type("html");

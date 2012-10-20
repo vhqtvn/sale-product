@@ -22,7 +22,7 @@ class GatherData extends AppModel {
 	/**
 	 * 采集ASIN基本信息
 	 */
-	public function asinInfo($asin,$id=null,$index = null){
+	public function asinInfo($asin,$id=null,$index = null,$logId=null){
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
@@ -34,7 +34,6 @@ class GatherData extends AppModel {
 		
 		try{
 			$url = "http://www.amazon.com/dp/" . $asin;
-			
 			$snoopy = new Snoopy ;
 			$snoopy->agent =  $this->getAgent($index) ;
 			$snoopy->referer = $url ;
@@ -157,23 +156,23 @@ class GatherData extends AppModel {
 					}
 					//----------------------------------------------------------------
 				}catch(Exception $e){
-					$log->savelog($id,"get product[".$asin."] details failed:::: ".$e->getMessage()) ;	
+					$log->savelog($logId,"get product[".$asin."] details failed:::: ".$e->getMessage()) ;	
 				}
 				$html->clear() ;
 				unset($html) ;
-				$log->savelog($id,"get product[".$asin."] details success!") ;	
+				$log->savelog($logId,"get product[".$asin."] details success!") ;	
 			}
 			
 			unset($snoopy) ;
 		}catch(Exception $e){
-			$log->savelog($id,"get product[".$asin."] error:::".$e->getMessage()) ;	
+			$log->savelog($logId,"get product[".$asin."] error:::".$e->getMessage()) ;	
 		}
 	}
 	
 	/**
 	 * 采集ASIN竞争信息
 	 */
-	public function asinCompetition($asin ,$id = null ){
+	public function asinCompetition($asin ,$id = null,$index=null,$logId = null ){
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
@@ -183,7 +182,7 @@ class GatherData extends AppModel {
 		
 		//echo $url ;
 		$snoopy = new Snoopy ;
-		$snoopy->agent =  $this->getAgent(0) ;
+		$snoopy->agent =  $this->getAgent($index) ;
 		$snoopy->referer = $url ;
 		$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
@@ -219,7 +218,7 @@ class GatherData extends AppModel {
 				//print_r($details) ;
 		        $service->saveCompetions($asin , $base , $details) ;
 			}catch(Exception $e){
-				$log->savelog("error" , $e->getMessage()) ;
+				$log->savelog($logId ,"error::::". $e->getMessage()) ;
 			}
 			$html->clear() ;
 			unset($html) ;
@@ -230,7 +229,7 @@ class GatherData extends AppModel {
 	/**
 	 * 采集ASIN FBA竞争信息
 	 */
-	public function asinFbas($asin ,$id = null ){
+	public function asinFbas($asin ,$id = null ,$index=null,$logId = null){
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
@@ -239,7 +238,7 @@ class GatherData extends AppModel {
 		$url = "http://www.amazon.com/gp/offer-listing/$asin?shipPromoFilter=1&dd=$d" ;
 		
 		$snoopy = new Snoopy ;
-		$snoopy->agent =  $this->getAgent(1) ;
+		$snoopy->agent =  $this->getAgent($index) ;
 		$snoopy->referer = $url ;
 		$snoopy->rawheaders["Pragma"] = "no-cache"; 
 
@@ -267,7 +266,9 @@ class GatherData extends AppModel {
 			        $service->saveFba($asin , $base , $details) ;
 		        }
 			        			
-			}catch(Exception $e){}
+			}catch(Exception $e){
+				$log->savelog($logId ,"error::::". $e->getMessage()) ;
+			}
 			$html->clear() ;
 			unset($html) ;
 		}
@@ -277,7 +278,7 @@ class GatherData extends AppModel {
 	/**
 	 * 采集ASIN价格信息
 	 */
-	public function asinPrice($asin,$code,$condition,$id=null,$index = null) {
+	public function asinPrice($asin,$code,$condition,$id=null,$index = null,$logId=null) {
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
@@ -317,16 +318,16 @@ class GatherData extends AppModel {
 					unset($arrays) ;
 					
 				}catch(Exception $e){
-					$log->savelog($id,"get product[".$asin."] price failed:::: ".$e->getMessage()) ;	
+					$log->savelog($logId,"get product[".$asin."] price failed:::: ".$e->getMessage()) ;	
 				}
 				$html->clear() ;
 				unset($html) ;
-				$log->savelog($id,"get product[".$asin."] price success!") ;	
+				$log->savelog($logId,"get product[".$asin."] price success!") ;	
 			}else{
 			}
 			unset($snoopy) ;
 		}catch( Exception $e){
-			$log->savelog($id,"get product[".$asin."] price error:::".$e->getMessage()) ;	
+			$log->savelog($logId,"get product[".$asin."] price error:::".$e->getMessage()) ;	
 		}
 	}
 
@@ -336,7 +337,7 @@ class GatherData extends AppModel {
 	/**
 	 * 通过URL采集产品
 	 */
-	public function sellerAsins($id){
+	public function sellerAsins($id,$logId=null){
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
@@ -347,7 +348,7 @@ class GatherData extends AppModel {
 		$url = $sellerurl[0]['sc_seller']['url'];
 		
 		for ($j = 1; $j < 200; $j++) {
-			$log->savelog($id,"from [".($url . "&page=" . $j)."] get products") ;
+			$log->savelog($logId,"from [".($url . "&page=" . $j)."] get products") ;
 			$snoopy = new Snoopy;
 			$snoopy->agent =  $this->getAgent($j) ;
 			$snoopy->referer = $url ;
@@ -366,10 +367,10 @@ class GatherData extends AppModel {
 		
 					for ($i = 0; $i < count($products); $i++) {
 						$productName = $products[$i]->name;
-						$log->savelog($id,'find productName:::::::::::'.$productName) ;
+						$log->savelog($logId,'find productName:::::::::::'.$productName) ;
 						echo 'productName:::::::::::'.$productName.'<br>' ;
 						$index = $index + 1 ;
-						$log->savelog($id,"find product[ index: ".$index." ]: ".$productName) ;
+						$log->savelog($logId,"find product[ index: ".$index." ]: ".$productName) ;
 						if (empty ($productName))
 							continue;
 						try {
@@ -378,16 +379,16 @@ class GatherData extends AppModel {
 							} ;
 							$service->saveGatherAsin($id, trim($productName) ) ;
 						} catch (Exception $e) {
-							$log->savelog($id,$productName." has exists!") ;
+							$log->savelog($logId,$productName." has exists!") ;
 						}
 					}
 				}catch(Exception $e){
-					print_r( $e->getMessage() ) ;
+					$log->savelog($logId,"error::::::".$e->getMessage()) ;
 				}
 				$html->clear() ;
 				unset($html) ;
 			}else{
-				$log->savelog($id,"error fetching document: ".$snoopy->error) ;
+				$log->savelog($logId,"error fetching document: ".$snoopy->error) ;
 			}
 			unset($snoopy) ;
 		}

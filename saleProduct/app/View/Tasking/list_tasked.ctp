@@ -58,11 +58,14 @@
 	       var gridConfig = {
 					columns:[
 			           	{align:"center",key:"NAME",label:"任务类型",width:"8%" },
-			           	{align:"center",key:"ASIN",label:"任务标识",width:"8%"},
-			           	{align:"center",key:"ACCOUNT_ID",label:"账号ID",width:"8%"},
+			           	{align:"center",key:"ASIN",label:"任务标识",width:"3%"},
+			           	{align:"center",key:"ACCOUNT_ID",label:"账号ID",width:"3%"},
 			           	{align:"center",key:"MESSAGE",label:'进度',width:"6%"},
 			           	{align:"center",key:"START_TIME",label:"开始时间",width:"6%"},
-			            {align:"center",key:"END_TIME",label:"结束时间",width:"6%"}
+			            {align:"center",key:"END_TIME",label:"结束时间",width:"6%"},
+			            {align:"center",key:"ID",label:"详细日志",width:"3%",format:function(val,record){
+			            	return "<a href='#' taskId='"+val+"'>查看</a>" ;
+			            }}
 			         ],
 			         ds:{type:"url",content:"/saleProduct/index.php/tasking/taskedGrid/"+accountId},
 					 limit:15,
@@ -79,6 +82,12 @@
 				} ;
 	     
 			$(".grid-content").llygrid(gridConfig) ;	
+			
+			$("[taskId]").live("click",function(){
+				var taskId = $(this).attr("taskId") ;
+				openCenterWindow("/saleProduct/index.php/log/taskLog/"+taskId,600,480) ;
+				return false ;
+			})
 			
    	 });
    </script>

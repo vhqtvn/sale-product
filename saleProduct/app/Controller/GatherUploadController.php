@@ -12,6 +12,7 @@ class GatherUploadController extends AppController {
 	); //,'Ajax','Javascript
 	
 	var $uses = array('Task', 'Config','Amazonaccount',"Utils","Log","GatherData","GatherService");
+	public $taskId = null ;
 	
 	/**
 	 * 通过商家ID采集商品
@@ -21,16 +22,16 @@ class GatherUploadController extends AppController {
 		if( $status ){//执行中
 			return ;
 		}else{
-			$this->Tasking->start("gather_seller",$id,"") ;
+			$this->taskId = $this->Tasking->start("gather_seller",$id,"") ;
 		}
 		try{
-			$this->Log->clearlog($id) ;
 			$this->GatherService->clearGatherAsin($id ) ;
-			$this->GatherData->sellerAsins($id) ;
+			$this->GatherData->sellerAsins($id,$this->taskId) ;
 			$this->taskAll($id) ;
 			
 			$this->Tasking->stop("gather_seller",$id,"") ;
 		}catch(Exception $e){
+			$this->Log->saveLog($this->taskId,"error::::::::".$e->getMessage()) ;
 			$this->Tasking->stop("gather_seller",$id,"") ;
 		}	
     }
@@ -100,7 +101,7 @@ class GatherUploadController extends AppController {
 		if( $status ){//执行中
 			return ;
 		}else{
-			$this->Tasking->start("gather_seller_all",$id,"") ;
+			$this->taskId = $this->Tasking->start("gather_seller_all",$id,"") ;
 		}
 		try{
 			$this->taskBaseInfo($id) ;
@@ -109,6 +110,7 @@ class GatherUploadController extends AppController {
 			
 			$this->Tasking->stop("gather_seller_all",$id,"") ;
 		}catch(Exception $e){
+			$this->Log->saveLog($this->taskId,"error::::::::".$e->getMessage()) ;
 			$this->Tasking->stop("gather_seller_all",$id,"") ;
 		}
 	}
@@ -119,14 +121,14 @@ class GatherUploadController extends AppController {
     public function taskBaseInfo($id=null) {
 		$array = $this->GatherService->listTaskAsins( $id ) ;
 		$index = 0 ;
-		$this->Log->savelog($id, "start gather details" );
+		$this->Log->savelog($this->taskId, "start gather details" );
 		foreach( $array as $arr ){
 			$index = $index + 1 ;
 			$asin = $arr['sc_gather_asin']['asin'] ;
-			$this->Log->savelog($id, "start get product[ index: ".$index." ][".$asin."] details" );
-			$this->GatherData->asinInfo($asin ,$id ) ;
+			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] details" );
+			$this->GatherData->asinInfo($asin ,$id,$index,$this->taskId ) ;
 		}
-		$this->Log->savelog($id, "end!" );
+		$this->Log->savelog($this->taskId, "end!" );
 	} 
 	
    /**
@@ -136,14 +138,14 @@ class GatherUploadController extends AppController {
     	//获取商家产品asin
 		$array = $this->GatherService->listTaskAsins( $id ) ;
 		$index = 0 ;
-		$this->Log->savelog($id, "start gather competition" );
+		$this->Log->savelog($this->taskId, "start gather competition" );
 		foreach( $array as $arr ){
 			$index = $index + 1 ;
 			$asin = $arr['sc_gather_asin']['asin'] ;
-			$this->Log->savelog($id, "start get product[ index: ".$index." ][".$asin."] competitions" );
-			$this->GatherData->asinCompetition($asin,$id ) ;
+			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] competitions" );
+			$this->GatherData->asinCompetition($asin,$id ,$index,$this->taskId ) ;
 		}
-		$this->Log->savelog($id, "end!" );
+		$this->Log->savelog($this->taskId, "end!" );
     }
     
     /**
@@ -152,14 +154,14 @@ class GatherUploadController extends AppController {
     public function taskFba($id){
     	$array = $this->GatherService->listTaskAsins( $id ) ;
 		$index = 0 ;
-		$this->Log->savelog($id, "start gather fba" );
+		$this->Log->savelog($this->taskId, "start gather fba" );
 		foreach( $array as $arr ){
 			$index = $index + 1 ;
 			$asin = $arr['sc_gather_asin']['asin'] ;
-			$this->Log->savelog($id, "start get product[ index: ".$index." ][".$asin."] fba" );
-			$this->GatherData->asinFbas($asin,$id ) ;
+			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] fba" );
+			$this->GatherData->asinFbas($asin,$id ,$index,$this->taskId ) ;
 		}
-		$this->Log->savelog($id, "end!" );
+		$this->Log->savelog($this->taskId, "end!" );
     }
     
 }

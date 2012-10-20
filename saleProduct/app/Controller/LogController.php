@@ -16,7 +16,7 @@ class LogController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Task', 'Config','Amazonaccount',"Utils");
+	var $uses = array('Task', 'Config','Amazonaccount',"Utils","Log");
 	
 	/**
 	 * 获取日志信息显示
@@ -26,5 +26,19 @@ class LogController extends AppController {
 		$this->response->type("json");
 		$this->response->body(json_encode($logs));
 		return $this->response;
+	}
+	
+	public function taskLog($taskId){
+		$this->set("taskId",$taskId) ;
+	}
+	
+	public function taskLogGrid($taskId){
+		$records =  $this->Log->getTaskLogGridRecords($taskId, $this->request->query ) ;
+		$count   =  $this->Log->getTaskLogGridCount($taskId, $this->request->query ) ;
+
+		$this->response->type("json") ;
+		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
+
+		return $this->response ;
 	}
 }

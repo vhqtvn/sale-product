@@ -16,6 +16,9 @@ class Tasking extends AppModel {
 			values('$type','$asin','$accountId',NOW(),'','开始执行...')" ;
 			
 		$this->query($sql) ;
+		
+		$task = $this->getTasking( $type , $asin , $accountId) ;
+		return $task['ID'] ;
 	}
 	
 	public function setStep($type , $asin , $accountId , $message){
@@ -42,6 +45,7 @@ class Tasking extends AppModel {
 	 * 判断当前任务状态
 	 */
 	public function status($type , $asin , $accountId){
+		$accountId = trim($accountId) ;
 		$sql = "select * from sc_tasking 
 			 		where task_type ='$type' and asin='$asin' and account_id = '$accountId'" ;
 		$s = $this->query($sql) ;
@@ -53,8 +57,9 @@ class Tasking extends AppModel {
 	
 	public function getTasking($type , $asin , $accountId){
 		$sql = "select * from sc_tasking 
-			 		where task_type ='$type' and asin='$asin' and account_id = '$accountId'" ;
+			 		where task_type ='$type' and asin='$asin' and account_id='$accountId'" ;
 		$s = $this->query($sql) ;
+		//print_r($s) ;
 		if(count($s) >= 1){
 			return $s[0]['sc_tasking'] ;
 		}
@@ -84,10 +89,24 @@ class Tasking extends AppModel {
 		$this->query($sql) ;
 	}
 	
-	public function stopByFront($id){
-		$sql = "update sc_tasking set force_stop = '1'
+	public function stopByFront($id,$isforce=null){
+		if( $isforce == 1 ){//强制删除
+			$sql = "update sc_tasking set force_stop = '2'
 				where id = '$id'" ;
-		$this->query($sql) ;
+			$this->query($sql) ;
+		
+			$sql = "insert into sc_tasked select sc_tasking.* , NOW() as end_time from sc_tasking
+					where id = '$id'" ;
+	 		$this->query($sql) ;
+	 		
+	 		$sql = "delete from sc_tasking
+				where id = '$id'" ;
+			$this->query($sql) ;
+		}else{
+			$sql = "update sc_tasking set force_stop = '1'
+				where id = '$id'" ;
+			$this->query($sql) ;
+		}
 	}
 	
 	/**
@@ -114,7 +133,7 @@ class Tasking extends AppModel {
 		$start =  $query["start"] ;
 		$end =  $query["end"] ;
 		
-		$sql = "SELECT sc_tasking.* , sc_tasking_type.name
+		$sql = "SELECT sc_tasking.* , sc_tasking_type.NAME
 		FROM sc_tasking,sc_tasking_type where sc_tasking.task_type = sc_tasking_type.code
 		limit ".$start.",".$limit;
 		$array = $this->query($sql);
@@ -135,7 +154,7 @@ class Tasking extends AppModel {
 		$end =  $query["end"] ;
 		
 		$sql = "SELECT sc_tasked.* , sc_tasking_type.NAME
-		FROM sc_tasked,sc_tasking_type where sc_tasked.task_type = sc_tasking_type.code
+		FROM sc_tasked,sc_tasking_type where sc_tasked.task_type = sc_tasking_type.code order by sc_tasked.id desc
 		limit ".$start.",".$limit;
 		$array = $this->query($sql);
 		return $array ;

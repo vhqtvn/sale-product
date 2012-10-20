@@ -60,8 +60,8 @@ class TaskingController extends AppController {
 	}
 	
 	
-	public function stop($id){
-		$this->Tasking->stopByFront($id) ;
+	public function stop($id,$isforce = null ){
+		$this->Tasking->stopByFront($id,$isforce) ;
 		
 		$this->response->type("json");
 		$this->response->body("execute complete");
