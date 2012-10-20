@@ -1,8 +1,8 @@
 .ie .bbit-tree .bbit-tree-bwrap {
 }
 
-.bbit-tree{
-	/*border:none;background:none;*/
+div.bbit-tree{
+	border:none;background:none;
 }
 
 .bbit-tree ul {
