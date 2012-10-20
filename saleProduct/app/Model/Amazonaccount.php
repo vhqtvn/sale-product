@@ -2,6 +2,16 @@
 class Amazonaccount extends AppModel {
 	var $useTable = "sc_election_rule" ;
 	
+	function getAmazonProductCategoryBySKU($accountId,$sku ){
+			$sql = "select sc_amazon_product_category.* 
+			 from sc_amazon_product_category ,sc_amazon_product_category_rel
+				where sc_amazon_product_category_rel.account_id = '$accountId'
+					and sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
+					and sc_amazon_product_category_rel.sku = '$sku' limit 0,1" ;
+			
+			return $this->query($sql) ;
+	}
+	
 	function getAmazonProductCategory($accountId,$asin = null,$type = null,$sku = null ){
 		if( !empty($sku) ){
 			$sql = "select sc_amazon_product_category.* ,
@@ -84,24 +94,26 @@ class Amazonaccount extends AppModel {
 	}
 	
 	/**
-	 * 获取分类策略
+	 * 获取分类策略  PRICE_STRATERY
 	 */
 	function getAmazonProductCategoryStratery($productCategory){
-		$str = $productCategory['PRICE_STRATERY'] ;
-		if( empty($str) ){
+		if(empty($productCategory) ){//没有设置分类
 			//获取上级策略
-			$parentCategory = $this->getAmazonProductParentCategory($productCategory) ;
-			if($productCategory == null){
-				return $str ;
-			}
-			return $this->getAmazonProductCategoryStratery($parentCategory) ;	
+			return null ;
 		}else{
+			$str = $productCategory['PRICE_STRATERY'] ;
+			if(empty($str)){
+				$parentCategory = $this->getAmazonProductParentCategory($productCategory) ;
+				if($productCategory == null){
+					return $str ;
+				}
+				return $this->getAmazonProductCategoryStratery($parentCategory) ;	
+			}
 			return $str ;
 		}
 	}
 	
 	function getAmazonProductParentCategory($productCategory){
-		$str = $productCategory['PRICE_STRATERY'] ;
 		$parentId = $productCategory['PARENT_ID'] ;
 		if( empty($parentId) ){
 			return null ;

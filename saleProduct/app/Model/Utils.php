@@ -93,8 +93,12 @@ class Utils extends AppModel {
 				}
 				
 				$sellerName = trim($sellerName) ;
-				$sellerName = iconv( 'ASCII' ,'utf-8//IGNORE' ,$sellerName ) ;
-				
+				try{
+					//print_r(">>>$sellerName") ;
+					$sellerName = iconv( 'ASCII' ,'utf-8//IGNORE' ,$sellerName ) ;
+					//print_r($sellerName) ;
+				}catch(Exception $e){
+				}
 				$index++ ;
 				$details[] = array(
 					"SELLER_NAME"=>$sellerName,
