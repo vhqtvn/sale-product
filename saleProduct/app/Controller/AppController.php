@@ -49,17 +49,22 @@ class AppController extends Controller {
 		if( isset($_COOKIE) && isset($_COOKIE["userId"]) ){
 			$userId  = $_COOKIE["userId"] ; 
 		}
-
-		if( $url == "users/login" || $this->startsWith($url,"error") || $url == 'users/logout' || $this->startsWith($url,"cron") ){
-			//ignore
-		}else{
+		
+		if( $this->Mysecurity->ignore($url) ){
 			if( !empty($userId) ){
-				
 				App::import('Model', 'User') ;
 				$u = new User() ;
 				$user1 = $u->queryUserByUserName($userId) ;
 				$user = $user1[0]['sc_user'] ;
-
+				$this->set("User" ,$user ) ;
+			}
+			//ignore
+		}else{
+			if( !empty($userId) ){
+				App::import('Model', 'User') ;
+				$u = new User() ;
+				$user1 = $u->queryUserByUserName($userId) ;
+				$user = $user1[0]['sc_user'] ;
 				$this->set("User" ,$user ) ;
 				
 				//判断用户是否有权限访问该URL

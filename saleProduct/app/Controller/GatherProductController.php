@@ -1,5 +1,11 @@
 <?php
 
+ini_set("memory_limit", "62M");
+ini_set("post_max_size", "24M");
+
+App :: import('Vendor', 'Amazon');
+
+
 /**
  * 单个产品采集
  */
@@ -9,7 +15,7 @@ class GatherProductController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Utils', 'Config','GatherData',"Amazonaccount","Log","Tasking");
+	var $uses = array('Utils', 'Config','GatherData','GatherMarketing',"Amazonaccount","Log","Tasking");
 	
 	public function execute($asin , $accountId = null , $productId = null ){
 		$status = $this->Tasking->status("gather_product",$asin,$accountId) ;
@@ -90,7 +96,7 @@ class GatherProductController extends AppController {
 		$asin = $product['ASIN'] ;
 		$sku = $product['SKU'] ;
 		//单个产品所属分类
-		$productCategory = $this->Amazonaccount->getAmazonProductCategory($accountId,$asin,null,$sku) ;
+		$productCategory = $this->Amazonaccount->getAmazonProductCategoryBySKU($accountId,$sku) ;
 		
 		//当前价格
 		$price = $product['PRICE'] + $product['SHIPPING_PRICE'] ;
@@ -101,6 +107,11 @@ class GatherProductController extends AppController {
 			$execPrice = $price ;
 		}
 		
+		if(!empty($productCategory)){
+			$productCategory = $productCategory[0]['sc_amazon_product_category'] ;
+		}
+		
+		//_processStratery
 		$processPrice = $this->GatherMarketing->_processStratery($product , $productCategory,$accountName) ;
 		
 		if(empty($processPrice)) {

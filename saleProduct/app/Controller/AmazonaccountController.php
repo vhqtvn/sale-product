@@ -5,7 +5,7 @@ App :: import('Vendor', 'Amazon');
 class AmazonaccountController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Amazonaccount', 'Config');
+    var $uses = array('Amazonaccount', 'Config','Tasking');
    
     /**
      * 数据采集管理
@@ -240,6 +240,11 @@ class AmazonaccountController extends AppController {
 	 }
 	 
 	 public function gatherDoPage($accountId , $categoryId = null ){
+	 	//最近的采集任务
+	 	$lastGatherTask = $this->Tasking->getLastGatherTask("gather_category",$categoryId ,$accountId) ;
+	 	$tasking = $this->Tasking->getTasking("gather_category",$categoryId ,$accountId) ;
+	 	$this->set("tasking",$tasking) ;
+	 	$this->set("lastGatherTask",$lastGatherTask) ;
 	 	$this->set('accountId', $accountId);
 	 	$this->set('categoryId', $categoryId );
 	 	$this->set("account",$this->Amazonaccount->getAccount($accountId,$categoryId)  ) ;
@@ -287,7 +292,6 @@ class AmazonaccountController extends AppController {
 		
 		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
 		
-		print_r($result) ;
 		$this->Amazonaccount->saveAccountFeed($result) ;
 
 		$this->response->type("html");

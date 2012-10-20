@@ -30,11 +30,17 @@ class GatherCategoryController extends AppController {
 			$this->Tasking->start("gather_category",$categoryId,$accountId) ;
 		}
 		try{
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集基本信息..") ;
 			$this->baseInfo( $accountId , $categoryId ) ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集竞争信息..") ;
 			$this->competition( $accountId , $categoryId  ) ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集FBA信息..") ;
 			$this->fba( $accountId , $categoryId ) ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集价格信息..") ;
 			$this->price( $accountId , $categoryId  ) ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始执行竞价营销..") ;
 			$this->marketing($accountId , $categoryId ) ;
+			
 			$this->Tasking->stop("gather_category",$categoryId,$accountId) ;
 		}catch(Exception $e){
 			$this->Tasking->stop("gather_category",$categoryId,$accountId) ;
@@ -181,7 +187,7 @@ class GatherCategoryController extends AppController {
 		$_products = array() ;
 		for( $i = 0 ;$i < count($products) ;$i++  ){
 			
-			if( $this->Tasking->task("gather_category",$categoryId,$accountId) ){
+			if( $this->Tasking->isStop("gather_category",$categoryId,$accountId) ){
 					$this->Tasking->stop("gather_category",$categoryId,$accountId) ;
 					exit() ;
 			}
@@ -225,7 +231,6 @@ class GatherCategoryController extends AppController {
 			$this->response->body("nothing to update");
 			return $this->response;
 		}
-		return ;
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
     	$amazon = new Amazon(

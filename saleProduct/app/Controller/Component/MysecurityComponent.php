@@ -37,6 +37,21 @@ App::uses('Security', 'Utility');
  * @link http://book.cakephp.org/2.0/en/core-libraries/components/security-component.html
  */
 class MysecurityComponent extends Component {
+	public function ignore( $url ){
+		
+		if( $url == "users/login" 
+			|| $this->startsWith($url,"error") 
+			|| $url == 'users/logout' 
+			|| $this->startsWith($url,"gatherLevel") 
+			|| $this->startsWith($url,"taskAsynAmazon") 
+		){
+			return true ;
+		}
+		
+		return false ;
+		
+	}
+	
 	public function isAllow( $url , $user ) {
 		$groupCode = $user['GROUP_CODE'] ;
 		
@@ -63,5 +78,12 @@ class MysecurityComponent extends Component {
 		
 		//未设置的默认有权限
 		return true;
+	}
+	
+	
+	function startsWith($haystack, $needle)
+	{
+	    $length = strlen($needle);
+	    return (substr($haystack, 0, $length) === $needle);
 	}
 }

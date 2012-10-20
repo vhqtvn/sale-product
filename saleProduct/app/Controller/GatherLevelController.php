@@ -17,7 +17,7 @@ class GatherLevelController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Utils', 'Config','GatherData',"Amazonaccount","Log","GatherMarketing");
+	var $uses = array('Utils', 'Config','GatherData',"Amazonaccount","Log","GatherMarketing","Tasking");
 	
 	/**
 	 * 执行采集分类采集
@@ -31,12 +31,17 @@ class GatherLevelController extends AppController {
 		}
 		
 		try{
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集基本信息..") ;
 			$this->baseInfo( $accountId , $level ) ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集竞争信息..") ;
 			$this->competition( $accountId , $level  ) ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集FBA信息..") ;
 			$this->fba( $accountId , $level ) ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集价格信息..") ;
 			$this->price( $accountId , $level  ) ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始执行竞价营销..") ;
 			$this->marketing($accountId , $level ) ;
-			
+			$this->Tasking->setStep("gather_level",$level,$accountId,"执行竞价营销结束") ;
 			$this->Tasking->stop("gather_level",$level,$accountId) ;
 		}catch(Exception $e){
 			$this->Tasking->stop("gather_level",$level,$accountId) ;
@@ -221,13 +226,14 @@ class GatherLevelController extends AppController {
 			}
 		}
 		
+		$this->Log->savelog($accountId, "执行价格更新记录=>".json_encode($_products) );
+		
 		if( count($_products) <=0 ){
 			$this->response->type("html");
 			$this->response->body("nothing to update");
 			return $this->response;
 		}
 		
-		return ;
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
     	$amazon = new Amazon(
