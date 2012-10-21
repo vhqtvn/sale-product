@@ -13,7 +13,7 @@
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/combotree/jquery.combotree');
 		echo $this->Html->css('../js/tree/jquery.tree');
-		echo $this->Html->css('style-all');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
@@ -109,6 +109,7 @@
 		<tr>
 			<td>TITLE：</td><td><?php echo $accountProduct[0]["sc_product"]["TITLE"];?></td>
 		</tr>
+		<!--
 		<tr>
 			<td>售价策略：</td><td>
 				<select id="STRATEGY">
@@ -121,8 +122,16 @@
 				</select>
 			</td>
 		</tr>
+		-->
 		<tr>
-			<td>执行价格：</td><td><input class="cost"  data-validator='required'  type="text" id="EXEC_PRICE" value="<?php echo $accountProduct[0]["sc_amazon_account_product"]["EXEC_PRICE"];?>"/></td>
+			<td>最低限价：</td>
+			<td><input class="cost"  data-validator='required' 
+				 type="text" id="EXEC_PRICE" value="<?php echo $accountProduct[0]["sc_amazon_account_product"]["EXEC_PRICE"];?>"/>
+				 
+				 <div class="alert alert-message" style="margin-top:5px;margin-bottom:5px;">
+				 	最低限价包括运费。只有在设置了最低限价的情况下，竞价营销才能得到有效执行。否则只涨不跌！
+				 </div>
+			</td>
 		</tr>
 		<tr>
 			<td>备注：</td><td><textarea class="cost span4" id="MEMO" style="height:100px;"><?php echo $accountProduct[0]["sc_amazon_account_product"]["MEMO"];?></textarea></td>

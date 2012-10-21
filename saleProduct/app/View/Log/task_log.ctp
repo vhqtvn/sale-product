@@ -51,7 +51,8 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"left",key:"MESSAGE",label:"内容", width:"88%"},
+		           	{align:"left",key:"MESSAGE",label:"内容", width:"80%"},
+		           	{align:"center",key:"LOG_TIME",label:"时间", width:"15%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/log/taskLogGrid/<?php echo $taskId?>"},
 				 limit:15,
