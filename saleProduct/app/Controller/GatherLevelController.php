@@ -177,6 +177,8 @@ class GatherLevelController extends AppController {
 	 * 营销
 	 */
 	public function marketing($accountId , $level ){
+		$this->Log->savelog($this->taskId, "开始执行竞价营销策略" );
+		
 		//获取分类产品信息
 		$products = $this->Amazonaccount->getAccountProductsForLevelSale( $accountId , $level ) ;
 	
@@ -224,6 +226,7 @@ class GatherLevelController extends AppController {
 			if($processPrice == $price){
 				//do nothing
 			}else{
+				//$this->Log->savelog($this->taskId, "SKU:::$sku  ==>$price " );
 				$price = $processPrice - $product['SHIPPING_PRICE'] ;
 				$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>round($price,2),'ORI_PRICE'=>$product['PRICE']) ;
 			}
@@ -231,9 +234,9 @@ class GatherLevelController extends AppController {
 		
 		$this->Log->savelog($this->taskId, "执行价格更新记录=>".json_encode($_products) );
 		if( count($_products) <=0 ){
-			$this->response->type("html");
-			$this->response->body("nothing to update");
-			return $this->response;
+			/*$this->response->type("html");
+			$this->response->body("nothing to update");*/
+			return ;//$this->response;
 		}
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
