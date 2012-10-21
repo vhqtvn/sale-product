@@ -277,7 +277,9 @@ class Amazonaccount extends AppModel {
 			$fulfillment = $data['fulfillment'] ;
 		if(isset($data['pendingQuantity']))
 			$pendingQuantity = $data['pendingQuantity'] ;
-		
+			
+		if(empty($data['ASIN']))
+			return ;
 		
 		if( !empty($tt) && count($tt) >= 1){
 			if($type == 2){
@@ -500,6 +502,7 @@ class Amazonaccount extends AppModel {
 				sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
 				and sc_amazon_account_product.account_id = '$accountId'
 				and sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
+				and sc_amazon_account_product.status = 'Y'
 				AND sc_amazon_product_category.account_id = '$accountId' $where ";
 			
 		$array = $this->query($sql);
@@ -510,7 +513,10 @@ class Amazonaccount extends AppModel {
 	function getAccountProductsForLevelSale($accountId,$level){
 		$where = " AND sc_amazon_product_category.gather_level='$level' " ;
 		if($level == '-'){
-			$where = " AND sc_amazon_product_category.gather_level not in ('A','B','C','D') " ;
+			$where = " AND (
+						sc_amazon_product_category.gather_level not in ('A','B','C','D')
+						or sc_amazon_product_category.gather_level is null
+				)" ;
 		}
 		
 		$sql = "SELECT sc_amazon_account_product.*,sc_amazon_product_category.*
@@ -520,6 +526,7 @@ class Amazonaccount extends AppModel {
 						WHERE sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
 							and sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
                             and sc_amazon_account_product.account_id = '$accountId'
+				and sc_amazon_account_product.status = 'Y'
 				AND sc_amazon_product_category.account_id = '$accountId' $where ";
 		$array = $this->query($sql);
 		
@@ -537,6 +544,7 @@ class Amazonaccount extends AppModel {
 						WHERE sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
 							and sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
                             and sc_amazon_account_product.account_id = '$accountId'
+				and sc_amazon_account_product.status = 'Y'
 				AND sc_amazon_product_category.account_id = '$accountId' $where ";
 		$array = $this->query($sql);
 		

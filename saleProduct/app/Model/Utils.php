@@ -197,6 +197,7 @@ class Utils extends AppModel {
 			$newf = fopen ($path, "wb");
 		    $downlen=0;
 		    if ($newf)
+		    	ob_start();
 				while(!feof($file)) {
 			        $data=fread($file, 1024 * 8 );	//默认获取8K
 			        $downlen+=strlen($data);	// 累计已经下载的字节数

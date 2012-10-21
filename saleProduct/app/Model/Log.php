@@ -11,7 +11,7 @@ class Log extends AppModel {
 			$taskId = "anomys" ;
 		}
 		$message = $this->formatSqlParams($message) ;
-		$sql = "insert into sc_exe_log(task_id,message) values('".$taskId."','".$message."')" ;
+		$sql = "insert into sc_exe_log(task_id,message,log_time) values('".$taskId."','".$message."',NOW())" ;
 		$this->query($sql) ;
 	}
 	
