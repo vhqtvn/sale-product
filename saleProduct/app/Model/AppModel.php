@@ -55,19 +55,55 @@ class AppModel extends Model {
 			return $agents[ $index % 2 ]  ;		
 		}
 		
-		public function creatdir($path)
-	{
-		if(!is_dir($path))
-		{
-			if($this->creatdir(dirname($path)))
+		function getRecursionWithMe($table,$idColName,$parentIdColName,$id){
+			$result = $this->getChildRecursion($table,$idColName,$parentIdColName,$id) ;
+			$sql = "select * from $table where $idColName = '$id' " ;
+			$temp = $this->query($sql) ;
+			if( count($temp) > 0 ){
+				foreach($temp as $record){
+					$record = $record[$table] ;
+					$result[] = $record ;
+				}
+			}
+			return $result ;
+		}
+		
+		function getRecursion($table,$idColName,$parentIdColName,$id){
+			$result = $this->getChildRecursion($table,$idColName,$parentIdColName,$id) ;
+			
+			return $result ;
+		}
+		
+		function getChildRecursion($table,$idColName,$parentIdColName,$id){
+			$array = array() ;
+			$sql = "select * from $table where $parentIdColName = '$id' " ;
+			$temp = $this->query($sql) ;
+			if( count($temp) > 0 ){
+				foreach($temp as $record){
+					$record = $record[$table] ;
+					$array[] = $record ;
+					$_id = $record[$idColName] ;
+					$temp1 = $this->getChildRecursion($table,$idColName,$parentIdColName,$_id) ;
+					foreach($temp1 as $record1){
+						$array[] = $record1 ;
+					}
+				}
+			}
+			return $array ;
+		}
+		
+		public function creatdir($path){
+			if(!is_dir($path))
 			{
-				mkdir($path,0777);
+				if($this->creatdir(dirname($path)))
+				{
+					mkdir($path,0777);
+					return true;
+				}
+			}
+			else
+			{
 				return true;
 			}
 		}
-		else
-		{
-			return true;
-		}
-	}
 }

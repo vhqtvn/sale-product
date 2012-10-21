@@ -561,6 +561,14 @@ class Amazonaccount extends AppModel {
 						 and ( cast(quantity as signed) > 0 or fulfillment_channel like 'AMAZON%' )";
 			$array = $this->query($sql);
 		}else{
+			$categorys = $this->getRecursionWithMe('sc_amazon_product_category','ID','PARENT_ID',$categoryId) ;
+			$catIds = array() ;
+			foreach($categorys as $category){
+				$id = $category['ID'] ;
+				$catIds[] = $id ;
+			}
+			
+			$ins = join("','",$catIds) ;
 			$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
 						FROM sc_amazon_product_category ,
 						sc_amazon_product_category_rel ,
@@ -569,7 +577,7 @@ class Amazonaccount extends AppModel {
 						 and sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id  
 						 and sc_amazon_account_product.status = 'Y'
 						 and ( cast(quantity as signed) > 0 or fulfillment_channel like 'AMAZON%' )
-				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.id='$categoryId'";
+				AND sc_amazon_product_category.account_id = '$accountId' AND sc_amazon_product_category.id in ('$ins')";
 			$array = $this->query($sql);
 		}
 		

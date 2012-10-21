@@ -24,6 +24,7 @@ class GatherCategoryController extends AppController {
 	 * 执营销集分类采集
 	 */
 	public function execute( $accountId , $categoryId ){
+		
 		$status = $this->Tasking->status("gather_category",$categoryId,$accountId) ;
 		if( $status ){//执行中
 			return ;
@@ -42,7 +43,7 @@ class GatherCategoryController extends AppController {
 			$this->price( $accountId , $categoryId  ) ;
 			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始执行竞价营销..") ;
 			$this->marketing($accountId , $categoryId ) ;
-			
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"执行竞价营销结束") ;
 			$this->Tasking->stop("gather_category",$categoryId,$accountId) ;
 		}catch(Exception $e){
 			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
@@ -231,9 +232,9 @@ class GatherCategoryController extends AppController {
 		$this->Log->savelog($this->taskId, "执行价格更新记录=>".json_encode($_products) );
 		
 		if( count($_products) <=0 ){
-			$this->response->type("html");
-			$this->response->body("nothing to update");
-			return $this->response;
+			//$this->response->type("html");
+			//$this->response->body("nothing to update");
+			return ;// $this->response;
 		}
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
