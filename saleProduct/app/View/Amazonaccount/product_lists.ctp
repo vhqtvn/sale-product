@@ -41,10 +41,10 @@
 			$id   = $sfs['ID'] ;
 			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
+			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;\n" ;
 			
 			
-			echo " treeMap['id_$id'] = item$index  ;" ;
+			echo " treeMap['id_$id'] = item$index  ;\n" ;
 			$index++ ;
 		} ;
 		$index = 0 ;
@@ -53,18 +53,18 @@
 			$id   = $sfs['ID'] ;
 			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;\n" ;
 			if(empty($pid)){
-				echo "treeData.childNodes.push( item$index ) ;" ;
+				echo "treeData.childNodes.push( item$index ) ;\n" ;
 			}else{
-				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
+				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;\n" ;
+				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;\n" ;
 			}
 			$index++ ;
 		} ;
 		
-		echo " treeMap['id_-'] = {id:'-',text:'未分类产品',memo:'',isExpand:true} ;" ;
-		echo " treeData.childNodes.push( treeMap['id_-']  ) ;" ;
+		echo " treeMap['id_-'] = {id:'-',text:'未分类产品',memo:'',isExpand:true} ;\n" ;
+		echo " treeData.childNodes.push( treeMap['id_-']  ) ;\n" ;
 	?>
    
    var accountId = '<?php echo $accountId ;?>' ;
