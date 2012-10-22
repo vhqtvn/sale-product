@@ -32,7 +32,7 @@ class Tasking extends AppModel {
 			 		where task_type ='$type' and asin='$asin' and account_id = $accountId " ;
 		
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
-		$db->_queryCache[$sql] = null ;
+		$db->_queryCache = array() ;
 		$s = $this->query($sql) ;
 		if( count($s) >= 1 ){
 			$stopFlag = $s[0]['sc_tasking']['FORCE_STOP'] ;
@@ -162,6 +162,32 @@ class Tasking extends AppModel {
 
 	function getTaskedCount($query=null){
 		$sql = "SELECT count(*) FROM sc_tasked,sc_tasking_type where sc_tasked.task_type = sc_tasking_type.code";
+		$array = $this->query($sql);
+		return $array ;
+	}
+	
+	function getGatherCategoryTaskRecords($accountId , $categoryId, $query=null){
+		$limit =  $query["limit"] ;
+		$curPage =  $query["curPage"] ;
+		$start =  $query["start"] ;
+		$end =  $query["end"] ;
+		
+		$sql = "SELECT t.* , sc_tasking_type.NAME FROM (
+			SELECT sc_tasking.* , '' AS END_TIME FROM sc_tasking WHERE task_type = 'gather_category' AND account_id = '$accountId' AND ASIN = '$categoryId'
+			UNION
+			SELECT * FROM sc_tasked WHERE task_type = 'gather_category' AND account_id = '$accountId' AND ASIN = '$categoryId'
+			) t , sc_tasking_type where sc_tasking_type.code = t.task_type   order by t.id desc
+		limit ".$start.",".$limit;
+		$array = $this->query($sql);
+		return $array ;
+	}
+
+	function getGatherCategoryTaskCount($accountId , $categoryId, $query=null){
+		$sql = "SELECT count(*) FROM (
+			SELECT sc_tasking.* , '' AS END_TIME FROM sc_tasking WHERE task_type = 'gather_category' AND account_id = '$accountId' AND ASIN = '$categoryId'
+			UNION
+			SELECT * FROM sc_tasked WHERE task_type = 'gather_category' AND account_id = '$accountId' AND ASIN = '$categoryId'
+			) t";
 		$array = $this->query($sql);
 		return $array ;
 	}
