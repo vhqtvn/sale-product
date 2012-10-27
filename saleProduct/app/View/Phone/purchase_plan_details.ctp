@@ -23,9 +23,9 @@
     	foreach( $purchaseList as $record ){
     		$index++ ;
     		//print_r($record);
-    		$scproduct =  $record['sc_product'] ;
-    		$others = $record[0] ;
-    		$record = $record['sc_purchase_plan_details'] ;
+    		$scproduct =  $record['t'] ;
+    		$others = $record['t'] ;
+    		$record = $record['t'] ;
     		
     		$title = $scproduct['TITLE'] ;
     		$localUrl = $others['LOCAL_URL'] ;

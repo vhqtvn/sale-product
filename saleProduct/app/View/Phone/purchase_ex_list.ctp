@@ -12,7 +12,7 @@
     <caption>采购执行列表</caption>
     <?php
     	foreach( $purchaseList as $record ){
-    		$record = $record['sc_purchase_plan'] ;
+    		$record = $record['t'] ;
     ?>
     <tr>
 		<td><a href="/saleProduct/index.php/phone/purchasePlanDetails/<?php echo $record['ID'];?>"><?php echo $record['NAME'];?></a></td>
