@@ -22,7 +22,7 @@
     -->
    
    <entry key="sql_purchase_plan_list">
-   SELECT  sc_purchase_plan.* ,
+      SELECT  sc_purchase_plan.* ,
 				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME,
 				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.executor ) as EXECUTOR_NAME,
 				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id

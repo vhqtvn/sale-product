@@ -34,6 +34,7 @@
 					{@ and IS_FM = '#isFM#' }
 					{@ and country >= '#outAemricanArea#' }
 					{@ and country = '#inAemricanArea#' }
+					{@ and warning like '%#warning#%' }
 					
 					{@ and ( fulfillment_channel is null or fulfillment_channel = '' ) and 1 = #fulfillmentChannelNull# }
 					{@ and fulfillment_channel like '%#fulfillmentChannel#%' }
