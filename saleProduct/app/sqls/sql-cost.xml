@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+    
+    <!--
+    	TODO:
+    	outAemricanArea: 1
+    	inAemricanArea : 0
+    	
+    	当空时设置：
+    	itemContidtionNull:1
+    	
+    	fulfillmentChannelNull:1
+    	
+    	isPriceQuery:1
+    	isQuantityQuery:1
+    	
+    	pm:other ==>0
+    	
+    	uncategory：1
+    -->
+   
+   <entry key="sql_cost_product_list">
+   SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
+				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
+				sc_sale_fba.FBA_NUM,sc_sale_competition.TARGET_PRICE,
+				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,
+				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL  
+				FROM sc_product
+				LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
+				LEFT JOIN sc_sale_fba  ON sc_sale_fba.asin = sc_product.asin
+				LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
+                LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
+                where 1=1
+                {@ and sc_product.title like '%#title#%'}
+                {@ and sc_product.asin = '#asin#'}
+                {@ and sc_product.asin in ( select sc_product_filter_details.asin 
+                	from sc_product_filter_details where sc_product_filter_details.status in (5,7)  )
+                  and 1=#unAsin#
+                }
+   </entry>
+   
+    <entry key="sql_cost_product_details_list">
+ 				 SELECT * from sc_product_cost
+                where 1=1
+                {@ and sc_product_cost.asin = '#asin#'}
+   </entry>
+   
+    <entry key="sql_supplier_list">
+ 			SELECT sc_supplier.* ,
+			( select sc_user.name from sc_user where sc_user.login_id = sc_supplier.creator ) as USERNAME
+			FROM sc_supplier
+			 where 1=1
+                {@  and name like '%#name#%'}
+   </entry>
+   
+   
+</properties>

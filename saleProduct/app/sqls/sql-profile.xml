@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="profile_getValidParams">
+        SELECT SP.GLOBAL,
+		       SPP.NAME,
+		       SPP.VALUE
+		FROM   SYS_PROFILE           SP,
+		       SYS_PROFILE_PARAMETER SPP
+		WHERE  SP.ID = SPP.PROFILE_ID
+		AND    ((SP.GLOBAL = 0 AND SP.ACTIVATE = 1) OR
+		      (SP.GLOBAL = 1 AND SP.ACTIVATE = 1))
+		ORDER  BY SP.GLOBAL DESC
+    </entry>
+    
+    <entry key="sql_product_upload">
+       		SELECT sc_upload.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_upload.id ) as TOTAL,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_upload.uploador ) as USERNAME
+              FROM sc_upload 
+              where 1=1 {@and sc_upload.group_id = '#groupId#' }
+               order by upload_time desc 
+    </entry>
+    
+     <entry key="sql_seller">
+       		SELECT sc_seller.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_seller.id ) as TOTAL
+		,( select sc_user.name from sc_user where sc_user.login_id = sc_seller.creator ) as USERNAME
+		FROM sc_seller
+    </entry>
+    
+    <entry key="sql_product_list">
+       		SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
+				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
+				sc_sale_fba.FBA_NUM,sc_sale_competition.TARGET_PRICE,
+				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,
+				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL  
+				FROM sc_product
+				LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
+				LEFT JOIN sc_sale_fba  ON sc_sale_fba.asin = sc_product.asin
+				LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
+                LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
+                where 1=1 
+                {@  and sc_product.title like '%#title#%' }
+                {@  and sc_product.asin = '#asin#' }
+                {@  and sc_product.test_status = '#test_status#' }
+                {@  and sc_product.user_status = '#user_status#' }
+                {@  and sc_product.asin in ( select sc_product_category_rel.asin  
+                		from sc_product_category_rel where sc_product_category_rel.category_id = '#categoryId#' ) }
+               
+    </entry>
+    
+    <entry key="sql_product_list_count">
+       		SELECT count(*) FROM sc_product 
+                where 1=1 
+                {@  and sc_product.title like '%#title#%' }
+                {@  and sc_product.asin = '#asin#' }
+                {@  and sc_product.test_status = '#test_status#' }
+                {@  and sc_product.user_status = '#user_status#' }
+                {@  and sc_product.asin in ( select sc_product_category_rel.asin  
+                		from sc_product_category_rel where sc_product_category_rel.category_id = '#categoryId#' ) }
+               
+    </entry>
+    
+    <entry key="sql_task_product_list">
+       		SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
+				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
+				sc_sale_fba.FBA_NUM,sc_sale_competition.TARGET_PRICE,
+				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,
+				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL  
+				FROM sc_gather_asin  , sc_product
+				LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
+				LEFT JOIN sc_sale_fba  ON sc_sale_fba.asin = sc_product.asin
+				LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
+                LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
+                where sc_product.asin = sc_gather_asin.asin 
+       		    {@  and sc_gather_asin.task_id = '#taskId}' }
+                {@  and sc_product.title like '%#title#%' }
+                {@  and sc_product.asin = '#asin#' }
+               
+    </entry>
+    
+    <entry key="sql_task_product_list_count">
+       		SELECT count(*) FROM  sc_product , sc_gather_asin 
+       		 where sc_product.asin = sc_gather_asin.asin 
+       		    {@  and sc_gather_asin.task_id = '#taskId}' }
+                {@  and sc_product.title like '%#title#%' }
+                {@  and sc_product.asin = '#asin#' }
+               
+    </entry>
+    
+    <entry key="sql_flow_list">
+       		SELECT sc_product_flow.*,
+			( select sc_user.name from sc_user where sc_user.login_id = sc_product_flow.creator ) as USERNAME
+			FROM sc_product_flow order by create_time desc 
+               
+    </entry>
+    
+    <entry key="sql_flow_details_list">
+    	select * from (
+       		 SELECT * FROM sc_product_flow_details WHERE 1=1 {@ and task_id = '#taskId#' }
+			{@ UNION
+			SELECT * FROM sc_product_flow_details_history WHERE task_id = '#taskId#' }
+		) t
+    </entry>
+    
+    <!--帅选规则管理-->
+    <entry key="sql_rule_script">
+    	SELECT * FROM sc_election_rule where status='enabled' 
+    </entry>
+    
+    <entry key="sql_rule_item_config">
+    	SELECT * FROM sc_config where 1=1 {@ and sc_config.type = '#type#' }
+    </entry>
+    
+     <entry key="sql_account_list">
+    	SELECT sc_amazon_account.*,( select count(1) from sc_amazon_account_product where
+				sc_amazon_account_product.account_id = sc_amazon_account.id ) as TOTAL
+		,( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account.creator ) as USERNAME
+		FROM sc_amazon_account where 1=1 {@ and domain = '#domain#'}
+    </entry>
+    
+    <entry key="sql_account_list_count">
+    	SELECT count(*) FROM sc_amazon_account where 1=1 {@ and domain = '#domain#'}
+    </entry>
+    
+    <entry key="sql_account_config">
+    SELECT * 
+		FROM sc_amazon_config
+    </entry>
+    
+     <entry key="sql_tasking_list">
+    SELECT sc_tasking.* , sc_tasking_type.NAME
+		FROM sc_tasking,sc_tasking_type where sc_tasking.task_type = sc_tasking_type.code
+    </entry>
+    
+     <entry key="sql_tasked_list">
+    	SELECT sc_tasked.* , sc_tasking_type.NAME
+		FROM sc_tasked,sc_tasking_type where sc_tasked.task_type = sc_tasking_type.code order by sc_tasked.id desc
+    </entry>
+    
+     <entry key="sql_product_asyn_history">
+    	SELECT *,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account_asyn.creator ) as USERNAME
+				FROM sc_amazon_account_asyn where 1=1 {@ and account_id = '#accountId#' }
+				and report_type = '_GET_FLAT_FILE_OPEN_LISTINGS_DATA_'
+				and status = 'complete' order by create_time desc
+    </entry>
+    
+     <entry key="sql_product_active_asyn_history">
+    	SELECT *,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account_asyn.creator ) as USERNAME
+				FROM sc_amazon_account_asyn where  1=1 {@ and account_id = '#accountId#' }
+				and report_type = '_GET_MERCHANT_LISTINGS_DATA_'
+				and status = 'complete' order by create_time desc  
+    </entry>
+    
+    <entry key="sql_gather_category_task">
+    	SELECT t.* , sc_tasking_type.NAME FROM (
+			SELECT sc_tasking.* , '' AS END_TIME , 1 as TYPE FROM sc_tasking WHERE task_type = 'gather_category' AND 
+			{@ account_id = '#accountId#'}
+			{@ AND ASIN = '#categoryId#' }
+			UNION
+			SELECT sc_tasked.* , 2 as TYPE FROM sc_tasked WHERE task_type = 'gather_category' AND 
+			{@ account_id = '#accountId#'}
+			{@ AND ASIN = '#categoryId#' }
+				  order by END_TIME desc
+			) t , sc_tasking_type where sc_tasking_type.code = t.task_type order by t.type , t.END_TIME desc
+    </entry>
+    
+    
+    
+</properties>

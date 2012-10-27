@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+    
+    <!--
+    	TODO:
+    	outAemricanArea: 1
+    	inAemricanArea : 0
+    	
+    	当空时设置：
+    	itemContidtionNull:1
+    	
+    	fulfillmentChannelNull:1
+    	
+    	isPriceQuery:1
+    	isQuantityQuery:1
+    	
+    	pm:other ==>0
+    	
+    	uncategory：1
+    -->
+   
+   <entry key="sql_user_list">
+  SELECT sc_user.* , (select name from sc_security_groups where sc_security_groups.code = sc_user.group_code ) as GROUP_NAME
+			FROM sc_user 
+   </entry>
+   
+   <entry key="sql_groups_list">
+		 SELECT * FROM sc_security_groups 
+   </entry>
+   
+   <entry key="sql_functions_list">
+		SELECT * FROM sc_security_function 
+   </entry>
+  
+   <entry key="sql_union_seller">
+		SELECT * FROM sc_union_seller where 1=1 {@ and account_id = '#accountId#'} 
+   </entry> 
+   
+   
+   
+   <entry key="sql_warning_list">
+		SELECT * FROM sc_account_product_warning where 1=1 {@ and account_id = '#accountId#'} 
+   </entry> 
+   
+   
+</properties>

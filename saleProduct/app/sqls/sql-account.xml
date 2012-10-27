@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+    
+    <!--
+    	TODO:
+    	outAemricanArea: 1
+    	inAemricanArea : 0
+    	
+    	当空时设置：
+    	itemContidtionNull:1
+    	
+    	fulfillmentChannelNull:1
+    	
+    	isPriceQuery:1
+    	isQuantityQuery:1
+    	
+    	pm:other ==>0
+    	
+    	uncategory：1
+    -->
+    <entry key="sql_account_product_list">
+    <![CDATA[	
+		SELECT  * FROM sc_amazon_account_product 
+					where status = 'Y'
+					{@ and title like '%#title#%' }
+					{@ and asin = '#asin#' }
+					{@ and quantity >= #quantity1# }
+					{@ and quantity <= #quantity2# }
+					{@ and price >= #price1# }
+					{@ and price <= #price2# }
+					{@ and account_id = '#accountId#' }
+					{@ and IS_FM = '#isFM#' }
+					{@ and country >= '#outAemricanArea#' }
+					{@ and country = '#inAemricanArea#' }
+					
+					{@ and ( fulfillment_channel is null or fulfillment_channel = '' ) and 1 = #fulfillmentChannelNull# }
+					{@ and fulfillment_channel like '%#fulfillmentChannel#%' }
+					
+					{@ and ( item_condition is null or item_condition = '' ) and 1 = #itemContidtionNull# }
+					{@ and item_condition = '#itemCondition#' }
+					
+					{@ and ( feed_price <> '' and feed_price is not null ) and 1 = #isPriceQuery# }
+					{@ and ( feed_quantity <> '' and feed_quantity is not null ) and 1 = #isQuantityQuery# }
+					{@ and ( F_PM = '#pm#' or N_PM = '#pm#' or U_PM = '#pm#'  or FBA_PM = '#pm#' ) }
+					
+					{@ and sku not in (
+								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '#accountId#')
+						and 1= #uncategory#
+					}
+					{@ and sku in (
+								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
+								and sku is not null and account_id = '#accountId#'
+					)}
+					
+		            order by cast(sc_amazon_account_product.DAY_PAGEVIEWS as signed) desc
+	]]>	      
+    </entry>
+    
+    <entry key="sql_account_product_assign_category_list">
+    <![CDATA[
+    select t1.* from ( 	
+		SELECT  sc_amazon_account_product.* ,
+		( select count(1) from sc_amazon_product_category_rel
+							where 1=1 {@ and category_id = '#categoryId#'} and sku = sc_amazon_account_product.sku ) as checked
+		FROM sc_amazon_account_product 
+					where status = 'Y'
+					{@ and title like '%#title#%' }
+					{@ and asin = '#asin#' }
+					{@ and quantity >= #quantity1# }
+					{@ and quantity <= #quantity2# }
+					{@ and price >= #price1# }
+					{@ and price <= #price2# }
+					{@ and account_id = '#accountId#' }
+					{@ and IS_FM = '#isFM#' }
+					{@ and country >= '#outAemricanArea#' }
+					{@ and country = '#inAemricanArea#' }
+					
+					{@ and ( fulfillment_channel is null or fulfillment_channel = '' ) and 1 = #fulfillmentChannelNull# }
+					{@ and fulfillment_channel like '%#fulfillmentChannel#%' }
+					
+					{@ and ( item_condition is null or item_condition = '' ) and 1 = #itemContidtionNull# }
+					{@ and item_condition = '#itemCondition#' }
+					
+					{@ and ( feed_price <> '' and feed_price is not null ) and 1 = #isPriceQuery# }
+					{@ and ( feed_quantity <> '' and feed_quantity is not null ) and 1 = #isQuantityQuery# }
+					{@ and ( F_PM = '#pm#' or N_PM = '#pm#' or U_PM = '#pm#'  or FBA_PM = '#pm#' ) }
+					
+					{@ and  not exists (
+									select sku from sc_amazon_product_category_rel where  account_id = '#accountId#'
+										and category_id <> '#categoryId#'
+										and SKU IS NOT NULL and sc_amazon_account_product.sku = sku
+						) }
+					
+		            order by cast(sc_amazon_account_product.DAY_PAGEVIEWS as signed) desc
+		) t1 where 1=1
+		{@ and t1.checked = #checked# }
+	]]>	      
+    </entry>
+    
+    <entry key="sql_account_product_double_list">
+    <![CDATA[	
+		select t1.* from (
+		          select t.*
+		          from (
+		              SELECT  sc_amazon_account_product.*
+						FROM sc_amazon_account_product
+						where 1=1
+						{@ and  sc_amazon_account_product.account_id = '#accountId#' }
+						and exists (
+							SELECT g1.ASIN FROM ( 
+						        SELECT COUNT(sku) AS c,ASIN,fulfillment_channel FROM sc_amazon_account_product
+						       WHERE {@ account_id = '#accountId#'} AND STATUS = 'Y' GROUP BY ASIN ,FULFILLMENT_CHANNEL 
+						       ) g1 WHERE g1.c > 1  
+						  AND g1.asin = sc_amazon_account_product.asin AND 
+						 sc_amazon_account_product.fulfillment_channel = g1.fulfillment_channel
+					)
+		           ) t order by t.asin
+			  ) t1
+	]]>	      
+    </entry>
+    
+    <entry key="sql_quantity_import_log">
+    SELECT *,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account_feed.creator ) as USERNAME
+				FROM sc_amazon_account_feed where 1=1 {@ and account_id = '#accountId#'}
+				and type = '_POST_INVENTORY_AVAILABILITY_DATA_'
+   </entry>
+   
+   <entry key="sql_price_import_log">
+    SELECT *,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account_feed.creator ) as USERNAME
+				FROM sc_amazon_account_feed where 1=1 {@ and account_id = '#accountId#'}
+				and type = '_POST_PRODUCT_PRICING_DATA_'
+   </entry>
+   
+   
+</properties>
