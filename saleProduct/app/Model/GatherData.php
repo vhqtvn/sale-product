@@ -285,7 +285,7 @@ class GatherData extends AppModel {
 		
 		try{
 			$url = "http://www.amazon.com/gp/offer-listing/$asin/?condition=$condition&me=$code" ;
-
+	
 			$d = date("U") ;
 			$url = $url."&ddd=$d" ;
 				
@@ -300,9 +300,10 @@ class GatherData extends AppModel {
 				$html = new simple_html_dom();
 				$html->load( $Result  ,true ,false );
 				
+				$arrays = array() ;
 				try{
 					//////////////////////////////////////////////////////////////////////////////////////////
-					$arrays = array() ;
+					
 					foreach(  $html->find("h2") as $e){ 
 						if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
 							$arrays = $utils->_processRowPrice($id,$e,'11',$arrays,"FM") ;
@@ -315,14 +316,15 @@ class GatherData extends AppModel {
 					//////////////////////////////////////////////////////////////////////////////////////////
 					//更新产品基本信息
 					$service->updateAmazonProductShipping($asin,$id,$arrays);
-					unset($arrays) ;
+					
 					
 				}catch(Exception $e){
 					$log->savelog($logId,"get product[".$asin."] price failed:::: ".$e->getMessage()) ;	
 				}
 				$html->clear() ;
 				unset($html) ;
-				$log->savelog($logId,"get product[".$asin."] price success!") ;	
+				$log->savelog($logId,"get product[".$asin."] price success!".json_encode($arrays).">>[$url]") ;	
+				unset($arrays) ;
 			}else{
 			}
 			unset($snoopy) ;
@@ -368,7 +370,6 @@ class GatherData extends AppModel {
 					for ($i = 0; $i < count($products); $i++) {
 						$productName = $products[$i]->name;
 						$log->savelog($logId,'find productName:::::::::::'.$productName) ;
-						echo 'productName:::::::::::'.$productName.'<br>' ;
 						$index = $index + 1 ;
 						$log->savelog($logId,"find product[ index: ".$index." ]: ".$productName) ;
 						if (empty ($productName))
