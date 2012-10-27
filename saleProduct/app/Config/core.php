@@ -172,9 +172,22 @@
  * the cake shell command: cake schema create Sessions
  *
  */
-	Configure::write('Session', array(
-		'defaults' => 'cake'
+	/*Configure::write('Session', array(
+		'defaults' => 'php',
+		'handler' => 'cookiedb'
 	));
+	*/
+	Configure::write('Session', array(
+        'defaults' => 'database',
+        'cookie'=>'saleProduct',
+        'handler' => array(
+            'engine' => 'CookiedbSession',
+            'model' => 'cake_session',
+            'cache' => 'apc'
+        )
+    ));
+	
+	//Configure::write('Session.save', 'database');
 
 /**
  * The level of CakePHP security.
