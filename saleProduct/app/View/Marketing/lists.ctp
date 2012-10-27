@@ -62,13 +62,13 @@
 						return html.join("") ;
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/marketing/marketingTestGrid"},//salegrid/purchasePlan
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},//salegrid/purchasePlan
 				 limit:5,
 				 pageSizes:[10,20,30,40],
 				 height:100,
 				 title:"筛选列表",
 				 indexColumn:true,
-				 querys:{},
+				 querys:{sqlId:"sql_marketing_test_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
 				 	var planId = rowData.ID  ;
@@ -125,13 +125,13 @@
 						
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/marketing/marketingTestDetailsGrid"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:300,
 				 title:"",
 				 indexColumn:true,
-				 querys:{planId:'-----'},
+				 querys:{planId:'-----',sqlId:"sql_marketing_test_details_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){

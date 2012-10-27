@@ -37,25 +37,6 @@ class SalegridController extends AppController {
 		return $this->response ;
 	}
 	
-	public function purchasePlan($flag){
-		$user =  $this->getCookUser() ;
-		$records=  $this->Salegrid->getPurchasePlanRecords( $this->request->query ,$user,$flag ) ;
-		$count=  $this->Salegrid->getPurchasePlanCount( $this->request->query ,$user,$flag ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
-	
-	public function purchasePlanDetails(){
-		$user =  $this->getCookUser() ;
-		$records=  $this->Salegrid->getPurchasePlanDetailsRecords( $this->request->query ,$user ) ;
-		$count=  $this->Salegrid->getPurchasePlanDetailsCount( $this->request->query ,$user ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
 	
 	public function purchasePlanPrints(){
 		$user =  $this->getCookUser() ;
@@ -66,18 +47,6 @@ class SalegridController extends AppController {
 		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
 		return $this->response ;
 	}
-	
-	public function deletePurchasePlanDetails(){
-		$user =  $this->getCookUser() ;
-		$records=  $this->Salegrid->getDeletePurchasePlanDetailsRecords( $this->request->query ,$user ) ;
-		$count=  $this->Salegrid->getDeletePurchasePlanDetailsCount( $this->request->query ,$user ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
-	
-	
 	
 	//获取所有审批通过产品
 	public function filterApply($id = null){

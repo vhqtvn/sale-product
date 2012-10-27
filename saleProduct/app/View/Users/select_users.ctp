@@ -59,7 +59,7 @@
 				 pageSizes:[10,20,30,40],
 				 height:200,
 				 title:"用户列表",
-				 rowDblClick:function(record){//
+				 rowDblClick:function(type,record){//
 				 	selectedUser = record ;
 				 	$(".ui-state-focus").html(record.NAME) ;
 				 },

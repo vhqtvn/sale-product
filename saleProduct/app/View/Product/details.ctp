@@ -17,12 +17,9 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
+		$username = $user["NAME"] ;
 		
 	?>
 	<?php
@@ -59,12 +56,7 @@
 			$fbs[] = $fb['sc_sale_fba_details'] ;
 		} ;
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
-		$username = $user["NAME"] ;
+		
 	?>
   
    <style>

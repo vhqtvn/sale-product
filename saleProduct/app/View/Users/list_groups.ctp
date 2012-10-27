@@ -88,13 +88,13 @@
 					{align:"center",key:"CODE",label:"代码", width:"15%"},
 		           	{align:"center",key:"NAME",label:"用户组名称",width:"20%",forzen:false,align:"left"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/groups"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:200,
 				 title:"用户组列表",
 				 indexColumn:false,
-				 // querys:{name:"hello",name2:"world"},
+				  querys:{sqlId:"sql_groups_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });

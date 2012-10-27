@@ -228,7 +228,8 @@ class GatherLevelController extends AppController {
 			}else{
 				//$this->Log->savelog($this->taskId, "SKU:::$sku  ==>$price " );
 				$price = $processPrice - $product['SHIPPING_PRICE'] ;
-				$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>round($price,2),'ORI_PRICE'=>$product['PRICE']) ;
+				if( round($price,2) != $product['PRICE'] )
+					$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>round($price,2),'ORI_PRICE'=>$product['PRICE']) ;
 			}
 		}
 		

@@ -71,13 +71,13 @@
 		           	{align:"center",key:"QUALITY_POINTS",label:"质量分",width:"5%"}
 		           	
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/cost/product/"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:200,
 				 title:"产品列表",
 				 indexColumn:true,
-				 querys:{},
+				 querys:{sqlId:"sql_cost_product_list",unAsin:1},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
 				 	var asin = rowData.ASIN  ;
@@ -139,13 +139,13 @@
 					}?>
 		           	
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/cost/productCost"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:100,
 				 title:"",
 				 indexColumn:true,
-				 querys:{asin:'-----'},
+				 querys:{asin:'-----',sqlId:"sql_cost_product_details_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){
@@ -174,6 +174,8 @@
 				var querys = {} ;
 				if(asin){
 					querys.asin = asin ;
+				}else{
+					querys.unAsin = 1 ;
 				}
 				if(title){
 					querys.title = title ;

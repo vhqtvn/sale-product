@@ -126,12 +126,13 @@ class Amazonaccount extends AppModel {
 	}
 	
 	function saveCategory($category,$user,$accountId){
-		$memo = $category['memo'] ;
-		$name = $category['name'] ;
-		$gatherLevel = $category['gatherLevel'] ;
-		$priceStratery = $category['priceStratery'] ;
-		
+		$memo = $this->getValue( $category, 'memo') ;
+		$name = $this->getValue( $category,'name') ;
+		$gatherLevel = $this->getValue( $category,'gatherLevel');
+		$priceStratery = $this->getValue( $category,'priceStratery') ;
+		$id = '' ;
 		if( isset( $category['id'] )  ){//update
+			$id = $category['id'] ;
 			$sql = "
 				UPDATE  sc_amazon_product_category 
 					SET
@@ -142,22 +143,41 @@ class Amazonaccount extends AppModel {
 					PARENT_ID = '".$category['parentId']."'
 					WHERE
 					ID = '".$category['id']."'" ;
-					
 					$this->query($sql) ;
 		}else{//insert
+			$sql = "select max(id) as m from sc_amazon_product_category " ;
+			$result = $this->query($sql) ;
+			$id = 1 ;
+			if(isset($result) &&  !empty($result)){
+				$id = $result[0][0]['m'] +1 ;
+			}
+		
 			$sql = "
 				INSERT INTO sc_amazon_product_category 
-					( NAME, 
+					(ID, NAME, 
 					PARENT_ID, 
 					MEMO,creator,create_time,account_id,gather_level,PRICE_STRATERY
 					)
 					VALUES
-					( '$name', 
+					('$id',  '$name', 
 					'".$category['parentId']."', 
 					'$memo','".$user['LOGIN_ID']."',NOW(),'$accountId','$gatherLevel','$priceStratery'
 					)" ;
-					
-					$this->query($sql) ;
+
+				$this->query($sql) ;
+		}
+		
+		//save relation
+		$warning = $this->getValue($category , 'warning') ;
+		$sql = "delete from sc_warning_category where category_id = '$id'" ;
+		$this->query($sql) ;
+		
+		if( !empty($warning) ){
+			$warnings = explode(",",$warning) ;
+			foreach($warnings as $item){
+				$sql = "insert into sc_warning_category(warning_id , category_id) values( '$item','$id' )" ;
+				$this->query($sql) ;
+			}
 		}
 	}
 

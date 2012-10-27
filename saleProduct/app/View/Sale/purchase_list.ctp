@@ -16,13 +16,9 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
-		
+		$user = $this->Session->read("product.sale.user") ;
 		$groupCode = $user["GROUP_CODE"] ;
+		$loginId = $user['LOGIN_ID'] ;
 	?>
   
    <script type="text/javascript">
@@ -59,6 +55,10 @@
 	 }
 
 	$(function(){
+			var loginId = "" ;
+			<?php if( $flag == 1 ){ ?>
+				loginId = '<?php echo $loginId;?>'
+			<?php } ?>
 			$(".grid-content").llygrid({
 				columns:[
 		           	//{align:"center",key:"ID",label:"编号", width:"5%"},
@@ -115,13 +115,13 @@
 						return "" ;
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/salegrid/purchasePlan/<?php echo $flag;?>"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/<?php echo $flag;?>"},
 				 limit:5,
 				 pageSizes:[5,10,20,30,40],
 				 height:130,
 				 title:"筛选列表",
 				 indexColumn:false,
-				 querys:{},
+				 querys:{loginId:loginId,sqlId:"sql_purchase_plan_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
 				 	if(isLinkClick){
@@ -139,7 +139,15 @@
 			 	isLinkClick = true ;
 				var planId = $(el).attr("planId") ;
 				var status = $(el).attr("status") ;
-				$(".grid-content-details").llygrid("reload",{planId:planId,status:status}) ;
+				
+				var params = {} ;
+				params.planId = planId ;
+				if(status == 1){
+					params.status1 = 1 ;
+				}else{
+					params.status = status ;
+				}
+				$(".grid-content-details").llygrid("reload",params) ;
 				return false ;
 			} ;
 			
@@ -184,7 +192,7 @@
 			$(".grid-content-details").llygrid({
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
-					{align:"left",key:"ID",label:"操作",forzen:true,width:"9%",format:function(val,record){
+					{align:"left",key:"ID",label:"操作",forzen:false,width:"9%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><?php echo $this->Html->image('edit.png') ?></a>&nbsp;') ;
@@ -209,7 +217,7 @@
 						return html.join("") ;
 						
 					}},
-					{align:"left",key:"ID",label:"状态",forzen:true,width:"7%",format:function(val,record){
+					{align:"left",key:"ID",label:"状态",forzen:false,width:"7%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						if( !status || status == 1){
@@ -383,13 +391,13 @@
 		            {align:"center",key:"SAMPLE_CODE",label:"样品编码",width:"8%"}
 		           	
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/salegrid/purchasePlanDetails"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:300,
 				 title:"",
 				 indexColumn:false,
-				 querys:{planId:'-----',status:""},
+				 querys:{planId:'-----',status:"",sqlId:"sql_purchase_plan_details_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){

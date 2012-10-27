@@ -60,13 +60,13 @@
 		           	{align:"center",key:"CREATE_TIME",label:"CREATE_TIME", width:"10%"},
 		           	{align:"center",key:"CREATOR",label:"CREATOR", width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/flowDetail/"+taskId},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+taskId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"流量信息列表",
 				 indexColumn:true,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_flow_details_list",taskId:taskId},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 

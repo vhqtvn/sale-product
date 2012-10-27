@@ -51,7 +51,7 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/users/editUser/"+id,400,300) ;
+					openCenterWindow("/saleProduct/index.php/users/editUser/"+id,600,400) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
@@ -66,7 +66,7 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/users/editUser",400,300) ;
+					openCenterWindow("/saleProduct/index.php/users/editUser",600,400) ;
 				} 
 				return false ;
 			})
@@ -86,13 +86,13 @@
 		           	{align:"center",key:"LOGIN_ID",label:"登录ID",width:"20%"},
 		           	{align:"center",key:"GROUP_NAME",label:"用户组",width:"20%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/users"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:200,
 				 title:"用户列表",
 				 indexColumn:false,
-				 // querys:{name:"hello",name2:"world"},
+				  querys:{sqlId:"sql_user_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });

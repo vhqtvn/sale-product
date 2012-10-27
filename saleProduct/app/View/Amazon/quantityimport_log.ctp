@@ -81,13 +81,13 @@
 		           	}}
 					
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/productFeedQuantityHistory/"+accountId},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:250,
 				 title:"价格更新历史",
 				 indexColumn:false,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{accountId:accountId,sqlId:"sql_quantity_import_log"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 		}) ;

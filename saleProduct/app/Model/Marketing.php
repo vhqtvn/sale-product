@@ -14,69 +14,6 @@ class Marketing extends AppModel {
 		return $array ;
 	}
 	
-	function getMarketingTestGridRecords($query=null,$user){
-		$limit =  $query["limit"] ;
-		$curPage =  $query["curPage"] ;
-		$start =  $query["start"] ;
-		$end =  $query["end"] ;
-		$loginId = $user["LOGIN_ID"] ;
-		
-		$where = " where 1 = 1 " ;
-
-		$sql = "SELECT  sc_marketing_test.* ,
-				( select sc_user.name from sc_user where sc_user.login_id = sc_marketing_test.creator ) as USERNAME
-               FROM sc_marketing_test $where  order by sc_marketing_test.create_time desc limit ".$start.",".$limit;
-		$array = $this->query($sql);
-		return $array ;
-	}
-
-	function getMarketingTestGridCount($query=null,$user){
-		$loginId = $user["LOGIN_ID"] ;
-		
-		$where = " where 1 = 1 " ;
-
-		
-		$sql = "SELECT count(*) FROM sc_marketing_test $where ";
-		$array = $this->query($sql);
-		return $array ;
-	}
-	
-	
-		
-	function getMarketingTestDetailsGridRecords($query=null,$user){
-		$limit =  $query["limit"] ;
-		$curPage =  $query["curPage"] ;
-		$start =  $query["start"] ;
-		$end =  $query["end"] ;
-		$loginId = $user["LOGIN_ID"] ;
-		$planId = $query["planId"] ;
-		
-		$where = " where 1 = 1 and  sc_marketing_test_details.asin = sc_product.asin and sc_marketing_test_details.plan_id = '$planId' " ;
-
-		$sql = "SELECT  sc_marketing_test_details.* ,
-				 sc_product.TITLE , sc_product_flow_details.DAY_PAGEVIEWS ,
-                (select sc_supplier.name from sc_supplier where sc_supplier.id = sc_marketing_test_details.PROVIDOR ) as PROVIDOR_NAME,
-				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL,
-				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,sc_sale_competition.TARGET_PRICE
-               FROM sc_marketing_test_details , sc_product
-			LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
-			left join sc_product_flow_details on sc_product_flow_details.asin = sc_product.asin $where
-			limit ".$start.",".$limit;
-		$array = $this->query($sql);
-		return $array ;
-	}
-
-	function getMarketingTestDetailsGridCount($query=null,$user){
-		$loginId = $user["LOGIN_ID"] ;
-		$planId = $query["planId"] ;
-		
-		$where = " where 1 = 1 and  sc_marketing_test_details.asin = sc_product.asin and sc_marketing_test_details.plan_id = '$planId' " ;
-		
-		$sql = "SELECT count(*) FROM sc_marketing_test_details , sc_product $where ";
-		$array = $this->query($sql);
-		return $array ;
-	}
-	
 
 	public function saveMarketingTestPlan($data,$user){
 		$loginId = $user["LOGIN_ID"] ;

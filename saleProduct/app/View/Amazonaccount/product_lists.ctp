@@ -20,11 +20,7 @@
 		echo $this->Html->script('layout/jquery.layout');
 		echo $this->Html->script('tree/jquery.tree');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
 	?>
 	
@@ -63,8 +59,8 @@
 			$index++ ;
 		} ;
 		
-		echo " treeMap['id_-'] = {id:'-',text:'未分类产品',memo:'',isExpand:true} ;\n" ;
-		echo " treeData.childNodes.push( treeMap['id_-']  ) ;\n" ;
+		echo " treeMap['id_uncategory'] = {id:'uncategory',text:'未分类产品',memo:'',isExpand:true} ;\n" ;
+		echo " treeData.childNodes.push( treeMap['id_uncategory']  ) ;\n" ;
 	?>
    
    var accountId = '<?php echo $accountId ;?>' ;
@@ -103,13 +99,13 @@
 					if( id == 'root' ){
 						currentCategoryId = "" ;
 						currentCategoryText = "" ;
-						$(".grid-content").llygrid("reload",{categoryId:"",accountId:accountId},
-							{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
+						$(".grid-content").llygrid("reload",getQueryCondition(),
+							{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
 					}else{
 						currentCategoryId = id ;
 						currentCategoryText = text ;
-						$(".grid-content").llygrid("reload",{categoryId:id,accountId:accountId},
-							{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
+						$(".grid-content").llygrid("reload",getQueryCondition(),
+							{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
 					}
 				}
 	       }) ;
@@ -126,7 +122,8 @@
 							return html.join("") ;
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
-			           		return "<a href='#' class='product-detail' asin='"+val+"' sku='"+record.SKU+"'>"+val+"</a>" ;
+			           		var memo = record.MEMO||"" ;
+			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+val+"</a>" ;
 			           	}},
 			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
 			           		if(val){
@@ -186,13 +183,14 @@
 			           	{align:"center",key:"FBA_COST",label:"总成本",group:"FBA",width:"6%"}//,
 			           	//{align:"center",key:"FBA_LOWER",label:"最低销售价",group:"FBA",width:"10%"}*/
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId},
+			         //ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId},
+			         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
 					 title:"",
 					 indexColumn:false,
-					 querys:{accountId:accountId},
+					 querys:{accountId:accountId,sqlId:"sql_account_product_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
 						$(".country-area-flag").parents("tr").css("background","#EEE") ;
@@ -207,7 +205,6 @@
 				var val = $(this).attr("val") ;
 				openCenterWindow("/saleProduct/index.php/amazonaccount/editAccountProduct/"+val,600,480) ;
 			}) ;
-				
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
@@ -217,12 +214,12 @@
 			
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
-					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId}}) ;	
+					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			$(".query-reply-btn").click(function(){
-				$(".grid-content").llygrid("reload",{accountId:currentAccountId,reply:'1'},
-					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/productReply/"+accountId}} ) ;	
+				$(".grid-content").llygrid("reload",{accountId:currentAccountId,reply:'1',sqlId:"sql_account_product_double_list"},
+					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}} ) ;	
 			}) ;
 			
 			$(".product-category-btn").click(function(){
@@ -245,13 +242,46 @@
 				querys.quantity2 = $("[name='quantity2']").val() ;
 				querys.price1 = $("[name='price1']").val() ;
 				querys.price2 = $("[name='price2']").val() ;
-				querys.itemCondition = $("[name='itemCondition']").val() ;
-				querys.fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
+				//querys.itemCondition = $("[name='itemCondition']").val() ;
+				//querys.fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
 				querys.isFM = $("[name='isFM']").val() ;
-				querys.pm = $("[name='pm']").val() ;
+				var pm = $("[name='pm']").val() ;
+				if(pm=='other') pm = 0 ;
+				querys.pm = pm ;
 				querys.type = '' ;
 				querys.test_status = $("[name='test_status']").val()||"" ;
-				querys.limitArea = $("[name='limitArea']").val()||"" ;
+				//querys.limitArea = $("[name='limitArea']").val()||"" ;
+				
+				var limitArea = $("[name='limitArea']").val()||"" ;
+				if(limitArea == 1){
+					querys.outAemricanArea = 1 ;
+				}else if(limitArea == 2){
+					querys.inAemricanArea = '0' ;
+				}
+				
+				var fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
+				if(fulfillmentChannel == '-'){
+					querys.fulfillmentChannelNull = 1 ;
+				}else if(fulfillmentChannel){
+					querys.fulfillmentChannel = fulfillmentChannel ;
+				}
+				
+				var itemCondition = $("[name='itemCondition']").val() ;
+				if(itemCondition == '-'){
+					querys.itemContidtionNull = 1 ;
+				}else if(itemCondition){
+					querys.itemCondition = itemCondition ;
+				}
+				
+				//isPriceQuery isQuantityQuery
+				if( currentCategoryId=='-'||currentCategoryId=='uncategory'){
+					querys.uncategory = 1;
+				}else if(currentCategoryId){
+					querys.categoryId = currentCategoryId;
+				}
+				
+				querys.sqlId = "sql_account_product_list" ;
+				
 				return querys ;
 			}
 			

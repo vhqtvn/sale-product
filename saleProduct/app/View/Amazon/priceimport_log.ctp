@@ -86,7 +86,7 @@
 				 height:250,
 				 title:"价格更新历史",
 				 indexColumn:false,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{accountId:accountId,sqlId:"sql_price_import_log"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 		}) ;

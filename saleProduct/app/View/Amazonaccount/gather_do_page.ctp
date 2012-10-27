@@ -115,14 +115,14 @@
 			            	return "<a href='#' taskId='"+val+"'>查看</a>" ;
 			            }}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/tasking/gatherCategoryTaskGrid/"+accountId+"/"+categoryId},
+			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:240,
 					 title:"",
 					 autoWidth:true,
 					 indexColumn:false,
-					 querys:{accountId:accountId},
+					 querys:{accountId:accountId,categoryId:categoryId,sqlId:"sql_gather_category_task"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
 						if(isRunning){

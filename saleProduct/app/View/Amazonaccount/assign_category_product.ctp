@@ -8,24 +8,20 @@
 
     <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../kissu/widgets/core/layout/layout');
-		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/layout/jquery.layout');
+		echo $this->Html->css('../js/tree/jquery.tree');
+		
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../kissu/scripts/jquery.utils');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-		echo $this->Html->script('../kissu/widgets/core/layout/jquery.layout');
-		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('layout/jquery.layout');
+		echo $this->Html->script('tree/jquery.tree');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
 	?>
 	
@@ -59,7 +55,7 @@
 	var currentAccountId = accountId ;
 	var currentCategoryId = "<?php echo $categoryId ;?>" ;
 	$(function(){
-			
+			var querys = getQueryCondition() ;
 		
 	       var gridConfig = {
 					columns:[
@@ -119,13 +115,13 @@
 			           		return val||"-" ;
 			           	}}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId},
+			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
 					 title:"",
 					 indexColumn:false,
-					 querys:{accountId:accountId},
+					 querys:querys,
 					 loadMsg:"数据加载中，请稍候......"
 				} ;
 	       
@@ -142,21 +138,21 @@
 			
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
-					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId}}) ;	
+					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			$(".checked-btn").click(function(){
 				var querys = getQueryCondition() ;
 				querys.checked = 1 ;
 				$(".grid-content").llygrid("reload",querys,
-					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId}}) ;	
+					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			$(".unchecked-btn").click(function(){
 				var querys = getQueryCondition() ;
-				querys.checked = 2 ;
+				querys.checked = 0 ;
 				$(".grid-content").llygrid("reload",querys,
-					{ds:{type:"url",content:"/saleProduct/index.php/amazongrid/categoryProduct/"+accountId}}) ;	
+					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			
@@ -183,27 +179,53 @@
 				var title = $("[name='title']").val() ;
 				var querys = {} ;
 				querys.reply = 0 ;
-				querys.accountId = currentAccountId;
-				querys.categoryId = currentCategoryId ; 
+				querys.accountId = currentAccountId||'-----';
 				querys.asin = asin ;
 				querys.title = title ;
 				querys.quantity1 = $("[name='quantity1']").val() ;
 				querys.quantity2 = $("[name='quantity2']").val() ;
 				querys.price1 = $("[name='price1']").val() ;
 				querys.price2 = $("[name='price2']").val() ;
-				querys.itemCondition = $("[name='itemCondition']").val() ;
-				querys.fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
+				//querys.itemCondition = $("[name='itemCondition']").val() ;
+				//querys.fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
 				querys.isFM = $("[name='isFM']").val() ;
-				querys.pm = $("[name='pm']").val() ;
+				var pm = $("[name='pm']").val() ;
+				if(pm=='other') pm = 0 ;
+				querys.pm = pm ;
 				querys.type = '' ;
 				querys.test_status = $("[name='test_status']").val()||"" ;
+				//querys.limitArea = $("[name='limitArea']").val()||"" ;
+				
+				var limitArea = $("[name='limitArea']").val()||"" ;
+				if(limitArea == 1){
+					querys.outAemricanArea = 1 ;
+				}else if(limitArea == 2){
+					querys.inAemricanArea = '0' ;
+				}
+				
+				var fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
+				if(fulfillmentChannel == '-'){
+					querys.fulfillmentChannelNull = 1 ;
+				}else if(fulfillmentChannel){
+					querys.fulfillmentChannel = fulfillmentChannel ;
+				}
+				
+				var itemCondition = $("[name='itemCondition']").val() ;
+				if(itemCondition == '-'){
+					querys.itemContidtionNull = 1 ;
+				}else if(itemCondition){
+					querys.itemCondition = itemCondition ;
+				}
+				
+				querys.categoryId = currentCategoryId;
+				querys.sqlId = "sql_account_product_assign_category_list" ;
+				
 				return querys ;
 			}
 			
    	 });
    </script>
-   
-   <style>
+      <style type="text/css">
    		*{
    			font:12px "微软雅黑";
    		}
@@ -221,21 +243,24 @@
    		.query-bar ul li{
    			list-style-type:none;
    			float:left;
-   			padding:5px 5px;
-   			display:block;
-   			height:20px;
-   			line-height:20px;
+   			padding:3px 0px;
    		}
    		
    		.query-bar ul li label{
-   			font-weight:bold;
+   			float:left;
+   			margin:0px 0px;
+   			margin-left:15px;
    		}
    		
    		.query-bar{
    			clear:both;
    		}
+   		
+   		li select,li input{
+   			width:auto;
+   			padding:0px;
+   		}
    </style>
-
 </head>
 <body style="magin:0px;padding:0px;">
 	<div class="widget-class" widget="layout" style="width:100%;height:100%;">

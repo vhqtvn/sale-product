@@ -225,7 +225,8 @@ class GatherCategoryController extends AppController {
 				//do nothing
 			}else{
 				$price = $processPrice - $product['SHIPPING_PRICE'] ;
-				$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>round($price,2),'ORI_PRICE'=>$product['PRICE']) ;
+				if( round($price,2) != $product['PRICE'] )
+					$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>round($price,2),'ORI_PRICE'=>$product['PRICE']) ;
 			}
 		}
 		

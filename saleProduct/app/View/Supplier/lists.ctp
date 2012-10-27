@@ -16,11 +16,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
 	?>
   
@@ -83,19 +79,19 @@
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"6%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/supplier/grid/"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"产品列表",
 				 indexColumn:true,
-				 querys:{},
+				 querys:{sqlId:"sql_supplier_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
 			$(".action-update").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/supplier/add/"+id,600,500) ;
+				openCenterWindow("/saleProduct/index.php/supplier/add/"+id,800,600) ;
 			});
 			
 			$(".action-del").live("click",function(){
@@ -130,7 +126,7 @@
 			}) ;
 			
 			$(".add-btn").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/add/",600,500) ;
+				openCenterWindow("/saleProduct/index.php/supplier/add/",800,600) ;
 			}) ;
    	 });
    </script>

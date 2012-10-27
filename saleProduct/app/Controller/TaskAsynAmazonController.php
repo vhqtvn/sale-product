@@ -16,7 +16,7 @@ class TaskAsynAmazonController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Task', 'Config','Amazonaccount','Utils');
+	var $uses = array('Task', 'Config','Amazonaccount','Utils','Warning');
 	
 	public function formatAmazonProducts($accountId){
 
@@ -43,7 +43,8 @@ class TaskAsynAmazonController extends AppController {
 							WHERE sc_sale_fba_details.asin = t.asin 
 							AND sc_sale_fba_details.ID <= t.fba_index ) AS FBA_PM
 		          from (
-		              	SELECT  sc_amazon_account_product.ID,sc_amazon_account_product.ASIN,sc_amazon_account_product.SKU,
+		              	SELECT  sc_amazon_account_product.ID,sc_amazon_account_product.ASIN,
+						sc_amazon_account_product.SKU,sc_amazon_account_product.ITEM_CONDITION,sc_amazon_account_product.IS_FM,
 						 sc_product.TITLE as TITLE , sc_product_flow_details.DAY_PAGEVIEWS as DAY_PAGEVIEWS,
 						( SELECT COUNT(1) FROM sc_sale_competition_details WHERE ASIN = sc_amazon_account_product.asin
 								and country <> '' AND country IS NOT NULL  ) AS COUNTRY ,
@@ -65,6 +66,7 @@ class TaskAsynAmazonController extends AppController {
 							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'F%'
 								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
 							AND sc_amazon_account.id = '$accountId' LIMIT 0,1) AS f_index,
+
 						(SELECT sc_sale_competition_details.ID FROM sc_sale_competition_details  , sc_amazon_account
 							WHERE sc_sale_competition_details.asin = sc_amazon_account_product.asin AND sc_sale_competition_details.type LIKE 'N%'
 								and sc_amazon_account.name = sc_sale_competition_details.seller_name 
@@ -91,6 +93,8 @@ class TaskAsynAmazonController extends AppController {
              $where1 " ;
        
 		$array = $this->Amazonaccount->query($sql);
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
 		
 		/**
 		 * Array ( [t1] => Array ( [ID] => 3040 [ASIN] => B001EVL21A [SKU] => 10015B 
@@ -102,6 +106,9 @@ class TaskAsynAmazonController extends AppController {
 		 * [FBA_COST] => [F_PM] => 3 [N_PM] => 0 [U_PM] => 0 [FBA_PM] => 0 ) ) ﻿
 		 */
 		foreach($array  as $product){
+			//判断预警类型
+			$warning = $this->Warning->getProductWarning($product['t1'] , $accountId , $account['NAME']) ;
+
 			$record = $product['t1'] ;
 			$sql = "UPDATE sc_amazon_account_product 
 						SET 
@@ -119,8 +126,8 @@ class TaskAsynAmazonController extends AppController {
 						N_PM = '".$record['N_PM']."' , 
 						U_PM = '".$record['U_PM']."' , 
 						FBA_PM = '".$record['FBA_PM']."',
-						COUNTRY = '".$record['COUNTRY']."'
-						
+						COUNTRY = '".$record['COUNTRY']."',
+						WARNING = '$warning'
 						WHERE
 						ID = '".$record['ID']."' 
 					" ;

@@ -15,11 +15,7 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
 	?>
 	
@@ -67,14 +63,14 @@
 			            	return "<a href='#' taskId='"+val+"'>查看</a>" ;
 			            }}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/tasking/taskedGrid/"+accountId},
+			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
 					 title:"",
 					 autoWidth:true,
 					 indexColumn:false,
-					 querys:{accountId:accountId},
+					 querys:{accountId:accountId,sqlId:"sql_tasked_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
 						$(".country-area-flag").parents("tr").css("background","#EEE") ;

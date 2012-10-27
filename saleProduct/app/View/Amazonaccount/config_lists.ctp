@@ -64,13 +64,13 @@
 		           	{align:"center",key:"TYPE",label:"类型",width:"10%"}
 					
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/config"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"上传列表",
 				 indexColumn:false,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_account_config"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 

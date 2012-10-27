@@ -13,11 +13,7 @@
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('../grid/grid');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$groupCode = $user["GROUP_CODE"] ;
 		
 	?>

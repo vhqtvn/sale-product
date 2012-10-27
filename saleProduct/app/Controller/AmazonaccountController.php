@@ -5,7 +5,7 @@ App :: import('Vendor', 'Amazon');
 class AmazonaccountController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Amazonaccount', 'Config','Tasking');
+    var $uses = array('Amazonaccount', 'Config','Tasking','Warning');
    
     /**
      * 数据采集管理
@@ -30,8 +30,10 @@ class AmazonaccountController extends AppController {
     
     public function category($accountId){
     	$categorys = $this->Amazonaccount->getAmazonProductCategory($accountId);  
+    	$warnings = $this->Warning->getWarnings($accountId);  
     	$this->set("categorys",$categorys) ;
     	$this->set("accountId",$accountId) ;
+    	$this->set("warnings",$warnings) ;
     }
     
     public function assignCategory($asin,$accountId,$sku=null){

@@ -8,12 +8,13 @@
 
    <?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('grid/jquery.llygrid');
 		
 		$loginId = $user["GROUP_CODE"] ;//transfer_specialist cashier purchasing_officer general_manager product_specialist
 	?>
@@ -46,7 +47,7 @@
 		return ret ;
    }
 
-	var currentAsin = "" ;
+	var currentAsin = "<?php echo $asin;?>" ;
 
 	$(function(){
 			
@@ -103,13 +104,13 @@
 					}?>
 		           	
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/cost/productCost"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:100,
 				 title:"",
 				 indexColumn:true,
-				 querys:{asin:'<?php echo $asin;?>'},
+				 querys:{asin:'<?php echo $asin;?>',sqlId:"sql_cost_product_details_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){

@@ -3,9 +3,15 @@ class UsersController extends AppController
 {   
 	public $helpers = array('Html', 'Form');//,'Ajax','Javascript
 	var $uses = array('User');
+	
+	function loginPhone(){
+		$this->login() ;
+	}
 
     function login()   
     {   
+    	$status = $this->browser['status'] ;
+    	
         $this->set('error', false);   
         // If a user has submitted form data:  
         if (!empty($this->data))  
@@ -18,11 +24,13 @@ class UsersController extends AppController
             $someone = $this->User->queryUserByUserName($this->data['username']);  
             $dbpasswd = $someone[0]['sc_user']['PASSWORD'] ;
             
-            if(!empty($dbpasswd) &&$dbpasswd == $md5passwd ){  
-            	
-            	setcookie("userId",$someone[0]['sc_user']['LOGIN_ID'],null ,"/") ;
-                //$this->Session->write('User', $someone[0]['sc_user']);  
-                $this->redirect("/home");
+            if(!empty($dbpasswd) &&$dbpasswd == $md5passwd ){
+                $this->Session->write('product.sale.user', $someone[0]['sc_user']);  
+                if($status == 1){
+                	$this->redirect("/home/phone");
+                }else{
+                	$this->redirect("/home");
+                }
             }  
             // Else, they supplied incorrect data:  
             else  
@@ -38,9 +46,10 @@ class UsersController extends AppController
         // Redirect users to this action if they click on a Logout button.   
         // All we need to do here is trash the session information:   
         //$this->Session->delete('User'); 
-        setcookie("userId", "", time() - 3600,"/");  
+       // setcookie("userId", "", time() - 3600,"/");  
+        $this->Session->destroy() ;
         
-        print_r($_COOKIE) ;
+       // print_r($_COOKIE) ;
         // And we should probably forward them somewhere, too...   
         $this->redirect('/');   
     }

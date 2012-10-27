@@ -53,13 +53,13 @@
 		           	{align:"center",key:"CREATE_TIME",label:"上传时间",width:"30%"},
 		           	{align:"center",key:"USERNAME",label:"上传用户",width:"30%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/flow"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"上传列表",
 				 indexColumn:true,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_flow_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 

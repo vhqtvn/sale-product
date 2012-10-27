@@ -74,22 +74,27 @@
 		$(function(){
 			$(".step1,.step2,.step3").attr("disabled",true).hide() ;
 			
+			var sqlId = "sql_product_asyn_history" ;
+			if(type == 'active'){
+		   	 sqlId = "sql_product_active_asyn_history" ;
+		   }
+			
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"编号", width:"5%"},
 					{align:"left",key:"CREATE_TIME",label:"同步时间",width:"30%",forzen:false},
 		           	{align:"left",key:"USERNAME",label:"操作用户",width:"30%",forzen:false},
 		           	{align:"left",key:"REPORT_ID",label:"REPORT_ID",width:"15%"}
-		          // 	{align:"center",key:"TYPE",label:"类型",width:"10%"}
+		          //{align:"center",key:"TYPE",label:"类型",width:"10%"}
 					
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product"+flag+"AsynsHistory/"+accountId},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:250,
 				 title:"同步历史列表",
 				 indexColumn:false,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:sqlId,accountId:accountId},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			

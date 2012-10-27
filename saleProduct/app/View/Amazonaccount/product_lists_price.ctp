@@ -59,8 +59,8 @@
 		} ;
 		
 		
-		echo " treeMap['id_-'] = {id:'-',text:'未分类产品',memo:'',isExpand:true} ;" ;
-		echo " treeData.childNodes.push( treeMap['id_-']  ) ;" ;
+		echo " treeMap['id_uncategory'] = {id:'uncategory',text:'未分类产品',memo:'',isExpand:true} ;\n" ;
+		echo " treeData.childNodes.push( treeMap['id_uncategory']  ) ;\n" ;
 	?>
    
    var accountId = '<?php echo $accountId ;?>' ;
@@ -89,22 +89,24 @@
 		return ret ;
    }
 	var currentAccountId = accountId ;
+	var currentCategoryId = "" ;
 	$(function(){
 			$('#default-tree').tree({//tree为容器ID
 				source:'array',
 				data:treeData ,
 				onNodeClick:function(id,text,record){
 					if( id == 'root' ){
-						$(".grid-content").llygrid("reload",{categoryId:"",accountId:accountId}) ;
+						currentCategoryId = "" ;
+						$(".grid-content").llygrid("reload",getQueryCondition()) ;
 					}else{
-						$(".grid-content").llygrid("reload",{categoryId:id,accountId:accountId}) ;
+						currentCategoryId = id ;
+						$(".grid-content").llygrid("reload",getQueryCondition()) ;
 					}
 				}
 	       }) ;
 			setTimeout(function(){
 				
 				var querys = getQueryCondition() ;
-				querys.type = "price" ;
 				querys.accountId = accountId ;
 				
 				$(".grid-content").llygrid({
@@ -149,7 +151,7 @@
 			           	}},
 			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId},
+			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:350,
@@ -176,7 +178,7 @@
 				var asin = $("[name='asin']").val() ;
 				var title = $("[name='title']").val() ;
 				var querys = {} ;
-
+				querys.reply = 0 ;
 				querys.accountId = currentAccountId||'-----';
 				querys.asin = asin ;
 				querys.title = title ;
@@ -184,12 +186,45 @@
 				querys.quantity2 = $("[name='quantity2']").val() ;
 				querys.price1 = $("[name='price1']").val() ;
 				querys.price2 = $("[name='price2']").val() ;
-				querys.itemCondition = $("[name='itemCondition']").val() ;
-				querys.fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
+				//querys.itemCondition = $("[name='itemCondition']").val() ;
+				//querys.fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
 				querys.isFM = $("[name='isFM']").val() ;
 				querys.pm = $("[name='pm']").val() ;
 				querys.type = '' ;
 				querys.test_status = $("[name='test_status']").val()||"" ;
+				//querys.limitArea = $("[name='limitArea']").val()||"" ;
+				
+				var limitArea = $("[name='limitArea']").val()||"" ;
+				if(limitArea == 1){
+					querys.outAemricanArea = 1 ;
+				}else if(limitArea == 2){
+					querys.inAemricanArea = '0' ;
+				}
+				
+				var fulfillmentChannel = $("[name='fulfillmentChannel']").val() ;
+				if(fulfillmentChannel == '-'){
+					querys.fulfillmentChannelNull = 1 ;
+				}else if(fulfillmentChannel){
+					querys.fulfillmentChannel = fulfillmentChannel ;
+				}
+				
+				var itemCondition = $("[name='itemCondition']").val() ;
+				if(itemCondition == '-'){
+					querys.itemContidtionNull = 1 ;
+				}else if(itemCondition){
+					querys.itemCondition = itemCondition ;
+				}
+				
+				//isPriceQuery isQuantityQuery
+				querys.isPriceQuery = 1 ;
+				if( currentCategoryId=='-'||currentCategoryId=='uncategory'){
+					querys.uncategory = 1;
+				}else if(currentCategoryId){
+					querys.categoryId = currentCategoryId;
+				}
+				
+				querys.sqlId = "sql_account_product_list" ;
+				
 				return querys ;
 			}
 			

@@ -40,6 +40,7 @@ class MysecurityComponent extends Component {
 	public function ignore( $url ){
 		
 		if( $url == "users/login" 
+			|| $url == "users/loginPhone" 
 			|| $this->startsWith($url,"error") 
 			|| $url == 'users/logout' 
 			|| $this->startsWith($url,"gatherLevel") 

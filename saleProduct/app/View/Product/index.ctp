@@ -85,6 +85,11 @@
 				}
 	       }) ;
 			setTimeout(function(){
+				var initParams = {sqlId:"sql_product_list",countSqlId:"sql_product_list_count"};
+				if(taskId){
+					initParams = {sqlId:"sql_task_product_list",countSqlId:"sql_task_product_list_count",taskId:taskId};
+				}
+				
 				$(".grid-content").llygrid({
 					columns:[
 			           	{align:"center",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
@@ -110,13 +115,13 @@
 			           	{align:"center",key:"REVIEWS_NUM",label:"Reviews数量",width:"9%"},
 			           	{align:"center",key:"QUALITY_POINTS",label:"质量分",width:"5%"}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/product/"+taskId},
+			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 					 limit:30,
 					 pageSizes:[10,20,30,40],
 					 height:400,
 					 title:"",
 					 indexColumn:false,
-					 querys:{name:"hello",name2:"world"},
+					 querys:initParams,
 					 loadMsg:"数据加载中，请稍候......"
 				}) ;
 			},200) ;
@@ -130,15 +135,16 @@
 			$(".query-btn").click(function(){
 				var asin = $("[name='asin']").val() ;
 				var title = $("[name='title']").val() ;
+				var ts = $("[name='test_status']").val()||"" ;
 				var querys = {} ;
-				//if(asin){
 				querys.asin = asin ;
-				//}
-				//if(title){
 				querys.title = title ;
-				//}
 				
-				querys.test_status = $("[name='test_status']").val()||"" ;
+				if(ts == 'focus'){
+					querys.user_status = ts ;
+				}else{
+					querys.test_status = ts ;
+				}
 				
 				$(".grid-content").llygrid("reload",querys) ;	
 			}) ;

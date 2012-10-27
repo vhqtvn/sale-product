@@ -2,27 +2,37 @@
 
 class GridController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
+    var $uses = array('SqlUtils',"Grid");
+    
+    /**
+     * 从配置文件加载sql
+     */
+    public function loadSql(){
+    	 $this->SqlUtils->loadSqls() ;
+    }
+    
+    
+    /**
+     * 通用查询方法
+     */
+    public function query(){
+    	$query = $this->request->query ;
+    	$recordSql = $this->SqlUtils->getRecordSql( $query) ;
+    	$countSql = $this->SqlUtils->getCountSql( $query) ;
+
+    	$records = $this->Grid->query($recordSql) ;
+    	$count = $this->Grid->query($countSql) ;
+    	
+    	$this->response->type("json") ;
+		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
+
+		return $this->response ;
+    }
+    
     
     function beforeFilter() {
 		parent::beforeFilter();
 		//$this->Auth->allow('*');
-	}
-
-	public function product($id = null ){
-		 $records=  null ;
-		 $count   = null ;
-		if( $id == null ){
-			 $records=  $this->Grid->getProductRecords( $this->request->query  , $id ) ;
-			 $count   =  $this->Grid->getProductCount( $this->request->query  , $id  ) ;
-		}else{
-			 $records=  $this->Grid->getTaskProductRecords( $this->request->query  , $id ) ;
-		 	$count   =  $this->Grid->getTaskProductCount( $this->request->query  , $id  ) ;
-		}
-		
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-
-		return $this->response ;
 	}
 	
 	public function productBlack($id = null ){
@@ -39,27 +49,6 @@ class GridController extends AppController {
 		return $this->response ;
 	}
 	
-	
-
-	public function seller(){
-		 $records=  $this->Grid->getSellerRecords( $this->request->query ) ;
-		 $count   =  $this->Grid->getSellerCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-
-		return $this->response ;
-	}
-	
-	public function upload(){
-		 $records=  $this->Grid->getUploadRecords( $this->request->query ) ;
-		 $count   =  $this->Grid->getUploadCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-
-		return $this->response ;
-	}
 	
 	public function sellerUpload(){
 		 $records=  $this->Grid->getSellerUploadRecords( $this->request->query ) ;
@@ -99,6 +88,7 @@ class GridController extends AppController {
 		return $this->response ;
 	}
 
+	
 
 	public function rule(){
 		
@@ -112,60 +102,16 @@ class GridController extends AppController {
 		  //return new CakeResponse( array('body'=> $array  , 'type' =>'json')  );
 	}
 
-	public function script(){
-		 $records=  $this->Grid->getScriptRecords( $this->request->query ) ;
-		 $count=  $this->Grid->getScriptCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-
-		return $this->response ;
-	}
-	
-	public function scriptitem(){
-		 $records=  $this->Grid->getScriptRecords( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body(  json_encode( $records )  )   ;
-
-		return $this->response ;
-	}
 	
 	public function configitem(){
 		$records=  $this->Grid->getConfigRecords( $this->request->query ) ;
 
 		$this->response->type("json") ;
-		$this->response->body(  json_encode($records) )   ;
+		$this->response->body( json_encode( $records ) )   ;
 
 		return $this->response ;
 	}
 
-	public function config(){
-		$records=  $this->Grid->getConfigRecords( $this->request->query ) ;
-		$count=  $this->Grid->getConfigCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
-	
-	public function users(){
-		$records=  $this->Grid->getUsersRecords( $this->request->query ) ;
-		$count=  $this->Grid->getUsersCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
-	
-	public function groups(){
-		$records=  $this->Grid->getGroupsRecords( $this->request->query ) ;
-		$count=  $this->Grid->getGroupsCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
 	
 	public function functionItems(){
 		
@@ -176,34 +122,6 @@ class GridController extends AppController {
 		$this->response->type("json") ;
 		$this->response->body(  json_encode($records) )   ;
 
-		return $this->response ;
-	}
-	
-	public function functions(){
-		$records=  $this->Grid->getFunctionsRecords( $this->request->query ) ;
-		$count=  $this->Grid->getFunctionsCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
-	
-	public function flow(){
-		$records=  $this->Grid->getFlowRecords( $this->request->query ) ;
-		$count=  $this->Grid->getFlowCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
-	
-	public function flowDetail($taskId = null ){
-		
-		$records=  $this->Grid->getFlowDetailRecords( $this->request->query ,$taskId) ;
-		$count=  $this->Grid->getFlowDetailCount( $this->request->query ,$taskId) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
 		return $this->response ;
 	}
 	

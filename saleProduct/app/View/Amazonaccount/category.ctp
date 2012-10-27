@@ -95,12 +95,24 @@
 						var pRecord = treeMap['id_'+pid] ;
 						pname = pRecord.text;
 					}
+					
+					$("#up-category [name='warning']").attr("checked",false) ;
 					if(id == 'root'){
 						$("#xj-category .parentName").val("") ;
 						$("#xj-category .parentId").val("") ;
 					}else{
 						$("#xj-category .parentName").val(text) ;
 						$("#xj-category .parentId").val(id) ;
+						
+						loadCategoryWarning(id , function(result){
+							if(typeof result =='string'){
+								eval("result = "+result) ;
+							}
+							$(result).each(function(){
+								var item = this['sc_warning_category'] ;
+								$("#up-category [name='warning'][value='"+item['WARNING_ID']+"']").attr("checked",true) ;
+							}) ;
+						}) ;
 					}
 					$("#up-category .parentName").val(pname) ;
 					$("#up-category .parentId").val(pid) ;
@@ -160,6 +172,19 @@
 				}
 			}); 
         }) ;
+        
+        function loadCategoryWarning(categoryId,callback){
+        	$.ajax({
+				type:"post",
+				url:"/saleProduct/index.php/warning/getByCategoryId/"+categoryId,
+				data:{},
+				cache:false,
+				dataType:"text",
+				success:function(result,status,xhr){
+					callback(result);
+				}
+			}); 
+        }
 		
 	})
    </script>
@@ -195,7 +220,16 @@
 				<input type="radio" name="priceStratery" value="jjfxs" />竞价非销售
 				<input type="radio" name="priceStratery" value="fjjxs" />非竞价销售
 				<input type="radio" name="priceStratery" value="jjxs" />竞价销售
-				<input type="radio" name="priceStratery" value="VIP" /> VIP自主定价				
+				<input type="radio" name="priceStratery" value="VIP" /> VIP自主定价
+				
+				<label>预警类别</label>
+				<?php
+					foreach( $warnings as $item ){
+						$item = $item['sc_account_product_warning'] ;
+						echo "<input type='checkbox' name='warning' value='".$item['CODE']."' />".$item['NAME'] ;
+					}
+				?>
+								
 				<br/><br/>
 				<button class="btn save-category">保存分类</button>
 				
@@ -230,7 +264,14 @@
 				<input type="radio" name="priceStratery" value="jjfxs" />竞价非销售
 				<input type="radio" name="priceStratery" value="fjjxs" />非竞价销售
 				<input type="radio" name="priceStratery" value="jjxs" />竞价销售
-				<input type="radio" name="priceStratery" value="VIP" /> VIP自主定价		
+				<input type="radio" name="priceStratery" value="VIP" /> VIP自主定价	
+				<label>预警类别</label>
+				<?php
+					foreach( $warnings as $item ){
+						$item = $item['sc_account_product_warning'] ;
+						echo "<input type='checkbox' name='warning' value='".$item['CODE']."' />".$item['NAME'] ;
+					}
+				?>	
 				<br/><br/>
 				<button class="btn update-category">修改分类</button>
 				

@@ -59,16 +59,27 @@
 			cache:false,
 			dataType:"text",
 			success:function(result,status,xhr){
+				
 				if(typeof result == 'string'){
 					eval("result = " +result) ;
 				}
-				var formatDate = window.formatGridData||function(data){ return data } ;
-				result = formatDate(result) ;
-
-				$(result.records).each(function(){
+				
+				var temps = [] ;
+				$(result).each(function(){
+					var row = {} ;
+					for(var o in this){
+						var record = this[o] ;
+						for(var o1 in record){
+							row[o1] = record[o1] ;
+						}
+					}
+					temps.push(row) ;
+				}) ;
+			
+				$(temps).each(function(){
 					if(this.TYPE == 'field'){
 						fields.push(this) ;
-					}else{
+					}else if(this.TYPE == 'relation'){
 						relations.push(this) ;
 					}
 				}) ;

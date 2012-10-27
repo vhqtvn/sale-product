@@ -17,11 +17,7 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
 	?>
   
@@ -66,13 +62,13 @@
 		           	{align:"center",key:"CODE",label:"账户Code",width:"15%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"8%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/account"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:200,
 				 title:"商家列表",
 				 indexColumn:false,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_account_list",countSqlId:"sql_account_list_count"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			

@@ -86,13 +86,13 @@
 		           	{align:"center",key:"CODE",label:"功能编码",width:"20%"},
 		           		{align:"center",key:"TYPE",label:"类别",width:"6%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/functions"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"用户列表",
 				 indexColumn:false,
-				 // querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_functions_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });

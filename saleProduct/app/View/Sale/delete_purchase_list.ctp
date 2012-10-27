@@ -16,11 +16,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		
-		$userId  = $_COOKIE["userId"] ; 
-		App::import('Model', 'User') ;
-		$u = new User() ;
-		$user1 = $u->queryUserByUserName($userId) ;
-		$user = $user1[0]['sc_user'] ;
+		$user = $this->Session->read("product.sale.user") ;
 		$groupCode = $user["LOGIN_ID"] ;
 	?>
   
@@ -82,13 +78,13 @@
 		           	<?php	
 		           	}?>
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/salegrid/deletePurchasePlanDetails"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:300,
 				 title:"",
 				 indexColumn:true,
-				 querys:{planId:'-----'},
+				 querys:{planId:'-----',sqlId:"sql_purchase_delete_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){

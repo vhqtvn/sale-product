@@ -46,24 +46,4 @@ class CostController extends AppController {
 
 		  return $this->response ;
 	 }
-	 
-	public function product(){
-		$records =  $this->Cost->getProductRecords( $this->request->query ) ;
-		$count   =  $this->Cost->getProductCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-
-		return $this->response ;
-	}
-	
-	public function productCost(){
-		$records =  $this->Cost->getProductCostRecords( $this->request->query ) ;
-		$count   =  $this->Cost->getProductCostCount( $this->request->query ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-
-		return $this->response ;
-	}
 }

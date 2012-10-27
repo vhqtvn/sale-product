@@ -85,13 +85,14 @@
 					return html.join("") ;
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/upload"},
+		         //ds:{type:"url",content:"/saleProduct/index.php/grid/upload"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"上传列表",
 				 indexColumn:false,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_product_upload"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 

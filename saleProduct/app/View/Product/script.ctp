@@ -83,13 +83,13 @@
 		           	{align:"center",key:"NAME",label:"NAME",width:"40%",forzen:false,align:"left"},
 		           	{align:"center",key:"SCRIPTS",label:"SCRIPTS",width:"40%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/script"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:200,
 				 title:"测试列表Demo",
 				 indexColumn:false,
-				 // querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_rule_script"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });

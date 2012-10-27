@@ -30,10 +30,28 @@ App::uses('Model', 'Model');
  *
  * @package       app.Model
  */
+$sqlMaps = null ;
+ 
 class AppModel extends Model {
 		function _clearDBCache() {
 		  	
 		}
+		
+		function getValue($params , $key){
+			if( isset($params[$key]) )
+				return $params[$key] ;
+			return null ;
+		}
+		
+		function endsWith($haystack, $needle)
+	{
+	    $length = strlen($needle);
+	    if ($length == 0) {
+	        return true;
+	    }
+	
+	    return (substr($haystack, -$length) === $needle);
+	}
 	
 		function getScriptRecords($query=null) {
 			$sql = 'SELECT * FROM sc_election_rule' ;
@@ -54,7 +72,7 @@ class AppModel extends Model {
 			$agents[] = "(compatible; MSIE 4.01; MSN 2.5; AOL 4.0; Windows 98)" ;
 			return $agents[ $index % 2 ]  ;		
 		}
-		
+		//递归查询，向下
 		function getRecursionWithMe($table,$idColName,$parentIdColName,$id){
 			$result = $this->getChildRecursion($table,$idColName,$parentIdColName,$id) ;
 			$sql = "select * from $table where $idColName = '$id' " ;
@@ -70,7 +88,6 @@ class AppModel extends Model {
 		
 		function getRecursion($table,$idColName,$parentIdColName,$id){
 			$result = $this->getChildRecursion($table,$idColName,$parentIdColName,$id) ;
-			
 			return $result ;
 		}
 		
@@ -92,6 +109,30 @@ class AppModel extends Model {
 			return $array ;
 		}
 		
+		//递归查询，向上
+		function getRecursionUp($table,$idColName,$parentIdColName,$pid){
+			$result = $this->getParentRecursion($table,$idColName,$parentIdColName,$pid) ;
+			return $result ;
+		}
+		
+		function getParentRecursion($table,$idColName,$parentIdColName,$pid){
+			$array = array() ;
+			$sql = "select * from $table where $idColName = '$pid' " ;
+			$temp = $this->query($sql) ;
+			if( count($temp) > 0 ){
+				foreach($temp as $record){
+					$record = $record[$table] ;
+					$array[] = $record ;
+					$_id = $record[$parentIdColName] ;
+					$temp1 = $this->getParentRecursion($table,$idColName,$parentIdColName,$_id) ;
+					foreach($temp1 as $record1){
+						$array[] = $record1 ;
+					}
+				}
+			}
+			return $array ;
+		}
+		
 		public function creatdir($path){
 			if(!is_dir($path))
 			{
@@ -105,5 +146,56 @@ class AppModel extends Model {
 			{
 				return true;
 			}
+		}
+		
+		public function getSql($sql , $query){
+			$domain =  $_SERVER['SERVER_NAME'] ;
+			$query['domain'] = $domain ;
+			
+			$index = 0 ;
+	    	$parseSql = "" ;
+	    	$array = explode("{@",$sql);
+	    	
+	    	foreach( $array as $child ){
+	    		if( $index==0 ){
+	    			$parseSql .= $child ;
+	    		}else{
+	    			$childArray = explode("}",$child ) ;
+	    			$i1 = 0 ;
+	    			foreach($childArray as $t){
+	    				if($i1 == 0){
+	    					$cArray = explode("#",$t) ;
+	    					$i2 =0 ;
+	    					
+	    					//解析字句
+	    					$clause = "" ;
+	    					$isTrue = false ;
+	    					foreach($cArray as $c){
+	    						if( $i2 > 0 && $i2 % 2 == 1 ){
+	    							$key = trim($c) ;
+	    							if( isset($query[$key]) &&($query[$key]=='0' || !empty($query[$key])) ){
+	    								$kValue = $query[$key] ;
+	    								$clause .= $kValue ;
+	    								$isTrue = true ;
+	    							}else{
+	    								$isTrue = false ;
+	    								break ;
+	    							}
+	    						}else{
+	    							$clause .= $c ;
+	     						}
+	     						$i2++ ;
+	    					}
+	    					if($isTrue)$parseSql .= $clause ;
+	    				}else{
+	    					$parseSql .= $t ;
+	    				}
+	    				$i1++ ;
+	    			} ;
+	    		}
+	    		$index++ ;
+	    	} 
+	    	//echo $parseSql;
+	    	return $parseSql ;
 		}
 }
