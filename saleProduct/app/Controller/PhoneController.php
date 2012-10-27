@@ -1,19 +1,30 @@
 <?php
 
 class PhoneController extends AppController {
-	var $uses = array('Salegrid','Product');
+	var $uses = array('Salegrid','Product','SqlUtils');
 	
     public function purchaseExList(){
     	$user =  $this->getCookUser() ;
-    	$query = array('limit'=>100,'start'=>0,'curPage'=>0,'end'=>100) ;
-		$records=  $this->Salegrid->getPurchasePlanRecords( $query ,$user,2 ) ;//2采购执行列表
+    	$query = array('limit'=>100,'start'=>0,'curPage'=>0,'end'=>100,
+			'sqlId'=>"sql_purchase_plan_list",'loginId'=>$user['LOGIN_ID']) ;
+    	
+    	$recordSql = $this->SqlUtils->getRecordSql( $query) ;
+    	$records = $this->SqlUtils->query($recordSql) ;
+
 		$this->set("purchaseList",$records);
     }
     
     public function purchasePlanDetails($planId){
     	$user =  $this->getCookUser() ;
-    	$query = array('limit'=>100,'start'=>0,'curPage'=>0,'end'=>100,'planId'=>"$planId") ;
-		$records=  $this->Salegrid->getPurchasePlanDetailsRecords( $query ,$user,2 ) ;//2采购执行列表
+    	$query = array('limit'=>100,'start'=>0,'curPage'=>0,'end'=>100,
+			'sqlId'=>"sql_purchase_plan_details_list",'planId'=>"$planId") ;
+    	
+    	$recordSql = $this->SqlUtils->getRecordSql( $query) ;
+    	$records = $this->SqlUtils->query($recordSql) ;
+    	
+    	
+    	//$query = array('limit'=>100,'start'=>0,'curPage'=>0,'end'=>100,'planId'=>"$planId") ;
+		//$records=  $this->Salegrid->getPurchasePlanDetailsRecords( $query ,$user,2 ) ;//2采购执行列表
 		$this->set("purchaseList",$records);
     }
     
