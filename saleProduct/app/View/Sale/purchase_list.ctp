@@ -56,7 +56,7 @@
 
 	$(function(){
 			var loginId = "" ;
-			<?php if( $flag == 1 ){ ?>
+			<?php if( $flag == 2 ){ ?>
 				loginId = '<?php echo $loginId;?>'
 			<?php } ?>
 			$(".grid-content").llygrid({

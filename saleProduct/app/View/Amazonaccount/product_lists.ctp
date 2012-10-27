@@ -112,12 +112,25 @@
 	       
 	       var gridConfig = {
 					columns:[
-						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
+						{align:"center",key:"ID",label:"状态",width:"6%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
 							if(record.COUNTRY >= 1){
-								html.push("<span class='country-area-flag'></span>") ;	
+								html.push("<span title='非美国卖家' class='country-area-flag'></span>") ;	
 							}
+							
+							if(record.WARNING && record.WARNING.indexOf("rights_warning") >= 0 ){
+								html.push("<span title='维权预警' class='rights-warning-flag'></span>") ;	
+							}
+							
+							if(record.WARNING && record.WARNING.indexOf("ranking_warning")>=0 ){
+								html.push("<span title='排名预警' class='ranking-warning-flag'></span>") ;	
+							}
+							return html.join("") ;
+						}},
+						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
+							var status = record.STATUS ;
+							var html = [] ;
 							html.push('<a href="#" class="edit-account-product" val="'+val+'"><?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?></a>&nbsp;') ;
 							return html.join("") ;
 						}},
@@ -193,7 +206,9 @@
 					 querys:{accountId:accountId,sqlId:"sql_account_product_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
-						$(".country-area-flag").parents("tr").css("background","#EEE") ;
+						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
+						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
+						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
 					 }
 				} ;
 	       
@@ -250,6 +265,7 @@
 				querys.pm = pm ;
 				querys.type = '' ;
 				querys.test_status = $("[name='test_status']").val()||"" ;
+				querys.warning = $("[name='warning']").val()||"" ;
 				//querys.limitArea = $("[name='limitArea']").val()||"" ;
 				
 				var limitArea = $("[name='limitArea']").val()||"" ;
@@ -305,9 +321,36 @@
    	 });
    </script>
    
-   <style>
+   <style style="text/css">
    		*{
    			font:12px "微软雅黑";
+   		}
+   		
+   		.rights-warning-flag{
+   			width:10px;
+   			height:10px;
+   			margin-top:5px;
+   			background:red;
+   			display:block;
+   			float:left;
+   		}
+   		
+   		.ranking-warning-flag{
+   			width:10px;
+   			height:10px;
+   			margin-top:5px;
+   			background:#800000;
+   			display:block;
+   			float:left;
+   		}
+   		
+   		.country-area-flag{
+   			width:10px;
+   			height:10px;
+   			margin-top:5px;
+   			background:#0000FF;
+   			display:block;
+   			float:left;
    		}
    		
    		.lly-grid-cell-input{
@@ -386,7 +429,15 @@
 					<option value=''>全部</option>
 					<option value="1">包括非美国地区</option>
 					<option value="2">限美国</option>
-				</select>
+				 </select>
+				 </li>
+				 <li>
+				 <label>预警:</label>
+				 <select name='warning'>
+					<option value=''>全部</option>
+					<option value="rights_warning">维权预警</option>
+					<option value="ranking_warning">排名预警</option>
+				 </select>
 				 </li>
 				 <li>
 				 	<button class="btn btn-primary btn-mini query-btn">查询</button>
