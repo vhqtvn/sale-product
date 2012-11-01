@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+   
+   <entry key="sql_order_insert">
+   INSERT INTO sc_amazon_order 
+	(ORDER_ID, 
+	ORDER_ITEM_ID, 
+	PURCHASE_DATE, 
+	PAYMENTS_DATE, 
+	BUYER_EMAIL, 
+	BUYER_NAME, 
+	BUYER_PHONE_NUMBER, 
+	SKU, 
+	PRODUCT_NAME, 
+	QUANTITY_PURCHASED, 
+	CURRENCY, 
+	ITEM_PRICE, 
+	ITEM_TAX, 
+	SHIPPING_PRICE, 
+	SHIPPING_TAX, 
+	SHIP_SERVICE_LEVEL, 
+	RECIPIENT_NAME, 
+	SHIP_ADDRESS_1, 
+	SHIP_ADDRESS_2, 
+	SHIP_ADDRESS_3, 
+	SHIP_CITY, 
+	SHIP_STATE, 
+	SHIP_POSTAL_CODE, 
+	SHIP_COUNTRY, 
+	SHIP_PHONE_NUMBER, 
+	TAX_LOCATION_CODE, 
+	TAX_LOCATION_CITY, 
+	TAX_LOCATION_COUNTY, 
+	TAX_LOCATION_STATE, 
+	PER_UNIT_ITEM_TAXABLE_DISTRICT, 
+	PER_UNIT_ITEM_TAXABLE_CITY, 
+	PER_UNIT_ITEM_TAXABLE_COUNTY, 
+	PER_UNIT_ITEM_TAXABLE_STATE, 
+	PER_UNIT_ITEM_NON_TAXABLE_DISTRICT, 
+	PER_UNIT_ITEM_NON_TAXABLE_CITY, 
+	PER_UNIT_ITEM_NON_TAXABLE_COUNTY, 
+	PER_UNIT_ITEM_NON_TAXABLE_STATE, 
+	PER_UNIT_ITEM_ZERO_RATED_DISTRICT, 
+	PER_UNIT_ITEM_ZERO_RATED_CITY, 
+	PER_UNIT_ITEM_ZERO_RATED_COUNTY, 
+	PER_UNIT_ITEM_ZERO_RATED_STATE, 
+	PER_UNIT_ITEM_TAX_COLLECTED_DISTRICT, 
+	PER_UNIT_ITEM_TAX_COLLECTED_CITY, 
+	PER_UNIT_ITEM_TAX_COLLECTED_COUNTY, 
+	PER_UNIT_ITEM_TAX_COLLECTED_STATE, 
+	PER_UNIT_SHIPPING_TAXABLE_DISTRICT, 
+	PER_UNIT_SHIPPING_TAXABLE_CITY, 
+	PER_UNIT_SHIPPING_TAXABLE_COUNTY, 
+	PER_UNIT_SHIPPING_TAXABLE_STATE, 
+	PER_UNIT_SHIPPING_NON_TAXABLE_DISTRICT, 
+	PER_UNIT_SHIPPING_NON_TAXABLE_CITY, 
+	PER_UNIT_SHIPPING_NON_TAXABLE_COUNTY, 
+	PER_UNIT_SHIPPING_NON_TAXABLE_STATE, 
+	PER_UNIT_SHIPPING_ZERO_RATED_DISTRICT, 
+	PER_UNIT_SHIPPING_ZERO_RATED_CITY, 
+	PER_UNIT_SHIPPING_ZERO_RATED_COUNTY, 
+	PER_UNIT_SHIPPING_ZERO_RATED_STATE, 
+	PER_UNIT_SHIPPING_TAX_COLLECTED_DISTRICT, 
+	PER_UNIT_SHIPPING_TAX_COLLECTED_CITY, 
+	PER_UNIT_SHIPPING_TAX_COLLECTED_COUNTY, 
+	PER_UNIT_SHIPPING_TAX_COLLECTED_STATE, 
+	DELIVERY_START_DATE, 
+	DELIVERY_END_DATE, 
+	DELIVERY_TIME_ZONE, 
+	DELIVERY_INSTRUCTIONS, 
+	SALES_CHANNEL,
+	ACCOUNT_ID,
+	UPLOAD_ID
+	)
+	VALUES
+	('{@#order-id#}', 
+	'{@#order-item-id#}', 
+	'{@#purchase-date#}', 
+	'{@#payments-date#}', 
+	'{@#buyer-email#}', 
+	'{@#buyer-name#}', 
+	'{@#buyer-phone-number#}', 
+	'{@#sku#}', 
+	'{@#product-name#}', 
+	'{@#quantity-purchased#}', 
+	'{@#currency#}', 
+	'{@#item-price#}', 
+	'{@#item-tax#}', 
+	'{@#shipping-price#}', 
+	'{@#shipping-tax#}', 
+	'{@#ship-service-level#}', 
+	'{@#recipient-name#}', 
+	'{@#ship-address-1#}', 
+	'{@#ship-address-2#}', 
+	'{@#ship-address-3#}', 
+	'{@#ship-city#}', 
+	'{@#ship-state#}', 
+	'{@#ship-postal-code#}', 
+	'{@#ship-country#}', 
+	'{@#ship-phone-number#}', 
+	'{@#tax-location-code#}', 
+	'{@#tax-location-city#}', 
+	'{@#tax-location-county#}', 
+	'{@#tax-location-state#}', 
+	'{@#per-unit-item-taxable-district#}', 
+	'{@#per-unit-item-taxable-city#}', 
+	'{@#per-unit-item-taxable-county#}', 
+	'{@#per-unit-item-taxable-state#}', 
+	'{@#per-unit-item-non-taxable-district#}', 
+	'{@#per-unit-item-non-taxable-city#}', 
+	'{@#per-unit-item-non-taxable-county#}', 
+	'{@#per-unit-item-non-taxable-state#}', 
+	'{@#per-unit-item-zero-rated-district#}', 
+	'{@#per-unit-item-zero-rated-city#}', 
+	'{@#per-unit-item-zero-rated-county#}', 
+	'{@#per-unit-item-zero-rated-state#}', 
+	'{@#per-unit-item-tax-collected-district#}', 
+	'{@#per-unit-item-tax-collected-city#}', 
+	'{@#per-unit-item-tax-collected-county#}', 
+	'{@#per-unit-item-tax-collected-state#}', 
+	'{@#per-unit-shipping-taxable-district#}', 
+	'{@#per-unit-shipping-taxable-city#}', 
+	'{@#per-unit-shipping-taxable-county#}', 
+	'{@#per-unit-shipping-taxable-state#}', 
+	'{@#per-unit-shipping-non-taxable-district#}', 
+	'{@#per-unit-shipping-non-taxable-city#}', 
+	'{@#per-unit-shipping-non-taxable-county#}', 
+	'{@#per-unit-shipping-non-taxable-state#}', 
+	'{@#per-unit-shipping-zero-rated-district#}', 
+	'{@#per-unit-shipping-zero-rated-city#}', 
+	'{@#per-unit-shipping-zero-rated-county#}', 
+	'{@#per-unit-shipping-zero-rated-state#}', 
+	'{@#per-unit-shipping-tax-collected-district#}', 
+	'{@#per-unit-shipping-tax-collected-city#}', 
+	'{@#per-unit-shipping-tax-collected-county#}', 
+	'{@#per-unit-shipping-tax-collected-state#}', 
+	'{@#delivery-start-date#}', 
+	'{@#delivery-end-date#}', 
+	'{@#delivery-time-zone#}', 
+	'{@#delivery-instructions#}', 
+	'{@#sales-channel#}', 
+	'{@#account_id#}', 
+	'{@#upload_id#}'
+	
+	)
+   </entry>
+
+	<entry key="sql_order_upload_list">
+		select * from (
+		select sc_amazon_order_upload.*  , sc_user.name as USERNAME
+		 from sc_amazon_order_upload , sc_user where 
+		 sc_amazon_order_upload.creator = sc_user.login_id
+		 {@ and sc_amazon_order_upload.account_id = '#accountId#'}
+		) t
+    </entry>
+   
+   <entry key="sql_order_list">
+		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+			sc_amazon_order_status.AUDIT_STATUS, 
+			sc_amazon_order_status.AUDIT_MEMO, 
+			sc_amazon_order_status.REAUDIT_STATUS, 
+			sc_amazon_order_status.REAUDIT_MEMO, 
+			sc_amazon_order_status.PICK_STATUS
+		
+		  from sc_amazon_order ,  sc_amazon_order_status 
+		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		   {@ and sc_amazon_order_status.audit_status = '#status#'}
+    </entry>
+    
+    <entry key="sql_order_list_nostatus">
+		select sc_amazon_order.* 
+		  from sc_amazon_order
+		  where  not exists (
+		  	select 1 from sc_amazon_order_status where 
+		  	sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id
+		  )
+    </entry>
+    
+    
+    <entry key="sql_order_status_insert">
+		INSERT INTO sc_amazon_order_status 
+		( 
+		ORDER_ID, 
+		ORDER_ITEM_ID, 
+		AUDIT_STATUS, 
+		AUDIT_MEMO, 
+		REAUDIT_STATUS, 
+		REAUDIT_MEMO, 
+		PICK_STATUS
+		)
+		VALUES
+		( 
+		{@'#ORDER_ID#'}, 
+		{@'#ORDER_ITEM_ID#'}, 
+		'{@#AUDIT_STATUS#}', 
+		'{@#AUDIT_MEMO#}', 
+		'{@#REAUDIT_STATUS#}', 
+		'{@#REAUDIT_MEMO#}', 
+		'{@#PICK_STATUS#}'
+		)
+    </entry>
+    
+     <entry key="sql_order_status_delete">
+		DELETE FROM sc_amazon_order_status 
+		WHERE
+		order_id = {@'#ORDER_ID#'}
+		and order_item_id = {@'#ORDER_ITEM_ID#'}
+    </entry>
+    
+    <entry key="sql_order_track_insert">
+		INSERT INTO sc_amazon_order_track 
+		(
+			ACTOR, 
+			ACT_TIME, 
+			MESSAGE, 
+			STATUS, 
+			ORDER_ID, 
+			ORDER_ITEM_ID
+		)
+		VALUES
+		( 
+			'{@#ACTOR#}', 
+			NOW(), 
+			'{@#MESSAGE#}', 
+			'{@#STATUS#}', 
+			'{@#ORDER_ID#}', 
+			'{@#ORDER_ITEM_ID#}'
+		)
+    </entry>
+    
+    
+
+   
+</properties>
