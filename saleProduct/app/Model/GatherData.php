@@ -361,7 +361,7 @@ class GatherData extends AppModel {
 				$html->load( $Result ,true ,false );
 				//$html = file_get_html($url . "&page=" . $j); 
 				try{
-					$products = $html->find('div.product');
+					$products = $html->find('.product');
 					
 					if (count($products) <= 0) {
 						break;

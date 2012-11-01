@@ -33,8 +33,16 @@ class SqlUtils extends AppModel {
 						    $_key = $value ;
 						}
 						$_value = (string)$entry ;
-						
+						//$_value = str_replace('\\','\\\\',$_value) ;
 						$_value = str_replace("'","\'",$_value) ;
+						/*try{
+							$_value = iconv("gbk//IGNORE", "UTF-8//IGNORE", $_value);
+							//$_value = iconv( 'ASCII' ,'utf-8//IGNORE' ,$_value ) ;
+						}catch(Exception $e){
+							print_r($e);
+						}*/
+						
+						echo '<br>find sql:::'.$_key;
 						try{
 							$this->query("insert into sc_sql(id,text) values('$_key' ,'$_value' )") ;
 			    		}catch(Exception $e){

@@ -175,6 +175,8 @@ class AppModel extends Model {
 	    							$key = trim($c) ;
 	    							if( isset($query[$key]) &&($query[$key]=='0' || !empty($query[$key])) ){
 	    								$kValue = $query[$key] ;
+	    								//格式化$kValue,防止sql特殊字符
+	    								$kValue = str_replace("'","\'",$kValue);
 	    								$clause .= $kValue ;
 	    								$isTrue = true ;
 	    							}else{
@@ -197,5 +199,15 @@ class AppModel extends Model {
 	    	} 
 	    	//echo $parseSql;
 	    	return $parseSql ;
+		}
+		
+		public function getDbSql($key){
+	
+			$sql = "select * from sc_sql where id = '$key'" ;
+			$record = $this->query($sql) ;
+			if(empty($record) || count($record)<=0){
+				return $key ;
+			}
+			return $record[0]['sc_sql']['TEXT'] ;
 		}
 }
