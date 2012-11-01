@@ -741,6 +741,27 @@
 							return vals ;
 						}
 					}) ;
+					
+					grid.llygrid("addEvent" , {
+						eventName:"getSelectedRecords",
+						func:function(params){
+							var key = params.key ;
+							var checked = params.checked ;
+							var vals = [] ;
+							if(checked || typeof checked == 'undefined'){
+								grid.find(":input[name='cb_"+key+"'][checked]").each(function(){
+									var row = $(this).parents("tr:first").get(0) ;
+									vals.push( $(row).data("record") ) ;
+								}) ;
+							}else{
+								grid.find(":input[name='cb_"+key+"']:not([checked])").each(function(){
+									var row = $(this).parents("tr:first").get(0) ;
+									vals.push( $(row).data("record") ) ;
+								}) ;
+							}
+							return vals ;
+						}
+					}) ;
 				}
 			},
 			"href":{
