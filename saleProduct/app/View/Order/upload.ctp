@@ -18,9 +18,8 @@
 	?>
   
    <script type="text/javascript">
-
-	 //result.records , result.totalRecord
-	 function formatGridData(data){
+		var accountId = '<?php echo $accountId;?>' ;
+		 function formatGridData(data){
 		var records = data.record ;
  		var count   = data.count ;
  		
@@ -42,52 +41,53 @@
 			
 		return ret ;
 	   }
-
-
-	var selectedUser = null ;
-
-	$(function(){
+		function validateForm(){
+			if( !$("[name='orderFile']").val() ){
+				alert("请选择上传文件！");
+				return false ;
+			}
+			return true ;
+		}
+		
+		$(function(){
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"ID", width:"5%",forzen:true},
-		           	{align:"center",key:"NAME",label:"用户姓名",width:"20%",forzen:false,align:"left"},
-		           	{align:"center",key:"LOGIN_ID",label:"登录ID",width:"20%"},
-		           	{align:"center",key:"GROUP_NAME",label:"用户组",width:"20%"}
+		           	{align:"center",key:"ID",label:"编号", width:"10%"},
+		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
+		           	{align:"center",key:"CREATE_TIME",label:"上传时间",width:"30%"},
+		           	{align:"center",key:"USERNAME",label:"上传用户",width:"30%",format:function(val,record){
+		           		return val ;
+		           	}}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:200,
-				 title:"用户列表",
-				 rowDblClick:function(type,record){//
-				 	selectedUser = record ;
-				 	$(".ui-state-focus").html(record.NAME) ;
-				 },
-				 indexColumn:false,
-				 querys:{sqlId:"sql_user_list"},
+				 height:400,
+				 title:"订单上传列表",
+				 querys:{sqlId:"sql_order_upload_list",accountId:accountId},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
-			
-			$(".confirmBtn").click(function(){
-				window.opener.addUser(selectedUser) ;
-				window.close() ;
-			}) ;
-   	 });
+		})
    </script>
-   
-   <style>
-   		*{
-   			font:12px "微软雅黑";
-   		}
-   </style>
+
 
 </head>
 <body>
-	<div class="ui-state-highlight" style="margin-bottom:3px;padding:2px 10px;"> 双击行选择用户 </div>
+
+   <div style="border:1px solid #CCC;margin:3px;">
+	    <form action="/saleProduct/index.php/order/doUpload/<?php echo $accountId;?>" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
+		   <table border=0 cellPadding=3 cellSpacing=4 >
+		    <tr>
+		     <td>订单文件：</td>
+		     <td><input name="orderFile" type="file"/></td>
+		     <td colSpan=2 align=center><input type="submit" value="上传订单文件"></td> 
+		    </tr>
+		   </table>
+	   </form>
+	   <iframe style="width:0; height:0; border:0;display:none;" name="form-target"></iframe>
+	</div>  
 	<div class="grid-content">
-	
 	</div>
-	<div class="ui-state-focus" style="margin-top:3px;padding:2px 10px;width:200px;float:left;">&nbsp; </div>
-	<div style="width:100px;float:right;"><button class="confirmBtn">确定</button></div>
+	
 </body>
 </html>

@@ -50,7 +50,7 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/users/editFunction/"+id,400,300) ;
+					openCenterWindow("/saleProduct/index.php/users/editFunction/"+id,600,400) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
@@ -65,7 +65,7 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/users/editFunction",400,300) ;
+					openCenterWindow("/saleProduct/index.php/users/editFunction",600,400) ;
 				} 
 				return false ;
 			})
