@@ -54,8 +54,9 @@
 				columns:[
 		           	{align:"center",key:"ID",label:"编号", width:"10%"},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-		           	{align:"center",key:"CREATE_TIME",label:"上传时间",width:"30%"},
-		           	{align:"center",key:"USERNAME",label:"上传用户",width:"30%",format:function(val,record){
+		           	{align:"center",key:"TOTAL",label:"订单总数",width:"10%",forzen:false,align:"left"},
+		           	{align:"center",key:"CREATE_TIME",label:"上传时间",width:"20%"},
+		           	{align:"center",key:"USERNAME",label:"上传用户",width:"20%",format:function(val,record){
 		           		return val ;
 		           	}}
 		         ],
