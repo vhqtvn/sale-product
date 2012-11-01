@@ -16,6 +16,12 @@
  */
 (function($){
 	function createTemplate(target,options){
+		
+		var height = options.height ;
+		if($.isFunction(options.height)){
+			height = options.height() ;
+		}
+		
 		var html = [] ;
 		html.push('<div class="lly-grid ui-widget ui-widget-content ui-corner-all">');
 		html.push('	<div class="lly-grid-caption ui-widget-header ui-corner-top ui-helper-clearfix"><span></span></div>');
@@ -33,7 +39,7 @@
 			//1head end
 			
 			//1body start
-			html.push('<div class="lly-grid-body lly-grid-1-body"   style="height:'+options.height+'px">');
+			html.push('<div class="lly-grid-body lly-grid-1-body"   style="height:'+height+'px">');
 			html.push("<div class='lly-grid-scroll-y' >")
 			html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed"><tbody></tbody></table>');
 			html.push("</div>");
@@ -53,7 +59,7 @@
 		//2head end
 		
 		//2body start
-		html.push('<div class="lly-grid-body lly-grid-2-body"  style="height:'+options.height+'px">');
+		html.push('<div class="lly-grid-body lly-grid-2-body"  style="height:'+height+'px">');
 		html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed"><tbody></tbody></table>');
 		html.push("</div>");
 		//2body end
