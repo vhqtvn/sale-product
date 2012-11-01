@@ -179,6 +179,10 @@
 		  	sc_amazon_order_status.order_id = sc_amazon_order.order_id and
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id
 		  )
+		  {@ and order_id = '#orderId#'}
+		  {@ and buyer_name = '#userName#'}
+		  {@ and buyer_email = '#email#'}
+		  {@ and sku = '#sku#'}
     </entry>
     
     
