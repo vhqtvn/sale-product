@@ -73,7 +73,16 @@ class SqlUtils extends AppModel {
 		$sql = $this->getSql($sql,$query) ;
 		$limit =  $query["limit"] ;
 		$start =  $query["start"] ;
-		$sql = "SELECT t.* FROM ( $sql ) t  limit ".$start.",".$limit;
+		
+		$sort = "" ;
+		if(isset($query['sortField'] ) && !empty($query['sortField'])){
+			$st = "" ;
+			if(isset($query['sortType'])){
+				$st = $query['sortType'] ;
+			}
+			$sort = "order by ".$query['sortField']." $st"  ;
+		}
+		$sql = "SELECT t.* FROM ( $sql ) t $sort limit ".$start.",".$limit;
 		
 		return $sql ;
 	}
