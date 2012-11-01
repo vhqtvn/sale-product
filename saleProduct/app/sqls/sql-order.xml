@@ -149,7 +149,8 @@
 
 	<entry key="sql_order_upload_list">
 		select * from (
-		select sc_amazon_order_upload.*  , sc_user.name as USERNAME
+		select sc_amazon_order_upload.*  , sc_user.name as USERNAME ,
+		( select count(1) from sc_amazon_order where upload_id = sc_amazon_order_upload.id ) as TOTAL
 		 from sc_amazon_order_upload , sc_user where 
 		 sc_amazon_order_upload.creator = sc_user.login_id
 		 {@ and sc_amazon_order_upload.account_id = '#accountId#'}
