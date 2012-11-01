@@ -3,6 +3,15 @@
 class PhoneController extends AppController {
 	var $uses = array('Salegrid','Product','SqlUtils');
 	
+	public function test(){
+		 $user_agent = $_SERVER['HTTP_USER_AGENT'];
+		  //This can also be used to detect a mobile device
+		 $accept = $_SERVER['HTTP_ACCEPT'];
+		 
+		 echo 'userAgent::::'.$user_agent.'<br><br>' ;
+		 echo 'accept:::::::'.$accept.'<br><br>' ;
+	}
+	
     public function purchaseExList(){
     	$user =  $this->getCookUser() ;
     	$query = array('limit'=>100,'start'=>0,'curPage'=>0,'end'=>100,

@@ -11,7 +11,7 @@ class GatherUploadController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Task', 'Config','Amazonaccount',"Utils","Log","GatherData","GatherService");
+	var $uses = array('Tasking', 'Config','Amazonaccount',"Utils","Log","GatherData","GatherService");
 	public $taskId = null ;
 	
 	/**

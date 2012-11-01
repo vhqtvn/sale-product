@@ -215,8 +215,8 @@ class GatherLevelController extends AppController {
 			
 			$processPrice = $this->GatherMarketing->_processStratery($product , $productCategory,$accountName) ;
 			
-			if(empty($processPrice)) {
-				$processPrice = $execPrice;
+			if(empty($processPrice)) {//为空，等于当前价格
+				$processPrice = $price ;
 			} ;
 			
 			if( $processPrice < $execPrice ){

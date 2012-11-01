@@ -214,7 +214,7 @@ class GatherCategoryController extends AppController {
 			$processPrice = $this->GatherMarketing->_processStratery($product , $productCategory,$accountName) ;
 			
 			if(empty($processPrice)) {
-				$processPrice = $execPrice;
+				$processPrice = $price;
 			} ;
 			
 			if( $processPrice < $execPrice ){
