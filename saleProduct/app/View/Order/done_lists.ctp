@@ -22,7 +22,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
-		echo $this->Html->script('modules/order/lists');
+		echo $this->Html->script('modules/order/done_lists');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
@@ -71,14 +71,8 @@
 		</table>	
 		<hr style="margin:2px;"/>
 		<table style="width:100%;">
-			<tr><th style="width:100px">审核操作：</th>
+			<tr><th style="width:100px">操作：</th>
 				<td>
-					<button class="btn btn-primary save-btn" status="5">合格订单</button>
-					<button class="btn btn-primary save-btn" status="4">外购订单</button>
-					<button class="btn btn-danger save-btn" status="2">风险客户</button>
-					<button class="btn btn-danger save-btn" status="3">待退单</button>
-					<button class="btn btn-danger save-btn" status="6">加急单</button>
-					<button class="btn btn-danger save-btn" status="7">特殊单</button>
 				</td>
 			</tr>	
 			<tr>
