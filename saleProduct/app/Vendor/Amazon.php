@@ -304,87 +304,18 @@ class Amazon {
 	
 	
 	public function updatePrice( $accountId ,$feed , $loginId ){
-
-		$config = array (
-		  'ServiceURL' => "https://mws.amazonservices.com",
-		  'ProxyHost' => null,
-		  'ProxyPort' => -1,
-		  'MaxErrorRetry' => 3,
-		);
-		
-		 $service = new MarketplaceWebService_FeedClient(
-		     $this->AWS_ACCESS_KEY_ID, 
-		     $this->AWS_SECRET_ACCESS_KEY, 
-		     $config,
-		     $this->APPLICATION_NAME,
-		     $this->APPLICATION_VERSION);
-		     
-		$marketplaceIdArray = array("Id" => array($this->MARKETPLACE_ID));
-		
-		$feedHandle = @fopen('php://temp', 'rw+');
-		fwrite($feedHandle, $feed);
-		rewind($feedHandle);
-		$parameters = array (
-		  'Merchant' => $this->MERCHANT_ID,
-		  'MarketplaceIdList' => $marketplaceIdArray,
-		  'FeedType' => '_POST_PRODUCT_PRICING_DATA_',
-		  'FeedContent' => $feedHandle,
-		  'PurgeAndReplace' => false,
-		  'ContentMd5' => base64_encode(md5(stream_get_contents($feedHandle), true)),
-		);
-
-		$request = new MarketplaceWebService_Model_SubmitFeedRequest($parameters);
-		$array = null ;
-		try {
-                $response = $service->submitFeed($request);
-
-                if ($response->isSetSubmitFeedResult()) { 
-                    $submitFeedResult = $response->getSubmitFeedResult();
-                    if ($submitFeedResult->isSetFeedSubmissionInfo()) { 
-                        $feedSubmissionInfo = $submitFeedResult->getFeedSubmissionInfo();
-                        
-                        $feedsubmissionId = "" ;
-                        $feedType  = "" ;
-                        $feedStatus = "" ;
-                        
-                        if ($feedSubmissionInfo->isSetFeedSubmissionId()) 
-                        {
-                            $feedsubmissionId = $feedSubmissionInfo->getFeedSubmissionId()  ;
-                        }
-                        if ($feedSubmissionInfo->isSetFeedType()) 
-                        {
-                            $feedType = $feedSubmissionInfo->getFeedType()  ;
-                        }
-                        
-                        if ($feedSubmissionInfo->isSetFeedProcessingStatus()) 
-                        {
-                            $feedStatus = $feedSubmissionInfo->getFeedProcessingStatus() ;
-                        }
-                        
-                        $array = array(
-								"feedsubmissionId"=>$feedsubmissionId,
-								"loginId"=>$loginId,
-								"type"=>$feedType,
-								"accountId"=>$accountId,
-								"status"=>$feedStatus,
-								"message"=>"",
-								"feed"=>""
-                        );
-                        
-                        //$amazon->saveAccountFeed($array) ;
-		
-                    } 
-                } 
-	     } catch (MarketplaceWebService_Exception $ex) {
-	     	print_r( $ex );
-	     }
-	     
-	     @fclose($feedHandle);
-	     
-	     return $array;
+	     return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_PRODUCT_PRICING_DATA_");
 	}
 	
 	public function updateInventory($accountId,$feed,$loginId){
+	     return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_INVENTORY_AVAILABILITY_DATA_");
+	}
+	
+	public function updateOrderTrackNumber( $accountId ,$feed , $loginId ){
+	     return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_ORDER_FULFILLMENT_DATA_");
+	}
+	
+	public function postFeedSubmission( $accountId ,$feed , $loginId ,$feedType){
 		$config = array (
 		  'ServiceURL' => "https://mws.amazonservices.com",
 		  'ProxyHost' => null,
@@ -407,7 +338,7 @@ class Amazon {
 		$parameters = array (
 		  'Merchant' => $this->MERCHANT_ID,
 		  'MarketplaceIdList' => $marketplaceIdArray,
-		  'FeedType' => '_POST_INVENTORY_AVAILABILITY_DATA_',
+		  'FeedType' => $feedType,
 		  'FeedContent' => $feedHandle,
 		  'PurgeAndReplace' => false,
 		  'ContentMd5' => base64_encode(md5(stream_get_contents($feedHandle), true)),
