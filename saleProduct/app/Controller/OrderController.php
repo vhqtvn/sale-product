@@ -1,11 +1,11 @@
 <?php
-
+App :: import('Vendor', 'Amazon');
 /**
  * 订单controller
  */
 class OrderController extends AppController {
 	
-	var $uses = array('OrderService');
+	var $uses = array('OrderService','Amazonaccount');
 	
 	public function doUpload($accountId){
 		
@@ -61,7 +61,66 @@ class OrderController extends AppController {
     	$this->set("accountId",$accountId);
     }
     
+    /**
+     * 新订单列表
+     */
     public function lists($accountId,$status = null){
+    	$this->set("accountId",$accountId);
+    	$this->set("status",$status);
+    }
+    
+    /**
+     * 处理中列表
+     */
+    public function doingLists($accountId,$status = null){
+    	$this->set("accountId",$accountId);
+    	$this->set("status",$status);
+    }
+    
+    public function updateTrackNumber(){
+    	$params = $this->request->data  ;
+    	$user =  $this->getCookUser() ;
+    	$this->OrderService->updateTrackNumber($params,$user ) ;
+
+    	$this->response->type("json");
+		$this->response->body("execute complete");
+		return $this->response;
+    }
+    
+    public function saveTrackNumberToAamazon($accountId){
+    	$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+		
+    	$params = $this->request->data  ;
+    	$user =  $this->getCookUser() ;
+    	$feed = $this->OrderService->getTrackNumberFeed($params,$user ,$accountId,$MerchantIdentifier) ;
+    	
+    	$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] , 
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+			 	$account['APPLICATION_NAME'] ,
+			 	$account['APPLICATION_VERSION'] ,
+			 	$account['MERCHANT_ID'] ,
+			 	$account['MARKETPLACE_ID'] ,
+			 	$account['MERCHANT_IDENTIFIER'] 
+		) ;
+		
+		$result = $amazon->updateOrderTrackNumber( $accountId,$feed,$user['LOGIN_ID'] ) ;
+		
+		//更新订单状态为已发货
+		$this->Amazonaccount->saveAccountFeed($result) ;
+		$this->OrderService->updateTrackNumberStatus($params,$user ,$accountId) ;
+		
+    	$this->response->type("json");
+		$this->response->body("execute complete");
+		return $this->response;
+    }
+    
+    /**
+     * 处理完成列表
+     */
+    public function doneLists($accountId,$status = null){
     	$this->set("accountId",$accountId);
     	$this->set("status",$status);
     }
@@ -73,11 +132,48 @@ class OrderController extends AppController {
     	$this->set("status",$status);
     }
     
+    /**
+     * 保存审查结果
+     */
     public function saveAudit( $status = null ){
     	$params = $this->request->data  ;
     	$user =  $this->getCookUser() ;
     	$this->OrderService->saveAudit($params,$user ) ;
     	
+    	
+    	$this->response->type("json");
+		$this->response->body("execute complete");
+		return $this->response;
+    }
+    
+    /**
+     * 列出将货单
+     */
+    public function listPicked(){
+    	
+    }
+    
+    public function editPicked($pickedId = null){
+    }
+    
+    public function savePicked(){
+    	$params = $this->request->data  ;
+    	$user =  $this->getCookUser() ;
+    	$this->OrderService->savePicked($params,$user ) ;
+    	
+    	$this->response->type("json");
+		$this->response->body("execute complete");
+		return $this->response;
+    }
+    
+    public function selectPickedProduct($pickId){	
+    	$this->set("pickId",$pickId) ;
+    }
+    
+    public function savePickedOrder($pickedId){
+    	$params = $this->request->data  ;
+    	$user =  $this->getCookUser() ;
+    	$this->OrderService->savePickedOrder($params,$user,$pickedId ) ;
     	
     	$this->response->type("json");
 		$this->response->body("execute complete");
