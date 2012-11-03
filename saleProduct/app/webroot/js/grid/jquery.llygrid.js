@@ -587,14 +587,14 @@
 				return events[opts](params) ;
 			}
 			
-			options = $.extend(options,_options) ;
+			//options = $.extend(options,_options) ;
 			
 			//owner
 			switch(opts){
 				case "reload":
 					params = params||{} ;
 					params.curPage = 1 ;//重新定位到第一页
-					reload($(this),params) ;
+					reload($(this),params,_options) ;
 					break ;
 				case "addEvent":
 					addEvent(me,params.eventName , params.func ) ;

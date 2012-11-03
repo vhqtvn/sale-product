@@ -256,7 +256,7 @@ jQuery.utils = {
 		
 		$(content).height(contentHeight).css({'overflow-x':'hidden','overflow-y':'auto'}) ;
 	},scriptPath:function(scriptName){
-		if(scriptName == "plugin"||scriptName == "plugins") return jQuery.utils.parseUrl("~/statics/scripts/plugins/") ;
+		if(scriptName == "plugin"||scriptName == "plugins") return jQuery.utils.parseUrl("~/app/webroot/js/") ;
 		if(scriptName == "upload") return jQuery.utils.parseUrl("~/statics/scripts/plugins/") ;
 		if( scriptName == 'jqueryui.css' ) return  jQuery.utils.parseUrl("~/statics/themes/default/jquery-ui.css") ;
 		var path = "" ;
