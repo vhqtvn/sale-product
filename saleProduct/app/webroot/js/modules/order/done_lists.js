@@ -37,6 +37,18 @@ function formatGridData(data){
 						,3:"待退单",4:"外购订单",6:"加急单",7:"特殊单"
 					}}},
 					{align:"center",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%",format:{type:"editor",fields:['ORDER_ID','ORDER_ITEM_ID']}},
+		           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
+			           		var memo = record.MEMO||"" ;
+			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
+			        }},
+		           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
+		           		if(val){
+		           			val = val.replace(/%/g,'%25') ;
+		           		}else{
+		           			return "" ;
+		           		}
+		           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+		           	}},
 		           	{align:"center",key:"ORDER_ID",label:"ORDER_ID", width:"15%"},
 		           	{align:"center",key:"ORDER_ITEM_ID",label:"ORDER_ITEM_ID", width:"12%"},
 		           	{align:"center",key:"SKU",label:"SKU",sort:true, width:"10%"},

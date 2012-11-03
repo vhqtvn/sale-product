@@ -22,10 +22,8 @@ function formatGridData(data){
 	   }
 
 	$(function(){
-		var sqlId = "sql_order_list" ;
-		if(!status){
-			sqlId = "sql_order_list_nostatus" ;
-		}
+		
+			var sqlId = "sql_order_list_picked" ;
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ORDER_ID",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
@@ -34,10 +32,17 @@ function formatGridData(data){
 							}
 					}}},
 					 //{未审核订单：,合格订单：5，风险订单：2，待退单：3，外购订单：4，加急单：6，特殊单：7}
-					{align:"center",key:"AUDIT_STATUS",label:"状态",sort:true, width:"8%",
-						format:{type:"json",content:{0:"未审核",5:"合格订单",2:"风险订单"
-						,3:"待退单",4:"外购订单",6:"加急单",7:"特殊单"
-					}}},
+					{align:"center",key:"AUDIT_STATUS",label:"状态",sort:true, width:"8%",format:function(val,record){
+						var pickStatus = record.PICK_STATUS ;
+						if(pickStatus == 9){
+							return "拣货中" ;
+						}else if(pickStatus == 10){
+							return "完成拣货" ;
+						}
+						
+						var map = {0:"未审核",5:"合格订单",2:"风险订单",3:"待退单",4:"外购订单",6:"加急单",7:"特殊单"} ;
+						return map[val] ;
+					}},
 					{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
@@ -72,19 +77,20 @@ function formatGridData(data){
 				 },
 				 title:"订单信息列表",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:status},
+				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:'9'},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
-			$(".save-btn").click(function(){
-					var checkedRecords = $(".grid-content").llygrid("getSelectedRecords",{key:"ORDER_ID",checked:true},true) ;
-					var status = $(this).attr("status");
-				
-					
-					var orders = [] ;
-					$(checkedRecords).each(function(index,item){
-						orders.push(item.ORDER_ID+"|"+item.ORDER_ITEM_ID) ;
-					}) ;
+			
+			$(".action-btn").click(function(){
+				var action = $(this).attr("action");
+				var checkedRecords = $(".grid-content").llygrid("getSelectedRecords",{key:"ORDER_ID",checked:true},true) ;
+				var status = $(this).attr("status");
+			
+				var orders = [] ;
+				$(checkedRecords).each(function(index,item){
+					orders.push(item.ORDER_ID+"|"+item.ORDER_ITEM_ID) ;
+				}) ;
 					
 				if( orders.length <=0 ){
 					alert("未选中任意订单！");
@@ -93,13 +99,19 @@ function formatGridData(data){
 				
 				var text = $.trim( $(this).text() ) ;
 				
-				if( window.confirm("确认将选择产品添加到["+text+"]中吗？") ){
-					
-					
+				var msgs = {
+					1:"确认将选择订单添加到拣货单中吗？",
+					2:"确认将选择订单移除出拣货单吗？",
+					3:"确认完成拣货吗？"
+				} ;
+				
+				var msg = msgs[action] ;
+				
+				if( window.confirm(msg) ){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/order/saveAudit" ,
-						data:{status:status,orders:orders.join(","),memo:$("#memo").val()},
+						url:"/saleProduct/index.php/order/savePickedOrder/"+pickedId ,
+						data:{status:status,orders:orders.join(","),memo:$("#memo").val(),action:action},
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
@@ -124,45 +136,43 @@ function formatGridData(data){
    	 $(function(){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
-					{label:'未审核订单',content:"tab-content"},
+					{label:'待拣货订单',content:"tab-content"},
+					{label:'完成拣货单',content:"tab-content"},
 					{label:'合格订单',content:"tab-content"},
 					{label:'风险客户',content:"tab-content"},
-					{label:'待退单',content:"tab-content"},
-					{label:'外购订单',content:"tab-content"},
+					//{label:'待退单',content:"tab-content"},
+					//{label:'外购订单',content:"tab-content"},
 					{label:'加急单',content:"tab-content"},
 					{label:'特殊单',content:"tab-content"}
 				] ,
 				//height:'500px',
 				select:function(event,ui){
 					var index = ui.index ;
-					renderAction(index);
-					
+					$(".save-btn").show().html("添加到拣货单").removeClass("btn-danger").addClass("btn-success").attr("action","1");
+					$(".pick-btn").hide() ;
+					if(index == 0){//拣货单订单
+						$(".pick-btn").show() ;
+						$(".save-btn").html("移除出拣货单").removeClass("btn-success").addClass("btn-danger").attr("action","2");
+						$(".grid-content").llygrid("reload",{pickStatus:9,status:'',sqlId:"sql_order_list_picked"},true) ;
+						currentQueryKey = "sql_order_list_picked" ;
+					}else if(index == 1){//完成拣货单
+						$(".save-btn").hide();
+						$(".grid-content").llygrid("reload",{pickStatus:10,status:'',sqlId:"sql_order_list_picked"},true) ;
+						currentQueryKey = "sql_order_list_picked" ;
+					}else if(index == 2){//合格订单
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:5,sqlId:"sql_order_list_picked"},true) ;
+						currentQueryKey = "sql_order_list_picked" ;
+					}else if(index == 3){//风险客户
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:2,sqlId:"sql_order_list_picked"},true) ;
+						currentQueryKey = "sql_order_list_picked" ;
+					}else if(index == 4){//加急单
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:6,sqlId:"sql_order_list_picked"},true) ;
+						currentQueryKey = "sql_order_list_picked" ;
+					}else if(index == 5){//特殊但
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:7,sqlId:"sql_order_list_picked"},true) ;
+						currentQueryKey = "sql_order_list_picked" ;
+					}
 				}
 			} ) ;
 		}) ;
    	 
-function renderAction(index){
-	$(".save-btn").show() ;
-	if(index == 0){//未审核订单
-		currentQueryKey = "sql_order_list_nostatus" ;
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:5,sqlId:"sql_order_list_nostatus"},true) ;
-	}else if(index == 1){//合格订单
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:5,sqlId:"sql_order_list"},true) ;
-		currentQueryKey = "sql_order_list" ;
-	}else if(index == 2){//风险客户
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:2,sqlId:"sql_order_list"},true) ;
-		currentQueryKey = "sql_order_list" ;
-	}else if(index == 3){//待退单
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:3,sqlId:"sql_order_list"},true) ;
-		currentQueryKey = "sql_order_list" ;
-	}else if(index == 4){//外购订单
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:4,sqlId:"sql_order_list"},true) ;
-		currentQueryKey = "sql_order_list" ;
-	}else if(index == 5){//加急单
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:6,sqlId:"sql_order_list"},true) ;
-		currentQueryKey = "sql_order_list" ;
-	}else if(index == 6){//特殊但
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:7,sqlId:"sql_order_list"},true) ;
-		currentQueryKey = "sql_order_list" ;
-	}
-}

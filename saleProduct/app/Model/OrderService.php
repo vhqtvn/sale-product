@@ -35,6 +35,12 @@ class OrderService extends AppModel {
 			$sql = $this->getSql($sql,$items) ;
 			$this->query($sql) ;
 		}catch(Exception $e){}
+		
+		try{
+			$sql = $this->getDbSql("sql_order_user_insert") ;
+			$sql = $this->getSql($sql,$items) ;
+			$this->query($sql) ;
+		}catch(Exception $e){}
 	}
 	
 

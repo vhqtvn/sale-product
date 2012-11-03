@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <entry key="sql_">
+    <entry key="sql_order_user_insert">	 
+	INSERT INTO sc_amazon_order_user 
+	(
+		EMAIL, 
+		NAME, 
+		PHONE, 
+		STATUS
+	)
+	VALUES
+	('{@#buyer-email#}', 
+	'{@#buyer-name#}', 
+	'{@#buyer-phone-number#}',
+	''
+	)
     </entry>
    
    <entry key="sql_order_insert">
@@ -156,24 +169,14 @@
 		 {@ and sc_amazon_order_upload.account_id = '#accountId#'}
 		) t
     </entry>
-   
-   <entry key="sql_order_list">
-		select sc_amazon_order.* ,sc_amazon_order_status.ID,
-			sc_amazon_order_status.AUDIT_STATUS, 
-			sc_amazon_order_status.AUDIT_MEMO, 
-			sc_amazon_order_status.REAUDIT_STATUS, 
-			sc_amazon_order_status.REAUDIT_MEMO, 
-			sc_amazon_order_status.PICK_STATUS
-		
-		  from sc_amazon_order ,  sc_amazon_order_status 
-		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
-		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   {@ and sc_amazon_order_status.audit_status = '#status#'}
-    </entry>
     
     <entry key="sql_order_list_nostatus">
-		select sc_amazon_order.* 
+		select sc_amazon_order.* ,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL
 		  from sc_amazon_order
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
 		  where  not exists (
 		  	select 1 from sc_amazon_order_status where 
 		  	sc_amazon_order_status.order_id = sc_amazon_order.order_id and
@@ -185,6 +188,104 @@
 		  {@ and sku = '#sku#'}
     </entry>
     
+   
+   <entry key="sql_order_list">
+		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+			sc_amazon_order_status.AUDIT_STATUS, 
+			sc_amazon_order_status.AUDIT_MEMO, 
+			sc_amazon_order_status.REAUDIT_STATUS, 
+			sc_amazon_order_status.REAUDIT_MEMO, 
+			sc_amazon_order_status.PICK_STATUS,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL
+		  from  sc_amazon_order_status ,sc_amazon_order
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		   {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
+		   {@ and sc_amazon_order_status.audit_status = '#status#'}
+		   {@ and sc_amazon_order.order_id = '#orderId#'}
+		   {@ and sc_amazon_order.buyer_name = '#userName#'}
+		   {@ and sc_amazon_order.buyer_email = '#email#'}
+		   {@ and sc_amazon_order.sku = '#sku#'}
+		   {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
+    </entry>
+    
+    <entry key="sql_order_doing_list">
+		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+			sc_amazon_order_status.AUDIT_STATUS, 
+			sc_amazon_order_status.AUDIT_MEMO, 
+			sc_amazon_order_status.REAUDIT_STATUS, 
+			sc_amazon_order_status.REAUDIT_MEMO, 
+			sc_amazon_order_status.PICK_STATUS,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL
+		  from  sc_amazon_order_status ,sc_amazon_order
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		   {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
+		   {@ and sc_amazon_order_status.audit_status = '#status#'}
+		   {@ and sc_amazon_order.order_id = '#orderId#'}
+		   {@ and sc_amazon_order.buyer_name = '#userName#'}
+		   {@ and sc_amazon_order.buyer_email = '#email#'}
+		   {@ and sc_amazon_order.sku = '#sku#'}
+		   {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
+		   and ( sc_amazon_order.tn_status is null or sc_amazon_order.tn_status not in ('1') )
+    </entry>
+    
+    <entry key="sql_order_done_list">
+		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+			sc_amazon_order_status.AUDIT_STATUS, 
+			sc_amazon_order_status.AUDIT_MEMO, 
+			sc_amazon_order_status.REAUDIT_STATUS, 
+			sc_amazon_order_status.REAUDIT_MEMO, 
+			sc_amazon_order_status.PICK_STATUS,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL
+		  from  sc_amazon_order_status ,sc_amazon_order
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		   {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
+		   {@ and sc_amazon_order_status.audit_status = '#status#'}
+		   {@ and sc_amazon_order.order_id = '#orderId#'}
+		   {@ and sc_amazon_order.buyer_name = '#userName#'}
+		   {@ and sc_amazon_order.buyer_email = '#email#'}
+		   {@ and sc_amazon_order.sku = '#sku#'}
+		   and sc_amazon_order.tn_status in ('1')
+    </entry>
+    
+    <entry key="sql_order_list_picked">
+    <![CDATA[
+		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+			sc_amazon_order_status.AUDIT_STATUS, 
+			sc_amazon_order_status.AUDIT_MEMO, 
+			sc_amazon_order_status.REAUDIT_STATUS, 
+			sc_amazon_order_status.REAUDIT_MEMO, 
+			sc_amazon_order_status.PICK_STATUS,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL
+		  from  sc_amazon_order_status ,sc_amazon_order
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		  {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
+		  {@ and sc_amazon_order_status.audit_status = '#status#'}
+		  {@ and sc_amazon_order.order_id = '#orderId#'}
+		  {@ and sc_amazon_order.buyer_name = '#userName#'}
+		  {@ and sc_amazon_order.buyer_email = '#email#'}
+		  {@ and sc_amazon_order.sku = '#sku#'}
+		  {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
+		  
+		 ]]>
+    </entry>
+    
+
     
     <entry key="sql_order_status_insert">
 		INSERT INTO sc_amazon_order_status 
@@ -237,7 +338,20 @@
 		)
     </entry>
     
+    <entry key="sql_order_picked_list">
+		select * from (
+		select sc_amazon_picked.*  , sc_user.name as USERNAME ,
+		( select count(1) from sc_amazon_picked_order where picked_id = sc_amazon_picked.id ) as TOTAL
+		 from sc_amazon_picked , sc_user where 
+		 sc_amazon_picked.creator = sc_user.login_id
+		 {@ and sc_amazon_picked.account_id = '#accountId#'}
+		) t
+    </entry>
     
+    <entry key="sql_order_update_tracknumber">
+		update sc_amazon_order set track_number = '{@#trackNumber#}'
+		where order_id = '{@#orderId#}' and order_item_id = '{@#orderItemId#}'
+    </entry>
 
    
 </properties>
