@@ -26,11 +26,24 @@ function formatGridData(data){
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ORDER_ID",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
-							if(record.checked >=1){
-								$(this).attr("checked",true) ;
-							}
-					}}},
+					{align:"center",key:"ORDER_ID",label:"操作",width:"25%",format:function(val,record){
+						var html = [] ;
+						
+						if(actionType == 0){
+							html.push("<button class='btn grid-action' action='1'>退货</button>") ;
+							html.push("<button class='btn grid-action' action='2'>退款</button>") ;
+							html.push("<button class='btn grid-action' action='3'>重发货</button>") ;
+							html.push("<button class='btn grid-action' action='4'>评论管理</button>") ;
+						}else if(actionType==1){//待审批退货订单
+							html.push("<button class='btn grid-action'>详细</button>") ;
+							html.push("<button class='btn grid-action' action='5'>审批</button>") ;
+						}else if(actionType==2){//待审批退款订单
+							html.push("<button class='btn grid-action'>详细</button>") ;
+							html.push("<button class='btn grid-action' action='6'>审批</button>") ;
+						}
+						
+						return html.join("");
+					}},
 					 //{未审核订单：,合格订单：5，风险订单：2，待退单：3，外购订单：4，加急单：6，特殊单：7}
 					{align:"center",key:"AUDIT_STATUS",label:"状态",sort:true, width:"8%",
 						format:{type:"json",content:{0:"未审核",5:"合格订单",2:"风险订单"
@@ -71,61 +84,21 @@ function formatGridData(data){
 				 },
 				 title:"订单信息列表",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:9},
+				 querys:{sqlId:sqlId,accountId:accountId,status:'',unRedoStatus:1},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
-			//trackNumber编辑框事件
-			$(".lly-grid-cell-input").live("blur",function(){
-				var orderId = $(this).attr("ORDER_ID") ;
-				var orderItemId =  $(this).attr("ORDER_ITEM_ID") ;
-				var val = $(this).val() ;
-					
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/order/updateTrackNumber",
-					data:{orderId:orderId,orderItemId:orderItemId,trackNumber:val},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-					}
-				}); 
-			}) ;
-			
-			$(".save-btn").click(function(){
-					var checkedRecords = $(".grid-content").llygrid("getSelectedRecords",{key:"ORDER_ID",checked:true},true) ;
-					var status = $(this).attr("status");
-				
-					var orders = [] ;
-					$(checkedRecords).each(function(index,item){
-						orders.push(item.ORDER_ID+"|"+item.ORDER_ITEM_ID) ;
-					}) ;
-					
-				if( orders.length <=0 ){
-					alert("未选中任意订单！");
-					return ;
-				}	
-				
-				var text = $.trim( $(this).text() ) ;
-				
-				if( window.confirm("确认将选择产品添加到["+text+"]中吗？") ){
-					
-					
-					$.ajax({
-						type:"post",
-						url:"/saleProduct/index.php/order/saveAudit" ,
-						data:{status:status,orders:orders.join(","),memo:$("#memo").val()},
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							alert("保存成功!");
-							window.location.reload();
-						}
-					});
+			$(".grid-action").live("click",function(){
+				var row = $(this).parents("tr:first").data("record") ;
+				var orderId = row['ORDER_ID'] ;
+				var orderItemId = row['ORDER_ITEM_ID'] ;
+				var action = $(this).attr("action");
+				if(action){//退货
+					openCenterWindow("/saleProduct/index.php/order/processCompleteOrder/"+action+"/"+orderId+"/"+orderItemId,600,480) ;
+				}else{//查看信息轨迹
+					openCenterWindow("/saleProduct/index.php/order/viewTrack/"+orderId+"/"+orderItemId,600,480) ;
 				}
-				
-				
-			}) ;
+			});
 			
 			$(".query").click(function(){
 				var json = $(".query-table").toJson() ;
@@ -138,7 +111,12 @@ function formatGridData(data){
    	 $(function(){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
-					{label:'完成',content:"tab-content"}
+					{label:'完成',content:"tab-content"},
+					{label:'待审批退款订单',content:"tab-content"},
+					{label:'待审批重发货订单',content:"tab-content"},
+					{label:'待退货订单',content:"tab-content"},
+					{label:'待退款订单',content:"tab-content"},
+					{label:'待重发货订单',content:"tab-content"}
 				] ,
 				//height:'500px',
 				select:function(event,ui){
@@ -148,11 +126,28 @@ function formatGridData(data){
 				}
 			} ) ;
 		}) ;
-   	 
+ 
+var actionType = 0 ;		
 function renderAction(index){
+	actionType = index ;
 	$(".save-btn").show() ;
 	if(index == 0){//拣货中
 		$(".save-btn").hide() ;
-		$(".grid-content").llygrid("reload",{pickStatus:11,status:''},true) ;
+		$(".grid-content").llygrid("reload",{unRedoStatus:1,status:''}) ;
+	}else if(index == 1){//待审批退款订单
+		$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{unRedoStatus:'',redoStatus:2,status:''}) ;
+	}else if(index == 2){//待审批重发货订单
+		$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{unRedoStatus:'',redoStatus:3,status:''}) ;
+	}else if(index == 3){//退货订单
+		$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{unRedoStatus:'',redoStatus:1,status:''}) ;
+	}else if(index == 4){//退款订单
+		$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{unRedoStatus:'',redoStatus:201,status:''}) ;
+	}else if(index == 5){//重发货
+		$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{unRedoStatus:'',redoStatus:301,status:''}) ;
 	}
 }

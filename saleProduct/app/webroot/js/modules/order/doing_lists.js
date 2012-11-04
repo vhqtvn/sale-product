@@ -36,8 +36,10 @@ function formatGridData(data){
 						format:{type:"json",content:{0:"未审核",5:"合格订单",2:"风险订单"
 						,3:"待退单",4:"外购订单",6:"加急单",7:"特殊单"
 					}}},
-					
+					{align:"center",key:"CARRIER_CODE",label:"CarrierCode", width:"10%",
+						format:{type:"editor",renderType:"select",fields:['ORDER_ID','ORDER_ITEM_ID'],data:[{value:'',text:'-'},{value:'UPS',text:'UPS'}]}},
 					{align:"center",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%",format:{type:"editor",fields:['ORDER_ID','ORDER_ITEM_ID']}},
+		           	{align:"center",key:"SHIP_SERVICE_LEVEL",label:"SHIP LEVEL", width:"10%"},
 		           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
@@ -81,11 +83,15 @@ function formatGridData(data){
 				var orderId = $(this).attr("ORDER_ID") ;
 				var orderItemId =  $(this).attr("ORDER_ITEM_ID") ;
 				var val = $(this).val() ;
-					
+				var key = $(this).attr("key") ;
+				
+				var params = {orderId:orderId,orderItemId:orderItemId,key:key} ;
+				params[key]= val ;
+				
 				$.ajax({
 					type:"post",
 					url:"/saleProduct/index.php/order/updateTrackNumber",
-					data:{orderId:orderId,orderItemId:orderItemId,trackNumber:val},
+					data:params,
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){

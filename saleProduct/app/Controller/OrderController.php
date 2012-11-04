@@ -156,6 +156,27 @@ class OrderController extends AppController {
     public function editPicked($pickedId = null){
     }
     
+    public function processCompleteOrder($action ,$orderId , $orderItemId){
+    	$this->set("action" , $action) ;
+    	$this->set("orderId" , $orderId) ;
+    	$this->set("orderItemId",$orderItemId) ;
+    }
+    
+    public function saveRedoOrder(){
+    	$params = $this->request->data  ;
+    	$user =  $this->getCookUser() ;
+    	$this->OrderService->saveRedoOrder($params,$user ) ;
+    	
+    	$this->response->type("json");
+		$this->response->body("execute complete");
+		return $this->response;
+    }
+    
+    public function viewTrack($orderId , $orderItemId){
+    	$this->set("orderId" , $orderId) ;
+    	$this->set("orderItemId",$orderItemId) ;
+    } 
+    
     public function savePicked(){
     	$params = $this->request->data  ;
     	$user =  $this->getCookUser() ;

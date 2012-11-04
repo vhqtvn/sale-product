@@ -663,9 +663,22 @@
 					
 					var clz = val?"lly-grid-cell-update":"" ;
 					
-					return "<input type='text' class='lly-grid-cell-input "+clz+"' key='"+col.key+"'  " + html.join("")+
+					if(col.format.renderType == 'select'){
+						var html1 = [] ;
+						html1.push("<select class='lly-grid-cell-input'  key='"+col.key+"'  " + html.join("")+
+							" name='editor_"+col.key+"'  rawval='"+val+"' style='width:100%;height:50%;padding:0px;margin:0px;border:none;'>") ;
+						$( col.format.data||[] ).each(function(){
+							var temp = '' ;
+							if( val == this.value )temp = "selected" ;
+							html1.push("<option "+temp+" value='"+this.value+"'>"+this.text+"</option>") ;
+						}) ;	
+						html1.push("</select>") ;
+						return html1.join("") ;
+					}else{
+						return "<input type='text' class='lly-grid-cell-input "+clz+"' key='"+col.key+"'  " + html.join("")+
 							" name='editor_"+col.key+"'  rawval='"+val+"' " +
 							" value='"+val+"' style='width:100%;height:50%;padding:0px;margin:0px;border:none;'/>"  ;
+					}	
 				},
 				bindEvent:function(col,grid){
 					grid.find("input[name='editor_"+col.key+"']").unbind("keyup").bind("keyup",function(){

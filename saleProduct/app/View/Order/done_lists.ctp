@@ -68,20 +68,7 @@
 					<button class="btn btn-primary query" >查询</button>
 				</td>
 			</tr>						
-		</table>	
-		<hr style="margin:2px;"/>
-		<table style="width:100%;">
-			<tr><th style="width:100px">操作：</th>
-				<td>
-				</td>
-			</tr>	
-			<tr>
-				<th>备注：</th>
-				<td>
-					<textarea id="memo" style="width:100%;height:50px;"></textarea>
-				</td>
-			</tr>					
-		</table>	
+		</table>
 	</div>	
 	
 	<div id="details_tab">

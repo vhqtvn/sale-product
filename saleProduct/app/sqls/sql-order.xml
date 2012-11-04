@@ -257,6 +257,8 @@
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
 		   and sc_amazon_order.tn_status in ('1')
+		   {@ and ( sc_amazon_order.redo_status is null or sc_amazon_order.redo_status = '' ) and '#unRedoStatus#' = '#unRedoStatus#'}
+		   {@ and sc_amazon_order.redo_status = '#redoStatus#'}
     </entry>
     
     <entry key="sql_order_list_picked">
@@ -349,9 +351,25 @@
     </entry>
     
     <entry key="sql_order_update_tracknumber">
-		update sc_amazon_order set track_number = '{@#trackNumber#}'
+		update sc_amazon_order set
+		 order_id = '{@#orderId#}'
+		 {@, track_number = '#TRACK_NUMBER#'}
+		 {@, carrier_code = '#CARRIER_CODE#'}
 		where order_id = '{@#orderId#}' and order_item_id = '{@#orderItemId#}'
     </entry>
 
+	<entry key="sql_order_track_list">
+		select sc_amazon_order_track.*,sc_user.name as USERNAME  from sc_amazon_order_track, sc_user where 
+		 sc_amazon_order_track.actor = sc_user.login_id
+		and order_id = '{@#orderId#}' and order_item_id = '{@#orderItemId#}'
+    </entry>
+    
+    <entry key="sql_order_can_do_ship">
+		select * from sc_amazon_order where account_id = '{@#accountId#}'
+			AND (tn_status is null or tn_status = '') 
+			AND track_number IS NOT NULL AND track_number !='' 
+			AND carrier_code IS NOT NULL AND carrier_code !='' 
+
+    </entry>
    
 </properties>

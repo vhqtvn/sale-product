@@ -2,6 +2,28 @@
 class OrderService extends AppModel {
 	var $useTable = "sc_account_product_warning" ;
 	
+	var $auditStatus = array('2'=>'风险客户',
+			'3'=>'待退单',
+			'4'=>'外购订单',
+			'5'=>'合格订单',
+			'6'=>'加急单',
+			'7'=>'特殊单') ;
+			
+	var $pickStatus = array('9'=>'拣货中','10'=>'拣货完成') ;
+	var $tnStatus   = array('1'=>'发货完成') ;
+	var $redoStatus = array(
+			'1'=>'退货',
+			'2'=>'退款',
+			'3'=>'重发货',
+			'4'=>'FEEDBACK',
+			'201'=>'退款审批',
+			'301'=>'重发货审批',
+			'202'=>'待退款',
+			'302'=>'待重发货',
+			'20001'=>'完成退款',
+			'30001'=>'完成重发货'
+		) ;
+	
 	/**
 	 * 保存上传记录
 	 */
@@ -28,13 +50,17 @@ class OrderService extends AppModel {
 	 * 保存订单明细
 	 */
 	function saveOrderItem($accountId , $items ,$id){
+		$this->setDataSource('gbk');
+		
 		$items['account_id'] = $accountId ;
 		$items['upload_id'] = $id ;
 		try{
 			$sql = $this->getDbSql("sql_order_insert") ;
 			$sql = $this->getSql($sql,$items) ;
 			$this->query($sql) ;
-		}catch(Exception $e){}
+		}catch(Exception $e){
+			print_r($e->getMessage()) ;
+		}
 		
 		try{
 			$sql = $this->getDbSql("sql_order_user_insert") ;
@@ -65,22 +91,26 @@ class OrderService extends AppModel {
 			$this->query($sql) ;
 			
 			$sql = $this->getDbSql("sql_order_track_insert") ;
-			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=> $this->auditStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+		
 			$this->query($sql) ;
 			
 		}
 	}
 	
 	function updateTrackNumber($params,$user){
+		$key = $params['key'] ;
+		$value = $params[$key] ;
+		
 		//更新trackingNumber
-		$trackNumber = $params['trackNumber'] ;
+		//$trackNumber = $params['trackNumber'] ;
 		$sql = $this->getDbSql("sql_order_update_tracknumber") ;
 		$loginId = $user['LOGIN_ID'] ;
 		$sql = $this->getSql($sql,$params) ;
 		$this->query($sql) ;
 		
 		//修改订单状态为拣货中 9
-		$memo = "add Tracking Number [ $trackNumber ]" ;
+		$memo = "update $key => $value" ;
 		$sql = $this->getDbSql("sql_order_track_insert") ;
 		$sql = $this->getSql($sql,array('ORDER_ID'=>$params['orderId'],'ORDER_ITEM_ID'=>$params['orderItemId'],'STATUS'=>'',"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 		$this->query($sql) ;	
@@ -119,7 +149,7 @@ class OrderService extends AppModel {
 				$this->query($sql) ;
 				
 				$sql = $this->getDbSql("sql_order_track_insert") ;
-				$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+				$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=> $this->pickStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 				$this->query($sql) ;		
 			}else if( $action == 2 ){//从拣货单删除
 				$sql = "delete from sc_amazon_picked_order where order_id = '$orderId' and ORDER_ITEM_ID='$orderItemId' and picked_id = '$pickedId'" ;
@@ -131,7 +161,7 @@ class OrderService extends AppModel {
 				$this->query($sql) ;
 				$memo = "从拣货单中移除" ;
 				$sql = $this->getDbSql("sql_order_track_insert") ;
-				$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+				$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>'',"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 				$this->query($sql) ;	
 			}else if( $action == 3){//完成拣货
 				//修改订单状态为拣货中 9
@@ -140,10 +170,37 @@ class OrderService extends AppModel {
 				$this->query($sql) ;
 				
 				$sql = $this->getDbSql("sql_order_track_insert") ;
-				$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+				$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$this->pickStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 				$this->query($sql) ;	
 			}
 		}
+	}
+
+	public function saveRedoOrder($params,$user){
+		$orderId = $params['orderId'] ;
+		$orderItemId = $params['orderItemId'] ;
+		$memo = $params['memo'] ;
+		$type = $params['type'] ;
+		$action = $params['action'] ;
+		$loginId = $user['LOGIN_ID'] ;
+		$relover = '' ;
+		if(isset($params['resolver'])){
+			$relover = $params['resolver'];
+		}
+
+		$sql = "update sc_amazon_order set redo_status = '$action'
+				, redo_type = '$type'
+				, redo_memo = '$memo'
+				, redo_resolver = '$relover'
+				where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
+		
+		$this->query($sql) ;
+		
+		$sql = $this->getDbSql("sql_order_track_insert") ;
+		
+		$status = $this->redoStatus[$action] ;
+		$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+		$this->query($sql) ;	
 	}
 	
 	public function savePicked($params,$user){
@@ -169,10 +226,12 @@ class OrderService extends AppModel {
 	}
 	
 	function getTrackNumberFeed($params,$user ,$accountId,$MerchantIdentifier){
-		$sql = "select * from sc_amazon_order where account_id = '$accountId'
-			and (tn_status is null or tn_status = '') AND track_number IS NOT NULL AND track_number !='' " ;
+		//$sql = "select * from sc_amazon_order where account_id = '$accountId'
+		//	and (tn_status is null or tn_status = '') AND track_number IS NOT NULL AND track_number !='' " ;
+		$sql = $this->getDbSql("sql_order_can_do_ship") ;
+		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
 		$items = $this->query($sql) ;
-		
+		//sql_order_can_do_ship
 		$feed = $this->_getTrackNumberFeed($MerchantIdentifier , $items) ;
 		
 		return $feed ;
@@ -180,8 +239,9 @@ class OrderService extends AppModel {
 	}
 	
 	function updateTrackNumberStatus($params,$user ,$accountId){
-		$sql = "select * from sc_amazon_order where account_id = '$accountId'
-			and (tn_status is null or tn_status = '') AND track_number IS NOT NULL AND track_number !='' " ;
+		$loginId = $user['LOGIN_ID'] ;
+		$sql = $this->getDbSql("sql_order_can_do_ship") ;
+		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
 		$items = $this->query($sql) ;
 		foreach($items as $order){
 			$order = $order['sc_amazon_order'] ;
@@ -190,8 +250,15 @@ class OrderService extends AppModel {
 			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
 			$trackNumber = $order['TRACK_NUMBER'] ;	
 			
+			
 			$sql = "update sc_amazon_order set TN_STATUS = '1' where
 					TRACK_NUMBER='$trackNumber' and ORDER_ID='$orderId' and ORDER_ITEM_ID='$orderItemId'" ;
+			$this->query($sql) ;
+			
+			$status = $this->tnStatus['1'] ;
+			$sql = $this->getDbSql("sql_order_track_insert") ;
+			$memo = "" ;
+			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 			$this->query($sql) ;
 		}
 	}
@@ -223,7 +290,8 @@ EOD;
 			$orderId = $order['ORDER_ID'] ;
 			$orderItemId = $order['ORDER_ITEM_ID'] ;
 			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
-			$trackNumber = $order['TRACK_NUMBER'] ;		
+			$trackNumber = $order['TRACK_NUMBER'] ;	
+			$carrierCode = $order['CARRIER_CODE'] ;	
 ////////////////////////////////////////////////////////////////////////////
 $Feed .= <<<EOD
 	<Message>
@@ -232,7 +300,7 @@ $Feed .= <<<EOD
 			<AmazonOrderID>$orderId</AmazonOrderID> 
 			<FulfillmentDate>$FulfillmentDate</FulfillmentDate> 
 			<FulfillmentData>
-				<CarrierCode>UPS</CarrierCode> 
+				<CarrierCode>$carrierCode</CarrierCode> 
 				<ShippingMethod>$shippingMethod</ShippingMethod> 
 				<ShipperTrackingNumber>$trackNumber</ShipperTrackingNumber> 
 			</FulfillmentData>
