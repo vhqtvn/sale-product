@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>llygrid demo</title>
+    <title>客户列表</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
@@ -15,11 +15,13 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('grid/query');
 	?>
   
    <script type="text/javascript">
-		var accountId = '' ;
-		 function formatGridData(data){
+
+	 //result.records , result.totalRecord
+	 function formatGridData(data){
 		var records = data.record ;
  		var count   = data.count ;
  		
@@ -41,19 +43,12 @@
 			
 		return ret ;
 	   }
-		function validateForm(){
-			if( !$("[name='orderFile']").val() ){
-				alert("请选择上传文件！");
-				return false ;
-			}
-			return true ;
-		}
-		
-		$(function(){
+
+	$(function(){
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/users/editFunction/"+id,600,400) ;
+					openCenterWindow("/saleProduct/index.php/users/editUser/"+id,600,400) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
@@ -68,52 +63,51 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/order/editPicked",600,400) ;
+					openCenterWindow("/saleProduct/index.php/saleProduct/editProduct",600,400) ;
 				} 
 				return false ;
-			}) ;
-			
-			$(".select-product").live("click",function(){
-				var pickId = $(this).attr("pickId") ;
-				openCenterWindow("/saleProduct/index.php/order/selectPickedProduct/"+pickId,1000,600) ;
 			})
-			
+
 			$(".grid-content").llygrid({
 				columns:[
-		           	//{align:"center",key:"ID",label:"编号", width:"10%"},
-		           	{align:"center",key:"ID",label:"操作",width:"10%",format:function(val,record){
-						var status = record.STATUS ;
-						var html = [] ;
-						html.push('<button class="btn select-product" pickId="'+val+'">编辑订单</button>&nbsp;') ;
-						return html.join("") ;
+					{align:"center",key:"ID",label:"Actions", width:"10%",format:function(val,record){
+							var html = [] ;
+							var val = record["LOGIN_ID"] ;
+							html.push("<a href='#' class='action update' val='"+val+"'>修改</a>&nbsp;") ;
+							//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
+							return html.join("") ;
 					}},
-		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-		           	{align:"center",key:"MEMO",label:"备注",width:"27%",forzen:false,align:"left"},
-		           	{align:"center",key:"TOTAL",label:"订单总数",width:"8%",forzen:false,align:"left"},
-		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"15%"},
-		           	{align:"center",key:"USERNAME",label:"创建用户",width:"10%",format:function(val,record){
-		           		return val ;
-		           	}}
+		           	{align:"center",key:"ENAIL",label:"EMAIL",width:"20%",forzen:false,align:"left"},
+		           	{align:"center",key:"NAME",label:"NAME",width:"20%"},
+		           	{align:"center",key:"PHONE",label:"PHONE",width:"20%"},
+		           	{align:"center",key:"STATUS",label:"STATUS",width:"10%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:400,
+				 height:function(){
+				 	return $(window).height() - 140 ;
+				 },
+				 title:"客户列表",
 				 autoWidth:true,
-				 title:"拣货单列表",
-				 querys:{sqlId:"sql_order_picked_list",accountId:accountId},
+				 indexColumn:false,
+				  querys:{sqlId:"sql_saleuser_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
-		})
+   	 });
    </script>
-
+   
+   <style>
+   		*{
+   			font:12px "微软雅黑";
+   		}
+   </style>
 
 </head>
 <body>
-	<div class="grid-query-button">
-		<button class="action add btn btn-primary">创建拣货单</button>
-	</div>  
+
 	<div class="grid-content">
+	
 	</div>
 </body>
 </html>

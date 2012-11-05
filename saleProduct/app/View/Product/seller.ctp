@@ -70,7 +70,9 @@
 		          ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:400,
+				 height:function(){
+				 	return $(window).height()-160 ;
+				 },
 				 title:"商家列表",
 				 indexColumn:true,
 				 querys:{sqlId:"sql_seller"},

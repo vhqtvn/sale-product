@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+
+   
+    <entry key="sql_saleproduct_list">
+ 			SELECT * from sc_real_product
+   </entry>
+   
+   <entry key="sql_saleproduct_insert">
+ 		INSERT INTO sc_real_product 
+		(REAL_SKU, 
+		IMAGE_URL, 
+		QUANTITY, 
+		POSITION, 
+		BARCODE, 
+		CREATOR, 
+		CREATE_TIME, 
+		NAME, 
+		MEMO, 
+		URL
+		)
+		VALUES
+		('{@#sku#}', 
+		'{@#imageUrl#}', 
+		'{@#quantity#}', 
+		'{@#position#}', 
+		'{@#barcode#}', 
+		'{@#loginId#}', 
+		NOW(), 
+		'{@#name#}', 
+		'{@#memo#}', 
+		'{@#url#}'
+		)
+   </entry>
+   
+   
+</properties>

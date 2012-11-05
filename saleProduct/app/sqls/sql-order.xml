@@ -283,6 +283,12 @@
 		  {@ and sc_amazon_order.buyer_email = '#email#'}
 		  {@ and sc_amazon_order.sku = '#sku#'}
 		  {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
+		  {@ and exists ( 
+		  		select 1 from sc_amazon_picked_order where
+		  		 picked_id = '#pickId#'
+		  		 and sc_amazon_picked_order.order_id = sc_amazon_order.order_id
+		  		 and sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
+		  )}
 		  
 		 ]]>
     </entry>
@@ -347,6 +353,7 @@
 		 from sc_amazon_picked , sc_user where 
 		 sc_amazon_picked.creator = sc_user.login_id
 		 {@ and sc_amazon_picked.account_id = '#accountId#'}
+
 		) t
     </entry>
     

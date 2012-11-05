@@ -77,7 +77,7 @@ function formatGridData(data){
 				 },
 				 title:"订单信息列表",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:'9'},
+				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:'9',pickId:pickedId},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
@@ -126,7 +126,6 @@ function formatGridData(data){
 			
 			$(".query").click(function(){
 				var json = $(".query-table").toJson() ;
-				//if(currentQueryKey)json.sqlId = currentQueryKey ;
 				$(".grid-content").llygrid("reload",json,true) ;
 			}) ;
    	 });
@@ -139,7 +138,7 @@ function formatGridData(data){
 					{label:'待拣货订单',content:"tab-content"},
 					{label:'完成拣货单',content:"tab-content"},
 					{label:'合格订单',content:"tab-content"},
-					{label:'风险客户',content:"tab-content"},
+					//{label:'风险客户',content:"tab-content"},
 					//{label:'待退单',content:"tab-content"},
 					//{label:'外购订单',content:"tab-content"},
 					{label:'加急单',content:"tab-content"},
@@ -153,24 +152,16 @@ function formatGridData(data){
 					if(index == 0){//拣货单订单
 						$(".pick-btn").show() ;
 						$(".save-btn").html("移除出拣货单").removeClass("btn-success").addClass("btn-danger").attr("action","2");
-						$(".grid-content").llygrid("reload",{pickStatus:9,status:'',sqlId:"sql_order_list_picked"},true) ;
-						currentQueryKey = "sql_order_list_picked" ;
+						$(".grid-content").llygrid("reload",{pickStatus:9,status:'',pickId:pickedId},true) ;
 					}else if(index == 1){//完成拣货单
 						$(".save-btn").hide();
-						$(".grid-content").llygrid("reload",{pickStatus:10,status:'',sqlId:"sql_order_list_picked"},true) ;
-						currentQueryKey = "sql_order_list_picked" ;
+						$(".grid-content").llygrid("reload",{pickStatus:10,status:'',pickId:pickedId},true) ;
 					}else if(index == 2){//合格订单
-						$(".grid-content").llygrid("reload",{pickStatus:'',status:5,sqlId:"sql_order_list_picked"},true) ;
-						currentQueryKey = "sql_order_list_picked" ;
-					}else if(index == 3){//风险客户
-						$(".grid-content").llygrid("reload",{pickStatus:'',status:2,sqlId:"sql_order_list_picked"},true) ;
-						currentQueryKey = "sql_order_list_picked" ;
-					}else if(index == 4){//加急单
-						$(".grid-content").llygrid("reload",{pickStatus:'',status:6,sqlId:"sql_order_list_picked"},true) ;
-						currentQueryKey = "sql_order_list_picked" ;
-					}else if(index == 5){//特殊但
-						$(".grid-content").llygrid("reload",{pickStatus:'',status:7,sqlId:"sql_order_list_picked"},true) ;
-						currentQueryKey = "sql_order_list_picked" ;
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:5,pickId:''},true) ;
+					}else if(index == 3){//加急单
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:6,pickId:''},true) ;
+					}else if(index == 4){//特殊但
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:''},true) ;
 					}
 				}
 			} ) ;

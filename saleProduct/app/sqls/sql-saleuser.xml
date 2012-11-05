@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+
+   
+    <entry key="sql_saleuser_list">
+ 			SELECT * from sc_amazon_order_user
+   </entry>
+   
+   
+   
+</properties>
