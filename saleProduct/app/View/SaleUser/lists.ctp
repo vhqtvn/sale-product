@@ -77,9 +77,9 @@
 							//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
 							return html.join("") ;
 					}},
-		           	{align:"center",key:"EMAIL",label:"EMAIL",width:"20%",forzen:false,align:"left"},
-		           	{align:"center",key:"NAME",label:"NAME",width:"20%"},
-		           	{align:"center",key:"PHONE",label:"PHONE",width:"20%"},
+		           	{align:"left",key:"EMAIL",label:"EMAIL",width:"40%",forzen:false,align:"left"},
+		           	{align:"left",key:"NAME",label:"NAME",width:"20%"},
+		           	{align:"right",key:"PHONE",label:"PHONE",width:"10%"},
 		           	{align:"center",key:"STATUS",label:"STATUS",width:"10%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
