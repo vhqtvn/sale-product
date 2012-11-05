@@ -73,11 +73,11 @@
 					{align:"center",key:"ID",label:"Actions", width:"10%",format:function(val,record){
 							var html = [] ;
 							var val = record["LOGIN_ID"] ;
-							html.push("<a href='#' class='action update' val='"+val+"'>修改</a>&nbsp;") ;
+							//html.push("<a href='#' class='action update' val='"+val+"'>修改</a>&nbsp;") ;
 							//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
 							return html.join("") ;
 					}},
-		           	{align:"center",key:"ENAIL",label:"EMAIL",width:"20%",forzen:false,align:"left"},
+		           	{align:"center",key:"EMAIL",label:"EMAIL",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"NAME",label:"NAME",width:"20%"},
 		           	{align:"center",key:"PHONE",label:"PHONE",width:"20%"},
 		           	{align:"center",key:"STATUS",label:"STATUS",width:"10%"}
