@@ -53,16 +53,20 @@
 		           		var val1 = record.ID ;
 		           		return "<a href='#' class='show-products' val='"+val1+"'>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"URL",label:"商家地址",width:"30%"},
+		           	{align:"center",key:"URL",label:"商家地址",width:"30%",format:function(val,record){
+		           		return "<a href='"+val+"' target='_blank'>"+val+"</a>" ;
+		           	}},
 		           	{align:"center",key:"TOTAL",label:"产品总数",width:"8%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"8%"},
-				   {align:"center",key:"ID",label:"采集操作",width:"20%",format:function(val,record){
-					var html = [] ;
-					html.push("<a href='#' class='gather-action' val='"+val+"'>产品采集</a>&nbsp;&nbsp;") ;
-					return html.join("") ;
-				}}
+				    {align:"center",key:"ID",label:"操作",width:"20%",format:function(val,record){
+						var html = [] ;
+						html.push("<a href='#' class='gather-action btn' val='"+val+"'>产品采集</a>&nbsp;") ;
+						if(record.TOTAL <= 0){
+							html.push("<a href='#' class='delete-action btn' val='"+val+"'>删除</a>") ;
+						}
+						return html.join("") ;
+					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/seller"},
 		          ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
@@ -94,6 +98,24 @@
 					success:function(result,status,xhr){
 					}
 				}); 
+			});
+			
+			$(".delete-action").live("click",function(){
+				if(window.confirm("确认删除吗?")){
+					var record = $(this).parents("tr:first").data("record");
+					var id = record.ID ;
+					$.ajax({
+						type:"post",
+						url:"/saleProduct/index.php/seller/deleteById/"+id,
+						data:{},
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							window.location.reload();
+						}
+					});
+				}
+					
 			});
 			
    	 });
