@@ -45,40 +45,8 @@
 	   }
 
 	$(function(){
-			$(".action").live("click",function(){
-				var id = $(this).attr("val") ;
-				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/details/"+id,900,600) ;
-				}else if( $(this).hasClass("del") ){
-					if(window.confirm("确认删除吗")){
-						$.ajax({
-							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
-							data:{id:id},
-							cache:false,
-							dataType:"text",
-							success:function(result,status,xhr){
-								$(".grid-content").llygrid("reload") ;
-							}
-						}); 
-					}
-				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/editProduct",600,400) ;
-				}else if( $(this).hasClass("bind") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/"+id,1000,640) ;
-				} 
-				return false ;
-			})
-
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"REAL_SKU",label:"Actions", width:"20%",format:function(val,record){
-							var html = [] ;
-							html.push("<a href='#' class='action update btn' val='"+val+"'>编辑</a>&nbsp;") ;
-							
-							//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
-							return html.join("") ;
-					}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,reocrd){
 		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
 		           	}},
@@ -93,10 +61,14 @@
 				 height:function(){
 				 	return $(window).height() - 140 ;
 				 },
+				 rowDblClick:function(val,record){
+				 	window.opener.setSelectedValue(record) ;
+				 	window.close();
+				 },
 				 title:"货品列表",
 				 autoWidth:true,
 				 indexColumn:false,
-				  querys:{sqlId:"sql_saleproduct_list"},
+				  querys:{sqlId:"sql_saleproduct_select_list",realSku:'<?php echo $sku;?>>'},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });
@@ -110,12 +82,7 @@
 
 </head>
 <body>
-
-	<div class="grid-query-button">
-		<button class="action add btn btn-primary">添加货品</button>
-	</div>
-	
-
+	<div class="alert alert-success">双击行选择</div>
 	<div class="grid-content">
 	
 	</div>

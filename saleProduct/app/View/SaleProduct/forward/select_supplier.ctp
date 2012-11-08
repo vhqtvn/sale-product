@@ -21,8 +21,6 @@
   
    <script type="text/javascript">
    
-   var asin = '<?php echo $asin;?>' ;
-   
    //result.records , result.totalRecord
  	function formatGridData(data){
  		var records = data.record ;
@@ -111,20 +109,8 @@
 					suppliers.push( $(this).attr("supplier") ) ;
 				}) ;
 				
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/supplier/saveProductSupplier",
-					data:{
-						asin:asin,
-						suppliers:suppliers.join(",")
-					},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						window.opener.location.reload() ;
-						window.close() ;
-					}
-				}); 
+				window.opener.doSelectedValue(suppliers) ;
+				window.close() ;
 			}) ;
    	 });
    </script>
@@ -163,11 +149,6 @@
 	</div>
 	<div class="product-list" style="border:1px solid #CCC;width:100%;height:100px;">
      		<ul>
-     			<?php
-     				foreach($suppliers as $supplier){
-     					echo "<li supplier='".$supplier['sc_supplier']['ID']."'>".$supplier['sc_supplier']['NAME']."</li>" ;
-     				} ;
-     			?>
      		</ul>
      </div>
      <button class="save-product-supplier">保存产品供应商</button>

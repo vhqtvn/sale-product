@@ -35,5 +35,132 @@
 		)
    </entry>
    
-   
+    <entry key="sql_saleproduct_selelctproduct_list">
+    <![CDATA[
+    select * from (	
+		SELECT  sc_amazon_account_product.*,
+		 (select count(1) from sc_real_product_rel where real_sku = '{@#realSku#}' and
+		 	sc_real_product_rel.sku = sc_amazon_account_product.sku
+		 	and sc_real_product_rel.account_id = sc_amazon_account_product.account_id
+		 ) as checked
+		 FROM sc_amazon_account_product 
+					where status = 'Y'
+					{@ and title like '%#title#%' }
+					{@ and asin = '#asin#' }
+					{@ and sku = '#sku#' }
+					{@ and account_id = '#accountId#' }
+					
+					{@ and sku not in (
+								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '#accountId#')
+						and 1= #uncategory#
+					}
+					{@ and sku in (
+								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
+								and sku is not null and account_id = '#accountId#'
+					)}
+					and sku not in (
+						select sku from sc_real_product_rel where real_sku != '{@#realSku#}'
+					)
+		) t order by t.checked desc
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_channel_list">
+    <![CDATA[
+    select * from (	
+		SELECT  sc_amazon_account_product.*,
+		(select name from sc_amazon_account where id = sc_amazon_account_product.account_id ) as CHANNEL_NAME
+		 FROM sc_amazon_account_product ,sc_real_product_rel
+					where status = 'Y'
+					and sc_real_product_rel.sku = sc_amazon_account_product.sku
+					and sc_real_product_rel.real_sku = '{@#realSku#}'
+					{@ and sc_amazon_account_product.title like '%#title#%' }
+					{@ and sc_amazon_account_product.asin = '#asin#' }
+					{@ and sc_amazon_account_product.sku = '#sku#' }
+					{@ and sc_amazon_account_product.account_id = '#accountId#' }
+					
+					{@ and sc_amazon_account_product.sku not in (
+								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '#accountId#')
+						and 1= #uncategory#
+					}
+					{@ and sc_amazon_account_product.sku in (
+								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
+								and sku is not null and account_id = '#accountId#'
+					)}
+					and sc_amazon_account_product.sku not in (
+						select sku from sc_real_product_rel where real_sku != '{@#realSku#}'
+					)
+		) t 
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_select_list">
+    <![CDATA[
+    	SELECT * from sc_real_product 
+    	where not exists (
+    		select * from sc_real_product_composition s1 where s1.composition_sku = sc_real_product.real_sku
+    	)
+    	and sc_real_product.real_sku != '{@#realSku#}'
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_composition_list">
+    <![CDATA[
+    SELECT s2.*,
+    s1.quantity as COM_QUANTITY
+     FROM 
+		sc_real_product_composition s1,sc_real_product s2
+		WHERE s1.ref_sku = s2.real_sku
+		and s1.composition_sku = '{@#realSku#}'
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_composition_save">
+    <![CDATA[
+    INSERT INTO sc_real_product_composition 
+		(
+		COMPOSITION_SKU, 
+		REF_SKU, 
+		QUANTITY, 
+		MEMO, 
+		CREATE_TIME, 
+		CREATOR
+		)
+		VALUES
+		(
+			{@'#comSku#'}, 
+			{@'#refSku#'}, 
+			'{@#quantity#}', 
+			'{@#memo#}', 
+			NOW(), 
+			'{@#loginId#}'
+		)
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_supplier_save">
+    <![CDATA[
+   insert into sc_real_product_supplier 
+		(REAL_SKU, 
+		SUPPLIER_ID, 
+		CREATE_TIME, 
+		CREATOR
+		)
+		values
+		('{@#realSku#}', 
+		'{@#supplierId#}', 
+		NOW(), 
+		'{@#loginId#}'
+		)
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_supplier_list">
+    <![CDATA[
+   SELECT * FROM sc_supplier WHERE id IN (
+	SELECT supplier_id FROM sc_real_product_supplier s1 WHERE s1.REAL_SKU = '{@#realSku#}'
+)
+	]]>	      
+    </entry>
+    
 </properties>

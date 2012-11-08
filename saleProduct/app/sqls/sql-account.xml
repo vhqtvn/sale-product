@@ -26,6 +26,7 @@
 					where status = 'Y'
 					{@ and title like '%#title#%' }
 					{@ and asin = '#asin#' }
+					{@ and sku = '#sku#' }
 					{@ and quantity >= #quantity1# }
 					{@ and quantity <= #quantity2# }
 					{@ and price >= #price1# }
