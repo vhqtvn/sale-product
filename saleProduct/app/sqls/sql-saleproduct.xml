@@ -35,6 +35,21 @@
 		)
    </entry>
    
+   <entry key="sql_saleproduct_update">
+ 		
+UPDATE sc_real_product 
+	SET
+	QUANTITY = '{@#quantity#}' , 
+	POSITION = '{@#position#}' , 
+	BARCODE = '{@#barcode#}' , 
+	NAME = '{@#name#}' , 
+	MEMO = '{@#memo#}' , 
+	URL = '{@#url#}'
+	WHERE
+	REAL_SKU = '{@#sku#}' ;
+		)
+   </entry>
+   
     <entry key="sql_saleproduct_selelctproduct_list">
     <![CDATA[
     select * from (	
