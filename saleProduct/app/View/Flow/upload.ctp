@@ -15,6 +15,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('calendar/WdatePicker');
 	?>
   
    <script type="text/javascript">
