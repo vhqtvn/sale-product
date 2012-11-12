@@ -59,10 +59,7 @@ function formatGridData(data){
 		           	{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
 		           	{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"},
 		           	{align:"center",key:"BUYER_PHONE_NUMBER",label:"BUYER_PHONE_NUMBER", width:"10%"},
-		           	{align:"center",key:"QUANTITY_PURCHASED",label:"QUANTITY_PURCHASED", width:"10%"},
-		           	{align:"center",key:"CURRENCY",label:"CURRENCY", width:"10%"},
-		           	{align:"center",key:"ITEM_PRICE",label:"ITEM_PRICE", width:"10%"},
-		           	{align:"center",key:"ITEM_TAX",label:"ITEM_TAX", width:"10%"}
+		           	{align:"center",key:"QUANTITY_PURCHASED",label:"QUANTITY_PURCHASED", width:"10%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
 				 limit:20,
