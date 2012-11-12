@@ -4,7 +4,7 @@ class SaleProductController extends AppController {
 	public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     var $uses = array('SaleProduct', 'Amazonaccount');
     
-    public function forward($layout , $sku){
+    public function forward($layout , $sku=null){
     	$this->set('sku',$sku);
     	
     	$item = null ;

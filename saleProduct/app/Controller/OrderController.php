@@ -10,6 +10,8 @@ class OrderController extends AppController {
 	public function doUpload($accountId){
 		
     	$params = $this->request->data  ;
+    	$startTime = $params['startTime'] ;
+    	$endTime = $params['endTime'] ;
     	if(isset($_FILES['orderFile'])){
     		$fileName = $_FILES['orderFile']["name"] ;
 			$myfile = $_FILES['orderFile']['tmp_name'] ;
@@ -17,7 +19,7 @@ class OrderController extends AppController {
 			//save db
 			$id = "O_".date('U') ;
 			
-			$this->OrderService->saveUpload( $id, $fileName,$accountId,$user ) ;
+			$this->OrderService->saveUpload( $id, $fileName,$accountId,$user,$startTime,$endTime ) ;
 			
 			$file_handle = fopen($myfile , "r");
 			
@@ -25,6 +27,9 @@ class OrderController extends AppController {
 			$header = null ;
 			while (!feof($file_handle)) {
 			   $line = fgets($file_handle);
+			   
+			  // echo $line.'<br/>' ;
+			  
 			   if( trim($line) != "" ){
 			   		$line = trim($line) ;
 			   		if( $isFirst === true ){//head
@@ -46,7 +51,7 @@ class OrderController extends AppController {
 			fclose($file_handle);
     		
     		$this->response->type("html");
-			$this->response->body("<script type='text/javascript'>window.opener.location.reload();</script>");
+			$this->response->body("<script type='text/javascript'>alert('success')</script>");
     	}
 				
 		
