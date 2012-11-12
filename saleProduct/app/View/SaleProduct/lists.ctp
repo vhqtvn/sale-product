@@ -63,10 +63,8 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/editProduct",600,400) ;
-				}else if( $(this).hasClass("bind") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/"+id,1000,640) ;
-				} 
+					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",600,400) ;
+				}
 				return false ;
 			})
 

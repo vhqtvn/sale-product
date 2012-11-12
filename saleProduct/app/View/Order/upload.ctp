@@ -9,12 +9,15 @@
    <?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('calendar/WdatePicker');
+		echo $this->Html->script('validator/jquery.validation');
 	?>
   
    <script type="text/javascript">
@@ -76,12 +79,17 @@
 <body>
 
    <div style="border:1px solid #CCC;margin:3px;">
-	    <form action="/saleProduct/index.php/order/doUpload/<?php echo $accountId;?>" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
+	    <form action="/saleProduct/index.php/order/doUpload/<?php echo $accountId;?>"
+	    	data-widget="validator" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
 		   <table border=0 cellPadding=3 cellSpacing=4 >
 		    <tr>
 		     <td>订单文件：</td>
-		     <td><input name="orderFile" type="file"/></td>
-		     <td colSpan=2 align=center><input type="submit" value="上传订单文件"></td> 
+		     <td><input name="orderFile" data-validator="required" type="file"/></td>
+		      <td>开始时间：</td>
+		     <td><input name="startTime" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td>
+		     <td>结束时间：</td>
+		     <td><input name="endTime" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td> 
+		     <td colSpan=2 align=center><input type="submit" class="btn btn-primary" value="上传订单文件"></td> 
 		    </tr>
 		   </table>
 	   </form>
