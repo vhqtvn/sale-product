@@ -27,21 +27,25 @@ class OrderService extends AppModel {
 	/**
 	 * 保存上传记录
 	 */
-	function saveUpload($id, $fileName,$accountId,$user){
+	function saveUpload($id, $fileName,$accountId,$user,$startTime = null ,$endTime = null){
 		$sql = "
 			INSERT INTO  sc_amazon_order_upload 
 				(ID, 
 				NAME, 
 				CREATE_TIME, 
 				CREATOR, 
-				ACCOUNT_ID
+				ACCOUNT_ID,
+				START_TIME, 
+				END_TIME
 				)
 				VALUES
 				('$id', 
 				'$fileName', 
 				NOW(), 
 				'".$user['LOGIN_ID']."', 
-				'$accountId'
+				'$accountId',
+				'$startTime',
+				'$endTime'
 				)" ;
 		return $this->query($sql) ;
 	}
@@ -66,11 +70,14 @@ class OrderService extends AppModel {
 			$sql = $this->getDbSql("sql_order_user_insert") ;
 			$sql = $this->getSql($sql,$items) ;
 			$this->query($sql) ;
-		}catch(Exception $e){}
+		}catch(Exception $e){
+			
+		}
 	}
 	
 
 	function saveAudit($params,$user){
+		$this->setDataSource('gbk');
 		$status = $params['status'] ;
 		$orders = $params['orders'] ;
 		$loginId = $user['LOGIN_ID'] ;
@@ -117,6 +124,8 @@ class OrderService extends AppModel {
 	}
 	
 	function savePickedOrder($params , $user,$pickedId){
+		$this->setDataSource('gbk');
+		
 		$orders = $params['orders'] ;
 		$loginId = $user['LOGIN_ID'] ;
 		$action  = $params['action'] ;

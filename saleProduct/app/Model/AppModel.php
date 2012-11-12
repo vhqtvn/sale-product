@@ -177,7 +177,7 @@ class AppModel extends Model {
 	    								$kValue = $query[$key] ;
 	    								//格式化$kValue,防止sql特殊字符
 	    								$kValue = str_replace("'","\'",$kValue);
-	    								$clause .= $kValue ;
+	    								$clause .=  utf8_encode($kValue) ;
 	    								$isTrue = true ;
 	    							}else{
 	    								$isTrue = false ;

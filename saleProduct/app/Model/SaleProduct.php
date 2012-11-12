@@ -4,9 +4,20 @@ class SaleProduct extends AppModel {
 	
 	function saveProduct($data , $user){
 		$data['loginId'] = $user['LOGIN_ID'] ;
-		$sql = $this->getDbSql("sql_saleproduct_insert") ;
-		$sql = $this->getSql($sql,$data) ;
-		$this->query($sql) ;
+		
+		$sku = $data['sku'] ;
+		
+		$item = $this->getSaleProduct($sku) ;
+		if( count($item) > 0){
+			//update
+			$sql = $this->getDbSql("sql_saleproduct_update") ;
+			$sql = $this->getSql($sql,$data) ;
+			$this->query($sql) ;
+		}else{
+			$sql = $this->getDbSql("sql_saleproduct_insert") ;
+			$sql = $this->getSql($sql,$data) ;
+			$this->query($sql) ;
+		}
 	}
 	
 	function getSaleProduct($sku){
