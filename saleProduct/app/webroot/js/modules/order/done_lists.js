@@ -23,33 +23,92 @@ function formatGridData(data){
 
 	$(function(){
 		var sqlId = "sql_order_done_list" ;
+		
+		     
+		     function doContextMenu(){
+		     	//alert("edit user( userId = " + this.data.userId + ")");
+		     	var row = this.data.record ;
+		     	var action = this.data.actionType ;
+		     	var orderId = row['ORDER_ID'] ;
+				var orderItemId = row['ORDER_ITEM_ID'] ;
+				if(action){//退货
+					openCenterWindow("/saleProduct/index.php/order/processCompleteOrder/"+action+"/"+orderId+"/"+orderItemId,600,480) ;
+				}else{//查看信息轨迹
+					openCenterWindow("/saleProduct/index.php/order/viewTrack/"+orderId+"/"+orderItemId,600,480) ;
+				}
+		     }
+		     
+		     /*$(".grid-action").live("click",function(){
+				var row = $(this).parents("tr:first").data("record") ;
+				var orderId = row['ORDER_ID'] ;
+				var orderItemId = row['ORDER_ITEM_ID'] ;
+				var action = $(this).attr("action");
+				if(action){//退货
+					openCenterWindow("/saleProduct/index.php/order/processCompleteOrder/"+action+"/"+orderId+"/"+orderItemId,600,480) ;
+				}else{//查看信息轨迹
+					openCenterWindow("/saleProduct/index.php/order/viewTrack/"+orderId+"/"+orderItemId,600,480) ;
+				}
+			});*/
+		     
+		     function openContextMenu(e,jq){
+		     	var row = jq.parents("tr:first").data("record") ;
+		     	var action = jq.attr("action");
+		     	
+		     	var menuItems  = [];
+		     	menuItems.push({text:"售后管理",alias:"aftermarket",action:doContextMenu,actionType:4,record:row}) ;
+		     	
+		     	html.push("<button class='btn grid-action' action='4'>售后管理</button>") ;
+		     	if(actionType == 0){
+		     		menuItems.push({text:"退货",alias:"th",action:doContextMenu,actionType:1,record:row}) ;
+		     		menuItems.push({text:"退款",alias:"tk",action:doContextMenu,actionType:2,record:row}) ;
+		     		menuItems.push({text:"重发货",alias:"cfh",action:doContextMenu,actionType:3,record:row}) ;
+				}else if(actionType==1){//待审批退货订单
+					menuItems.push({text:"审批",alias:"sp",action:doContextMenu,actionType:5,record:row}) ;
+				}else if(actionType==2){//待审批退款订单
+					menuItems.push({text:"审批",alias:"sp",action:doContextMenu,actionType:6,record:row}) ;
+				}
+				
+				menuItems.push({text:"详细",alias:"xx",action:doContextMenu,actionType:"",record:row}) ;
+		     	
+		        var option = { 
+		      		width: 150, 
+		  	        items:menuItems
+		        };
+		        jq.contextmenu(option);
+		        jq.contextmenu().show(e);
+		     }
+		        
+	    	 $('.operation').live('mouseover', function(e){
+	    	 	 openContextMenu(e,$(this));
+	    	 } ) ;
+		
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ORDER_ID",label:"操作",width:"25%",format:function(val,record){
-						var html = [] ;
+					{align:"center",key:"ORDER_ID",label:"操作",width:"5%",format:function(val,record){
+						/*var html = [] ;
 						
 						if(actionType == 0){
 							html.push("<button class='btn grid-action' action='1'>退货</button>") ;
 							html.push("<button class='btn grid-action' action='2'>退款</button>") ;
 							html.push("<button class='btn grid-action' action='3'>重发货</button>") ;
-							html.push("<button class='btn grid-action' action='4'>评论管理</button>") ;
+							html.push("<button class='btn grid-action' action='4'>售后管理</button>") ;
 						}else if(actionType==1){//待审批退货订单
 							html.push("<button class='btn grid-action'>详细</button>") ;
 							html.push("<button class='btn grid-action' action='5'>审批</button>") ;
 						}else if(actionType==2){//待审批退款订单
 							html.push("<button class='btn grid-action'>详细</button>") ;
 							html.push("<button class='btn grid-action' action='6'>审批</button>") ;
-						}
+						}*/
 						
-						return html.join("");
+						return "<img src='/saleProduct/app/webroot/img/prop.gif' class='operation'>" ;
 					}},
 					 //{未审核订单：,合格订单：5，风险订单：2，待退单：3，外购订单：4，加急单：6，特殊单：7}
 					{align:"center",key:"AUDIT_STATUS",label:"状态",sort:true, width:"8%",
 						format:{type:"json",content:{0:"未审核",5:"合格订单",2:"风险订单"
 						,3:"待退单",4:"外购订单",6:"加急单",7:"特殊单"
 					}}},
-					{align:"center",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%",format:{type:"editor",fields:['ORDER_ID','ORDER_ITEM_ID']}},
+					//{align:"center",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%",format:{type:"editor",fields:['ORDER_ID','ORDER_ITEM_ID']}},
 		           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
@@ -88,17 +147,7 @@ function formatGridData(data){
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
-			$(".grid-action").live("click",function(){
-				var row = $(this).parents("tr:first").data("record") ;
-				var orderId = row['ORDER_ID'] ;
-				var orderItemId = row['ORDER_ITEM_ID'] ;
-				var action = $(this).attr("action");
-				if(action){//退货
-					openCenterWindow("/saleProduct/index.php/order/processCompleteOrder/"+action+"/"+orderId+"/"+orderItemId,600,480) ;
-				}else{//查看信息轨迹
-					openCenterWindow("/saleProduct/index.php/order/viewTrack/"+orderId+"/"+orderItemId,600,480) ;
-				}
-			});
+			
 			
 			$(".query").click(function(){
 				var json = $(".query-table").toJson() ;

@@ -44,14 +44,14 @@ class OrderController extends AppController {
 			   				$index++ ;
 			   			} 
 			   			if( empty( $map['order-id']) ) continue ;
-			   			$this->OrderService->saveOrderItem($accountId, $map ,$id ) ;
+			   			$this->OrderService->saveOrderItem($accountId, $map ,$id ,$header ) ;
 			   		}
 			   }
 			}
 			fclose($file_handle);
     		
     		$this->response->type("html");
-			$this->response->body("<script type='text/javascript'>alert('success')</script>");
+			$this->response->body("<script type='text/javascript'>window.location.reload()</script>");
     	}
 				
 		
@@ -111,10 +111,10 @@ class OrderController extends AppController {
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
 		
-		$result = $amazon->updateOrderTrackNumber( $accountId,$feed,$user['LOGIN_ID'] ) ;
+		//$result = $amazon->updateOrderTrackNumber( $accountId,$feed,$user['LOGIN_ID'] ) ;
 		
 		//更新订单状态为已发货
-		$this->Amazonaccount->saveAccountFeed($result) ;
+		//$this->Amazonaccount->saveAccountFeed($result) ;
 		$this->OrderService->updateTrackNumberStatus($params,$user ,$accountId) ;
 		
     	$this->response->type("json");

@@ -11,10 +11,11 @@
      var status = "<?php echo $status;?>"
     </script>
    <?php
-			echo $this->Html->meta('icon');
+		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
+		echo $this->Html->css('../js/contextmenu/jquery.contextmenu');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
@@ -25,8 +26,10 @@
 		echo $this->Html->script('modules/order/done_lists');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
+		echo $this->Html->script('contextmenu/jquery.contextmenu');
 		
 	?>
+
 </head>
 <!--
 风险客户<input type="radio" name="status" value="2">

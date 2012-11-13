@@ -177,7 +177,12 @@ class AppModel extends Model {
 	    								$kValue = $query[$key] ;
 	    								//格式化$kValue,防止sql特殊字符
 	    								$kValue = str_replace("'","\'",$kValue);
-	    								$clause .=  utf8_encode($kValue) ;
+	    								if( $this->is_utf8($kValue) ){
+	    									//
+	    								}else{
+	    									$kValue = utf8_encode($kValue) ;
+	    								}
+	    								$clause .=  $kValue ;
 	    								$isTrue = true ;
 	    							}else{
 	    								$isTrue = false ;
@@ -209,5 +214,19 @@ class AppModel extends Model {
 				return $key ;
 			}
 			return $record[0]['sc_sql']['TEXT'] ;
+		}
+		
+		function is_utf8($string) {  
+		    // From http://w3.org/International/questions/qa-forms-utf-8.html      
+		    return preg_match('%^(?:  
+		        [\x09\x0A\x0D\x20-\x7E]              # ASCII  
+		        | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte  
+		        |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs  
+		        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte   
+		        |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates   
+		        |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3   
+		        | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15  
+		        |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16  
+		    )*$%xs', $string);  
 		}
 }

@@ -28,8 +28,8 @@
 	'{@#ship-country#}'
 	)
     </entry>
-   
-   <entry key="sql_order_insert">
+    
+    <entry key="sql_order_insert">
    INSERT INTO sc_amazon_order 
 	(ORDER_ID, 
 	ORDER_ITEM_ID, 
@@ -89,6 +89,18 @@
 	'{@#upload_id#}'
 	
 	)
+   </entry>
+   
+   <entry key="sql_order_update">
+	   UPDATE sc_amazon_order 
+		SET
+		CURRENCY = '{@#currency#}' , 
+		ITEM_PRICE = '{@#item-price#}' , 
+		ITEM_TAX = '{@#item-tax#}' , 
+		SHIPPING_PRICE = '{@#shipping-price#}' , 
+		SHIPPING_TAX = '{@#shipping-tax#}'
+		WHERE
+		ORDER_ID = '{@#order-id#}' AND ORDER_ITEM_ID = '{@#order-item-id#}'
    </entry>
 
 	<entry key="sql_order_upload_list">
@@ -301,6 +313,14 @@
 		 sc_amazon_order_track.actor = sc_user.login_id
 		and order_id = '{@#orderId#}' and order_item_id = '{@#orderItemId#}'
     </entry>
+    
+    <entry key="sql_order_aftermarket_list">
+		select sc_amazon_order_aftermarket.*,sc_user.name as USERNAME  from sc_amazon_order_aftermarket, sc_user where 
+		 sc_amazon_order_aftermarket.creator = sc_user.login_id
+		and order_id = '{@#orderId#}' and order_item_id = '{@#orderItemId#}'
+    </entry>
+    
+    
     
     <entry key="sql_order_can_do_ship">
 		select * from sc_amazon_order where account_id = '{@#accountId#}'

@@ -83,12 +83,13 @@
 	    	data-widget="validator" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
 		   <table border=0 cellPadding=3 cellSpacing=4 >
 		    <tr>
-		     <td>订单文件：</td>
 		     <td><input name="orderFile" data-validator="required" type="file"/></td>
-		      <td>开始时间：</td>
-		     <td><input name="startTime" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td>
+		     <td>开始时间：</td>
+		     <td><input name="startTime" class="span2" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td>
 		     <td>结束时间：</td>
-		     <td><input name="endTime" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td> 
+		     <td><input name="endTime" class="span2" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td> 
+		     <td>BatchId：</td>
+		     <td><input name="batchId" class="span2" type="text"/></td> 
 		     <td colSpan=2 align=center><input type="submit" class="btn btn-primary" value="上传订单文件"></td> 
 		    </tr>
 		   </table>

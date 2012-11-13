@@ -70,17 +70,21 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"Actions", width:"10%",format:function(val,record){
-							var html = [] ;
-							var val = record["LOGIN_ID"] ;
-							//html.push("<a href='#' class='action update' val='"+val+"'>修改</a>&nbsp;") ;
-							//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
-							return html.join("") ;
-					}},
-		           	{align:"left",key:"EMAIL",label:"EMAIL",width:"40%",forzen:false,align:"left"},
-		           	{align:"left",key:"NAME",label:"NAME",width:"20%"},
-		           	{align:"right",key:"PHONE",label:"PHONE",width:"10%"},
-		           	{align:"center",key:"STATUS",label:"STATUS",width:"10%"}
+					{align:"center",key:"EMAIL",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
+							if(record.checked >=1){
+								$(this).attr("checked",true) ;
+							}
+					}}},
+		           	{align:"left",key:"EMAIL",label:"邮箱",width:"20%",forzen:false,align:"left"},
+		           	{align:"left",key:"NAME",label:"姓名",width:"10%"},
+		           	{align:"right",key:"PHONE",label:"电话",width:"10%"},
+		           	{align:"right",key:"PHONE",label:"地址",width:"20%",format:function(val,record){
+		           		return record.ADDRESS_1+"<br/>"+record.ADDRESS_2+"<br>"+record.ADDRESS_3 ;
+		           	}},
+		           	{align:"center",key:"STATUS",label:"地区",width:"15%",format:function(val,record){
+		           		return record.COUNTRY+","+record.STATE+","+record.CITY ;
+		           	}},
+		           	{align:"center",key:"POSTAL_CODE",label:"邮编",width:"10%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
@@ -94,6 +98,22 @@
 				  querys:{sqlId:"sql_saleuser_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
+			
+			$(".set-danger").click(function(){
+				var checked = $(".grid-content").llygrid("getSelectedValue",{key:"EMAIL",checked:true},true) ;
+				var nochecked = $(".grid-content").llygrid("getSelectedValue",{key:"EMAIL",checked:false},true) ;
+				
+				$.ajax({
+					type:"post",
+					url:"/saleProduct/index.php/amazonaccount/saveCategoryProducts" ,
+					data:{checked_skus:checked.join(","),unchecked_skus:nochecked.join(","),accountId:currentAccountId,categoryId:currentCategoryId},
+					cache:false,
+					dataType:"text",
+					success:function(result,status,xhr){
+						alert("保存成功!");
+					}
+				});
+			}) ;
    	 });
    </script>
    
@@ -105,7 +125,25 @@
 
 </head>
 <body>
-
+ <div style="border:1px solid #CCC;margin:3px;">
+	   <table border=0 cellPadding=3 cellSpacing=4 >
+		    <tr>
+		      <td>姓名：</td>
+		     <td><input name="name"  type="text"/></td>
+		     <td>邮箱：</td>
+		     <td><input name="email" type="text"/></td> 
+		     <td>状态：</td>
+		     <td><select name="status">
+				<option value="">-</option>
+				<option value="1">风险客户</option>
+			</select></td> 
+		     <td colSpan=2 align=center>
+		     	<input type="button" class="btn btn-primary query-btn" value="查询">
+		     	<input type="button" class="btn btn-danger set-danger" value="设置为风险客户">
+		     </td> 
+		    </tr>
+		   </table>
+	</div>  
 	<div class="grid-content">
 	
 	</div>

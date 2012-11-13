@@ -53,26 +53,33 @@ class OrderService extends AppModel {
 	/**
 	 * 保存订单明细
 	 */
-	function saveOrderItem($accountId , $items ,$id){
+	function saveOrderItem($accountId , $items ,$id,$header){
 		$this->setDataSource('gbk');
 		
 		$items['account_id'] = $accountId ;
 		$items['upload_id'] = $id ;
-		try{
-			$sql = $this->getDbSql("sql_order_insert") ;
+		
+		if( count( $header ) > 60 ){//详细信息
+			//sql_order_update
+			$sql = $this->getDbSql("sql_order_update") ;
 			$sql = $this->getSql($sql,$items) ;
 			$this->query($sql) ;
-		}catch(Exception $e){
-			print_r($e->getMessage()) ;
+		}else{
+			try{
+				$sql = $this->getDbSql("sql_order_insert") ;
+				$sql = $this->getSql($sql,$items) ;
+				$this->query($sql) ;
+			}catch(Exception $e){
+				print_r($e->getMessage()) ;
+			}
+			
+			try{
+				$sql = $this->getDbSql("sql_order_user_insert") ;
+				$sql = $this->getSql($sql,$items) ;
+				$this->query($sql) ;
+			}catch(Exception $e){}
 		}
 		
-		try{
-			$sql = $this->getDbSql("sql_order_user_insert") ;
-			$sql = $this->getSql($sql,$items) ;
-			$this->query($sql) ;
-		}catch(Exception $e){
-			
-		}
 	}
 	
 
@@ -196,20 +203,47 @@ class OrderService extends AppModel {
 		if(isset($params['resolver'])){
 			$relover = $params['resolver'];
 		}
+		
+		if( $action == 4 ){//售后管理
+			$sql = "INSERT INTO sc_amazon_order_aftermarket 
+						(
+						ORDER_ID, 
+						ORDER_ITEM_ID, 
+						ACTION_TYPE, 
+						DETAIL_TYPE, 
+						MEMO, 
+						RESOLVER,
+						ACT_TIME,
+						CREATOR
+						)
+						VALUES
+						(
+						'$orderId', 
+						'$orderItemId', 
+						'$action', 
+						'$type', 
+						'$memo', 
+						'$relover',
+						NOW(), 
+						'$loginId'
+						)" ;
+			$this->query($sql) ;
+		}else{
+			$sql = "update sc_amazon_order set redo_status = '$action'
+					, redo_type = '$type'
+					, redo_memo = '$memo'
+					, redo_resolver = '$relover'
+					where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
+			
+			$this->query($sql) ;
+			
+			$sql = $this->getDbSql("sql_order_track_insert") ;
+			$status = $this->redoStatus[$action] ;
+			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+			$this->query($sql) ;
+		}
 
-		$sql = "update sc_amazon_order set redo_status = '$action'
-				, redo_type = '$type'
-				, redo_memo = '$memo'
-				, redo_resolver = '$relover'
-				where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
-		
-		$this->query($sql) ;
-		
-		$sql = $this->getDbSql("sql_order_track_insert") ;
-		
-		$status = $this->redoStatus[$action] ;
-		$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=>$status,"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
-		$this->query($sql) ;	
+			
 	}
 	
 	public function savePicked($params,$user){
@@ -248,6 +282,8 @@ class OrderService extends AppModel {
 	}
 	
 	function updateTrackNumberStatus($params,$user ,$accountId){
+		//$this->setDataSource('gbk');
+		
 		$loginId = $user['LOGIN_ID'] ;
 		$sql = $this->getDbSql("sql_order_can_do_ship") ;
 		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;

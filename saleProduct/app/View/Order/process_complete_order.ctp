@@ -40,7 +40,8 @@
 						dataType:"text",
 						success:function(result,status,xhr){
 							//window.opener.location.reload() ;
-							//window.close() ;
+							alert("保存成功");
+							window.close() ;
 						}
 					}); 
 				};
@@ -59,6 +60,7 @@
 			<div class="container-fluid">
 	
 		        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		        	<input type="hidden" id="actionType" value="1"/>
 					<!-- panel 头部内容  此场景下是隐藏的-->
 					<div class="panel apply-panel">
 						<!-- panel 中间内容-->
@@ -105,6 +107,7 @@
 			<div class="container-fluid">
 	
 		        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		        	<input type="hidden" id="actionType" value="2"/>
 					<!-- panel 头部内容  此场景下是隐藏的-->
 					<div class="panel apply-panel">
 						<!-- panel 中间内容-->
@@ -151,6 +154,7 @@
 			<div class="container-fluid">
 	
 		        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		        	<input type="hidden" id="actionType" value="3"/>
 					<!-- panel 头部内容  此场景下是隐藏的-->
 					<div class="panel apply-panel">
 						<!-- panel 中间内容-->
@@ -192,11 +196,12 @@
 		<div class="apply-page">
 			<!-- 页面标题 -->
 			<div class="page-title">
-				<h2>评论管理</h2>
+				<h2>售后管理</h2>
 			</div>
 			<div class="container-fluid">
 	
 		        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		        	<input type="hidden" id="actionType" value="4"/>
 					<!-- panel 头部内容  此场景下是隐藏的-->
 					<div class="panel apply-panel">
 						<!-- panel 中间内容-->
@@ -205,12 +210,15 @@
 							<table class="form-table col2" >
 								<tbody>	
 									<tr>
-										<th>评论类型：</th>
+										<th>售后类型：</th>
 										<td>
 											<select id="type">
 												<option value="">--</option>
-												<option value="good">好评</option>
-												<option value="bad">差评</option>
+												<option value="1">评价</option>
+												<option value="2">品质</option>
+												<option value="3">物流</option>
+												<option value="4">库存</option>
+												<option value="5">促销</option>
 											</select>
 										</td>
 									</tr>

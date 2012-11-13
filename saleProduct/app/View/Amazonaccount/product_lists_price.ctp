@@ -66,7 +66,7 @@
    var accountId = '<?php echo $accountId ;?>' ;
    
    //result.records , result.totalRecord
- 	function formatGridData(data){
+   function formatGridData(data){
  		var records = data.record ;
  		var count   = data.count ;
  		
