@@ -6,6 +6,10 @@
    
     <entry key="sql_saleuser_list">
  			SELECT * from sc_amazon_order_user
+ 			where 1=1 
+ 			{@ and name = '#name#'}
+ 			{@ and email = '#email#'}
+ 			{@ and status = '#status#'}
    </entry>
    
    

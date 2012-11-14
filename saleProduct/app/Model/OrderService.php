@@ -205,6 +205,33 @@ class OrderService extends AppModel {
 		}
 		
 		if( $action == 4 ){//售后管理
+			$isEndService = '' ;
+			$isDangerUser = '' ;
+			if( isset($params['isEndService']) ){
+				$isEndService = $params['isEndService'] ;
+			}
+			
+			if( isset($params['isDangerUser']) ){
+				$isDangerUser = $params['isDangerUser'] ;
+			}
+			
+			if( $isEndService == 1 ){//结束售后服务
+				$sql = "update sc_amazon_order set service_status = 'done' where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
+				$this->query($sql) ;
+			}
+			
+			if( $isDangerUser == 1 ){//风险用户
+				$sql = "UPDATE sc_amazon_order_user SET STATUS = 'danger'
+						WHERE email IN (SELECT buyer_email FROM sc_amazon_order WHERE
+						order_id = '$orderId' AND order_item_id = '$orderItemId')" ;
+				$this->query($sql) ;
+			}else{
+				$sql = "UPDATE sc_amazon_order_user SET STATUS = ''
+						WHERE email IN (SELECT buyer_email FROM sc_amazon_order WHERE
+						order_id = '$orderId' AND order_item_id = '$orderItemId')" ;
+				$this->query($sql) ;
+			}
+		
 			$sql = "INSERT INTO sc_amazon_order_aftermarket 
 						(
 						ORDER_ID, 
@@ -233,6 +260,7 @@ class OrderService extends AppModel {
 					, redo_type = '$type'
 					, redo_memo = '$memo'
 					, redo_resolver = '$relover'
+					, SERVICE_STATUS = 'doing'
 					where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
 			
 			$this->query($sql) ;
@@ -266,6 +294,15 @@ class OrderService extends AppModel {
 				NOW()
 				)" ;
 		$this->query($sql) ;
+	}
+	
+	//判断是否为风险用户
+	function getOrderUser($orderId ,$orderItemId ){
+		$sql = "SELECT * FROM sc_amazon_order_user 
+			WHERE  email IN 
+			(SELECT buyer_email FROM sc_amazon_order WHERE order_id = '$orderId' AND order_item_id = '$orderItemId')" ;
+		$item = $this->query($sql) ;
+		return $item ;
 	}
 	
 	function getTrackNumberFeed($params,$user ,$accountId,$MerchantIdentifier){

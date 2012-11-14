@@ -71,10 +71,16 @@
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"EMAIL",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
-							if(record.checked >=1){
+							if(record.STATUS == 'danger'){
 								$(this).attr("checked",true) ;
 							}
 					}}},
+					{align:"center",key:"STATUS",label:"状态",width:"6%",format:function(val,record){
+							if(val == "danger"){
+								return "<div class='danger-user'></div>" ;
+							}
+							return "" ;
+					}},
 		           	{align:"left",key:"EMAIL",label:"邮箱",width:"20%",forzen:false,align:"left"},
 		           	{align:"left",key:"NAME",label:"姓名",width:"10%"},
 		           	{align:"right",key:"PHONE",label:"电话",width:"10%"},
@@ -99,18 +105,23 @@
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
+			$(".query-btn").click(function(){
+				var json = $(".query-table").toJson() ;
+				$(".grid-content").llygrid("reload",json,true) ;
+			}) ;
+			
 			$(".set-danger").click(function(){
 				var checked = $(".grid-content").llygrid("getSelectedValue",{key:"EMAIL",checked:true},true) ;
 				var nochecked = $(".grid-content").llygrid("getSelectedValue",{key:"EMAIL",checked:false},true) ;
-				
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/amazonaccount/saveCategoryProducts" ,
-					data:{checked_skus:checked.join(","),unchecked_skus:nochecked.join(","),accountId:currentAccountId,categoryId:currentCategoryId},
+					url:"/saleProduct/index.php/saleUser/setDanger" ,
+					data:{checked_emails:checked.join(","),unchecked_emails:nochecked.join(",")},
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
 						alert("保存成功!");
+						$(".grid-content").llygrid("reload");
 					}
 				});
 			}) ;
@@ -121,12 +132,18 @@
    		*{
    			font:12px "微软雅黑";
    		}
+   		
+   		.danger-user{
+   			width:20px;
+   			height:20px;
+   			background-color:red;
+   		}
    </style>
 
 </head>
 <body>
  <div style="border:1px solid #CCC;margin:3px;">
-	   <table border=0 cellPadding=3 cellSpacing=4 >
+	   <table border=0 cellPadding=3 cellSpacing=4 class="query-table" >
 		    <tr>
 		      <td>姓名：</td>
 		     <td><input name="name"  type="text"/></td>
@@ -135,7 +152,7 @@
 		     <td>状态：</td>
 		     <td><select name="status">
 				<option value="">-</option>
-				<option value="1">风险客户</option>
+				<option value="danger">风险客户</option>
 			</select></td> 
 		     <td colSpan=2 align=center>
 		     	<input type="button" class="btn btn-primary query-btn" value="查询">

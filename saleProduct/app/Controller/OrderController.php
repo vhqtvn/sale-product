@@ -165,6 +165,12 @@ class OrderController extends AppController {
     	$this->set("action" , $action) ;
     	$this->set("orderId" , $orderId) ;
     	$this->set("orderItemId",$orderItemId) ;
+    	
+    	$orderUser = $this->OrderService->getOrderUser($orderId ,$orderItemId ) ;
+    	$orderUser = $orderUser[0]['sc_amazon_order_user'] ;
+    	$isDangerUser = $orderUser['STATUS'] == 'danger' ;
+ 
+		$this->set("isDangerUser",$isDangerUser) ;
     }
     
     public function saveRedoOrder(){

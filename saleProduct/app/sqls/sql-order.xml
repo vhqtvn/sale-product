@@ -199,6 +199,7 @@
 		   {@ and sc_amazon_order.buyer_name = '#userName#'}
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
+		   {@ and sc_amazon_order.service_status = '#serviceStatus#'}
 		   and sc_amazon_order.tn_status in ('1')
 		   {@ and ( sc_amazon_order.redo_status is null or sc_amazon_order.redo_status = '' ) and '#unRedoStatus#' = '#unRedoStatus#'}
 		   {@ and sc_amazon_order.redo_status = '#redoStatus#'}

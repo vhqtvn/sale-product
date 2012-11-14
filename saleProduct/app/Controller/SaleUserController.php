@@ -2,18 +2,17 @@
 
 class SaleUserController extends AppController {
 	public $helpers = array('Html', 'Form');//,'Ajax','Javascript
-    var $uses = array('Config');
+    var $uses = array('Config','SaleUser');
     
     public function lists(){	
     }
     
-    public function editProduct(){
-    	
-    }
     
-    public function saveProduct(){
+    public function setDanger(){
     	$user =  $this->getCookUser() ;
-    	$this->SaleProduct->saveProduct($this->request->data , $user) ;
+    	
+    	
+    	$this->SaleUser->setDanger($this->request->data , $user) ;
 
 		//$this->Product->save( $params ) ;
 		$this->response->type("json") ;

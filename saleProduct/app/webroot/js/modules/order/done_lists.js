@@ -34,7 +34,7 @@ function formatGridData(data){
 				if(action){//退货
 					openCenterWindow("/saleProduct/index.php/order/processCompleteOrder/"+action+"/"+orderId+"/"+orderItemId,600,480) ;
 				}else{//查看信息轨迹
-					openCenterWindow("/saleProduct/index.php/order/viewTrack/"+orderId+"/"+orderItemId,600,480) ;
+					openCenterWindow("/saleProduct/index.php/order/viewTrack/"+orderId+"/"+orderItemId,800,480) ;
 				}
 		     }
 		     
@@ -55,17 +55,23 @@ function formatGridData(data){
 		     	var action = jq.attr("action");
 		     	
 		     	var menuItems  = [];
-		     	menuItems.push({text:"售后管理",alias:"aftermarket",action:doContextMenu,actionType:4,record:row}) ;
+		     	
+		     	//menuItems.push({text:"售后管理",alias:"aftermarket",action:doContextMenu,actionType:4,record:row}) ;
 		     	
 		     	html.push("<button class='btn grid-action' action='4'>售后管理</button>") ;
 		     	if(actionType == 0){
 		     		menuItems.push({text:"退货",alias:"th",action:doContextMenu,actionType:1,record:row}) ;
 		     		menuItems.push({text:"退款",alias:"tk",action:doContextMenu,actionType:2,record:row}) ;
 		     		menuItems.push({text:"重发货",alias:"cfh",action:doContextMenu,actionType:3,record:row}) ;
+		     		menuItems.push({text:"邀请好评",alias:"yqhp",action:doContextMenu,actionType:7,record:row}) ;
 				}else if(actionType==1){//待审批退货订单
 					menuItems.push({text:"审批",alias:"sp",action:doContextMenu,actionType:5,record:row}) ;
 				}else if(actionType==2){//待审批退款订单
 					menuItems.push({text:"审批",alias:"sp",action:doContextMenu,actionType:6,record:row}) ;
+				}else if(actionType==6){//待审批退款订单
+					menuItems.push({text:"售后管理",alias:"aftermarket",action:doContextMenu,actionType:4,record:row}) ;
+				}else{
+					menuItems.push({text:"售后管理",alias:"aftermarket",action:doContextMenu,actionType:4,record:row}) ;
 				}
 				
 				menuItems.push({text:"详细",alias:"xx",action:doContextMenu,actionType:"",record:row}) ;
@@ -160,12 +166,13 @@ function formatGridData(data){
    	 $(function(){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
-					{label:'完成',content:"tab-content"},
+					{label:'完成订单',content:"tab-content"},
 					{label:'待审批退款订单',content:"tab-content"},
 					{label:'待审批重发货订单',content:"tab-content"},
 					{label:'待退货订单',content:"tab-content"},
 					{label:'待退款订单',content:"tab-content"},
-					{label:'待重发货订单',content:"tab-content"}
+					{label:'待重发货订单',content:"tab-content"},
+					{label:'售后订单',content:"tab-content"}
 				] ,
 				//height:'500px',
 				select:function(event,ui){
@@ -198,5 +205,8 @@ function renderAction(index){
 	}else if(index == 5){//重发货
 		$(".save-btn").hide() ;
 		$(".grid-content").llygrid("reload",{unRedoStatus:'',redoStatus:301,status:''}) ;
+	}else if(index == 6){//售后订单
+		$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{unRedoStatus:'',redoStatus:"",status:'',serviceStatus:"doing"}) ;
 	}
 }

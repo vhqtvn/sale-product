@@ -29,9 +29,11 @@
 				
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
+
 					json.action = action ;
 					json.orderId = orderId ;
 					json.orderItemId = orderItemId ;
+					json.type = json.type||"" ;
 					$.ajax({
 						type:"post",
 						url:"/saleProduct/index.php/order/saveRedoOrder",
@@ -210,15 +212,16 @@
 							<table class="form-table col2" >
 								<tbody>	
 									<tr>
-										<th>售后类型：</th>
+										<th style="200px">售后类型：</th>
 										<td>
 											<select id="type">
 												<option value="">--</option>
-												<option value="1">评价</option>
+												<option value="1">差评</option>
 												<option value="2">品质</option>
 												<option value="3">物流</option>
 												<option value="4">库存</option>
 												<option value="5">促销</option>
+												<option value="6">邀请好评</option>
 											</select>
 										</td>
 									</tr>
@@ -229,6 +232,50 @@
 									<tr>
 										<th>解决方法：</th>
 										<td><textarea id="resolver" style="width:300px;height:100px;"></textarea></td>
+									</tr>
+									<tr>
+										<th>是否结束售后服务：</th>
+										<td><input type="checkbox" id="isEndService" name="isEndService" value="1"/></td>
+									</tr>
+									<tr class="alert alert-danger">
+										<th>是否风险客户：</th>
+										<td><input type="checkbox" id="isDangerUser" name="isDangerUser" <?php if($isDangerUser) echo 'checked' ;?> value="1"/></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<!-- panel脚部内容-->
+	                    <div class="panel-foot">
+							<div class="form-actions col2">
+								<button type="button" class="btn btn-primary">提&nbsp;交</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	<?php }else if($action==7){ //邀请好评?>
+		<!-- apply 主场景 -->
+		<div class="apply-page">
+			<!-- 页面标题 -->
+			<div class="page-title">
+				<h2>邀请好评</h2>
+			</div>
+			<div class="container-fluid">
+	
+		        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		        	<input type="hidden" id="actionType" value="7"/>
+					<!-- panel 头部内容  此场景下是隐藏的-->
+					<div class="panel apply-panel">
+						<!-- panel 中间内容-->
+						<div class="panel-content">
+							<!-- 数据列表样式 -->
+							<table class="form-table col2" >
+								<tbody>
+									<tr>
+										<th>原因：</th>
+										<td><textarea id="memo" style="width:300px;height:100px;"></textarea></td>
 									</tr>
 								</tbody>
 							</table>
@@ -245,7 +292,6 @@
 			</div>
 		</div>
 	<?php }?>
-
 	
 </body>
 </html>

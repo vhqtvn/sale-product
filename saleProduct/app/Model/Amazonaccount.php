@@ -74,7 +74,6 @@ class Amazonaccount extends AppModel {
 	 */
 	function saveAmazonProductsCategory($params ){
 		
-		print_r($params) ; 
 		$skus = $params['checked_skus'] ;
 		$unskus = $params['unchecked_skus'] ;
 		$categoryId = $params['categoryId'] ;
