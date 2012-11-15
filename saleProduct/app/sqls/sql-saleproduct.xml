@@ -41,6 +41,7 @@ UPDATE sc_real_product
 	SET
 	QUANTITY = '{@#quantity#}' , 
 	POSITION = '{@#position#}' , 
+	{@ IMAGE_URL = '#imageUrl#',}
 	BARCODE = '{@#barcode#}' , 
 	NAME = '{@#name#}' , 
 	MEMO = '{@#memo#}' , 

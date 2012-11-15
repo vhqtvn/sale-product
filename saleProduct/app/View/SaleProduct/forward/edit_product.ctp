@@ -38,7 +38,7 @@
 				$("#login_id").attr("disabled",true) ;
 			}
 			
-			$("button").click(function(){
+			/*$("button").click(function(){
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
 					$.ajax({
@@ -58,8 +58,12 @@
 						}
 					}); 
 				};
-			})
+			})*/
 		})
+		
+		function uploadSuccess(){
+			window.location.reload();
+		}
    </script>
 
 </head>
@@ -73,7 +77,9 @@
 		</div>
 		<div class="container-fluid">
 
-	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+	        <form id="personForm" action="/saleProduct/index.php/saleProduct/saveProduct"
+	          method="post" target="form-target"
+	         enctype="multipart/form-data" class="form-horizontal" >
 	        <input type="hidden" id="id" value=""/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
@@ -86,22 +92,32 @@
 								<tr>
 									<th>SKU：</th><td><input type="text"
 										<?php if(!empty($item['REAL_SKU']))echo 'readonly';?>
-										 data-validator="required" id="sku" value="<?php echo $item['REAL_SKU']?>"/></td>
+										 data-validator="required" name="sku" value="<?php echo $item['REAL_SKU']?>"/></td>
 								</tr>									   
 								<tr>
-									<th>名称：</th><td><input type="text" data-validator="required" id="name" value="<?php echo $item['NAME']?>"/></td>
+									<th>名称：</th>
+									<td><input type="text" data-validator="required" name="name" value="<?php echo $item['NAME']?>"/></td>
 								</tr>
 								<tr>
-									<th>仓库位置：</th><td><input type="text" id="position" value="<?php echo $item['POSITION']?>"/></td>
+									<th>仓库位置：</th>
+									<td><input type="text" name="position" value="<?php echo $item['POSITION']?>"/></td>
 								</tr>
 								<tr>
-									<th>条形码：</th><td><input type="text" id="barcode" value="<?php echo $item['BARCODE']?>"/></td>
+									<th>条形码：</th>
+									<td><input type="text" name="barcode" value="<?php echo $item['BARCODE']?>"/></td>
 								</tr>
 								<tr>
-									<th>产品图片：</th><td><input type="file" id="imageUrl" value="<?php echo $item['IMAGE_URL']?>"/></td>
+									<th>产品图片：</th>
+									<td><input type="file" name="imageUrl"/>
+									<?php
+									if( $item['IMAGE_URL'] ){
+										echo "<img src='/saleProduct/".$item['IMAGE_URL']."' style='width:50px;height:40px;'>" ;
+									}?>
+									</td>
 								</tr>
 								<tr>
-									<th>产品地址：</th><td><input type="text" id="url" value="<?php echo $item['URL']?>"/></td>
+									<th>产品地址：</th>
+									<td><input type="text" name="url" value="<?php echo $item['URL']?>"/></td>
 								</tr>
 							</tbody>
 						</table>
@@ -110,11 +126,12 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
 						<div class="form-actions col2">
-							<button type="button" class="btn btn-primary">提&nbsp;交</button>
+							<button type="submit" class="btn btn-primary">提&nbsp;交</button>
 						</div>
 					</div>
 				</div>
 			</form>
+			 <iframe style="width:0; height:0; border:0;display:none;" name="form-target"></iframe>
 		</div>
 	</div>
 </body>

@@ -34,15 +34,49 @@ class SaleProductController extends AppController {
     }
     
     public function saveProduct(){
-    	$user =  $this->getCookUser() ;
-    	$this->SaleProduct->saveProduct($this->request->data , $user) ;
+    	//上传图片 imageUrl
+    	$fileName = $_FILES['imageUrl']["name"] ;
+		
+		
+		$params = $this->request->data ;
+		$user =  $this->getCookUser() ;
+		
+		$params['imageUrl'] = "" ;
+		
+		if( !empty($fileName) ){
+			$myfile   = $_FILES['imageUrl']['tmp_name'] ;
+			$path = dirname(dirname(dirname(__FILE__)))."/images/real_product/";
+		
+			if( !file_exists($path) ) {
+				$this->creatdir($path) ;
+			}
+			$fileUrl = $path.$params['sku'] ;
+			move_uploaded_file($myfile,$fileUrl) ;
+			
+			$params['imageUrl'] = "/images/real_product/".$params['sku'];
+		}
+		
+    	$this->SaleProduct->saveProduct($params , $user) ;
 
-		//$this->Product->save( $params ) ;
-		$this->response->type("json") ;
-		$this->response->body( "Save Success" )   ;
-
-		return $this->response ;
+		$this->response->type("html");
+		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess();</script>");
+		return $this->response;
     }
+    
+    public function creatdir($path){
+		if(!is_dir($path))
+		{
+			if($this->creatdir(dirname($path)))
+			{
+				mkdir($path,0777);
+				return true;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
     
     public function details($sku){
     	$this->set('sku',$sku);

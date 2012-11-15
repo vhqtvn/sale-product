@@ -86,6 +86,12 @@ function formatGridData(data){
 				var action = $(this).attr("action");
 				var checkedRecords = $(".grid-content").llygrid("getSelectedRecords",{key:"ORDER_ID",checked:true},true) ;
 				var status = $(this).attr("status");
+				
+				if( action == 4 ){//打印拣货单
+					alert("合并打印拣货单");
+					openCenterWindow("/saleProduct/index.php/order/printPicked/"+pickedId,950,650) ;
+					return ;
+				}
 			
 				var orders = [] ;
 				$(checkedRecords).each(function(index,item){

@@ -211,4 +211,8 @@ class OrderController extends AppController {
 		$this->response->body("execute complete");
 		return $this->response;
     }
+    
+    public function printPicked($pickId){
+    	$this->set("pickId",$pickId) ;
+    }
 }

@@ -237,6 +237,50 @@
 		 ]]>
     </entry>
     
+    <entry key="sql_order_list_picked_print">
+    <![CDATA[
+		  SELECT t.SKU ,
+		t.REAL_SKU,
+		       t.IMAGE_URL,
+		       t.POSITION,
+		       t.BARCODE,
+		       t.NAME,
+		       t.ASIN,
+		       t.LOCAL_URL,
+		       SUM(t.QUANTITY_TO_SHIP) AS QUANTITY
+           FROM (
+    
+		SELECT sc_amazon_order.SKU ,
+		       sc_amazon_order.QUANTITY_TO_SHIP,
+		       sc_real_product.REAL_SKU,
+		       sc_real_product.IMAGE_URL,
+		       sc_real_product.POSITION,
+		       sc_real_product.BARCODE,
+		       sc_real_product.NAME,
+		       sc_amazon_account_product.ASIN,
+		       sc_amazon_account_product.LOCAL_URL
+		  FROM  sc_amazon_order_status ,sc_amazon_order
+		  LEFT JOIN sc_amazon_account_product 
+		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
+		  LEFT JOIN sc_real_product_rel
+		  ON sc_amazon_order.sku = sc_real_product_rel.sku
+		  LEFT JOIN sc_real_product
+		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
+		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+
+		  
+		   AND sc_amazon_order_status.pick_status = '9'
+		   AND EXISTS ( 
+		  		SELECT 1 FROM sc_amazon_picked_order WHERE
+		  		 picked_id = '{@#pickId#}'
+		  		 AND sc_amazon_picked_order.order_id = sc_amazon_order.order_id
+		  		 AND sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
+		  )
+            ) t GROUP BY t.REAL_SKU
+		 ]]>
+    </entry>
+    
 
     
     <entry key="sql_order_status_insert">
