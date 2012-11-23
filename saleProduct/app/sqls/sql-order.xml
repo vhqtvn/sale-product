@@ -228,7 +228,7 @@
 		  {@ and sc_amazon_order.sku = '#sku#'}
 		  {@ and sc_amazon_order.track_number is not null and '#trackNumber#' = '#trackNumber#'}
 		  {@ and sc_amazon_order.track_number is null and '#trackNumberNull#' = '#trackNumberNull#'}
-		  {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
+		  {@ and sc_amazon_order_status.pick_status in ( '9','10') and  '#pickStatus#' ='#pickStatus#'  }
 		  {@ and exists ( 
 		  		select 1 from sc_amazon_picked_order where
 		  		 picked_id = '#pickId#'
