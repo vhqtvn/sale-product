@@ -12,6 +12,7 @@ class SaleProduct extends AppModel {
 			//update
 			$sql = $this->getDbSql("sql_saleproduct_update") ;
 			$sql = $this->getSql($sql,$data) ;
+			print_r($sql) ;
 			$this->query($sql) ;
 		}else{
 			$sql = $this->getDbSql("sql_saleproduct_insert") ;

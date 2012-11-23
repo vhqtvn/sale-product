@@ -19,7 +19,13 @@
 		CREATE_TIME, 
 		NAME, 
 		MEMO, 
-		URL
+		URL,
+		PACKAGE_TYPE,
+		WEIGHT,
+		WEIGHT_UNIT,
+		LENGTH,
+		WIDTH,
+		HEIGHT
 		)
 		VALUES
 		('{@#sku#}', 
@@ -31,7 +37,13 @@
 		NOW(), 
 		'{@#name#}', 
 		'{@#memo#}', 
-		'{@#url#}'
+		'{@#url#}',
+		'{@#packageType#}',
+		'{@#weight#}',
+		'{@#weightUnit#}',
+		'{@length#}',
+		'{@#width#}',
+		'{@#height#}'
 		)
    </entry>
    
@@ -45,7 +57,13 @@ UPDATE sc_real_product
 	BARCODE = '{@#barcode#}' , 
 	NAME = '{@#name#}' , 
 	MEMO = '{@#memo#}' , 
-	URL = '{@#url#}'
+	URL = '{@#url#}',
+	PACKAGE_TYPE = '{@#packageType#}',
+	WEIGHT = '{@#weight#}',
+	WEIGHT_UNIT = '{@#weightUnit#}',
+	LENGTH = '{@#length#}',
+	WIDTH = '{@#width#}',
+	HEIGHT = '{@#height#}'
 	WHERE
 	REAL_SKU = '{@#sku#}' ;
 		)

@@ -19,27 +19,54 @@ function formatGridData(data){
 		var ret = {records: array,totalRecord:count } ;
 			
 		return ret ;
-	   }
+	}
 
 	$(function(){
-		var sqlId = "sql_order_doing_list" ;
+			//拣货单列表
+			$("#picked-grid-content").llygrid({
+				 columns:[
+		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,record){
+		           		return '<a href="#" class="select-product"  pickId="'+record.ID+'">'+img+'</a>&nbsp;'+val+"<strong>（"+record.TOTAL+"）</strong>" ;
+		           	}}
+		         ],
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+				 limit:20,
+				 pageSizes:[10,20,30,40],
+				 height:function(){
+				 	return $(window).height() - $(".toolbar-auto").height() -55 ;
+				 },
+				 autoWidth:true,
+				 title:"",
+				 pagerType:"simple",
+				 querys:{sqlId:"sql_order_picked_list"},
+				 loadMsg:"数据加载中，请稍候......",
+				 rowClick:function(rowIndex , rowData){
+				 	$(".grid-content").llygrid("reload",{pickId:rowData.ID});
+				 }
 
+			}) ;
+			
+			$(".action").live("click",function(){
+				var id = $(this).attr("val") ;
+				if( $(this).hasClass("add") ){
+					openCenterWindow("/saleProduct/index.php/order/editPicked",600,400) ;
+				} 
+				return false ;
+			}) ;
+			
+			$(".select-product").live("click",function(){
+				var pickId = $(this).attr("pickId") ;
+				openCenterWindow("/saleProduct/index.php/order/selectPickedProduct/"+pickId,1000,600) ;
+			})
+			
+		
+			//var sqlId = "sql_order_doing_list" ;
+			var sqlId = "sql_order_list_picked" ;
+			//拣货单订单列表
 			$(".grid-content").llygrid({
 				columns:[
-					/*{align:"center",key:"ORDER_ID",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
-							if(record.checked >=1){
-								$(this).attr("checked",true) ;
-							}
-					}}},*/
-					 //{未审核订单：,合格订单：5，风险订单：2，待退单：3，外购订单：4，加急单：6，特殊单：7}
-					{align:"center",key:"AUDIT_STATUS",label:"状态",sort:true, width:"8%",
-						format:{type:"json",content:{0:"未审核",5:"合格订单",2:"风险订单"
-						,3:"待退单",4:"外购订单",6:"加急单",7:"特殊单"
-					}}},
-					{align:"center",key:"CARRIER_CODE",label:"CarrierCode", width:"10%",
-						format:{type:"editor",renderType:"select",fields:['ORDER_ID','ORDER_ITEM_ID'],data:[{value:'',text:'-'},{value:'UPS',text:'UPS'}]}},
-					{align:"center",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%",format:{type:"editor",fields:['ORDER_ID','ORDER_ITEM_ID']}},
-		           	{align:"center",key:"SHIP_SERVICE_LEVEL",label:"SHIP LEVEL", width:"10%"},
+					{align:"left",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%"},
+		           	//{align:"center",key:"SHIP_SERVICE_LEVEL",label:"SHIP LEVEL", width:"10%"},
 		           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
@@ -70,11 +97,11 @@ function formatGridData(data){
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-				 	return $(window).height() - $(".toolbar-auto").height() -155 ;
+				 	return $(window).height() - $(".toolbar-auto").height() -185 ;
 				 },
 				 title:"订单信息列表",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:9},
+				 querys:{sqlId:sqlId,accountId:accountId,status:'',trackNumberNull:"1",pickStatus:"9"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
@@ -130,14 +157,14 @@ function formatGridData(data){
    	 $(function(){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
-					{label:'拣货中',content:"tab-content"},
-					{label:'拣货完成',content:"tab-content"}
+					{label:'处理中',content:"tab-content"},
+					{label:'拣货完成',content:"tab-content"},
+					{label:'发货完成',content:"tab-content"}
 				] ,
 				//height:'500px',
 				select:function(event,ui){
 					var index = ui.index ;
 					renderAction(index);
-					
 				}
 			} ) ;
 		}) ;
@@ -146,9 +173,9 @@ function renderAction(index){
 	$(".save-btn").show() ;
 	if(index == 0){//拣货中
 		$(".save-btn").hide() ;
-		$(".grid-content").llygrid("reload",{pickStatus:9,status:''},true) ;
+		$(".grid-content").llygrid("reload",{pickStatus:9,status:'',trackNumberNull:"1",trackNumber:""},true) ;
 	}else if(index == 1){//拣货完成
 		//$(".save-btn").hide() ;
-		$(".grid-content").llygrid("reload",{pickStatus:10,status:''},true) ;
+		$(".grid-content").llygrid("reload",{pickStatus:'',status:'',trackNumber:"1",trackNumberNull:""},true) ;
 	}
 }

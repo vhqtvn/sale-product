@@ -74,8 +74,10 @@
 			<tr>
 				<th></th>
 				<td colspan="5">
+					<!--
 					<button class="btn btn-primary action-btn print-btn pick-btn" action='4'>合并打印拣货单</button>
 					<button class="btn btn-primary action-btn confirm-btn pick-btn" action='3'>确认拣货完成</button>
+					-->
 					&nbsp;&nbsp;
 					<button class="btn btn-danger action-btn save-btn" action="2" >移除出拣货单</button>
 				</td>

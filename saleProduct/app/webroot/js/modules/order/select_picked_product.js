@@ -141,8 +141,8 @@ function formatGridData(data){
    	 $(function(){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
-					{label:'待拣货订单',content:"tab-content"},
-					{label:'完成拣货单',content:"tab-content"},
+					{label:'拣货单订单',content:"tab-content"},
+					//{label:'完成拣货单',content:"tab-content"},
 					{label:'合格订单',content:"tab-content"},
 					//{label:'风险客户',content:"tab-content"},
 					//{label:'待退单',content:"tab-content"},
@@ -159,14 +159,14 @@ function formatGridData(data){
 						$(".pick-btn").show() ;
 						$(".save-btn").html("移除出拣货单").removeClass("btn-success").addClass("btn-danger").attr("action","2");
 						$(".grid-content").llygrid("reload",{pickStatus:9,status:'',pickId:pickedId},true) ;
-					}else if(index == 1){//完成拣货单
+					}/*else if(index == 1){//完成拣货单
 						$(".save-btn").hide();
 						$(".grid-content").llygrid("reload",{pickStatus:10,status:'',pickId:pickedId},true) ;
-					}else if(index == 2){//合格订单
+					}*/else if(index == 1){//合格订单
 						$(".grid-content").llygrid("reload",{pickStatus:'',status:5,pickId:''},true) ;
-					}else if(index == 3){//加急单
+					}else if(index == 2){//加急单
 						$(".grid-content").llygrid("reload",{pickStatus:'',status:6,pickId:''},true) ;
-					}else if(index == 4){//特殊但
+					}else if(index == 3){//特殊但
 						$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:''},true) ;
 					}
 				}

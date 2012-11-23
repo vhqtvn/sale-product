@@ -1,4 +1,15 @@
 <?php
+/**
+ SELECT sc_amazon_order.* 
+		  FROM  sc_amazon_order_status ,sc_amazon_order
+		  LEFT JOIN sc_amazon_account_product 
+		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
+		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		   AND sc_amazon_order_status.pick_status IN ('9','10')
+		   AND ( sc_amazon_order.track_number IS NULL OR sc_amazon_order.track_number = '') 
+		   AND ( sc_amazon_order.tn_status IS NULL OR sc_amazon_order.tn_status NOT IN ('1') )
+ */
 class OrderService extends AppModel {
 	var $useTable = "sc_account_product_warning" ;
 	

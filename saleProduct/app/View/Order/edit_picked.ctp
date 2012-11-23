@@ -15,10 +15,10 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');	
+		
+		$defaultName = "P".date("Y-m-d H:m") ;
 	?>
 	
-
-
    <script>
 		$(function(){
 
@@ -64,7 +64,7 @@
 								<tr>
 									<th>名称：</th>
 									<td>
-										<input data-validator="required" type="text" name="name" class="span4"/>
+										<input data-validator="required" type="text" name="name" value="<?php echo $defaultName;?>" class="span4"/>
 									</td>
 								</tr>
 								<tr>

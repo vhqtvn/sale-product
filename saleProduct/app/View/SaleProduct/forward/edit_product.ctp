@@ -87,7 +87,7 @@
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
 						<table class="form-table col2" >
-							<caption>基本信息</caption>
+							<!--<caption>基本信息</caption>-->
 							<tbody>	
 								<tr>
 									<th>SKU：</th><td><input type="text"
@@ -103,8 +103,32 @@
 									<td><input type="text" name="position" value="<?php echo $item['POSITION']?>"/></td>
 								</tr>
 								<tr>
+									<th>库存数量：</th>
+									<td><input type="text" name="quantity" class="alert alert-danger" value="<?php echo $item['QUANTITY']?>"/></td>
+								</tr>
+								<tr>
 									<th>条形码：</th>
 									<td><input type="text" name="barcode" value="<?php echo $item['BARCODE']?>"/></td>
+								</tr>
+								<tr>
+									<th>重量：</th>
+									<td><input type="text" name="weight" style="width:50px;" value="<?php echo $item['WEIGHT']?>"/>
+									<select name="weightUnit" style="width:150px;">
+										<option value="lb">pound</option>
+									</select>
+									</td>
+								</tr>
+								<tr>
+									<th>包装类型：</th>
+									<td><input type="text" name="packageType"  value="<?php echo $item['PACKAGE_TYPE']?>"/>
+									</td>
+								</tr>
+								<tr>
+									<th>长X宽X高：</th>
+									<td><input type="text" name="length" style="width:50px;" value="<?php echo $item['LENGTH']?>"/>
+									X<input type="text" name="width" style="width:50px;" value="<?php echo $item['WIDTH']?>"/>
+									X<input type="text" name="height" style="width:50px;" value="<?php echo $item['HEIGHT']?>"/>
+									</td>
 								</tr>
 								<tr>
 									<th>产品图片：</th>
@@ -115,6 +139,7 @@
 									}?>
 									</td>
 								</tr>
+								
 								<tr>
 									<th>产品地址：</th>
 									<td><input type="text" name="url" value="<?php echo $item['URL']?>"/></td>

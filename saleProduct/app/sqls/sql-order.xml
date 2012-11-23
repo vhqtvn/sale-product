@@ -226,6 +226,8 @@
 		  {@ and sc_amazon_order.buyer_name = '#userName#'}
 		  {@ and sc_amazon_order.buyer_email = '#email#'}
 		  {@ and sc_amazon_order.sku = '#sku#'}
+		  {@ and sc_amazon_order.track_number is not null and '#trackNumber#' = '#trackNumber#'}
+		  {@ and sc_amazon_order.track_number is null and '#trackNumberNull#' = '#trackNumberNull#'}
 		  {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
 		  {@ and exists ( 
 		  		select 1 from sc_amazon_picked_order where
@@ -335,14 +337,16 @@
     </entry>
     
     <entry key="sql_order_picked_list">
-		select * from (
-		select sc_amazon_picked.*  , sc_user.name as USERNAME ,
-		( select count(1) from sc_amazon_picked_order where picked_id = sc_amazon_picked.id ) as TOTAL
-		 from sc_amazon_picked , sc_user where 
-		 sc_amazon_picked.creator = sc_user.login_id
-		 {@ and sc_amazon_picked.account_id = '#accountId#'}
-
-		) t
+    	SELECT * FROM (
+			SELECT sc_amazon_picked.*  , sc_user.name AS USERNAME ,
+		( SELECT COUNT(1) FROM sc_amazon_picked_order WHERE picked_id = sc_amazon_picked.id
+	  		AND order_id IN (SELECT order_id FROM sc_amazon_order)	
+	 	) AS TOTAL
+	 FROM sc_amazon_picked , sc_user WHERE 
+	 sc_amazon_picked.creator = sc_user.login_id
+	 {@ and sc_amazon_picked.account_id = '#accountId#'}
+	ORDER BY sc_amazon_picked.id DESC
+	) t
     </entry>
     
     <entry key="sql_order_update_tracknumber">

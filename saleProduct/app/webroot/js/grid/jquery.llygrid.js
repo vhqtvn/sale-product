@@ -509,6 +509,7 @@
 			$(".lly-grid-pager",target).llypager({
 				totalRecord:totalRecord,
 				curPage:p.curPage,
+				type:options.pagerType,
 				pageSizes:options.pageSizes,
 				limit:p.limit,
 				selectPage:function(curPage , limit ){
@@ -842,6 +843,7 @@
 		var limit    = settings.limit ;
 		var totalPage = calcTotalPage(totalRecord , limit) ;
 		var selectPage = settings.selectPage ;
+		var type = settings.type ;
 		
 		template() ;
 		render()   ;
@@ -931,6 +933,39 @@
 		}
 		
 		function template(){
+			if(type == 'simple'){
+				var html = [] ;
+				html.push('<div class="grid-toolbar-div">');
+				html.push('<div style="float:right">');
+				html.push('	<table  cellspacing="0" cellpadding="0">');
+				html.push('		<tbody>');
+				html.push('			<tr>');
+				html.push('				<td></td>');
+				html.push('				<td> <span><span class="_totalpage_"></span>/<span class="_totalnumber_"></span></td>');
+				html.push('				<td>');
+			html.push('					<select class="_limitselect_"></select>');
+			html.push('				</td>');
+				html.push('				<td>');
+				html.push('					<a href="#" class="_page_ _firstpage_ " pn="first"><span class="ui-icon ui-icon-seek-first"></span></a>');
+				html.push('					<a href="#" class="_page_ _prepage_ " pn="pre"><span class="ui-icon ui-icon-seek-prev"></span></a>');
+				html.push('				</td>');
+				html.push('				<td>');
+				html.push('					<span class="grid-navig"></span>');
+				html.push('				</td>');
+				html.push('				<td>');
+				html.push('					<a href="#" class="_page_ _nextpage_ " pn="next"><span class="ui-icon ui-icon-seek-next"></span></a>');
+				html.push('					<a href="#" class="_page_ _lastpage_ " pn="last"><span class="ui-icon ui-icon-seek-end"></span></a>');
+				html.push('				</td>');
+				html.push('			</tr>');
+				html.push('		</tbody>');
+				html.push('	</table>');
+				html.push('</div>');
+				html.push('<div style="clear:both;"></div>');
+				html.push('</div>');
+				$(me).html(html.join('')) ;
+				return ;
+			}
+			
 			var html = [] ;
 			html.push('<div class="grid-toolbar-div">');
 			html.push('<div style="float:right">');

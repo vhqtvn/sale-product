@@ -15,6 +15,8 @@
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
+		echo $this->Html->css('../js/layout/jquery.layout');
+		echo $this->Html->css('../js/tree/jquery.tree');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
@@ -25,6 +27,8 @@
 		echo $this->Html->script('modules/order/doing_lists');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
+		echo $this->Html->script('layout/jquery.layout');
+		echo $this->Html->script('tree/jquery.tree');
 		
 	?>
 </head>
@@ -36,53 +40,52 @@
 										加急单<input type="radio" name="status" value="6">
 										特殊单
 -->
+<script>
+	var img = '<?php echo $this->Html->image('example.gif',array("title"=>"编辑订单")) ?>' ;
+</script>
 <body>
-	<div class="toolbar toolbar-auto">
-		
-		<table style="width:100%;" class="query-table">	
-			<tr>
-				<th>订单号：</th>
-				<td>
-					<input type="text" name="orderId"/>
-				</td>
-				<th>人名：</th>
-				<td>
-					<input type="text" name="userName"/>
-				</td>
-				<th>邮件：</th>
-				<td>
-					<input type="text" name="email"/>
-				</td>
-			</tr>
-			<tr>
-				<th>日期：</th>
-				<td>
-					<input type="text" name="dateTime" data-widget="calendar"/>
-				</td>
-				<th>SKU：</th>
-				<td>
-					<input type="text" name="sku"/>
-				</td>
-				<th></th>
-				<td>
-					<button class="btn btn-primary query" >查询</button>
-				</td>
-			</tr>						
-		</table>	
-		<hr style="margin:2px;"/>
-		<table style="width:100%;">
-			<tr><th style="width:100px"></th>
-				<td>
-					<button class="btn btn-primary save-track">更新Tracking Number</button>
-				</td>
-			</tr>					
-		</table>	
-	</div>	
-	
-	<div id="details_tab">
-	</div>
-	<div class="grid-content" id="tab-content">
-	
-	</div>
+	<div data-widget="layout" style="width:100%;height:100%;">
+		<div region="center" split="true" border="true" title="拣货单订单列表" style="padding:2px;">
+			<div class="toolbar toolbar-auto">
+				<table style="width:100%;" class="query-table">	
+					<tr>
+						<th>订单号：</th>
+						<td>
+							<input type="text" name="orderId" class="span2"/>
+						</td>
+						<th>人名：</th>
+						<td>
+							<input type="text" name="userName" class="span2"/>
+						</td>
+						<th>邮件：</th>
+						<td>
+							<input type="text" name="email" class="span2"/>
+						</td>
+					</tr>
+					<tr>
+						<th>日期：</th>
+						<td>
+							<input type="text" name="dateTime" class="span2" data-widget="calendar"/>
+						</td>
+						<th>SKU：</th>
+						<td>
+							<input type="text" name="sku" class="span2"/>
+						</td>
+						<th></th>
+						<td>
+							<button class="btn btn-primary query" >查询</button>
+						</td>
+					</tr>						
+				</table>	
+			</div>	
+			
+			<div id="details_tab">
+			</div>
+			<div class="grid-content" id="tab-content"></div>
+		</div>
+		<div region="west" icon="icon-edit" split="true" border="true" title="拣货单列表" style="width:200px;">
+			<button class="action add btn btn-primary">创建拣货单</button>
+			<div id="picked-grid-content" class="tree" style="padding: 5px; "></div>
+		</div>
 </body>
 </html>
