@@ -264,7 +264,7 @@
 		           	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"6%"},
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
-		           	<?php if($groupCode == 'general_manager' || $groupCode == 'cashier' ){
+		           	<?php if($groupCode == 'manage' || $groupCode == 'general_manager' || $groupCode == 'cashier' ){
 		           	?>
 		           	{align:"center",key:"FBM_COST",label:"其他成本",group:"FBM",width:"6%",format:function(val,record){
 		           		return "<a href='' class='cost' type='FBM' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;

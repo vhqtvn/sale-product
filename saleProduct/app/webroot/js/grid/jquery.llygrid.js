@@ -504,6 +504,7 @@
 		
 		function renderPage(records , totalRecord , p){
 			var options = target.data("options") ;
+			options.records = records ;
 			var _ = records.slice(0,p.limit) ;
 			createBody(target,_ , p) ;
 			$(".lly-grid-pager",target).llypager({

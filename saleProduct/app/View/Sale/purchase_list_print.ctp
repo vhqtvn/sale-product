@@ -62,9 +62,16 @@
 		           			kHtml.push("<p"+know.split("</p>")[0]+"</p>") ;
 		           		}) ;
 		           		
+		           		var localUrl = (record.LOCAL_URL+"").replace(/\%/g,"%25") ;
+		           		
+		           		if(localUrl && localUrl != 'null')
+		           			localUrl = '<img src="/saleProduct/'+localUrl+'"/>' ;
+		           		else
+		           			localUrl = '' ;
+		           		
 		           		var html = '\
 		           		<div>\
-							<div class="product-image" style="width:152px;float:left;"><img src="/saleProduct/'+record.LOCAL_URL+'"/></div>\
+							<div class="product-image" style="width:152px;float:left;">'+localUrl+'</div>\
 							<div class="product-base" style="width:362px;float:left;">\
 								<div class="product-content product-asin">'+record.ASIN+'</div>\
 								<div class="product-content product-title">'+record.TITLE+'</div>\

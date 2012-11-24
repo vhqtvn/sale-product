@@ -24,12 +24,44 @@ function formatGridData(data){
 	$(function(){
 			var _index = 1 ;
 			var sqlId = "sql_order_list_repicked_print"//"sql_order_list_picked" ;
-			if(type == '1'){
+			/*if(type == '1'){
 				sqlId = "sql_order_list_one_repicked_print" ;
 			}else if(type == '2'){
 				sqlId = "sql_order_list_many_repicked_print" ;
-			}
-			$(".grid-content").llygrid({
+			}*/
+			$(".btn-search").click(function(){
+				var val = $(this).prev().val() ;
+				var records = [] ;
+				if( detailRecords ){
+					$(detailRecords||[]).each(function(index,record){
+						if( val == record.ORDER_ID ){
+							records.push(record) ;
+						}
+					}) ;
+				}
+				
+				if(!val){
+					records = detailRecords;
+				}
+				_index = 1 ;
+				gridConfig.ds = {type:"data",records:records} ;
+				gridConfig.loadMsg = "获取明细中......";
+				gridConfig.loadAfter = null ;
+				$(".grid-content").empty().llygrid(gridConfig) ;
+			}) ;
+			
+			jQuery(document).bind('keydown', 'return',function (evt){
+				$(".btn-search").click() ;
+				 return false; 
+			});
+			
+			 jQuery(document).bind('keydown', 'space',function (evt){
+			 $("#orderId").focus() ;
+			 return false; });
+			
+			var detailRecords = null ;
+			
+			var gridConfig = {
 				columns:[
 					{align:"left",key:"INDEX",label:"序号", width:"30",format:function(val,record){
 						return _index++ ;
@@ -60,8 +92,14 @@ function formatGridData(data){
 				 autoWidth:true,
 				 indexColumn:false,
 				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:'9',pickId:pickedId},
-				 loadMsg:"数据加载中，请稍候......"
-			}) ;
+				 loadMsg:"数据加载中，请稍候......",
+				 loadAfter:function(){
+				 	var options = $(".grid-content").data("options") ;
+				 	detailRecords = options.records;
+				 }
+			} ;
+			
+			$(".grid-content").llygrid(gridConfig) ;
    	 });
    	 
    	 var currentQueryKey = "" ;

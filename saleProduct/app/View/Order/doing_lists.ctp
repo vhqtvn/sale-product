@@ -80,8 +80,7 @@
 						<th></th>
 						<td colspan="5">
 							<button class="btn btn-primary action-btn print-btn pick-btn" action='4'>打印拣货单</button>
-							<button class="btn btn-primary action-btn print-btn pick-btn" action='5'>单品订单二次分拣单</button>
-							<button class="btn btn-primary action-btn print-btn pick-btn" action='6'>多品订单二次分拣单</button>
+							<button class="btn btn-primary action-btn print-btn pick-btn" action='5'>二次分拣</button>
 						</td>
 					</tr>							
 				</table>	

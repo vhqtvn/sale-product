@@ -45,25 +45,30 @@
    </entry>
    
    <entry key="sql_purchase_plan_details_list">
-         SELECT  sc_purchase_plan_details.* ,
+          SELECT distinct  sc_purchase_plan_details.* ,
 				 sc_product.TITLE , sc_product_flow_details.DAY_PAGEVIEWS ,
-                (select sc_supplier.name from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_NAME,
+                (SELECT sc_supplier.name FROM sc_supplier WHERE sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) AS PROVIDOR_NAME,
 				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL,
 				( SELECT TOTAL_COST - PURCHASE_COST
-				from sc_product_cost 
-				where sc_product_cost.asin = sc_product.asin and
-					( sc_product_cost.type='FBM' or sc_product_cost.type is null )  ) as FBM_COST,
-				sc_sale_competition.TARGET_PRICE as FBM_PRICE,
-				( select min(sc_sale_fba_details.seller_price) from sc_sale_fba_details
-						where sc_sale_fba_details.asin = sc_product.asin ) as FBA_PRICE,
+				FROM sc_product_cost 
+				WHERE sc_product_cost.asin = sc_product.asin AND
+					( sc_product_cost.type='FBM' OR sc_product_cost.type IS NULL )  ) AS FBM_COST,
+					
+				( SELECT MIN(sc_sale_competition_details.seller_price+sc_sale_competition_details.seller_ship_price) FROM sc_sale_competition_details
+						WHERE sc_sale_competition_details.asin = sc_product.asin
+						and ( type like 'F%' or type like 'N%' )
+						 ) AS FBM_PRICE,
+						
+				( SELECT MIN(sc_sale_fba_details.seller_price) FROM sc_sale_fba_details
+						WHERE sc_sale_fba_details.asin = sc_product.asin ) AS FBA_PRICE,
 				( SELECT TOTAL_COST - PURCHASE_COST
-				from sc_product_cost where sc_product_cost.asin = sc_product.asin and
-					( sc_product_cost.type='FBA' or sc_product_cost.type is null )  ) as FBA_COST,
-				(select count(*) from sc_product_supplier where sc_product_supplier.asin = sc_product.asin
-							and sc_product_supplier.num1 is not null and  sc_product_supplier.offer1 is not null  ) as XJ 
+				FROM sc_product_cost WHERE sc_product_cost.asin = sc_product.asin AND
+					( sc_product_cost.type='FBA' OR sc_product_cost.type IS NULL )  ) AS FBA_COST,
+				(SELECT COUNT(*) FROM sc_product_supplier WHERE sc_product_supplier.asin = sc_product.asin
+							AND sc_product_supplier.num1 IS NOT NULL AND  sc_product_supplier.offer1 IS NOT NULL  ) AS XJ 
                FROM sc_purchase_plan_details , sc_product
-			   left join sc_product_flow_details on sc_product_flow_details.asin = sc_product.asin
-				LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
+				LEFT JOIN sc_product_flow_details ON sc_product_flow_details.asin = sc_product.asin
+				LEFT JOIN sc_sale_competition_details  ON sc_sale_competition_details.asin = sc_product.asin
 			where 1=1 and  sc_purchase_plan_details.asin = sc_product.asin
 			{@  and sc_purchase_plan_details.plan_id = '#planId#' }
 			{@  and ( sc_purchase_plan_details.status = '#status1#' or sc_purchase_plan_details.status is null ) }

@@ -20,6 +20,7 @@
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery-ui');
+		echo $this->Html->script('jquery.hotkeys');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('modules/order/re_print_picked');
@@ -57,6 +58,12 @@
 			margin-bottom:3px;
 			font-size:20px;
 		}
+		
+		.search{
+			margin:10px auto;
+			text-align:center;
+			
+		}
 	</style>
 	
 	<script>
@@ -64,9 +71,9 @@
 		$(function(){
 			var text = "" ;
 			if(type == 1){
-				text = "单品订单二次分拣单" ;
+				text = "订单二次分拣" ;
 			}else if(type == 2){
-				text = "多品订单二次分拣单" ;
+				text = "订单二次分拣" ;
 			}
 			$(".header").html( text+"("+ window.opener.currentPickName+")");
 		}) ;
@@ -92,15 +99,18 @@
 				<td style="text-align:right;">
 					<nobr>
 					<?php echo date('Y-m-d H:i:s')?>(<?php echo $user['NAME']?>)
-					<button class="noprint" onclick="$('.noprint').remove();window.print();">打印</button>
 					</nobr>
 				</td>
 			</tr>
 		</table>
-		
 	</div>
-	<div class="grid-content">
 	
+	<div class="search">
+		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID"/>
+		<button class="btn btn-search btn-primary">search</button>
+	</div>
+	
+	<div class="grid-content" style="">
 	</div>
 </body>
 </html>
