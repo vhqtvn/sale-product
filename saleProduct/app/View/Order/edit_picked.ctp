@@ -16,7 +16,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');	
 		
-		$defaultName = "P".date("Y-m-d H:m") ;
+		$defaultName = "P".date("Y-m-d H:i") ;
 	?>
 	
    <script>

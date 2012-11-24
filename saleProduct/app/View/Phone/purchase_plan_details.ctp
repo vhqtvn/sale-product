@@ -35,7 +35,14 @@
     	<td><?php echo $index;?></td>
 		<td><a href="/saleProduct/index.php/phone/productDetails/<?php echo $record['ASIN'];?>"><?php echo $record['ASIN'];?></a></td>
 		<td><?php echo $title;?></td>
-		<td><img src='<?php echo $localUrl;?>'></td>
+		<td>
+		<?php if(empty($localUrl)){}else{
+			$localUrl = str_replace("%" , "%25",$localUrl) ;
+		?>
+		<img src='<?php echo '/saleProduct/'.$localUrl;?>'>
+		<?php
+		}?>
+		</td>
 	</tr> 
     <?		
     	}

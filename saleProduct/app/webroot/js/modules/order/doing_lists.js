@@ -20,8 +20,9 @@ function formatGridData(data){
 			
 		return ret ;
 	}
-
+	var currentPickName = '' ;
 	$(function(){
+			var currentPickId = '' ;
 			//拣货单列表
 			$("#picked-grid-content").llygrid({
 				 columns:[
@@ -41,7 +42,10 @@ function formatGridData(data){
 				 querys:{sqlId:"sql_order_picked_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
+				 	currentPickId = rowData.ID ;
+				 	currentPickName = rowData.NAME ;
 				 	$(".grid-content").llygrid("reload",{pickId:rowData.ID});
+				 	renderBtn() ;
 				 }
 
 			}) ;
@@ -53,6 +57,33 @@ function formatGridData(data){
 				} 
 				return false ;
 			}) ;
+			
+			$(".action-btn").click(function(){
+				var action = $(this).attr("action");
+				var checkedRecords = $(".grid-content").llygrid("getSelectedRecords",{key:"ORDER_ID",checked:true},true) ;
+				var status = $(this).attr("status");
+				
+				if( action == 4 ){//打印拣货单
+					openCenterWindow("/saleProduct/index.php/order/printPicked/"+currentPickId,950,650) ;
+					return ;
+				}else if( action == 5 ){//单品打印拣货单
+					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/1",950,650) ;
+					return ;
+				}else if( action == 6 ){//多品打印拣货单
+					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/2",950,650) ;
+					return ;
+				}
+			}) ;
+			
+			function renderBtn(){
+				if(currentPickId){
+					$(".action-btn").removeAttr("disabled");
+				}else{
+					$(".action-btn").attr("disabled",true);
+				}
+			}
+			
+			renderBtn() ;
 			
 			$(".select-product").live("click",function(){
 				var pickId = $(this).attr("pickId") ;
@@ -99,50 +130,10 @@ function formatGridData(data){
 				 height:function(){
 				 	return $(window).height() - $(".toolbar-auto").height() -185 ;
 				 },
-				 title:"订单信息列表",
+				 title:"",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:'',trackNumberNull:"1",pickStatus:"9"},
+				 querys:{sqlId:sqlId,accountId:accountId,status:'',trackNumberNull:"",pickStatus:"9"},
 				 loadMsg:"数据加载中，请稍候......"
-			}) ;
-			
-			//trackNumber编辑框事件
-			$(".lly-grid-cell-input").live("blur",function(){
-				var orderId = $(this).attr("ORDER_ID") ;
-				var orderItemId =  $(this).attr("ORDER_ITEM_ID") ;
-				var val = $(this).val() ;
-				var key = $(this).attr("key") ;
-				
-				var params = {orderId:orderId,orderItemId:orderItemId,key:key} ;
-				params[key]= val ;
-				
-				$.ajax({
-					type:"post",
-					url:"/saleProduct/index.php/order/updateTrackNumber",
-					data:params,
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-					}
-				}); 
-			}) ;
-			
-			$(".save-track").click(function(){
-				
-				if( window.confirm("确认要更新tracking Number到Amazon？") ){
-					$.ajax({
-						type:"post",
-						url:"/saleProduct/index.php/order/saveTrackNumberToAamazon/"+accountId ,
-						data:{},
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							alert("保存成功!");
-							$(".grid-content").llygrid("reload",{},true) ;
-						}
-					});
-				}
-				
-				
 			}) ;
 			
 			$(".query").click(function(){
@@ -158,7 +149,7 @@ function formatGridData(data){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
 					{label:'处理中',content:"tab-content"},
-					{label:'拣货完成',content:"tab-content"},
+					//{label:'拣货完成',content:"tab-content"},
 					{label:'发货完成',content:"tab-content"}
 				] ,
 				//height:'500px',
@@ -173,7 +164,7 @@ function renderAction(index){
 	$(".save-btn").show() ;
 	if(index == 0){//拣货中
 		$(".save-btn").hide() ;
-		$(".grid-content").llygrid("reload",{pickStatus:9,status:'',trackNumberNull:"1",trackNumber:""},true) ;
+		$(".grid-content").llygrid("reload",{pickStatus:9,status:'',trackNumberNull:"",trackNumber:""},true) ;
 	}else if(index == 1){//拣货完成
 		//$(".save-btn").hide() ;
 		$(".grid-content").llygrid("reload",{pickStatus:'',status:'',trackNumber:"1",trackNumberNull:""},true) ;

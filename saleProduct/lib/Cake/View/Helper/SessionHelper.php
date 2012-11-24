@@ -41,7 +41,26 @@ class SessionHelper extends AppHelper {
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/session.html#SessionHelper::read
  */
 	public function read($name = null) {
-		return CakeSession::read($name);
+		$uuid = null ;
+		$name = str_replace(".","_",$name) ;
+		
+		if(isset($_COOKIE[$name])){
+			$uuid = $_COOKIE[$name] ;
+		}else{
+			return null ;
+		}
+
+		$this->User = ClassRegistry::init('User')  ;
+		$result = $this->User->query("select * from sc_user where login_id = '$uuid'") ;
+		
+		if(empty($result))
+			return null ;
+			
+		$result = $result[0]['sc_user'] ;
+		
+		return $result ;
+		
+		//return CakeSession::read($name);
 	}
 
 /**

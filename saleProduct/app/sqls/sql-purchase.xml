@@ -50,7 +50,8 @@
                 (select sc_supplier.name from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_NAME,
 				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL,
 				( SELECT TOTAL_COST - PURCHASE_COST
-				from sc_product_cost where sc_product_cost.asin = sc_product.asin and
+				from sc_product_cost 
+				where sc_product_cost.asin = sc_product.asin and
 					( sc_product_cost.type='FBM' or sc_product_cost.type is null )  ) as FBM_COST,
 				sc_sale_competition.TARGET_PRICE as FBM_PRICE,
 				( select min(sc_sale_fba_details.seller_price) from sc_sale_fba_details

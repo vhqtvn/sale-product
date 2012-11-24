@@ -23,12 +23,18 @@ function formatGridData(data){
 
 	$(function(){
 			var _index = 1 ;
-			var sqlId = "sql_order_list_picked_print"//"sql_order_list_picked" ;
+			var sqlId = "sql_order_list_repicked_print"//"sql_order_list_picked" ;
+			if(type == '1'){
+				sqlId = "sql_order_list_one_repicked_print" ;
+			}else if(type == '2'){
+				sqlId = "sql_order_list_many_repicked_print" ;
+			}
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"left",key:"INDEX",label:"序号", width:"30",format:function(val,record){
 						return _index++ ;
 					}},
+					{align:"left",key:"ORDER_ID",label:"订单编号", width:"90"},
 					{align:"left",key:"REAL_SKU",label:"产品SKU", width:"60"},
 					{align:"left",key:"NAME",label:"名称", width:"90"},
 					{align:"center",key:"IMAGE_URL",label:"图片", width:"45",format:function(val,record){
@@ -37,7 +43,6 @@ function formatGridData(data){
 						}
 						return "" ;
 					}},
-					{align:"left",key:"POSITION",label:"位置", width:"90"},
 					{align:"right",key:"QUANTITY",label:"数量", width:"30"},
 					{align:"left",key:"STATUS",label:"完成状态", width:"50"},
 					{align:"left",key:"MENU",label:"备注信息", width:"90"},

@@ -215,4 +215,9 @@ class OrderController extends AppController {
     public function printPicked($pickId){
     	$this->set("pickId",$pickId) ;
     }
+    
+    public function rePrintPicked($pickId,$type){
+    	$this->set("pickId",$pickId) ;
+    	$this->set("type",$type) ;
+    }
 }

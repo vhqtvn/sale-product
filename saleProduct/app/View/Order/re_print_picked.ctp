@@ -22,7 +22,7 @@
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/order/print_picked');
+		echo $this->Html->script('modules/order/re_print_picked');
 		echo $this->Html->script('grid/query');
 	
 	?>
@@ -60,18 +60,27 @@
 	</style>
 	
 	<script>
+		var type = '<?php echo $type;?>'
 		$(function(){
-			$(".header").html( "拣货单("+ window.opener.currentPickName+")");
+			var text = "" ;
+			if(type == 1){
+				text = "单品订单二次分拣单" ;
+			}else if(type == 2){
+				text = "多品订单二次分拣单" ;
+			}
+			$(".header").html( text+"("+ window.opener.currentPickName+")");
 		}) ;
 	</script>
+	
+	<style media=print type="text/css">  
+	    #noprint{visibility:hidden}  
+	</style>
    
 </head>
 
 <body>
 	<?php
-		
 		$user = $this->Session->read("product.sale.user") ;
-		
 	?>
 	<div class="print-title">
 		<div class="header" >
