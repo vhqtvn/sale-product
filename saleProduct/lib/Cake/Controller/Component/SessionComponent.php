@@ -53,7 +53,16 @@ class SessionComponent extends Component {
  * @link http://book.cakephp.org/2.0/en/core-libraries/components/sessions.html#SessionComponent::write
  */
 	public function write($name, $value = null) {
-		return CakeSession::write($name, $value);
+		setcookie($name , $value['LOGIN_ID'] , null ,"/") ;
+		/*
+		$uuid = $this->uuid($name) ;
+		echo $uuid.'       '.$name ;
+		setcookie($name , $uuid , null ,"/") ;
+		$this->User = ClassRegistry::init('User')  ;
+		$this->User->query("insert into cake_sessions(id,data) values('$uuid' ,'--".json_encode($value)."')") ;
+		//return CakeSession::write($name, $value);
+		 * 
+		 */
 	}
 
 /**
@@ -67,7 +76,25 @@ class SessionComponent extends Component {
  * @link http://book.cakephp.org/2.0/en/core-libraries/components/sessions.html#SessionComponent::read
  */
 	public function read($name = null) {
-		return CakeSession::read($name);
+		$uuid = null ;
+		$name = str_replace(".","_",$name) ;
+		
+		if(isset($_COOKIE[$name])){
+			$uuid = $_COOKIE[$name] ;
+		}else{
+			return null ;
+		}
+
+		$this->User = ClassRegistry::init('User')  ;
+		$result = $this->User->query("select * from sc_user where login_id = '$uuid'") ;
+		
+		if(empty($result))
+			return null ;
+			
+		$result = $result[0]['sc_user'] ;
+		
+		return $result ;
+		//return CakeSession::read($name);
 	}
 
 /**
@@ -157,8 +184,12 @@ class SessionComponent extends Component {
  * @return void
  * @link http://book.cakephp.org/2.0/en/core-libraries/components/sessions.html#SessionComponent::destroy
  */
-	public function destroy() {
-		return CakeSession::destroy();
+	public function destroy($id = null) {
+		if( empty($id) ){
+			$id = 'product.sale.user' ;
+		}
+		setcookie($id, "", time() - 3600,"/");  
+		//return CakeSession::destroy();
 	}
 
 /**
@@ -186,5 +217,16 @@ class SessionComponent extends Component {
 	public function started() {
 		return CakeSession::started();
 	}
+	
+	function uuid($prefix = '')
+	{
+	    $chars = md5(uniqid(mt_rand(), true));
+	    $uuid = substr($chars,0,8) . '-';
+	    $uuid .= substr($chars,8,4) . '-';
+	    $uuid .= substr($chars,12,4) . '-';
+	    $uuid .= substr($chars,16,4) . '-';
+	    $uuid .= substr($chars,20,12);
+	    return $prefix . $uuid;
+	} 
 
 }
