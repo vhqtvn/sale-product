@@ -29,7 +29,12 @@ function formatGridData(data){
 					{align:"left",key:"INDEX",label:"序号", width:"30",format:function(val,record){
 						return _index++ ;
 					}},
-					{align:"left",key:"REAL_SKU",label:"产品SKU", width:"60"},
+					{align:"left",key:"REAL_SKU",label:"产品SKU", width:"60",format:function(val,record){
+						if(record.P_TYPE == 1){
+							return "<font color=red>"+val+"(未关联货品)</font>" ;
+						}else
+							return val ;
+					}},
 					{align:"left",key:"NAME",label:"名称", width:"90"},
 					{align:"center",key:"IMAGE_URL",label:"图片", width:"45",format:function(val,record){
 						if(val){

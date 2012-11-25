@@ -15,14 +15,15 @@
    <?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
-		echo $this->Html->css('../js/grid/jquery.llygrid-print');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery-ui');
+		echo $this->Html->script('jquery.hotkeys');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/order/print_picked');
+		echo $this->Html->script('modules/order/out_warehouse');
 		echo $this->Html->script('grid/query');
 	
 	?>
@@ -30,6 +31,12 @@
 	<style type="text/css">
 		body{
 			padding:3px;
+		}
+		
+		#orderId{
+			font-weight:bold;
+			color:#FFF;
+			font-size:15px;
 		}
 		
 		.print-title{
@@ -58,28 +65,58 @@
 			font-size:20px;
 		}
 		
-		.table tr th, .table tr td {
-			word-break:none;
+		.search{
+			margin:10px auto;
+			text-align:center;
+			position:relative;
+		}
+		
+		.exception{
+			position:absolute;
+			top:0px;
+			right:0px;
+			z-index:1;
+			text-align:right;
+		}
+		
+		.exception-form{
+			background:#ffc0cb ;
+			border:1px solid #CCC;
+			padding:10px;
+			text-align:left;
+			display:none;
+		}
+		
+		.exception-form div{
+			margin:3px;
 		}
 	</style>
 	
 	<script>
+		var type = '<?php echo $type;?>'
 		$(function(){
-			$(".header").html( "拣货单("+ window.opener.currentPickName+")");
+			var text = "" ;
+			$(".btn-danger").toggle(function(){
+				$(".exception-form").show() ;
+			},function(){
+				$(".exception-form").hide() ;
+			}) ;
 		}) ;
 	</script>
+	
+	<style media=print type="text/css">  
+	    #noprint{visibility:hidden}  
+	</style>
    
 </head>
 
 <body>
 	<?php
-		
 		$user = $this->Session->read("product.sale.user") ;
-		
 	?>
 	<div class="print-title">
 		<div class="header" >
-			拣货单（XXXXXXXX）
+			订单出仓
 		</div>
 		
 		<table>
@@ -87,15 +124,18 @@
 				<td style="text-align:right;">
 					<nobr>
 					<?php echo date('Y-m-d H:i:s')?>(<?php echo $user['NAME']?>)
-					<button class="noprint" onclick="$('.noprint').remove();window.print();">打印</button>
 					</nobr>
 				</td>
 			</tr>
 		</table>
-		
 	</div>
-	<div class="grid-content">
 	
+	<div class="search">
+		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID"/>
+		<button class="btn btn-search btn-primary">search</button>
+	</div>
+	
+	<div class="grid-content" style="">
 	</div>
 </body>
 </html>

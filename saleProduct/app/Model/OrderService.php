@@ -20,7 +20,7 @@ class OrderService extends AppModel {
 			'6'=>'加急单',
 			'7'=>'特殊单') ;
 			
-	var $pickStatus = array('9'=>'拣货中','10'=>'拣货完成') ;
+	var $pickStatus = array('9'=>'拣货中','10'=>'拣货完成','11'=>'异常订单') ;
 	var $tnStatus   = array('1'=>'发货完成') ;
 	var $redoStatus = array(
 			'1'=>'退货',
@@ -141,7 +141,25 @@ class OrderService extends AppModel {
 		$this->query($sql) ;	
 	}
 	
-	function savePickedOrder($params , $user,$pickedId){
+	function repickedException($params , $user,$pickedId = null){
+		//$this->setDataSource('gbk');
+		
+		$orderId = $params['orderId'] ;
+		$loginId = $user['LOGIN_ID'] ;
+		$memo    = $params['memo'] ;
+		$type    = $params['type'] ;
+		$status  = $params['status'] ;
+		$memo = "[$type]$memo" ;
+		
+		$sql = "" ;
+		$sql = "update sc_amazon_order_status set pick_status = '$status' where order_id = '$orderId'" ;
+		$this->query($sql) ;
+		$sql = $this->getDbSql("sql_order_track_insert") ;
+		$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'STATUS'=>$this->pickStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+		$this->query($sql) ;
+	}
+	
+	function savePickedOrder($params , $user,$pickedId = null){
 		$this->setDataSource('gbk');
 		
 		$orders = $params['orders'] ;

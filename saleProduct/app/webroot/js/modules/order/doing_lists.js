@@ -50,6 +50,10 @@ function formatGridData(data){
 
 			}) ;
 			
+			$(".btn-outwarehouse").click(function(){
+				openCenterWindow("/saleProduct/index.php/order/outWarehouse",850,450) ;
+			}) ;
+			
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("add") ){
@@ -66,11 +70,23 @@ function formatGridData(data){
 				if( action == 4 ){//打印拣货单
 					openCenterWindow("/saleProduct/index.php/order/printPicked/"+currentPickId,950,650) ;
 					return ;
-				}else if( action == 5 ){//单品打印拣货单
+				}else if( action == 5 ){//二次分拣
 					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/1",950,650) ;
 					return ;
-				}else if( action == 6 ){//多品打印拣货单
-					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/2",950,650) ;
+				}else if( action == 6 ){//确认发货
+					if( window.confirm("确认发货并更新TN到Amazon？") ){
+						$.ajax({
+							type:"post",
+							url:"/saleProduct/index.php/order/saveTrackNumberToAamazon/"+currentPickId ,
+							data:{},
+							cache:false,
+							dataType:"text",
+							success:function(result,status,xhr){
+								alert("保存成功!");
+								$(".grid-content").llygrid("reload",{},true) ;
+							}
+						});
+					}
 					return ;
 				}
 			}) ;

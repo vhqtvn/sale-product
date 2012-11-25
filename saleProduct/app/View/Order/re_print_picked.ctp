@@ -15,7 +15,7 @@
    <?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
-		echo $this->Html->css('../js/grid/jquery.llygrid-print');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
@@ -62,7 +62,27 @@
 		.search{
 			margin:10px auto;
 			text-align:center;
-			
+			position:relative;
+		}
+		
+		.exception{
+			position:absolute;
+			top:0px;
+			right:0px;
+			z-index:1;
+			text-align:right;
+		}
+		
+		.exception-form{
+			background:#ffc0cb ;
+			border:1px solid #CCC;
+			padding:10px;
+			text-align:left;
+			display:none;
+		}
+		
+		.exception-form div{
+			margin:3px;
 		}
 	</style>
 	
@@ -76,6 +96,12 @@
 				text = "订单二次分拣" ;
 			}
 			$(".header").html( text+"("+ window.opener.currentPickName+")");
+			
+			$(".btn-danger").toggle(function(){
+				$(".exception-form").show() ;
+			},function(){
+				$(".exception-form").hide() ;
+			}) ;
 		}) ;
 	</script>
 	
@@ -108,6 +134,25 @@
 	<div class="search">
 		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID"/>
 		<button class="btn btn-search btn-primary">search</button>
+		
+		<div class="exception">
+			<button class="btn btn-danger">异常处理</button>
+			<div class="exception-form">
+				<div>
+					<label>分类：</label>
+					<select id="type">
+						<option value="value1">option1</option>
+						<option value="value2">option2</option>
+						<option value="value3">option3</option>
+					</select>
+				</div>
+				<div>
+					<label>备注:</label>
+					<textarea id="memo"></textarea>
+				</div>
+				<button class="btn btn-primary exception-btn">确认</button>
+			</div>
+		</div>
 	</div>
 	
 	<div class="grid-content" style="">

@@ -92,14 +92,14 @@ class OrderController extends AppController {
 		return $this->response;
     }
     
-    public function saveTrackNumberToAamazon($accountId){
-    	$account = $this->Amazonaccount->getAccount($accountId) ;
+    public function saveTrackNumberToAamazon($pickedId){
+    	$account = $this->Amazonaccount->getAccount($pickedId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
 		
     	$params = $this->request->data  ;
     	$user =  $this->getCookUser() ;
-    	$feed = $this->OrderService->getTrackNumberFeed($params,$user ,$accountId,$MerchantIdentifier) ;
+    	$feed = $this->OrderService->getTrackNumberFeed($params,$user ,$pickedId,$MerchantIdentifier) ;
     	
     	$amazon = new Amazon(
 				$account['AWS_ACCESS_KEY_ID'] , 
@@ -202,7 +202,18 @@ class OrderController extends AppController {
     	$this->set("pickId",$pickId) ;
     }
     
-    public function savePickedOrder($pickedId){
+    //二次分拣是将订单设置为异常订单
+    public function repickedException(){
+    	$params = $this->request->data  ;
+    	$user =  $this->getCookUser() ;
+    	$this->OrderService->repickedException($params,$user ) ;
+    	
+    	$this->response->type("json");
+		$this->response->body("execute complete");
+		return $this->response;
+    }
+    
+    public function savePickedOrder($pickedId = null){
     	$params = $this->request->data  ;
     	$user =  $this->getCookUser() ;
     	$this->OrderService->savePickedOrder($params,$user,$pickedId ) ;
@@ -214,6 +225,12 @@ class OrderController extends AppController {
     
     public function printPicked($pickId){
     	$this->set("pickId",$pickId) ;
+    }
+    
+    /**
+     * 出仓
+     */
+    public function outWarehouse(){
     }
     
     public function rePrintPicked($pickId,$type){

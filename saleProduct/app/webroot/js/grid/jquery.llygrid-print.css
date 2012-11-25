@@ -272,11 +272,11 @@ div.lly-grid  tr.ui-widget-content{
 }
 
 .cell-div{
-    overflow:hidden;
+    /*overflow:hidden;
     white-space:nowrap;
 	text-overflow:ellipsis;
 	word-break : keep-all; 
-    -o-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;*/
 }
 
 .lly-grid-mask{

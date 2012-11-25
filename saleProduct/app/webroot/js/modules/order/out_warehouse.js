@@ -23,58 +23,30 @@ function formatGridData(data){
 
 	$(function(){
 			var _index = 1 ;
-			var sqlId = "sql_order_list_repicked_print" ;//"sql_order_list_picked" ;
+			var sqlId = "sql_order_list_repicked_outwarehouse" ;//"sql_order_list_picked" ;
 			
-			$(".exception-btn").click(function(){
-				var type = $("#type").val() ;
-				var memo = $("#memo").val() ;
-				var orderId = $("#orderId").val() ;
-				if( window.confirm("确认订单为异常订单吗？") ){
-					$.ajax({
-						type:"post",
-						url:"/saleProduct/index.php/order/repickedException/" ,
-						data:{type:type,memo:memo,orderId:orderId,status:11},
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							window.location.reload() ;
-						}
-					});
-				}
-
-			}) ;
-
 			$(".btn-search").click(function(){
-				var val = $(this).prev().val() ;
-				var records = [] ;
-				if( detailRecords ){
-					$(detailRecords||[]).each(function(index,record){
-						if( val == record.ORDER_ID ){
-							records.push(record) ;
-						}
-					}) ;
-				}
-				
-				if(!val){
-					records = detailRecords;
-				}
-				_index = 1 ;
-				gridConfig.ds = {type:"data",records:records} ;
-				gridConfig.loadMsg = "获取明细中......";
-				gridConfig.loadAfter = null ;
-				$(".grid-content").empty().llygrid(gridConfig) ;
+				$("#orderId").css("background","#EEE").css("color","#000") ;
+				var val = $.trim($(this).prev().val()) ;//orderId
+				if(val){
+					$(".grid-content").llygrid("reload",{orderId:val}) ;
+				};
 			}) ;
 			
 			jQuery(document).bind('keydown', 'return',function (evt){
+				$("#orderId").css("background","#EEE").css("color","#000") ;
 				$(".btn-search").click() ;
 				 return false; 
 			});
 			
 			 jQuery(document).bind('keydown', 'space',function (evt){
-			 $("#orderId").focus() ;
-			 return false; });
+			 	$("#orderId").css("background","#EEE").css("color","#000") ;
+			 	$("#orderId").focus() ;
+			 	return false; 
+			 });
 			
 			var detailRecords = null ;
+			var isFirst = true ;
 			
 			var gridConfig = {
 				columns:[
@@ -95,27 +67,41 @@ function formatGridData(data){
 						}
 						return "" ;
 					}},
-					{align:"right",key:"QUANTITY",label:"数量", width:"30"},
-					{align:"left",key:"STATUS",label:"完成状态", width:"50"},
-					{align:"left",key:"MENU",label:"备注信息", width:"90"},
-					{align:"left",key:"PICKER",label:"拣货人", width:"40"}
+					{align:"right",key:"QUANTITY",label:"数量", width:"30"}
 		         ],
 		        // 序号、产品SKU、名称、图片，位置、数量，完成状态，备注信息。拣货人
 
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
 				 limit:1000,
 				 pageSizes:[1000],
-				/* height:function(){
-				 	return $(window).height() - $(".toolbar-auto").height() -85 ;
-				 },*/
 				 title:"",
 				 autoWidth:true,
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:'9',pickId:pickedId},
+				 querys:{sqlId:sqlId,status:'',pickStatus:'9'},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
+				 	if(isFirst){
+				 		isFirst = false ;
+				 		$("#orderId").css("background","#EEE").css("color","#000") ;
+				 		return ;
+				 	}
 				 	var options = $(".grid-content").data("options") ;
 				 	detailRecords = options.records;
+				 	if( detailRecords && detailRecords.length > 0){
+						var orderId = $("#orderId").val() ;
+						$.ajax({
+							type:"post",
+							url:"/saleProduct/index.php/order/repickedException/" ,
+							data:{type:'',memo:'',orderId:orderId,status:10},
+							cache:false,
+							dataType:"text",
+							success:function(result,status,xhr){
+								$("#orderId").css("background","green").css("color","#000") ;
+							}
+						});
+					}else{
+						$("#orderId").css("background","red").css("color","#000") ;
+					}
 				 }
 			} ;
 			
@@ -123,5 +109,3 @@ function formatGridData(data){
    	 });
    	 
    	 var currentQueryKey = "" ;
-     //{未审核订单：,合格订单：5，风险订单：2，待退单：3，外购订单：4，加急单：6，特殊单：7}
-   	 
