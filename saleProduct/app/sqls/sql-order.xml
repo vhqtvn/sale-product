@@ -229,15 +229,11 @@
 		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
 		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		  {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
-		  {@ and sc_amazon_order_status.audit_status = '#status#'}
 		  {@ and sc_amazon_order.order_id = '#orderId#'}
 		  {@ and sc_amazon_order.buyer_name = '#userName#'}
 		  {@ and sc_amazon_order.buyer_email = '#email#'}
 		  {@ and sc_amazon_order.sku = '#sku#'}
-		  {@ and sc_amazon_order.track_number is not null and '#trackNumber#' = '#trackNumber#'}
-		  {@ and sc_amazon_order.track_number is null and '#trackNumberNull#' = '#trackNumberNull#'}
-		  {@ and sc_amazon_order_status.pick_status in ( '9','10') and  '#pickStatus#' ='#pickStatus#'  }
+		  {@ and sc_amazon_order_status.pick_status =  '#pickStatus#' }
 		  {@ and exists ( 
 		  		select 1 from sc_amazon_picked_order where
 		  		 picked_id = '#pickId#'
@@ -292,12 +288,7 @@
 		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
 		   AND sc_amazon_order_status.pick_status = '9'
-		   AND EXISTS ( 
-		  		SELECT 1 FROM sc_amazon_picked_order WHERE
-		  		 picked_id = '{@#pickId#}'
-		  		 AND sc_amazon_picked_order.order_id = sc_amazon_order.order_id
-		  		 AND sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
-		  )
+		   AND sc_amazon_order.order_id = '{@#orderId#}'
             ) t order by t.real_sku
 		 ]]>
     </entry>
@@ -344,7 +335,7 @@
 		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
 		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   AND sc_amazon_order_status.pick_status = '9'
+		   AND sc_amazon_order_status.pick_status = '12'
 		   AND sc_amazon_order.order_id = '{@#orderId#}'
             ) t order by t.real_sku
     ]]>
@@ -588,10 +579,12 @@
     
     <entry key="sql_order_can_do_ship">
 		select * from sc_amazon_order where account_id = '{@#accountId#}'
-			AND (tn_status is null or tn_status = '') 
-			AND track_number IS NOT NULL AND track_number !='' 
-			AND carrier_code IS NOT NULL AND carrier_code !='' 
-
+			AND exists (
+				select 1 from sc_amazon_order_status where 
+					sc_amazon_order_status.pick_status = '10'
+					and sc_amazon_order_status.order_id = sc_amazon_order.order_id
+			)
+			AND (tn_status is null or tn_status = '')
     </entry>
    
 </properties>

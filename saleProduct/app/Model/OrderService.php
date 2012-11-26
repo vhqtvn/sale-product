@@ -20,8 +20,8 @@ class OrderService extends AppModel {
 			'6'=>'加急单',
 			'7'=>'特殊单') ;
 			
-	var $pickStatus = array('9'=>'拣货中','10'=>'拣货完成','11'=>'异常订单') ;
-	var $tnStatus   = array('1'=>'发货完成') ;
+	var $pickStatus = array('9'=>'拣货中','10'=>'发货完成','11'=>'异常订单','12'=>'拣货完成') ;
+	var $tnStatus   = array('1'=>'同步AMAZON完成') ;
 	var $redoStatus = array(
 			'1'=>'退货',
 			'2'=>'退款',
@@ -361,9 +361,7 @@ class OrderService extends AppModel {
 			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
 			$trackNumber = $order['TRACK_NUMBER'] ;	
 			
-			
-			$sql = "update sc_amazon_order set TN_STATUS = '1' where
-					TRACK_NUMBER='$trackNumber' and ORDER_ID='$orderId' and ORDER_ITEM_ID='$orderItemId'" ;
+			$sql = "update sc_amazon_order set TN_STATUS = '1' where ORDER_ID='$orderId'" ;
 			$this->query($sql) ;
 			
 			$status = $this->tnStatus['1'] ;
@@ -376,6 +374,10 @@ class OrderService extends AppModel {
 	
 	////////////////////////////////////////////////
 	///////getOrderFeed
+	/*
+	 <CarrierCode>USPS</CarrierCode>
+<ShippingMethod>Standard</ShippingMethod>
+<ShipperTrackingNumber>42031909940011020088254XXXXXXX</ShipperTrackingNumber>*/
 	public function _getTrackNumberFeed($MerchantIdentifier , $orders){
 				////////////////////////////////////////////////////////////////////////////		
 $Feed = <<<EOD
@@ -402,7 +404,14 @@ EOD;
 			$orderItemId = $order['ORDER_ITEM_ID'] ;
 			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
 			$trackNumber = $order['TRACK_NUMBER'] ;	
-			$carrierCode = $order['CARRIER_CODE'] ;	
+			$carrierCode = $order['CARRIER_CODE'] ;
+			if(empty($carrierCode)){
+				$carrierCode = "USPS" ;
+			}
+			
+			if(empty($shippingMethod))	{
+				$shippingMethod = "Standard" ;
+			}
 ////////////////////////////////////////////////////////////////////////////
 $Feed .= <<<EOD
 	<Message>

@@ -20,6 +20,42 @@ function formatGridData(data){
 			
 		return ret ;
 	   }
+	   
+	var RePicked = {
+		clear:function(){
+			$("#orderId").val("").css("background","#EEE").css("color","#000") ;
+			detailRecords= null ;
+			$(".lly-grid-row ").remove();
+			$(".message-alert").hide(2000) ;
+		},
+		passed:function(orderId){
+			$.ajax({
+				type:"post",
+				url:"/saleProduct/index.php/order/repickedException/" ,
+				data:{type:'',memo:'',orderId:orderId,status:9},//9拣货 11异常 10完成 12拣货完成
+				cache:false,
+				dataType:"text",
+				success:function(result,status,xhr){
+					$("#orderId").css("background","green").css("color","#000") ;
+					$(".message-alert").show();
+					setTimeout(function(){
+						RePicked.clear() ;
+					},1000) ;
+				}
+			});
+		},
+		error:function(){
+			$("#orderId").css("background","red").css("color","#000") ;
+			$(".message-alert").hide() ;
+		},
+		running:function(){
+			$("#orderId").css("background","#EEE").css("color","#000") ;
+			$(".message-alert").hide() ;
+		},
+		rowPassed:function(target){
+			$(target).parents("tr:first").find("td").css("background","green") ;
+		}
+	} ;
 
 	$(function(){
 			var _index = 1 ;
@@ -43,45 +79,79 @@ function formatGridData(data){
 				}
 
 			}) ;
-
-			$(".btn-search").click(function(){
-				var val = $(this).prev().val() ;
-				var records = [] ;
-				if( detailRecords ){
-					$(detailRecords||[]).each(function(index,record){
-						if( val == record.ORDER_ID ){
-							records.push(record) ;
+			
+			function updatePickQuantity(productSKU,type){
+				var exists = false ;
+				var orderId = '' ;
+				$("[key='BARCODE']").each(function(){
+					var barcode = $.trim($(this).text()) ;
+					if( barcode == productSKU ){
+						exists = true ;
+						var currentNum = $(this).parents("tr:first").find("[key='QUANTITY']").find("span").text()||'0' ;
+						var pickedNum = $.trim($(this).parents("tr:first").find("[key='PICKED_QUANTITY']").find("span").text())||'0' ;
+						currentNum = parseInt($.trim(currentNum)) ;
+						pickedNum = parseInt($.trim(pickedNum)) ;
+						if( currentNum >= 1 ){//正常情况
+							$(this).parents("tr:first").find("[key='QUANTITY']").find("span").html(currentNum-1) ;
+							$(this).parents("tr:first").find("[key='PICKED_QUANTITY']").find("span").html(pickedNum+1) ;
+						}else{//告警
+							RePicked.error() ;
+							exists = false ;
+						}
+					}
+				}) ;
+				
+				if( !exists ){
+					RePicked.error() ;
+				}else{
+					orderId = $.trim($("[key='ORDER_ID']").text()) ;
+					//判断是否已经完成二次拣货了
+					var isComplete = true ;
+					$("[key='QUANTITY']").each(function(){
+						$q = $.trim($(this).text()) ;
+						$q = parseInt($q) ;
+						if($q >= 1){
+							isComplete = false ;
+						}else{
+							RePicked.rowPassed(this) ;
 						}
 					}) ;
+					if(isComplete){
+						RePicked.passed(orderId) ;
+					}else{
+						RePicked.running(orderId) ;
+					}
 				}
-				
-				if(!val){
-					records = detailRecords;
+			}
+
+			$(".btn-search").unbind("click").bind('click',function(){
+				var val = $(this).prev().val() ;
+				//判断是否订单号还是产品号码
+				if( detailRecords && detailRecords.length > 0 ){//当前为产品号
+					updatePickQuantity(val) ;
+				}else{//订单号
+					$(".grid-content").llygrid("reload",{orderId:val}) ;
 				}
-				_index = 1 ;
-				gridConfig.ds = {type:"data",records:records} ;
-				gridConfig.loadMsg = "获取明细中......";
-				gridConfig.loadAfter = null ;
-				$(".grid-content").empty().llygrid(gridConfig) ;
 			}) ;
-			
 			jQuery(document).bind('keydown', 'return',function (evt){
 				$(".btn-search").click() ;
-				 return false; 
+				return false; 
 			});
 			
 			 jQuery(document).bind('keydown', 'space',function (evt){
-			 $("#orderId").focus() ;
-			 return false; });
+			 	$("#orderId").focus() ;
+			 	return false; 
+			 });
 			
 			var detailRecords = null ;
-			
+			var isFirst = true ;
 			var gridConfig = {
 				columns:[
 					{align:"left",key:"INDEX",label:"序号", width:"30",format:function(val,record){
 						return _index++ ;
 					}},
 					{align:"left",key:"ORDER_ID",label:"订单编号", width:"90"},
+					{align:"left",key:"BARCODE",label:"条形码", width:"45"},
 					{align:"left",key:"REAL_SKU",label:"产品SKU", width:"60",format:function(val,record){
 						if(record.P_TYPE == 1){
 							return "<font color=red>"+val+"(未关联货品)</font>" ;
@@ -95,10 +165,8 @@ function formatGridData(data){
 						}
 						return "" ;
 					}},
-					{align:"right",key:"QUANTITY",label:"数量", width:"30"},
-					{align:"left",key:"STATUS",label:"完成状态", width:"50"},
-					{align:"left",key:"MENU",label:"备注信息", width:"90"},
-					{align:"left",key:"PICKER",label:"拣货人", width:"40"}
+					{align:"right",key:"QUANTITY",label:"待拣数量", width:"30"},
+					{align:"right",key:"PICKED_QUANTITY",label:"已拣数量", width:"30"}
 		         ],
 		        // 序号、产品SKU、名称、图片，位置、数量，完成状态，备注信息。拣货人
 
@@ -114,8 +182,20 @@ function formatGridData(data){
 				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:'9',pickId:pickedId},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
+				 	_index = 1 ;
+				 	if(isFirst){
+				 		isFirst = false ;
+				 		$("#orderId").css("background","#EEE").css("color","#000") ;
+				 		return ;
+				 	}
 				 	var options = $(".grid-content").data("options") ;
 				 	detailRecords = options.records;
+				 	if( detailRecords && detailRecords.length > 0){
+						var orderId = $("#orderId").val() ;
+						$("#orderId").css("background","#EEE").css("color","#000") ;
+					}else{
+						$("#orderId").css("background","red").css("color","#000") ;
+					}
 				 }
 			} ;
 			

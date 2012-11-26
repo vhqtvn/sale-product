@@ -71,7 +71,7 @@ function formatGridData(data){
 					openCenterWindow("/saleProduct/index.php/order/printPicked/"+currentPickId,950,650) ;
 					return ;
 				}else if( action == 5 ){//二次分拣
-					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/1",950,650) ;
+					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/1",950,550) ;
 					return ;
 				}else if( action == 6 ){//确认发货
 					if( window.confirm("确认发货并更新TN到Amazon？") ){
@@ -93,9 +93,9 @@ function formatGridData(data){
 			
 			function renderBtn(){
 				if(currentPickId){
-					$(".action-btn").removeAttr("disabled");
+					$(".action-can-disabled").removeAttr("disabled");
 				}else{
-					$(".action-btn").attr("disabled",true);
+					$(".action-can-disabled").attr("disabled",true);
 				}
 			}
 			
@@ -164,9 +164,10 @@ function formatGridData(data){
    	 $(function(){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
-					{label:'处理中',content:"tab-content"},
-					//{label:'拣货完成',content:"tab-content"},
-					{label:'发货完成',content:"tab-content"}
+					{label:'处理中',content:"tab-content"},//9
+					{label:'拣货完成',content:"tab-content"},//12
+					{label:'发货完成',content:"tab-content"},//10
+					{label:'异常订单',content:"tab-content"}//10
 				] ,
 				//height:'500px',
 				select:function(event,ui){
@@ -180,9 +181,15 @@ function renderAction(index){
 	$(".save-btn").show() ;
 	if(index == 0){//拣货中
 		$(".save-btn").hide() ;
-		$(".grid-content").llygrid("reload",{pickStatus:9,status:'',trackNumberNull:"",trackNumber:""},true) ;
+		$(".grid-content").llygrid("reload",{pickStatus:'9',status:''},true) ;
 	}else if(index == 1){//拣货完成
 		//$(".save-btn").hide() ;
-		$(".grid-content").llygrid("reload",{pickStatus:'',status:'',trackNumber:"1",trackNumberNull:""},true) ;
+		$(".grid-content").llygrid("reload",{pickStatus:'12',status:''},true) ;
+	}else if(index == 2){//发货完成
+		//$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{pickStatus:'10',status:''},true) ;
+	}else if(index == 3){//发货完成
+		//$(".save-btn").hide() ;
+		$(".grid-content").llygrid("reload",{pickStatus:'11',status:''},true) ;
 	}
 }

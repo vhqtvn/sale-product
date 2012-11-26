@@ -92,31 +92,35 @@ class OrderController extends AppController {
 		return $this->response;
     }
     
-    public function saveTrackNumberToAamazon($pickedId){
-    	$account = $this->Amazonaccount->getAccount($pickedId) ;
-		$account = $account[0]['sc_amazon_account'] ;
-		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-		
+    public function saveTrackNumberToAamazon($pickedId = null ){
     	$params = $this->request->data  ;
     	$user =  $this->getCookUser() ;
-    	$feed = $this->OrderService->getTrackNumberFeed($params,$user ,$pickedId,$MerchantIdentifier) ;
     	
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
-		
-		//$result = $amazon->updateOrderTrackNumber( $accountId,$feed,$user['LOGIN_ID'] ) ;
-		
-		//更新订单状态为已发货
-		//$this->Amazonaccount->saveAccountFeed($result) ;
-		$this->OrderService->updateTrackNumberStatus($params,$user ,$accountId) ;
-		
+    	//查找系统账户
+    	$accounts = $this->Amazonaccount->getAccounts() ;
+    	foreach( $accounts as $account ){
+    		$account = $account['sc_amazon_account'] ;
+    		$accountId = $account['ID'] ;
+			$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+			$feed = $this->OrderService->getTrackNumberFeed($params,$user ,$accountId,$MerchantIdentifier) ;
+			print_r( $feed ) ;
+			$amazon = new Amazon(
+					$account['AWS_ACCESS_KEY_ID'] , 
+					$account['AWS_SECRET_ACCESS_KEY'] ,
+				 	$account['APPLICATION_NAME'] ,
+				 	$account['APPLICATION_VERSION'] ,
+				 	$account['MERCHANT_ID'] ,
+				 	$account['MARKETPLACE_ID'] ,
+				 	$account['MERCHANT_IDENTIFIER'] 
+			) ;
+			
+			//$result = $amazon->updateOrderTrackNumber( $accountId,$feed,$user['LOGIN_ID'] ) ;
+			
+			//更新订单状态为已发货
+			//$this->Amazonaccount->saveAccountFeed($result) ;
+			$this->OrderService->updateTrackNumberStatus($params,$user ,$accountId) ;
+    	} ;
+    	
     	$this->response->type("json");
 		$this->response->body("execute complete");
 		return $this->response;
@@ -233,7 +237,7 @@ class OrderController extends AppController {
     public function outWarehouse(){
     }
     
-    public function rePrintPicked($pickId,$type){
+    public function rePrintPicked($pickId = null,$type = null){
     	$this->set("pickId",$pickId) ;
     	$this->set("type",$type) ;
     }

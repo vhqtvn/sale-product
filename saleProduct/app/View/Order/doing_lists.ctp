@@ -78,15 +78,17 @@
 					</tr>
 					<tr class="action-row">
 						<th></th>
-						<td colspan="4">
-							<button class="btn btn-primary action-btn print-btn pick-btn" action='4'>打印拣货单</button>
-							<button class="btn btn-primary action-btn print-btn pick-btn" action='5'>二次分拣</button>
+						<td colspan='2'>
+							<button class="btn btn-primary action-btn print-btn pick-btn action-can-disabled" action='4'>打印拣货单</button>
+							
 							<!--
-							<button class="btn btn-danger action-btn print-btn pick-btn" action='6'>确认发货（同步TN到AMAZON）</button>
+							
 							-->
 						</td>
-						<td>
+						<td colspan="3" style="text-align:right;">
+							<button class="btn btn-primary action-btn print-btn pick-btn" action='5'>二次分拣</button>
 							<button class="btn btn-success btn-outwarehouse" action='6'>订单出仓</button>
+							<button class="btn btn-danger action-btn print-btn pick-btn" action='6'>同步TN到AMAZON</button>
 						</td>
 					</tr>							
 				</table>	

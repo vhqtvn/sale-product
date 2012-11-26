@@ -18,9 +18,9 @@
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('jquery.hotkeys');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery-ui');
-		echo $this->Html->script('jquery.hotkeys');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('modules/order/re_print_picked');
@@ -38,6 +38,12 @@
 			font-weight:bold;
 			font-size:12px;
 			position:relative;
+		}
+		
+		#orderId{
+			font-weight:bold;
+			color:#FFF;
+			font-size:15px;
 		}
 		
 		.print-title table{
@@ -84,19 +90,41 @@
 		.exception-form div{
 			margin:3px;
 		}
+		
+		.cell-div{
+		    overflow:normal;
+		    white-space:normal;
+			text-overflow:normal;
+			word-break : normal; 
+		    -o-text-overflow: none;
+		}
+		
+		.message-alert{
+			display:none;
+			width:100%;
+			height:30px;
+			font-size:25px;
+			color:#000;
+			font-weight:bold;
+			border:1px solid #CCC;
+			margin:0px auto;
+			padding-top:20px;
+			background:green;
+			text-align:center;
+			position:absolute;
+			bottom:0px;right:0px;left:0px;
+		}
+		
+		div.lly-grid .cell-div span{
+			font-size:16px;
+			font-weight:bold;
+			color:#000;
+		}
 	</style>
 	
 	<script>
 		var type = '<?php echo $type;?>'
 		$(function(){
-			var text = "" ;
-			if(type == 1){
-				text = "订单二次分拣" ;
-			}else if(type == 2){
-				text = "订单二次分拣" ;
-			}
-			$(".header").html( text+"("+ window.opener.currentPickName+")");
-			
 			$(".btn-danger").toggle(function(){
 				$(".exception-form").show() ;
 			},function(){
@@ -117,7 +145,7 @@
 	?>
 	<div class="print-title">
 		<div class="header" >
-			拣货单（XXXXXXXX）
+			订单二次分拣
 		</div>
 		
 		<table>
@@ -132,8 +160,8 @@
 	</div>
 	
 	<div class="search">
-		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID"/>
-		<button class="btn btn-search btn-primary">search</button>
+		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID OR 产品条形码"/>
+		<button class="btn btn-search btn-primary" style="display:none;">search</button>
 		
 		<div class="exception">
 			<button class="btn btn-danger">异常处理</button>
@@ -157,5 +185,7 @@
 	
 	<div class="grid-content" style="">
 	</div>
+	
+	<div class="message-alert">PASS</div>
 </body>
 </html>
