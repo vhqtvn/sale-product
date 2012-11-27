@@ -130,6 +130,12 @@ function formatGridData(data){
 				if( detailRecords && detailRecords.length > 0 ){//当前为产品号
 					updatePickQuantity(val) ;
 				}else{//订单号
+					//格式化订单号10609395653711467
+					val = $.trim(val) ;
+					var f1 = val.substring(0,3) ;
+					var f2 = val.substring(3,10) ;
+					var f3 = val.substring(10) ;
+					val = f1+'-'+f2+'-'+f3;
 					$(".grid-content").llygrid("reload",{orderId:val}) ;
 				}
 			}) ;
