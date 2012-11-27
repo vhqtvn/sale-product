@@ -169,9 +169,11 @@
 				<div>
 					<label>分类：</label>
 					<select id="type">
-						<option value="value1">option1</option>
-						<option value="value2">option2</option>
-						<option value="value3">option3</option>
+						<option value="">-</option>
+						<option value="exception_value">质量异常</option>
+						<option value="exception_package">包装异常</option>
+						<option value="exception_ship">物流错误</option>
+						<option value="exception_weight">重量超标</option>
 					</select>
 				</div>
 				<div>
