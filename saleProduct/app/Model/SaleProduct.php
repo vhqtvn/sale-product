@@ -26,6 +26,29 @@ class SaleProduct extends AppModel {
 		return $this->query($sql) ;
 	}
 	
+	function saveSkuToRealProduct($params,$user){
+		$accountId = $params['accountId'] ;
+		$skus = $params['skus'] ;
+		$realSku = $params['realSku'] ;
+		
+		$skus = explode(",",$skus) ;
+		foreach( $skus as $sku ){
+			$sql = " INSERT INTO sc_real_product_rel 
+				(REAL_SKU, 
+				SKU, 
+				ACCOUNT_ID
+				)
+				VALUES
+				('$realSku', 
+				'$sku', 
+				'$accountId'
+				)" ;
+			try{
+				$this->query($sql) ;
+			}catch(Exception $e){}	
+		}
+	}
+	
 	function saveSelectedProducts($params,$user){
 		$items = $params['items'] ;
 		$unitems = $params['unitems'] ;

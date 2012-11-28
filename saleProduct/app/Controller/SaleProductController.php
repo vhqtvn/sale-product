@@ -19,8 +19,9 @@ class SaleProductController extends AppController {
     public function lists(){
     }
     
-    public function bindProduct( $sku){
+    public function bindProduct( $sku,$type=null){
     	$this->set('sku',$sku);
+		$this->set('type',$type);
     }
     
     
@@ -82,8 +83,9 @@ class SaleProductController extends AppController {
     	$this->set('sku',$sku);
     }
 
-    public function bindProductDetails($accountId , $sku){
+    public function bindProductDetails($accountId , $sku,$type=null){
     	$this->set('sku',$sku);
+		$this->set('type',$type);
     	$this->set("accountId",$accountId) ;
     	
     	$account = $this->Amazonaccount->getAccount($accountId);  
@@ -96,6 +98,30 @@ class SaleProductController extends AppController {
     	
     	$categorys = $this->Amazonaccount->getAmazonProductCategory($accountId);  
     	$this->set("categorys",$categorys) ;
+    }
+    
+    public function bindSkuDetails($accountId , $sku,$type=null){
+    	$this->set('sku',$sku);
+		$this->set('type',$type);
+    	$this->set("accountId",$accountId) ;
+    	
+    	$account = $this->Amazonaccount->getAccount($accountId);  
+	 	$account = $account[0]['sc_amazon_account'] ;
+	 	
+	 	$this->set('accountId', $account["ID"]);
+		
+		$accounts = $this->Amazonaccount->getAccounts();  
+    	$this->set("accounts",$accounts) ;
+    }
+    
+    function saveSkuToRealProduct(){
+    	$user =  $this->getCookUser() ;
+    	$this->SaleProduct->saveSkuToRealProduct($this->request->data , $user) ;
+
+		$this->response->type("json") ;
+		$this->response->body( "Save Success" )   ;
+
+		return $this->response ;
     }
     
      public function saveSelectedProducts(){

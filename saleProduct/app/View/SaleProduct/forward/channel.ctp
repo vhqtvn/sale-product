@@ -63,10 +63,12 @@
 								}
 						}}},*/
 						{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"8%"},
-						{align:"center",key:"SKU",label:"SKU",width:"8%"},
+						{align:"center",key:"SKU",label:"SKU",width:"8%",format:function(val,record){
+							return val||record.REL_SKU ;
+						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
-			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+val+"</a>" ;
+			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 			           	}},
 			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
 			           		if(val){
@@ -77,7 +79,7 @@
 			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
-			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
 			           	}},
 			           	
 			           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
@@ -135,8 +137,12 @@
 				return querys ;
 			}
 			
-			$(".add-btn").click(function(){
-				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $sku;?>",1000,640) ;
+			$(".add-channel-product").click(function(){
+				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $sku;?>/1",1000,640) ;
+			}) ;
+			
+			$(".add-sku").click(function(){
+				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $sku;?>/2",1000,640) ;
 			}) ;
    	 });
    </script>
@@ -183,7 +189,8 @@
 			<div class="query-bar">
 			   <ul>
 			   	 <li>
-				 	<button class="btn btn-primary btn-mini add-btn">添加渠道产品</button>
+				 	<button class="btn btn-primary btn-mini add-btn add-channel-product">选择渠道产品</button>
+				 	<button class="btn btn-primary btn-mini add-btn add-sku">添加产品SKU</button>
 				 </li>
 			   </ul>
 			

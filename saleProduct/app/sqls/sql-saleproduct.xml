@@ -69,6 +69,16 @@ UPDATE sc_real_product
 		)
    </entry>
    
+   <entry key="sql_saleproduct_selelctsku_list">
+   	select * from sc_real_product_rel where 1=1
+   	and account_id = '{@#accountId#}'
+   	and real_sku = '{@#realSku#}'
+   	and sku not in (
+   		select sku from sc_amazon_account_product
+   		where sc_amazon_account_product.account_id = '{@#accountId#}'
+   	)
+   </entry>
+   
     <entry key="sql_saleproduct_selelctproduct_list">
     <![CDATA[
     select * from (	
@@ -101,30 +111,31 @@ UPDATE sc_real_product
     
     <entry key="sql_saleproduct_channel_list">
     <![CDATA[
-    select * from (	
+    SELECT * FROM (	
 		SELECT  sc_amazon_account_product.*,
-		(select name from sc_amazon_account where id = sc_amazon_account_product.account_id ) as CHANNEL_NAME
-		 FROM sc_amazon_account_product ,sc_real_product_rel
-					where status = 'Y'
-					and sc_real_product_rel.sku = sc_amazon_account_product.sku
-					and sc_real_product_rel.real_sku = '{@#realSku#}'
-					{@ and sc_amazon_account_product.title like '%#title#%' }
-					{@ and sc_amazon_account_product.asin = '#asin#' }
-					{@ and sc_amazon_account_product.sku = '#sku#' }
-					{@ and sc_amazon_account_product.account_id = '#accountId#' }
+		sc_real_product_rel.sku AS REL_SKU,
+		(SELECT NAME FROM sc_amazon_account WHERE id = sc_real_product_rel.account_id ) AS CHANNEL_NAME
+		 FROM sc_real_product_rel
+		 LEFT JOIN sc_amazon_account_product 
+		 ON sc_real_product_rel.sku = sc_amazon_account_product.sku
+					WHERE  sc_real_product_rel.real_sku = '{@#realSku#}'
+					{@ AND sc_amazon_account_product.title LIKE '%#title#%' }
+					{@ AND sc_amazon_account_product.asin = '#asin#' }
+					{@ AND sc_amazon_account_product.sku = '#sku#' }
+					{@ AND sc_amazon_account_product.account_id = '#accountId#' }
 					
-					{@ and sc_amazon_account_product.sku not in (
-								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '#accountId#')
-						and 1= #uncategory#
+					{@ AND sc_amazon_account_product.sku NOT IN (
+								SELECT sku FROM sc_amazon_product_category_rel WHERE sku IS NOT NULL AND account_id = '#accountId#')
+						AND 1= #uncategory#
 					}
-					{@ and sc_amazon_account_product.sku in (
-								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
-								and sku is not null and account_id = '#accountId#'
+					{@ AND sc_amazon_account_product.sku IN (
+								SELECT sku FROM sc_amazon_product_category_rel WHERE category_id = '#categoryId#'
+								AND sku IS NOT NULL AND account_id = '#accountId#'
 					)}
-					and sc_amazon_account_product.sku not in (
-						select sku from sc_real_product_rel where real_sku != '{@#realSku#}'
-					)
-		) t 
+					and sc_real_product_rel.sku is not null
+					and sc_real_product_rel.sku != ''
+					
+		) t  order by t.CHANNEL_NAME , t.ASIN
 	]]>	      
     </entry>
     

@@ -30,7 +30,15 @@
    		
    		foreach($accounts as $account){
    			$account = $account['sc_amazon_account'] ;
-			echo "tabs.push( {label:'".$account['NAME']."',url:'/saleProduct/index.php/saleProduct/bindProductDetails/".$account['ID']."/$sku',iframe:true}) ;" ;
+   			
+   			$page = "bindProductDetails" ;
+   			if( $type == 1 ){
+   				$page = "bindProductDetails" ;
+   			}else if($type == 2){
+   				$page = "bindSkuDetails" ;
+   			}
+   			
+			echo "tabs.push( {label:'".$account['NAME']."',url:'/saleProduct/index.php/saleProduct/$page/".$account['ID']."/$sku/$type',iframe:true}) ;" ;
 		} ;
    ?>
   	$(function(){
