@@ -29,8 +29,16 @@ function formatGridData(data){
 				$("#orderId").css("background","#EEE").css("color","#000") ;
 				var val = $.trim($(this).prev().val()) ;//orderId
 				if(val){
+					if(val.indexOf('-') < 0){
+						var f1 = val.substring(0,3) ;
+						var f2 = val.substring(3,10) ;
+						var f3 = val.substring(10) ;
+						val = f1+'-'+f2+'-'+f3;
+					}
+					
 					$(".grid-content").llygrid("reload",{orderId:val}) ;
 				};
+				
 			}) ;
 			
 			jQuery(document).bind('keydown', 'return',function (evt){
@@ -102,6 +110,7 @@ function formatGridData(data){
 					}else{
 						$("#orderId").css("background","red").css("color","#000") ;
 					}
+					$("#orderId").val('') ;
 				 }
 			} ;
 			
