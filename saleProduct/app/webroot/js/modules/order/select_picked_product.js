@@ -23,7 +23,7 @@ function formatGridData(data){
 
 	$(function(){
 		
-			var sqlId = "sql_order_list_picked" ;
+			var sqlId = "sql_order_list_picked_forselect" ;
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ORDER_ID",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
@@ -37,6 +37,10 @@ function formatGridData(data){
 						if(pickStatus == 9){
 							return "拣货中" ;
 						}else if(pickStatus == 10){
+							return "完成出仓" ;
+						}else if(pickStatus == 11){
+							return "拣货单异常" ;
+						}else if(pickStatus == 12){
 							return "完成拣货" ;
 						}
 						

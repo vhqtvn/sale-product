@@ -244,6 +244,48 @@
 		 ]]>
     </entry>
     
+    <entry key="sql_order_list_picked_forselect">
+    <![CDATA[
+		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+			sc_amazon_order_status.AUDIT_STATUS, 
+			sc_amazon_order_status.AUDIT_MEMO, 
+			sc_amazon_order_status.REAUDIT_STATUS, 
+			sc_amazon_order_status.REAUDIT_MEMO, 
+			sc_amazon_order_status.PICK_STATUS,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL,
+			sc_real_product.REAL_SKU,
+		    sc_real_product.IMAGE_URL,
+		    sc_real_product.POSITION,
+		    sc_real_product.BARCODE,
+		    sc_real_product.NAME
+		  from  sc_amazon_order_status ,sc_amazon_order
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		  LEFT JOIN sc_real_product_rel
+		  ON sc_amazon_order.sku = sc_real_product_rel.sku
+		  LEFT JOIN sc_real_product
+		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
+		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		   {@ and sc_amazon_order_status.pick_status not in ('9','10','11','12') and '#status#' = '#status#'}
+		   {@ and sc_amazon_order_status.audit_status = '#status#'}
+		  {@ and sc_amazon_order.order_id = '#orderId#'}
+		  {@ and sc_amazon_order.order_id = '#orderId#'}
+		  {@ and sc_amazon_order.buyer_name = '#userName#'}
+		  {@ and sc_amazon_order.buyer_email = '#email#'}
+		  {@ and sc_amazon_order.sku = '#sku#'}
+		  {@ and sc_amazon_order_status.pick_status in ('9','10','11','12') and   '#pickStatus#'  = '#pickStatus#' }
+		  {@ and exists ( 
+		  		select 1 from sc_amazon_picked_order where
+		  		 picked_id = '#pickId#'
+		  		 and sc_amazon_picked_order.order_id = sc_amazon_order.order_id
+		  		 and sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
+		  )}  order by sc_amazon_order_status.PICK_STATUS desc
+		  
+		 ]]>
+    </entry>
+    
     
     <entry key="sql_order_list_repicked_print">
     <![CDATA[

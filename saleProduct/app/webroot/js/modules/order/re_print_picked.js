@@ -32,7 +32,7 @@ function formatGridData(data){
 			$.ajax({
 				type:"post",
 				url:"/saleProduct/index.php/order/repickedException/" ,
-				data:{type:'',memo:'',orderId:orderId,status:9},//9拣货 11异常 10完成 12拣货完成
+				data:{type:'',memo:'',orderId:orderId,status:12},//9拣货 11异常 10完成 12拣货完成
 				cache:false,
 				dataType:"text",
 				success:function(result,status,xhr){
@@ -43,6 +43,7 @@ function formatGridData(data){
 					},1000) ;
 				}
 			});
+			$(".order-id").html("") ;
 		},
 		error:function(){
 			$("#orderId").css("background","red").css("color","#000") ;
@@ -104,7 +105,7 @@ function formatGridData(data){
 				if( !exists ){
 					RePicked.error() ;
 				}else{
-					orderId = $.trim($("[key='ORDER_ID']").text()) ;
+					orderId = $.trim($(".lly-grid-body-column[key='ORDER_ID']:first").text()) ;
 					//判断是否已经完成二次拣货了
 					var isComplete = true ;
 					$("[key='QUANTITY']").each(function(){
@@ -129,15 +130,24 @@ function formatGridData(data){
 				//判断是否订单号还是产品号码
 				if( detailRecords && detailRecords.length > 0 ){//当前为产品号
 					updatePickQuantity(val) ;
+					
+					$(this).prev().val("");
 				}else{//订单号
 					//格式化订单号10609395653711467
 					val = $.trim(val) ;
-					var f1 = val.substring(0,3) ;
-					var f2 = val.substring(3,10) ;
-					var f3 = val.substring(10) ;
-					val = f1+'-'+f2+'-'+f3;
+					if(val.indexOf('-') < 0){
+						var f1 = val.substring(0,3) ;
+						var f2 = val.substring(3,10) ;
+						var f3 = val.substring(10) ;
+						val = f1+'-'+f2+'-'+f3;
+					}
+					
 					$(".grid-content").llygrid("reload",{orderId:val}) ;
+					
+					$(".order-id").html("订单编号："+val) ;
 				}
+				
+				
 			}) ;
 			jQuery(document).bind('keydown', 'return',function (evt){
 				$(".btn-search").click() ;
@@ -192,6 +202,7 @@ function formatGridData(data){
 				 	if(isFirst){
 				 		isFirst = false ;
 				 		$("#orderId").css("background","#EEE").css("color","#000") ;
+				 		$("#orderId").val("") ;
 				 		return ;
 				 	}
 				 	var options = $(".grid-content").data("options") ;
@@ -202,6 +213,8 @@ function formatGridData(data){
 					}else{
 						$("#orderId").css("background","red").css("color","#000") ;
 					}
+					
+					$("#orderId").val("") ;
 				 }
 			} ;
 			
