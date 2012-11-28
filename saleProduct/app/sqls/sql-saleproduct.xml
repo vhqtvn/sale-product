@@ -70,13 +70,20 @@ UPDATE sc_real_product
    </entry>
    
    <entry key="sql_saleproduct_selelctsku_list">
-   	select * from sc_real_product_rel where 1=1
-   	and account_id = '{@#accountId#}'
-   	and real_sku = '{@#realSku#}'
-   	and sku not in (
-   		select sku from sc_amazon_account_product
-   		where sc_amazon_account_product.account_id = '{@#accountId#}'
-   	)
+   	 SELECT * FROM (	
+		SELECT  sc_amazon_account_product.*,
+		sc_real_product_rel.sku AS REL_SKU,
+		sc_real_product_rel.real_sku AS REL_REAL_SKU,
+		sc_real_product_rel.account_id as REL_ACCOUNT_ID
+		 FROM sc_real_product_rel
+		 LEFT JOIN sc_amazon_account_product 
+		 ON sc_real_product_rel.sku = sc_amazon_account_product.sku
+					WHERE  sc_real_product_rel.real_sku = '{@#realSku#}'
+					{@ AND sc_real_product_rel.account_id = '#accountId#' }
+					and sc_real_product_rel.sku is not null
+					and sc_real_product_rel.sku != ''
+					
+		) t  order by t.ASIN
    </entry>
    
     <entry key="sql_saleproduct_selelctproduct_list">
@@ -122,7 +129,7 @@ UPDATE sc_real_product
 					{@ AND sc_amazon_account_product.title LIKE '%#title#%' }
 					{@ AND sc_amazon_account_product.asin = '#asin#' }
 					{@ AND sc_amazon_account_product.sku = '#sku#' }
-					{@ AND sc_amazon_account_product.account_id = '#accountId#' }
+					{@ AND sc_real_product_rel.account_id = '#accountId#' }
 					
 					{@ AND sc_amazon_account_product.sku NOT IN (
 								SELECT sku FROM sc_amazon_product_category_rel WHERE sku IS NOT NULL AND account_id = '#accountId#')

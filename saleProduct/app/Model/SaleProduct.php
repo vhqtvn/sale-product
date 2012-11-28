@@ -89,4 +89,12 @@ class SaleProduct extends AppModel {
 		   }catch(Exception $e){}
 		}
 	}
+	
+	public function deleteRelProduct($params ,$user){
+		$accountId = $params['accountId'] ;
+		$sku = $params['sku'] ;
+		$realSku = $params['realSku'] ;
+		$sql = "delete from sc_real_product_rel where account_id='$accountId' and sku='$sku' and real_sku='$realSku'" ;
+		$this->query($sql) ;
+	}
 }

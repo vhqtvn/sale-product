@@ -51,10 +51,10 @@ class SaleProductController extends AppController {
 			if( !file_exists($path) ) {
 				$this->creatdir($path) ;
 			}
-			$fileUrl = $path.$params['sku'] ;
+			$fileUrl = $path.trim( $params['sku'] );
 			move_uploaded_file($myfile,$fileUrl) ;
 			
-			$params['imageUrl'] = "/images/real_product/".$params['sku'];
+			$params['imageUrl'] = "/images/real_product/".trim( $params['sku']);
 		}
 		
     	$this->SaleProduct->saveProduct($params , $user) ;
@@ -127,6 +127,16 @@ class SaleProductController extends AppController {
      public function saveSelectedProducts(){
     	$user =  $this->getCookUser() ;
     	$this->SaleProduct->saveSelectedProducts($this->request->data , $user) ;
+
+		$this->response->type("json") ;
+		$this->response->body( "Save Success" )   ;
+
+		return $this->response ;
+    }
+    
+    public function deleteRelProduct(){
+    	$user =  $this->getCookUser() ;
+    	$this->SaleProduct->deleteRelProduct($this->request->data , $user) ;
 
 		$this->response->type("json") ;
 		$this->response->body( "Save Success" )   ;

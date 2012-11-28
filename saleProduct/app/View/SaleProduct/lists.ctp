@@ -81,7 +81,13 @@
 		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"20%"},
-		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"20%"},
+		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"20%",format:function(val,record){
+		           		if(val){
+		           			val = val.replace(/%/g,'%25') ;
+		           			return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'>" ;
+		           		}
+		           		return "" ;
+		           	}},
 		           	{align:"center",key:"POSITION",label:"仓库位置",width:"20%"},
 		           	{align:"center",key:"BARCODE",label:"条形码",width:"20%"}
 		         ],

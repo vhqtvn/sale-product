@@ -65,9 +65,49 @@
 			}
 		}) ;
 		
+		$(".del-action").live("click",function(){
+			var record = $(this).parents("tr:first").data("record") ;
+			if(window.confirm("确认删除引用吗？")){
+				$.ajax({
+						type:"post",
+						url:"/saleProduct/index.php/saleProduct/deleteRelProduct/" ,
+						data:{accountId:record.REL_ACCOUNT_ID,sku:record.REL_SKU,realSku:record.REL_REAL_SKU},
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							$(".grid-content").llygrid("reload") ;
+						}
+				});
+			}
+			return false ;
+		}) ;
+		
 		var gridConfig = {
 					columns:[
-						{align:"center",key:"SKU",label:"SKU",width:"8%"}
+						{align:"center",key:"ID",label:"操作",forzen:false,width:"30",format:function(val,record){
+							var html = [] ;
+							html.push('<a href="#" title="删除" class="del-action"  val="'+val+'"><?php echo $this->Html->image('delete.gif') ?></a>&nbsp;') ;
+							return html.join("") ;
+							
+						}},
+						{align:"center",key:"SKU",label:"SKU",width:"8%",format:function(val,record){
+							return val||record.REL_SKU ;
+						}},
+			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
+			           		var memo = record.MEMO||"" ;
+			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
+			           	}},
+			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
+			           		if(val){
+			           			val = val.replace(/%/g,'%25') ;
+			           		}else{
+			           			return "" ;
+			           		}
+			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+			           	}},
+			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
+			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
+			           	}}
 			         ],
 			         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 					 limit:15,
@@ -79,9 +119,6 @@
 					 querys:{accountId:accountId,realSku:'<?php echo $sku;?>',sqlId:"sql_saleproduct_selelctsku_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
-						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
-						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
-						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
 					 }
 				} ;
 	       

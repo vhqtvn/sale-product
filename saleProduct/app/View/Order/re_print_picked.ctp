@@ -120,6 +120,17 @@
 			font-weight:bold;
 			color:#000;
 		}
+		
+		.order-id {
+			width:200px;
+			position:absolute;
+			left:50px;
+			top:0px;
+			height:18px;
+			padding:3px;
+			font-weight:bold;
+			color:#000;
+		}
 	</style>
 	
 	<script>
@@ -162,7 +173,7 @@
 	<div class="search">
 		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID OR 产品条形码"/>
 		<button class="btn btn-search btn-primary" style="display:none;">search</button>
-		
+		<div class="order-id alert alert-info"></div>
 		<div class="exception">
 			<button class="btn btn-danger">异常处理</button>
 			<div class="exception-form">
