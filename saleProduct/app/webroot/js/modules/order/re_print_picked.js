@@ -48,6 +48,7 @@ function formatGridData(data){
 		error:function(){
 			$("#orderId").css("background","red").css("color","#000") ;
 			$(".message-alert").hide() ;
+			alert("输入错误！") ;
 		},
 		running:function(){
 			$("#orderId").css("background","#EEE").css("color","#000") ;
@@ -84,7 +85,7 @@ function formatGridData(data){
 			function updatePickQuantity(productSKU,type){
 				var exists = false ;
 				var orderId = '' ;
-				$("[key='BARCODE']").each(function(){
+				$("[key='REAL_SKU']").each(function(){
 					var barcode = $.trim($(this).text()) ;
 					if( barcode == productSKU ){
 						exists = true ;
@@ -167,10 +168,9 @@ function formatGridData(data){
 						return _index++ ;
 					}},
 					{align:"left",key:"ORDER_ID",label:"订单编号", width:"90"},
-					{align:"left",key:"BARCODE",label:"条形码", width:"45"},
 					{align:"left",key:"REAL_SKU",label:"产品SKU", width:"60",format:function(val,record){
 						if(record.P_TYPE == 1){
-							return "<font color=red>"+val+"(未关联货品)</font>" ;
+							return "<font color=red>"+val+"</font>" ;
 						}else
 							return val ;
 					}},
@@ -211,7 +211,7 @@ function formatGridData(data){
 						var orderId = $("#orderId").val() ;
 						$("#orderId").css("background","#EEE").css("color","#000") ;
 					}else{
-						$("#orderId").css("background","red").css("color","#000") ;
+						RePicked.error() ;
 					}
 					
 					$("#orderId").val("") ;

@@ -50,6 +50,7 @@ function formatGridData(data){
 							}else{
 								$("#orderId").css("background","red").css("color","#000") ;
 								$("#orderId").val("") ;
+								alert("输入错误") ;
 							}
 						},
 						error:function(){
