@@ -151,12 +151,21 @@ class OrderService extends AppModel {
 		$status  = $params['status'] ;
 		$memo = "[$type]$memo" ;
 		
-		$sql = "" ;
+		$clause = "" ;
+		if( $status == '10'){//出仓
+			$sql = "select * from sc_amazon_order_status where order_id = '$orderId' and pick_status='12' " ;
+			$result = $this->query($sql) ;
+			if( count($result) <= 0 ){
+				return false ;
+			}
+		}
+		
 		$sql = "update sc_amazon_order_status set pick_status = '$status' where order_id = '$orderId'" ;
-		$this->query($sql) ;
+		$result = $this->query($sql) ;
 		$sql = $this->getDbSql("sql_order_track_insert") ;
 		$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'STATUS'=>$this->pickStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 		$this->query($sql) ;
+		return true ;
 	}
 	
 	function savePickedOrder($params , $user,$pickedId = null){
