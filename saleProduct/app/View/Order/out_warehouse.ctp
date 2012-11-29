@@ -8,7 +8,7 @@
 
   
     <script type="text/javascript">
-    	var pickedId = "<?php echo $pickId;?>"
+    	var pickedId = ""
      	var accountId = "" ;
      	var status = "5" ;
 	</script>
