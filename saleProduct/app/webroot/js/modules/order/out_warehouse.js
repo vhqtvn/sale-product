@@ -36,10 +36,34 @@ function formatGridData(data){
 						val = f1+'-'+f2+'-'+f3;
 					}
 					
-					$(".grid-content").llygrid("reload",{orderId:val}) ;
+					//$(".grid-content").llygrid("reload",{orderId:val}) ;
+					$.ajax({
+						type:"post",
+						url:"/saleProduct/index.php/order/repickedException/" ,
+						data:{type:'',memo:'',orderId:val,status:10},
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							if(result >= 1){
+								$("#orderId").css("background","green").css("color","#000") ;
+								$("#orderId").val("") ;
+							}else{
+								$("#orderId").css("background","red").css("color","#000") ;
+								$("#orderId").val("") ;
+							}
+						},
+						error:function(){
+							$("#orderId").css("background","red").css("color","#000") ;
+							$("#orderId").val("") ;
+						}
+					});
+					
+					$("#orderId").val("") ;
 				};
 				
 			}) ;
+			
+			$("#orderId").css("background","#EEE").css("color","#000") ;
 			
 			jQuery(document).bind('keydown', 'return',function (evt){
 				$("#orderId").css("background","#EEE").css("color","#000") ;
@@ -114,7 +138,7 @@ function formatGridData(data){
 				 }
 			} ;
 			
-			$(".grid-content").llygrid(gridConfig) ;
+			//$(".grid-content").llygrid(gridConfig) ;
    	 });
    	 
    	 var currentQueryKey = "" ;
