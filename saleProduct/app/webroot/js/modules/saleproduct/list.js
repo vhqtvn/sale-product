@@ -1,4 +1,3 @@
-
 	 //result.records , result.totalRecord
 	 function formatGridData(data){
 		var records = data.record ;
@@ -69,10 +68,10 @@
 		           	}},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
-		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"8%",format:function(val,record){
+		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'>" ;
+		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
