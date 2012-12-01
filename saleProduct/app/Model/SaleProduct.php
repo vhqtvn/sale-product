@@ -60,6 +60,7 @@ class SaleProduct extends AppModel {
 		
 		$skus = explode(",",$skus) ;
 		foreach( $skus as $sku ){
+			$sku = trim($sku) ;
 			$sql = " INSERT INTO sc_real_product_rel 
 				(REAL_ID,REAL_SKU, 
 				SKU, 
