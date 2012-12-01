@@ -413,7 +413,7 @@
 		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
 		   AND sc_amazon_order_status.pick_status = '9'
-		   AND sc_amazon_order.order_id = '{@#orderId#}'
+		   AND sc_amazon_order.order_number = '{@#orderNumber#}'
             ) t order by t.real_sku
 		 ]]>
     </entry>

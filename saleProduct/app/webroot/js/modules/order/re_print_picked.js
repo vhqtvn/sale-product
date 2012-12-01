@@ -136,16 +136,10 @@ function formatGridData(data){
 				}else{//订单号
 					//格式化订单号10609395653711467
 					val = $.trim(val) ;
-					if(val.indexOf('-') < 0){
-						var f1 = val.substring(0,3) ;
-						var f2 = val.substring(3,10) ;
-						var f3 = val.substring(10) ;
-						val = f1+'-'+f2+'-'+f3;
-					}
 					
-					$(".grid-content").llygrid("reload",{orderId:val}) ;
+					$(".grid-content").llygrid("reload",{orderNumber:val}) ;
 					
-					$(".order-id").html("订单编号："+val) ;
+					$(".order-id").html("系统货号："+val) ;
 				}
 				
 				

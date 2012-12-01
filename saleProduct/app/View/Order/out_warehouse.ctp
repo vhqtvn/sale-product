@@ -131,7 +131,7 @@
 	</div>
 	
 	<div class="search">
-		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID"/>
+		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="系统货号"/>
 		<button class="btn btn-search btn-primary" style="display:none">search</button>
 	</div>
 	

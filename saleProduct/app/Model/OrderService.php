@@ -149,13 +149,28 @@ class OrderService extends AppModel {
 	
 	function repickedException($params , $user,$pickedId = null){
 		//$this->setDataSource('gbk');
+		$orderId = null ;
+		$orderNumber = null ;
+		if(isset($params['orderId'])){
+			$orderId = $params['orderId'] ;
+		}
 		
-		$orderId = $params['orderId'] ;
+		if(isset($params['orderNumber'])){
+			$orderNumber =  $params['orderNumber'] ;
+		}
+		
 		$loginId = $user['LOGIN_ID'] ;
 		$memo    = $params['memo'] ;
 		$type    = $params['type'] ;
 		$status  = $params['status'] ;
 		$memo = "[$type]$memo" ;
+		
+		if( $orderId  == null ){
+			$sql = "select * from sc_amazon_order where order_number = '$orderNumber' limit 0,1 " ;
+			$result = $this->query($sql) ;
+			if( empty($result) ) return false ;
+			$orderId = $result[0]['sc_amazon_order']['ORDER_ID'] ;
+		}
 		
 		$clause = "" ;
 		if( $status == '10'){//出仓
