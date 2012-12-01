@@ -24,6 +24,12 @@ class SaleProductController extends AppController {
 		$this->set('type',$type);
     }
     
+    public function giveup($sku,$type){
+    	$this->SaleProduct->giveup($sku,$type) ;
+    	$this->response->type("json") ;
+		$this->response->body( "Save Success" )   ;
+		return $this->response ;
+    }
     
     public function editProduct($sku = null){
     	$item = null ;
@@ -81,6 +87,13 @@ class SaleProductController extends AppController {
     
     public function details($sku){
     	$this->set('sku',$sku);
+    	
+    	$item = null ;
+    	if(!empty($sku)){
+    		$item =$this->SaleProduct->getSaleProduct($sku) ;
+    		$item = $item[0]['sc_real_product'] ;
+    	}
+    	$this->set('item',$item);
     }
 
     public function bindProductDetails($accountId , $sku,$type=null){

@@ -5,16 +5,15 @@
 
    
     <entry key="sql_saleproduct_list">
- 			SELECT * from sc_real_product
+ 			SELECT * from sc_real_product where 1=1
+ 			{@ and type='#type#'}
+ 			{@ and status='#status#'}
    </entry>
    
    <entry key="sql_saleproduct_insert">
  		INSERT INTO sc_real_product 
 		(REAL_SKU, 
-		IMAGE_URL, 
-		QUANTITY, 
-		POSITION, 
-		BARCODE, 
+		IMAGE_URL,
 		CREATOR, 
 		CREATE_TIME, 
 		NAME, 
@@ -25,14 +24,13 @@
 		WEIGHT_UNIT,
 		LENGTH,
 		WIDTH,
-		HEIGHT
+		HEIGHT,
+		TYPE,
+		STATUS
 		)
 		VALUES
 		('{@#sku#}', 
 		'{@#imageUrl#}', 
-		'{@#quantity#}', 
-		'{@#position#}', 
-		'{@#barcode#}', 
 		'{@#loginId#}', 
 		NOW(), 
 		'{@#name#}', 
@@ -43,18 +41,17 @@
 		'{@#weightUnit#}',
 		'{@length#}',
 		'{@#width#}',
-		'{@#height#}'
+		'{@#height#}',
+		'{@#type#}',
+		1
 		)
    </entry>
    
    <entry key="sql_saleproduct_update">
  		
 UPDATE sc_real_product 
-	SET
-	QUANTITY = '{@#quantity#}' , 
-	POSITION = '{@#position#}' , 
+	SET 
 	{@ IMAGE_URL = '#imageUrl#',}
-	BARCODE = '{@#barcode#}' , 
 	NAME = '{@#name#}' , 
 	MEMO = '{@#memo#}' , 
 	URL = '{@#url#}',
@@ -152,6 +149,7 @@ UPDATE sc_real_product
     	where not exists (
     		select * from sc_real_product_composition s1 where s1.composition_sku = sc_real_product.real_sku
     	)
+    	and type = 'base' and status = '1' 
     	and sc_real_product.real_sku != '{@#realSku#}'
 	]]>	      
     </entry>

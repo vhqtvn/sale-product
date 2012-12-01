@@ -2,6 +2,17 @@
 class SaleProduct extends AppModel {
 	var $useTable = "sc_product_flow" ;
 	
+	function giveup($sku,$type){
+		if( $type == 1 ){//作废
+			$sql = "update sc_real_product set status='0' where real_sku = '$sku'" ;
+			$this->query($sql) ;
+		}else{
+			$sql = "update sc_real_product set status='1' where real_sku = '$sku'" ;
+			$this->query($sql) ;
+		}
+		
+	}
+	
 	function saveProduct($data , $user){
 		$data['loginId'] = $user['LOGIN_ID'] ;
 		

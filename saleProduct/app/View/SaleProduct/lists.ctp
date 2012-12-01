@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>货品管理</title>
@@ -10,102 +10,19 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
+		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
+		echo $this->Html->script('modules/saleproduct/list');
+		echo $this->Html->script('calendar/WdatePicker');
+		echo $this->Html->script('tab/jquery.ui.tabs');
 	?>
-  
-   <script type="text/javascript">
 
-	 //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
-	$(function(){
-			$(".action").live("click",function(){
-				var id = $(this).attr("val") ;
-				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/details/"+id,900,600) ;
-				}else if( $(this).hasClass("del") ){
-					if(window.confirm("确认删除吗")){
-						$.ajax({
-							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
-							data:{id:id},
-							cache:false,
-							dataType:"text",
-							success:function(result,status,xhr){
-								$(".grid-content").llygrid("reload") ;
-							}
-						}); 
-					}
-				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",600,400) ;
-				}
-				return false ;
-			})
-
-			$(".grid-content").llygrid({
-				columns:[
-					{align:"center",key:"REAL_SKU",label:"Actions", width:"20%",format:function(val,record){
-							var html = [] ;
-							html.push("<a href='#' class='action update btn' val='"+val+"'>编辑</a>&nbsp;") ;
-							
-							//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
-							return html.join("") ;
-					}},
-		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,reocrd){
-		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
-		           	}},
-		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"20%"},
-		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"20%",format:function(val,record){
-		           		if(val){
-		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'>" ;
-		           		}
-		           		return "" ;
-		           	}},
-		           	{align:"center",key:"POSITION",label:"仓库位置",width:"20%"},
-		           	{align:"center",key:"BARCODE",label:"条形码",width:"20%"}
-		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
-				 limit:20,
-				 pageSizes:[10,20,30,40],
-				 height:function(){
-				 	return $(window).height() - 140 ;
-				 },
-				 title:"货品列表",
-				 autoWidth:true,
-				 indexColumn:false,
-				  querys:{sqlId:"sql_saleproduct_list"},
-				 loadMsg:"数据加载中，请稍候......"
-			}) ;
-   	 });
-   </script>
-   
    <style>
    		*{
    			font:12px "微软雅黑";
@@ -119,9 +36,8 @@
 		<button class="action add btn btn-primary">添加货品</button>
 	</div>
 	
-
-	<div class="grid-content">
-	
+	<div id="details_tab">
 	</div>
+	<div class="grid-content" id="tab-content"></div>
 </body>
 </html>

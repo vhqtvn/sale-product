@@ -62,7 +62,12 @@
 		})
 		
 		function uploadSuccess(){
-			window.location.reload();
+			if(window.opener){
+				window.opener.location.reload() ;
+				window.close() ;
+			}else{
+				window.location.reload();
+			}
 		}
    </script>
 
@@ -78,7 +83,7 @@
 		<div class="container-fluid">
 
 	        <form id="personForm" action="/saleProduct/index.php/saleProduct/saveProduct"
-	          method="post" target="form-target"
+	          method="post" target="form-target" data-widget="validator"
 	         enctype="multipart/form-data" class="form-horizontal" >
 	        <input type="hidden" id="id" value=""/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
@@ -88,27 +93,26 @@
 						<!-- 数据列表样式 -->
 						<table class="form-table col2" >
 							<!--<caption>基本信息</caption>-->
-							<tbody>	
+							<tbody>
+								<tr>
+									<th>类型：</th>
+									<td>
+										<input type="radio" <?php if($item['TYPE']=='base')echo 'checked';?> 
+												<?php if($item['TYPE'])echo 'disabled';?> 
+											data-validator="required" name="type" value="base" />基本货品
+										<input type="radio" <?php if($item['TYPE']=='package')echo 'checked';?>
+										<?php if($item['TYPE'])echo 'disabled';?>  
+											data-validator="required" name="type" value="package"/>打包货品
+									</td>
+								</tr>	
 								<tr>
 									<th>SKU：</th><td><input type="text"
 										<?php if(!empty($item['REAL_SKU']))echo 'readonly';?>
-										 data-validator="required" name="sku" value="<?php echo $item['REAL_SKU']?>"/></td>
+										 	data-validator="required" name="sku" value="<?php echo $item['REAL_SKU']?>"/></td>
 								</tr>									   
 								<tr>
 									<th>名称：</th>
 									<td><input type="text" data-validator="required" name="name" value="<?php echo $item['NAME']?>"/></td>
-								</tr>
-								<tr>
-									<th>仓库位置：</th>
-									<td><input type="text" name="position" value="<?php echo $item['POSITION']?>"/></td>
-								</tr>
-								<tr>
-									<th>库存数量：</th>
-									<td><input type="text" name="quantity" class="alert alert-danger" value="<?php echo $item['QUANTITY']?>"/></td>
-								</tr>
-								<tr>
-									<th>条形码：</th>
-									<td><input type="text" name="barcode" value="<?php echo $item['BARCODE']?>"/></td>
 								</tr>
 								<tr>
 									<th>重量：</th>
@@ -139,10 +143,11 @@
 									}?>
 									</td>
 								</tr>
-								
 								<tr>
-									<th>产品地址：</th>
-									<td><input type="text" name="url" value="<?php echo $item['URL']?>"/></td>
+									<th>备注：</th>
+									<td>
+									<textarea name="memo" style="width:98%;height:50px;"><?php echo $item['MEMO']?></textarea>
+									</td>
 								</tr>
 							</tbody>
 						</table>

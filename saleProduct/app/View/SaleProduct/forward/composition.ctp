@@ -52,32 +52,41 @@
    }
    
 	$(function(){
-				
+		
 			$(".grid-content").llygrid({
 				columns:[
-					
-		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a href='"+record.URL+"' target='_blank'>"+val+"</a>" ;
+					{align:"center",key:"REAL_SKU",label:"Actions", width:"12%",format:function(val,record){
+							var html = [] ;
+							html.push("<a href='#' class='btn action del' val='"+val+"'>删除</a>") ;
+							return html.join("") ;
+					}},
+		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,reocrd){
+		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"20%"},
-		           	{align:"center",key:"COM_QUANTITY",label:"数量",width:"20%"},
-		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"20%"},
-		           	{align:"center",key:"POSITION",label:"仓库位置",width:"20%"},
-		           	{align:"center",key:"BARCODE",label:"条形码",width:"20%"}
+		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
+		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
+		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"8%",format:function(val,record){
+		           		if(val){
+		           			val = val.replace(/%/g,'%25') ;
+		           			return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'>" ;
+		           		}
+		           		return "" ;
+		           	}},
+		           	{align:"center",key:"MEMO",label:"备注",width:"38%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-				 	return $(window).height() - 140 ;
+				 	return $(window).height() - 200 ;
 				 },
-				 title:"",
-				 autoWidth:true,
+				 title:"货品列表",
+				 //autoWidth:true,
 				 indexColumn:false,
 				 querys:{realSku:'<?php echo $sku;?>',sqlId:"sql_saleproduct_composition_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
-	    
+				
 	    	$(".add-composition").click(function(){
 	    		openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_composition/<?php echo $sku;?>",550,300) ;
 	    	}) ;   
