@@ -26,7 +26,7 @@
   		var sku ='<?php echo $sku;?>' ;
   		var tab = $('#tabs-default').tabs( {//$this->layout="index";
 			tabs:[
-				{label:'基本信息',url:"/saleProduct/index.php/saleProduct/forward/edit_product/"+sku,iframe:true}
+				{label:'基本信息',url:"/saleProduct/index.php/saleProduct/forward/edit_product/"+sku,iframe:true},
 				{label:'渠道产品信息',url:"/saleProduct/index.php/saleProduct/forward/channel/"+sku,iframe:true}
 				<?php if($item['TYPE'] == 'package'){?>
 					,{label:'打包产品信息',url:"/saleProduct/index.php/saleProduct/forward/composition/"+sku,iframe:true}
