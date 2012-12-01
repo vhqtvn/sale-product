@@ -67,6 +67,9 @@ class OrderService extends AppModel {
 	function saveOrderItem($accountId , $items ,$id,$header){
 		$this->setDataSource('gbk');
 		
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$db->_queryCache = array() ;
+		
 		$items['account_id'] = $accountId ;
 		$items['upload_id'] = $id ;
 		

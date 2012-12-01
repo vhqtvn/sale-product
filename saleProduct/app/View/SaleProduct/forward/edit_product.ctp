@@ -85,7 +85,7 @@
 	        <form id="personForm" action="/saleProduct/index.php/saleProduct/saveProduct"
 	          method="post" target="form-target" data-widget="validator"
 	         enctype="multipart/form-data" class="form-horizontal" >
-	        <input type="hidden" id="id" value=""/>
+	        	<input type="hidden" id="id" value="<?php echo $item['ID']?>"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
@@ -107,7 +107,6 @@
 								</tr>	
 								<tr>
 									<th>SKU：</th><td><input type="text"
-										<?php if(!empty($item['REAL_SKU']))echo 'readonly';?>
 										 	data-validator="required" name="sku" 
 										 	value="<?php if(isset($item['REAL_SKU']))echo $item['REAL_SKU']; else echo $realSku;?>"/></td>
 								</tr>									   
@@ -119,8 +118,8 @@
 									<th>重量：</th>
 									<td><input type="text" name="weight" style="width:50px;" value="<?php echo $item['WEIGHT']?>"/>
 									<select name="weightUnit" style="width:150px;">
-										<option value="lb" <?php if($item['weightUnit']=='lb')echo 'selected';?>  >pound</option>
-										<option value="oz" <?php if($item['weightUnit']=='oz')echo 'selected';?> >ounce</option>
+										<option value="lb" <?php if($item['WEIGHT_UNIT']=='lb')echo 'selected';?>  >pound</option>
+										<option value="oz" <?php if($item['WEIGHT_UNIT']=='oz')echo 'selected';?> >ounce</option>
 									</select>
 									</td>
 								</tr>

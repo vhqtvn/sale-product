@@ -28,10 +28,16 @@ class SaleProduct extends AppModel {
 		
 		$item = $this->getSaleProduct($sku) ;
 		if( count($item) > 0){
+			$realId = $item[0]['sc_real_product']['ID'] ;
 			//update
 			$sql = $this->getDbSql("sql_saleproduct_update") ;
 			$sql = $this->getSql($sql,$data) ;
 			$this->query($sql) ;
+			
+			//更新引用表
+			$sql = "update sc_real_product_rel set real_sku = '$sku' where real_id = '$realId'" ;
+			$this->query($sql) ;
+			
 		}else{
 			$sql = $this->getDbSql("sql_saleproduct_insert") ;
 			$sql = $this->getSql($sql,$data) ;
@@ -49,15 +55,18 @@ class SaleProduct extends AppModel {
 		$skus = $params['skus'] ;
 		$realSku = $params['realSku'] ;
 		
+		$product = $this->getSaleProduct($realSku) ;
+		$realId = $product[0]['sc_real_product']['ID'] ;
+		
 		$skus = explode(",",$skus) ;
 		foreach( $skus as $sku ){
 			$sql = " INSERT INTO sc_real_product_rel 
-				(REAL_SKU, 
+				(REAL_ID,REAL_SKU, 
 				SKU, 
 				ACCOUNT_ID
 				)
 				VALUES
-				('$realSku', 
+				('$realId','$realSku', 
 				'$sku', 
 				'$accountId'
 				)" ;
@@ -72,6 +81,9 @@ class SaleProduct extends AppModel {
 		$unitems = $params['unitems'] ;
 		$realSku = $params['realSku'] ;
 		
+		$product = $this->getSaleProduct($realSku) ;
+		$realId = $product[0]['sc_real_product']['ID'] ;
+		
 		$items = explode(",",$items) ;
 		foreach( $items as $item ){
 			$item = explode("|",$item) ;
@@ -79,12 +91,13 @@ class SaleProduct extends AppModel {
 			$sku = $item[1] ;
 			
 			$sql = " INSERT INTO sc_real_product_rel 
-				(REAL_SKU, 
+				(REAL_ID,REAL_SKU, 
 				SKU, 
 				ACCOUNT_ID
 				)
 				VALUES
-				('$realSku', 
+				('$realId',
+				'$realSku', 
 				'$sku', 
 				'$accountId'
 				)" ;
