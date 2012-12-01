@@ -108,7 +108,8 @@
 								<tr>
 									<th>SKU：</th><td><input type="text"
 										<?php if(!empty($item['REAL_SKU']))echo 'readonly';?>
-										 	data-validator="required" name="sku" value="<?php echo $item['REAL_SKU']?>"/></td>
+										 	data-validator="required" name="sku" 
+										 	value="<?php if(isset($item['REAL_SKU']))echo $item['REAL_SKU']; else echo $realSku;?>"/></td>
 								</tr>									   
 								<tr>
 									<th>名称：</th>

@@ -46,7 +46,12 @@
 					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",700,500) ;
 				}
 				return false ;
-			})
+			});
+		
+			$(".query").click(function(){
+				var json = $(".query-table").toJson() ;
+				$(".grid-content").llygrid("reload",json,true) ;
+			}) ;
 
 			$(".grid-content").llygrid({
 				columns:[

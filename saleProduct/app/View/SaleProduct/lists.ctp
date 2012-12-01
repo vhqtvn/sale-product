@@ -31,9 +31,25 @@
 
 </head>
 <body>
-
-	<div class="grid-query-button">
-		<button class="action add btn btn-primary">添加货品</button>
+	<div class="toolbar toolbar-auto">
+		<table style="width:100%;" class="query-table">	
+			<tr>
+				<th>名称：</th>
+				<td>
+					<input type="text" id="name"/>
+				</td>
+				<th>SKU：</th>
+				<td>
+					<input type="text" id="sku"/>
+				</td>
+				<th></th>
+				<td>
+					<button class="btn btn-primary query" >查询</button>
+					<button class="action add btn btn-primary">添加货品</button>
+				</td>
+			</tr>						
+		</table>	
+		<hr style="margin:2px;"/>	
 	</div>
 	
 	<div id="details_tab">

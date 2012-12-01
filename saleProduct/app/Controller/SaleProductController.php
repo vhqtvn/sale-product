@@ -11,6 +11,9 @@ class SaleProductController extends AppController {
     	if(!empty($sku)){
     		$item =$this->SaleProduct->getSaleProduct($sku) ;
     		$item = $item[0]['sc_real_product'] ;
+    	}else{
+    		$max =$this->SaleProduct->getMaxSku() ;
+    		$this->set('realSku',$max);
     	}
     	$this->set('item',$item);
     	$this->layout = "../SaleProduct/forward/".$layout ;
@@ -36,6 +39,9 @@ class SaleProductController extends AppController {
     	if(!empty($sku)){
     		$item =$this->SaleProduct->getSaleProduct($sku) ;
     		$item = $item[0]['sc_real_product'] ;
+    	}else{
+    		$max =$this->SaleProduct->getMaxSku() ;
+    		$item = array('REAL_SKU',$max) ;
     	}
     	$this->set('item',$item);
     }

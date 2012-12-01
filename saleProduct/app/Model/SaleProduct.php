@@ -13,6 +13,14 @@ class SaleProduct extends AppModel {
 		
 	}
 	
+	function getMaxSku(){
+		$sql = $this->getDbSql("sql_saleproduct_getMaxSKU") ;
+		$sql = $this->getSql($sql,array()) ;
+		$count = $this->query($sql) ;
+		$C = $count[0][0]['C'] ;
+		return $C ;
+	}
+	
 	function saveProduct($data , $user){
 		$data['loginId'] = $user['LOGIN_ID'] ;
 		
@@ -23,7 +31,6 @@ class SaleProduct extends AppModel {
 			//update
 			$sql = $this->getDbSql("sql_saleproduct_update") ;
 			$sql = $this->getSql($sql,$data) ;
-			print_r($sql) ;
 			$this->query($sql) ;
 		}else{
 			$sql = $this->getDbSql("sql_saleproduct_insert") ;
