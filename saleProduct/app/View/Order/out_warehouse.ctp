@@ -132,7 +132,7 @@
 	
 	<div class="search">
 		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="ORDER ID"/>
-		<button class="btn btn-search btn-primary">search</button>
+		<button class="btn btn-search btn-primary" style="display:none">search</button>
 	</div>
 	
 	<div class="grid-content" style="">

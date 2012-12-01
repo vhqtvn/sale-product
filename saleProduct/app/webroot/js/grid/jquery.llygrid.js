@@ -706,6 +706,13 @@
 					var callback = col.format.callback||function(){} ;
 					var render = col.format.render||function(){} ;
 					
+					if(col.render){
+						grid.find("tr").each(function(){
+							if($(this).data("record"))
+								col.render.call(this,$(this).data("record")) ;
+						});
+					}
+					
 					grid.find("input[name='cb_"+col.key+"']").each(function(){
 						var row = $(this).parents("tr:first").get(0) ;
 						/*if( checked ){

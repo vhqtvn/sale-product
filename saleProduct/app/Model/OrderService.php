@@ -77,6 +77,12 @@ class OrderService extends AppModel {
 			$this->query($sql) ;
 		}else{
 			try{
+				$sql = $this->getDbSql("sql_order_getMaxOrderNumber") ;
+				$sql = $this->getSql($sql,$items) ;
+				$count = $this->query($sql) ;
+				$orderNumber = $count[0][0]['ORDER_NUMBER'] ;
+				$items['order-barcode'] = $orderNumber ;
+				
 				$sql = $this->getDbSql("sql_order_insert") ;
 				$sql = $this->getSql($sql,$items) ;
 				$this->query($sql) ;

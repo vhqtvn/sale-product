@@ -91,7 +91,12 @@ function formatGridData(data){
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ORDER_ID",label:"操作",width:"5%",format:function(val,record){
+					{align:"center",key:"ORDER_ID",label:"操作",width:"5%",render:function(record){
+							if(record.C > 1){
+								$(this).find("td").css("background","#EEBBFF") ;
+							}
+						}
+						,format:function(val,record){
 						/*var html = [] ;
 						
 						if(actionType == 0){
@@ -119,7 +124,10 @@ function formatGridData(data){
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 			        }},
-		           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
+			        {align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"10%"},
+		           	{align:"left",key:"REAL_SKU",label:"货品SKU", width:"10%"},
+			        {align:"left",key:"NAME",label:"货品名称", width:"10%"},
+		           	{align:"center",key:"IMAGE_URL",label:"货品图片",width:"4%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
 		           		}else{

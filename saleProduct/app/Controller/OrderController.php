@@ -202,6 +202,13 @@ class OrderController extends AppController {
 		return $this->response;
     }
     
+    public function test(){
+    	$sql = $this->OrderService->getDbSql("sql_order_getMaxOrderNumber") ;
+		$sql = $this->OrderService->getSql($sql,array()) ;
+		$count = $this->OrderService->query($sql) ;
+		debug($count[0][0]['ORDER_NUMBER']) ;
+    }
+    
     public function selectPickedProduct($pickId){	
     	$this->set("pickId",$pickId) ;
     }
@@ -210,10 +217,10 @@ class OrderController extends AppController {
     public function repickedException(){
     	$params = $this->request->data  ;
     	$user =  $this->getCookUser() ;
-    	$this->OrderService->repickedException($params,$user ) ;
+    	$result = $this->OrderService->repickedException($params,$user ) ;
     	
     	$this->response->type("json");
-		$this->response->body("execute complete");
+		$this->response->body($result?1:0);
 		return $this->response;
     }
     

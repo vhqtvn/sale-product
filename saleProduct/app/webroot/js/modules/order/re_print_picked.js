@@ -168,7 +168,8 @@ function formatGridData(data){
 						return _index++ ;
 					}},
 					{align:"left",key:"ORDER_ID",label:"订单编号", width:"90"},
-					{align:"left",key:"REAL_SKU",label:"产品SKU", width:"60",format:function(val,record){
+					{align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"10%"},
+					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"60",format:function(val,record){
 						if(record.P_TYPE == 1){
 							return "<font color=red>"+val+"</font>" ;
 						}else

@@ -29,12 +29,18 @@
 	)
     </entry>
     
+    <entry key="sql_order_getMaxOrderNumber">
+    	SELECT ( CASE WHEN MAX(order_number) IS NULL THEN 1000000000 ELSE ( MAX(order_number)+1) END ) AS ORDER_NUMBER 
+		FROM sc_amazon_order
+    </entry>
+    
     <entry key="sql_order_insert">
    INSERT INTO sc_amazon_order 
 	(ORDER_ID, 
-	ORDER_ITEM_ID, 
-	PURCHASE_DATE, 
-	PAYMENTS_DATE, 
+	 ORDER_ITEM_ID,
+	 ORDER_NUMBER,
+	 PURCHASE_DATE, 
+	 PAYMENTS_DATE, 
 	reporting_date,
 	promise_date,
 	days_past_promise,
@@ -62,6 +68,7 @@
 	VALUES
 	('{@#order-id#}', 
 	'{@#order-item-id#}', 
+	'{@#order-barcode#}', 
 	'{@#purchase-date#}', 
 	'{@#payments-date#}',
 	'{@#reporting-date#}',
@@ -113,11 +120,24 @@
 		) t
     </entry>
     
-    <entry key="sql_order_list_nostatus">
+    <entry key="sql_order_list_nostatus_many">
+    	<![CDATA[
+	select t.* from (
 		select sc_amazon_order.* ,
 			sc_amazon_account_product.ASIN,
-			sc_amazon_account_product.LOCAL_URL
+			sc_real_product.REAL_SKU,
+			sc_real_product.NAME as REAL_NAME,
+			sc_real_product.IMAGE_URL,
+			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+		   	  WHERE s1.order_id = sc_amazon_order.order_id
+		   	  GROUP BY s1.order_id ) AS C
 		  from sc_amazon_order
+		  left join sc_real_product 
+		  on sc_real_product.real_sku in (
+		  	 select s.real_sku from sc_real_product_rel s 
+		  	 where s.sku = sc_amazon_order.sku
+		  	 and s.account_id = sc_amazon_order.account_id
+		  )
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
 		  where  not exists (
@@ -129,21 +149,70 @@
 		  {@ and buyer_name = '#userName#'}
 		  {@ and buyer_email = '#email#'}
 		  {@ and sku = '#sku#'}
+	) t
+	where t.C > 1
+		]]>
     </entry>
     
-   
+    <entry key="sql_order_list_nostatus_one">
+    	<![CDATA[
+	select t.* from (
+		select sc_amazon_order.* ,
+			sc_amazon_account_product.ASIN,
+			sc_real_product.REAL_SKU,
+			sc_real_product.NAME as REAL_NAME,
+			sc_real_product.IMAGE_URL,
+			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+		   	  WHERE s1.order_id = sc_amazon_order.order_id
+		   	  GROUP BY s1.order_id ) AS C
+		  from sc_amazon_order
+		  left join sc_real_product 
+		  on sc_real_product.real_sku in (
+		  	 select s.real_sku from sc_real_product_rel s 
+		  	 where s.sku = sc_amazon_order.sku
+		  	 and s.account_id = sc_amazon_order.account_id
+		  )
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		  where  not exists (
+		  	select 1 from sc_amazon_order_status where 
+		  	sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id
+		  )
+		  {@ and order_id = '#orderId#'}
+		  {@ and buyer_name = '#userName#'}
+		  {@ and buyer_email = '#email#'}
+		  {@ and sku = '#sku#'}
+	) t
+	where t.C <= 1
+	]]>
+    </entry>
+
    <entry key="sql_order_list">
-		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+		select sc_amazon_order.* ,
+			sc_amazon_order_status.ID,
 			sc_amazon_order_status.AUDIT_STATUS, 
 			sc_amazon_order_status.AUDIT_MEMO, 
 			sc_amazon_order_status.REAUDIT_STATUS, 
 			sc_amazon_order_status.REAUDIT_MEMO, 
 			sc_amazon_order_status.PICK_STATUS,
 			sc_amazon_account_product.ASIN,
-			sc_amazon_account_product.LOCAL_URL
+			sc_amazon_account_product.LOCAL_URL,
+			sc_real_product.REAL_SKU,
+			sc_real_product.NAME as REAL_NAME,
+			sc_real_product.IMAGE_URL,
+			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+		   	  WHERE s1.order_id = sc_amazon_order.order_id
+		   	  GROUP BY s1.order_id ) AS C
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		  left join sc_real_product 
+		  on sc_real_product.real_sku in (
+		  	 select s.real_sku from sc_real_product_rel s 
+		  	 where s.sku = sc_amazon_order.sku
+		  	 and s.account_id = sc_amazon_order.account_id
+		  )
 		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
 		   {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
@@ -163,7 +232,10 @@
 			sc_amazon_order_status.REAUDIT_MEMO, 
 			sc_amazon_order_status.PICK_STATUS,
 			sc_amazon_account_product.ASIN,
-			sc_amazon_account_product.LOCAL_URL
+			sc_amazon_account_product.LOCAL_URL,
+			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+		   	  WHERE s1.order_id = sc_amazon_order.order_id
+		   	  GROUP BY s1.order_id ) AS C
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -187,7 +259,10 @@
 			sc_amazon_order_status.REAUDIT_MEMO, 
 			sc_amazon_order_status.PICK_STATUS,
 			sc_amazon_account_product.ASIN,
-			sc_amazon_account_product.LOCAL_URL
+			sc_amazon_account_product.LOCAL_URL,
+			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+		   	  WHERE s1.order_id = sc_amazon_order.order_id
+		   	  GROUP BY s1.order_id ) AS C
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -219,7 +294,10 @@
 		    sc_real_product.IMAGE_URL,
 		    sc_real_product.POSITION,
 		    sc_real_product.BARCODE,
-		    sc_real_product.NAME
+		    sc_real_product.NAME,
+		    (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+		   	  WHERE s1.order_id = sc_amazon_order.order_id
+		   	  GROUP BY s1.order_id ) AS C
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -258,7 +336,10 @@
 		    sc_real_product.IMAGE_URL,
 		    sc_real_product.POSITION,
 		    sc_real_product.BARCODE,
-		    sc_real_product.NAME
+		    sc_real_product.NAME,
+		    (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+		   	  WHERE s1.order_id = sc_amazon_order.order_id
+		   	  GROUP BY s1.order_id ) AS C
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -292,6 +373,7 @@
 		  SELECT 
 		       t.ORDER_ID,
 		       t.ORDER_ITEM_ID,
+		       t.ORDER_NUMBER,
 		       t.SKU ,
 		       t.REAL_SKU,
 		       t.IMAGE_URL,
@@ -308,6 +390,7 @@
 			   sc_amazon_order.ORDER_ITEM_ID,
 		       sc_amazon_order.SKU ,
 		       sc_amazon_order.QUANTITY_TO_SHIP,
+		       sc_amazon_order.ORDER_NUMBER,
 		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
 		       	 THEN sc_amazon_order.SKU ELSE sc_real_product.REAL_SKU END ) AS REAL_SKU,
 		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
