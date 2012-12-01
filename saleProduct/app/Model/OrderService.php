@@ -80,10 +80,19 @@ class OrderService extends AppModel {
 			$this->query($sql) ;
 		}else{
 			try{
-				$sql = $this->getDbSql("sql_order_getMaxOrderNumber") ;
-				$sql = $this->getSql($sql,$items) ;
-				$count = $this->query($sql) ;
-				$orderNumber = $count[0][0]['ORDER_NUMBER'] ;
+				$orderId = $items['order-id'] ;
+				$sql = "select * from sc_amazon_order where order_id = '$orderId'" ;
+				$record = $this->query($sql) ;
+				$orderNumber = '' ;
+				if(empty($record)){
+					$sql = $this->getDbSql("sql_order_getMaxOrderNumber") ;
+					$sql = $this->getSql($sql,$items) ;
+					$count = $this->query($sql) ;
+					$orderNumber = $count[0][0]['ORDER_NUMBER'] ;
+				}else{
+					$orderNumber = $record[0]['sc_amazon_order']['ORDER_NUMBER'] ;
+				}
+				
 				$items['order-barcode'] = $orderNumber ;
 				
 				$sql = $this->getDbSql("sql_order_insert") ;

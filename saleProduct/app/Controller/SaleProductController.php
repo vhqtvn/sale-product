@@ -4,12 +4,12 @@ class SaleProductController extends AppController {
 	public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     var $uses = array('SaleProduct', 'Amazonaccount');
     
-    public function forward($layout , $sku=null){
-    	$this->set('sku',$sku);
+    public function forward($layout , $id=null){
+    	$this->set('id',$id);
     	
-    	$item = null ;
-    	if(!empty($sku)){
-    		$item =$this->SaleProduct->getSaleProduct($sku) ;
+    	$item = null ; 
+    	if(!empty($id)){
+    		$item =$this->SaleProduct->getSaleProductById($id) ;
     		$item = $item[0]['sc_real_product'] ;
     	}else{
     		$max =$this->SaleProduct->getMaxSku() ;
@@ -21,23 +21,24 @@ class SaleProductController extends AppController {
     
     public function lists(){
     }
+  
     
-    public function bindProduct( $sku,$type=null){
-    	$this->set('sku',$sku);
+    public function bindProduct( $id ,$type=null){
+    	$this->set('id',$id);
 		$this->set('type',$type);
     }
     
-    public function giveup($sku,$type){
-    	$this->SaleProduct->giveup($sku,$type) ;
+    public function giveup($id,$type){
+    	$this->SaleProduct->giveup($id,$type) ;
     	$this->response->type("json") ;
 		$this->response->body( "Save Success" )   ;
 		return $this->response ;
     }
     
-    public function editProduct($sku = null){
+    public function editProduct( $id = null ){
     	$item = null ;
     	if(!empty($sku)){
-    		$item =$this->SaleProduct->getSaleProduct($sku) ;
+    		$item =$this->SaleProduct->getSaleProductById($id) ;
     		$item = $item[0]['sc_real_product'] ;
     	}else{
     		$max =$this->SaleProduct->getMaxSku() ;
@@ -72,7 +73,7 @@ class SaleProductController extends AppController {
     	$this->SaleProduct->saveProduct($params , $user) ;
 
 		$this->response->type("html");
-		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess();</script>");
+		$this->response->body("");
 		return $this->response;
     }
     
@@ -91,19 +92,19 @@ class SaleProductController extends AppController {
 		}
 	}
     
-    public function details($sku){
-    	$this->set('sku',$sku);
+    public function details($id){
+    	$this->set('id',$id);
     	
     	$item = null ;
-    	if(!empty($sku)){
-    		$item =$this->SaleProduct->getSaleProduct($sku) ;
+    	if(!empty($id)){
+    		$item =$this->SaleProduct->getSaleProductById($id) ;
     		$item = $item[0]['sc_real_product'] ;
     	}
     	$this->set('item',$item);
     }
 
-    public function bindProductDetails($accountId , $sku,$type=null){
-    	$this->set('sku',$sku);
+    public function bindProductDetails($accountId , $id ,$type=null){
+    	$this->set('id',$id);
 		$this->set('type',$type);
     	$this->set("accountId",$accountId) ;
     	
@@ -119,8 +120,8 @@ class SaleProductController extends AppController {
     	$this->set("categorys",$categorys) ;
     }
     
-    public function bindSkuDetails($accountId , $sku,$type=null){
-    	$this->set('sku',$sku);
+    public function bindSkuDetails($accountId , $id,$type=null){
+    	$this->set('id',$id);
 		$this->set('type',$type);
     	$this->set("accountId",$accountId) ;
     	
@@ -156,6 +157,17 @@ class SaleProductController extends AppController {
     public function deleteRelProduct(){
     	$user =  $this->getCookUser() ;
     	$this->SaleProduct->deleteRelProduct($this->request->data , $user) ;
+
+		$this->response->type("json") ;
+		$this->response->body( "Save Success" )   ;
+
+		return $this->response ;
+    }
+    
+      
+    public function deleteComposition(){
+    	$user =  $this->getCookUser() ;
+    	$this->SaleProduct->deleteComposition($this->request->data , $user) ;
 
 		$this->response->type("json") ;
 		$this->response->body( "Save Success" )   ;

@@ -38,7 +38,7 @@
    				$page = "bindSkuDetails" ;
    			}
    			
-			echo "tabs.push( {label:'".$account['NAME']."',url:'/saleProduct/index.php/saleProduct/$page/".$account['ID']."/$sku/$type',iframe:true}) ;" ;
+			echo "tabs.push( {label:'".$account['NAME']."',url:'/saleProduct/index.php/saleProduct/$page/".$account['ID']."/$id/$type',iframe:true}) ;" ;
 		} ;
    ?>
   	$(function(){

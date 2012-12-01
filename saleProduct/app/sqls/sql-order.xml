@@ -151,6 +151,7 @@
 		  {@ and sku = '#sku#'}
 	) t
 	where t.C > 1
+	order by t.order_number
 		]]>
     </entry>
     
@@ -185,6 +186,7 @@
 		  {@ and sku = '#sku#'}
 	) t
 	where t.C <= 1
+	order by t.order_number
 	]]>
     </entry>
 
@@ -222,6 +224,7 @@
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
 		   {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
+		   order by sc_amazon_order.order_number
     </entry>
     
     <entry key="sql_order_doing_list">
@@ -249,6 +252,7 @@
 		   {@ and sc_amazon_order.sku = '#sku#'}
 		   {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
 		   and ( sc_amazon_order.tn_status is null or sc_amazon_order.tn_status not in ('1') )
+		   order by sc_amazon_order.order_number
     </entry>
     
     <entry key="sql_order_done_list">
@@ -278,6 +282,7 @@
 		   and sc_amazon_order.tn_status in ('1')
 		   {@ and ( sc_amazon_order.redo_status is null or sc_amazon_order.redo_status = '' ) and '#unRedoStatus#' = '#unRedoStatus#'}
 		   {@ and sc_amazon_order.redo_status = '#redoStatus#'}
+		   order by sc_amazon_order.order_number
     </entry>
     
     <entry key="sql_order_list_picked">

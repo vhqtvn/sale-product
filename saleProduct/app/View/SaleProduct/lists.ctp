@@ -5,7 +5,9 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
-
+	<script>
+		var deleteHtml = "" ;
+	</script>
    <?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -21,6 +23,16 @@
 		echo $this->Html->script('modules/saleproduct/list');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
+		
+		$user = $this->Session->read("product.sale.user") ;
+		$loginId = $user["GROUP_CODE"] ;
+		if($loginId == 'general_manager'){
+	?>
+	<script>
+		var deleteHtml = "<a href='#' class='action giveup btn'   type=3>删除</a>" ;
+	</script>
+	<?php
+		}
 	?>
 
    <style>

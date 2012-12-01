@@ -92,10 +92,10 @@ function formatGridData(data){
 						orders.push(item.ORDER_ID+"|"+item.ORDER_ITEM_ID) ;
 					}) ;
 					
-				if( orders.length <=0 ){
-					alert("未选中任意订单！");
-					return ;
-				}	
+					if( orders.length <=0 ){
+						alert("未选中任意订单！");
+						return ;
+					}	
 				
 				var text = $.trim( $(this).text() ) ;
 				

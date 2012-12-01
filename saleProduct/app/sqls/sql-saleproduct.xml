@@ -67,9 +67,10 @@ UPDATE sc_real_product
 	WEIGHT_UNIT = '{@#weightUnit#}',
 	LENGTH = '{@#length#}',
 	WIDTH = '{@#width#}',
-	HEIGHT = '{@#height#}'
+	HEIGHT = '{@#height#}',
+	REAL_SKU = '{@#sku#}'
 	WHERE
-	REAL_SKU = '{@#sku#}' ;
+	 ID = '{@#id#}';
 		)
    </entry>
    
@@ -82,7 +83,7 @@ UPDATE sc_real_product
 		 FROM sc_real_product_rel
 		 LEFT JOIN sc_amazon_account_product 
 		 ON sc_real_product_rel.sku = sc_amazon_account_product.sku
-					WHERE  sc_real_product_rel.real_sku = '{@#realSku#}'
+					WHERE  sc_real_product_rel.real_id = '{@#id#}'
 					{@ AND sc_real_product_rel.account_id = '#accountId#' }
 					and sc_real_product_rel.sku is not null
 					and sc_real_product_rel.sku != ''
@@ -114,7 +115,7 @@ UPDATE sc_real_product
 								and sku is not null and account_id = '#accountId#'
 					)}
 					and sku not in (
-						select sku from sc_real_product_rel where real_sku != '{@#realSku#}'
+						select sku from sc_real_product_rel where real_id != '{@#id#}'
 					)
 		) t order by t.checked desc
 	]]>	      
@@ -129,7 +130,7 @@ UPDATE sc_real_product
 		 FROM sc_real_product_rel
 		 LEFT JOIN sc_amazon_account_product 
 		 ON sc_real_product_rel.sku = sc_amazon_account_product.sku
-					WHERE  sc_real_product_rel.real_sku = '{@#realSku#}'
+					WHERE  sc_real_product_rel.real_id = '{@#id#}'
 					{@ AND sc_amazon_account_product.title LIKE '%#title#%' }
 					{@ AND sc_amazon_account_product.asin = '#asin#' }
 					{@ AND sc_amazon_account_product.sku = '#sku#' }
@@ -157,18 +158,21 @@ UPDATE sc_real_product
     		select * from sc_real_product_composition s1 where s1.composition_sku = sc_real_product.real_sku
     	)
     	and type = 'base' and status = '1' 
-    	and sc_real_product.real_sku != '{@#realSku#}'
 	]]>	      
     </entry>
     
     <entry key="sql_saleproduct_composition_list">
     <![CDATA[
     SELECT s2.*,
-    s1.quantity as COM_QUANTITY
+    s1.quantity as COM_QUANTITY,
+    COMPOSITION_ID, 
+	COMPOSITION_SKU, 
+	REF_ID, 
+	REF_SKU
      FROM 
 		sc_real_product_composition s1,sc_real_product s2
 		WHERE s1.ref_sku = s2.real_sku
-		and s1.composition_sku = '{@#realSku#}'
+		and s1.composition_id = '{@#id#}'
 	]]>	      
     </entry>
     
@@ -176,7 +180,9 @@ UPDATE sc_real_product
     <![CDATA[
     INSERT INTO sc_real_product_composition 
 		(
+		COMPOSITION_ID,
 		COMPOSITION_SKU, 
+		REF_ID,
 		REF_SKU, 
 		QUANTITY, 
 		MEMO, 
@@ -185,7 +191,9 @@ UPDATE sc_real_product
 		)
 		VALUES
 		(
+			{@'#comId#'},
 			{@'#comSku#'}, 
+			{@'#refId#'}, 
 			{@'#refSku#'}, 
 			'{@#quantity#}', 
 			'{@#memo#}', 

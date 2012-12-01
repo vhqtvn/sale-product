@@ -55,7 +55,7 @@
 				$.ajax({
 						type:"post",
 						url:"/saleProduct/index.php/saleProduct/saveSkuToRealProduct/" ,
-						data:{accountId:accountId,skus:$("#skus").val(),realSku:'<?php echo $sku;?>'},
+						data:{accountId:accountId,skus:$("#skus").val(),id:'<?php echo $id;?>'},
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
@@ -116,7 +116,7 @@
 					 autoWidth:true,
 					 title:"",
 					 indexColumn:false,
-					 querys:{accountId:accountId,realSku:'<?php echo $sku;?>',sqlId:"sql_saleproduct_selelctsku_list"},
+					 querys:{accountId:accountId,id:'<?php echo $id;?>',sqlId:"sql_saleproduct_selelctsku_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
 					 }

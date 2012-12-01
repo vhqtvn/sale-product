@@ -30,6 +30,7 @@
 				}else if( $(this).hasClass("giveup") ){
 					var type = $(this).attr("type");
 					var message = type == 1?"确认将该货品作废吗":"确认恢复该货品吗？"
+					message = type == 3?"确认删除该货品吗（相关货品数据都将删除，如与SKU关系，组合产品关系等）？":message;
 					if(window.confirm(message)){
 						$.ajax({
 							type:"post",
@@ -55,18 +56,13 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"REAL_SKU",label:"Actions", width:"10%",format:function(val,record){
+					{align:"center",key:"ID",label:"编辑", width:"6%",format:function(val,record){
+						var html = [] ;
 						if(tabIndex < 2){
-							var html = [] ;
 							html.push("<a href='#' class='action update btn' val='"+val+"'>编辑</a>&nbsp;") ;
-							html.push("<a href='#' class='action giveup btn' val='"+val+"' type=1>作废</a>") ;
-							return html.join("") ;
-						}else{
-							var html = [] ;
-							html.push("<a href='#' class='action giveup btn' val='"+val+"' type=2>恢复</a>") ;
 							return html.join("") ;
 						}
-							
+						return "" ;
 					}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,reocrd){
 		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
@@ -80,7 +76,19 @@
 		           		}
 		           		return "" ;
 		           	}},
-		           	{align:"center",key:"MEMO",label:"备注",width:"40%"}
+		           	{align:"center",key:"MEMO",label:"备注",width:"35%"},
+		           	{align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
+						if(tabIndex < 2){
+							var html = [] ;
+							html.push("<a href='#' class='action giveup btn' val='"+val+"' type=1>作废</a>") ;
+							return html.join("") ;
+						}else{
+							var html = [] ;
+							html.push(deleteHtml) ;
+							html.push("<a href='#' class='action giveup btn'  type=2>恢复</a>") ;
+							return html.join("") ;
+						}
+					}}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,

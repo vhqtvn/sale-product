@@ -2,15 +2,26 @@
 class SaleProduct extends AppModel {
 	var $useTable = "sc_product_flow" ;
 	
-	function giveup($sku,$type){
+	function giveup($id,$type){
 		if( $type == 1 ){//作废
-			$sql = "update sc_real_product set status='0' where real_sku = '$sku'" ;
+			$sql = "update sc_real_product set status='0' where id = '$id'" ;
 			$this->query($sql) ;
-		}else{
-			$sql = "update sc_real_product set status='1' where real_sku = '$sku'" ;
+		}else if( $type == 2 ){
+			$sql = "update sc_real_product set status='1' where id = '$id'" ;
+			$this->query($sql) ;
+		}else if($type == 3){ //删除该产品
+			$sql = "delete from sc_real_product_composition where COMPOSITION_ID = '$id'" ;
+			$this->query($sql) ;
+			
+			$sql = "delete from sc_real_product_composition where REF_ID = '$id'" ;
+			$this->query($sql) ;
+			
+			$sql = "delete from sc_real_product_rel where real_id = '$id'" ;
+			$this->query($sql) ;
+			
+			$sql = "delete from sc_real_product where id = '$id'" ;
 			$this->query($sql) ;
 		}
-		
 	}
 	
 	function getMaxSku(){
@@ -22,27 +33,41 @@ class SaleProduct extends AppModel {
 	}
 	
 	function saveProduct($data , $user){
+		
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$db->_queryCache = array() ;
+		
 		$data['loginId'] = $user['LOGIN_ID'] ;
-		
+		print_r( $data ) ;
 		$sku = $data['sku'] ;
-		
-		$item = $this->getSaleProduct($sku) ;
+		$id =  $data['id'] ;
+		$item = $this->getSaleProductById($data['id']) ;
 		if( count($item) > 0){
-			$realId = $item[0]['sc_real_product']['ID'] ;
 			//update
 			$sql = $this->getDbSql("sql_saleproduct_update") ;
 			$sql = $this->getSql($sql,$data) ;
 			$this->query($sql) ;
 			
 			//更新引用表
-			$sql = "update sc_real_product_rel set real_sku = '$sku' where real_id = '$realId'" ;
+			$sql = "update sc_real_product_rel set real_sku = '$sku' where real_id = '$id'" ;
 			$this->query($sql) ;
 			
+			$sql = "update sc_real_product_composition set COMPOSITION_SKU = '$sku' where COMPOSITION_ID = '$id'" ;
+			$this->query($sql) ;
+			
+			$sql = "update sc_real_product_composition set REF_SKU = '$sku' where REF_ID = '$id'" ;
+			$this->query($sql) ;
+
 		}else{
 			$sql = $this->getDbSql("sql_saleproduct_insert") ;
 			$sql = $this->getSql($sql,$data) ;
 			$this->query($sql) ;
 		}
+	}
+	
+	function getSaleProductById($id){
+		$sql = "select * from sc_real_product where id = '$id'" ;
+		return $this->query($sql) ;
 	}
 	
 	function getSaleProduct($sku){
@@ -53,10 +78,10 @@ class SaleProduct extends AppModel {
 	function saveSkuToRealProduct($params,$user){
 		$accountId = $params['accountId'] ;
 		$skus = $params['skus'] ;
-		$realSku = $params['realSku'] ;
+		$realId = $params['id'] ;
 		
-		$product = $this->getSaleProduct($realSku) ;
-		$realId = $product[0]['sc_real_product']['ID'] ;
+		$product = $this->getSaleProductById($realId) ;
+		$realSku = $product[0]['sc_real_product']['REAL_SKU'] ;
 		
 		$skus = explode(",",$skus) ;
 		foreach( $skus as $sku ){
@@ -80,10 +105,10 @@ class SaleProduct extends AppModel {
 	function saveSelectedProducts($params,$user){
 		$items = $params['items'] ;
 		$unitems = $params['unitems'] ;
-		$realSku = $params['realSku'] ;
+		$realId = $params['id'] ;
 		
-		$product = $this->getSaleProduct($realSku) ;
-		$realId = $product[0]['sc_real_product']['ID'] ;
+		$product = $this->getSaleProductById($realId) ;
+		$realSku = $product[0]['sc_real_product']['REAL_SKU'] ;
 		
 		$items = explode(",",$items) ;
 		foreach( $items as $item ){
@@ -129,4 +154,23 @@ class SaleProduct extends AppModel {
 		$sql = "delete from sc_real_product_rel where account_id='$accountId' and sku='$sku' and real_sku='$realSku'" ;
 		$this->query($sql) ;
 	}
+	
+	/**
+	 * [COMPOSITION_ID] => 2
+    [COMPOSITION_SKU] => 1001
+    [REF_ID] => 1
+    [REF_SKU] => 10006
+	 */
+	public function deleteComposition($params ,$user){
+		$accountId = $params['accountId'] ;
+		$sku = $params['sku'] ;
+		$realSku = $params['realSku'] ;
+		$sql = "DELETE FROM  sc_real_product_composition 
+				WHERE
+					COMPOSITION_ID = '".$params['COMPOSITION_ID']."' AND COMPOSITION_SKU = '".$params['COMPOSITION_SKU']."'
+					AND REF_ID = '".$params['REF_ID']."' AND REF_SKU = '".$params['REF_SKU']."'" ;
+		$this->query($sql) ;
+	}
+	
+	
 }
