@@ -418,7 +418,7 @@
 			  		 and sc_amazon_picked_order.order_id = sc_amazon_order.order_id
 			  		 and sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
 			  )}  order by sc_amazon_order.order_number,sc_amazon_order_status.PICK_STATUS desc
-		   ) t 
+		   ) t  where 1= 1 {@ and t.C <= 1 and (t.IS_PACKAGE is null) and  '#status#' = '#status#' }
 		 ]]>
     </entry>
     
@@ -619,6 +619,7 @@
 		       t.P_TYPE,
 		       t.NAME,
 		       t.ASIN,
+		       t.MEMO,
 		       t.LOCAL_URL,
 		       SUM( t.QUANTITY_TO_SHIP * t.ITEM_COUNT ) AS QUANTITY
            FROM (
@@ -631,6 +632,7 @@
 		        s4.IMAGE_URL ,
 		        s4.POSITION,
 		        s4.BARCODE,
+		        s4.MEMO,
 		        (CASE WHEN ( s4.NAME IS NULL OR  s4.NAME = '') 
 		       	THEN s2.PRODUCT_NAME ELSE s4.NAME END ) AS NAME,
 		       '' AS ASIN,
