@@ -30,7 +30,7 @@
     </entry>
     
     <entry key="sql_order_getMaxOrderNumber">
-    	SELECT ( CASE WHEN MAX(order_number) IS NULL THEN 1000000000 ELSE ( MAX(order_number)+1) END ) AS ORDER_NUMBER 
+    	SELECT ( CASE WHEN MAX(order_number) IS NULL THEN 2000000000 ELSE ( MAX(order_number)+1) END ) AS ORDER_NUMBER 
 		FROM sc_amazon_order
     </entry>
     
