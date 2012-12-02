@@ -44,10 +44,10 @@ function formatGridData(data){
 						}
 						return "" ;
 					}},
-					{align:"left",key:"POSITION",label:"位置", width:"15%"},
+					{align:"left",key:"POSITION",label:"位置", width:"10%"},
 					{align:"right",key:"QUANTITY",label:"数量", width:"5%"},
+					{align:"left",key:"MEMO",label:"备注信息", width:"13%"},
 					{align:"left",key:"STATUS",label:"完成状态", width:"8%"},
-					{align:"left",key:"MENU",label:"备注信息", width:"13%"},
 					{align:"left",key:"PICKER",label:"拣货人", width:"5%"}
 		         ],
 		        // 序号、产品SKU、名称、图片，位置、数量，完成状态，备注信息。拣货人

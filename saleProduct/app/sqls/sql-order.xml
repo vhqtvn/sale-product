@@ -483,6 +483,7 @@
 		       t.POSITION,
 		       t.P_TYPE,
 		       t.BARCODE,
+		       t.MEMO,
 		       t.NAME,
 		       t.ASIN,
 		       t.LOCAL_URL,
@@ -501,6 +502,7 @@
 				        s4.IMAGE_URL ,
 				        s4.POSITION,
 				        s4.BARCODE,
+				        s4.MEMO,
 				        (CASE WHEN ( s4.NAME IS NULL OR  s4.NAME = '') 
 				       	THEN s2.PRODUCT_NAME ELSE s4.NAME END ) AS NAME,
 				       '' AS ASIN,
@@ -531,6 +533,7 @@
 				       s6.IMAGE_URL ,
 				       s6.POSITION,
 				       s6.BARCODE,
+				       s6.MEMO,
 				        (CASE WHEN ( s6.NAME IS NULL OR  s6.NAME = '') 
 				       	THEN s2.PRODUCT_NAME ELSE s6.NAME END ) AS NAME,
 				       '' AS ASIN,
@@ -665,6 +668,7 @@
 		       s6.IMAGE_URL ,
 		       s6.POSITION,
 		       s6.BARCODE,
+		       s6.MEMO,
 		        (CASE WHEN ( s6.NAME IS NULL OR  s6.NAME = '') 
 		       	THEN s2.PRODUCT_NAME ELSE s6.NAME END ) AS NAME,
 		       '' AS ASIN,

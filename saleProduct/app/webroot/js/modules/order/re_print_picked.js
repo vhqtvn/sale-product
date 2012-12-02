@@ -161,8 +161,8 @@ function formatGridData(data){
 					{align:"left",key:"INDEX",label:"序号", width:"30",format:function(val,record){
 						return _index++ ;
 					}},
-					{align:"left",key:"ORDER_ID",label:"订单编号", width:"90"},
-					{align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"10%"},
+					{align:"left",key:"ORDER_ID",label:"订单编号", width:"60"},
+					{align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"8%"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"60",format:function(val,record){
 						if(record.P_TYPE == 1){
 							return "<font color=red>"+val+"</font>" ;
@@ -170,6 +170,7 @@ function formatGridData(data){
 							return val ;
 					}},
 					{align:"left",key:"NAME",label:"名称", width:"90"},
+					{align:"left",key:"MEMO",label:"备注", width:"90"},
 					{align:"center",key:"IMAGE_URL",label:"图片", width:"45",format:function(val,record){
 						if(val){
 							return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'/>" ;

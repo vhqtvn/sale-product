@@ -413,6 +413,17 @@ class OrderService extends AppModel {
 		}
 	}
 	
+	function getPicked($picked){
+		$sql = "select * from sc_amazon_picked where id = '$picked'" ;
+		$result = $this->query($sql);
+		return $result[0]['sc_amazon_picked'] ;
+	}
+	
+	function updatePickedStatus($picked){
+		$sql = "update sc_amazon_picked set status = '1' where id = '$picked'" ;
+		$this->query($sql);
+	}
+	
 	////////////////////////////////////////////////
 	///////getOrderFeed
 	/*

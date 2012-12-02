@@ -27,6 +27,7 @@ function formatGridData(data){
 			$("#picked-grid-content").llygrid({
 				 columns:[
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,record){
+		           		if(record.STATUS == 1) return "&nbsp;&nbsp;&nbsp;"+val+"<strong>（"+record.TOTAL+"）</strong>" ;
 		           		return '<a href="#" class="select-product"  pickId="'+record.ID+'">'+img+'</a>&nbsp;'+val+"<strong>（"+record.TOTAL+"）</strong>" ;
 		           	}}
 		         ],

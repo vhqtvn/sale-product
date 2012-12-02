@@ -236,6 +236,16 @@ class OrderController extends AppController {
     
     public function printPicked($pickId){
     	$this->set("pickId",$pickId) ;
+    	$pick = $this->OrderService->getPicked($pickId) ;
+    	$this->set("pick",$pick) ;
+    }
+    
+    public function updatePickedStatus($pickId){
+    	$this->set("pickId",$pickId) ;
+    	$this->OrderService->updatePickedStatus($pickId ) ;
+    	$this->response->type("json");
+		$this->response->body("execute complete");
+		return $this->response;
     }
     
     /**

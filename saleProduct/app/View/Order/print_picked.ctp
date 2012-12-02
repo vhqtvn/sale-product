@@ -24,7 +24,7 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('modules/order/print_picked');
 		echo $this->Html->script('grid/query');
-	
+		
 	?>
 	
 	<style type="text/css">
@@ -62,10 +62,51 @@
 		}
 	</style>
 	
-	<script>
+	<script type="text/javascript">
 		$(function(){
 			$(".header").html( "拣货单("+ window.opener.currentPickName+")");
+	
+			$(".print-btn").click(function(){
+				printPicked();
+			}) ;
 		}) ;
+		
+		function printPicked(){
+			<?php if( $pick['STATUS'] != 1 ) {
+			?>
+				if( window.confirm("确认打印拣货单吗，打印后拣货单将不再能编辑？") ){
+					$.ajax({
+						type:"post",
+						url:"/saleProduct/index.php/order/updatePickedStatus/<?php echo $pickId;?>" ,
+						data:{},
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							$('.noprint').remove();
+							window.print();
+						}
+					});
+				}
+			<?php	
+			}else{
+			?>
+				$.ajax({
+						type:"post",
+						url:"/saleProduct/index.php/order/updatePickedStatus/<?php echo $pickId;?>" ,
+						data:{},
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							$('.noprint').remove();
+							window.print();
+						}
+					});
+			
+			<?php		
+			}?>
+			
+			
+		}
 	</script>
    
 </head>
@@ -86,7 +127,7 @@
 				<td style="text-align:right;">
 					<nobr>
 					<?php echo date('Y-m-d H:i:s')?>(<?php echo $user['NAME']?>)
-					<button class="noprint" onclick="$('.noprint').remove();window.print();">打印</button>
+					<button class="noprint print-btn btn">打印</button>
 					</nobr>
 				</td>
 			</tr>
