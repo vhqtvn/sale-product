@@ -85,7 +85,7 @@
 						}else{
 							var html = [] ;
 							html.push(deleteHtml) ;
-							html.push("<a href='#' class='action giveup btn'  type=2>恢复</a>") ;
+							html.push("<a href='#' class='action giveup btn'  val='"+val+"' type=2>恢复</a>") ;
 							return html.join("") ;
 						}
 					}}

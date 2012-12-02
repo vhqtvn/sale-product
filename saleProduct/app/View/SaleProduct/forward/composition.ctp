@@ -64,15 +64,16 @@
 		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
-		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
-		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"8%",format:function(val,record){
+		           	{align:"center",key:"COM_QUANTITY",label:"数量",width:"8%"},
+		           	{align:"center",key:"TYPE",label:"货品类型",width:"8%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
+		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'>" ;
+		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
-		           	{align:"center",key:"MEMO",label:"备注",width:"38%"}
+		           	{align:"center",key:"MEMO",label:"备注",width:"35%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
@@ -83,13 +84,30 @@
 				 title:"货品列表",
 				 //autoWidth:true,
 				 indexColumn:false,
-				 querys:{realSku:'<?php echo $sku;?>',sqlId:"sql_saleproduct_composition_list"},
+				 querys:{id:'<?php echo $id;?>',sqlId:"sql_saleproduct_composition_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 				
 	    	$(".add-composition").click(function(){
-	    		openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_composition/<?php echo $sku;?>",550,300) ;
+	    		openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_composition/<?php echo $id;?>",550,300) ;
 	    	}) ;   
+	    	
+	    	$(".del").live('click',function(){
+	    		var record = $(this).parents("tr:first").data("record") ;
+	    		if(window.confirm("确认删除吗？")){
+	    			$.ajax({
+						type:"post",
+						url:"/saleProduct/index.php/saleProduct/deleteComposition",
+						data:record,
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							$(".grid-content").llygrid("reload");
+						}
+					}); 
+	    		}
+					
+			}) ;
    	 });
    	 
    </script>

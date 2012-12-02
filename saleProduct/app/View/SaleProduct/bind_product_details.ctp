@@ -22,6 +22,7 @@
 		
 		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
+		$realId = $id ;
 	?>
 	
     <script type="text/javascript">
@@ -154,7 +155,7 @@
 					 autoWidth:true,
 					 title:"",
 					 indexColumn:false,
-					 querys:{accountId:accountId,realSku:'<?php echo $sku;?>',sqlId:"sql_saleproduct_selelctproduct_list"},
+					 querys:{accountId:accountId,id:'<?php echo $realId;?>',sqlId:"sql_saleproduct_selelctproduct_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
 						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
@@ -185,7 +186,7 @@
 					$.ajax({
 						type:"post",
 						url:"/saleProduct/index.php/saleProduct/saveSelectedProducts/" ,
-						data:{items:items.join(","),unitems:unitems.join(","),realSku:'<?php echo $sku;?>'},
+						data:{items:items.join(","),unitems:unitems.join(","),id:'<?php echo $realId;?>'},
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){

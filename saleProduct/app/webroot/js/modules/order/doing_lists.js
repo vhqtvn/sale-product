@@ -105,8 +105,7 @@ function formatGridData(data){
 				var pickId = $(this).attr("pickId") ;
 				openCenterWindow("/saleProduct/index.php/order/selectPickedProduct/"+pickId,1000,600) ;
 			})
-			
-		
+
 			//var sqlId = "sql_order_doing_list" ;
 			var sqlId = "sql_order_list_picked" ;
 			//拣货单订单列表
@@ -115,7 +114,7 @@ function formatGridData(data){
 					{align:"left",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%"},
 		           	//{align:"center",key:"SHIP_SERVICE_LEVEL",label:"SHIP LEVEL", width:"10%"},
 		           	{align:"left",key:"ASIN",label:"ASIN", width:"90",render:function(record){
-							if(record.C > 1){
+							if(record.IS_PACKAGE || record.C > 1){
 								$(this).find("td").css("background","#EEBBFF") ;
 							}
 						}

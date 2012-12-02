@@ -34,7 +34,7 @@
 		$(function(){
 			
 			$(".select-p").click(function(){
-				openCenterWindow("/saleProduct/index.php/saleProduct/forward/select/<?php echo $sku;?>",750,500) ;
+				openCenterWindow("/saleProduct/index.php/saleProduct/forward/select/<?php echo $id;?>",750,500) ;
 			});
 			
 			$(".save-btn").click(function(){
@@ -59,6 +59,7 @@
 		
    	 function setSelectedValue(record){
    	 	$("#refSku").val(record.REAL_SKU) ;
+   	 	$("#refId").val(record.ID) ;
    	 	$("#name").val(record.NAME) ;
    	 }
    </script>
@@ -75,8 +76,10 @@
 		<div class="container-fluid">
 
 	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	        	<input type="hidden" id="comSku" value="<?php echo $sku;?>"/>
+	        	<input type="hidden" id="comId" value="<?php echo $id;?>"/>
+	        	<input type="hidden" id="comSku" value="<?php echo $item['REAL_SKU'];?>"/>
 	        	<input type="hidden" id="refSku" value=""/>
+	        	<input type="hidden" id="refId" value=""/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->

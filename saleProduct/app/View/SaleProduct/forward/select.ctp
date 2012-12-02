@@ -68,7 +68,7 @@
 				 title:"货品列表",
 				 autoWidth:true,
 				 indexColumn:false,
-				  querys:{sqlId:"sql_saleproduct_select_list",realSku:'<?php echo $sku;?>>'},
+				  querys:{sqlId:"sql_saleproduct_select_list",id:'<?php echo $id;?>>'},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });

@@ -27,7 +27,7 @@ function formatGridData(data){
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ORDER_ID",label:"操作",width:"6%",render:function(record){
-							if(record.C > 1){
+							if(record.IS_PACKAGE || record.C > 1){
 								$(this).find("td").css("background","#EEBBFF") ;
 							}
 						}
@@ -160,7 +160,8 @@ function formatGridData(data){
 					//{label:'待退单',content:"tab-content"},
 					//{label:'外购订单',content:"tab-content"},
 					{label:'加急单',content:"tab-content"},
-					{label:'特殊单',content:"tab-content"}
+					{label:'特殊单',content:"tab-content"},
+					{label:'多品订单',content:"tab-content"}
 				] ,
 				//height:'500px',
 				select:function(event,ui){
@@ -175,11 +176,17 @@ function formatGridData(data){
 						$(".save-btn").hide();
 						$(".grid-content").llygrid("reload",{pickStatus:10,status:'',pickId:pickedId},true) ;
 					}*/else if(index == 1){//合格订单
-						$(".grid-content").llygrid("reload",{pickStatus:'',status:5,pickId:''},true) ;
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:5,pickId:''
+								,sqlId:"sql_order_list_picked_forselect"},true) ;
 					}else if(index == 2){//加急单
-						$(".grid-content").llygrid("reload",{pickStatus:'',status:6,pickId:''},true) ;
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:6,pickId:''
+								,sqlId:"sql_order_list_picked_forselect"},true) ;
 					}else if(index == 3){//特殊但
-						$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:''},true) ;
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:''
+								,sqlId:"sql_order_list_picked_forselect"},true) ;
+					}else if(index == 4){//特殊但
+						$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:''
+								,sqlId:"sql_order_list_picked_forselect.many"},true) ;
 					}
 				}
 			} ) ;

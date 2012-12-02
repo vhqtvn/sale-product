@@ -66,7 +66,6 @@ class OrderService extends AppModel {
 	 */
 	function saveOrderItem($accountId , $items ,$id,$header){
 		$this->setDataSource('gbk');
-		
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
@@ -113,7 +112,7 @@ class OrderService extends AppModel {
 	
 
 	function saveAudit($params,$user){
-		$this->setDataSource('gbk');
+		//$this->setDataSource('gbk');
 		$status = $params['status'] ;
 		$orders = $params['orders'] ;
 		$loginId = $user['LOGIN_ID'] ;
@@ -202,7 +201,7 @@ class OrderService extends AppModel {
 	}
 	
 	function savePickedOrder($params , $user,$pickedId = null){
-		$this->setDataSource('gbk');
+		//$this->setDataSource('gbk');
 		
 		$orders = $params['orders'] ;
 		$loginId = $user['LOGIN_ID'] ;

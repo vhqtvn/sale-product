@@ -164,11 +164,11 @@ UPDATE sc_real_product
     <entry key="sql_saleproduct_composition_list">
     <![CDATA[
     SELECT s2.*,
-    s1.quantity as COM_QUANTITY,
-    COMPOSITION_ID, 
-	COMPOSITION_SKU, 
-	REF_ID, 
-	REF_SKU
+    	s1.quantity as COM_QUANTITY,
+    	COMPOSITION_ID, 
+		COMPOSITION_SKU, 
+		REF_ID, 
+		REF_SKU
      FROM 
 		sc_real_product_composition s1,sc_real_product s2
 		WHERE s1.ref_sku = s2.real_sku

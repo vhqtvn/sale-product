@@ -128,9 +128,16 @@
 			sc_real_product.REAL_SKU,
 			sc_real_product.NAME as REAL_NAME,
 			sc_real_product.IMAGE_URL,
-			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
 		  from sc_amazon_order
 		  left join sc_real_product 
 		  on sc_real_product.real_sku in (
@@ -150,7 +157,7 @@
 		  {@ and buyer_email = '#email#'}
 		  {@ and sku = '#sku#'}
 	) t
-	where t.C > 1
+	where ( t.C > 1 or (t.IS_PACKAGE is not null) )
 	order by t.order_number
 		]]>
     </entry>
@@ -163,9 +170,16 @@
 			sc_real_product.REAL_SKU,
 			sc_real_product.NAME as REAL_NAME,
 			sc_real_product.IMAGE_URL,
-			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
 		  from sc_amazon_order
 		  left join sc_real_product 
 		  on sc_real_product.real_sku in (
@@ -185,7 +199,7 @@
 		  {@ and buyer_email = '#email#'}
 		  {@ and sku = '#sku#'}
 	) t
-	where t.C <= 1
+	where ( t.C <= 1 AND t.IS_PACKAGE is null )
 	order by t.order_number
 	]]>
     </entry>
@@ -203,9 +217,16 @@
 			sc_real_product.REAL_SKU,
 			sc_real_product.NAME as REAL_NAME,
 			sc_real_product.IMAGE_URL,
-			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -236,9 +257,16 @@
 			sc_amazon_order_status.PICK_STATUS,
 			sc_amazon_account_product.ASIN,
 			sc_amazon_account_product.LOCAL_URL,
-			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -264,9 +292,16 @@
 			sc_amazon_order_status.PICK_STATUS,
 			sc_amazon_account_product.ASIN,
 			sc_amazon_account_product.LOCAL_URL,
-			(  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -300,9 +335,16 @@
 		    sc_real_product.POSITION,
 		    sc_real_product.BARCODE,
 		    sc_real_product.NAME,
-		    (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
+		     (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
@@ -329,52 +371,108 @@
     
     <entry key="sql_order_list_picked_forselect">
     <![CDATA[
-		select sc_amazon_order.* ,sc_amazon_order_status.ID,
-			sc_amazon_order_status.AUDIT_STATUS, 
-			sc_amazon_order_status.AUDIT_MEMO, 
-			sc_amazon_order_status.REAUDIT_STATUS, 
-			sc_amazon_order_status.REAUDIT_MEMO, 
-			sc_amazon_order_status.PICK_STATUS,
-			sc_amazon_account_product.ASIN,
-			sc_amazon_account_product.LOCAL_URL,
-			sc_real_product.REAL_SKU,
-		    sc_real_product.IMAGE_URL,
-		    sc_real_product.POSITION,
-		    sc_real_product.BARCODE,
-		    sc_real_product.NAME,
-		    (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
-		  from  sc_amazon_order_status ,sc_amazon_order
-		  left join sc_amazon_account_product 
-		  on sc_amazon_account_product.sku = sc_amazon_order.sku
-		  LEFT JOIN sc_real_product_rel
-		  ON sc_amazon_order.sku = sc_real_product_rel.sku
-		  LEFT JOIN sc_real_product
-		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
-		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
-		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   {@ and sc_amazon_order_status.pick_status not in ('9','10','11','12') and '#status#' = '#status#'}
-		   {@ and sc_amazon_order_status.audit_status = '#status#'}
-		  {@ and sc_amazon_order.order_id = '#orderId#'}
-		  {@ and sc_amazon_order.order_id = '#orderId#'}
-		  {@ and sc_amazon_order.buyer_name = '#userName#'}
-		  {@ and sc_amazon_order.buyer_email = '#email#'}
-		  {@ and sc_amazon_order.sku = '#sku#'}
-		  {@ and sc_amazon_order_status.pick_status in ('9','10','11','12') and   '#pickStatus#'  = '#pickStatus#' }
-		  {@ and exists ( 
-		  		select 1 from sc_amazon_picked_order where
-		  		 picked_id = '#pickId#'
-		  		 and sc_amazon_picked_order.order_id = sc_amazon_order.order_id
-		  		 and sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
-		  )}  order by sc_amazon_order_status.PICK_STATUS desc
-		  
+        select t.* from (
+			select sc_amazon_order.* ,sc_amazon_order_status.ID,
+				sc_amazon_order_status.AUDIT_STATUS, 
+				sc_amazon_order_status.AUDIT_MEMO, 
+				sc_amazon_order_status.REAUDIT_STATUS, 
+				sc_amazon_order_status.REAUDIT_MEMO, 
+				sc_amazon_order_status.PICK_STATUS,
+				sc_amazon_account_product.ASIN,
+				sc_amazon_account_product.LOCAL_URL,
+				sc_real_product.REAL_SKU,
+			    sc_real_product.IMAGE_URL,
+			    sc_real_product.POSITION,
+			    sc_real_product.BARCODE,
+			    sc_real_product.NAME,
+			    (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
+			  from  sc_amazon_order_status ,sc_amazon_order
+			  left join sc_amazon_account_product 
+			  on sc_amazon_account_product.sku = sc_amazon_order.sku
+			  LEFT JOIN sc_real_product_rel
+			  ON sc_amazon_order.sku = sc_real_product_rel.sku
+			  LEFT JOIN sc_real_product
+			  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
+			where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+			   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+			   {@ and sc_amazon_order_status.pick_status not in ('9','10','11','12') and '#status#' = '#status#'}
+			   {@ and sc_amazon_order_status.audit_status = '#status#'}
+			  {@ and sc_amazon_order.order_id = '#orderId#'}
+			  {@ and sc_amazon_order.order_id = '#orderId#'}
+			  {@ and sc_amazon_order.buyer_name = '#userName#'}
+			  {@ and sc_amazon_order.buyer_email = '#email#'}
+			  {@ and sc_amazon_order.sku = '#sku#'}
+			  {@ and sc_amazon_order_status.pick_status in ('9','10','11','12') and   '#pickStatus#'  = '#pickStatus#' }
+			  {@ and exists ( 
+			  		select 1 from sc_amazon_picked_order where
+			  		 picked_id = '#pickId#'
+			  		 and sc_amazon_picked_order.order_id = sc_amazon_order.order_id
+			  		 and sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
+			  )}  order by sc_amazon_order.order_number,sc_amazon_order_status.PICK_STATUS desc
+		   ) t 
+		 ]]>
+    </entry>
+    
+    <entry key="sql_order_list_picked_forselect.many">
+    <![CDATA[
+        select t.* from (
+			select sc_amazon_order.* ,sc_amazon_order_status.ID,
+				sc_amazon_order_status.AUDIT_STATUS, 
+				sc_amazon_order_status.AUDIT_MEMO, 
+				sc_amazon_order_status.REAUDIT_STATUS, 
+				sc_amazon_order_status.REAUDIT_MEMO, 
+				sc_amazon_order_status.PICK_STATUS,
+				sc_amazon_account_product.ASIN,
+				sc_amazon_account_product.LOCAL_URL,
+				sc_real_product.REAL_SKU,
+			    sc_real_product.IMAGE_URL,
+			    sc_real_product.POSITION,
+			    sc_real_product.BARCODE,
+			    sc_real_product.NAME,
+			     (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
+			  from  sc_amazon_order_status ,sc_amazon_order
+			  left join sc_amazon_account_product 
+			  on sc_amazon_account_product.sku = sc_amazon_order.sku
+			  LEFT JOIN sc_real_product_rel
+			  ON sc_amazon_order.sku = sc_real_product_rel.sku
+			  LEFT JOIN sc_real_product
+			  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
+			where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+			   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+			    and sc_amazon_order_status.pick_status not in ('9','10','11','12')  
+			    and sc_amazon_order_status.audit_status in ('5','6','7')
+			   {@ and sc_amazon_order.order_id = '#orderId#'}
+			   {@ and sc_amazon_order.buyer_name = '#userName#'}
+			   {@ and sc_amazon_order.buyer_email = '#email#'}
+			   {@ and sc_amazon_order.sku = '#sku#'}
+			    order by  sc_amazon_order.order_number,sc_amazon_order_status.PICK_STATUS desc
+		   ) t where ( t.C > 1 or (t.IS_PACKAGE is not null) )
 		 ]]>
     </entry>
     
     
     <entry key="sql_order_list_repicked_print">
     <![CDATA[
+    SELECT t.* FROM ( 
+    
 		  SELECT 
 		       t.ORDER_ID,
 		       t.ORDER_ITEM_ID,
@@ -388,38 +486,78 @@
 		       t.NAME,
 		       t.ASIN,
 		       t.LOCAL_URL,
-		       t.QUANTITY_TO_SHIP AS QUANTITY
+		       t.QUANTITY_TO_SHIP QUANTITY
            FROM (
-			SELECT 
-		       sc_amazon_order.ORDER_ID,
-			   sc_amazon_order.ORDER_ITEM_ID,
-		       sc_amazon_order.SKU ,
-		       sc_amazon_order.QUANTITY_TO_SHIP,
-		       sc_amazon_order.ORDER_NUMBER,
-		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
-		       	 THEN sc_amazon_order.SKU ELSE sc_real_product.REAL_SKU END ) AS REAL_SKU,
-		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
-		       	 THEN '1' ELSE '2' END ) AS P_TYPE,
-		       (CASE WHEN ( sc_real_product.IMAGE_URL IS NULL OR  sc_real_product.IMAGE_URL = '') 
-		       	THEN sc_amazon_account_product.LOCAL_URL ELSE sc_real_product.IMAGE_URL END ) AS IMAGE_URL,
-		       sc_real_product.POSITION,
-		       sc_real_product.BARCODE,
-		        (CASE WHEN ( sc_real_product.NAME IS NULL OR  sc_real_product.NAME = '') 
-		       	THEN sc_amazon_order.PRODUCT_NAME ELSE sc_real_product.NAME END ) AS NAME,
-		       sc_amazon_account_product.ASIN,
-		       sc_amazon_account_product.LOCAL_URL
-		  FROM  sc_amazon_order_status ,sc_amazon_order
-		  LEFT JOIN sc_amazon_account_product 
-		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
-		  LEFT JOIN sc_real_product_rel
-		  ON sc_amazon_order.sku = sc_real_product_rel.sku
-		  LEFT JOIN sc_real_product
-		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
-		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
-		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   AND sc_amazon_order_status.pick_status = '9'
-		   AND sc_amazon_order.order_number = '{@#orderNumber#}'
-            ) t order by t.real_sku
+           
+				SELECT
+				        s2.ORDER_ID,
+			            s2.ORDER_ITEM_ID,
+		                s2.SKU ,
+		                s2.QUANTITY_TO_SHIP,
+		                s2.ORDER_NUMBER,
+				        s4.REAL_SKU ,
+				        (CASE WHEN ( s4.REAL_SKU IS NULL OR  s4.REAL_SKU = '')
+				       	   THEN '1' ELSE '2' END ) AS P_TYPE ,
+				        s4.IMAGE_URL ,
+				        s4.POSITION,
+				        s4.BARCODE,
+				        (CASE WHEN ( s4.NAME IS NULL OR  s4.NAME = '') 
+				       	THEN s2.PRODUCT_NAME ELSE s4.NAME END ) AS NAME,
+				       '' AS ASIN,
+				       '' AS LOCAL_URL,
+				       1 AS ITEM_COUNT
+				  FROM  sc_amazon_order_status s1
+					,sc_amazon_order s2
+					,sc_real_product_rel s3
+					,sc_real_product s4
+				WHERE 
+				   s1.order_id = s2.order_id 
+				   AND s1.pick_status = '9'
+				   AND s1.order_item_id = s2.order_item_id
+				   AND s2.sku = s3.sku
+				   AND s4.id = s3.real_id
+				   AND s4.real_sku = s3.real_sku
+				   AND s4.type = 'base'
+				   AND s2.order_number = '{@#orderNumber#}'
+				  UNION
+				  SELECT s2.ORDER_ID,
+			            s2.ORDER_ITEM_ID,
+		                s2.SKU ,
+		                (s2.QUANTITY_TO_SHIP*s5.QUANTITY) AS QUANTITY_TO_SHIP,
+		                s2.ORDER_NUMBER,
+				       s6.REAL_SKU ,
+				       (CASE WHEN ( s6.REAL_SKU IS NULL OR  s6.REAL_SKU = '')
+				       	 THEN '1' ELSE '2' END ) AS P_TYPE ,
+				       s6.IMAGE_URL ,
+				       s6.POSITION,
+				       s6.BARCODE,
+				        (CASE WHEN ( s6.NAME IS NULL OR  s6.NAME = '') 
+				       	THEN s2.PRODUCT_NAME ELSE s6.NAME END ) AS NAME,
+				       '' AS ASIN,
+				       '' AS LOCAL_URL,
+				       s5.QUANTITY AS ITEM_COUNT
+				  FROM  sc_amazon_order_status s1
+					,sc_amazon_order s2
+					,sc_real_product_rel s3
+					,sc_real_product s4
+					,sc_real_product_composition s5
+					,sc_real_product s6
+				WHERE 
+				   s1.order_id = s2.order_id 
+				   AND s1.pick_status = '9'
+				   AND s1.order_item_id = s2.order_item_id
+				   AND s2.sku = s3.sku
+				   AND s4.id = s3.real_id
+				   AND s4.real_sku = s3.real_sku
+				   AND s4.type = 'package'
+				   AND s5.composition_id = s4.id
+				   AND s5.ref_id = s6.id
+				   AND s5.ref_sku = s6.real_sku
+				   AND s2.order_number = '{@#orderNumber#}'
+  
+            ) t ORDER BY t.real_sku
+		 
+     ) t  LIMIT 0,1000
 		 ]]>
     </entry>
     
@@ -471,109 +609,9 @@
     ]]>
     </entry>
     
-    <entry key="sql_order_list_one_repicked_print">
-    <![CDATA[
-		  SELECT 
-		       t.ORDER_ID,
-		       t.ORDER_ITEM_ID,
-		       t.SKU ,
-		       t.REAL_SKU,
-		       t.IMAGE_URL,
-		       t.POSITION,
-		       t.BARCODE,
-		       t.NAME,
-		       t.ASIN,
-		       t.LOCAL_URL,
-		       t.QUANTITY_TO_SHIP AS QUANTITY
-           FROM (
-			SELECT 
-			   sc_amazon_order.ORDER_ID,
-			   sc_amazon_order.ORDER_ITEM_ID,
-			   sc_amazon_order.SKU ,
-		       sc_amazon_order.QUANTITY_TO_SHIP,
-		       sc_real_product.REAL_SKU,
-		       sc_real_product.IMAGE_URL,
-		       sc_real_product.POSITION,
-		       sc_real_product.BARCODE,
-		       sc_real_product.NAME,
-		       sc_amazon_account_product.ASIN,
-		       sc_amazon_account_product.LOCAL_URL,
-		       (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
-		  FROM  sc_amazon_order_status ,sc_amazon_order
-		  LEFT JOIN sc_amazon_account_product 
-		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
-		  LEFT JOIN sc_real_product_rel
-		  ON sc_amazon_order.sku = sc_real_product_rel.sku
-		  LEFT JOIN sc_real_product
-		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
-		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
-		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   AND sc_amazon_order_status.pick_status = '9'
-		   AND EXISTS ( 
-		  		SELECT 1 FROM sc_amazon_picked_order WHERE
-		  		 picked_id = '{@#pickId#}'
-		  		 AND sc_amazon_picked_order.order_id = sc_amazon_order.order_id
-		  		 AND sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
-		  )
-            ) t where t.C <= 1 order by t.real_sku
-		 ]]>
-    </entry>
-    
-    <entry key="sql_order_list_many_repicked_print">
-    <![CDATA[
-		  SELECT 
-		       t.ORDER_ID,
-		       t.ORDER_ITEM_ID,
-		       t.SKU ,
-		       t.REAL_SKU,
-		       t.IMAGE_URL,
-		       t.POSITION,
-		       t.BARCODE,
-		       t.NAME,
-		       t.ASIN,
-		       t.LOCAL_URL,
-		       t.QUANTITY_TO_SHIP AS QUANTITY
-           FROM (
-		SELECT 
-			   sc_amazon_order.ORDER_ID,
-			   sc_amazon_order.ORDER_ITEM_ID,
-			   sc_amazon_order.SKU ,
-		       sc_amazon_order.QUANTITY_TO_SHIP,
-		       sc_real_product.REAL_SKU,
-		       sc_real_product.IMAGE_URL,
-		       sc_real_product.POSITION,
-		       sc_real_product.BARCODE,
-		       sc_real_product.NAME,
-		       sc_amazon_account_product.ASIN,
-		       sc_amazon_account_product.LOCAL_URL,
-		       (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
-		   	  WHERE s1.order_id = sc_amazon_order.order_id
-		   	  GROUP BY s1.order_id ) AS C
-		  FROM  sc_amazon_order_status ,sc_amazon_order
-		  LEFT JOIN sc_amazon_account_product 
-		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
-		  LEFT JOIN sc_real_product_rel
-		  ON sc_amazon_order.sku = sc_real_product_rel.sku
-		  LEFT JOIN sc_real_product
-		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
-		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
-		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   AND sc_amazon_order_status.pick_status = '9'
-		   AND EXISTS ( 
-		  		SELECT 1 FROM sc_amazon_picked_order WHERE
-		  		 picked_id = '{@#pickId#}'
-		  		 AND sc_amazon_picked_order.order_id = sc_amazon_order.order_id
-		  		 AND sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
-		  )
-            ) t where t.C >=2 order by t.order_id
-		 ]]>
-    </entry>
-    
     <entry key="sql_order_list_picked_print">
     <![CDATA[
-		  SELECT t.SKU ,
+         SELECT t.SKU ,
 		t.REAL_SKU,
 		       t.IMAGE_URL,
 		       t.POSITION,
@@ -582,40 +620,79 @@
 		       t.NAME,
 		       t.ASIN,
 		       t.LOCAL_URL,
-		       SUM(t.QUANTITY_TO_SHIP) AS QUANTITY
+		       SUM( t.QUANTITY_TO_SHIP * t.ITEM_COUNT ) AS QUANTITY
            FROM (
     
-		SELECT  sc_amazon_order.SKU ,
-		       sc_amazon_order.QUANTITY_TO_SHIP,
-		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
-		       	 THEN sc_amazon_order.SKU ELSE sc_real_product.REAL_SKU END ) AS REAL_SKU,
-		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
-		       	 THEN '1' ELSE '2' END ) AS P_TYPE,
-		       (CASE WHEN ( sc_real_product.IMAGE_URL IS NULL OR  sc_real_product.IMAGE_URL = '') 
-		       	THEN sc_amazon_account_product.LOCAL_URL ELSE sc_real_product.IMAGE_URL END ) AS IMAGE_URL,
-		       sc_real_product.POSITION,
-		       sc_real_product.BARCODE,
-		        (CASE WHEN ( sc_real_product.NAME IS NULL OR  sc_real_product.NAME = '') 
-		       	THEN sc_amazon_order.PRODUCT_NAME ELSE sc_real_product.NAME END ) AS NAME,
-		       sc_amazon_account_product.ASIN,
-		       sc_amazon_account_product.LOCAL_URL
-		  FROM  sc_amazon_order_status ,sc_amazon_order
-		  LEFT JOIN sc_amazon_account_product 
-		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
-		  LEFT JOIN sc_real_product_rel
-		  ON sc_amazon_order.sku = sc_real_product_rel.sku
-		  LEFT JOIN sc_real_product
-		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
-		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
-		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   AND sc_amazon_order_status.pick_status = '9'
+		SELECT  s2.SKU ,
+		        s2.QUANTITY_TO_SHIP,
+		        s4.REAL_SKU ,
+		        (CASE WHEN ( s4.REAL_SKU IS NULL OR  s4.REAL_SKU = '')
+		       	   THEN '1' ELSE '2' END ) AS P_TYPE ,
+		        s4.IMAGE_URL ,
+		        s4.POSITION,
+		        s4.BARCODE,
+		        (CASE WHEN ( s4.NAME IS NULL OR  s4.NAME = '') 
+		       	THEN s2.PRODUCT_NAME ELSE s4.NAME END ) AS NAME,
+		       '' AS ASIN,
+		       '' AS LOCAL_URL,
+		       1 AS ITEM_COUNT
+		  FROM  sc_amazon_order_status s1
+			,sc_amazon_order s2
+			,sc_real_product_rel s3
+			,sc_real_product s4
+		WHERE 
+		   s1.order_id = s2.order_id 
+		   AND s1.pick_status = '9'
+		   AND s1.order_item_id = s2.order_item_id
+		   AND s2.sku = s3.sku
+		   AND s4.id = s3.real_id
+		   AND s4.real_sku = s3.real_sku
+		   AND s4.type = 'base'
 		   AND EXISTS ( 
 		  		SELECT 1 FROM sc_amazon_picked_order WHERE
 		  		 picked_id = '{@#pickId#}'
-		  		 AND sc_amazon_picked_order.order_id = sc_amazon_order.order_id
-		  		 AND sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
+		  		 AND sc_amazon_picked_order.order_id = s2.order_id
+		  		 AND sc_amazon_picked_order.order_item_id = s2.order_item_id
+		  )
+		  UNION
+		  SELECT  s2.SKU ,
+		          s2.QUANTITY_TO_SHIP,
+		       s6.REAL_SKU ,
+		       (CASE WHEN ( s6.REAL_SKU IS NULL OR  s6.REAL_SKU = '')
+		       	 THEN '1' ELSE '2' END ) AS P_TYPE ,
+		       s6.IMAGE_URL ,
+		       s6.POSITION,
+		       s6.BARCODE,
+		        (CASE WHEN ( s6.NAME IS NULL OR  s6.NAME = '') 
+		       	THEN s2.PRODUCT_NAME ELSE s6.NAME END ) AS NAME,
+		       '' AS ASIN,
+		       '' AS LOCAL_URL,
+		       s5.QUANTITY AS ITEM_COUNT
+		  FROM  sc_amazon_order_status s1
+			,sc_amazon_order s2
+			,sc_real_product_rel s3
+			,sc_real_product s4
+			,sc_real_product_composition s5
+			,sc_real_product s6
+		WHERE 
+		   s1.order_id = s2.order_id 
+		   AND s1.pick_status = '9'
+		   AND s1.order_item_id = s2.order_item_id
+		   AND s2.sku = s3.sku
+		   AND s4.id = s3.real_id
+		   AND s4.real_sku = s3.real_sku
+		   AND s4.type = 'package'
+		   AND s5.composition_id = s4.id
+		   AND s5.ref_id = s6.id
+		   AND s5.ref_sku = s6.real_sku
+		   AND EXISTS ( 
+		  		SELECT 1 FROM sc_amazon_picked_order WHERE
+		  		 picked_id = '{@#pickId#}'
+		  		 AND sc_amazon_picked_order.order_id = s2.order_id
+		  		 AND sc_amazon_picked_order.order_item_id = s2.order_item_id
 		  )
             ) t GROUP BY t.REAL_SKU
+     
 		 ]]>
     </entry>
     

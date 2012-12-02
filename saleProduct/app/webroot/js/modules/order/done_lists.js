@@ -92,7 +92,7 @@ function formatGridData(data){
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ORDER_ID",label:"操作",width:"5%",render:function(record){
-							if(record.C > 1){
+							if(record.IS_PACKAGE || record.C > 1){
 								$(this).find("td").css("background","#EEBBFF") ;
 							}
 						}

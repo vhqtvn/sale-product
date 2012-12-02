@@ -29,7 +29,6 @@
 	
 	<style type="text/css">
 		body{
-			padding:3px;
 		}
 		
 		.print-title{
@@ -94,7 +93,7 @@
 		</table>
 		
 	</div>
-	<div class="grid-content">
+	<div class="grid-content" >
 	
 	</div>
 </body>

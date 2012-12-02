@@ -24,29 +24,31 @@ function formatGridData(data){
 	$(function(){
 			var _index = 1 ;
 			var sqlId = "sql_order_list_picked_print"//"sql_order_list_picked" ;
+		setTimeout(function(){
+			
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"left",key:"INDEX",label:"序号", width:"30",format:function(val,record){
+					{align:"left",key:"INDEX",label:"序号", width:"5%",format:function(val,record){
 						return _index++ ;
 					}},
-					{align:"left",key:"REAL_SKU",label:"产品SKU", width:"60",format:function(val,record){
+					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"13%",format:function(val,record){
 						if(record.P_TYPE == 1){
-							return "<font color=red>"+val+"(未关联货品)</font>" ;
+							return "<font color=red>"+val+"</font>" ;
 						}else
 							return val ;
 					}},
-					{align:"left",key:"NAME",label:"名称", width:"90"},
-					{align:"center",key:"IMAGE_URL",label:"图片", width:"45",format:function(val,record){
+					{align:"left",key:"NAME",label:"货品名称", width:"20%"},
+					{align:"center",key:"IMAGE_URL",label:"图片", width:"10%",format:function(val,record){
 						if(val){
 							return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'/>" ;
 						}
 						return "" ;
 					}},
-					{align:"left",key:"POSITION",label:"位置", width:"90"},
-					{align:"right",key:"QUANTITY",label:"数量", width:"30"},
-					{align:"left",key:"STATUS",label:"完成状态", width:"50"},
-					{align:"left",key:"MENU",label:"备注信息", width:"90"},
-					{align:"left",key:"PICKER",label:"拣货人", width:"40"}
+					{align:"left",key:"POSITION",label:"位置", width:"15%"},
+					{align:"right",key:"QUANTITY",label:"数量", width:"5%"},
+					{align:"left",key:"STATUS",label:"完成状态", width:"8%"},
+					{align:"left",key:"MENU",label:"备注信息", width:"13%"},
+					{align:"left",key:"PICKER",label:"拣货人", width:"5%"}
 		         ],
 		        // 序号、产品SKU、名称、图片，位置、数量，完成状态，备注信息。拣货人
 
@@ -62,6 +64,8 @@ function formatGridData(data){
 				 querys:{sqlId:sqlId,accountId:accountId,status:'',pickStatus:'9',pickId:pickedId},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
+		
+		},300) ;
    	 });
    	 
    	 var currentQueryKey = "" ;

@@ -37,29 +37,7 @@
 			if( $("#login_id").val()  ){
 				$("#login_id").attr("disabled",true) ;
 			}
-			
-			/*$("button").click(function(){
-				if( !$.validation.validate('#personForm').errorInfo ) {
-					var json = $("#personForm").toJson() ;
-					$.ajax({
-						type:"post",
-						url:"/saleProduct/index.php/saleProduct/saveProduct",
-						data:json,
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							if(window.opener){
-								window.opener.location.reload() ;
-								window.close() ;
-							}else{
-								window.location.reload();
-							}
-							
-						}
-					}); 
-				};
-			})*/
-		})
+		});
 		
 		function uploadSuccess(){
 			if(window.opener){
@@ -85,7 +63,7 @@
 	        <form id="personForm" action="/saleProduct/index.php/saleProduct/saveProduct"
 	          method="post" target="form-target" data-widget="validator"
 	         enctype="multipart/form-data" class="form-horizontal" >
-	        	<input type="hidden" id="id" value="<?php echo $item['ID']?>"/>
+	        	<input type="hidden" id="id" name="id" value="<?php echo $item['ID']?>"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->

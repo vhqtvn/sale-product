@@ -212,8 +212,10 @@ function formatGridData(data){
 					$("#orderId").val("") ;
 				 }
 			} ;
+			setTimeout(function(){
+				$(".grid-content").llygrid(gridConfig) ;
+			},100) ;
 			
-			$(".grid-content").llygrid(gridConfig) ;
    	 });
    	 
    	 var currentQueryKey = "" ;

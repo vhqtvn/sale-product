@@ -102,7 +102,7 @@
 					 autoWidth:true,
 					 title:"",
 					 indexColumn:false,
-					 querys:{realSku:'<?php echo $sku;?>',sqlId:"sql_saleproduct_channel_list"},
+					 querys:{id:'<?php echo $id;?>',sqlId:"sql_saleproduct_channel_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
 						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
@@ -138,11 +138,11 @@
 			}
 			
 			$(".add-channel-product").click(function(){
-				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $sku;?>/1",1000,640) ;
+				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $id;?>/1",1000,640) ;
 			}) ;
 			
 			$(".add-sku").click(function(){
-				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $sku;?>/2",1000,640) ;
+				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $id;?>/2",1000,640) ;
 			}) ;
    	 });
    </script>
@@ -190,7 +190,7 @@
 			   <ul>
 			   	 <li>
 				 	<button class="btn btn-primary btn-mini add-btn add-channel-product">选择渠道产品</button>
-				 	<button class="btn btn-primary btn-mini add-btn add-sku">添加产品SKU</button>
+				 	<button class="btn btn-primary btn-mini add-btn add-sku">相关产品SKU</button>
 				 </li>
 			   </ul>
 			

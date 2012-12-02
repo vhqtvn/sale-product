@@ -348,14 +348,14 @@
 			totalWidth += 25*totalWidth/(width - 25 ) ;
 		}
 		
+		
 		$(options.columns).each(function(index){
 			for(var o in $.llygrid.format){//format
 				if( this[o] && !this.format){
 					this.format = {type:o,content:this[o]} ;
 				}
 			}
-			options.autoWidth&&(this.width = parseInt( this.width/(totalWidth+options.columns.length )*width -1 ) ) ;
-
+			options.autoWidth&&(this.width = parseInt( this.width/(totalWidth+options.columns.length )*width -4 ) ) ;
 			this.forzen?forzenColumn.push(this):bodyColumn.push(this) ;
 		}) ;
 		options.forzenColumn = forzenColumn ;
@@ -528,6 +528,12 @@
 				if( col.format && col.format.type &&(_ = $.llygrid.format[col.format.type] )&& _.bindEvent ){
 					_.bindEvent(col,target) ;
 				}
+				if(col.render){
+					target.find("tr").each(function(){
+						if($(this).data("record"))
+							col.render.call(this,$(this).data("record")) ;
+					});
+				}
 			}) ;
 			if(options.loadAfter){
 				options.loadAfter() ;
@@ -633,7 +639,7 @@
 		version:"1.0.0",
 		defaults:{
 			title: null,
-			autoWidth:true,
+			autoWidth:false,
 			columns: null,
 			loadMsg: 'Processing, please wait ...',
 			pager: false,
@@ -705,13 +711,6 @@
 				bindEvent:function(col,grid){
 					var callback = col.format.callback||function(){} ;
 					var render = col.format.render||function(){} ;
-					
-					if(col.render){
-						grid.find("tr").each(function(){
-							if($(this).data("record"))
-								col.render.call(this,$(this).data("record")) ;
-						});
-					}
 					
 					grid.find("input[name='cb_"+col.key+"']").each(function(){
 						var row = $(this).parents("tr:first").get(0) ;
