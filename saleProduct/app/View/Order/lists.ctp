@@ -80,10 +80,13 @@
 					<button class="btn btn-danger save-btn" status="6">加急单</button>
 					<button class="btn btn-danger save-btn" status="7">特殊单</button>
 				</td>
+				<td style="text-align:right;">
+					
+				</td>
 			</tr>	
 			<tr>
 				<th>备注：</th>
-				<td>
+				<td colspan=2>
 					<textarea id="memo" style="width:100%;height:50px;"></textarea>
 				</td>
 			</tr>					

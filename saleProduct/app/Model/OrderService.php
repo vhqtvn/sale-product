@@ -375,6 +375,13 @@ class OrderService extends AppModel {
 		return $item ;
 	}
 	
+	function getPickOrders($pickId){
+		$sql = $this->getDbSql("sql_order_list_picked_export") ;
+		$sql = $this->getSql($sql,array('pickId'=>$pickId)) ;
+		$items = $this->query($sql) ;
+		return $items ;
+	}
+	
 	function getTrackNumberFeed($params,$user ,$accountId,$MerchantIdentifier){
 		//$sql = "select * from sc_amazon_order where account_id = '$accountId'
 		//	and (tn_status is null or tn_status = '') AND track_number IS NOT NULL AND track_number !='' " ;

@@ -702,7 +702,50 @@
 		 ]]>
     </entry>
     
-
+	<entry key="sql_order_list_picked_export">
+    <![CDATA[
+       select * from (
+         	SELECT  
+         		'{@#pickId#}' as PICK_ID,
+				s4.REAL_SKU ,
+				s4.NAME,
+		        s4.IMAGE_URL ,
+		        s4.MEMO,
+				s2.SKU ,
+				s2.BUYER_PHONE_NUMBER,
+				s2.BUYER_EMAIL,
+		        s2.QUANTITY_TO_SHIP,
+		        s2.ORDER_ID,
+		        s2.ORDER_NUMBER,
+		        s2.ORDER_ITEM_ID,
+		        s2.RECIPIENT_NAME,
+		        s2.SHIP_ADDRESS_1,
+		        s2.SHIP_ADDRESS_2,
+		        s2.SHIP_ADDRESS_3,
+		        s2.SHIP_COUNTRY,
+		        s2.SHIP_CITY,
+		        s2.SHIP_STATE,
+		        s2.SHIP_POSTAL_CODE
+		  FROM  sc_amazon_order_status s1
+			,sc_amazon_order s2
+			,sc_real_product_rel s3
+			,sc_real_product s4
+		WHERE 
+		   s1.order_id = s2.order_id 
+		   AND s1.pick_status = '9'
+		   AND s1.order_item_id = s2.order_item_id
+		   AND s2.sku = s3.sku
+		   AND s4.id = s3.real_id
+		   AND s4.real_sku = s3.real_sku
+		   AND EXISTS ( 
+		  		SELECT 1 FROM sc_amazon_picked_order WHERE
+		  		 picked_id = '{@#pickId#}'
+		  		 AND sc_amazon_picked_order.order_id = s2.order_id
+		  		 AND sc_amazon_picked_order.order_item_id = s2.order_item_id
+		  )
+        ) t order by t.ORDER_NUMBER
+		 ]]>
+    </entry>
     
     <entry key="sql_order_status_insert">
 		INSERT INTO sc_amazon_order_status 

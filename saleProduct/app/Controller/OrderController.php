@@ -5,7 +5,7 @@ App :: import('Vendor', 'Amazon');
  */
 class OrderController extends AppController {
 	
-	var $uses = array('OrderService','Amazonaccount');
+	var $uses = array('OrderService','Amazonaccount','SqlUtils');
 	
 	public function doUpload($accountId){
 		
@@ -240,12 +240,72 @@ class OrderController extends AppController {
     	$this->set("pick",$pick) ;
     }
     
+    public function exportPicked($pickId){
+    	$this->set("pickId",$pickId) ;
+    	$pick = $this->OrderService->getPicked($pickId) ;
+    	$this->set("pick",$pick) ;
+    }
+    
+    public function doExportPicked($pickId){
+    	
+    	$this->set("pickId",$pickId) ;
+    	$items = $this->OrderService->getPickOrders($pickId) ;
+    	$pick = $this->OrderService->getPicked($pickId) ;
+    	
+    	$filename = "拣货单_".$pick['NAME'].date("Y.m.d").".csv";
+		$csv_file = fopen('php://output', 'w');
+
+		header('Content-type: application/csv');
+		header('Content-Disposition: attachment; filename="'.$filename.'"');
+		
+		// The column headings of your .csv file
+		$header_row = array("PICK_ID", "ORDER_NUMBER", "REAL_SKU", "NAME", "SKU", "BUYER_PHONE_NUMBER", "BUYER_EMAIL",
+		"QUANTITY_TO_SHIP","ORDER_ID","ORDER_ITEM_ID","RECIPIENT_NAME","SHIP_ADDRESS_1","SHIP_ADDRESS_2","SHIP_ADDRESS_3",
+		"SHIP_COUNTRY","SHIP_CITY","SHIP_STATE","SHIP_POSTAL_CODE", "MEMO");
+		fputcsv($csv_file,$header_row,',','"');
+	
+		// Each iteration of this while loop will be a row in your .csv file where each field corresponds to the heading of the column
+		foreach($items as $result)
+		{
+			$result = $result['t'] ;
+			// Array indexes correspond to the field names in your db table(s)
+			$row = array(
+				$result['PICK_ID'],
+				$result['ORDER_NUMBER'],
+				$result['REAL_SKU'],
+				$result['NAME'],
+				$result['SKU'],
+				$result['BUYER_PHONE_NUMBER'],
+				$result['BUYER_EMAIL'],
+				$result['QUANTITY_TO_SHIP'],
+				$result['ORDER_ID'],
+				$result['ORDER_ITEM_ID'],
+				$result['RECIPIENT_NAME'],
+				$result['SHIP_ADDRESS_1'],
+				$result['SHIP_ADDRESS_2'],
+				$result['SHIP_ADDRESS_3'],
+				$result['SHIP_COUNTRY'],
+				$result['SHIP_CITY'],
+				$result['SHIP_STATE'],
+				$result['SHIP_POSTAL_CODE'],
+				$result['MEMO']
+			);
+	
+			fputcsv($csv_file,$row,',','"');
+		}
+	
+		fclose($csv_file);
+    	
+    }
+    
     public function updatePickedStatus($pickId){
     	$this->set("pickId",$pickId) ;
     	$this->OrderService->updatePickedStatus($pickId ) ;
     	$this->response->type("json");
 		$this->response->body("execute complete");
 		return $this->response;
+		
+		
     }
     
     /**

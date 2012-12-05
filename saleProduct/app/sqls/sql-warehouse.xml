@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+
+   <entry key="sql_warehouse_lists">
+  		SELECT * FROM sc_warehouse 
+   </entry>
+   
+   <entry key="sql_warehouse_insert">
+INSERT INTO sc_warehouse 
+	( 
+	CODE, 
+	NAME, 
+	ADDRESS, 
+	ZIPCODE, 
+	MEMO, 
+	CREATOR, 
+	CREATE_TIME
+	)
+	VALUES
+	( 
+	'{@#code#}', 
+	'{@#name#}', 
+	'{@#address#}', 
+	'{@#zipcode#}', 
+	'{@#memo#}', 
+	'{@#loginId#}', 
+	NOW()
+	)
+   </entry>
+   
+    <entry key="sql_warehouse_update">
+	UPDATE  sc_warehouse 
+		SET 
+		CODE = '{@#code#}' , 
+		NAME = '{@#name#}' , 
+		ADDRESS = '{@#address#}' , 
+		ZIPCODE = '{@#zipcode#}' , 
+		MEMO = '{@#memo#}'
+		WHERE
+		ID = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_user_list_forwarehouse">
+		select * from sc_user
+   </entry>
+   
+   <entry key="sql_warehouse_manage_lists">
+		select sc_warehouse_manage.*,
+		sc_user.NAME,
+		sc_user.PHONE,
+		sc_user.EMAIL
+		 from sc_warehouse_manage ,sc_user
+		 where 1=1 
+		 and sc_user.id = sc_warehouse_manage.user_id
+		 and warehouse_id = '{@#warehouseId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_manage_delete">
+		delete from sc_warehouse_manage where id = '{@#warehouseManageId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_unit_1_lists">
+		select * from sc_warehouse_unit where type = 1 and warehouse_id = '{@#warehouseId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_unit_insert">
+		
+INSERT INTO  sc_warehouse_unit 
+	(
+	TYPE, 
+	CODE, 
+	MEMO, 
+	ROW_VALUE, 
+	FLOOR_VALUE, 
+	COLUMN_VALUE, 
+	WAREHOUSE_ID
+	)
+	VALUES
+	(
+	'1', 
+	'{@#code#}', 
+	'{@#memo#}', 
+	{@#row#}, 
+	{@#floor#}, 
+	{@#column#}, 
+	'{@#warehouseId#}'
+	)
+   </entry>
+   
+   <entry key="sql_warehouse_unit_delete">
+   delete from sc_warehouse_unit where id = '{@#warehouseUnitId#}'
+   </entry>
+   <entry key="sql_warehouse_unit_update">
+   
+UPDATE  sc_warehouse_unit 
+	SET 
+	CODE = '{@#code#}' , 
+	MEMO = '{@#memo#}' , 
+	ROW_VALUE = '{@#row#}' , 
+	FLOOR_VALUE = '{@#floor#}' , 
+	COLUMN_VALUE = '{@#column#}'
+	
+	WHERE
+	ID = '{@#id#}' 
+   </entry>
+   
+</properties>

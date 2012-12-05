@@ -79,8 +79,8 @@
 					<tr class="action-row">
 						<th></th>
 						<td colspan='2'>
-							<button class="btn btn-primary action-btn print-btn pick-btn action-can-disabled" action='4'>打印拣货单</button>
-							
+							<button class="btn btn-primary action-btn action-can-disabled" action='4'>打印拣货单</button>
+							<button class="btn btn-primary action-btn action-can-disabled" action='10'>导出拣货单</button>
 							<!--
 							
 							-->
