@@ -35,7 +35,7 @@
 	      		  <div class="span6 control-group">
 		            <label class="control-label" for="name">姓名：</label>
 		            <div class="controls">
-		              <input type="text" id="name" /><button type="button" onclick="$('#name-target').val($('#name').val());">Validate</button>
+		              <input type="text" id="name" />
 		              <input type="hidden" id="name-target" data-validator="required,length[6,10]"  data-options="{tipsTarget:'#name'}"/>
 		            </div>
 		          </div>
@@ -131,7 +131,7 @@
 		          <div class="span6 control-group">
 		            <label class="control-label" for="remark">备注：</label>
 		            <div class="controls">
-		              <textarea id="remark" class="view-source" data-validator="required,func[myLength]"></textarea>
+		              <textarea placeHolder="自定义函数校验：备注文字的长度必须介于5到10之间" id="remark" class="view-source" data-validator="required,func[myLength]"></textarea>
 		            </div>
 		          </div>
 		      </div>

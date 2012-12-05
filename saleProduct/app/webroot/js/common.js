@@ -1,4 +1,4 @@
-﻿/*解析 ConextPath*/
+/*解析 ConextPath*/
 function getContextPath() {
     var pathName = document.location.pathname;
     var index = pathName.substr(1).indexOf("/");
@@ -12,7 +12,10 @@ function getContextPath() {
     return result ;
 }
 
-window.Config = window.Config || {contextPath:getContextPath()} ;
+window.Config = window.Config || {
+	contextPath:getContextPath(),
+	serverPath:window.location.protocol+"//"+window.location.host+getContextPath()
+} ;
 window.Global = window.Global || window.Config ;
 
 
@@ -29,12 +32,38 @@ if( !jQuery.fn.dialogClose ){
 	}
 }
 
-jQuery.open = function(url,width,height,params,callback,fixParams){
+jQuery.open = function(){//url,width,height,params,callback,fixParams
+	var url , width , height , params , callback , fixParams ;//6
+	var args = arguments ;
+	var argsLength = args.length ;
+	for(var i=argsLength+1 ;i<7;i++){
+		args[i-1] = null ;
+	}
+	url = args[0] ;
+	jQuery(args).each(function(index,arg){
+		if(index == 0 )return ;
+		if( jQuery.isFunction( arg )  ){
+			callback = arg ;
+		}else if( typeof arg == 'string' || typeof arg == 'number' ){
+			if(!width) width = arg ;
+			else if(!height) height = arg ;
+			//else params = arg ;
+		}else if(arg === null || arg === "" ){
+			//none
+		}else if(typeof arg == "object"){
+			if(!params)
+				params = arg ;
+			else
+				fixParams = arg ;
+		}
+	}) ;
+	
 	url = jQuery.utils.parseUrl(url||"") ;
 	jQuery.dialogReturnValue("__init__");
 	params = params||{} ;
 	fixParams = fixParams||{} ;
-	if( $.dialog  && (params.showType == 'dialog' || !params.showType ) ){
+	params.showType = "open" ;
+	if( jQuery.dialog  && (params.showType == 'dialog' || !params.showType ) ){
 		var opts = {
 			width:width,
 			height:height,
@@ -51,22 +80,26 @@ jQuery.open = function(url,width,height,params,callback,fixParams){
 						me.frwDom.browserFix() ;
 					},5 ) ;
 				}
-			},close:function(){
-				callback && callback.call(this) ;
+			},close:function(opener){
+				var val = $.dialogReturnValue() ;
+				if( callback ){
+					return callback.call(this,val,opener) ;
+				}
+				return true ;
 			}
 		}
 		
-		opts = $.extend({},opts,params,fixParams) ;
+		opts =jQuery.extend({},opts,params,fixParams) ;
 		var _dialog = jQuery.dialog(opts) ;
 		return _dialog ;
 		
-	}else if(!$.browser.msie || params.showType == 'open'){
+	}else if(!jQuery.browser.msie || params.showType == 'open'){
 		
 		var win = openCenterWindow(url, width, height);
 		window._dialogArguments = params ;
 		
 		var _callbak = function(){
-			if( $.unblock ){$.unblock() ; }
+			if( jQuery.unblock ){jQuery.unblock() ; }
 			callback(window);
 		}
 		try{
@@ -79,13 +112,11 @@ jQuery.open = function(url,width,height,params,callback,fixParams){
 			
 		}
 		return win ;
-	} else if( $.browser.msie ){
+	} else if( jQuery.browser.msie ){
 		_returnValue = showCenterModalDialog(url , width ,height ,params) ;
 		jQuery.dialogReturnValue(_returnValue||"") ;
 		callback() ;
 	}
-	
-	
 }
 
 jQuery.dialogAraguments = function(){
@@ -98,17 +129,27 @@ jQuery.dialogAraguments = function(){
 
 jQuery.dialogReturnValue = function(returnValue){
 	if(typeof returnValue != 'undefined'){
-		if( returnValue == "__init__" ){
+		if( returnValue == "__init__" || !returnValue   ){
 			window.returnValue = null ;
 			return ;
 		}
+
 		//window.winReturnValue = returnValue ;
 		window.returnValue = returnValue ;//showModelDialog
-		if(window.opener){ //open
-			window.opener.returnValue = returnValue ;
+
+		try{
+			if( window.opener.location.href != window.location.href ){ //open
+				//fix crossdomain
+				try{ window.opener.returnValue = returnValue }catch(e){} ;
+			}
+		}catch (e){
 		}
-		//dialog iframe
-		$(document.body).dialogReturnValue && $(document.body).dialogReturnValue(returnValue) ;
+
+		if(window.location.href != window.top.location.href ){//no iframe
+			//dialog iframe
+			$(document.body).dialogReturnValue && $(document.body).dialogReturnValue(returnValue) ;
+		}
+		
 		//dialog iframe
 		if( $(".ui-dialog-wrapper:last")[0]){
 			$(".ui-dialog-wrapper:last").find("div:first").dialogReturnValue(returnValue) ;
@@ -173,7 +214,7 @@ jQuery.fn.toJson = function(beforeExtend,afterExtend,params) {
 	} ) ;
 	jQuery( temp_cb.split(",") ).each( function(){
 		var tempValue = [] ;
-		jQuery("input[name='" + this + "']:checked").each(function(i) {
+		me.find("input[name='" + this + "']:checked").each(function(i) {
 			tempValue.push( this.value ) ;
 		});
 		_add(this ,tempValue.join(",")) ;
@@ -216,16 +257,31 @@ jQuery.fn.toJson = function(beforeExtend,afterExtend,params) {
  *********************************/
 jQuery.utils = {
 	//解析URL
-	parseUrl : function(url){
-		url = jQuery.trim(url) ;
-		if( url.startWith("~") ){
-			url = url.substring(1) ;
-			url = Config.contextPath+url ;
-		}
+	parseUrl: function (url,params) {
+        params = params || {};
+        url = jQuery.trim(url);
+        if (url.startWith("~")) {
+            url = url.substring(1);
+            url = Config.contextPath + url;
+        }
 
-		//url = url.replace("~",Config.contextPath) ;
-		url = url.replace("{host}",getHost()) ;
-		url = url.replace("{port}",getPort()) ;
+        //url = url.replace("~",Config.contextPath) ;
+        url = url.replace("{host}", getHost());
+        url = url.replace("{port}", getPort());
+        
+        for (var o in params) {
+            url = url.replace("{" + o + "}", params[o]);
+        }
+
+        if (new RegExp("^(http|https)://").test(url)) {
+        	try{
+	        	var urlObject = parseUrlInternal(url);
+	            if ((urlObject.host + ":" + urlObject.port == window.location.host) || urlObject.host == window.location.host) {
+	                url = url.replace(new RegExp("^(http|https)://[^/]+/"), window.location.protocol + "//" + window.location.host + "/");
+	            }
+        	}catch(e){
+        	}
+        }
 
 		return url ;
 		
@@ -237,28 +293,41 @@ jQuery.utils = {
 		function getPort(){
 			return window.location.port ;
 		}
-	},
-	scrollContent:function(header,content,footer){
-		$(document.body).attr("scroll","no").css("overflow","hidden");
 		
-		var header 	= content||".header" ;
-		var footbtn = footbtn||".footbtn" ;
-		var content = content||".content" ;
-		
-		var h = header===false?0:$(header).outerHeight() ;
-		var f = footer===false?0:$(footbtn).outerHeight() ;
-		
-		var contentHeight =  $(document.body).height() -  h - f - 5;
-		
-		if($.browser.msie){
-			$(content).width($(document.body).width()-5) ;
-		}
-		
-		$(content).height(contentHeight).css({'overflow-x':'hidden','overflow-y':'auto'}) ;
+		 function parseUrlInternal(url) {
+            var a = document.createElement('a');
+            a.href = url;
+           
+            return {
+                source: url,
+                protocol: a.protocol.replace(':', ''),
+                host: a.hostname,
+                port: a.port,
+                query: a.search,
+                params: (function () {
+                    var ret = {},
+         			seg = a.search.replace(/^\?/, '').split('&'),
+         			len = seg.length, i = 0, s;
+                    for (; i < len; i++) {
+                        if (!seg[i]) { continue; }
+                        s = seg[i].split('=');
+                        ret[s[0]] = s[1];
+                    }
+                    return ret;
+                })(),
+                file: (a.pathname.match(/\/([^\/?#]+)$/i) || [, ''])[1],
+                hash: a.hash.replace('#', ''),
+                path: a.pathname.replace(/^([^\/])/, '/$1')
+            };
+        }
 	},scriptPath:function(scriptName){
-		if(scriptName == "plugin"||scriptName == "plugins") return jQuery.utils.parseUrl("~/app/webroot/js/") ;
-		if(scriptName == "upload") return jQuery.utils.parseUrl("~/statics/scripts/plugins/") ;
-		if( scriptName == 'jqueryui.css' ) return  jQuery.utils.parseUrl("~/statics/themes/default/jquery-ui.css") ;
+		var _scriptRoot = window.defaultScriptRoot||"~/statics/scripts" ;
+		var _themeRoot  = window.defaultThemeRoot||"~/statics/themes" ;
+		var _defaultTheme = window.defaultTheme||"mobile" ;
+		
+		if(scriptName == "plugin"||scriptName == "plugins") return jQuery.utils.parseUrl(_scriptRoot+"/plugins/") ;
+		if(scriptName == "upload") return jQuery.utils.parseUrl(_scriptRoot+"/plugins/") ;
+		if( scriptName == 'jqueryui.css' ) return  jQuery.utils.parseUrl(_themeRoot+"/"+_defaultTheme+"/jquery-ui.css") ;
 		var path = "" ;
 		$("script,link").each(function(){
 			if(path) return ;
@@ -293,6 +362,7 @@ jQuery.utils = {
          returnValue:      --  json object
  * 
  */
+jQuery.support.cors = true ;
 jQuery.request = function(params){
 	var _url     = null ;
 	var _data    = null ;
@@ -302,21 +372,22 @@ jQuery.request = function(params){
 
 	 if( jQuery.block && !params.noblock ) jQuery(target).block() ;
 	 
- 	 var dataType 	= params.dataType||'text' ;
+ 	 var dataType 	= 'text' ;
  	 var async 		= typeof params.async == 'undefined' ? true : params.async ;
  	 var type 		= params.type||'post' ;
  	 var error 		= params.error||_error|| jQuery.request.defaultErrorHandler;
  	 var success 	= params.success||_success ;
  	 var url 		= params.url ||_url ;
  	 var data 		= params.data || _data ;
-
+ 	 
 	 if(jQuery.utils) url = jQuery.utils.parseUrl(url) ;
 	 if (url.indexOf("?") > 0) {
         url = url + "&sb=" + Math.random();
-    } else {
+     } else {
         url = url + "?sb=" + Math.random();
-    }
- 	 $.ajax({
+     }
+     
+     var ajaxOptions = {
         type: type,
         url: url ,
         data: data ,
@@ -325,6 +396,12 @@ jQuery.request = function(params){
         success: function(response){
         	if( jQuery.unblock && !params.noblock ) jQuery(target).unblock() ;
         	var json = response ;
+        	
+        	if(!response){
+        		success(response,params.custom||{}) ;
+        		return ;
+        	}
+        	
         	if(typeof(response) == 'string'){
         		try{
         			eval("response = "+ response ) ;
@@ -343,12 +420,12 @@ jQuery.request = function(params){
         			if( response.returnValue.Rows ){
         				var items = [] ;
         				var columnNames = response.returnValue.ColumnNames ;
-        				$(response.returnValue.Rows).each(function(){
+        				jQuery(response.returnValue.Rows).each(function(){
         					var item = this ;
         					var temp = {} ;
-        					$(item).each(function(index,record){
+        					jQuery(item).each(function(index,record){
         						var colName = columnNames[index] ;
-        						temp[colName] = this ;
+        						temp[colName] = record ;
         					}) ;
         					items.push(temp) ;
         				}) ;
@@ -364,11 +441,50 @@ jQuery.request = function(params){
         	error(xhr, textStatus, errorThrown,url) ;
         	params._error && params._error(xhr, textStatus, errorThrown,url) ;
         }
-     });
+     } ;
+     
+     if( jQuery.request._events['beforeSend'] || params.beforeSend){
+     	ajaxOptions.beforeSend = function(xhr){
+     		jQuery( jQuery.request._events['beforeSend']||[] ).each(function(index,func){
+     			func.call(ajaxOptions,xhr) ;
+     		}) ;
+     		if( params.beforeSend ){
+     			params.beforeSend.call(ajaxOptions,xhr) ;
+     		}
+     	}
+     }
+     var isCrossDomain = false ;
+     var url = ajaxOptions.url ;
+     if( url.startWith("http://") || url.startWith("https://") ){
+     	 var urlParser = new Poly9.URLParser(url) ;
+     	 var  proto = urlParser.getProtocol() ;
+     	 var  host = urlParser.getHost() ;
+     	 var  port = urlParser.getPort() ;
+     	 
+     	 var requestUrl = proto+"://"+host+":"+port ;
+     	 var localUrl   = jQuery.utils.parseUrl("http://{host}:{port}") ;
+     	 
+     	 isCrossDomain = requestUrl!=localUrl ;
+     }
+     
+     if(isCrossDomain){
+     	ajaxOptions.type = "get" ;
+     	ajaxOptions.dataType = 'jsonp' ;
+     	ajaxOptions.async = false ;
+        ajaxOptions.data = ajaxOptions.data||{} ;
+		ajaxOptions.data.jsonp = true ;
+     }
+     
+ 	 jQuery.ajax(ajaxOptions);
  }
+jQuery.request._events = {} ;
+jQuery.request.addEvent = function( type , func ){
+	 jQuery.request._events[type] == jQuery.request._events[type]||[] ;
+	 jQuery.request._events[type].push(func) ;
+}
  
 jQuery.request.defaultErrorHandler = function(xhr, textStatus, errorThrown,url){
-	 $.open(Global.contextPath+"/common/error/report500.jsp",570,410,errorThrown ,null , {title:"提示信息"} ) ;
+	 jQuery.open(Global.contextPath+"/common/error/report500.jsp",570,410,{errorThrown:errorThrown} ) ;
 }
 
 
@@ -431,15 +547,87 @@ String.prototype.getQueryString = function(name){ //name 是URL的参数名字
 	if (r=this.match(reg)) return (unescape(r[2])||"").split("#")[0]; return null; 
 }; 
 
+if (typeof Poly9 == 'undefined')
+{
+    var Poly9 = {};
+}
+  
+/**
+ * Creates an URLParser instance
+ *
+ * @classDescription    Creates an URLParser instance
+ * @return {Object} return an URLParser object
+ * @param {String} url  The url to parse
+ * @constructor
+ * @exception {String}  Throws an exception if the specified url is invalid
+ */
+Poly9.URLParser = function(url) {
+  
+    this._fields = {
+        'Username' : 4, 
+        'Password' : 5, 
+        'Port' : 7, 
+        'Protocol' : 2, 
+        'Host' : 6, 
+        'Pathname' : 8, 
+        'URL' : 0, 
+        'Querystring' : 9, 
+        'Fragment' : 10
+    };
+  
+    this._values = {};
+    this._regex = null;
+    this.version = 0.1;
+    this._regex = /^((\w+):\/\/)?((\w+):?(\w+)?@)?([^\/\?:]+):?(\d+)?(\/?[^\?#]+)?\??([^#]+)?#?(\w*)/;
+  
+    for(var f in this._fields)
+    {
+        this['get' + f] = this._makeGetter(f);
+    }
+  
+    if (typeof url != 'undefined')
+    {
+        this._parse(url);
+    }
+}
+
+Poly9.URLParser.prototype.setURL = function(url) {
+    this._parse(url);
+}
+  
+Poly9.URLParser.prototype._initValues = function() {
+    for(var f in this._fields)
+    {
+        this._values[f] = '';
+    }
+}
+  
+Poly9.URLParser.prototype._parse = function(url) {
+    this._initValues();
+    var r = this._regex.exec(url);
+    if (!r) throw "DPURLParser::_parse -> Invalid URL";
+  
+    for(var f in this._fields) if (typeof r[this._fields[f]] != 'undefined')
+    {
+        this._values[f] = r[this._fields[f]];
+    }
+}
+  
+Poly9.URLParser.prototype._makeGetter = function(field) {
+    return function() {
+        return this._values[field];
+    }
+}
+
 
 /* fix 表单点击回车提交问题 */
-$(function(){
-   $(document).find("form").keydown(function(e){
+jQuery(function(){
+   jQuery(document).find("form").keydown(function(e){
 	  var kc = e.keyCode ;
 	  if(kc == 13){
-		 var $tgt = $(e.target);
+		 	var $tgt = jQuery(e.target);
 		 
-		 if (!$tgt.is('input'))return true ;
+		 	if (!$tgt.is('input'))return true ;
 			 
 	 		 if (e && e.preventDefault) {
 	 			e.preventDefault();
@@ -447,10 +635,10 @@ $(function(){
 				window.event.returnValue = false;
 			 }
 			 return false;
-		  }
-		  return true ;
+		}
+		return true ;
       }) ;
-  }) ;
+}) ;
   
 
  
@@ -497,8 +685,10 @@ $(function(){
 			
 			$(widgetTrack).each(function(index,type){
 				if( $.uiwidget.map[type] ){
-					var selector = $("["+$.uiwidget.mark+"^='"+type+"'],["+$.uiwidget.mark+"*=',"+type+"']",target)
-					$.uiwidget.map[type]( selector,target)  ;
+					var selector = $("["+$.uiwidget.mark+"^='"+type+"'],["+$.uiwidget.mark+"*=',"+type+"']",target) ;
+					if(selector.length > 0){
+						$.uiwidget.map[type]( selector,target)  ;
+					}
 				}
 			})
 
@@ -584,66 +774,66 @@ $(function(){
 })(jQuery)
 
 //register dialog
-$.uiwidget.register("dialog",function(selector){
+jQuery.uiwidget.register("dialog",function(selector){
 	selector.live("click",function(){
-		var options = $(this).attr( $.uiwidget.options )||"{}";
+		var options = jQuery(this).attr( jQuery.uiwidget.options )||"{}";
 		eval(" var jsonOptions = "+options) ;
-		var url 	= jsonOptions.url||$(this).attr("href") ;
+		var url 	= jsonOptions.url||jQuery(this).attr("href") ;
 		var width 	= jsonOptions.width ;
 		var height 	= jsonOptions.height ;
 		
 		var fixOPtions = {} ;
-		if($(this)[0].tagName == "A"){
+		if(jQuery(this)[0].tagName == "A"){
 			fixOPtions.requestType = "GET" ;
 		}
 		fixOPtions.target = this ;
 
-		var id     = $(this).attr("id")||$(this).attr("name");
+		var id     = jQuery(this).attr("id")||jQuery(this).attr("name");
 		var callback = jsonOptions.callback||(window[id+"Callback"]||function(){}) ;
 		
-		$.open(url , width , height ,jsonOptions,callback,fixOPtions ) ;
+		jQuery.open(url , width , height ,jsonOptions,callback,fixOPtions ) ;
 		return false ;
 	}) ;
 }) ;
 //register btn-toggle
-$.uiwidget.register("btn-toggle",function(selector){
+jQuery.uiwidget.register("btn-toggle",function(selector){
 	selector.live("click",function(){
-		var options = $(this).attr( $.uiwidget.options )||"{}";
+		var options = jQuery(this).attr( jQuery.uiwidget.options )||"{}";
 	    eval(" var jsonOptions = "+options);
 		var target = jsonOptions.rel;
 		
-		if( $(this).find('.icon-plus').hasClass('icon-minus')){
-			$(target ).hide();	
-			$(this).find('.icon-plus').removeClass('icon-minus');
-		}else if($(this).find('.icon-plus').length){
-			$( target ).show();
-		    $(this).find('.icon-plus').addClass('icon-minus');
+		if( jQuery(this).find('.icon-plus').hasClass('icon-minus')){
+			jQuery(target ).hide();	
+			jQuery(this).find('.icon-plus').removeClass('icon-minus');
+		}else if(jQuery(this).find('.icon-plus').length){
+			jQuery( target ).show();
+		    jQuery(this).find('.icon-plus').addClass('icon-minus');
 		}
 		
-		if( $(this).find('.icon-plus2').hasClass('icon-minus2')){
-			$(target ).hide();		
-			$(this).find('.icon-plus2').removeClass('icon-minus2');
-		}else if($(this).find('.icon-plus2').length){
-			$( target ).show();
-		    $(this).find('.icon-plus2').addClass('icon-minus2');
+		if( jQuery(this).find('.icon-plus2').hasClass('icon-minus2')){
+			jQuery(target ).hide();		
+			jQuery(this).find('.icon-plus2').removeClass('icon-minus2');
+		}else if(jQuery(this).find('.icon-plus2').length){
+			jQuery( target ).show();
+		    jQuery(this).find('.icon-plus2').addClass('icon-minus2');
 		}
 		return false ;
 	}) ;
 	//init
 	selector.each(function(){
-		var options = $(this).attr( $.uiwidget.options )||"{}";
+		var options = jQuery(this).attr( jQuery.uiwidget.options )||"{}";
 	    eval(" var jsonOptions = "+options);
 		var target = jsonOptions.rel;
 		
-		if( $(this).find('.icon-plus').hasClass('icon-minus')){
-			$(target ).show();
+		if( jQuery(this).find('.icon-plus').hasClass('icon-minus')){
+			jQuery(target ).show();
 		}else{
-			$( target ).hide();
+			jQuery( target ).hide();
 		}
 		if( $(this).find('.icon-plus2').hasClass('icon-minus2')){
-			$(target ).show();
+			jQuery(target ).show();
 		}else{
-			$( target ).hide();
+			jQuery( target ).hide();
 		}
 	}) ;
 }) ;
@@ -652,19 +842,19 @@ $.uiwidget.register("btn-toggle",function(selector){
 /**
  * data-widget="ajaxlink" data-options="{action:'',before:function(req){return true;},success:function(resp){}}"
  */
-$.uiwidget.register("ajaxlink",function(selector){
+jQuery.uiwidget.register("ajaxlink",function(selector){
 	selector.live("click",function(){
-		var options = $(this).attr( $.uiwidget.options )||"{}";
+		var options = jQuery(this).attr( jQuery.uiwidget.options )||"{}";
 		eval(" var jsonOptions = "+options) ;
 		
-		var action = jsonOptions.action||$(this).attr("href") ;
+		var action = jsonOptions.action||jQuery(this).attr("href") ;
 		var type   = jsonOptions.type||"GET" ;
 		
 		jsonOptions.before = jsonOptions.before||function(){return true ;} ;
 		jsonOptions.success = jsonOptions.success||function(){return true ;} ;
 		var data = {} ;
 		if( jsonOptions.before( data ) ){//doSubmit
-        	$.request({
+        	jQuery.request({
         		type:type ,
         		url:action ,
         		data:data,
@@ -686,10 +876,10 @@ var bui = {
 		/**
 		 * Slide toggle for panel down
 		 * */
-		 $('.panel-head .tabs').parent().find('.toggle').remove(); 
-		 $('.panel-head .toggle').each(function(){
-		 	$(this).click(function(){
-				 $(this).toggleClass('toggle-hide').parents(".panel:first").find('.panel-content').slideToggle(300);
+		 jQuery('.panel-head .tabs').parent().find('.toggle').remove(); 
+		 jQuery('.panel-head .toggle').each(function(){
+		 	jQuery(this).click(function(){
+				jQuery(this).toggleClass('toggle-hide').parents(".panel:first").find('.panel-content').slideToggle(300);
 				 return false; 
 			 });
 		 }) ;
@@ -697,23 +887,23 @@ var bui = {
 		 * Slide toggle for panel left
 		 * */
 		var panelNextClass;
-		 $('.panel-head .toggle-left').toggle(function(){
-			var $parentSpan = $(this).parent().parent().parent(),
-				$panel = $(this).parents('.panel'),
+		jQuery('.panel-head .toggle-left').toggle(function(){
+			var $parentSpan = jQuery(this).parent().parent().parent(),
+				$panel = jQuery(this).parents('.panel'),
 				$panelNextClass = $parentSpan.next().attr('class');
 				panelNextClass = $panelNextClass;
 				
-				$(this).addClass('toggle-hide');
+				jQuery(this).addClass('toggle-hide');
 				$parentSpan.addClass('span1')
 						.next().removeClass()
 							.addClass('span11');
 				$panel.addClass('panel-collapsed').find('.panel-content').hide();
 				return false; 
 		 },function(){
-			var $parentSpan = $(this).parent().parent().parent(), 
-				$panel = $(this).parents('.panel');				
+			var $parentSpan =jQuery(this).parent().parent().parent(), 
+				$panel = jQuery(this).parents('.panel');				
 				
-				$(this).removeClass('toggle-hide')
+				jQuery(this).removeClass('toggle-hide')
 				$parentSpan.removeClass('span1')
 						.next().removeClass()
 							.addClass(panelNextClass);
@@ -725,23 +915,23 @@ var bui = {
 		 * Slide toggle for panel right
 		 * */
 		var panelNextClass;
-		 $('.panel-head .toggle-right').toggle(function(){
-			var $parentSpan = $(this).parent().parent().parent(),
-				$panel = $(this).parents('.panel'),
+		 jQuery('.panel-head .toggle-right').toggle(function(){
+			var $parentSpan = jQuery(this).parent().parent().parent(),
+				$panel = jQuery(this).parents('.panel'),
 				$panelNextClass = $parentSpan.prev().attr('class');
 				panelNextClass = $panelNextClass;
 				
-				$(this).addClass('toggle-hide');
+				jQuery(this).addClass('toggle-hide');
 				$parentSpan.addClass('span1')
 						.prev().removeClass()
 							.addClass('span11');
 				$panel.addClass('panel-collapsed').find('.panel-content').hide();
 				return false; 
 		 },function(){
-			var $parentSpan = $(this).parent().parent().parent(), 
-				$panel = $(this).parents('.panel');				
+			var $parentSpan = jQuery(this).parent().parent().parent(), 
+				$panel = jQuery(this).parents('.panel');				
 				
-				$(this).removeClass('toggle-hide')
+				jQuery(this).removeClass('toggle-hide')
 				$parentSpan.removeClass('span1')
 						.prev().removeClass()
 							.addClass(panelNextClass);
@@ -753,8 +943,8 @@ var bui = {
 }
 
 /*IE6下浏览器执行resize时死掉问题*/
-$.execResize = function(flag , func ){//执行resize
-	var version = parseInt( $.browser.version, 10 );  
+jQuery.execResize = function(flag , func ){//执行resize
+	var version = parseInt( jQuery.browser.version, 10 );  
 	if(version < 7 ){
 		window[flag] = window[flag]||0 ;
         var now = new Date().getTime();
@@ -765,4 +955,27 @@ $.execResize = function(flag , func ){//执行resize
 	}else{
 		func() ;
 	}
+}
+
+/*组装url*/
+function buildUrl(url, paramObject) {
+    if (paramObject) {
+        var queryString = "";
+        var attrs = paramObject.attributes;
+        for (var attr in paramObject) {
+            var name = attr;
+            var value = paramObject[attr];
+
+            if (queryString.length > 0) { queryString += "&"; }
+            queryString += name + "=" + encodeURI(value);
+        }
+        if (queryString.length > 0) {
+            if (url.indexOf("?") >= 0) {
+                url = url + "&" + queryString;
+            } else {
+                url = url + "?" + queryString;
+            }
+        }
+    }
+    return url;
 }

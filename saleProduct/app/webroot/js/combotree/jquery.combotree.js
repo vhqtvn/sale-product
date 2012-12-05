@@ -7,6 +7,7 @@
  * 
  */
 (function($){
+	var index = 0;
 	function setSize(target){
 		var opts = $.data(target, 'combotree').options;
 		var combo = $.data(target, 'combotree').combotree;
@@ -15,6 +16,18 @@
 			var width = opts.width - 26   ;
 			combo.find('input.combotree-text').width(width);
 		}
+		
+		if( document.compatMode == "BackCompat" ){
+			var input = combo.find('input.combotree-text') ;
+			if($.browser.msie){
+				combo.find(".btn").css("margin-bottom","0px") ;
+				input.css("padding","0px 4px") ;
+				input.height( combo.find(".btn").outerHeight()  ) ;
+			}else{
+				input.height( combo.find(".btn").outerHeight()  ) ;
+			}
+		}
+	
 		opts.treeWidth = combo.width() ;// opts.treeWidth||opts.width ;auto
 		if (opts.treeWidth){
 			content.width(opts.treeWidth);
@@ -26,17 +39,24 @@
 		}
 		
 		var isShowCheck = opts.showCheck ;
-		var __appendText =  '<a  class="clear-content" title="清空" style="cursor:pointer;">【清空】</a>' ;
+		var __appendText =  '<span  class="clear-content" title="清空" style="cursor:pointer;">【清空】</span>' ;
 
 		var __tree = content.find('>ul').tree({//tree为容器ID
 			method : 'post',
 			asyn : true, //异步
 			rootId  : 'root',
 			rootText : '请选择'+__appendText,
+			url:opts.url,
 			CommandName : opts.CommandName ,
 			showCheck:opts.showCheck,
 			params :  opts.params,
 			cascadeCheck:opts.cascadeCheck||false,
+			nodeFormat:function(node){
+				var vals = combo.find('input.combotree-value').val() ;
+				
+				//node.checkstate = 1 ;
+				return node ;
+			},
 			onNodeClick:function(id, text, record,node){
 				if(!isShowCheck ){
 					if(id == "root"){
@@ -123,18 +143,26 @@
 	function init(target,options){
 		$(target).hide();
 		
-		var span,input,arrow ,iframe, content ;
+		var span,input,arrow ,iframe, content,inputValue ;
 		if( $(target).next().hasClass("combotree") ){
 			span = $(target).next() ;
-			input = span.find(".include-span").addClass("combotree-text").attr("html-render",true) ;
+			input = span.addClass("ui-widget").find(".include-span").addClass("combotree-text").attr("html-render",true) ;
 			arrow = span.find(".add-on") ;
-			input.before('<input type="hidden" class="combotree-value"/>') ;
+			inputValue  = span.find("input.combotree-value") ;
+			if(!inputValue.length){
+				input.before('<input type="hidden" class="combotree-value"/>') ;
+				inputValue  = span.find("input.combotree-value") ;
+			}
 		}else{
-			span = $('<span class="combotree input-append"></span>').insertAfter(target);
-			$('<input type="hidden" class="combotree-value"/>').appendTo(span);
+			span = $('<span class="combotree input-append ui-widget"></span>').insertAfter(target);
+			inputValue = $('<input type="hidden" class="combotree-value"/>').appendTo(span);
 			input = $('<input class="combotree-text include-span input-span-uneditable" readonly="true"/>').appendTo(span);
 			arrow = $('<span class="add-on btn button-reset"><i class="icon-chevron-down ui-icon ui-icon-triangle-1-s"></i></span>').appendTo(span);
 		}
+		/*index++ ;
+		var widgetId = $(target).attr("id")||$(target).attr("name")||"combotree_id_"+index ;
+		input.attr("id",widgetId+"_display") ;
+		span.find("input.combotree-value").attr("id",widgetId+"_value") ;*/
 		
 		//create proxy
 		if( $(target)[0].className ){
@@ -163,21 +191,17 @@
 		 * 该方法与ui.select.multi.js有冲突
 		 */
 		function show(){
-			var left = span.offset().left ;
-			var top  = span.offset().top + span.height()+2 ;
-			if( ( $(window).height() - span.offset().top ) < content.height() ){
-				top = span.offset().top - content.height() -4 ;
-			}
-			
 			var pos = {
 				my : "left top",
 				at : "left bottom",
-				of : span ,
+				of : input ,
 				collision : "flip",
 				offset:"0 0"
 			};
-
-			content.width($(span).width()).show().position(pos) ;
+			
+			content.css({ top : 0, left : 0 }).hide() ;
+			var fixWidth = document.compatMode == "BackCompat" && $.browser.msie ?0:2 ;
+			content.width($(input).parent().width()-fixWidth).show().position(pos) ;
 			
 			var isOver = false ;
 			var clickBtn = false;

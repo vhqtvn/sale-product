@@ -230,6 +230,9 @@
 	var validtorAttrValue = $.uiwidget.validator ;
 	
 	$.fn.validation = function(settings) {
+		if( $(this).attr("__validation_init__") )
+			return ;
+		$(this).attr("__validation_init__",true) ;
 		
 		if ($.validationConfig) { // IS THERE A LANGUAGE LOCALISATION ?
 			allRules = $.validationConfig.allRules;
@@ -250,7 +253,7 @@
 		}, settings);
 		$.validation.settings = settings;
 		
-		$(this).find(validtorAttr).tipsy({gravity: gravity,title:"errorInfo",trigger: 'manual'});
+		$(this).find(validtorAttr).attr("tipsy-render",true).tipsy({gravity: gravity,title:"errorInfo",trigger: 'manual'});
 		
 
 		if (settings.inlineValidation == true) { // Validating Inline ?
@@ -302,13 +305,11 @@
 							_inlinEvent(this,event);
 						}) ;
 					}
-				}) ;
-							
+				}) ;		
 				firstvalid = false;
 			}
 
 			function _inlinEvent(caller,eventType,bool) {
-				
 				$.validation.settings = settings;
 				if ($.validation.intercept == false || !$.validation.intercept) { // STOP INLINE VALIDATION THIS TIME ONLY
 					$.validation.onSubmitValid = false;
@@ -322,23 +323,28 @@
 		//required
 		$(this).find(validtorAttr).each(function(){
 			if( $(this).attr(validtorAttrValue).indexOf("required")!=-1 ){
-				if( $(this).parents(".control-group")[0] ){
-					if($(this).parents(".control-group")
+				if( $(this).parents(".control-group:first")[0] ){
+					if($(this).parents(".control-group:first")
 						.find(".required-star")[0] ) return ;
-					$(this).parents(".control-group")
+					$(this).parents(".control-group:first")
 						.find("label.control-label")
 						.prepend("<span class='required-star'>*</span>") ;
 				}else{
 					if($(this).parents("td:first").prev()
 						.find(".required-star")[0] ) return ;
-					$(this).parents("td:first").prev()
-						//.find("label")
+						
+					if( $(this).parents("td:first").prev().find("label").length ){
+						$(this).parents("td:first").prev()
+						.find("label")
 						.prepend("<span class='required-star'>*</span>") ;
+					}else{
+						$(this).parents("td:first").prev()
+						.prepend("<span class='required-star'>*</span>") ;
+					}
 				}	
 			}
 		}) ;
 		
-	
 		if (settings.returnIsValid) { // Do validation and return true or false, it bypass everything;
 			return $.validation.validate(this, settings);
 		}
@@ -418,6 +424,10 @@
 		},
 
 		validateCall : function(caller, rules,eventType) { // EXECUTE VALIDATION REQUIRED BY THE USER FOR THIS FIELD
+			if( $(caller).attr("tipsy-render") != true ){
+				$(caller).attr("tipsy-render",true).tipsy({gravity: gravity,title:"errorInfo",trigger: 'manual'});
+			}
+
 			var promptText = "";
 
 			//if (!$(caller).attr("id"))
@@ -627,8 +637,8 @@
 					$(caller).attr("errorInfo", promptText).parents("td:first").removeClass("success").addClass("_td_layout control-group error").append("<span class='tipsy-container tipsy-error'></span>")  ;
 					$(caller).attr("errorInfo", promptText).parents("td:first").prev().find("label").addClass("validator-error-label") ;
 			}else{
-					$(caller).parents(".control-group").removeClass("error success") ;
-				    $(caller).attr("errorInfo", promptText).parents(".control-group").addClass("error").find(">label").addClass("validator-error-label");
+					$(caller).parents(".control-group:first").removeClass("error success") ;
+				    $(caller).attr("errorInfo", promptText).parents(".control-group:first").addClass("error").find(">label").addClass("validator-error-label");
 			}
 		},
 
@@ -646,10 +656,9 @@
 				$(caller).parents("td:first").removeClass("error").addClass("_td_layout control-group success").append("<span class='tipsy-container tipsy-success'></span>") ; ;
 				$(caller).removeAttr("errorInfo").parents("td:first").prev().find("label").removeClass("validator-error-label").addClass("validator-success-label") ;
 			}else{
-				$(caller).parents(".control-group").removeClass("error success") ;
-			    $(caller).removeAttr("errorInfo").parents(".control-group").addClass("success").find(">label").addClass("validator-success-label");; 
+				$(caller).parents(".control-group:first").removeClass("error success") ;
+			    $(caller).removeAttr("errorInfo").parents(".control-group:first").addClass("success").find(">label").addClass("validator-success-label");; 
 			}
-			
 		},
 
 		debug : function(error) {
@@ -829,10 +838,10 @@
 		selector.each(function(){
 			var options = $(this).attr( $.uiwidget.options )||"{}";
 			eval(" var jsonOptions = "+options) ;
-			var action = jsonOptions.action||$(this).attr("action") ;
 			jsonOptions.before = jsonOptions.before||function(){return true ;} ;
 			var me = $(this) ;
 			$(this).unbind("submit.ajaxform").bind("submit.ajaxform",function(e){
+				var action = jsonOptions.action||$(this).attr("action") ;
 				 if (!e.isDefaultPrevented()) { // if event has been canceled, don't proceed
 			        e.preventDefault();
 			        var json = me.toJson() ;

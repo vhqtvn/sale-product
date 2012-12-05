@@ -74,6 +74,9 @@ function formatGridData(data){
 				}else if( action == 5 ){//二次分拣
 					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/1",950,550) ;
 					return ;
+				}else if( action == 10 ){//导出
+					openCenterWindow("/saleProduct/index.php/order/exportPicked/"+currentPickId+"/1",950,550) ;
+					return ;
 				}else if( action == 6 ){//确认发货
 					if( window.confirm("确认发货并更新TN到Amazon？") ){
 						$.ajax({

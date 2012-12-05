@@ -116,6 +116,10 @@ function formatGridData(data){
 				
 			}) ;
 			
+			$(".export").click(function(){
+				openCenterWindow("/saleProduct/index.php/order/selectExportOrder/",1000,600) ;
+			}) ;
+			
 			$(".query").click(function(){
 				var json = $(".query-table").toJson() ;
 				//if(currentQueryKey)json.sqlId = currentQueryKey ;

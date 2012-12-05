@@ -107,6 +107,10 @@ $.widget("ui.__tabs", {
 
 		this._tabify(true);
 		
+		if(this.options.height && $.isFunction(this.options.height)){
+			this.options.height = this.options.height() ;
+		};
+		
 		if(this.options.height)this.element.find('.ui-tabs-panel').height(this.options.height) ;
 		
 		if(  this.options.carousel === false) return ;

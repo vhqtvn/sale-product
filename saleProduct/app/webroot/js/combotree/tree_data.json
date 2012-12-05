@@ -2,55 +2,35 @@
  "returnDesc":"success",
  "error":"none",
  "returnValue":
-  {
-    "OutParams":{}, 
-    "AffectedRows":-1,   
-    "ColumnNames":[],
-    "Rows":
 		[
-		  {
-			"id":1,
-			"text":"Folder1",
-			"iconCls":"icon-ok",
-			"children":
-			[
-				{
-					"id":2,
-					"text":"File1"
-				},
-				{
-					"id":3,
-					"text":"Folder2",
-					"state":"open",
-					"children":
-					[
-						{
-							"id":4,
-							"text":"File3",
-							"iconCls":"icon-reload"
-						},
-						{
-							"id": 8,
-							"text":"Async Folder",
-							"state":"closed"
-						}
-				   ]
-				}
-			]
-		},
-		{
-			"text":"Languages",
-			"state":"closed",
-			"children":
-			[
-				{
-					"text":"Java"
-				},
-				{
-					"text":"C#"
-				}
-			]
-		}
-	]
-  }
+           {
+            "id":"111",
+            "text":"异步1",
+            "hasChildren":"true",
+            "complete":"true",
+            "showCheck":"true",
+            "parentId":"root",
+            "childNodes":[
+	                 {
+	                   "id":"211",
+	                   "text":"异步1-1",
+	                   "hasChildren":"true",
+	                   "complete":"true",
+	                   "showCheck":"true",
+	                   "childNodes":
+	                      [
+	                         { "id":"youda11",
+	                           "text":"异步1-1-1",
+	                           "showCheck":"true" 
+	                         }
+	                      ]
+	                 },
+	                 {
+	                   "id":"311",
+	                   "text":"异步1-2",
+	                   "showCheck":"true"
+	                 }
+            ]
+          }
+		]
 }
