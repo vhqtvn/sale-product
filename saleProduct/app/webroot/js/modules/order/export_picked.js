@@ -58,6 +58,14 @@ function formatGridData(data){
 						}
 						return "" ;
 					}},
+					{align:"left",key:"WEIGHT",label:"重量", width:"6%"},
+					{align:"left",key:"LENGTH",label:"长", width:"6%"},
+					{align:"left",key:"WIDTH",label:"宽", width:"6%"},
+					{align:"left",key:"HEIGHT",label:"高", width:"6%"},
+					{align:"left",key:"PAYMENTS_DATE",label:"支付时间", width:"6%"},
+					{align:"left",key:"SHIP_SERVICE_LEVEL",label:"SHIP LEVEL", width:"6%"},
+					{align:"left",key:"TRACKING_SERVICE",label:"Tracking Service", width:"6%"},
+					{align:"left",key:"PACKAGE_VALUE",label:"VALUE", width:"6%"},
 					{align:"right",key:"QUANTITY_TO_SHIP",label:"数量", width:"5%"},
 					{align:"left",key:"ORDER_ID",label:"订单编号", width:"15%"},
 					{align:"left",key:"ORDER_ITEM_ID",label:"订单项编号", width:"12%"},

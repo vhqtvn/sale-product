@@ -521,7 +521,7 @@
 				   AND s4.real_sku = s3.real_sku
 				   AND s4.type = 'base'
 				   AND s2.order_number = '{@#orderNumber#}'
-				  UNION
+				  UNION ALL
 				  SELECT s2.ORDER_ID,
 			            s2.ORDER_ITEM_ID,
 		                s2.SKU ,
@@ -659,7 +659,7 @@
 		  		 AND sc_amazon_picked_order.order_id = s2.order_id
 		  		 AND sc_amazon_picked_order.order_item_id = s2.order_item_id
 		  )
-		  UNION
+		  UNION ALL
 		  SELECT  s2.SKU ,
 		          s2.QUANTITY_TO_SHIP,
 		       s6.REAL_SKU ,
@@ -706,11 +706,16 @@
     <![CDATA[
        select * from (
          	SELECT  
-         		'{@#pickId#}' as PICK_ID,
+         		s6.NAME as PICK_ID,
 				s4.REAL_SKU ,
 				s4.NAME,
 		        s4.IMAGE_URL ,
 		        s4.MEMO,
+		        s4.WEIGHT,
+		        CONCAT(s4.WEIGHT,' ',s4.WEIGHT_UNIT) AS WEIGHT_WITH_UNIT,
+		        s4.LENGTH,
+		        s4.WIDTH,
+		        s4.HEIGHT,
 				s2.SKU ,
 				s2.BUYER_PHONE_NUMBER,
 				s2.BUYER_EMAIL,
@@ -725,11 +730,17 @@
 		        s2.SHIP_COUNTRY,
 		        s2.SHIP_CITY,
 		        s2.SHIP_STATE,
-		        s2.SHIP_POSTAL_CODE
+		        s2.SHIP_POSTAL_CODE,
+		        s2.PAYMENTS_DATE,
+		        s2.SHIP_SERVICE_LEVEL,
+		        s2.TRACKING_SERVICE,
+		        s2.PACKAGE_VALUE
 		  FROM  sc_amazon_order_status s1
 			,sc_amazon_order s2
 			,sc_real_product_rel s3
 			,sc_real_product s4
+			,sc_amazon_picked_order s5
+			,sc_amazon_picked s6
 		WHERE 
 		   s1.order_id = s2.order_id 
 		   AND s1.pick_status = '9'
@@ -737,12 +748,11 @@
 		   AND s2.sku = s3.sku
 		   AND s4.id = s3.real_id
 		   AND s4.real_sku = s3.real_sku
-		   AND EXISTS ( 
-		  		SELECT 1 FROM sc_amazon_picked_order WHERE
-		  		 picked_id = '{@#pickId#}'
-		  		 AND sc_amazon_picked_order.order_id = s2.order_id
-		  		 AND sc_amazon_picked_order.order_item_id = s2.order_item_id
-		  )
+		   AND s5.picked_id = '{@#pickId#}'
+		   AND s5.order_id = s2.order_id
+		   AND s5.order_item_id = s2.order_item_id
+		   AND s5.picked_id = s6.id
+		   
         ) t order by t.ORDER_NUMBER
 		 ]]>
     </entry>

@@ -252,14 +252,18 @@ class OrderController extends AppController {
     	$items = $this->OrderService->getPickOrders($pickId) ;
     	$pick = $this->OrderService->getPicked($pickId) ;
     	
-    	$filename = "拣货单_".$pick['NAME'].date("Y.m.d").".csv";
+    	$pName = str_replace(" ","",$pick['NAME']) ;
+    	
+    	$filename = $pName.'-'.date("Ymd").".csv";
 		$csv_file = fopen('php://output', 'w');
 
-		header('Content-type: application/csv');
+		header('Content-type: application/csv;charset=GB2312');
 		header('Content-Disposition: attachment; filename="'.$filename.'"');
 		
 		// The column headings of your .csv file
-		$header_row = array("PICK_ID", "ORDER_NUMBER", "REAL_SKU", "NAME", "SKU", "BUYER_PHONE_NUMBER", "BUYER_EMAIL",
+		$header_row = array("PICK_ID", "ORDER_NUMBER", "REAL_SKU", "NAME","WEIGHT","WEIGHT_WITH_UNIT","LENGTH","WIDTH","HEIGHT", 
+		"PAYMENTS_DATE", "SHIP_SERVICE_LEVEL", "TRACKING_SERVICE", "PACKAGE_VALUE", 
+		"SKU", "BUYER_PHONE_NUMBER", "BUYER_EMAIL",
 		"QUANTITY_TO_SHIP","ORDER_ID","ORDER_ITEM_ID","RECIPIENT_NAME","SHIP_ADDRESS_1","SHIP_ADDRESS_2","SHIP_ADDRESS_3",
 		"SHIP_COUNTRY","SHIP_CITY","SHIP_STATE","SHIP_POSTAL_CODE", "MEMO");
 		fputcsv($csv_file,$header_row,',','"');
@@ -274,6 +278,17 @@ class OrderController extends AppController {
 				$result['ORDER_NUMBER'],
 				$result['REAL_SKU'],
 				$result['NAME'],
+				$result['WEIGHT'],
+				$result['WEIGHT_WITH_UNIT'],
+				$result['LENGTH'],
+				$result['WIDTH'],
+				$result['HEIGHT'],
+				
+				$result['PAYMENTS_DATE'],
+				$result['SHIP_SERVICE_LEVEL'],
+				$result['TRACKING_SERVICE'],
+				$result['PACKAGE_VALUE'],
+				
 				$result['SKU'],
 				$result['BUYER_PHONE_NUMBER'],
 				$result['BUYER_EMAIL'],
