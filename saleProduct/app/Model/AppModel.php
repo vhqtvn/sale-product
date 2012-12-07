@@ -43,15 +43,39 @@ class AppModel extends Model {
 			return null ;
 		}
 		
-		function endsWith($haystack, $needle)
-	{
-	    $length = strlen($needle);
-	    if ($length == 0) {
-	        return true;
-	    }
-	
-	    return (substr($haystack, -$length) === $needle);
-	}
+		function getMaxValue($type ,$belongTo = null , $defaultValue = null){
+			if( $belongTo != null ){
+				$sql = "select * from sc_index_gen where type = '$type' and belong_to= '$belongTo'" ;
+				$result = $this->query($sql) ;
+				if( !empty($result) ){
+					return $result[0]['sc_index_gen']['INDEX'] ;
+				}
+			}
+			
+			$sql = "SELECT ( MAX(`index`)+1 ) AS C FROM sc_index_gen where type = '$type'" ;
+			$result = $this->query($sql) ;
+			$value = '' ;
+			if( empty($result) ){
+				$value = $defaultValue ;
+			}else{
+				$value= $result[0][0]['C'] ;
+				if(empty($value)){
+					$value = $defaultValue ;
+				}
+			}
+			$sql = "insert into sc_index_gen(`index`,type,belong_to) values($value , '$type','$belongTo')" ;
+			$this->query($sql) ;
+			return $value ;
+		}
+		
+		function endsWith($haystack, $needle){
+		    $length = strlen($needle);
+		    if ($length == 0) {
+		        return true;
+		    }
+		
+		    return (substr($haystack, -$length) === $needle);
+		}
 	
 		function getScriptRecords($query=null) {
 			$sql = 'SELECT * FROM sc_election_rule' ;

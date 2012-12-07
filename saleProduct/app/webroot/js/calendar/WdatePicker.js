@@ -221,13 +221,14 @@ var $dp, WdatePicker;
 		/*var _, A, $ = X[M][C]("script");
 		for (var B = 0; B < $.length; B++) {
 			_ = $[B].getAttribute("src") || "";
-			_ = _.substr(0, _.toLowerCase().indexOf("wdatepicker.js"));
+			_ = _.substr(0, _.toLowerCase().indexOf("Wdatepicker.js"));
 			A = _.lastIndexOf("/");
 			if (A > 0)
 				_ = _.substring(0, A + 1);
 			if (_)
 				break
 		}
+		alert(_);
 		return _*/
 	}
 	function K(A, $, B) {

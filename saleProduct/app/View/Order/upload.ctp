@@ -10,18 +10,21 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 		echo $this->Html->css('default/style');
+		
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
+		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('tab/jquery.ui.tabs');
 	?>
   
    <script type="text/javascript">
-		var accountId = '<?php echo $accountId;?>' ;
 		 function formatGridData(data){
 		var records = data.record ;
  		var count   = data.count ;
@@ -51,8 +54,31 @@
 			}
 			return true ;
 		}
-		
-		$(function(){
+   </script>
+
+   <script>
+	   var tabs = [];
+	   var accounts = [] ;
+	   <?php
+	   		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+		    $accounts = $amazonAccount->getAllAccounts(); 
+	   		
+	   		foreach($accounts as $account){
+	   			$account = $account['sc_amazon_account'] ;
+	   			echo "accounts.push({id:'".$account['ID']."'});";
+				echo "tabs.push( {label:'".$account['NAME']."',content:'tab-content'}) ;" ;
+			} ;
+	   ?>
+	  	$(function(){
+	  		var tab = $('#tabs-default').tabs( {
+				tabs:tabs,
+				select:function(event,ui){
+					var index = ui.index ;
+					var accountId = accounts[index]['id'] ;
+					$(".grid-content").llygrid("reload",{accountId:accountId},true) ;
+				}
+			} ) ;
+			
 			$(".grid-content").llygrid({
 				columns:[
 		           	{align:"center",key:"ID",label:"编号", width:"10%"},
@@ -68,35 +94,52 @@
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"订单上传列表",
-				 querys:{sqlId:"sql_order_upload_list",accountId:accountId},
+				 querys:{sqlId:"sql_order_upload_list",accountId:accounts[0]['id']},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
-		})
-   </script>
-
-
+	  	})
+	  </script>
 </head>
 <body>
 
-   <div style="border:1px solid #CCC;margin:3px;">
+   <div style="border:1px solid #CCC;margin:3px;" class="toolbar">
 	    <form action="/saleProduct/index.php/order/doUpload/<?php echo $accountId;?>"
 	    	data-widget="validator" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
 		   <table border=0 cellPadding=3 cellSpacing=4 >
 		    <tr>
+		     <td>选择文件：</td>
 		     <td><input name="orderFile" data-validator="required" type="file"/></td>
+		     <td>BatchId：</td>
+		     <td><input name="batchId" class="span2" type="text"/></td> 
+		     <td>选择账户：</td>
+		     <td>
+		     	<select name="accountId" data-validator="required">
+		     		<option value="">--选择--</option>
+		     	<?php
+		     		 
+		     		foreach($accounts as $account ){
+		     			$account = $account['sc_amazon_account'] ;
+		     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+		     		} ;
+		     	?>
+				</select>
+		     </td> 
+		    </tr>
+		    <tr>
 		     <td>开始时间：</td>
 		     <td><input name="startTime" class="span2" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td>
 		     <td>结束时间：</td>
 		     <td><input name="endTime" class="span2" data-validator="required" data-widget="calendar" data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}" type="text"/></td> 
-		     <td>BatchId：</td>
-		     <td><input name="batchId" class="span2" type="text"/></td> 
 		     <td colSpan=2 align=center><input type="submit" class="btn btn-primary" value="上传订单文件"></td> 
 		    </tr>
 		   </table>
 	   </form>
 	   <iframe style="width:0; height:0; border:0;display:none;" name="form-target"></iframe>
 	</div>  
-	<div class="grid-content">
+	
+	<div id="tabs-default" >
+	</div>
+	<div class="grid-content" id="tab-content" style="padding:2px;">
 	</div>
 	
 </body>

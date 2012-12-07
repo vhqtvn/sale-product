@@ -51,15 +51,25 @@
 					<tr>
 						<th>订单号：</th>
 						<td>
-							<input type="text" name="orderId" class="span2"/>
+							<input type="text" name="orderId"/>
 						</td>
-						<th>人名：</th>
+						<th>系统货号：</th>
 						<td>
-							<input type="text" name="userName" class="span2"/>
+							<input type="text" name="orderNumber"/>
 						</td>
-						<th>邮件：</th>
+						<th>账号：</th>
 						<td>
-							<input type="text" name="email" class="span2"/>
+							<select name="accountId">
+				     		<option value="">--选择--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     		} ;
+					     	?>
+							</select>
 						</td>
 					</tr>
 					<tr>

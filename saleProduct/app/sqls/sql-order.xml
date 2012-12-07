@@ -155,6 +155,8 @@
 		  {@ and order_id = '#orderId#'}
 		  {@ and buyer_name = '#userName#'}
 		  {@ and buyer_email = '#email#'}
+		  {@ and order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		  {@ and sku = '#sku#'}
 	) t
 	where ( t.C > 1 or (t.IS_PACKAGE is not null) )
@@ -197,6 +199,8 @@
 		  {@ and order_id = '#orderId#'}
 		  {@ and buyer_name = '#userName#'}
 		  {@ and buyer_email = '#email#'}
+		  {@ and order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		  {@ and sku = '#sku#'}
 	) t
 	where ( t.C <= 1 AND t.IS_PACKAGE is null )
@@ -243,6 +247,8 @@
 		   {@ and sc_amazon_order.order_id = '#orderId#'}
 		   {@ and sc_amazon_order.buyer_name = '#userName#'}
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
+		   {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
 		   {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
 		   order by sc_amazon_order.order_number
@@ -278,6 +284,8 @@
 		   {@ and sc_amazon_order.buyer_name = '#userName#'}
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
+		   {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		   {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
 		   and ( sc_amazon_order.tn_status is null or sc_amazon_order.tn_status not in ('1') )
 		   order by sc_amazon_order.order_number
@@ -313,6 +321,8 @@
 		   {@ and sc_amazon_order.buyer_name = '#userName#'}
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
+		   {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		   {@ and sc_amazon_order.service_status = '#serviceStatus#'}
 		   and sc_amazon_order.tn_status in ('1')
 		   {@ and ( sc_amazon_order.redo_status is null or sc_amazon_order.redo_status = '' ) and '#unRedoStatus#' = '#unRedoStatus#'}
@@ -357,6 +367,8 @@
 		  {@ and sc_amazon_order.order_id = '#orderId#'}
 		  {@ and sc_amazon_order.buyer_name = '#userName#'}
 		  {@ and sc_amazon_order.buyer_email = '#email#'}
+		  {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		  {@ and sc_amazon_order.account_id = '#accountId#'}
 		  {@ and sc_amazon_order.sku = '#sku#'}
 		  {@ and sc_amazon_order_status.pick_status =  '#pickStatus#' }
 		  {@ and exists ( 
@@ -407,10 +419,11 @@
 			   {@ and sc_amazon_order_status.pick_status not in ('9','10','11','12') and '#status#' = '#status#'}
 			   {@ and sc_amazon_order_status.audit_status = '#status#'}
 			  {@ and sc_amazon_order.order_id = '#orderId#'}
-			  {@ and sc_amazon_order.order_id = '#orderId#'}
 			  {@ and sc_amazon_order.buyer_name = '#userName#'}
 			  {@ and sc_amazon_order.buyer_email = '#email#'}
 			  {@ and sc_amazon_order.sku = '#sku#'}
+			  {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
 			  {@ and sc_amazon_order_status.pick_status in ('9','10','11','12') and   '#pickStatus#'  = '#pickStatus#' }
 			  {@ and exists ( 
 			  		select 1 from sc_amazon_picked_order where
@@ -462,6 +475,8 @@
 			   {@ and sc_amazon_order.order_id = '#orderId#'}
 			   {@ and sc_amazon_order.buyer_name = '#userName#'}
 			   {@ and sc_amazon_order.buyer_email = '#email#'}
+			   {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
 			   {@ and sc_amazon_order.sku = '#sku#'}
 			    order by  sc_amazon_order.order_number,sc_amazon_order_status.PICK_STATUS desc
 		   ) t where ( t.C > 1 or (t.IS_PACKAGE is not null) )
@@ -698,7 +713,6 @@
 		  		 AND sc_amazon_picked_order.order_item_id = s2.order_item_id
 		  )
             ) t GROUP BY t.REAL_SKU
-     
 		 ]]>
     </entry>
     
@@ -711,8 +725,8 @@
 				s4.NAME,
 		        s4.IMAGE_URL ,
 		        s4.MEMO,
-		        s4.WEIGHT,
-		        CONCAT(s4.WEIGHT,' ',s4.WEIGHT_UNIT) AS WEIGHT_WITH_UNIT,
+		        (s4.WEIGHT*s2.QUANTITY_TO_SHIP) as WEIGHT ,
+		        CONCAT((s4.WEIGHT*s2.QUANTITY_TO_SHIP),' ',s4.WEIGHT_UNIT) AS WEIGHT_WITH_UNIT,
 		        s4.LENGTH,
 		        s4.WIDTH,
 		        s4.HEIGHT,
@@ -733,8 +747,8 @@
 		        s2.SHIP_POSTAL_CODE,
 		        s2.PAYMENTS_DATE,
 		        s2.SHIP_SERVICE_LEVEL,
-		        s2.TRACKING_SERVICE,
-		        s2.PACKAGE_VALUE
+		        ( case when s2.TRACKING_SERVICE is null then 1 else s2.TRACKING_SERVICE end ) as TRACKING_SERVICE,
+		        ( s2.ITEM_PRICE*s2.QUANTITY_TO_SHIP ) as PACKAGE_VALUE
 		  FROM  sc_amazon_order_status s1
 			,sc_amazon_order s2
 			,sc_real_product_rel s3
@@ -752,7 +766,10 @@
 		   AND s5.order_id = s2.order_id
 		   AND s5.order_item_id = s2.order_item_id
 		   AND s5.picked_id = s6.id
-		   
+		   AND s7.order_id = s2.order_id
+		   AND s2.order_id not in (
+		     select order_id from sc_order_result
+		   )
         ) t order by t.ORDER_NUMBER
 		 ]]>
     </entry>

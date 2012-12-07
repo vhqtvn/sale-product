@@ -80,14 +80,17 @@ class OrderService extends AppModel {
 		}else{
 			try{
 				$orderId = $items['order-id'] ;
+				$sql = "select * from sc_amazon_order where order_id = '$orderId' and upload_id != '$id'" ;
+				$record = $this->query($sql) ;
+				if(!empty($record)){//判断是否已经存在，重复导入
+					return ;
+				}
+				
 				$sql = "select * from sc_amazon_order where order_id = '$orderId'" ;
 				$record = $this->query($sql) ;
 				$orderNumber = '' ;
 				if(empty($record)){
-					$sql = $this->getDbSql("sql_order_getMaxOrderNumber") ;
-					$sql = $this->getSql($sql,$items) ;
-					$count = $this->query($sql) ;
-					$orderNumber = $count[0][0]['ORDER_NUMBER'] ;
+					$orderNumber = $this->getMaxValue("order",$orderId,'1000000000') ;
 				}else{
 					$orderNumber = $record[0]['sc_amazon_order']['ORDER_NUMBER'] ;
 				}
@@ -97,6 +100,14 @@ class OrderService extends AppModel {
 				$sql = $this->getDbSql("sql_order_insert") ;
 				$sql = $this->getSql($sql,$items) ;
 				$this->query($sql) ;
+				
+				$sql = "select * from sc_order_result where order_id = '$orderId'" ;
+				$result = $this->query($sql) ; 
+				if(empty($result)){
+					$sql = "insert into sc_order_result(order_id) values('$orderId')" ;
+					$this->query($sql) ;
+				}
+				
 			}catch(Exception $e){
 				print_r($e->getMessage()) ;
 			}

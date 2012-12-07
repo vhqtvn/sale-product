@@ -7,11 +7,12 @@ class OrderController extends AppController {
 	
 	var $uses = array('OrderService','Amazonaccount','SqlUtils');
 	
-	public function doUpload($accountId){
+	public function doUpload(){
 		
     	$params = $this->request->data  ;
     	$startTime = $params['startTime'] ;
     	$endTime = $params['endTime'] ;
+    	$accountId = $params['accountId'] ;
     	if(isset($_FILES['orderFile'])){
     		$fileName = $_FILES['orderFile']["name"] ;
 			$myfile = $_FILES['orderFile']['tmp_name'] ;
@@ -28,8 +29,6 @@ class OrderController extends AppController {
 			while (!feof($file_handle)) {
 			   $line = fgets($file_handle);
 			   
-			  // echo $line.'<br/>' ;
-			  
 			   if( trim($line) != "" ){
 			   		$line = trim($line) ;
 			   		if( $isFirst === true ){//head
@@ -44,7 +43,11 @@ class OrderController extends AppController {
 			   				$index++ ;
 			   			} 
 			   			if( empty( $map['order-id']) ) continue ;
+			   			try{
 			   			$this->OrderService->saveOrderItem($accountId, $map ,$id ,$header ) ;
+			   			}catch(Exception $e){
+			   				print_r($e) ;
+			   			}
 			   		}
 			   }
 			}

@@ -26,7 +26,7 @@
    var tabs = [];
    <?php
    		$amazonaccount  = ClassRegistry::init("Amazonaccount") ;
-		$accounts = $amazonaccount->getAccounts(); 
+		$accounts = $amazonaccount->getAllAccounts(); 
    		
    		foreach($accounts as $account){
    			$account = $account['sc_amazon_account'] ;

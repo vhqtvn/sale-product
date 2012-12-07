@@ -115,9 +115,12 @@ function formatGridData(data){
 			//拣货单订单列表
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"left",key:"TRACK_NUMBER",label:"Tracking Number", width:"20%"},
-		           	//{align:"center",key:"SHIP_SERVICE_LEVEL",label:"SHIP LEVEL", width:"10%"},
-		           	{align:"left",key:"ASIN",label:"ASIN", width:"90",render:function(record){
+					{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
+							var html = [] ;
+							html.push("<a href='#' class='action-update' val='"+val+"'>编辑</a>&nbsp;") ;
+							return html.join("") ;
+					}},
+					{align:"left",key:"ASIN",label:"ASIN", width:"90",render:function(record){
 							if(record.IS_PACKAGE || record.C > 1){
 								$(this).find("td").css("background","#EEBBFF") ;
 							}

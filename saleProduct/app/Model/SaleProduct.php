@@ -25,11 +25,8 @@ class SaleProduct extends AppModel {
 	}
 	
 	function getMaxSku(){
-		$sql = $this->getDbSql("sql_saleproduct_getMaxSKU") ;
-		$sql = $this->getSql($sql,array()) ;
-		$count = $this->query($sql) ;
-		$C = $count[0][0]['C'] ;
-		return $C ;
+		$result = $this->getMaxValue("sku",null,20000000) ;
+		return $result ;
 	}
 	
 	function saveProduct($data , $user){

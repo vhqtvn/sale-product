@@ -321,11 +321,11 @@ jQuery.utils = {
             };
         }
 	},scriptPath:function(scriptName){
-		var _scriptRoot = window.defaultScriptRoot||"~/statics/scripts" ;
+		var _scriptRoot = window.defaultScriptRoot||"~/app/webroot/js" ;
 		var _themeRoot  = window.defaultThemeRoot||"~/statics/themes" ;
 		var _defaultTheme = window.defaultTheme||"mobile" ;
 		
-		if(scriptName == "plugin"||scriptName == "plugins") return jQuery.utils.parseUrl(_scriptRoot+"/plugins/") ;
+		if(scriptName == "plugin"||scriptName == "plugins") return jQuery.utils.parseUrl(_scriptRoot+"/") ;
 		if(scriptName == "upload") return jQuery.utils.parseUrl(_scriptRoot+"/plugins/") ;
 		if( scriptName == 'jqueryui.css' ) return  jQuery.utils.parseUrl(_themeRoot+"/"+_defaultTheme+"/jquery-ui.css") ;
 		var path = "" ;

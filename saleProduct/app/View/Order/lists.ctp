@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>订单列表</title>
@@ -45,13 +45,23 @@
 				<td>
 					<input type="text" name="orderId"/>
 				</td>
-				<th>人名：</th>
+				<th>系统货号：</th>
 				<td>
-					<input type="text" name="userName"/>
+					<input type="text" name="orderNumber"/>
 				</td>
-				<th>邮件：</th>
+				<th>账号：</th>
 				<td>
-					<input type="text" name="email"/>
+					<select name="accountId">
+		     		<option value="">--选择--</option>
+			     	<?php
+			     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+		   				 $accounts = $amazonAccount->getAllAccounts(); 
+			     		foreach($accounts as $account ){
+			     			$account = $account['sc_amazon_account'] ;
+			     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+			     		} ;
+			     	?>
+					</select>
 				</td>
 			</tr>
 			<tr>
