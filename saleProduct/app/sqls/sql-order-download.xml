@@ -17,7 +17,7 @@
 			AND (tn_status is null or tn_status = '')
     </entry>
     
-    <entry key="sql_order_set_asying">
+    <entry key="sql_order_set_asyed">
     	update sc_amazon_order set tn_status = '1' where 
 			account_id = '{@#accountId#}'
 			AND exists (

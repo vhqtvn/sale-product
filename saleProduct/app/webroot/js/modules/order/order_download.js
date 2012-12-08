@@ -50,8 +50,8 @@ var Page = {
 				 rowClick:function(rowIndex , rowData){
 				 	currentPickId = rowData.ID ;
 				 	currentPickName = rowData.NAME ;
-				 	$(".grid-content").llygrid("reload",{pickId:rowData.ID});
-				 	renderBtn() ;
+				 	//$(".grid-content").llygrid("reload",{pickId:rowData.ID});
+				 	//renderBtn() ;
 				 }
 
 			}) ;

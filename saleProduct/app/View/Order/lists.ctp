@@ -27,6 +27,13 @@
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
 	?>
+	
+	<style type="text/css">
+		.lly-grid-cell-update{
+			background:#DFA;
+			font-weight:blod;
+		}
+</style>
 </head>
 <!--
 风险客户<input type="radio" name="status" value="2">

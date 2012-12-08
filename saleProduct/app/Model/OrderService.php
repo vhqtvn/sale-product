@@ -35,6 +35,14 @@ class OrderService extends AppModel {
 			'30001'=>'完成重发货'
 		) ;
 	
+	function updateProcessField($params){
+		$type = $params['type'] ;
+		$value = $params['value'] ;
+		$orderId = $params['orderId'] ;
+		$sql = "update sc_amazon_order set $type = '$value' where order_id = '$orderId'" ;
+		return $this->query($sql) ;
+	}
+	
 	/**
 	 * 保存上传记录
 	 */

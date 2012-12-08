@@ -98,7 +98,9 @@
 						<td colspan="3" style="text-align:right;">
 							<button class="btn btn-primary action-btn print-btn pick-btn" action='5'>二次分拣</button>
 							<button class="btn btn-success btn-outwarehouse" action='6'>订单出仓</button>
+							<!--
 							<button class="btn btn-danger action-btn print-btn pick-btn" action='6'>同步TN到AMAZON</button>
+							-->
 						</td>
 					</tr>							
 				</table>	
