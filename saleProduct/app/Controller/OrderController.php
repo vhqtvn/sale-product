@@ -69,6 +69,10 @@ class OrderController extends AppController {
     	$this->set("accountId",$accountId);
     }
     
+    public function orderDownload($accountId){
+    	$this->set("accountId",$accountId);
+    }
+    
     /**
      * 新订单列表
      */
@@ -93,6 +97,32 @@ class OrderController extends AppController {
     	$this->response->type("json");
 		$this->response->body("execute complete");
 		return $this->response;
+    }
+    
+        
+    /**
+     * 下载对应账号对应的订单
+     */
+    public function doDownloadOrder($accountId,$downId=null){
+    	if(!empty($downId)){
+    		$down = $this->OrderService->getDownloadById($downId) ;
+    		$down = $down[0]['sc_amazon_order_download'] ;
+    		$this->set("name",$down['NAME']) ;
+			$this->set("feed",$down['FEED']) ;
+    	}else{
+    		$name = "ACCOUNT$accountId".'_'.date("YmdHi") ;
+	    	$user =  $this->getCookUser() ;
+	    	
+	    	$this->set("accountId",$accountId) ;
+	    	$accounts = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
+	    	$account = $accounts[0]['sc_amazon_account'] ;
+	    	$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+	    	$feed = $this->OrderService->downloadOrderFeed($accountId,$MerchantIdentifier,$user,$name) ;
+	    	
+	    	//保存下载批次
+	    	$this->set("name",$name) ;
+			$this->set("feed",$feed) ;
+    	}
     }
     
     public function saveTrackNumberToAamazon($pickedId = null ){
@@ -248,6 +278,7 @@ class OrderController extends AppController {
     	$pick = $this->OrderService->getPicked($pickId) ;
     	$this->set("pick",$pick) ;
     }
+
     
     public function doExportPicked($pickId){
     	

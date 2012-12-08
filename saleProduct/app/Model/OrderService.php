@@ -21,7 +21,7 @@ class OrderService extends AppModel {
 			'7'=>'特殊单') ;
 			
 	var $pickStatus = array('9'=>'拣货中','10'=>'发货完成','11'=>'异常订单','12'=>'拣货完成') ;
-	var $tnStatus   = array('1'=>'同步AMAZON完成') ;
+	var $tnStatus   = array('1'=>'同步AMAZON完成','2'=>'同步进行中') ;
 	var $redoStatus = array(
 			'1'=>'退货',
 			'2'=>'退款',
@@ -391,6 +391,40 @@ class OrderService extends AppModel {
 		$sql = $this->getSql($sql,array('pickId'=>$pickId)) ;
 		$items = $this->query($sql) ;
 		return $items ;
+	}
+	
+	function getDownloadById($id){
+		$sql = "select * from sc_amazon_order_download where id = '$id'" ;
+		return $this->query($sql) ;
+	}
+	
+	function downloadOrderFeed($accountId,$MerchantIdentifier,$user,$name){
+		$loginId = $user['LOGIN_ID'] ;
+		
+		//更改状态
+		$sql = $this->getDbSql("sql_order_set_asying") ;
+		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
+		$this->query($sql) ;
+		
+		//获取列表
+		$sql = $this->getDbSql("sql_order_asying_list") ;
+		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
+		$items = $this->query($sql) ;
+		
+		$feed = $this->_getTrackNumberFeed($MerchantIdentifier , $items) ;
+		
+		//插入到下载表
+		$sql = $this->getDbSql("sql_order_download_insert") ;
+		$sql = $this->getSql($sql,array('accountId'=>$accountId,'feed'=>$feed,'loginId'=>$loginId,'name'=>$name)) ;
+		$this->query($sql) ;
+		
+		//将插入到下载明细
+		$sql = $this->getDbSql("sql_order_set_asyed") ;
+		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
+		$this->query($sql) ;
+		
+		return $feed ;
+		
 	}
 	
 	function getTrackNumberFeed($params,$user ,$accountId,$MerchantIdentifier){

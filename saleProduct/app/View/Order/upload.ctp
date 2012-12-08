@@ -25,6 +25,8 @@
 	?>
   
    <script type="text/javascript">
+   		var accountId = '<?php echo $accountId;?>' ;
+   
 		 function formatGridData(data){
 		var records = data.record ;
  		var count   = data.count ;
@@ -57,28 +59,9 @@
    </script>
 
    <script>
-	   var tabs = [];
-	   var accounts = [] ;
-	   <?php
-	   		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
-		    $accounts = $amazonAccount->getAllAccounts(); 
-	   		
-	   		foreach($accounts as $account){
-	   			$account = $account['sc_amazon_account'] ;
-	   			echo "accounts.push({id:'".$account['ID']."'});";
-				echo "tabs.push( {label:'".$account['NAME']."',content:'tab-content'}) ;" ;
-			} ;
-	   ?>
+
 	  	$(function(){
-	  		var tab = $('#tabs-default').tabs( {
-				tabs:tabs,
-				select:function(event,ui){
-					var index = ui.index ;
-					var accountId = accounts[index]['id'] ;
-					$(".grid-content").llygrid("reload",{accountId:accountId},true) ;
-				}
-			} ) ;
-			
+	
 			$(".grid-content").llygrid({
 				columns:[
 		           	{align:"center",key:"ID",label:"编号", width:"10%"},
@@ -94,7 +77,7 @@
 				 pageSizes:[10,20,30,40],
 				 height:400,
 				 title:"订单上传列表",
-				 querys:{sqlId:"sql_order_upload_list",accountId:accounts[0]['id']},
+				 querys:{sqlId:"sql_order_upload_list",accountId:accountId},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 	  	})
@@ -111,19 +94,7 @@
 		     <td><input name="orderFile" data-validator="required" type="file"/></td>
 		     <td>BatchId：</td>
 		     <td><input name="batchId" class="span2" type="text"/></td> 
-		     <td>选择账户：</td>
-		     <td>
-		     	<select name="accountId" data-validator="required">
-		     		<option value="">--选择--</option>
-		     	<?php
-		     		 
-		     		foreach($accounts as $account ){
-		     			$account = $account['sc_amazon_account'] ;
-		     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
-		     		} ;
-		     	?>
-				</select>
-		     </td> 
+		  
 		    </tr>
 		    <tr>
 		     <td>开始时间：</td>

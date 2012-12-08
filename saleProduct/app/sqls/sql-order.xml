@@ -766,7 +766,6 @@
 		   AND s5.order_id = s2.order_id
 		   AND s5.order_item_id = s2.order_item_id
 		   AND s5.picked_id = s6.id
-		   AND s7.order_id = s2.order_id
 		   AND s2.order_id not in (
 		     select order_id from sc_order_result
 		   )
@@ -863,7 +862,8 @@
     <entry key="sql_order_can_do_ship">
 		select sc_amazon_order.* ,
 			(select track_number from sc_order_result where sc_order_result.order_id = sc_amazon_order.order_id ) as TN
-		from sc_amazon_order where account_id = '{@#accountId#}'
+		from sc_amazon_order where 
+			account_id = '{@#accountId#}'
 			AND exists (
 				select 1 from sc_amazon_order_status where 
 					sc_amazon_order_status.pick_status = '10'

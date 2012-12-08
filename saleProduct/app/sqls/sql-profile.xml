@@ -133,7 +133,8 @@
     
      <entry key="sql_tasked_list">
     	SELECT sc_tasked.* , sc_tasking_type.NAME
-		FROM sc_tasked,sc_tasking_type where sc_tasked.task_type = sc_tasking_type.code order by sc_tasked.id desc
+		FROM sc_tasked,sc_tasking_type where sc_tasked.task_type = sc_tasking_type.code 
+		order by sc_tasked.START_TIME desc
     </entry>
     
      <entry key="sql_product_asyn_history">
