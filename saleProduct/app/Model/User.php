@@ -149,7 +149,7 @@ class User extends AppModel {
 
     	//getAccount Info
 		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
-		$accounts = $amazonAccount->getAccounts(); 
+		$accounts = $amazonAccount->getAllAccounts(); 
 		
 		$accountSecuritys = array() ;
 		$accountArray = array() ;

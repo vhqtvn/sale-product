@@ -493,6 +493,12 @@ class Amazonaccount extends AppModel {
 		return $array ;
 	}
 	
+	function getAccountIngoreDomainById($accountId){
+		$sql = "SELECT * FROM sc_amazon_account where id='$accountId'";
+		$array = $this->query($sql);
+		return $array ;
+	}
+	
 	function getAllAccounts(){
 		$sql = "SELECT * FROM sc_amazon_account";
 		$array = $this->query($sql);

@@ -413,12 +413,12 @@ class OrderService extends AppModel {
 		$sql = $this->getDbSql("sql_order_can_do_ship") ;
 		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
 		$items = $this->query($sql) ;
-		foreach($items as $order){
-			$order = $order['sc_amazon_order'] ;
+		foreach($items as $order1){
+			$order = $order1['sc_amazon_order'] ;
 			$orderId = $order['ORDER_ID'] ;
 			$orderItemId = $order['ORDER_ITEM_ID'] ;
 			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
-			$trackNumber = $order['TRACK_NUMBER'] ;	
+			$trackNumber = $order[0]['TN'] ;	
 			
 			$sql = "update sc_amazon_order set TN_STATUS = '1' where ORDER_ID='$orderId'" ;
 			$this->query($sql) ;

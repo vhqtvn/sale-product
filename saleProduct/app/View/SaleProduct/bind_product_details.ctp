@@ -115,6 +115,7 @@
 					columns:[
 						{align:"center",key:"SKU",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
 								if(record.checked >=1){
+									
 									$(this).attr("checked",true) ;
 								}
 						}}},

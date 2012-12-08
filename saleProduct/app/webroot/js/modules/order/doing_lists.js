@@ -162,7 +162,7 @@ function formatGridData(data){
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:'',trackNumberNull:"",pickStatus:"9"},
+				 querys:{sqlId:sqlId,accountId:'',status:'',trackNumberNull:"",pickStatus:"9"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			

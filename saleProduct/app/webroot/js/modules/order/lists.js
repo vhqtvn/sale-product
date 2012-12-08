@@ -78,7 +78,7 @@ function formatGridData(data){
 				 },
 				 title:"订单信息列表",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId,status:status},
+				 querys:{sqlId:sqlId,accountId:'',status:status},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			

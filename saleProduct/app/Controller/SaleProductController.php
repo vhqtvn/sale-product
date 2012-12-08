@@ -108,12 +108,12 @@ class SaleProductController extends AppController {
 		$this->set('type',$type);
     	$this->set("accountId",$accountId) ;
     	
-    	$account = $this->Amazonaccount->getAccount($accountId);  
+    	$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId);  
 	 	$account = $account[0]['sc_amazon_account'] ;
 	 	
 	 	$this->set('accountId', $account["ID"]);
 		
-		$accounts = $this->Amazonaccount->getAccounts();  
+		$accounts = $this->Amazonaccount->getAllAccounts();  
     	$this->set("accounts",$accounts) ;
     	
     	$categorys = $this->Amazonaccount->getAmazonProductCategory($accountId);  

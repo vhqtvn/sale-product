@@ -135,7 +135,7 @@
 			treeMap['id_'+this.pid].childNodes.push(this) ;
 		}
 		
-		if(this.id == "marketing_manage"){
+		if(this.id == "order_manage"){
 			this.childNodes = this.childNodes||[] ;
 			var me = this ;
 			$(accounts).each(function(){

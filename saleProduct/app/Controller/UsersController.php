@@ -84,7 +84,7 @@ class UsersController extends AppController
     }
     
     function assignFunctions( $code ){
-    	
+   
     	//获取正常的菜单信息
 		$someone = $this->User->getFunctionRelGroups($code);  
     	$this->set("Functions",$someone) ;

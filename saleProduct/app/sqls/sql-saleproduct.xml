@@ -95,7 +95,7 @@ UPDATE sc_real_product
     <![CDATA[
     select * from (	
 		SELECT  sc_amazon_account_product.*,
-		 (select count(1) from sc_real_product_rel where real_sku = '{@#realSku#}' and
+		 (select count(1) from sc_real_product_rel where real_id = '{@#id#}' and
 		 	sc_real_product_rel.sku = sc_amazon_account_product.sku
 		 	and sc_real_product_rel.account_id = sc_amazon_account_product.account_id
 		 ) as checked

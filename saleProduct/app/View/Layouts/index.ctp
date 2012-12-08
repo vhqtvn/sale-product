@@ -106,7 +106,7 @@
 				treeMap['id_'+this.pid].children.push(this) ;
 			}
 			
-			if(this.code == "marketing_manage"){
+			if(this.code == "order_manage"){
 				this.children = this.children||[] ;
 				var me = this ;
 				$(accounts).each(function(){
