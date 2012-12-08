@@ -12,9 +12,7 @@ class Tasking extends AppModel {
 	 * 通过插入数据库标记任务开始
 	 */
 	public function start( $type , $asin , $accountId){
-		$sql = "SELECT ( CASE WHEN MAX(id) IS NULL THEN 1 ELSE MAX(id)+1 END ) AS C FROM sc_tasked " ;
-		$result = $this->query($sql) ;
-		$id = $result[0][0]['C'] ;
+		$id = date('U') ;
 		
 		$sql = "insert sc_tasking(id,task_type,asin,account_id,start_time,executor,message)
 			values($id,'$type','$asin','$accountId',NOW(),'','开始执行...')" ;
