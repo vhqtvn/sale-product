@@ -44,26 +44,33 @@ function formatGridData(data){
 						format:{type:"json",content:{0:"未审核",5:"合格订单",2:"风险订单"
 						,3:"待退单",4:"外购订单",6:"加急单",7:"特殊单"
 					}}},*/
-					{align:"left",key:"VALUE",label:"VALUE", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
-					{align:"left",key:"MAIL_CLASS",label:"MAIL CLASS", width:"6%",
-						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],
-						data:[{value:'1',text:'none'},{value:'2',text:'Delivery Confirmation'},{value:'3',text:'Signature Confirmation'}]}},
+					{align:"left",key:"PACKAGE_VALUE",label:"VALUE", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
 					/*
 					 First-Class Letter
 					First-Class Letter Large Envelp（Flat）
 					First-Class Package Service
 					Priority Mail*/
-					{align:"left",key:"TRACKING_TYPE",label:"TRACKING", width:"6%",
-						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],
-						data:[{value:'FCL',text:'First-Class Letter'},
-							{value:'FCLLE',text:'First-Class Letter Large Envelp（Flat）'},
-							{value:'FCPS',text:'First-Class Package Service'},
-							{value:'PM',text:'Priority Mail'}
+					{align:"left",key:"MAIL_CLASS",label:"MAIL CLASS", width:"10%",
+						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],valFormat:function(val,record){
+							return val||'FCPS' ;
+						},
+						data:[{value:'FCL',text:'FCL:First-Class Letter'},
+							{value:'FCLLE',text:'FCLLE:First-Class Letter Large Envelp（Flat）'},
+							{value:'FCPS',text:'FCPS:First-Class Package Service'},
+							{value:'PM',text:'PM:Priority Mail'}
 							]}},
+					{align:"left",key:"TRACKING_TYPE",label:"TRACKING", width:"10%",
+						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],
+						data:[{value:'1',text:'1:none'},{value:'2',text:'2:Delivery Confirmation'},{value:'3',text:'3:Signature Confirmation'}]}},
 					{align:"left",key:"LENGTH",label:"LENGTH", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
 					{align:"left",key:"WIDTH",label:"WIDTH", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
 					{align:"left",key:"HEIGHT",label:"HEIGHT", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
-					{align:"left",key:"WEIGHT",label:"WEIGHT", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
+					{align:"left",key:"WEIGHT",label:"WEIGHT", width:"6%",format:{type:"editor",fields:['ORDER_ID'],valFormat:function(val,record){
+						var realWeight = record['REAL_WEIGHT'] ;
+						var weight = record['WEIGHT'] ;
+						var w =  weight||realWeight ;
+						return (w == 'null' || w== null) ?'':w ;
+					}}},
 					{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
@@ -200,13 +207,11 @@ function renderAction(index){
 
 $(".lly-grid-cell-input").live("blur",function(){
 	var orderId = $(this).attr("ORDER_ID")||$(this).attr("order_id") ;
-	var price = "" ;
-	var quantity = "" ;
 	var key = $(this).attr("key") ;
 	var val = $(this).val() ;
 	
 	$.dataservice("model:OrderService.updateProcessField",{type:key,orderId:orderId,value:val},function(result){
-		alert(result);
+		//alert(result);
 	}) ;
 
 }) ;

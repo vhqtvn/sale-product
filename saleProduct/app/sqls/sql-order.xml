@@ -127,6 +127,7 @@
 			sc_amazon_account_product.ASIN,
 			sc_real_product.REAL_SKU,
 			sc_real_product.NAME as REAL_NAME,
+			( sc_real_product.WEIGHT * sc_amazon_order.QUANTITY_TO_SHIP ) as REAL_WEIGHT,
 			sc_real_product.IMAGE_URL,
 			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
 			   	  WHERE s1.order_id = sc_amazon_order.order_id
@@ -171,6 +172,7 @@
 			sc_amazon_account_product.ASIN,
 			sc_real_product.REAL_SKU,
 			sc_real_product.NAME as REAL_NAME,
+			( sc_real_product.WEIGHT * sc_amazon_order.QUANTITY_TO_SHIP ) as REAL_WEIGHT,
 			sc_real_product.IMAGE_URL,
 			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
 			   	  WHERE s1.order_id = sc_amazon_order.order_id
@@ -221,6 +223,7 @@
 			sc_real_product.REAL_SKU,
 			sc_real_product.NAME as REAL_NAME,
 			sc_real_product.IMAGE_URL,
+			( sc_real_product.WEIGHT * sc_amazon_order.QUANTITY_TO_SHIP ) as REAL_WEIGHT,
 			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
 			   	  WHERE s1.order_id = sc_amazon_order.order_id
 			   	  GROUP BY s1.order_id
@@ -725,15 +728,9 @@
 				s4.NAME,
 		        s4.IMAGE_URL ,
 		        s4.MEMO,
-		        (s4.WEIGHT*s2.QUANTITY_TO_SHIP) as WEIGHT ,
-		        CONCAT((s4.WEIGHT*s2.QUANTITY_TO_SHIP),' ',s4.WEIGHT_UNIT) AS WEIGHT_WITH_UNIT,
-		        s4.LENGTH,
-		        s4.WIDTH,
-		        s4.HEIGHT,
 				s2.SKU ,
 				s2.BUYER_PHONE_NUMBER,
 				s2.BUYER_EMAIL,
-		        s2.QUANTITY_TO_SHIP,
 		        s2.ORDER_ID,
 		        s2.ORDER_NUMBER,
 		        s2.ORDER_ITEM_ID,
@@ -747,8 +744,13 @@
 		        s2.SHIP_POSTAL_CODE,
 		        s2.PAYMENTS_DATE,
 		        s2.SHIP_SERVICE_LEVEL,
-		        ( case when s2.TRACKING_SERVICE is null then 1 else s2.TRACKING_SERVICE end ) as TRACKING_SERVICE,
-		        ( s2.ITEM_PRICE*s2.QUANTITY_TO_SHIP ) as PACKAGE_VALUE
+		        s2.MAIL_CLASS,
+		        s2.LENGTH,
+		        s2.WIDTH,
+		        s2.HEIGHT,
+		        s2.WEIGHT,
+		        s2.TRACKING_TYPE,
+		        s2.PACKAGE_VALUE
 		  FROM  sc_amazon_order_status s1
 			,sc_amazon_order s2
 			,sc_real_product_rel s3

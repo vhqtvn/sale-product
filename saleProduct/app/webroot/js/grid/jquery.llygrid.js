@@ -662,7 +662,12 @@
 			},
 			"editor":{
 				body:function(val,record ,col){
-					val = val||"" ;
+					val = val || col.defaultValue||"";
+					
+					if( col.format.valFormat ){
+						val = col.format.valFormat(val,record) ;
+					}
+					
 					var fields = col.format.fields||[] ;
 					var html = [] ;
 					$(fields).each(function(){
@@ -679,7 +684,7 @@
 							var temp = '' ;
 							if( val == this.value )temp = "selected" ;
 							html1.push("<option "+temp+" value='"+this.value+"'>"+this.text+"</option>") ;
-						}) ;	
+						}) ;
 						html1.push("</select>") ;
 						return html1.join("") ;
 					}else{
@@ -1030,3 +1035,9 @@ function formatGridData(data){
 			
 		return ret ;
 	}
+	
+	
+//common action 
+function viewSupplier(id){
+	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,600,500) ;
+}

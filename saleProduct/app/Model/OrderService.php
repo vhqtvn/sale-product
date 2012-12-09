@@ -109,12 +109,12 @@ class OrderService extends AppModel {
 				$sql = $this->getSql($sql,$items) ;
 				$this->query($sql) ;
 				
-				$sql = "select * from sc_order_result where order_id = '$orderId'" ;
+				/*$sql = "select * from sc_order_result where order_id = '$orderId'" ;
 				$result = $this->query($sql) ; 
 				if(empty($result)){
 					$sql = "insert into sc_order_result(order_id) values('$orderId')" ;
 					$this->query($sql) ;
-				}
+				}*/
 				
 			}catch(Exception $e){
 				print_r($e->getMessage()) ;
