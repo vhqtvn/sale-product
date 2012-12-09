@@ -744,12 +744,12 @@
 		        s2.SHIP_POSTAL_CODE,
 		        s2.PAYMENTS_DATE,
 		        s2.SHIP_SERVICE_LEVEL,
-		        s2.MAIL_CLASS,
+		        ( case when ( s2.MAIL_CLASS is null or s2.MAIL_CLASS = '' ) then 'FCPS' else s2.MAIL_CLASS end ) as MAIL_CLASS,
 		        s2.LENGTH,
 		        s2.WIDTH,
 		        s2.HEIGHT,
 		        s2.WEIGHT,
-		        s2.TRACKING_TYPE,
+		        ( case when ( s2.TRACKING_TYPE is null or s2.TRACKING_TYPE = '' ) then '2' else s2.TRACKING_TYPE end ) as TRACKING_TYPE,
 		        s2.PACKAGE_VALUE
 		  FROM  sc_amazon_order_status s1
 			,sc_amazon_order s2
