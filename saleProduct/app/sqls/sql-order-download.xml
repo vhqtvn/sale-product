@@ -28,10 +28,24 @@
 			AND tn_status = '2'
     </entry>
     
+    <entry key="sql_order_set_download_details">
+    	INSERT INTO sc_amazon_order_download_details (id,order_id,download_id) 
+    	SELECT order_number as id ,order_id ,'{@#downloadId#}' as download_id  FROM sc_amazon_order
+    	where
+			account_id = '{@#accountId#}'
+			AND exists (
+				select 1 from sc_amazon_order_status where 
+					sc_amazon_order_status.pick_status = '10'
+					and sc_amazon_order_status.order_id = sc_amazon_order.order_id
+			)
+			AND tn_status='2'
+    </entry>
+    
     <entry key="sql_order_asying_list">
     	select sc_amazon_order.* ,
 			(select track_number from sc_order_result where sc_order_result.order_id = sc_amazon_order.order_id ) as TN
-		from sc_amazon_order where 
+		from sc_amazon_order 
+		where
 			account_id = '{@#accountId#}'
 			AND exists (
 				select 1 from sc_amazon_order_status where 
@@ -61,5 +75,86 @@
 	'{@#loginId#}'
 	)
 	 </entry>
+	 
+	 
+    
+    <entry key="sql_order_can_do_ship">
+    	SELECT  
+    	s1.ORDER_ID,
+        s1.ORDER_ITEM_ID,
+        s1.ORDER_NUMBER,
+        s1.SKU,
+        s2.TRACK_NUMBER, 
+		s2.SHIPPING_FEE, 
+		s2.TRANSACTION_ID, 
+		s2.MAIL_CLASS, 
+		s2.POSTMARK_DATE, 
+		s2.TRANSACTION_DATETIME, 
+		s2.GROUP_CODE, 
+		s2.INSURED_VALUE, 
+		s2.INSURANCE_FEE, 
+		s2.STATUS,
+		s2.LENGTH, 
+		s2.WIDTH, 
+		s2.HEIGHT, 
+		s2.BILLED_WEIGHT, 
+		s2.ACTUAL_WEIGHT,
+		s3.REAL_SKU,
+		s3.NAME as REAL_NAME,
+		s3.IMAGE_URL
+	 FROM sc_amazon_order s1
+	LEFT JOIN sc_order_result s2 
+	ON s1.order_id = s2.order_id
+	left join sc_real_product s3
+		  on s3.real_sku in (
+		  	 select s.real_sku from sc_real_product_rel s 
+		  	 where s.sku = s1.sku
+		  	 and s.account_id = s1.account_id
+		  )
+	WHERE 	account_id = '{@#accountId#}'
+		AND EXISTS (
+			SELECT 1 FROM sc_amazon_order_status WHERE 
+				sc_amazon_order_status.pick_status = '10'
+				AND sc_amazon_order_status.order_id = s1.order_id
+		)
+		AND (tn_status IS NULL OR tn_status = '')
+    </entry>
+    
+    <entry key="sql_order_has_do_ship">
+    	SELECT  
+    	s1.ORDER_ID,
+        s1.ORDER_ITEM_ID,
+        s1.ORDER_NUMBER,
+        s1.SKU,
+        s2.TRACK_NUMBER, 
+		s2.SHIPPING_FEE, 
+		s2.TRANSACTION_ID, 
+		s2.MAIL_CLASS, 
+		s2.POSTMARK_DATE, 
+		s2.TRANSACTION_DATETIME, 
+		s2.GROUP_CODE, 
+		s2.INSURED_VALUE, 
+		s2.INSURANCE_FEE, 
+		s2.STATUS,
+		s2.LENGTH, 
+		s2.WIDTH, 
+		s2.HEIGHT, 
+		s2.BILLED_WEIGHT, 
+		s2.ACTUAL_WEIGHT,
+		s3.REAL_SKU,
+		s3.NAME as REAL_NAME,
+		s3.IMAGE_URL
+	 FROM sc_amazon_order s1
+	LEFT JOIN sc_order_result s2 
+	ON s1.order_id = s2.order_id
+	left join sc_real_product s3
+		  on s3.real_sku in (
+		  	 select s.real_sku from sc_real_product_rel s 
+		  	 where s.sku = s1.sku
+		  	 and s.account_id = s1.account_id
+		  )
+	WHERE 	account_id = '{@#accountId#}'
+		AND tn_status = '1'
+    </entry>
    
 </properties>

@@ -34,6 +34,13 @@ class OrderService extends AppModel {
 			'20001'=>'完成退款',
 			'30001'=>'完成重发货'
 		) ;
+		
+	var $shipMethod = array(
+			'FCL'=>'First-Class Letter',
+			'FCLLE'=>'First-Class Letter Large Envelp（Flat）',
+			'FCPS'=>'First-Class Package Service',
+			'PM'=>'Priority Mail'
+		) ;
 	
 	function updateProcessField($params){
 		$type = $params['type'] ;
@@ -419,7 +426,7 @@ class OrderService extends AppModel {
 		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
 		$items = $this->query($sql) ;
 		
-		$feed = $this->_getTrackNumberFeed($MerchantIdentifier , $items) ;
+		$feed = $this->_getTrackNumberTxt($MerchantIdentifier , $items) ;
 		
 		//插入到下载表
 		$sql = $this->getDbSql("sql_order_download_insert") ;
@@ -427,6 +434,11 @@ class OrderService extends AppModel {
 		$this->query($sql) ;
 		
 		//将插入到下载明细
+		$sql = $this->getDbSql("sql_order_set_download_details") ;
+		$sql = $this->getSql($sql,array('accountId'=>$accountId,'downloadId'=>$name)) ;
+		$this->query($sql) ;
+		
+		//更新订单状态为完成
 		$sql = $this->getDbSql("sql_order_set_asyed") ;
 		$sql = $this->getSql($sql,array('accountId'=>$accountId)) ;
 		$this->query($sql) ;
@@ -485,6 +497,42 @@ class OrderService extends AppModel {
 	}
 	
 	////////////////////////////////////////////////
+	public function _getTrackNumberTxt($MerchantIdentifier , $orders){
+		$return = "order-id	order-item-id	quantity	ship-date	carrier-code	carrier-name	tracking-number	ship-method\n" ;
+		
+		$time = new DateTime('now', new DateTimeZone('UTC')) ;
+		$time->modify( '+6 hour +40 minute +31 second' );
+    
+    	$FulfillmentDate = $this->getFormattedTimestamp($time);
+		
+		foreach($orders as $order1){
+			$order = $order1['sc_amazon_order'] ;
+			$orderId = $order['ORDER_ID'] ;
+			$orderItemId = $order['ORDER_ITEM_ID'] ;
+			$quantity = $order['QUANTITY_TO_SHIP'] ;
+			$shippingMethod = $order['MAIL_CLASS'] ;
+			$trackNumber = $order1[0]['TN'] ;
+			$carrierCode = $order['CARRIER_CODE'] ;
+			if(empty($carrierCode)){
+				$carrierCode = "USPS" ;
+			}
+			//$shipMethod
+			if(empty($shippingMethod))	{
+				$shippingMethod = "First Class Mail" ;
+			}else{
+				if(isset($shipMethod[$shippingMethod])){
+					$shippingMethod = $shipMethod[$shippingMethod]  ;
+				}else{
+					$shippingMethod = "First Class Mail" ;
+				}
+			}
+	
+			$return .= "$orderId	$orderItemId	$quantity	$FulfillmentDate	$carrierCode		$trackNumber	$shippingMethod\n" ;
+		}
+		
+		return $return ;
+	}	
+	
 	///////getOrderFeed
 	/*
 	 <CarrierCode>USPS</CarrierCode>
@@ -509,20 +557,27 @@ EOD;
     	$FulfillmentDate = $this->getFormattedTimestamp($time);
 		
 		$index = 0 ;
-		foreach($orders as $order){
-			$order = $order['sc_amazon_order'] ;
+		foreach($orders as $order1){
+			$order = $order1['sc_amazon_order'] ;
 			$index++ ;
 			$orderId = $order['ORDER_ID'] ;
 			$orderItemId = $order['ORDER_ITEM_ID'] ;
 			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
-			$trackNumber = $order['TRACK_NUMBER'] ;	
+			$trackNumber = $order1[0]['TN'] ;
 			$carrierCode = $order['CARRIER_CODE'] ;
 			if(empty($carrierCode)){
 				$carrierCode = "USPS" ;
 			}
 			
+			//$shipMethod
 			if(empty($shippingMethod))	{
-				$shippingMethod = "Standard" ;
+				$shippingMethod = "First Class Mail" ;
+			}else{
+				if(isset($shipMethod[$shippingMethod])){
+					$shippingMethod = $shipMethod[$shippingMethod]  ;
+				}else{
+					$shippingMethod = "First Class Mail" ;
+				}
 			}
 ////////////////////////////////////////////////////////////////////////////
 $Feed .= <<<EOD

@@ -66,8 +66,10 @@
 						<th></th>
 						<td>
 							<button class="btn btn-primary query" >查询</button>
-							<button class="download btn btn-primary">下载订单</button>
+							<button class="download btn btn-primary">下载订单处理信息</button>
+							<!--
 							<button class="btn btn-danger toamazon" disabled>同步AMAZON</button>
+							-->
 						</td>
 					</tr>						
 				</table>	
@@ -77,7 +79,6 @@
 			<div class="grid-content" id="tab-content"></div>
 		</div>
 		<div region="west" icon="icon-edit" split="true" border="true" title="下载历史列表" style="width:200px;">
-			
 			<div id="picked-grid-content" class="tree" style="padding: 5px; "></div>
 		</div>
 </body>

@@ -1,6 +1,23 @@
 var Page = {
 	init: function(){
 		$(function(){
+			var tab = $('#details_tab').tabs( {
+				tabs:[
+					{label:'订单处理信息',content:"tab-content"},//9
+					{label:'同步的订单处理信息',content:"tab-content"}
+				] ,
+				//height:'500px',
+				select:function(event,ui){
+					var index = ui.index ;
+					if(index == 0){//拣货中
+						$(".grid-content").llygrid("reload",{sqlId:"sql_order_can_do_ship"}) ;
+					}else if(index == 1){//拣货完成
+						//$(".save-btn").hide() ;
+						$(".grid-content").llygrid("reload",{sqlId:"sql_order_has_do_ship"}) ;
+					}
+				}
+			} ) ;
+			
 			Page.loadDownloadGrid() ;
 			Page.loadOrderGrid() ;
 			
@@ -59,21 +76,32 @@ var Page = {
 	loadOrderGrid:function(){
 		var sqlId = "sql_order_can_do_ship" ;
 			//拣货单订单列表
+		/*s1.ORDER_ID,
+        s1.ORDER_ITEM_ID,
+        s2.TRACK_NUMBER, 
+		s2.SHIPPING_FEE, 
+		s2.TRANSACTION_ID, 
+		s2.MAIL_CLASS, 
+		s2.POSTMARK_DATE, 
+		s2.TRANSACTION_DATETIME, 
+		s2.GROUP_CODE, 
+		s2.INSURED_VALUE, 
+		s2.INSURANCE_FEE, 
+		s2.STATUS,
+		s2.LENGTH, 
+		s2.WIDTH, 
+		s2.HEIGHT, 
+		s2.BILLED_WEIGHT, 
+		s2.ACTUAL_WEIGHT,
+		sc_real_product.REAL_SKU,
+		sc_real_product.NAME as REAL_NAME,
+		sc_real_product.IMAGE_URL*/
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"left",key:"ASIN",label:"ASIN", width:"90",render:function(record){
-							if(record.IS_PACKAGE || record.C > 1){
-								$(this).find("td").css("background","#EEBBFF") ;
-							}
-						}
-						,format:function(val,record){
-			           		var memo = record.MEMO||"" ;
-			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
-			        }},
 			        {align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"10%"},
 		           	{align:"left",key:"REAL_SKU",label:"货品SKU", width:"10%"},
 			        {align:"left",key:"NAME",label:"货品名称", width:"10%"},
-		           	{align:"center",key:"IMAGE_URL",label:"货品图片",width:"4%",format:function(val,record){
+		           	{align:"center",key:"IMAGE_URL",label:"货品图片",width:"8%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
 		           		}else{
@@ -81,25 +109,19 @@ var Page = {
 		           		}
 		           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 		           	}},
-		           	{align:"center",key:"ORDER_ID",label:"ORDER_ID", width:"15%"},
-		           	{align:"center",key:"ORDER_ITEM_ID",label:"ORDER_ITEM_ID", width:"12%"},
-		           	{align:"center",key:"SKU",label:"SKU",sort:true, width:"10%"},
-		           	{align:"center",key:"PRODUCT_NAME",label:"PRODUCT_NAME", width:"20%"},
-		           	{align:"center",key:"PURCHASE_DATE",label:"PURCHASE_DATE",sort:true, width:"20%"},
-		           	{align:"center",key:"PAYMENTS_DATE",label:"PAYMENTS_DATE",sort:true, width:"20%"},
-		           	{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
-		           	{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"},
-		           	{align:"center",key:"BUYER_PHONE_NUMBER",label:"BUYER_PHONE_NUMBER", width:"10%"},
-		           	{align:"center",key:"QUANTITY_PURCHASED",label:"QUANTITY_PURCHASED", width:"10%"},
-		           	{align:"center",key:"CURRENCY",label:"CURRENCY", width:"10%"},
-		           	{align:"center",key:"ITEM_PRICE",label:"ITEM_PRICE", width:"10%"},
-		           	{align:"center",key:"ITEM_TAX",label:"ITEM_TAX", width:"10%"}
+		           	{align:"center",key:"ORDER_ID",label:"ORDER_ID", width:"20%"},
+		           	{align:"center",key:"ORDER_ITEM_ID",label:"ORDER_ITEM_ID", width:"15%"},
+		           	{align:"center",key:"SKU",label:"SKU",sort:true, width:"15%"},
+		           	{align:"center",key:"TRACK_NUMBER",label:"TRACK_NUMBER", width:"20%"},
+		           	{align:"center",key:"SHIPPING_FEE",label:"SHIPPING_FEE",sort:true, width:"20%"},
+		           	{align:"center",key:"TRANSACTION_ID",label:"TRANSACTION_ID",sort:true, width:"20%"},
+		           	{align:"center",key:"MAIL_CLASS",label:"MAIL_CLASS", width:"30%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-				 	return $(window).height() - $(".toolbar-auto").height() -130 ;
+				 	return $(window).height() - $(".toolbar-auto").height() -160 ;
 				 },
 				 title:"",
 				 indexColumn:false,

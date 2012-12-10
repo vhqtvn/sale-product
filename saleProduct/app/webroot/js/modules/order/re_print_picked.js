@@ -58,6 +58,7 @@ function formatGridData(data){
 			$(target).parents("tr:first").find("td").css("background","green") ;
 		}
 	} ;
+	var detailRecords = null ;
 
 	$(function(){
 			var _index = 1 ;
@@ -154,7 +155,7 @@ function formatGridData(data){
 			 	return false; 
 			 });
 			
-			var detailRecords = null ;
+			
 			var isFirst = true ;
 			var gridConfig = {
 				columns:[

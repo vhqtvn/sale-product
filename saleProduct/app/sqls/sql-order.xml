@@ -317,8 +317,8 @@
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
 		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
-		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
-		   {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id
+		   and sc_amazon_order.tn_status = '1'
 		   {@ and sc_amazon_order_status.audit_status = '#status#'}
 		   {@ and sc_amazon_order.order_id = '#orderId#'}
 		   {@ and sc_amazon_order.buyer_name = '#userName#'}
@@ -327,7 +327,6 @@
 		   {@ and sc_amazon_order.order_number = '#orderNumber#'}
 		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		   {@ and sc_amazon_order.service_status = '#serviceStatus#'}
-		   and sc_amazon_order.tn_status in ('1')
 		   {@ and ( sc_amazon_order.redo_status is null or sc_amazon_order.redo_status = '' ) and '#unRedoStatus#' = '#unRedoStatus#'}
 		   {@ and sc_amazon_order.redo_status = '#redoStatus#'}
 		   order by sc_amazon_order.order_number
@@ -860,18 +859,5 @@
     </entry>
     
     
-    
-    <entry key="sql_order_can_do_ship">
-		select sc_amazon_order.* ,
-			(select track_number from sc_order_result where sc_order_result.order_id = sc_amazon_order.order_id ) as TN
-		from sc_amazon_order where 
-			account_id = '{@#accountId#}'
-			AND exists (
-				select 1 from sc_amazon_order_status where 
-					sc_amazon_order_status.pick_status = '10'
-					and sc_amazon_order_status.order_id = sc_amazon_order.order_id
-			)
-			AND (tn_status is null or tn_status = '')
-    </entry>
    
 </properties>

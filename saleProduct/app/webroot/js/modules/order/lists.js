@@ -60,7 +60,9 @@ function formatGridData(data){
 							{value:'PM',text:'PM:Priority Mail'}
 							]}},
 					{align:"left",key:"TRACKING_TYPE",label:"TRACKING", width:"10%",
-						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],
+						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],valFormat:function(val,record){
+							return val||'2' ;
+						},
 						data:[{value:'1',text:'1:none'},{value:'2',text:'2:Delivery Confirmation'},{value:'3',text:'3:Signature Confirmation'}]}},
 					{align:"left",key:"LENGTH",label:"LENGTH", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
 					{align:"left",key:"WIDTH",label:"WIDTH", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
