@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+
+   <entry key="sql_warehouse_in_lists">
+  		SELECT s1.* ,
+		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
+		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME
+		  FROM sc_warehouse_in s1
+   </entry>
+   
+   <entry key="sql_warehouse_in_getById">
+  		SELECT s1.* ,
+		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
+		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME
+		  FROM sc_warehouse_in s1
+		  where 1=1 
+		  and s1.id = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_warehouse_in_update">
+	    UPDATE  sc_warehouse_in 
+		SET 
+			IN_NUMBER = '{@#inNumber#}' , 
+			CHARGER = '{@#charger#}' , 
+			WAREHOUSE_ID = '{@#warehouseId#}' , 
+			SHIP_COMPANY = '{@#shipCompany#}' , 
+			SHIP_TYPE = '{@#shipType#}' , 
+			SHIP_NO = '{@#shipNo#}' , 
+			SHIP_TRACKNUMBER = '{@#shipTracknumber#}' , 
+			SHIP_DATE = '{@#shipDate#}' , 
+			ARRIVAL_PORT = '{@#arrivalPort#}' , 
+			PLAN_ARRIVAL_DATE = '{@#planArrivalDate#}' , 
+			{@REAL_ARRIVAL_DATE = '#realArrivalDate#' , }
+			MEMO = '{@#memo#}' , 
+			{@ IS_IN = '#isIn#' ,}
+			UPDATOR = '{@#loginId#}' , 
+			UPDATE_TIME = NOW()
+		WHERE
+		ID = '{@#id#}' 
+   </entry>
+   
+   <entry key="sql_warehouse_in_insert">	
+		INSERT INTO sc_warehouse_in 
+			(
+			IN_NUMBER, 
+			CHARGER, 
+			WAREHOUSE_ID, 
+			SHIP_COMPANY, 
+			SHIP_TYPE, 
+			SHIP_NO, 
+			SHIP_TRACKNUMBER, 
+			ARRIVAL_PORT,
+			SHIP_DATE, 
+			PLAN_ARRIVAL_DATE,
+			MEMO,
+			CREATOR,
+			CREATE_TIME
+			)
+			VALUES
+			(
+			'{@#inNumber#}', 
+			'{@#charger#}', 
+			'{@#warehouseId#}', 
+			'{@#shipCompany#}', 
+			'{@#shipType#}', 
+			'{@#shipNo#}', 
+			'{@#shipTracknumber#}', 
+			'{@#arrivalPort#}',
+			'{@#shipDate#}', 
+			'{@#planArrivalDate#}', 
+			'{@#memo#}',
+			'{@#loginId#}',
+			NOW()
+			)
+   </entry>
+   
+   <entry key="sql_warehouse_box_getById">
+  		select * from sc_warehouse_box where id = '{@#boxId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_box_lists">
+  		select * from sc_warehouse_box where in_id = '{@#inId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_box_products">
+   		select s1.* , s2.NAME , s2.REAL_SKU as SKU , s3.BOX_NUMBER 
+   		from sc_warehouse_box_product s1,
+   		 sc_real_product s2,
+   		 sc_warehouse_box s3
+   		 where s1.box_id = '{@#boxId#}'
+   		 and s3.id = s1.box_id
+   		 and s1.real_product_id = s2.id
+   </entry>
+   
+   <entry key="sql_warehouse_in_track_lists">
+   		select * from sc_warehouse_in_track where in_id = '{@#inId#}' order by create_time 
+   </entry>
+   
+   <entry key="sql_warehouse_box_insert">
+	   INSERT INTO sc_warehouse_box 
+		( 
+		IN_ID, 
+		BOX_NUMBER, 
+		SHIP_FEE, 
+		WEIGHT, 
+		LENGTH, 
+		WIDTH, 
+		HEIGHT, 
+		MEMO
+		)
+		VALUES
+		(
+		'{@#IN_ID#}', 
+		'{@#BOX_NUMBER#}', 
+		'{@#SHIP_FEE#}', 
+		'{@#WEIGHT#}', 
+		'{@#LENGTH#}', 
+		'{@#WIDTH#}', 
+		'{@#HEIGHT#}', 
+		'{@#MEMO#}'
+		)
+   </entry>
+   
+   <entry key="sql_warehouse_box_update">	
+   </entry>
+   
+   <entry key="sql_warehouse_box_product_insert">
+	  
+		INSERT INTO sc_warehouse_box_product 
+			(
+			BOX_ID, 
+			REAL_PRODUCT_ID, 
+			QUANTITY, 
+			DELIVERY_TIME, 
+			PRODUCT_TRACKCODE, 
+			MEMO
+			)
+			VALUES
+			(
+			'{@#BOX_ID#}', 
+			'{@#REAL_PRODUCT_ID#}', 
+			'{@#QUANTITY#}', 
+			'{@#DELIVERY_TIME#}', 
+			'{@#PRODUCT_TRACKCODE#}', 
+			'{@#MEMO#}'
+			)
+   </entry>
+   
+   <entry key="sql_warehouse_box_product_update">	
+   </entry>
+   
+   <entry key="sql_warehouse_track_insert">
+	  
+	INSERT INTO sc_warehouse_in_track 
+		( 
+		IN_ID, 
+		STATUS, 
+		MEMO, 
+		CREATE_TIME, 
+		CREATOR
+		)
+		VALUES
+		( 
+		'{@#IN_ID#}', 
+		'{@#STATUS#}', 
+		'{@#MEMO#}', 
+		NOW(), 
+		'{@#loginId#}'
+		)
+
+   </entry>
+   
+   
+   
+</properties>

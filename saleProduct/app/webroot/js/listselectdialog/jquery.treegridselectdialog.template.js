@@ -7,6 +7,7 @@
  *  TODO
  */
 (function(){
+	var selectReocrds = {} ;
 	var args = jQuery.dialogAraguments() ;//dialogAraguments
 	window.document.title = args.title ;
 	
@@ -235,6 +236,9 @@
 	function addSelectedItem(record){
 		var val = record[valueKey]||record["value"] ;
 		var lab = record[labelKey]||record["label"] ;
+		
+		selectReocrds[val] = record ;
+		
 		$(".selected-container ul").find("[val='"+val+"']").remove() ;
 		
 		$(".selected-container ul").append("<li title='双击删除' class='selected-item alert alert-success' val='"+val+"'>"+lab+"</li>") ;
@@ -243,6 +247,7 @@
 	}
 	function removeSelectedItem(record){
 		var val = record[valueKey]||record["value"] ;
+		if(selectReocrds[val]) selectReocrds[val]  = window.undefined;
 		$(".selected-container ul").find("[val='"+val+"']").remove() ;
 	}
 	
@@ -289,7 +294,7 @@
 				labels.push($.trim($(this).text())) ;
 			}) ;
 	
-			$(this).dialogReturnValue({value:vals,label:labels}) ;
+			$(this).dialogReturnValue({value:vals,label:labels,selectReocrds:selectReocrds}) ;
 			$(this).dialogClose() ;
 
 			//return false ;

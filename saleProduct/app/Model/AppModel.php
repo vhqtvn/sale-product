@@ -172,6 +172,35 @@ class AppModel extends Model {
 			}
 		}
 		
+		public function getObject($sql , $query){
+			$result = $this->exeSql($sql , $query) ;
+			if(empty($result)){
+				return null ;
+			}
+			
+			$result = $result[0] ;
+			$return = array() ;
+			foreach($result as $items){
+				foreach($items as $key=>$value){
+					$return[$key] = $value ;
+				}
+			}
+			
+			return $return ;
+		}
+		
+		public function exeSql($sql , $query){
+			$sql = $this->getDbSql($sql) ;
+			$sql = $this->getSql($sql,$query) ;
+			return $this->query($sql) ;
+		}
+		
+		public function getExeSql($sql , $query){
+			$sql = $this->getDbSql($sql) ;
+			$sql = $this->getSql($sql,$query) ;
+			return $sql ;
+		}
+		
 		public function getSql($sql , $query){
 			$domain =  $_SERVER['SERVER_NAME'] ;
 			$query['domain'] = $domain ;

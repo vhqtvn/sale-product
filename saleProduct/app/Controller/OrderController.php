@@ -7,12 +7,11 @@ class OrderController extends AppController {
 	
 	var $uses = array('OrderService','Amazonaccount','SqlUtils');
 	
-	public function doUpload(){
+	public function doUpload($accountId){
 		
     	$params = $this->request->data  ;
     	$startTime = $params['startTime'] ;
     	$endTime = $params['endTime'] ;
-    	$accountId = $params['accountId'] ;
     	if(isset($_FILES['orderFile'])){
     		$fileName = $_FILES['orderFile']["name"] ;
 			$myfile = $_FILES['orderFile']['tmp_name'] ;

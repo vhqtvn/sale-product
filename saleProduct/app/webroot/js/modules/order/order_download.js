@@ -1,3 +1,5 @@
+var downloadId = '' ;
+
 var Page = {
 	init: function(){
 		$(function(){
@@ -65,9 +67,9 @@ var Page = {
 				 querys:{sqlId:"sql_order_download_list",accountId:accountId},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
-				 	currentPickId = rowData.ID ;
-				 	currentPickName = rowData.NAME ;
-				 	//$(".grid-content").llygrid("reload",{pickId:rowData.ID});
+				 	downloadId = rowData.ID ;
+				 	$('#details_tab').tabs().active({'index' : 1})
+				 	$(".grid-content").llygrid("reload",{sqlId:"sql_order_has_do_ship",downloadId:downloadId}) ;
 				 	//renderBtn() ;
 				 }
 
@@ -125,7 +127,7 @@ var Page = {
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:accountId},
+				 querys:{sqlId:sqlId,accountId:accountId,downloadId:downloadId},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 	}
