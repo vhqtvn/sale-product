@@ -8,6 +8,8 @@
 		  FROM sc_warehouse_in s1
    </entry>
    
+   
+   
    <entry key="sql_warehouse_in_getById">
   		SELECT s1.* ,
 		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
@@ -92,6 +94,27 @@
    		 and s1.real_product_id = s2.id
    </entry>
    
+   <entry key="sql_warehouse_in_products">
+		   		   		 
+		SELECT s1.* , s2.NAME , s2.REAL_SKU AS SKU  
+		   		FROM (
+					SELECT s1.PRODUCT_TRACKCODE,
+					       s1.REAL_PRODUCT_ID  ,
+					       s1.DELIVERY_TIME,
+					       SUM(s1.quantity) AS QUANTITY,
+					       SUM(s1.gen_quantity) AS GEN_QUANTITY,
+					       SUM(s1.waste_quantity) AS WASTE_QUANTITY
+					  FROM sc_warehouse_box_product s1 , sc_warehouse_box swb
+					  WHERE swb.id = s1.box_id
+					       AND swb.in_id = '{@#inId#}'
+					  GROUP BY s1.product_trackcode,s1.real_product_id,s1.DELIVERY_TIME 		
+		   		) s1,
+		   		 sc_real_product s2
+		   		 WHERE   s1.real_product_id = s2.id 
+   </entry>
+   
+   
+   
    <entry key="sql_warehouse_in_track_lists">
    		select * from sc_warehouse_in_track where in_id = '{@#inId#}' order by create_time 
    </entry>
@@ -170,6 +193,16 @@
 
    </entry>
    
+   <entry key="sql_warehouse_in_update_status">	
+   	update sc_warehouse_in set status = '{@#status#}' where id='{@#inId#}'
+   </entry>
    
+   <entry key="sql_warehouse_boxp_update_status">	
+   	update sc_warehouse_box_product set 
+   		WASTE_QUANTITY = '{@#wasteQuantity#}',
+   		GEN_QUANTITY = '{@#genQuantity#}' 
+   		where id='{@#bpId#}'
+   </entry>
    
+   sql_warehouse_in_update_quantity
 </properties>
