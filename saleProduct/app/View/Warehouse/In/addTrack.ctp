@@ -32,7 +32,7 @@
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
 					$.dataservice("model:Warehouse.In.doSaveTrack",json,function(result){
-						window.opener.$(".grid-content").llygrid("reload");
+						window.opener.openCallback('edit') ;
 						window.close();
 					});
 

@@ -32,7 +32,8 @@
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
 					$.dataservice("model:Warehouse.In.doSaveBox",json,function(result){
-						window.location.reload();
+						window.opener.openCallback('box') ;
+						window.close();
 					});
 
 				};
