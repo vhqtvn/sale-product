@@ -34,12 +34,29 @@ class OrderService extends AppModel {
 			'20001'=>'完成退款',
 			'30001'=>'完成重发货'
 		) ;
-		
+	
+	/*
+	 [{value:'FCPS',text:'FCPS:FIRST CLASS PACKAGE SERVICE'},
+							{value:'FCLEF',text:'FCLEF:FIRST CLASS LARGE ENVELOPS FLAT'},
+							{value:'PM',text:'PM:Priority Mail'},
+							{value:'PMFRME',text:'PMFRME:PRIORITY MAIL FLAT RATE MAIL ENVELOPE'},
+							{value:'PMSFRB',text:'PMSFRB:PRIORITY MAIL SMALL FLAT RATE BOX'},
+							{value:'PMMFRB',text:'PMMFRB:PRIORITY MAIL MIDUM FLAT RATE BOX'},
+							{value:'PMLFRB',text:'PMLFRB:PRIORITY MAIL LARGE FLAT RATE BOX'},
+							{value:'PPM',text:'PPM:PARCEL POST MAIL'},
+							{value:'FLC',text:'FLC:First Class Letter'}
+							]}},
+		*/	
 	var $shipMethod = array(
-			'FCL'=>'First-Class Letter',
-			'FCLLE'=>'First-Class Letter Large Envelp（Flat）',
-			'FCPS'=>'First-Class Package Service',
-			'PM'=>'Priority Mail'
+			'FCPS'=>'FIRST CLASS PACKAGE SERVICE',
+			'FCLEF'=>'FIRST CLASS LARGE ENVELOPS FLAT',
+			'PM'=>'PRIORITY MAIL',
+			'PMFRME'=>'PRIORITY MAIL FLAT RATE MAIL ENVELOPE',
+			'PMSFRB'=>'PRIORITY MAIL SMALL FLAT RATE BOX',
+			'PMMFRB'=>'PRIORITY MAIL MIDUM FLAT RATE BOX',
+			'PMLFRB'=>'PRIORITY MAIL LARGE FLAT RATE BOX',
+			'PPM'=>'PARCEL POST MAIL',
+			'FCL'=>'FIRST CLASS LETTER'
 		) ;
 	
 	function updateProcessField($params){

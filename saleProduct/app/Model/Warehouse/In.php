@@ -25,6 +25,15 @@ class In extends AppModel {
 			return $result ;
 		}
 	}
+	
+	public function doStatus($params){
+		$inId = $params['inId'] ;
+		$this->exeSql("sql_warehouse_in_update_status",$params) ;
+	}
+
+	public function doSave4Quantity($params){
+		$this->exeSql("sql_warehouse_boxp_update_status",$params) ;
+	}
 
  
 	public function editBoxProductPage($params,$user){
