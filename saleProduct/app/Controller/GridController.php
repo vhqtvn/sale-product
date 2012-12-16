@@ -11,7 +11,6 @@ class GridController extends AppController {
     	 $this->SqlUtils->loadSqls() ;
     }
     
-    
     /**
      * 通用查询方法
      */

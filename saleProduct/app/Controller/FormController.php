@@ -3,7 +3,7 @@
 class FormController extends AppController {
    	public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Config','Form');
+    var $uses = array('Config','Form','SqlUtils');
     
     public function ajaxSave(){
     	$user =  $this->getCookUser() ;
@@ -18,12 +18,14 @@ class FormController extends AppController {
     }
     
     public function dataService(){
+    	
     	$user =  $this->getCookUser() ;
     	$params = $this->request->data  ;
     	$params['loginId'] = $user['LOGIN_ID'] ;
     	$command = $params['CommandName'] ;
     	
-    	if(strpos($command,'model:')==0){
+		
+    	if(strpos($command,'model:')===0){
     		$command = str_replace("model:","",$command) ;
     		
     		$as = explode(".",$command) ;
@@ -57,10 +59,16 @@ class FormController extends AppController {
     		
     		$method = $r->getMethod($method) ;
     		$result = $method->invoke($service, $params); */
+    	}else if(strpos($command,'sqlId:') === 0){
+    		$sqlId = str_replace("sqlId:","",$command) ;
+    		$params = array('sqlId'=>$sqlId,'start'=>0,'limit'=>1000,'inId'=>$params['inId']) ;
+    		$recordSql = $this->SqlUtils->getRecordSql( $params) ;
+    		$result = $this->SqlUtils->query($recordSql) ;
+    		$result = json_encode($result) ;
     	}
     	
     	$this->response->type("json");
-		$this->response->body("execute complete");
+		$this->response->body(empty($result)?'':$result);
 		return $this->response;
     }
 }
