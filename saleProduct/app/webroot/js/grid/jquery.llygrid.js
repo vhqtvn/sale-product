@@ -676,6 +676,8 @@
 					
 					var clz = val?"lly-grid-cell-update":"" ;
 					
+					var inclz = col.format.clazz||"" ;
+					
 					if(col.format.renderType == 'select'){
 						var html1 = [] ;
 						html1.push("<select class='lly-grid-cell-input'  key='"+col.key+"'  " + html.join("")+
@@ -688,7 +690,7 @@
 						html1.push("</select>") ;
 						return html1.join("") ;
 					}else{
-						return "<input type='text' class='lly-grid-cell-input "+clz+"' key='"+col.key+"'  " + html.join("")+
+						return "<input type='text' class='lly-grid-cell-input "+clz+"  "+inclz+"' key='"+col.key+"'  " + html.join("")+
 							" name='editor_"+col.key+"'  rawval='"+val+"' " +
 							" value='"+val+"' style='width:100%;height:50%;padding:0px;margin:0px;border:none;'/>"  ;
 					}	
@@ -842,6 +844,10 @@
 			}
 		}
 	} ;
+	
+	$.llygrid.getRecord = function(target){
+		return $(target).parents("tr:first").data("record") ;
+	}
 	
 	$.fn.llypager = function(settings){//pageSizes,curPage,totalRecord,limit,selectPage
 		var me = $(this) ;

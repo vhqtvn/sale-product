@@ -1,26 +1,3 @@
-function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
 	$(function(){
 		var sqlId = "sql_order_list" ;
 		if(!status){
@@ -54,10 +31,26 @@ function formatGridData(data){
 						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],valFormat:function(val,record){
 							return val||'FCPS' ;
 						},
-						data:[{value:'FCL',text:'FCL:First-Class Letter'},
-							{value:'FCLLE',text:'FCLLE:First-Class Letter Large Envelp（Flat）'},
-							{value:'FCPS',text:'FCPS:First-Class Package Service'},
-							{value:'PM',text:'PM:Priority Mail'}
+						/*
+						 FIRST CLASS PACKAGE SERVICE 
+							FIRST CLASS LARGE ENVELOPS FLAT 
+							PRIORITY MAIL 
+							PRIORITY MAIL FLAT RATE MAIL ENVELOPE 
+							PRIORITY MAIL SMALL FLAT RATE BOX 
+							PRIORITY MAIL MIDUM FLAT RATE BOX
+							PRIORITY MAIL LARGE FLAT RATE BOX
+							PARCEL POST MAIL 
+							FLC:First Class Letter
+							*/
+						data:[{value:'FCPS',text:'FCPS:FIRST CLASS PACKAGE SERVICE'},
+							{value:'FCLEF',text:'FCLEF:FIRST CLASS LARGE ENVELOPS FLAT'},
+							{value:'PM',text:'PM:Priority Mail'},
+							{value:'PMFRME',text:'PMFRME:PRIORITY MAIL FLAT RATE MAIL ENVELOPE'},
+							{value:'PMSFRB',text:'PMSFRB:PRIORITY MAIL SMALL FLAT RATE BOX'},
+							{value:'PMMFRB',text:'PMMFRB:PRIORITY MAIL MIDUM FLAT RATE BOX'},
+							{value:'PMLFRB',text:'PMLFRB:PRIORITY MAIL LARGE FLAT RATE BOX'},
+							{value:'PPM',text:'PPM:PARCEL POST MAIL'},
+							{value:'FLC',text:'FLC:First Class Letter'}
 							]}},
 					{align:"left",key:"TRACKING_TYPE",label:"TRACKING", width:"10%",
 						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],valFormat:function(val,record){

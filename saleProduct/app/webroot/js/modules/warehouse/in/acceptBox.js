@@ -2,10 +2,27 @@
 
 	var currentId = '' ;
 	$(function(){
-		$(".message,.loading").hide() ;
+		/*$.dataservice("sqlId:sql_warehouse_box_lists",{inId:inId},function(ret){
+			alert($.json.encode(ret));
+		}) ;*/
+		
+			$(".btn-danger").toggle(function(){
+				$(".exception-form").show() ;
+			},function(){
+				$(".exception-form").hide() ;
+			}) ;
+		
+			$(".btn-confirm").click(function(){
+				$.dataservice("model:Warehouse.In.doStatus",{inId:inId,status:1},function(result){//确认收货
+					window.opener.openCallback('edit') ;
+					window.close();
+				});
+				return false ;
+			}) ;
+
 			$(".grid-content").llygrid({
 				columns:[
-		           	//{align:"center",key:"ID",label:"编号", width:"9%"},
+		           	{align:"center",key:"ID",label:"编号", width:"9%"},
 		           	{align:"center",key:"BOX_NUMBER",label:"包装箱编号",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"SHIP_FEE",label:"运输费用",width:"13%"},
 		           	{align:"center",key:"WEIGHT",label:"重量",width:"8%"},
@@ -27,8 +44,10 @@
 				 	currentId = id ;
 				 	$(".grid-content-details").llygrid("reload",{boxId:currentId}) ;
 				 	$(".add-box-product").removeAttr("disabled");
-				 }
+				 },
+				 loadAfter:function(){
 				 
+				 }
 			}) ;
 
 			$(".grid-content-details").llygrid({
@@ -51,27 +70,5 @@
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
-			$(".process-action").live("click",function(){
-				var FILTER_ID = $(this).attr("val") ;
-				var asin = $(this).attr("asin") ;
-				var status = $(this).attr("status") ;
-				openCenterWindow("/saleProduct/index.php/sale/details1/"+FILTER_ID+"/"+asin+"/"+type+"/"+status,950,650) ;
-			}) ;
-			
-			$(".add-box").live("click",function(){
-				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxPage/"+inId,550,420) ;
-			}) ;
-			
-			$(".add-box-product").live("click",function(){
-				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440) ;
-			})
 			
    	 });
-   	 
-   	 function openCallback(type){
-   	 	if(type == 'box'){
-   	 		$(".grid-content").llygrid("reload",{},true);
-   	 	}else{
-   	 		$(".grid-content-details").llygrid("reload",{},true);
-   	 	}
-   	 }

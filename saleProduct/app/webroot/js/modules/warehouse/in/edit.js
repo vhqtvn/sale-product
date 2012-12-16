@@ -4,7 +4,8 @@
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
 					$.dataservice("model:Warehouse.In.doSave",json,function(result){
-						window.location.reload();
+						window.opener.openCallback('edit') ;
+						window.close();
 					});
 
 				};
