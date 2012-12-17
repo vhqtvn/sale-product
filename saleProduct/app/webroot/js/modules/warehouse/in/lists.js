@@ -12,11 +12,11 @@ $(function(){
 					if(!status){//未收货
 						html.push("等待收货&nbsp;<a href='#' class='action sh btn' val='"+val+"' status=1>收货</a>&nbsp;&nbsp;") ;
 					}else if(status == 1){//收货完成//为入库
-						html.push("收获完成&nbsp;<a href='#' class='action rk btn' val='"+val+"' status=2>入库</a>&nbsp;&nbsp;") ;
-					}else if(status == 2){//收货完成//为入库
+						html.push("收货完成&nbsp;<a href='#' class='action rk btn' val='"+val+"' status=2>入库</a>&nbsp;&nbsp;") ;
+					}/*else if(status == 2){//收货完成//为入库
 						html.push("入库完成&nbsp;<a href='#' class='action sj btn' val='"+val+"' status=3>上架</a>&nbsp;&nbsp;") ;
-					}else if(status == 3){//收货完成//为入库
-						html.push("上架完成") ;
+					}*/else if(status == 2){//收货完成//为入库
+						html.push("入库完成") ;
 					}
 					
 					return html.join("") ;
