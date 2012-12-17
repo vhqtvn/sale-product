@@ -15,8 +15,7 @@ $(function(){
 		 title:"跟踪列表",
 		 autoWidth:true,
 		 querys:{sqlId:"sql_warehouse_in_track_lists",inId:inId},
-		 loadMsg:"数据加载中，请稍候......"
-			 
+		 loadMsg:"数据加载中，请稍候......"	 
 	}) ;
 	
 	$(".add-track").live("click",function(){

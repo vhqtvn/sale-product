@@ -76,4 +76,13 @@ class In extends AppModel {
 	public function doSaveTrack($params){
 		$this->exeSql("sql_warehouse_track_insert",$params) ;
 	}
+	
+	public function saveDesign($params){
+		$this->exeSql("sql_warehouse_saveDesgin",$params) ;
+	}
+	
+	public function loadDesign($params){
+		$result = $this->getObject("sql_warehouse_getById",array('warehouseId'=>$params['arg1'])) ;
+		return $result ;
+	}
 }

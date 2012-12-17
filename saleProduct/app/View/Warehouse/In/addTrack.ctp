@@ -35,7 +35,6 @@
 						window.opener.openCallback('edit') ;
 						window.close();
 					});
-
 				};
 				return false ;
 			}) ;

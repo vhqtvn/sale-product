@@ -44,33 +44,13 @@
 
 </head>
 <body>
-	<div class="toolbar toolbar-info row-fluid" style="text-align:right;">
+	<div class="toolbar toolbar-info row-fluid" style="text-align:right;padding:10px 0px;">
 		<span class="span8">&nbsp;</span>
 		<span class="span3">
 			<button class="btn btn-primary btn-confirm">确认上架完成</button>
-			
-			<div class="exception-form">
-			   <!--<div>
-					<label>分类：</label>
-					<select id="type">
-						<option value="">-</option>
-						<option value="exception_value">质量异常</option>
-						<option value="exception_package">包装异常</option>
-						<option value="exception_ship">物流错误</option>
-						<option value="exception_weight">重量超标</option>
-					</select>
-				</div>
-				-->
-				<div>
-					<label>备注:</label>
-					<textarea id="memo" style="width:300px;height:50px;"></textarea>
-				</div>
-				<button class="btn btn-primary exception-btn">确认</button>
-			</div>
 		</div>
 		</span>
 	</div>
-	
 	
 	<div class="grid-content" style="width:99.5%">
 	</div>

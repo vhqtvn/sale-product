@@ -29,7 +29,7 @@ $(function(){
 			 limit:30,
 			 pageSizes:[10,20,30,40],
 			 height:function(){
-			 	return $(window).height() - 150 ;
+			 	return $(window).height() - 180 ;
 			 },
 			 title:"待上架货品列表",
 			 autoWidth:true,

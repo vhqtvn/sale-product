@@ -204,5 +204,4 @@
    		where id='{@#bpId#}'
    </entry>
    
-   sql_warehouse_in_update_quantity
 </properties>

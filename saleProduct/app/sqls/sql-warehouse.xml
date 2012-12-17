@@ -5,6 +5,17 @@
   		SELECT * FROM sc_warehouse 
    </entry>
    
+   
+   <entry key="sql_warehouse_saveDesgin">	
+   	update sc_warehouse set  Design_text = '{@#text#}' where id='{@#warehouseId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_getById">	
+   	SELECT * FROM sc_warehouse  where id='{@#warehouseId#}'
+   </entry>
+   
+   
+   
    <entry key="sql_warehouse_insert">
 INSERT INTO sc_warehouse 
 	( 
