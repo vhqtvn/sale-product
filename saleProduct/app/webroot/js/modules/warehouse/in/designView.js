@@ -1,13 +1,19 @@
 $(function() {
 	WDesign.initEvent() ;
 
-	$(".save").click(function() {
-		WDesign.save(function(){
-			
-		});
-	});
-	
 	WDesign.render(designText) ;
+	
+	var tab = $('#tabs-default').tabs( {//$this->layout="index";
+		tabs:[
+			{label:'基本信息',content:'base-tab'},
+			{label:'上架货品信息',url:"/saleProduct/index.php/saleProduct/forward/channel/",iframe:true}
+		] ,
+		height:'230px'
+	} ) ;
+	
+	$(".design-view").click(function(){
+		openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.loadDesign/"+warehouseId,1000,700) ;
+	}) ;
 });
 
 var blockIndex = 0 ;
@@ -18,12 +24,6 @@ function getBlockId(){
 }
 
 var WDesign = {
-	save:function(callback){
-		var result = WDesign.format() ;
-		$.dataservice("model:Warehouse.In.saveDesign",{text:$.json.encode(result),warehouseId:warehouseId},function(){
-			callback(result) ;
-		}) ;
-	},
 	render : function(items) {
 		//var items = [{"key":"rkm","text":"入库门","left":98.89999389648438,"top":58,"width":100,"height":18},{"key":"ckm","text":"出库门","left":98.89999389648438,"top":127,"width":100,"height":18},{"key":"td","text":"通道","left":99.89999389648438,"top":203,"width":100,"height":18},{"key":"hj","text":"货架","left":97.89999389648438,"top":267,"width":100,"height":18}]
 		
@@ -44,11 +44,7 @@ var WDesign = {
 			var containment = '.design-area' ;
 			
 			$('<div class="block w-'+key+'" blockId="'+id+'"  key="'+key+'" style="position: absolute; left: '+left+'px; top:'+top+'px;">'+text+'</div>')
-				.appendTo(".design-area").resizable({
-					handles : "all"
-				}).draggable({
-					containment : containment
-				}).css({width:item.width,height:item.height});
+				.appendTo(".design-area").css({width:item.width,height:item.height});
 		}) ;
 	},
 	format:function(){
@@ -72,11 +68,7 @@ var WDesign = {
 		return result ;
 	},
 	initEvent:function(){
-		$(".tool-area .block").draggable({
-			helper : "clone",
-			cursor : 'crosshair'
-		});
-		
+
 		$(".design-area .block[key='hw']").live("click",function(){
 			$(".active").removeClass("active");
 			$(this).addClass("active");
@@ -104,22 +96,5 @@ var WDesign = {
 			})
 		}) ;
 	
-		$(".design-area").droppable({
-			accept : ".tool-area .block",
-			drop : function(event, ui) {
-				var key = ui.helper.attr("key");
-				var text = ui.helper.text();
-				var outerHTML = ui.helper[0].outerHTML
-				var html = outerHTML;
-				
-				var containment = '.design-area' ;
-				
-				$(html).appendTo($(".design-area")).resizable({
-							handles : "all"
-						}).draggable({
-							containment : containment
-						});
-			}
-		});
 	}
 }

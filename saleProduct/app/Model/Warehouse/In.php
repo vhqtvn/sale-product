@@ -82,7 +82,22 @@ class In extends AppModel {
 	}
 	
 	public function loadDesign($params){
+		//getWarehouse
 		$result = $this->getObject("sql_warehouse_getById",array('warehouseId'=>$params['arg1'])) ;
-		return $result ;
+		//getWarehouse Unit（Item）
+		$items = $this->exeSql("sql_warehouse_item_listByWarehouseId",array('warehouseId'=>$params['arg1'])) ;
+		
+		return array('warehouse'=>$result,'units'=>$items) ;
 	}
+	
+	public function loadDesignView($params){
+		//getWarehouse
+		$result = $this->getObject("sql_warehouse_getById",array('warehouseId'=>$params['arg1'])) ;
+		//getWarehouse Unit（Item）
+		$items = $this->exeSql("sql_warehouse_item_listByWarehouseId",array('warehouseId'=>$params['arg1'])) ;
+		
+		return array('warehouse'=>$result,'units'=>$items) ;
+	}
+	
+	
 }

@@ -10,13 +10,14 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
-
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/warehouse/in/design');
+		echo $this->Html->script('modules/warehouse/in/designView');
+		echo $this->Html->script('tab/jquery.ui.tabs');
 		
 		$warehouse = $result['warehouse'] ;
 		$units     = $result['units'] ;
@@ -26,6 +27,7 @@
 	?>
   
    <script type="text/javascript">
+    var actionType = 'view' ;
    	var warehouseId = '<?php echo $warehouse['ID'] ;?>' ;	
    </script>
    
@@ -48,20 +50,10 @@
 		array.push(row) ;
 		unitMap[row['ID']] = row ;
 	}) ;
-	
    </script>
    
     <style type="text/css">
-    	.span2 .block{
-    		margin-top:5px;
-    		width:auto;
-    		padding:10px;
-    		font-weight:bold;
-    		font-size:15px;
-    		width:100px;
-    		text-align:center;
-    	}
-    	
+
     	.design-area .block{
     		margin-top:5px;
     		width:auto;
@@ -70,16 +62,7 @@
     		width:100px;
     		text-align:center;
     	}
-    	
-    	.tool-area{
-    		width:98%;
-    		margin:0px auto;
-    		border:1px solid #EEE;
-    		padding:10px;
-    		min-height:380px;
-    		margin-right:5px;
-    		background:#EEE;
-    	}
+ 
     	
 		.w-rkm{background:yellow ;}
 		.w-ckm{background:yellow ;}
@@ -102,51 +85,48 @@
 			padding:10px;
 			font-weight:bold;
 		}
+		
+		.design-view{
+			position:absolute;
+			top:2px;
+			right:2px;
+		}
 	</style>
 
 </head>
 <body>
 	<div class="row-fluid">
-		<div class="span2">
-		  <div class="tool-area">
-		  	<button class="btn btn-primary btn-larger save">保存设计</button>
-		  	<br/><br/>
-		  
-			<div class="block w-rkm" key="rkm">入库门</div>
-			<div class="block w-ckm" key="ckm">出库门</div>
-			<div class="block w-td"  key="td">通道</div>
-			<div class="block w-kw"  key="kw">库位</div>
-			<div class="block w-hj"  key="hj">货架</div>
-			<div class="block w-hw"  key="hw">货位</div>
-		  </div>
-		</div>
-		<div class="span10">
+		<div class="span12">
+			<button class="btn btn-primary design-view">设计视图</button>
 			<div class="design-area">
 			</div>
 		</div>
 	</div>
 	<div class="row-fluid">
-		<div class="span2">&nbsp;</div>
-		<div class="span10">
-			<input type="hidden" id="blockId"  value=""/>
-			<table class="form-table col3" >
-				<caption>货位信息</caption>
-				<tbody>										   
-					<tr>
-						<th>位置编码：</th>
-						<td><input type="text" id="code" style="width:400px;" value=""/></td>
-						<td rowspan=2>
-						<button class="btn btn-primary save-config">保存</button>
-						</td>
-					</tr>
-					<tr>
-						<th>备注：</th>
-						<td>
-							<textarea id="memo" style="width:400px;height:50px;"></textarea>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		<div class="span12">
+			<div id="tabs-default"></div>
+			<div id="base-tab">
+				<input type="hidden" id="blockId"  value=""/>
+				<table class="form-table col3" >
+					<caption>货位信息</caption>
+					<tbody>										   
+						<tr>
+							<th>位置编码：</th>
+							<td><input type="text" id="code" style="width:400px;" value=""/></td>
+							<td rowspan=2>
+							<button class="btn btn-primary save-config">保存</button>
+							</td>
+						</tr>
+						<tr>
+							<th>备注：</th>
+							<td>
+								<textarea id="memo" style="width:400px;height:50px;"></textarea>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+				
 		</div>
 	</div>
 </body>

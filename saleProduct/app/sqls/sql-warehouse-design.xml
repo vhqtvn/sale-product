@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	
+	<entry key="sql_warehouse_itemGetById">
+  		select * from  sc_warehouse_unit where id = '{@#id#}'
+   </entry>
+
+   <entry key="sql_warehouse_item_insert">
+  		INSERT INTO  sc_warehouse_unit 
+			(
+			ID, 
+			TYPE, 
+			CODE, 
+			MEMO, 
+			WAREHOUSE_ID
+			)
+			VALUES
+			('{@#id#}', 
+			'{@#type#}', 
+			'{@#code#}', 
+			'{@#memo#}', 
+			'{@#warehouseId#}'
+			)
+   </entry>
+   
+   <entry key="sql_warehouse_item_update">
+  		UPDATE  sc_warehouse_unit 
+			SET
+			TYPE = '{@#type#}' , 
+			CODE = '{@#code#}' , 
+			MEMO = '{@#memo#}' , 
+			WAREHOUSE_ID = '{@#warehouseId#}'
+			
+			WHERE
+			ID = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_warehouse_item_listByWarehouseId">
+  		select * from  sc_warehouse_unit 
+			where
+			WAREHOUSE_ID = '{@#warehouseId#}'
+   </entry>
+   
+
+   
+</properties>

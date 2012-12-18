@@ -61,7 +61,10 @@ class FormController extends AppController {
     		$result = $method->invoke($service, $params); */
     	}else if(strpos($command,'sqlId:') === 0){
     		$sqlId = str_replace("sqlId:","",$command) ;
-    		$params = array('sqlId'=>$sqlId,'start'=>0,'limit'=>1000,'inId'=>$params['inId']) ;
+    		$params['sqlId'] = $sqlId ;
+    		$params['start'] = 0 ;
+    		$params['limit'] = 1000 ;
+    		
     		$recordSql = $this->SqlUtils->getRecordSql( $params) ;
     		$result = $this->SqlUtils->query($recordSql) ;
     		$result = json_encode($result) ;
