@@ -10,13 +10,9 @@ $(function(){
 					var status = record.STATUS ;
 					var html = [] ;
 					if(!status){//未收货
-						html.push("等待收货&nbsp;<a href='#' class='action sh btn' val='"+val+"' status=1>收货</a>&nbsp;&nbsp;") ;
+						html.push("验货中..&nbsp;<a href='#' class='action sh btn' val='"+val+"' status=1>处理</a>&nbsp;&nbsp;") ;
 					}else if(status == 1){//收货完成//为入库
-						html.push("收货完成&nbsp;<a href='#' class='action rk btn' val='"+val+"' status=2>入库</a>&nbsp;&nbsp;") ;
-					}/*else if(status == 2){//收货完成//为入库
-						html.push("入库完成&nbsp;<a href='#' class='action sj btn' val='"+val+"' status=3>上架</a>&nbsp;&nbsp;") ;
-					}*/else if(status == 2){//收货完成//为入库
-						html.push("入库完成") ;
+						html.push("入库完成&nbsp;<a href='#' class='action rk btn' val='"+val+"' status=2>查看</a>&nbsp;&nbsp;") ;
 					}
 					
 					return html.join("") ;
@@ -53,13 +49,10 @@ $(function(){
 		$(".action").live("click",function(){
 			var record = $.llygrid.getRecord(this) ;
 			var id = record.ID ;
-			if( $(this).hasClass("sh") ){//收货
-				openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.acceptBox/"+id,860,630) ;
-			}else if( $(this).hasClass("rk") ){//入库
-				openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storage/"+id,860,630) ;
-			}else if( $(this).hasClass("sj") ){//上架
-				openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.shelves/"+id,860,630) ;
-			}
+			var status = record.STATUS||"" ;
+			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.process/"+id+"/",860,630) ;
+			return false;
+			
 		})
 		
 		

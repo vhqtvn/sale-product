@@ -8,7 +8,10 @@
 		  FROM sc_warehouse_in s1
    </entry>
    
-   
+   <entry key="sql_warehouse_in_getById">
+  		SELECT s1.* 
+		  FROM sc_warehouse_in s1 where s1.id = '{@#id#}'
+   </entry>
    
    <entry key="sql_warehouse_in_getById">
   		SELECT s1.* ,
@@ -85,7 +88,7 @@
    </entry>
    
    <entry key="sql_warehouse_box_products">
-   		select s1.* , s2.NAME , s2.REAL_SKU as SKU , s3.BOX_NUMBER 
+   		select s1.* , s2.NAME , s2.REAL_SKU as SKU , s3.BOX_NUMBER ,s2.IMAGE_URL,s2.MEMO as P_MEMO
    		from sc_warehouse_box_product s1,
    		 sc_real_product s2,
    		 sc_warehouse_box s3
@@ -94,20 +97,39 @@
    		 and s1.real_product_id = s2.id
    </entry>
    
+   <entry key="sql_warehouse_boxproduct_updateForException">
+   		update sc_warehouse_box_product set 
+   			waste_quantity = '{@#wasteQuantity#}'
+   			,exception_memo='{@#exceptionMemo#}'
+   			,gen_quantity = '{@#genQuantity#}'
+   		where id = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_warehouse_boxproduct_updateStatus">
+   		update sc_warehouse_box_product set 
+   			status = '{@#status#}'
+   			,waste_quantity = '{@#wasteQuantity#}'
+   			,gen_quantity = '{@#genQuantity#}'
+   		where id = '{@#id#}'
+   </entry>
+   
+   
+   
    <entry key="sql_warehouse_in_products">
-		   		   		 
-		SELECT s1.* , s2.NAME , s2.REAL_SKU AS SKU  
+		SELECT s1.* , s2.NAME , s2.REAL_SKU as SKU , s2.IMAGE_URL
+			,s2.MEMO as P_MEMO
 		   		FROM (
-					SELECT s1.PRODUCT_TRACKCODE,
+					SELECT 
 					       s1.REAL_PRODUCT_ID  ,
 					       s1.DELIVERY_TIME,
 					       SUM(s1.quantity) AS QUANTITY,
 					       SUM(s1.gen_quantity) AS GEN_QUANTITY,
-					       SUM(s1.waste_quantity) AS WASTE_QUANTITY
+					       SUM(s1.waste_quantity) AS WASTE_QUANTITY,
+					       (select warehouse_id from sc_warehouse_in where id = swb.in_id ) as WAREHOUSE_ID
 					  FROM sc_warehouse_box_product s1 , sc_warehouse_box swb
 					  WHERE swb.id = s1.box_id
 					       AND swb.in_id = '{@#inId#}'
-					  GROUP BY s1.product_trackcode,s1.real_product_id,s1.DELIVERY_TIME 		
+					  GROUP BY  s1.real_product_id,s1.DELIVERY_TIME 		
 		   		) s1,
 		   		 sc_real_product s2
 		   		 WHERE   s1.real_product_id = s2.id 
@@ -143,6 +165,7 @@
 		'{@#MEMO#}'
 		)
    </entry>
+
    
    <entry key="sql_warehouse_box_update">	
    </entry>
@@ -204,4 +227,48 @@
    		where id='{@#bpId#}'
    </entry>
    
+   <entry key="sql_warehouse_storage_in_find">	
+   		select * from sc_warehouse_storage_in
+   		WHERE
+		IN_ID = '{@#inId#}' AND 
+		WAREHOUSE_ID = '{@#warehouseId#}' AND 
+		REAL_PRODUCT_ID = '{@#realProductId#}' and
+		DELIVERY_TIME = '{@#deliveryTime#}'
+		
+   </entry>
+   
+   <entry key="sql_warehouse_storage_in_insert">	
+   		INSERT INTO sc_warehouse_storage_in 
+		(
+		IN_ID, 
+		WAREHOUSE_ID, 
+		REAL_PRODUCT_ID, 
+		QUANTITY, 
+		CREATE_TIME, 
+		CREATOR, 
+		DELIVERY_TIME
+		)
+		VALUES
+		(
+		'{@#inId#}', 
+		'{@#warehouseId#}', 
+		'{@#realProductId#}', 
+		'{@#genQuantity#}', 
+		NOW(), 
+		'{@#loginId#}', 
+		'{@#deliveryTime#}'
+		);
+   </entry>
+   
+   <entry key="sql_warehouse_storage_in_update">	
+   		UPDATE  sc_warehouse_storage_in 
+		SET
+		QUANTITY = '{@#genQuantity#}'
+		
+		WHERE
+		IN_ID = '{@#inId#}' AND 
+		WAREHOUSE_ID = '{@#warehouseId#}' AND 
+		REAL_PRODUCT_ID = '{@#realProductId#}' and
+		DELIVERY_TIME = '{@#deliveryTime#}'
+   </entry>
 </properties>

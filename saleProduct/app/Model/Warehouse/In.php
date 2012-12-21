@@ -99,5 +99,63 @@ class In extends AppModel {
 		return array('warehouse'=>$result,'units'=>$items) ;
 	}
 	
+	/**
+	 * 保存包装箱产品异常信息
+	 */
+	public function saveBoxProductException($params){
+		  $this->exeSql("sql_warehouse_boxproduct_updateForException",$params) ;
+	}
 	
+	/**
+	 * 包装箱产品状态
+	 */
+	public function doBoxProductStatus($params){
+		$this->exeSql("sql_warehouse_boxproduct_updateStatus",$params) ;
+	}
+	
+	/**
+	 * 执行入库操作
+	 */
+	public function doIn($params,$user){
+		$inId = $params['inId'] ;
+		//检查是否已经入库
+		$inProducts = $this->exeSql("sql_warehouse_in_products",$params) ;
+		
+		
+		/**
+		 *  'IN_ID', 
+			'WAREHOUSE_ID', 
+			'REAL_PRODUCT_ID', 
+			'QUANTITY', 
+			'CREATE_TIME', 
+			'CREATOR', 
+			'DELIVERY_TIME'
+		 */
+		foreach($inProducts as $product){
+			$product = $this->formatObject($product) ;
+			$warehouseId = $product['WAREHOUSE_ID'] ;
+			$realProductId = $product['REAL_PRODUCT_ID'] ;
+			$genQuantity = $product['GEN_QUANTITY'] ;
+			
+			$params1 = array('inId'=>$inId,
+						'warehouseId'=>$warehouseId,
+						'realProductId'=>$realProductId
+						,'genQuantity'=>$genQuantity
+						,'loginId'=>$params['loginId']
+						,'deliveryTime'=>$product['DELIVERY_TIME']
+					) ;
+					
+			$result = $this->getObject("sql_warehouse_storage_in_find",$params1) ;
+			if(empty($result)){
+				$this->exeSql("sql_warehouse_storage_in_insert",$params1) ;
+			}else{
+				$this->exeSql("sql_warehouse_storage_in_update",$params1) ;
+			}
+					
+			//$this->exeSql("sql_warehouse_storage_in_insert",$params1) ;
+		}
+		
+		//更新计划单为已入库完成
+		$this->doStatus( array('inId'=>$inId,'status'=>'1') ) ;
+	}
 }

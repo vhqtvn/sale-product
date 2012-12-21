@@ -189,6 +189,16 @@ class AppModel extends Model {
 			return $return ;
 		}
 		
+		public function formatObject($result){
+			$return = array() ;
+			foreach($result as $items){
+				foreach($items as $key=>$value){
+					$return[$key] = $value ;
+				}
+			}
+			return $return ;
+		}
+		
 		public function exeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
 			$sql = $this->getSql($sql,$query) ;

@@ -153,7 +153,6 @@
 	
 	function adjustWidth(target){
 			forzenWidth = $(".lly-grid-1-head",target).outerWidth(true);
-			
 			$(".lly-grid-content",target).width( $(".lly-grid",target).width() ) ;
 
 			if( forzenWidth == $(".lly-grid-content",target).width()){

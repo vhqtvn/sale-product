@@ -21,6 +21,7 @@
    <script type="text/javascript">
    	var inId = '<?php echo $params['arg1'] ;?>' ;	
    	
+   	
    </script>
    
     <style type="text/css">
@@ -44,6 +45,8 @@
 
 </head>
 <body>
+
+
 	<div class="toolbar toolbar-info row-fluid" style="text-align:right;">
 		<span class="span8">&nbsp;</span>
 		<span class="span3">

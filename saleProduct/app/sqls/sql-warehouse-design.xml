@@ -41,6 +41,12 @@
 			WAREHOUSE_ID = '{@#warehouseId#}'
    </entry>
    
-
+   <entry key="sql_warehouse_item_product">
+  		select s1.QUANTITY as UNIT_QUANTITY,s2.* from  sc_warehouse_unit_product s1,
+  		   sc_real_product s2
+			where
+			s1.real_product_id = s2.id
+			and s1.unit_id = '{@#unitId#}'
+   </entry>
    
 </properties>

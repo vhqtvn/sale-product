@@ -126,6 +126,11 @@
 					</tbody>
 				</table>
 			</div>
+			
+			<div id="product-tab">
+				
+				<div class="product-grid" style="width:800px"></div>
+			</div>
 				
 		</div>
 	</div>
