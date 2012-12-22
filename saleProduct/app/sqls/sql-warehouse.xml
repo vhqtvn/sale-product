@@ -101,6 +101,7 @@ INSERT INTO  sc_warehouse_unit
    <entry key="sql_warehouse_unit_delete">
    delete from sc_warehouse_unit where id = '{@#warehouseUnitId#}'
    </entry>
+   
    <entry key="sql_warehouse_unit_update">
    
 UPDATE  sc_warehouse_unit 
@@ -114,5 +115,5 @@ UPDATE  sc_warehouse_unit
 	WHERE
 	ID = '{@#id#}' 
    </entry>
-   
+  
 </properties>

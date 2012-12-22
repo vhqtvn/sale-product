@@ -44,7 +44,7 @@
 				title:'货品选择界面',
 				defaults:[],//默认值
 				key:{value:'ID',label:'REAL_SKU'},//对应value和label的key
-				multi:true ,
+				multi:false ,
 				grid:{
 					title:"用户选择",
 					params:{

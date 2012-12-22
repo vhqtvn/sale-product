@@ -8,6 +8,7 @@
  */
 ;(function($){
 	$.listselectdialog = function(params , callback){
+		
 		var _p = $.extend({},params) ;
 		
 		callback = callback||function(){
@@ -15,6 +16,7 @@
 			if(args){
 				var value = args.value ;
 				var label = args.label ;
+				
 				if( _p.valueField && _p.labelField ){
 					$(_p.valueField).val(value) ;
 					$(_p.labelField).val(label) ;
@@ -49,7 +51,7 @@
 				height = height||600 ;
 			}else if(params.tree){
 				width = width||500 ;
-				height = height||500 ;
+				height = height||600 ;
 			}else{
 				width = width||800 ;
 				height = height||600 ;
@@ -65,6 +67,7 @@
 			
 			templateName = "select_template.html" ;
 		}
+		
 		
 		$.open(
 			(Config.serverPath||Config.contextPath)+"/app/webroot/js/listselectdialog/"+templateName+"?random="+random , 
@@ -82,6 +85,7 @@
 		$( this ).each(function(){
 			$(this).unbind("click.listselect").bind("click.listselect",function(){
 				$.listselectdialog( params , callback ) ;
+				return false;
 			})
 		});
 	}

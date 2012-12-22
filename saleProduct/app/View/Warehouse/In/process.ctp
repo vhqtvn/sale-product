@@ -113,12 +113,6 @@
 			color:blue;
 		}
 	</style>
-	
-	<script type="text/javascript">
-	
-		
-	</script>
-
 </head>
 <body>
 	<div class="flow-toolbar toolbar">

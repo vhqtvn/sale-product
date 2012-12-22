@@ -16,7 +16,7 @@
 				title:'用户选择页面',
 				defaults:[],//默认值
 				key:{value:'ID',label:'NAME'},//对应value和label的key
-				multi:true,
+				multi:false,
 				grid:{
 					title:"用户选择",
 					params:{
@@ -45,7 +45,7 @@
 				title:'仓库选择',
 				defaults:[],//默认值
 				key:{value:'ID',label:'NAME'},//对应value和label的key
-				multi:true,
+				multi:false,
 				grid:{
 					title:"仓库选择",
 					params:{

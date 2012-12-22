@@ -9,8 +9,9 @@ class SaleProductController extends AppController {
     	
     	$item = null ; 
     	if(!empty($id)){
-    		$item =$this->SaleProduct->getSaleProductById($id) ;
-    		$item = $item[0]['sc_real_product'] ;
+    		$item1 =$this->SaleProduct->getSaleProductById($id) ;
+    		$item = $item1[0]['sc_real_product'] ;
+    		$item['CATEGORY_NAME'] = $item1[0][0]['CATEGORY_NAME'] ;
     	}else{
     		$max =$this->SaleProduct->getMaxSku() ;
     		$this->set('realSku',$max);

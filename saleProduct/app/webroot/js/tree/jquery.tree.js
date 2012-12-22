@@ -129,8 +129,7 @@
         //通过AJAX从后台取数据
         function loadJsonTreeByURL(params,async,showCheck)
         {
-            var tree = '';		
-            
+            var tree = '';
 		  	asyn = asyn ? 'true' : 'false';
 		  	showCheck = showCheck ? 'true' : 'false';
 		  	
@@ -139,9 +138,47 @@
 		  	
 		  	var service_param = {CommandName:dfop.CommandName};
 			service_param = $.extend(service_param, params);
-			$.dataservice(dfop.CommandName,service_param,function (response){tree = response;},{async:false,url:dfop.url}) ;
+			$.dataservice(dfop.CommandName,service_param,function (response){
+				if(settings.recordFormat){
+					var result = [] ;
+					$(response).each(function(index , record){
+						var item = {} ;
+						for(var o in record){
+							for(var o1 in record[o]){
+								item[o1] = record[o][o1] ;
+							}
+						}
+						item.id = item.ID ;
+						item.text = item.NAME ;
+						item.parentId = item.PARENT_ID ;
+						result.push(item) ;
+					}) ;
+					tree =formatTree( result );// settings.recordFormat(response) ;
+				}else{
+					tree = response;
+				}
+			},{async:false,url:dfop.url}) ;
                  
 		  	return tree;
+  		}
+  		
+  		function formatTree(result){
+  			var root = [] ;
+  			var map = {} ;
+  			$(result).each(function(index,item){
+  				if(!item.parentId){
+  					root.push(item) ;
+  				}else{
+  					map[item.parentId] = map[item.parentId]||[] ;
+  					map[item.parentId].push(item) ;
+  				}
+  			}) ;
+  			
+  			$(root).each(function(index,item){
+  				item['childNodes'] = map[item.id]  ;
+  			}) ;
+  			
+  			return root ;
   		}
         
         //扩展子属性
@@ -203,6 +240,7 @@
    
         //endregion
         function buildnode(nd, ht, deep, path, isend) {
+        	
         	nd = dfop.nodeFormat(nd) ;
             var nid = (nd.id+"").replace(/[^\w]/gi, "_");
             ht.push("<li class='bbit-tree-node ui-color-default'>");

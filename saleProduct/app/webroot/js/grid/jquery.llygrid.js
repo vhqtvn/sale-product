@@ -706,8 +706,28 @@
 					});
 					
 				}
-			},
-			"checkbox":{
+			},"radio":{
+				head:function(col){
+					return "选择" ;
+				},
+				body:function(val,record,col){
+					return "<input type='radio' class='grid-checkbox' value='"+val+"' name='cb_"+col.key+"'>" ;
+				},
+				bindEvent:function(col,grid){
+					var callback = col.format.callback||function(){} ;
+					grid.find("input[name='cb_"+col.key+"']").unbind("click").bind("click",function(event){
+						grid.find(".ui-state-checked").removeClass("ui-state-checked ui-state-highlight") ;
+						var row = $(this).parents("tr:first").get(0) ;
+						if( $(this).attr("checked") ){
+							getRow(grid,row).find("td").addClass("ui-state-checked") ;
+						}else{
+							getRow(grid,row).find("td").removeClass("ui-state-checked ui-state-highlight") ;
+						}
+						callback.call(this,$(row).data("record")) ;
+						event.stopPropagation();
+					});
+				}
+			},"checkbox":{
 				head:function(col){
 					return "<input type='checkbox' value='_' target='cb_"+col.key+"' name='cb_"+col.key+"_head'>" ;
 				},

@@ -111,7 +111,7 @@
 				cache:false,
 				dataType:"text",
 				success:function(result,status,xhr){
-					alert("删除成功!");
+					alert("保存成功!");
 					$(".grid-content").llygrid("reload",{},true) ;
 				}
 			});

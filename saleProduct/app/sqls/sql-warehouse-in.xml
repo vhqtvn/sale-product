@@ -4,7 +4,9 @@
    <entry key="sql_warehouse_in_lists">
   		SELECT s1.* ,
 		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
-		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME
+		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME,
+		(SELECT COUNT(*)  FROM sc_warehouse_box_product s2 , sc_warehouse_box s3 
+		        WHERE s2.box_id = s3.id AND s3.in_id = s1.id AND ( s2.status IS NULL OR s2.status !=1 ) ) AS STATUS1
 		  FROM sc_warehouse_in s1
    </entry>
    
@@ -228,7 +230,7 @@
    </entry>
    
    <entry key="sql_warehouse_storage_in_find">	
-   		select * from sc_warehouse_storage_in
+   		select * from sc_warehouse_storage_details
    		WHERE
 		IN_ID = '{@#inId#}' AND 
 		WAREHOUSE_ID = '{@#warehouseId#}' AND 
@@ -237,13 +239,15 @@
 		
    </entry>
    
+   <!--入库操作-->
    <entry key="sql_warehouse_storage_in_insert">	
-   		INSERT INTO sc_warehouse_storage_in 
+   		INSERT INTO sc_warehouse_storage_details 
 		(
 		IN_ID, 
 		WAREHOUSE_ID, 
-		REAL_PRODUCT_ID, 
-		QUANTITY, 
+		REAL_PRODUCT_ID,
+		TYPE,
+		IN_QUANTITY, 
 		CREATE_TIME, 
 		CREATOR, 
 		DELIVERY_TIME
@@ -252,7 +256,8 @@
 		(
 		'{@#inId#}', 
 		'{@#warehouseId#}', 
-		'{@#realProductId#}', 
+		'{@#realProductId#}',
+		'{@#type#}',
 		'{@#genQuantity#}', 
 		NOW(), 
 		'{@#loginId#}', 
@@ -261,14 +266,30 @@
    </entry>
    
    <entry key="sql_warehouse_storage_in_update">	
-   		UPDATE  sc_warehouse_storage_in 
+   		UPDATE  sc_warehouse_storage_details 
 		SET
-		QUANTITY = '{@#genQuantity#}'
-		
+		IN_QUANTITY = '{@#genQuantity#}'
 		WHERE
 		IN_ID = '{@#inId#}' AND 
 		WAREHOUSE_ID = '{@#warehouseId#}' AND 
 		REAL_PRODUCT_ID = '{@#realProductId#}' and
 		DELIVERY_TIME = '{@#deliveryTime#}'
    </entry>
+   
+   <entry key="sql_warehouse_storage_detailsByProduct">	
+   	 SELECT 
+			s1.* ,
+			(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
+			(SELECT IN_NUMBER FROM sc_warehouse_in s2 WHERE s2.id = s1.in_id) AS IN_NUMBER,
+			(SELECT s2.name FROM sc_user s2 WHERE s2.login_id = s1.creator) AS CREATOR_NAME,
+			s2.NAME , s2.REAL_SKU AS SKU  ,s2.IMAGE_URL,s2.MEMO AS P_MEMO
+		FROM 
+		sc_warehouse_storage_details s1,
+		   		 sc_real_product s2
+		WHERE s1.real_product_id = '{@#realProductId#}'
+		AND s1.real_product_id = s2.id
+		ORDER BY s1.create_time
+   </entry>
+   
+   
 </properties>

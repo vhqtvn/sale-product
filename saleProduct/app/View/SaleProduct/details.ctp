@@ -32,7 +32,7 @@
 					,{label:'打包货品信息',url:"/saleProduct/index.php/saleProduct/forward/composition/"+realId,iframe:true}
 				<?php } ?>
 			] ,
-			height:'500px'
+			height:'535px'
 		} ) ;
   	})
   </script>

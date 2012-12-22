@@ -10,11 +10,13 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 
 	?>
   
@@ -37,6 +39,27 @@
 			if( $("#login_id").val()  ){
 				$("#login_id").attr("disabled",true) ;
 			}
+			
+			var categoryTreeSelect = {
+					title:'产品分类选择页面',
+					valueField:"#categoryId",
+					labelField:"#categoryName",
+					key:{value:'id',label:'text'},//对应value和label的key
+					multi:false ,
+					tree:{
+						title:"产品分类选择页面",
+						method : 'post',
+						asyn : true, //异步
+						rootId  : 'root',
+						rootText : '根节点',
+						CommandName : 'sqlId:sql_saleproduct_categorytree',
+						recordFormat:true,
+						params : {
+						}
+					}
+			   } ;
+			   
+			$(".select-category").listselectdialog( categoryTreeSelect) ;
 		});
 		
 		function uploadSuccess(){
@@ -82,7 +105,15 @@
 										<?php if($item['TYPE'])echo 'disabled';?>  
 											data-validator="required" name="type" value="package"/>打包货品
 									</td>
-								</tr>	
+								</tr>
+								<tr>
+									<th>选择产品分类：</th>
+									<td>
+										<input type="hidden"  id="categoryId" name="categoryId" value="<?php echo $item['CATEGORY_ID']?>"/>
+										<input type="text" id="categoryName" name="categoryName" value="<?php echo $item['CATEGORY_NAME']?>"/>
+										<button class="btn select-category">选择</button>
+									</td>
+								</tr>
 								<tr>
 									<th>SKU：</th><td><input type="text"
 										 	data-validator="required" name="sku" 
@@ -91,6 +122,10 @@
 								<tr>
 									<th>名称：</th>
 									<td><input type="text" data-validator="required" name="name" value="<?php echo $item['NAME']?>"/></td>
+								</tr>
+								<tr>
+									<th>预警库存：</th>
+									<td><input type="text" data-validator="required" name="warningQuantity" value="<?php echo $item['WARNING_QUANTITY']?>"/></td>
 								</tr>
 								<tr>
 									<th>重量：</th>
@@ -107,10 +142,11 @@
 									</td>
 								</tr>
 								<tr>
-									<th>长X宽X高：</th>
+									<th>长X宽X高(cm)：</th>
 									<td><input type="text" name="length" style="width:50px;" value="<?php echo $item['LENGTH']?>"/>
 									X<input type="text" name="width" style="width:50px;" value="<?php echo $item['WIDTH']?>"/>
 									X<input type="text" name="height" style="width:50px;" value="<?php echo $item['HEIGHT']?>"/>
+									
 									</td>
 								</tr>
 								<tr>

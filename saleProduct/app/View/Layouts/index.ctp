@@ -238,21 +238,10 @@
    
 </div>
   <div id="layout1" style="width:99.2%; margin:0 auto; margin-top:4px; "> 
-        <div position="left"  title="主要菜单" id="accordion1"> 
-                     <div title="功能列表" class="l-scroll">
-                         <ul id="tree1" style="margin-top:3px;">
-                    </div>
-		    <!--
-                    <div title="应用场景">
-                    <div style=" height:7px;"></div>
-                         <a class="l-link" href="javascript:f_addTab('listpage','列表页面','demos/case/listpage.htm')">列表页面</a> 
-                         <a class="l-link" href="demos/dialog/win7.htm" target="_blank">模拟Window桌面</a> 
-                    </div>    
-                     <div title="实验室">
-                    <div style=" height:7px;"></div>
-                          <a class="l-link" href="lab/generate/index.htm" target="_blank">表格表单设计器</a> 
-                    </div> 
-		    -->
+        <div position="left"  title="" id="accordion1"> 
+             <div title="功能列表" class="l-scroll">
+                 <ul id="tree1" style="margin-top:3px;">
+            </div>
         </div>
         <div position="center" id="framecenter"> 
 	   

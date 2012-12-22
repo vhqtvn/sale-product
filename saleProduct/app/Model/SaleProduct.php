@@ -63,8 +63,8 @@ class SaleProduct extends AppModel {
 	}
 	
 	function getSaleProductById($id){
-		$sql = "select * from sc_real_product where id = '$id'" ;
-		return $this->query($sql) ;
+		//$sql = "select * from sc_real_product where id = '$id'" ;
+		return $this->exeSql("sql_saleproduct_getById",array('realProductId'=>$id) )  ;
 	}
 	
 	function getSaleProduct($sku){

@@ -45,6 +45,8 @@
 					}
 				}else if( $(this).hasClass("add") ){
 					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",700,500) ;
+				}else if( $(this).hasClass("inout") ){//货品出入库明细
+					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,800,500) ;
 				}
 				return false ;
 			});
@@ -64,10 +66,23 @@
 						}
 						return "" ;
 					}},
+					{align:"center",key:"ID",label:"出入库明细", width:"8%",format:function(val,record){
+						var html = [] ;
+						html.push("<a href='#' class='action inout btn' val='"+val+"'>出入库</a>&nbsp;") ;
+						return html.join("") ;
+					}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,reocrd){
 		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
+		           	{align:"center",key:"QUANTITY",label:"库存",width:"6%",render:function(record){
+		  
+		           		if( parseInt(record.WARNING_QUANTITY||0) >= parseInt(record.QUANTITY||0) ){
+		           			
+		           			var title = "当前库存已经小于或等于预警库存【"+record.WARNING_QUANTITY+"】" ;
+		           			$(this).find("td[key='QUANTITY']").css({"background":"red",'font-size':'15px',color:'#FFF'}).find("span").attr("title",title);
+		           		}
+		           	}},
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
 		           		if(val){
@@ -76,8 +91,8 @@
 		           		}
 		           		return "" ;
 		           	}},
-		           	{align:"center",key:"MEMO",label:"备注",width:"35%"},
-		           	{align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
+		           	{align:"center",key:"MEMO",label:"备注",width:"25%"},
+		           	{align:"center",key:"ID",label:"操作", width:"6%",format:function(val,record){
 						if(tabIndex < 2){
 							var html = [] ;
 							html.push("<a href='#' class='action giveup btn' val='"+val+"' type=1>作废</a>") ;
@@ -96,10 +111,10 @@
 				 height:function(){
 				 	return $(window).height() - 200 ;
 				 },
-				 title:"货品列表",
-				 //autoWidth:true,
+				 title:"",
+				// autoWidth:true,
 				 indexColumn:false,
-				  querys:{sqlId:"sql_saleproduct_list",type:"base",status:1},
+				  querys:{sqlId:"sql_saleproduct_list",type:"base",status:1,categoryId:''},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });

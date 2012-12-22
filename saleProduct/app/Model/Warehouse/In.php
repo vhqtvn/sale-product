@@ -115,22 +115,20 @@ class In extends AppModel {
 	
 	/**
 	 * 执行入库操作
+	 * 
+	 * sql_warehouse_in_getById
 	 */
-	public function doIn($params,$user){
+	public function doIn($params){
 		$inId = $params['inId'] ;
 		//检查是否已经入库
+		
+		$in = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+		if(!empty($in) && $in['STATUS'] == 1){
+			return "has storaged!" ;
+		}
+		
 		$inProducts = $this->exeSql("sql_warehouse_in_products",$params) ;
 		
-		
-		/**
-		 *  'IN_ID', 
-			'WAREHOUSE_ID', 
-			'REAL_PRODUCT_ID', 
-			'QUANTITY', 
-			'CREATE_TIME', 
-			'CREATOR', 
-			'DELIVERY_TIME'
-		 */
 		foreach($inProducts as $product){
 			$product = $this->formatObject($product) ;
 			$warehouseId = $product['WAREHOUSE_ID'] ;
@@ -143,6 +141,7 @@ class In extends AppModel {
 						,'genQuantity'=>$genQuantity
 						,'loginId'=>$params['loginId']
 						,'deliveryTime'=>$product['DELIVERY_TIME']
+						,'type'=>'in'
 					) ;
 					
 			$result = $this->getObject("sql_warehouse_storage_in_find",$params1) ;
@@ -151,6 +150,18 @@ class In extends AppModel {
 			}else{
 				$this->exeSql("sql_warehouse_storage_in_update",$params1) ;
 			}
+			
+			//将产品信息计入总库存
+			$p = $this->getObject("sql_saleproduct_getById",$params) ;
+			$quantity = $p['QUANTITY'] ;
+			if(empty($quantity)){
+				$quantity = 0 ;
+			}
+			
+			$quantity = $quantity + $genQuantity ;
+			$params1['genQuantity'] = $quantity ;
+			
+			$this->exeSql("sql_saleproduct_quantity_in",$params1) ;
 					
 			//$this->exeSql("sql_warehouse_storage_in_insert",$params1) ;
 		}

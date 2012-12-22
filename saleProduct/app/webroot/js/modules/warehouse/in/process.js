@@ -12,6 +12,7 @@ $(function(){
 		if(window.confirm("确认列表产品已入库吗?")){
 			$.dataservice("model:Warehouse.In.doIn",{inId:inId},function(result){//确认收货
 				//window.location.reload();
+				window.location.reload();
 			});
 		} ;
 	}) ;
