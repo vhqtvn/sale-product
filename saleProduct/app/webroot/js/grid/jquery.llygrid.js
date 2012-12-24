@@ -691,7 +691,7 @@
 					}else{
 						return "<input type='text' class='lly-grid-cell-input "+clz+"  "+inclz+"' key='"+col.key+"'  " + html.join("")+
 							" name='editor_"+col.key+"'  rawval='"+val+"' " +
-							" value='"+val+"' style='width:100%;height:50%;padding:0px;margin:0px;border:none;'/>"  ;
+							" value='"+val+"'/>"  ;
 					}	
 				},
 				bindEvent:function(col,grid){

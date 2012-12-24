@@ -34,6 +34,7 @@
 		URL,
 		PACKAGE_TYPE,
 		WARNING_QUANTITY,
+		SECURITY_QUANTITY,
 		WEIGHT,
 		WEIGHT_UNIT,
 		LENGTH,
@@ -53,6 +54,7 @@
 		'{@#url#}',
 		'{@#packageType#}',
 		'{@#warningQuantity#}',
+		'{@#securityQuantity#}',
 		'{@#weight#}',
 		'{@#weightUnit#}',
 		'{@length#}',
@@ -79,6 +81,7 @@
 	URL = '{@#url#}',
 	PACKAGE_TYPE = '{@#packageType#}',
 	WARNING_QUANTITY = '{@#warningQuantity#}',
+	SECURITY_QUANTITY = '{@#securityQuantity#}',
 	WEIGHT = '{@#weight#}',
 	WEIGHT_UNIT = '{@#weightUnit#}',
 	LENGTH = '{@#length#}',
@@ -143,6 +146,7 @@
     SELECT * FROM (	
 		SELECT  sc_amazon_account_product.*,
 		sc_real_product_rel.sku AS REL_SKU,
+		sc_real_product_rel.QUANTITY as ASSIGN_QUANTITY,
 		(SELECT NAME FROM sc_amazon_account WHERE id = sc_real_product_rel.account_id ) AS CHANNEL_NAME
 		 FROM sc_real_product_rel
 		 LEFT JOIN sc_amazon_account_product 

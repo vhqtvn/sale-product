@@ -1,27 +1,3 @@
-	 //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
 	$(function(){
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
@@ -47,6 +23,8 @@
 					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",700,500) ;
 				}else if( $(this).hasClass("inout") ){//货品出入库明细
 					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,800,500) ;
+				}else if( $(this).hasClass("assign") ){//货品出入库明细
+					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.assign/"+id,800,500) ;
 				}
 				return false ;
 			});
@@ -58,17 +36,15 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"编辑", width:"6%",format:function(val,record){
+					{align:"center",key:"ID",label:"操作", width:"25%",format:function(val,record){
 						var html = [] ;
 						if(tabIndex < 2){
 							html.push("<a href='#' class='action update btn' val='"+val+"'>编辑</a>&nbsp;") ;
-							return html.join("") ;
+							
 						}
-						return "" ;
-					}},
-					{align:"center",key:"ID",label:"出入库明细", width:"8%",format:function(val,record){
-						var html = [] ;
+						
 						html.push("<a href='#' class='action inout btn' val='"+val+"'>出入库</a>&nbsp;") ;
+						html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
 						return html.join("") ;
 					}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,reocrd){
