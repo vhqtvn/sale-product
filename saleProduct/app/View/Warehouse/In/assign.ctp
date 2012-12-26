@@ -10,12 +10,16 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 
 		echo $this->Html->script('jquery');
+		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('modules/warehouse/in/assign');
+		
 		
 		$realProductId = $params['arg1'] ;
 	?>
@@ -100,7 +104,7 @@
 	<?php
 		$realProductId = $params['arg1'] ;
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-		$product = $SqlUtils->getObject("sql_saleproduct_getById",array('realProductId'=>$realProductId )) ;
+		$product = $SqlUtils->getObject("sql_saleproduct_getByIdForStorage",array('realProductId'=>$realProductId )) ;
 		
 		$imgUrl = '/saleProduct/'.$product['IMAGE_URL'] ;
 		
@@ -129,11 +133,11 @@
 							</div>
 							<div class="qt">
 								<div class='qt-label'>锁定库存：</div>
-								<div class='qt-value' style="color:red;font-size:13px;">0</div>
+								<div class='qt-value' style="color:red;font-size:13px;"><?php echo $product['LOCK_QUANTITY'];?></div>
 							</div>
 							<div class="qt">
 								<div class='qt-label'>可分配库存：</div>
-								<div class='qt-value'><?php echo $product['QUANTITY'] - $product['SECURITY_QUANTITY'] ?></div>
+								<div class='qt-value'><?php echo $product['QUANTITY'] - $product['SECURITY_QUANTITY'] - $product['LOCK_QUANTITY'] ?></div>
 							</div>
 						</td>
 					</tr>
@@ -141,7 +145,10 @@
 			</div>
 	</div>
 	
-	<div class="grid-content" style="width:99%;">
-			</div>
+	<div id="details_tab"></div>
+	
+	<div class="grid-content" style="width:99%;margin-top:5px" id="assign-grid"></div>
+	
+	<div class="usinggrid-content" style="width:99%;margin-top:5px" id="using-grid"></div>
 </body>
 </html>

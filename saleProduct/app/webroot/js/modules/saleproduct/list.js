@@ -24,7 +24,7 @@
 				}else if( $(this).hasClass("inout") ){//货品出入库明细
 					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,800,500) ;
 				}else if( $(this).hasClass("assign") ){//货品出入库明细
-					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.assign/"+id,800,500) ;
+					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.assign/"+id,850,600) ;
 				}
 				return false ;
 			});
@@ -51,14 +51,27 @@
 		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
-		           	{align:"center",key:"QUANTITY",label:"库存",width:"6%",render:function(record){
-		  
-		           		if( parseInt(record.WARNING_QUANTITY||0) >= parseInt(record.QUANTITY||0) ){
-		           			
-		           			var title = "当前库存已经小于或等于预警库存【"+record.WARNING_QUANTITY+"】" ;
-		           			$(this).find("td[key='QUANTITY']").css({"background":"red",'font-size':'15px',color:'#FFF'}).find("span").attr("title",title);
+		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
+		           		if( val >= record.LAST_ASSIGN_TIME ){
+							return '<img title="已经分配" src="/saleProduct/app/webroot/img/success.gif">';
+				
+		           		}
+		           		return "<img title='未分配' src='/saleProduct/app/webroot/img/error.gif'>"  ;
+		           	}},
+		           	{align:"center",key:"QUANTITY",label:"总",group:"库存",width:"5%" },
+		           	{align:"center",key:"SECURITY_QUANTITY",label:"安全",group:"库存",width:"5%" },
+		           	{align:"center",key:"LOCK_QUANTITY",label:"锁定",group:"库存",width:"5%" },
+		           	{align:"center",key:"ASSIGN_QUANTITY",label:"可分配",group:"库存",width:"5%",format:function(val, record){
+		           		var quantity = record.QUANTITY - record.SECURITY_QUANTITY - record.LOCK_QUANTITY ;
+		           		return quantity ;
+		           	},render:function(record){
+		           		var quantity = record.QUANTITY - record.SECURITY_QUANTITY - record.LOCK_QUANTITY ;
+		           		if( parseInt(record.WARNING_QUANTITY||0) >= quantity ){
+		           			var title = "当前可分配库存已经小于或等于预警库存【"+record.WARNING_QUANTITY+"】" ;
+		           			$(this).find("td[key='ASSIGN_QUANTITY']").css({"background":"red",'font-size':'15px',color:'#FFF'}).find("span").attr("title",title);
 		           		}
 		           	}},
+		           	
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
 		           		if(val){

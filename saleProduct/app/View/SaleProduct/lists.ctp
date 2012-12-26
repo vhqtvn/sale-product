@@ -106,8 +106,7 @@
 				<hr style="margin:2px;"/>	
 			</div>
 			
-			<div id="details_tab">
-			</div>
+			<div id="details_tab"></div>
 			<div class="grid-content" id="tab-content"></div>
 		</div>
 		<div region="west"  split="true" border="true" title="货品分类" style="width:180px;">

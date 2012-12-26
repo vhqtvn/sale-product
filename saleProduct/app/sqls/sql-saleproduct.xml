@@ -5,7 +5,9 @@
 
 	<!--入库sql-->
 	<entry key="sql_saleproduct_quantity_in">
- 			update sc_real_product set quantity = {@#genQuantity#}  where id='{@#realProductId#}'
+ 			update sc_real_product set quantity = {@#genQuantity#} 
+ 			,QUANTITY_IN_TIME = now()
+ 			 where id='{@#realProductId#}'
    </entry>
    
    <entry key="sql_saleproduct_getById">
@@ -14,8 +16,18 @@
 			from sc_real_product   where id='{@#realProductId#}'
    </entry>
    
+   <entry key="sql_saleproduct_getByIdForStorage">
+ 			 SELECT sc_real_product.*,
+		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id ) AS LOCK_QUANTITY,
+			(SELECT s.name FROM sc_product_category s WHERE s.id = sc_real_product.category_id ) AS CATEGORY_NAME
+			FROM sc_real_product
+			  where id='{@#realProductId#}'
+   </entry>
+   
     <entry key="sql_saleproduct_list">
- 			SELECT * from sc_real_product where 1=1
+ 			SELECT sc_real_product.*,
+		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id ) AS LOCK_QUANTITY
+		         from sc_real_product where 1=1
  			{@ and type='#type#'}
  			{@ and status='#status#'}
  			{@ and name like '%#name#%'}

@@ -133,13 +133,22 @@ class OrderService extends AppModel {
 				$sql = $this->getSql($sql,$items) ;
 				$this->query($sql) ;
 				
+				//查询REAL_SKU
+				$realItem = $this->getObject("sql_getRealSku_ByOrderItemId",$items) ;
+				if( !empty( $realItem ) ){
+					$items['realSku'] = $realItem['REAL_SKU'] ;
+					$items['realId'] = $realItem['REAL_ID'] ;
+					
+					//插入订单库存表
+					$this->exeSql( "sql_order_storage_insert" , $items ) ;
+				}
+				
 				/*$sql = "select * from sc_order_result where order_id = '$orderId'" ;
 				$result = $this->query($sql) ; 
 				if(empty($result)){
 					$sql = "insert into sc_order_result(order_id) values('$orderId')" ;
 					$this->query($sql) ;
 				}*/
-				
 			}catch(Exception $e){
 				print_r($e->getMessage()) ;
 			}
