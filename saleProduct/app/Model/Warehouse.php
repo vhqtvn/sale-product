@@ -22,4 +22,22 @@ class Warehouse extends AppModel {
 		return $this->query($sql) ;
 	}
 	
+	/**
+	 * 执行订单出库操作
+	 */
+	function doOrderOut($orderId){
+		//sql_order_storage_getByOrderId
+		//查询订单库存
+		$items = $this->exeSql("sql_order_storage_getByOrderId",array('orderId'=>$orderId)) ;
+		foreach( $items as $item ){
+			$item = $this->formatObject($item) ;
+			$realId = $item['REAL_ID'] ;
+			$quantity = $item['QUANTITY'] ;
+			//更新仓库库存减少
+			$this->exeSql("sql_saleproduct_quantity_out",array('realProductId'=>$realId,"quantity"=>$quantity)) ;
+		}
+		//sql_order_storage_shipped
+		//更新为已经出库
+		$this->exeSql("sql_order_storage_shipped",array('orderId'=>$orderId)) ;
+	}
 }

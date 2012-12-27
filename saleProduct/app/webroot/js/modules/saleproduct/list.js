@@ -22,7 +22,7 @@
 				}else if( $(this).hasClass("add") ){
 					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",700,500) ;
 				}else if( $(this).hasClass("inout") ){//货品出入库明细
-					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,800,500) ;
+					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,850,600) ;
 				}else if( $(this).hasClass("assign") ){//货品出入库明细
 					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.assign/"+id,850,600) ;
 				}
@@ -98,7 +98,7 @@
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-				 	return $(window).height() - 200 ;
+				 	return $(window).height() - 220 ;
 				 },
 				 title:"",
 				// autoWidth:true,

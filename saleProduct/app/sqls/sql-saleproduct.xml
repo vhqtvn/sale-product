@@ -10,6 +10,11 @@
  			 where id='{@#realProductId#}'
    </entry>
    
+   <entry key="sql_saleproduct_quantity_out">
+ 			update sc_real_product set quantity =  quantity - {@#quantity#}
+ 			 where id='{@#realProductId#}'
+   </entry>
+   
    <entry key="sql_saleproduct_getById">
  			select sc_real_product.*,
 			(select s.name from sc_product_category s where s.id = sc_real_product.category_id ) as CATEGORY_NAME
@@ -26,7 +31,8 @@
    
     <entry key="sql_saleproduct_list">
  			SELECT sc_real_product.*,
-		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id ) AS LOCK_QUANTITY
+		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id
+		        	and status = 1 ) AS LOCK_QUANTITY
 		         from sc_real_product where 1=1
  			{@ and type='#type#'}
  			{@ and status='#status#'}

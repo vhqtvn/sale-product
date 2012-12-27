@@ -249,6 +249,13 @@ class OrderService extends AppModel {
 		$sql = $this->getDbSql("sql_order_track_insert") ;
 		$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'STATUS'=>$this->pickStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 		$this->query($sql) ;
+		
+		//更新库存为出库
+		if( $status == '10' ){
+			$Warehouse  = ClassRegistry::init("Warehouse") ;
+			$Warehouse->doOrderOut( $orderId ) ;
+		}
+
 		return true ;
 	}
 	
