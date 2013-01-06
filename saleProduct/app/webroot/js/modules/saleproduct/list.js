@@ -52,7 +52,7 @@
 		           	}},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
 		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
-		           		if( val >= record.LAST_ASSIGN_TIME ){
+		           		if( record.LAST_ASSIGN_TIME &&( val >= record.LAST_ASSIGN_TIME ) ){
 							return '<img title="已经分配" src="/saleProduct/app/webroot/img/success.gif">';
 				
 		           		}

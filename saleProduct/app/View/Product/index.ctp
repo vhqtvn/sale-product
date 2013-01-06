@@ -123,7 +123,7 @@
 					querys.test_status = ts ;
 				}
 				
-				$(".grid-content").llygrid("reload",querys) ;	
+				$(".grid-content").llygrid("reload",querys,true) ;	
 			}) ;
    	 });
    </script>

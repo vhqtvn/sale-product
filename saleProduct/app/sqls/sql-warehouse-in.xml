@@ -244,24 +244,28 @@
    		INSERT INTO sc_warehouse_storage_details 
 		(
 		IN_ID, 
+		DISK_ID,
 		WAREHOUSE_ID, 
 		REAL_PRODUCT_ID,
 		TYPE,
 		IN_QUANTITY, 
 		CREATE_TIME, 
 		CREATOR, 
-		DELIVERY_TIME
+		DELIVERY_TIME,
+		MEMO
 		)
 		VALUES
 		(
 		'{@#inId#}', 
+		'{@#diskId#}',
 		'{@#warehouseId#}', 
 		'{@#realProductId#}',
 		'{@#type#}',
 		'{@#genQuantity#}', 
 		NOW(), 
 		'{@#loginId#}', 
-		'{@#deliveryTime#}'
+		'{@#deliveryTime#}',
+		'{@#memo#}'
 		);
    </entry>
    

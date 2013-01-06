@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	
+	<entry key="sql_warehouse_disk_lists">
+  		select s1.*,
+  		  (select name from sc_warehouse where id = s1.warehouse_id ) as WAREHOUSE_NAME
+  		 from  sc_warehouse_disk s1
+  		 where 1=1
+  		 {@ and id = '#id#'}
+  		  order by create_time desc
+   </entry>
+   
+   <entry key="sql_warehouse_disk_product_insert">
+	INSERT INTO  sc_warehouse_disk_details 
+		(
+		DISK_ID, 
+		REAL_ID, 
+		PAPER_NUM
+		)
+		VALUES
+		(  
+		'{@#diskId#}', 
+		'{@#realId#}', 
+		{@#paperNum#}
+		)
+	</entry>
+	
+	<entry key="sql_warehouse_disk_product_update">
+		update sc_warehouse_disk_details set 
+			memo = '{@#memo#}'
+			, real_num='{@#realNum#}'
+			, gain_num='{@#gainNum#}'
+			, loss_num='{@#lossNum#}'
+	
+			where id = '{@#id#}'
+	</entry>
+   
+   <entry key="sql_warehouse_disk_products">
+  		SELECT sc_real_product.*,
+		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id
+		        	and status = 1 ) AS LOCK_QUANTITY
+		         from sc_real_product where 1=1
+		         and sc_real_product.id not in (
+		         select s1.real_id from sc_warehouse_disk_details s1 where s1.disk_id = '{@#id#}'	
+		         )
+   </entry>
+   
+   <entry key="sql_warehouse_disk_details">
+  		SELECT s1.*, s2.NAME ,  s2.REAL_SKU, s2.IMAGE_URL 
+  			FROM sc_warehouse_disk_details s1 , sc_real_product s2 
+  			WHERE s1.real_id = s2.id
+  			 and s1.disk_id = '{@#id#}'	
+   </entry>
+   
+   <!--更新盘点计划状态-->
+   <entry key="sql_warehouse_disk_updateStatus">
+   		update sc_warehouse_disk set status = '{@#status#}' where id = '{@#diskId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_disk_insert">
+  		INSERT INTO  sc_warehouse_disk 
+				( 
+				DISK_TIME, 
+				DISK_NO, 
+				WAREHOUSE_ID, 
+				PROCESSOR, 
+				CREATOR, 
+				CREATE_TIME, 
+				MEMO,
+				status
+				)
+				VALUES
+				(  
+				'{@#diskTime#}', 
+				'{@#diskNo#}', 
+				'{@#warehouseId#}', 
+				'{@#processor#}', 
+				'{@#loginId#}', 
+				NOW(), 
+				'{@#memo#}',
+				'0'
+				)
+   </entry>
+   
+   <!--盘点入库-->
+   <entry key="sql_warehouse_disk_insert">
+   INSERT INTO sc_warehouse_storage_details 
+	(ID, 
+	IN_ID, 
+	WAREHOUSE_ID, 
+	REAL_PRODUCT_ID, 
+	TYPE, 
+	IN_QUANTITY, 
+	OUT_QUANTITY, 
+	CREATE_TIME, 
+	CREATOR, 
+	DELIVERY_TIME, 
+	MEMO
+	)
+	VALUES
+	('ID', 
+	'IN_ID', 
+	'WAREHOUSE_ID', 
+	'REAL_PRODUCT_ID', 
+	'TYPE', 
+	'IN_QUANTITY', 
+	'OUT_QUANTITY', 
+	'CREATE_TIME', 
+	'CREATOR', 
+	'DELIVERY_TIME', 
+	'MEMO'
+	)
+	</entry>
+	
+	 <entry key="sql_warehouse_disk_update">
+   
+UPDATE sc_warehouse_disk 
+	SET
+	DISK_NO = '{@#deskNo#}' , 
+	PROCESSOR = '{@#processor#}' , 
+	MEMO = '{@#memo#}' 
+	
+	WHERE
+	ID = '{@#id#}' 
+	</entry>
+	
+	
+	
+	<entry key="sql_warehouse_disk_in_insert">	
+   		INSERT INTO sc_warehouse_storage_details 
+		(
+		IN_ID, 
+		DISK_ID,
+		WAREHOUSE_ID, 
+		REAL_PRODUCT_ID,
+		TYPE,
+		IN_QUANTITY, 
+		CREATE_TIME, 
+		CREATOR,
+		MEMO
+		)
+		VALUES
+		(
+		'{@#inId#}', 
+		'{@#diskId#}',
+		'{@#warehouseId#}', 
+		'{@#realProductId#}',
+		'{@#type#}',
+		'{@#genQuantity#}', 
+		NOW(), 
+		'{@#loginId#}',
+		'{@#memo#}'
+		);
+   </entry>
+
+</properties>
