@@ -248,7 +248,8 @@
 		WAREHOUSE_ID, 
 		REAL_PRODUCT_ID,
 		TYPE,
-		IN_QUANTITY, 
+		IN_QUANTITY,
+		BAD_IN_QUANTITY, 
 		CREATE_TIME, 
 		CREATOR, 
 		DELIVERY_TIME,
@@ -261,7 +262,8 @@
 		'{@#warehouseId#}', 
 		'{@#realProductId#}',
 		'{@#type#}',
-		'{@#genQuantity#}', 
+		'{@#genQuantity#}',
+		'{@#badInQuantity#}', 
 		NOW(), 
 		'{@#loginId#}', 
 		'{@#deliveryTime#}',
@@ -281,10 +283,13 @@
    </entry>
    
    <entry key="sql_warehouse_storage_detailsByProduct">	
-   	 SELECT 
+   	 	SELECT 
 			s1.* ,
 			(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
 			(SELECT IN_NUMBER FROM sc_warehouse_in s2 WHERE s2.id = s1.in_id) AS IN_NUMBER,
+			
+			(SELECT DISK_NO FROM sc_warehouse_disk s2 WHERE s2.id = s1.disk_id) AS DISK_NO,
+			
 			(SELECT s2.name FROM sc_user s2 WHERE s2.login_id = s1.creator) AS CREATOR_NAME,
 			s2.NAME , s2.REAL_SKU AS SKU  ,s2.IMAGE_URL,s2.MEMO AS P_MEMO
 		FROM 
@@ -292,8 +297,7 @@
 		   		 sc_real_product s2
 		WHERE s1.real_product_id = '{@#realProductId#}'
 		AND s1.real_product_id = s2.id
-		ORDER BY s1.create_time
+		ORDER BY s1.create_time desc
    </entry>
-   
    
 </properties>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	
+	<entry key="sql_warehouse_bad_lists">
+  		select * from  sc_real_product where bad_quantity is not null and bad_quantity > 0
+   </entry>
+
+	<entry key="sql_saleproduct_bad_quantity_in">
+  		update sc_real_product set bad_quantity = {@#badQuantity#}  
+ 			 where id='{@#realProductId#}'
+   </entry>
+   
+</properties>

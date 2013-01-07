@@ -147,6 +147,7 @@ class In extends AppModel {
 						'realProductId'=>$realProductId
 						,'genQuantity'=>$genQuantity
 						,'loginId'=>$params['loginId']
+						,'badInQuantity'=>$badQuantity
 						,'deliveryTime'=>$product['DELIVERY_TIME']
 						,'type'=>'in'
 					) ;

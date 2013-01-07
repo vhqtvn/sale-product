@@ -1,14 +1,21 @@
 	$(function(){
+		var isAdd = false ;
 
 			$(".btn-save").click(function(){
+				if(isAdd)return ;
 				if( !$.validation.validate('#personForm').errorInfo ) {
-					var json = $("#personForm").toJson() ;
-					//保存基本信息
-					$.dataservice("model:Warehouse.Disk.doSave",json,function(result){
-						//window.opener.openCallback('edit') ;
-						//window.close();
-					});
-
+					if(window.confirm("确认保存吗?")){
+						isAdd = true ;
+						
+						var json = $("#personForm").toJson() ;
+						//保存基本信息
+						$.dataservice("model:Warehouse.Disk.doSave",json,function(result){
+							if( !diskId ){
+								window.opener.openCallback('edit') ;
+								window.close();
+							}
+						});
+					}
 				};
 				
 				//保存明细信息
@@ -92,12 +99,12 @@
 		}) ;
 		
 		var productGridSelect = {
-				title:'仓库选择',
+				title:'货品选择',
 				defaults:[],//默认值
 				key:{value:'ID',label:'NAME'},//对应value和label的key
 				multi:true,
 				grid:{
-					title:"仓库选择",
+					title:"货品选择",
 					params:{
 						sqlId:"sql_warehouse_disk_products",
 						id:diskId

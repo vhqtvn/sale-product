@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	
+	<entry key="sql_warehouse_rma_lists">
+  		select s1.*,s2.NAME,s2.REAL_SKU,s2.IMAGE_URL,
+  		  (select name from sc_warehouse where id = s1.warehouse_id ) as WAREHOUSE_NAME
+  		 from  sc_warehouse_rma s1 , sc_real_product s2
+  		 where 1=1
+  		 and s1.real_product_id = s2.id
+  		 {@ and id = '#id#'}
+  		  order by create_time desc
+   </entry>
+   
+   <entry key="sql_warehouse_rma_insert">
+   INSERT INTO sc_warehouse_rma 
+	(
+	TYPE, 
+	QUALITY, 
+	QUANTITY, 
+	REAL_PRODUCT_ID, 
+	CREATOR, 
+	CREATE_TIME, 
+	MEMO, 
+	WAREHOUSE_ID
+	)
+	VALUES
+	(
+	'in', 
+	'{@#quality#}', 
+	'{@#quantity#}', 
+	'{@#realProductId#}', 
+	'{@#loginId#}', 
+	NOW(), 
+	'{@#memo#}', 
+	'{@#warehouseId#}'
+	)
+   </entry>
+</properties>

@@ -82,36 +82,6 @@
 				)
    </entry>
    
-   <!--盘点入库-->
-   <entry key="sql_warehouse_disk_insert">
-   INSERT INTO sc_warehouse_storage_details 
-	(ID, 
-	IN_ID, 
-	WAREHOUSE_ID, 
-	REAL_PRODUCT_ID, 
-	TYPE, 
-	IN_QUANTITY, 
-	OUT_QUANTITY, 
-	CREATE_TIME, 
-	CREATOR, 
-	DELIVERY_TIME, 
-	MEMO
-	)
-	VALUES
-	('ID', 
-	'IN_ID', 
-	'WAREHOUSE_ID', 
-	'REAL_PRODUCT_ID', 
-	'TYPE', 
-	'IN_QUANTITY', 
-	'OUT_QUANTITY', 
-	'CREATE_TIME', 
-	'CREATOR', 
-	'DELIVERY_TIME', 
-	'MEMO'
-	)
-	</entry>
-	
 	 <entry key="sql_warehouse_disk_update">
    
 UPDATE sc_warehouse_disk 

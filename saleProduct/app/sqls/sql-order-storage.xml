@@ -62,4 +62,10 @@
 		   AND s1.account_id = s2.account_id
 		and s1.real_id = '{@#id#}'
     </entry>
+    
+    <entry key="sql_listRamForStorage">
+		SELECT s1.*
+		 FROM sc_warehouse_rma s1		 
+		  WHERE   s1.real_product_id = '{@#id#}'
+    </entry>
 </properties>

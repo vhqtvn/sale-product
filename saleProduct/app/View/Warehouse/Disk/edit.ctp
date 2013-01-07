@@ -22,12 +22,16 @@
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('modules/warehouse/disk/edit');
 		echo $this->Html->script('calendar/WdatePicker');
-
+		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$result = null ;
 		$diskId = $params['arg1'] ;
-		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-		$result = $SqlUtils->getObject("sql_warehouse_disk_lists",array('id'=>$diskId) ) ;
+		if(!empty($diskId)){
+			
 		
+			$result = $SqlUtils->getObject("sql_warehouse_disk_lists",array('id'=>$diskId) ) ;
+		
+		}
 	?>
 	
 	<script>
@@ -118,7 +122,7 @@
 							</tbody>
 						</table>
 					</div>
-					
+			<?php	if(!empty($diskId)){	?>
 					<table class="table table-bordered table-stripped edit-table">
 						<tr style="background:#CCC;">
 							<th style="width:5%;">图片</th>
@@ -157,6 +161,7 @@
 						}
 						?>
 					</table>
+			<?php	}	?>
 				</div>
 			</form>
 		</div>

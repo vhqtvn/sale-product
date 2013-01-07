@@ -127,5 +127,7 @@
 	<div class="grid-content" style="width:99%;margin-top:5px" id="assign-grid"></div>
 	
 	<div class="ordergrid-content" style="width:99%;margin-top:5px" id="order-grid"></div>
+	
+	<div class="ramgrid-content" style="width:99%;margin-top:5px" id="ram-grid"></div>
 </body>
 </html>
