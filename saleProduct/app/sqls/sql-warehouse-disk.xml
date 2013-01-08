@@ -86,7 +86,7 @@
    
 UPDATE sc_warehouse_disk 
 	SET
-	DISK_NO = '{@#deskNo#}' , 
+	DISK_NO = '{@#diskNo#}' , 
 	PROCESSOR = '{@#processor#}' , 
 	MEMO = '{@#memo#}' 
 	

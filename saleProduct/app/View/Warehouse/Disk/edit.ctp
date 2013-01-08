@@ -24,11 +24,16 @@
 		echo $this->Html->script('calendar/WdatePicker');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
+		
+		
+		
+		$loginId   = $user['LOGIN_ID'] ;
+		
 		$result = null ;
 		$diskId = $params['arg1'] ;
 		if(!empty($diskId)){
 			
-		
 			$result = $SqlUtils->getObject("sql_warehouse_disk_lists",array('id'=>$diskId) ) ;
 		
 		}
@@ -49,26 +54,44 @@
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 				<?php
-					if( $result['STATUS'] == 2 ){
+					$status = $result['STATUS'] ;
+					if( $status == 2 ){//结束盘点
 						//nothing
 					}else{
-				 ?>		
-					
-                    <div class="panel-foot">
-						<div class="form-actions" style="padding:5px;">
-							<button type="button" class="btn btn-primary btn-save">保&nbsp;存</button>
-							<?php
-								if( empty($result) ){
-									//nothing
-								}else{
-							 ?>	
-							<button type="button" class="btn btn-primary btn-select-product">选择盘点货品</button>
-							&nbsp;&nbsp;&nbsp;&nbsp;
-							<button type="button" class="btn btn-danger btn-end">结束盘点</button>
-							<?php } ?>
-						</div>
-					</div>
-				<?php } ?>
+						
+						if( $security->hasPermission($loginId , 'WAREHOUSE$DODISK') 
+							&& ( $status == '' || $status == 0 || $status==3 ) ){//盘点库存权限
+				 		?>		
+		                    <div class="panel-foot">
+								<div class="form-actions" style="padding:5px;">
+									<button type="button" class="btn btn-primary btn-save">保&nbsp;存</button>
+									<?php
+										if( empty($result) ){
+											//nothing
+										}else{
+									 ?>	
+									<button type="button" class="btn btn-primary btn-select-product">选择盘点货品</button>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<button type="button" class="btn btn-danger btn-end">结束盘点提交审批</button>
+									<?php } ?>
+								</div>
+							</div>
+						<?php 
+						}
+						
+						if( $security->hasPermission($loginId , 'WAREHOUSE$DOAPPLY')
+							&& $status == 1  ){//审批库存权限
+						?>
+							<div class="panel-foot">
+								<div class="form-actions" style="padding:5px;">
+									<button type="button" class="btn btn-primary btn-pass">审批通过</button>
+									<button type="button" class="btn btn-primary btn-nopass">审批不通过</button>
+									
+								</div>
+							</div>	
+						<?php
+						}
+					} ?>
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->

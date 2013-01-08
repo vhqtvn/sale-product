@@ -1,26 +1,85 @@
 	$(function(){
-		var isAdd = false ;
+			var isAdd = false ;
+			
+			
+			//结束盘点
+			$(".btn-end").click(function(){
+				if(window.confirm("确认结束盘点，并提交审批?")){
+					/*$.dataservice("model:Warehouse.Disk.doEnd",{diskId:diskId},function(result){
+						//window.location.reload();
+					});*/
+					
+					var length = $(".data-row").length ;
+					if(length > 0){
+						$(".data-row").each(function(index){
+							var id = $(this).find("[name='id']").val() ;
+							var realNum = $(this).find("[name='realNum']").val() ;
+							var memo = $(this).find("[name='memo']").val() ;
+							var gainNum = $.trim( $(this).find("[key='gainNum']").text() ) ;
+							var lossNum = $.trim( $(this).find("[key='lossNum']").text() ) ;
+							var row = {id:id,realNum:realNum,memo:memo,gainNum:gainNum,lossNum:lossNum}  ;
+						
+							$.dataservice("model:Warehouse.Disk.doEditDetails",row,function(result){
+								if( length == index+1 ){
+									$.dataservice("model:Warehouse.Disk.doCommit",{diskId:diskId},function(result){
+										//window.location.reload();
+									});
+								}
+							});
+						}) ;
+					}else{
+						alert("未选择任何货品进行盘点") ;
+					}
+				}
+			}) ;
+			
+			//审批通过
+			$(".btn-pass").click(function(){
+				if(window.confirm("确认通过审批？")){
+					$.dataservice("model:Warehouse.Disk.doPass",{diskId:diskId},function(result){
+						window.opener.openCallback('edit') ;
+						window.location.reload() ;
+					});
+				}
+					
+			});
+			
+			//审批不通过
+			$(".btn-nopass").click(function(){
+				if(window.confirm("确认盘点审批不通过？")){
+					$.dataservice("model:Warehouse.Disk.doNoPass",{diskId:diskId},function(result){
+						window.opener.openCallback('edit') ;
+						window.location.reload() ;
+					});
+				}
+			});
+		
 
 			$(".btn-save").click(function(){
 				if(isAdd)return ;
+				var length = $(".data-row").length ;
+				
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					if(window.confirm("确认保存吗?")){
 						isAdd = true ;
 						
 						var json = $("#personForm").toJson() ;
+						
 						//保存基本信息
 						$.dataservice("model:Warehouse.Disk.doSave",json,function(result){
 							if( !diskId ){
 								window.opener.openCallback('edit') ;
 								window.close();
 							}
+							
+							if(length <=0) window.location.reload();
 						});
 					}
 				};
 				
 				//保存明细信息
 				//var rows = [] ;
-				var length = $(".data-row").length ;
+				
 				$(".data-row").each(function(index){
 					var id = $(this).find("[name='id']").val() ;
 					var realNum = $(this).find("[name='realNum']").val() ;
@@ -31,7 +90,7 @@
 				
 					$.dataservice("model:Warehouse.Disk.doEditDetails",row,function(result){
 						if( length == index+1 ){
-							//window.location.reload();
+							window.location.reload();
 						}
 					});
 				}) ;
@@ -143,15 +202,6 @@
 				window.location.reload();
 			});
 			return false;
-		}) ;
-		
-		//结束盘点
-		$(".btn-end").click(function(){
-			if(window.confirm("确认库存盘点正确？结束盘点就会将盈和亏的数量记录正式库存！")){
-				$.dataservice("model:Warehouse.Disk.doEnd",{diskId:diskId},function(result){
-					//window.location.reload();
-				});
-			}
 		}) ;
 		
 		//实际库存编辑

@@ -2,6 +2,9 @@
 class Disk extends AppModel {
 	var $useTable = "sc_warehouse_in" ;
 	
+	/**
+	 * 保存盘点计划信息
+	 */
 	public function doSave($params){
 		if( empty( $params['id'] ) ){
 			$this->exeSql("sql_warehouse_disk_insert",$params) ;
@@ -10,6 +13,9 @@ class Disk extends AppModel {
 		}
 	}
 	
+	/**
+	 * 选择产品保存
+	 */
 	public function doSelectProduct($params){
 		$value  = $params['value'] ;
 		$diskId = $params['diskId'] ;
@@ -30,9 +36,26 @@ class Disk extends AppModel {
 	}
 	
 	/**
-	 * 结束库存盘点
+	 * 提交审批
 	 */
-	public function doEnd($params){
+	public function doCommit($params){
+		$params['status'] = 1 ;//1 提交审批
+		$this->exeSql("sql_warehouse_disk_updateStatus",$params) ;
+	}
+	
+	/**
+	 * 未通过审批，重新盘点
+	 */
+	public function doNoPass($params){
+		$params['status'] = 3 ;//1 提交审批
+		$this->exeSql("sql_warehouse_disk_updateStatus",$params) ;
+	}
+	
+	
+	/**
+	 * 通过审批，结束盘点
+	 */
+	public function doPass($params){
 		//判断是否已经执行了盘点
 		
 		$params['status'] = 2 ;

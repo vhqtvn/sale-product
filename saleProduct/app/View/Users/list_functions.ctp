@@ -9,6 +9,7 @@
    <?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/tree/jquery.tree');
 		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
@@ -16,37 +17,27 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
+		echo $this->Html->script('tree/jquery.tree');
+		
+		//test tree
+		$Utils  = ClassRegistry::init("Utils") ;
+		$result = $Utils->formatTree("sql_security_listAllFUnctions",array()) ;
+		//debug($result) ;
 	?>
   
    <script type="text/javascript">
 
-	 //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
-
-
 	$(function(){
+		
+		$('#default-tree').tree({//tree为容器ID
+				source:'array',
+				data:<?php echo $result;?> ,
+				isRootExpand:true,
+				onNodeClick:function(id, text, record,node){
+					$(".grid-content").llygrid("reload",{id:id}) ;
+				}
+           }) ;
+           
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
@@ -107,13 +98,20 @@
 </head>
 <body>
 
-	<div class="grid-query-button">
-		<button class="action add btn btn-primary">添加功能</button>
+	<div class="grid-query-button" style="padding:5px;">
+		
 	</div>
 	
-
-	<div class="grid-content">
-	
+	<div class="row-fluid">
+		<div class="span2">
+			<div id="default-tree" class="tree" style="padding: 5px; "></div>
+		</div>
+		<div class="span10">
+			<button class="action add btn btn-primary">添加功能</button>
+			<div class="grid-content"></div>
+		</div>
 	</div>
+	
+	
 </body>
 </html>

@@ -31,11 +31,24 @@
    </entry>
    
    <entry key="sql_functions_list">
-		SELECT * FROM sc_security_function 
+		SELECT * FROM sc_security_function where 1=1 {@ and parent_id = '#id#'
+		  or
+		  parent_id in (
+		    select id from sc_security_function s1 where s1.parent_id = '#id#'
+		  )
+		}
    </entry>
   
    <entry key="sql_union_seller">
 		SELECT * FROM sc_union_seller where 1=1 {@ and account_id = '#accountId#'} 
+   </entry> 
+   
+   <entry key="sql_security_haspermissionByCode">
+		SELECT COUNT(*) as C FROM sc_security_group_function s1,sc_user s2
+
+		 WHERE s1.group_code = s2.group_code
+		 AND s2.login_id = '{@#loginId#}'
+		 AND s1.function_code = '{@#code#}'
    </entry> 
    
    
@@ -43,6 +56,11 @@
    <entry key="sql_warning_list">
 		SELECT * FROM sc_account_product_warning where 1=1 {@ and account_id = '#accountId#'} 
    </entry> 
+   
+   <entry key="sql_security_listAllFUnctions">
+   	
+   	SELECT s.* , concat(s.name,'[',s.id,']') AS TEXT FROM sc_security_function s  where s.parent_id is null or s.parent_id = ''
+   </entry>
    
    
 </properties>

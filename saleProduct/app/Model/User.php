@@ -177,6 +177,7 @@ class User extends AppModel {
 		$sql = " SELECT 
 		  sc_security_function.* 
 		 FROM sc_security_function where ( parent_id <> 'account' || parent_id IS NULL)
+		 and type = 'MENU'
 		 and code in (
        		SELECT sc_security_group_function.function_code FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
 		   = sc_security_function.code AND sc_security_group_function.GROUP_CODE = '$code'

@@ -2,8 +2,10 @@ $(function(){
 		$(".grid-content").llygrid({
 			columns:[
 				{align:"center",key:"STATUS",label:"状态",width:"6%",format:function(val,record){
-					if(!val || val=='0') return "初始化" ;
+					if(!val || val=='0') return "盘点中" ;
+					if(val == 1) return "等待审批" ;
 					if(!val || val=='2') return "盘点结束" ;
+					if(!val || val=='3') return "重新盘点" ;
 					return val;
 				}},
 				{align:"center",key:"ID",label:"编辑",width:"8%",format:function(val,record){

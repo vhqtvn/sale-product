@@ -1,6 +1,68 @@
 <?php
 class Utils extends AppModel {
-	var $useTable = false;
+	var $useTable = 'sc_user';
+	
+	/**
+	 * 格式化为树格式 ID , TEXT ,PARENT_ID
+	 */
+	public function formatTree($sqlId , $params){
+		$records = $this->exeSql($sqlId,$params) ;
+		
+		$items = array() ;
+		$roots = array() ;
+		$keyMap = array() ;
+		$rootIds = array() ;
+		
+		foreach( $records as $record ){
+			$record = $this->formatObject($record) ;
+			$pid = $record['PARENT_ID'] ;
+			$id = $record['ID'] ;
+			$record = array('id'=>$id,'pid'=>$pid,'text'=>$record['TEXT']) ;
+			if(empty( $pid )){
+				$roots[] = $record ;
+			}
+			$keyMap[ $id ] = $record ;
+			
+			$items[] = $record ;
+		}
+		
+		
+		//{id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} 
+		foreach( $items as $item ){
+			$parentId 	= $item['pid'] ;
+			$id 		= $item['id'] ;
+			
+			if( !empty($parentId) ){
+				//获取父节点
+				if(isset($keyMap[$parentId])){
+					$parent = $keyMap[$parentId] ;
+				}else{
+					$parent = array() ;
+				}
+				
+				if( isset( $parent['childNodes'] ) ){
+					
+				}else{
+					$parent['childNodes'] = array() ;
+				}
+				
+				$parent['childNodes'][] = $item ;
+				
+				$keyMap[$parentId] = $parent ;
+			}
+		}
+		
+		$results = array() ;
+		foreach($roots as $root){
+			$id 		= $root['id'] ;
+			if( isset( $keyMap[$id] ) ){
+				$results[] = $keyMap[$id] ;
+			}
+			//$results[] = $root ;
+		}
+		
+		return json_encode($results) ;
+	}
 	
 	public function _processRowCompetetion($e , $details ,$type , $base , $numType){
 
