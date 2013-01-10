@@ -16,7 +16,6 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('modules/warehouse/disk/lists');
-		
 	?>
 	
 	<script type="text/javascript">
@@ -37,6 +36,8 @@
 		</table>					
 
 	</div>
-	<div class="grid-content"></div>
+	<div class="grid-content-plan"></div>
+	
+	<div class="grid-content-active"></div>
 </body>
 </html>

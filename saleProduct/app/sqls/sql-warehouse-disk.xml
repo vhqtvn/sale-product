@@ -1,14 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<!--盘点计划-->
+	<entry key="sql_warehouse_disk_plan_insert">
+		INSERT INTO  sc_warehouse_disk_plan 
+				(  
+				CODE, 
+				WAREHOUSE_ID, 
+				NAME, 
+				STATUS, 
+				CHARGER, 
+				MEMO, 
+				START_TIME, 
+				END_TIME, 
+				CREATOR, 
+				CREATE_TIME
+				)
+				VALUES
+				( 
+				'{@#code#}', 
+				'{@#warehouseId#}', 
+				'{@#name#}', 
+				'0', 
+				'{@#charger#}', 
+				'{@#memo#}', 
+				'{@#startTime#}', 
+				'{@#endTime#}', 
+				'{@#creator#}', 
+				NOW()
+				)
+     </entry>
+   
+	 <entry key="sql_warehouse_disk_plan_update">
+	 	UPDATE sale_product1.sc_warehouse_disk_plan 
+			SET
+			code = '{@#code#}' ,
+			name = '{@#name#}' ,
+			charger = '{@#charger#}' , 
+			memo = '{@#memo#}' , 
+			start_time = '{@#startTime#}' , 
+			end_time = '{@#endTime#}'
+			
+			WHERE
+			ID = '{@#id#}' 
+	</entry>
 	
 	<entry key="sql_warehouse_disk_lists">
   		select s1.*,
-  		  (select name from sc_warehouse where id = s1.warehouse_id ) as WAREHOUSE_NAME
+  		  (select count(*) from sc_warehouse_disk_details s2 where s2.disk_id = s1.id) as COUNT,
+  		  (select count(*) from sc_warehouse_disk_details s2 where s2.disk_id = s1.id and s2.status=1) as PASS_COUNT
   		 from  sc_warehouse_disk s1
+  		 where 1=1
+  		 {@ and s1.id = '#id#'}
+  		 {@ and s1.plan_id = '#planId#'}
+  		  order by create_time desc
+   </entry>
+   
+   <!--获取仓库ID通过活动ID-->
+   <entry key="sql_warehouse_getWarehouseIdByDiskId">
+  		select s2.id as WAREHOUSE_ID
+  		 from  sc_warehouse_disk s1 , sc_warehouse_disk_plan s2
+  		 where 1=1 and
+  		   s1.plan_id = s2.id
+  		   {@ and s1.id = '#id#'}
+   </entry>
+   
+   
+   
+   <entry key="sql_warehouse_disk_plan_lists">
+  		select s1.*,
+  		  (select name from sc_warehouse where id = s1.warehouse_id ) as WAREHOUSE_NAME
+  		 from  sc_warehouse_disk_plan s1
   		 where 1=1
   		 {@ and id = '#id#'}
   		  order by create_time desc
    </entry>
+   
+   
    
    <entry key="sql_warehouse_disk_product_insert">
 	INSERT INTO  sc_warehouse_disk_details 
@@ -21,7 +88,7 @@
 		(  
 		'{@#diskId#}', 
 		'{@#realId#}', 
-		{@#paperNum#}
+		'{@#paperNum#}'
 		)
 	</entry>
 	
@@ -35,13 +102,15 @@
 			where id = '{@#id#}'
 	</entry>
    
+   <!--选择盘点货品-->
    <entry key="sql_warehouse_disk_products">
   		SELECT sc_real_product.*,
 		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id
 		        	and status = 1 ) AS LOCK_QUANTITY
 		         from sc_real_product where 1=1
 		         and sc_real_product.id not in (
-		         select s1.real_id from sc_warehouse_disk_details s1 where s1.disk_id = '{@#id#}'	
+		         select s1.real_id from sc_warehouse_disk_details s1, sc_warehouse_disk s2
+		           where s1.disk_id =s2.id and  s2.plan_id = '{@#planId#}'	
 		         )
    </entry>
    
@@ -52,9 +121,21 @@
   			 and s1.disk_id = '{@#id#}'	
    </entry>
    
+   <entry key="sql_warehouse_disk_details_getById">
+  		SELECT s1.*, s2.NAME ,  s2.REAL_SKU, s2.IMAGE_URL 
+  			FROM sc_warehouse_disk_details s1 , sc_real_product s2 
+  			WHERE s1.real_id = s2.id
+  			 and s1.id = '{@#id#}'	
+   </entry>
+   
    <!--更新盘点计划状态-->
    <entry key="sql_warehouse_disk_updateStatus">
    		update sc_warehouse_disk set status = '{@#status#}' where id = '{@#diskId#}'
+   </entry>
+   
+   <!--更新盘点活动产品状态-->
+   <entry key="sql_warehouse_disk_details_updateStatus">
+   		update sc_warehouse_disk_details set status = '{@#status#}' where id = '{@#id#}'
    </entry>
    
    <entry key="sql_warehouse_disk_insert">
@@ -62,7 +143,7 @@
 				( 
 				DISK_TIME, 
 				DISK_NO, 
-				WAREHOUSE_ID, 
+				PLAN_ID, 
 				PROCESSOR, 
 				CREATOR, 
 				CREATE_TIME, 
@@ -73,25 +154,24 @@
 				(  
 				'{@#diskTime#}', 
 				'{@#diskNo#}', 
-				'{@#warehouseId#}', 
+				'{@#planId#}', 
 				'{@#processor#}', 
 				'{@#loginId#}', 
 				NOW(), 
 				'{@#memo#}',
 				'0'
 				)
-   </entry>
+     </entry>
    
 	 <entry key="sql_warehouse_disk_update">
-   
-UPDATE sc_warehouse_disk 
-	SET
-	DISK_NO = '{@#diskNo#}' , 
-	PROCESSOR = '{@#processor#}' , 
-	MEMO = '{@#memo#}' 
-	
-	WHERE
-	ID = '{@#id#}' 
+		UPDATE sc_warehouse_disk 
+			SET
+			DISK_NO = '{@#diskNo#}' , 
+			PROCESSOR = '{@#processor#}' , 
+			MEMO = '{@#memo#}' 
+			
+			WHERE
+			ID = '{@#id#}' 
 	</entry>
 	
 	

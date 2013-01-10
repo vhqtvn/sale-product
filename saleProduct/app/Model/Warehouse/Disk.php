@@ -2,6 +2,14 @@
 class Disk extends AppModel {
 	var $useTable = "sc_warehouse_in" ;
 	
+	public function doSavePlan($params){
+		if( empty( $params['id'] ) ){
+			$this->exeSql("sql_warehouse_disk_plan_insert",$params) ;
+		}else{
+			$this->exeSql("sql_warehouse_disk_plan_update",$params) ;
+		}
+	}
+	
 	/**
 	 * 保存盘点计划信息
 	 */
@@ -46,49 +54,58 @@ class Disk extends AppModel {
 	/**
 	 * 未通过审批，重新盘点
 	 */
-	public function doNoPass($params){
+	/*public function doNoPass($params){
 		$params['status'] = 3 ;//1 提交审批
 		$this->exeSql("sql_warehouse_disk_updateStatus",$params) ;
-	}
+	}*/
 	
 	
 	/**
 	 * 通过审批，结束盘点
 	 */
-	public function doPass($params){
+	public function doAudit($params){
 		//判断是否已经执行了盘点
+		//$params['status'] = 1 ;
 		
-		$params['status'] = 2 ;
+		$passProductIds = $params['passProductIds'] ;
+		
+		//更新状态为已经审批
 		$this->exeSql("sql_warehouse_disk_updateStatus",$params) ;
 		
-		$disk = $this->getObject("sql_warehouse_disk_lists",array('id'=>$params['diskId']) ) ;
+		$disk = $this->getObject("sql_warehouse_getWarehouseIdByDiskId",array('id'=>$params['diskId']) ) ;
 		
-		$deskDetails = $this->exeSql("sql_warehouse_disk_details",array('id'=>$params['diskId']) ) ;
+		$passProductIds = explode(",",$passProductIds) ;
 		
-		if( !empty($deskDetails) ){
-			foreach($deskDetails as $detail){
-				$product = $this->formatObject($detail) ;
-				$lossNum = $product['LOSS_NUM'] ;
-				$gainNum = $product['GAIN_NUM'] ;
+		foreach($passProductIds as $ddId){//ID
+			
+			$detail = $this->getObject("sql_warehouse_disk_details_getById",array('id'=>$ddId) ) ;
+			
+			$lossNum = $detail['LOSS_NUM'] ;
+			$gainNum = $detail['GAIN_NUM'] ;
+			if( !empty($lossNum) ){//盘点出库
 				
-				if( !empty($lossNum) ){//盘点出库
-					$this->doDiskIn(array(
-						'realProductId'=>$product['REAL_ID'],
-						'QUANTITY'=>$lossNum,
-						'diskId'=>$params['diskId'],
-						'warehouseId'=>$disk['WAREHOUSE_ID']
-					),'out') ;
-				}
-				
-				if( !empty($gainNum) ){//盘点入库
-					$this->doDiskIn(array(
-						'realProductId'=>$product['REAL_ID'],
-						'QUANTITY'=>$gainNum,
-						'diskId'=>$params['diskId'],
-						'warehouseId'=>$disk['WAREHOUSE_ID']
-					),'in') ;
-				}
+				$this->doDiskIn(array(
+					'realProductId'=>$detail['REAL_ID'],
+					'QUANTITY'=>$lossNum,
+					'diskId'=>$params['diskId'],
+					'warehouseId'=>$disk['WAREHOUSE_ID'],
+					'status'=>'1'
+				),'out') ;
 			}
+			
+			if( !empty($gainNum) ){//盘点入库
+				
+				$this->doDiskIn(array(
+					'realProductId'=>$detail['REAL_ID'],
+					'QUANTITY'=>$gainNum,
+					'diskId'=>$params['diskId'],
+					'warehouseId'=>$disk['WAREHOUSE_ID'],
+					'status'=>'1'
+				),'in') ;
+			}
+			
+			$this->exeSql("sql_warehouse_disk_details_updateStatus",array('status'=>'1','id'=>$ddId)) ;
+			
 		}
 	}
 	

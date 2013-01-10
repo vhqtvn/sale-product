@@ -22,7 +22,7 @@
 							$.dataservice("model:Warehouse.Disk.doEditDetails",row,function(result){
 								if( length == index+1 ){
 									$.dataservice("model:Warehouse.Disk.doCommit",{diskId:diskId},function(result){
-										//window.location.reload();
+										window.location.reload();
 									});
 								}
 							});
@@ -33,27 +33,34 @@
 				}
 			}) ;
 			
-			//审批通过
-			$(".btn-pass").click(function(){
-				if(window.confirm("确认通过审批？")){
-					$.dataservice("model:Warehouse.Disk.doPass",{diskId:diskId},function(result){
-						window.opener.openCallback('edit') ;
+			//保存审批结果
+			$(".btn-audit-save").click(function(){
+				if(window.confirm("确认保存审批结果？")){
+					
+					var json =$(".edit-table").toJson() ;
+					
+					var isPass = json.isPass||"" ;
+					
+					$.dataservice("model:Warehouse.Disk.doAudit",{diskId:diskId,passProductIds:isPass,status:1},function(result){
+						try{ window.opener.openCallback('edit') ; }catch(e){}
 						window.location.reload() ;
 					});
 				}
-					
+				
 			});
 			
-			//审批不通过
-			$(".btn-nopass").click(function(){
-				if(window.confirm("确认盘点审批不通过？")){
-					$.dataservice("model:Warehouse.Disk.doNoPass",{diskId:diskId},function(result){
-						window.opener.openCallback('edit') ;
+			//保存审批结果
+			$(".btn-audit-complete").click(function(){
+				if(window.confirm("确认审批完成？")){
+					var json =$(".edit-table").toJson() ;
+					
+					var isPass = json.isPass||"" ;
+					$.dataservice("model:Warehouse.Disk.doAudit",{diskId:diskId,passProductIds:isPass,status:3},function(result){
+						try{ window.opener.openCallback('edit') ; }catch(e){}
 						window.location.reload() ;
 					});
 				}
 			});
-		
 
 			$(".btn-save").click(function(){
 				if(isAdd)return ;
@@ -64,6 +71,8 @@
 						isAdd = true ;
 						
 						var json = $("#personForm").toJson() ;
+						
+						json.planId=planId;
 						
 						//保存基本信息
 						$.dataservice("model:Warehouse.Disk.doSave",json,function(result){
@@ -166,7 +175,7 @@
 					title:"货品选择",
 					params:{
 						sqlId:"sql_warehouse_disk_products",
-						id:diskId
+						planId:planId
 					},
 					ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 					pagesize:10,

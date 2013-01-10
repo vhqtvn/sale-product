@@ -26,21 +26,36 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		
-		
-		
 		$loginId   = $user['LOGIN_ID'] ;
 		
 		$result = null ;
 		$diskId = $params['arg1'] ;
+		$planId = null ;
 		if(!empty($diskId)){
-			
 			$result = $SqlUtils->getObject("sql_warehouse_disk_lists",array('id'=>$diskId) ) ;
-		
+			$planId = $result['PLAN_ID'] ;
 		}
+		
+		$defaultCode = "DA-".date("Ymd") ;
 	?>
+	
+	<style type="text/css">
+		.audit-same{
+			
+		}
+		
+		.audit-nosame{
+			background:pink;
+		}
+		
+		.audit-agree{
+			background:#B5F4B5;
+		}
+	</style>
 	
 	<script>
 		var diskId = '<?php echo $diskId ; ?>';
+		var planId = '<?php echo $planId ; ?>'||window.opener.currentPlan.ID;
    </script>
 </head>
 
@@ -55,19 +70,25 @@
 				<div class="panel apply-panel">
 				<?php
 					$status = $result['STATUS'] ;
+					$count = $result['COUNT'] ;
+					$passCount = $result['PASS_COUNT'] ;
+					
 					if( $status == 2 ){//结束盘点
 						//nothing
 					}else{
 						
 						if( $security->hasPermission($loginId , 'WAREHOUSE$DODISK') 
-							&& ( $status == '' || $status == 0 || $status==3 ) ){//盘点库存权限
+							&& ( $status == '' || $status == 0 || $status==3 )
+							&& !($passCount == $count && $count > 0 )
+							 ){//盘点库存权限
+							
 				 		?>		
 		                    <div class="panel-foot">
 								<div class="form-actions" style="padding:5px;">
 									<button type="button" class="btn btn-primary btn-save">保&nbsp;存</button>
 									<?php
 										if( empty($result) ){
-											//nothing
+											//nothing 新建
 										}else{
 									 ?>	
 									<button type="button" class="btn btn-primary btn-select-product">选择盘点货品</button>
@@ -78,17 +99,15 @@
 							</div>
 						<?php 
 						}
-						
-						if( $security->hasPermission($loginId , 'WAREHOUSE$DOAPPLY')
-							&& $status == 1  ){//审批库存权限
+						$hasAudit = $security->hasPermission($loginId , 'WAREHOUSE$DOAPPLY') ;
+						if( $hasAudit && $status == 1  ){//审批库存权限
 						?>
 							<div class="panel-foot">
 								<div class="form-actions" style="padding:5px;">
-									<button type="button" class="btn btn-primary btn-pass">审批通过</button>
-									<button type="button" class="btn btn-primary btn-nopass">审批不通过</button>
-									
+									<button type="button" class="btn btn-primary btn-audit-save">保存审批结果</button>
+									<button type="button" class="btn btn-primary btn-audit-complete">审批完成</button>
 								</div>
-							</div>	
+							</div>
 						<?php
 						}
 					} ?>
@@ -112,26 +131,20 @@
 										}
 									?>
 									</td>
-									<th>目标仓库：</th>
+									<th>计划名称：</th>
 									<td>
-									<?php
-										if(!empty($result['WAREHOUSE_NAME'])){
-											echo $result['WAREHOUSE_NAME'] ;
-										}else{
-										?>
-									<input data-validator="required" type="hidden" id="warehouseId" 
-										value="<?php echo $result['WAREHOUSE_ID'];?>"/>
-									<input type="text" data-validator="required" id="warehouseName" readonly
-										value="<?php echo $result['WAREHOUSE_NAME'];?>" class="span2"/>
-									<button class="btn btn-warehouse">选择</button>
-									<?php	
-										}
-									?>
+									<script type="text/javascript">
+										document.write( window.opener.currentPlan.NAME );
+									</script>
 									</td>
 								</tr>
 								<tr>
-									<th>盘点单号：</th><td><input data-validator="required" type="text" id="diskNo"
-										value="<?php echo $result['DISK_NO'];?>"/></td>
+									<th>活动代码：</th><td><input data-validator="required" type="text" id="diskNo"
+										value="<?php if( empty($result['DISK_NO']) ){
+												echo $defaultCode ;
+											   }else{
+											   		echo $result['DISK_NO'];
+											   }?>"/></td>
 								
 									<th>经办人：</th><td><input data-validator="required" type="text" id="processor"
 										value="<?php echo $result['PROCESSOR'];?>"/></td>
@@ -156,6 +169,7 @@
 							<th style="width:7%;">盈</th>
 							<th style="width:7%;">亏</th>
 							<th>备注</th>
+							<th style="width:30px;">&nbsp;</th>
 						</tr>
 						<?php
 						$deskDetails = $SqlUtils->exeSql("sql_warehouse_disk_details",array('id'=>$diskId) ) ;
@@ -164,20 +178,54 @@
 							foreach($deskDetails as $detail){
 								$product = $SqlUtils->formatObject($detail) ;
 								$imgUrl = '/saleProduct/'.$product['IMAGE_URL'] ;
+								$id = $product['ID'] ;
+								$paperNum = $product['PAPER_NUM']  ;//账面库存
+								$realNum  = $product['REAL_NUM'] ;//实际库存
+								$pstatus   = $product['STATUS'] ;
+								
+								$rowClass= $paperNum == $realNum ?"audit-same":"audit-nosame" ;
+								$isChecked = $paperNum == $realNum ?"checked=checked":"" ;
+								
+								if($pstatus == 1){
+									$rowClass = "audit-agree" ;
+								}
+								
 								?>
-								<tr class="data-row">
+								<tr class="data-row <?php echo $rowClass;?>">
 									<th style="display:none;">
 										<input type="hidden" name="id" value="<?php echo $product['ID'] ?>"/>
 										<input type="hidden" name="paperNum" value="<?php echo $product['PAPER_NUM'] ?>"/>
 									</th>
-									<th><img style="width:45px;height:45px;" src="<?php echo $imgUrl;?>"/></th>
+									<th><img style="width:25px;height:25px;" src="<?php echo $imgUrl;?>"/></th>
 									<th><?php echo $product['REAL_SKU'] ?></th>
 									<th><?php echo $product['NAME'] ?></th>
 									<th><?php echo $product['PAPER_NUM'] ?></th>
-									<th><input type='text' name="realNum" class="span1" value="<?php echo $product['REAL_NUM'] ?>"/></th>
+									<th>
+									    <?php if( ($status == '' || $status == 0 || $status==3) && $pstatus!=1 ){
+									    ?>
+									    	<input type="text" name="realNum" style="width:50px;" value="<?php echo $product['REAL_NUM'] ?>"/>
+									    <?php
+									    }else{
+									    	echo $product['REAL_NUM'] ;
+									    }?>
+										
+									</th>
 									<th key="gainNum"><?php echo $product['GAIN_NUM'] ?></th>
 									<th key="lossNum"><?php echo $product['LOSS_NUM'] ?></th>
-									<th><textarea name="memo"><?php echo $product['MEMO'] ?></textarea></th>
+									<th style="padding:2px;">
+										<?php if($pstatus == 1){?>
+											<?php echo $product['MEMO'] ?>
+										<?php }else{?>
+										<textarea name="memo" style="height:35px;margin:0px;"><?php echo $product['MEMO'] ?></textarea>
+										<?php } ?>
+									</th>
+									<th>
+										<?php if($pstatus == 1){?>
+											通过
+										<?php }else if($hasAudit && $status == 1 ){?>
+										<input type="checkbox" name="isPass" <?php echo $isChecked;?> value="<?php echo $id;?>"/>
+										<?php } ?>
+									</th>
 								</tr>
 								<?php
 							}

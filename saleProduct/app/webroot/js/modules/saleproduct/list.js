@@ -20,7 +20,7 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",700,500) ;
+					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",730,540) ;
 				}else if( $(this).hasClass("inout") ){//货品出入库明细
 					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,850,600) ;
 				}else if( $(this).hasClass("assign") ){//货品出入库明细

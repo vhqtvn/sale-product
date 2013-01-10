@@ -48,13 +48,13 @@
 		if(_p.grid || _p.tree ){
 			if( params.tree && params.grid ){
 				width = width||800 ;
-				height = height||600 ;
+				height = height||650 ;
 			}else if(params.tree){
 				width = width||500 ;
-				height = height||600 ;
+				height = height||650 ;
 			}else{
 				width = width||800 ;
-				height = height||600 ;
+				height = height||650 ;
 			}
 			templateName = "treegrid_template.html" ;
 		}else{
