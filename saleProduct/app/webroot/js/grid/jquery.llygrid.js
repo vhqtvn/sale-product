@@ -659,6 +659,12 @@
 					return col.format.content[val]||val  ;
 				}
 			},
+			'func':{
+				body:function(val,record,col){
+					var funcName = col.format.funcName ;
+					return eval(funcName)(val,record) ;
+				}
+			},
 			"editor":{
 				body:function(val,record ,col){
 					val = val || col.defaultValue||"";
