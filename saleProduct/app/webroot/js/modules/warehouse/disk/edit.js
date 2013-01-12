@@ -186,20 +186,21 @@
 			           	
 			           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",
 			           		content:{'base':"基本类型",'package':"打包货品"}}},
-			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
-			           		
-			           		if(val){
-			           			val = val.replace(/%/g,'%25') ;
-			           			alert(val);
-			           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
-			           		}
-			           		return "" ;
-			           	}},
+			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"window.opener.renderProductImg"}},
 			           	{align:"center",key:"MEMO",label:"备注",width:"20%"}
 			           	
 					]
 				}
 		   } ;
+		   
+		window.renderProductImg = function(val,record){
+       		if(val){
+       			val = val.replace(/%/g,'%25') ;
+       			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+       		}
+       		return "" ;
+       	}
+		   
 		$(".btn-select-product").listselectdialog( productGridSelect,function(){
 			var args = jQuery.dialogReturnValue() ;
 			args.diskId = diskId ;
@@ -219,10 +220,16 @@
 			var row = $(this).parents("tr:first") ;
 			var paperNum = row.find("[name='paperNum']").val() ;
 			if( val - paperNum > 0 ){
+				row.removeClass("audit-nosame audit-same").addClass("audit-nosame") ;
 				row.find("[key='gainNum']").html(val - paperNum) ;
 				row.find("[key='lossNum']").html("") ;
 			}else if( paperNum - val > 0 ){
+				row.removeClass("audit-nosame audit-same").addClass("audit-nosame") ;
 				row.find("[key='lossNum']").html( paperNum - val) ;
+				row.find("[key='gainNum']").html("") ;
+			}else if(val == paperNum){
+				row.removeClass("audit-nosame audit-same").addClass("audit-same") ;//"audit-same":"audit-nosame"
+				row.find("[key='lossNum']").html("") ;
 				row.find("[key='gainNum']").html("") ;
 			}
 		});
