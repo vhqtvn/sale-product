@@ -20,32 +20,6 @@
   
    <script type="text/javascript">
 
-	 //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
-
-
 
 	$(function(){
 			$(".action").live("click",function(){
@@ -91,7 +65,9 @@
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:200,
+				 height:function(){
+				 	return $(window).height() - 200 ;
+				 },
 				 title:"用户组列表",
 				 indexColumn:false,
 				  querys:{sqlId:"sql_groups_list"},

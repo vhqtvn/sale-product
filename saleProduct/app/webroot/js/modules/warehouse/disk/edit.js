@@ -193,13 +193,7 @@
 				}
 		   } ;
 		   
-		window.renderProductImg = function(val,record){
-       		if(val){
-       			val = val.replace(/%/g,'%25') ;
-       			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
-       		}
-       		return "" ;
-       	}
+		
 		   
 		$(".btn-select-product").listselectdialog( productGridSelect,function(){
 			var args = jQuery.dialogReturnValue() ;

@@ -1,5 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+   <entry key="sql_ram_options_list">
+  		select * from sc_ram_options order by type
+   </entry>
+   
+   <entry key="sql_ram_options_getByCode">
+  		select * from sc_ram_options where code = '{@#code#}'
+   </entry>
+   
+   
+   <entry key="sql_ram_options_getByType">
+  		select * from sc_ram_options where type = '{@#type#}'
+   </entry>
+   
+   <entry key="sql_ram_option_insert">	
+	INSERT INTO  sc_ram_options 
+		(CODE, 
+		NAME, 
+		TYPE, 
+		MEMO
+		)
+		VALUES
+		('{@#code#}', 
+		'{@#name#}', 
+		'{@#type#}', 
+		'{@#memo#}'
+		)
+   </entry>
+   
+   <entry key="sql_ram_option_update">
+		UPDATE sc_ram_options 
+			SET
+			NAME = '{@#name#}' , 
+			TYPE = '{@#type#}' , 
+			MEMO = '{@#memo#}'
+			
+			WHERE
+			CODE = '{@#code#}'  
+   </entry>
+   
+   <entry key="sql_ram_event_getById">
+  		select * from sc_ram_event where id = '{@#id#}'
+   </entry>
+   
+   
+	
+   <entry key="sql_ram_events_list">
+  		SELECT s1.* ,
+		  srp.IMAGE_URL,
+		  srp.REAL_SKU,
+		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.cause_code ) AS CAUSE_NAME,
+		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.policy_code ) AS POLICY_NAME
+		  FROM sc_ram_event s1 , sc_amazon_order sao
+		  LEFT JOIN sc_real_product_rel srpr
+		  ON srpr.sku = sao.sku
+		  LEFT JOIN sc_real_product srp
+		  on srp.id = srpr.real_id
+		  WHERE s1.order_id = sao.order_id
+		  {@ and s1.status = '#status#'}
+   </entry>
+   
+   <entry key="sql_ram_event_insert">	
+	INSERT INTO sc_ram_event 
+		( 
+		CODE, 
+		ORDER_ID, 
+		ORDER_NO, 
+		CAUSE_CODE, 
+		POLICY_CODE, 
+		CREATOR, 
+		CREATE_TIME, 
+		STATUS, 
+		MEMO, 
+		CHARGER
+		)
+		VALUES
+		( 
+		'{@#code#}', 
+		'{@#orderId#}', 
+		'{@#orderNo#}', 
+		'{@#causeCode#}', 
+		'{@#policyCode#}', 
+		'{@#loginId#}', 
+		NOW(), 
+		'{@#status#}', 
+		'{@#memo#}', 
+		''
+		)
+   </entry>
+   
+   <entry key="sql_ram_event_update">
+		UPDATE sc_ram_event 
+			SET
+			CODE = '{@#code#}' , 
+			ORDER_ID = '{@#orderId#}' , 
+			ORDER_NO = '{@#orderNo#}' , 
+			CAUSE_CODE = '{@#causeCode#}' , 
+			POLICY_CODE = '{@#policyCode#}' ,
+			MEMO = '{@#memo#}' , 
+			CHARGER = '{@#charger#}'
+			WHERE
+			ID = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_ram_event_updateStatus">
+   		UPDATE sc_ram_event 
+			SET
+			status = '{@#status#}'
+			WHERE
+			ID = '{@#id#}'
+   </entry>
+	
 	
 	<entry key="sql_warehouse_rma_lists">
   		select s1.*,s2.NAME,s2.REAL_SKU,s2.IMAGE_URL,

@@ -600,7 +600,7 @@
 			switch(opts){
 				case "reload":
 					params = params||{} ;
-					params.curPage = 1 ;//重新定位到第一页
+					//params.curPage = 1 ;//重新定位到第一页
 					reload($(this),params,_options) ;
 					break ;
 				case "addEvent":
@@ -1066,7 +1066,14 @@ function formatGridData(data){
 			
 		return ret ;
 	}
-	
+
+var renderGridImg = function(val,record){
+	if(val){
+		val = val.replace(/%/g,'%25') ;
+		return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+	}
+	return "" ;
+}
 	
 //common action 
 function viewSupplier(id){

@@ -116,6 +116,8 @@ $(function(){
  function openCallback(type){
  	if(type=='editPlan' ){
  		$(".grid-content-plan").llygrid("reload") ;
+ 	}else{
+ 		$(".grid-content-active").llygrid("reload");
  	}
  	
  }

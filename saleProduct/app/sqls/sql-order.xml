@@ -246,10 +246,12 @@
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
 		   {@ and sc_amazon_order_status.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
 		   {@ and sc_amazon_order_status.audit_status = '#status#'}
-		   {@ and sc_amazon_order.order_id = '#orderId#'}
 		   {@ and sc_amazon_order.buyer_name = '#userName#'}
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
+		   {@ and sc_amazon_order.order_id = '#orderId#'}
 		   {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.order_id = '#ORDER_ID#'}
+		   {@ and sc_amazon_order.order_number = '#ORDER_NUMBER#'}
 		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
 		   {@ and sc_amazon_order_status.pick_status = '#pickStatus#'}
