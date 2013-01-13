@@ -27,18 +27,10 @@
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('contextmenu/jquery.contextmenu');
-		
 	?>
 
 </head>
-<!--
-风险客户<input type="radio" name="status" value="2">
-										待退单<input type="radio" name="status" value="3">
-										外购订单<input type="radio" name="status" value="4">
-										合格订单<input type="radio" name="status" value="5">
-										加急单<input type="radio" name="status" value="6">
-										特殊单
--->
+
 <body>
 	<div class="toolbar toolbar-auto">
 		

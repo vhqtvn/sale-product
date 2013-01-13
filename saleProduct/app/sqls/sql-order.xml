@@ -219,6 +219,7 @@
 			sc_amazon_order_status.PICK_STATUS,
 			sc_amazon_account_product.ASIN,
 			sc_amazon_account_product.LOCAL_URL,
+			sc_real_product.ID as REAL_ID,
 			sc_real_product.REAL_SKU,
 			sc_real_product.NAME as REAL_NAME,
 			sc_real_product.IMAGE_URL,
@@ -773,6 +774,11 @@
 		   )
         ) t order by t.ORDER_NUMBER
 		 ]]>
+    </entry>
+    
+    <entry key="sql_order_redostatusUpdate">
+		update sc_amazon_order set redo_status = '{@#status#}'
+		where order_id = '{@#orderId#}'
     </entry>
     
     <entry key="sql_order_status_insert">

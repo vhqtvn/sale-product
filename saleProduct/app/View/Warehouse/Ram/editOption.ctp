@@ -76,6 +76,18 @@
 									</td>
 								</tr>
 								
+								<tr id="resendRow" style="<?php echo $result['TYPE']=='policy'?"":"display:none;";?>" >
+									<th>是否需要重发货：</th>
+									<td  colspan=3>
+										是：<input 
+											<?php echo $result['IS_RESEND']=='1'?"checked":"";?>
+											type="radio" name="isResend" value="1"/>
+										否：<input
+											<?php echo $result['IS_RESEND']!='1'?"checked":"";?>
+										type="radio" name="isResend" value="0"/>
+									</td>
+								</tr>
+								
 								<tr>
 									<th>备注：</th><td  colspan=3>
 										<textarea name="memo"  style="width:90%;height:40px;"><?php echo $result['MEMO'];?></textarea>

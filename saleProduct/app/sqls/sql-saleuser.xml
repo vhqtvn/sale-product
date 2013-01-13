@@ -12,6 +12,17 @@
  			{@ and status = '#status#'}
    </entry>
    
+   <entry key="sql_saleuser_updateStatusByEmail">
+   	update sc_amazon_order_user set status = '{@#status#}'
+   	  where email = '{@#email#}'
+   </entry>
    
+   <entry key="sql_saleuser_findByEmail">
+   	SELECT * from sc_amazon_order_user
+ 			where 1=1 
+ 			{@ and name = '#name#'}
+ 			{@ and email = '#email#'}
+ 			{@ and status = '#status#'}
+   </entry>
    
 </properties>

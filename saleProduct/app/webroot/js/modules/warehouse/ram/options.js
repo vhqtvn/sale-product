@@ -8,7 +8,12 @@ $(function(){
 				}},
 				{key:"CODE",label:"代码",width:"15%",forzen:false,align:"left"},
 				{key:"NAME",label:"名称",width:"30%",forzen:false,align:"left"},
-	           	{key:"TYPE",label:"类型",width:"15%",format:{type:"json",content:{'cause':"RAM原因",'policy':"PAM决策"}}},
+	           	{key:"TYPE",label:"类型",width:"8%",format:{type:"json",content:{'cause':"RAM原因",'policy':"PAM决策"}}},
+	           	{key:"IS_RESEND",label:"是否重发货",width:"8%",format:function(val,record){
+	           		if(record.TYPE == 'cause') return "-" ;
+	           		if(val==1) return "是" ;
+	           		return "否" ;
+	           	}},
 	           	{key:"MEMO",label:"备注",width:"30%"}
 	         ],
 	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},

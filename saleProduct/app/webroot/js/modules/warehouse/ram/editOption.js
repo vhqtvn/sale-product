@@ -23,5 +23,12 @@
 				return false ;
 			}) ;
 			
-   		
+   		   $("[name='type']").click(function(){
+   		   		var val = $(this).val() ;
+   		   		if(val == 'cause'){
+   		   			$("#resendRow").hide();
+   		   		}else{
+   		   			$("#resendRow").show();
+   		   		}
+   		   });
    }) ;

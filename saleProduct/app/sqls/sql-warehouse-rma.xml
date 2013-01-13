@@ -18,13 +18,15 @@
 		(CODE, 
 		NAME, 
 		TYPE, 
-		MEMO
+		MEMO,
+		IS_RESEND
 		)
 		VALUES
 		('{@#code#}', 
 		'{@#name#}', 
 		'{@#type#}', 
-		'{@#memo#}'
+		'{@#memo#}', 
+		'{@#isResend#}'
 		)
    </entry>
    
@@ -33,7 +35,8 @@
 			SET
 			NAME = '{@#name#}' , 
 			TYPE = '{@#type#}' , 
-			MEMO = '{@#memo#}'
+			MEMO = '{@#memo#}' ,
+			IS_RESEND = '{@#isResend#}'
 			
 			WHERE
 			CODE = '{@#code#}'  
@@ -110,22 +113,78 @@
 			WHERE
 			ID = '{@#id#}'
    </entry>
-	
-	
-	<entry key="sql_warehouse_rma_lists">
+   
+   <entry key="sql_ram_event_updateRecieve">
+   		UPDATE sc_ram_event 
+			SET
+			IS_RECEIVE = '{@#isReceive#}'
+			WHERE
+			ID = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_ram_event_completeRecieve">
+   		UPDATE sc_ram_event 
+			SET
+			IN_STATUS = '1'
+			WHERE
+			ID = '{@#id#}'
+   </entry>
+   
+   
+   
+   
+   <entry key="sql_ram_track_insert">
+	INSERT INTO sc_ram_track 
+		(
+		RAM_ID, 
+		CREATE_TIME, 
+		CREATOR, 
+		MEMO
+		)
+		VALUES
+		(
+		'{@#id#}', 
+		NOW(), 
+		'{@#loginId#}', 
+		'{@#trackMemo#}'
+		)
+
+   </entry>
+   
+   
+   <entry key="sql_ram_track_list">
+   	select s1.* ,
+   		(select name from sc_user su where su.login_id = s1.creator ) as CREATOR_NAME
+   	from sc_ram_track s1 where ram_id = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_warehouse_rma_lists">
   		select s1.*,s2.NAME,s2.REAL_SKU,s2.IMAGE_URL,
   		  (select name from sc_warehouse where id = s1.warehouse_id ) as WAREHOUSE_NAME
   		 from  sc_warehouse_rma s1 , sc_real_product s2
   		 where 1=1
   		 and s1.real_product_id = s2.id
-  		 {@ and id = '#id#'}
+  		 {@ and s2.id = '#id#'}
+  		 {@ and s1.ram_id = '#rmaId#'}
+  		  order by create_time desc
+   </entry>
+   
+   <entry key="sql_warehouse_rmaEdit_lists">
+  		select s1.*,s2.NAME,s2.REAL_SKU,s2.IMAGE_URL,
+  		  (select name from sc_warehouse where id = s1.warehouse_id ) as WAREHOUSE_NAME
+  		 from  sc_warehouse_rma s1 , sc_real_product s2
+  		 where 1=1
+  		 and s1.real_product_id = s2.id
+  		 {@ and s2.id = '#id#'}
+  		  and s1.ram_id = '{@#rmaId#}'
   		  order by create_time desc
    </entry>
    
    <entry key="sql_warehouse_rma_insert">
    INSERT INTO sc_warehouse_rma 
 	(
-	TYPE, 
+	TYPE,
+	RAM_ID, 
 	QUALITY, 
 	QUANTITY, 
 	REAL_PRODUCT_ID, 
@@ -137,6 +196,7 @@
 	VALUES
 	(
 	'in', 
+	'{@#ramId#}', 
 	'{@#quality#}', 
 	'{@#quantity#}', 
 	'{@#realProductId#}', 

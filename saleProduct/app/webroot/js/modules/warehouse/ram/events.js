@@ -55,12 +55,12 @@ $(function(){
 
 	//添加选项
 	$(".add-btn").click(function(){
-		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent",780,530) ;
+		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent",880,330) ;
 	}) ;
 	
 	$(".edit").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
-		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent/"+record.ID,780,530) ;
+		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent/"+record.ID,880,650) ;
 		return false;
 	}) ;
 		
