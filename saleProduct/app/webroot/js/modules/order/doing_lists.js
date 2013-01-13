@@ -1,25 +1,4 @@
-function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	}
+
 	var currentPickName = '' ;
 	$(function(){
 			var currentPickId = '' ;
@@ -115,11 +94,11 @@ function formatGridData(data){
 			//拣货单订单列表
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
+					/*{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
 							var html = [] ;
 							html.push("<a href='#' class='action-update' val='"+val+"'>编辑</a>&nbsp;") ;
 							return html.join("") ;
-					}},
+					}},*/
 					{align:"left",key:"ASIN",label:"ASIN", width:"90",render:function(record){
 							if(record.IS_PACKAGE || record.C > 1){
 								$(this).find("td").css("background","#EEBBFF") ;

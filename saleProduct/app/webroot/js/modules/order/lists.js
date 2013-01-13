@@ -121,6 +121,7 @@
 				var text = $.trim( $(this).text() ) ;
 				
 				if( window.confirm("确认将选择产品添加到["+text+"]中吗？") ){
+					
 					$.ajax({
 						type:"post",
 						url:"/saleProduct/index.php/order/saveAudit" ,

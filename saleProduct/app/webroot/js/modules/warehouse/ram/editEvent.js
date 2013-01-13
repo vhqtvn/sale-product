@@ -119,6 +119,26 @@ $(function(){
 			}
 		}) ;
 		
+		$("[name='refundStatus']").click(function(){
+			var val = $(this).val() ;
+			if( val==1 ){
+				$(".refund-action").show();
+			}else{
+				$(".refund-action").hide();
+			}
+		}) ;
+		
+		
+		$(".refundConfirm").click(function(){
+			var json = $("#personForm").toJson() ;
+			if(window.confirm("确认已经退款完成?")){
+				$.dataservice("model:Warehouse.Ram.doRefundConfrim",json,function(result){
+						window.location.reload();
+				});
+			}
+		}) ;
+		
+		
 		//
 		var json = $("#personForm").toJson() ;
 		if(json.isReceive == 1){

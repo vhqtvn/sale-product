@@ -14,7 +14,12 @@ $(function(){
 	           		if(val==1) return "是" ;
 	           		return "否" ;
 	           	}},
-	           	{key:"MEMO",label:"备注",width:"30%"}
+	           	{key:"IS_REFUND",label:"是否重退款",width:"8%",format:function(val,record){
+	           		if(record.TYPE == 'cause') return "-" ;
+	           		if(val==1) return "是" ;
+	           		return "否" ;
+	           	}},
+	           	{key:"MEMO",label:"备注",width:"20%"}
 	         ],
 	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 			 limit:10,
