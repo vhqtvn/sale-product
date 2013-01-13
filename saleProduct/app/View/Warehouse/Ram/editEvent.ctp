@@ -37,6 +37,13 @@
 		if(!empty($eventId)){
 			$result = $SqlUtils->getObject("sql_ram_event_getById",array('id'=>$eventId) ) ;
 		}
+		
+		$orderId = $result['ORDER_ID'] ;
+		if(empty($result)){
+			$orderId = $eventId ;
+			$result = $SqlUtils->getObject("sql_ram_event_getByOrderId",array('orderId'=>$eventId) ) ;
+		}
+		
 		//1、提交审批 2、审批通过  3、重新编辑 
 		$defaultCode = "RMA-".date("Ymd")."-".date("His") ;
 		
@@ -53,10 +60,12 @@
 		$isAuditPass = $status== '2' ;
 		$isComplete = $status == '3' ;
 		
-		$orderId = $result['ORDER_ID'] ;
+		
 		$orders = null ;
+		$order = null ;
 		if(!empty($orderId)){
 			$orders = $SqlUtils->exeSql("sql_order_list",array('orderId'=>$orderId) ) ;
+			$order = $SqlUtils->formatObject($orders[0]) ;
 		}
 	?>
 </head>
@@ -114,14 +123,22 @@
 									<th>订单ID：</th><td><input data-validator="required" 
 										type="text" id="orderId"
 										<?php echo !$isInit?"readOnly":"" ;?>
-										value="<?php echo $result['ORDER_ID'];?>"/>
+										value="<?php if(empty($result['ORDER_ID'])){
+											echo $order['ORDER_ID'] ;
+										}else{
+											echo $result['ORDER_ID'] ;
+										};?>"/>
 										<button class="btn btn-order"
 										<?php echo !$isInit?"style='display:none;'":"" ;?>
 										>选择</button>
 									</td>
 									<th>订单系统货号：</th><td><input data-validator="required" type="text" id="orderNo"
 										<?php echo !$isInit?"readOnly":"" ;?>
-										value="<?php echo $result['ORDER_NO'];?>"/></td>
+										value="<?php if(empty($result['ORDER_NO'])){
+											echo $order['ORDER_NUMBER'] ;
+										}else{
+											echo $result['ORDER_NO'] ;
+										};?>"/></td>
 								</tr>
 								
 								<tr>
@@ -132,6 +149,7 @@
 										<?php
 											$causeCode = $result['CAUSE_CODE'];
 											$causes = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'cause')) ;
+											
 											foreach( $causes as $cause ){
 												$cause = $SqlUtils->formatObject($cause) ;
 												$selected = $cause['CODE'] == $causeCode?"selected":"" ;
@@ -148,9 +166,15 @@
 										<?php
 											
 											$causes = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'policy')) ;
+											$selectedPolicy = null ;
 											foreach( $causes as $cause ){
 												$cause = $SqlUtils->formatObject($cause) ;
 												$selected = $cause['CODE'] == $policyCode?"selected":"" ;
+												
+												if( $cause['CODE'] == $policyCode ){
+													$selectedPolicy = $cause ;
+												}
+												
 												echo "<option $selected  value='".$cause['CODE']."'>".$cause['NAME']."</option>" ;
 											}
 										?>
@@ -181,6 +205,27 @@
 										style="width:90%;height:40px;"></textarea>
 									</td>
 								</tr>
+								<?php if( $selectedPolicy['IS_REFUND'] == 1 ){?>
+								<tr>
+									<th>是否已经退款：</th><td  colspan=3>
+										是<input type="radio" name="refundStatus"
+										<?php  echo $result['REFUND_STATUS'] == 1?'checked':"" ?>
+										<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
+										 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
+										否<input type="radio" name="refundStatus"
+											<?php  echo $result['REFUND_STATUS'] == 0?'checked':"" ?>
+											<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
+										 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
+										 
+										 <?php  echo $result['REFUND_STATUS'] == 1?'<span class="alert alert-info">退款金额:'.$result['REFUND_VALUE'].'</span>' :"" ?>
+										 
+										 <span class="refund-action" style="display:none;">
+										 <input type="text" name="refundValue" placeHolder="请输入退款金额"/>
+										 <button class="btn btn-danger refundConfirm">确认</button>
+										 </span>
+									</td>
+								</tr>
+								<?php }?>
 								<tr>
 									<th>是否收到退货：</th><td  colspan=3>
 										是<input type="radio" name="isReceive"
@@ -191,7 +236,7 @@
 											<?php  echo $result['IS_RECEIVE'] == 0?'checked':"" ?>
 											<?php  echo $result['IS_RECEIVE'] == 1?' disabled':"" ?>
 										 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
-										<?php if($result['IN_STATUS'] == 1 ){?>
+										<?php if($result['IN_STATUS'] != 1 ){?>
 										<button class="btn disabled ram-in" disabled>RMA入库</button>
 										<button class="btn btn-success disabled ram-in complete" disabled>RMA完成入库</button>
 										<?php }else{
@@ -209,7 +254,7 @@
 											<table style="width:100%;">
 											<tr style="padding:0px;margin:0px;">
 												<?php 
-												$order = $SqlUtils->formatObject($orders[0]) ;
+												
 												$email =  $order['BUYER_EMAIL'] ;
 												$Customer = $SqlUtils->getObject("sql_saleuser_findByEmail",array("email"=>$email)) ;
 												$clz = $Customer['STATUS'] == 'danger'?"alert-danger":"" ;
