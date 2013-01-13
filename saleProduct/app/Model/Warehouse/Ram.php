@@ -2,6 +2,10 @@
 class Ram extends AppModel {
 	var $useTable = "sc_warehouse_in" ;
 	
+	public function doOrderRam($params){
+		$this->exeSql("sql_order_ram_status",$params ) ;
+	}
+	
 	public function doSaveOption($params){
 		$option = $this->getObject("sql_ram_options_getByCode",$params) ;
 		
@@ -18,6 +22,9 @@ class Ram extends AppModel {
 		}else{
 			$this->exeSql("sql_ram_event_update",$params) ;
 		}
+		//初始化
+		$params['rmaValue'] = 0 ;
+		$this->doOrderRam($params) ;
 	}
 	
 	public function doSaveAndAuditEvent($params){
@@ -25,9 +32,10 @@ class Ram extends AppModel {
 			$this->exeSql("sql_ram_event_insert",$params) ;
 		}else{
 			$this->exeSql("sql_ram_event_update",$params) ;
-			
 			$this->exeSql("sql_ram_event_updateStatus",$params) ;
 		}
+		$params['rmaValue'] = 1 ;
+		$this->doOrderRam($params) ;
 	}
 	
 	/**
@@ -39,6 +47,9 @@ class Ram extends AppModel {
 		
 		$trackMemo = "[审批通过]".$params['trackMemo'] ;
 		$params['trackMemo'] = $trackMemo ;
+		
+		$params['rmaValue'] = 2 ;
+		$this->doOrderRam($params) ;
 	}
 	
 	/**
@@ -52,11 +63,21 @@ class Ram extends AppModel {
 		$params['trackMemo'] = $trackMemo ;
 		
 		$this->exeSql("sql_ram_track_insert",$params) ;
+		
+		$params['rmaValue'] = 3 ;
+		$this->doOrderRam($params) ;
 	}
 	
 	public function doSaveTrack($params){
 		//保存跟踪意见
 		$this->exeSql("sql_ram_track_insert",$params) ;
+	}
+	
+	/**
+	 * 确认已经退款完成
+	 */
+	public function doRefundConfrim($params){
+		$this->exeSql("sql_ram_event_confirmRefund",$params) ;
 	}
 	
 	/**
@@ -67,23 +88,25 @@ class Ram extends AppModel {
 	}
 	
 	/**
-	 * 确认收到退货
+	 * 完成退货入库
 	 */
 	public function doCompleteRecevie($params){
-
 		//完成订单订单收货
 		$this->exeSql("sql_ram_event_completeRecieve",$params) ;
 		//订单重发
-		//$policyCode = $result['POLICY_CODE'];
-		//if(!empty($policyCode)){
-		//	$policy = $SqlUtils->getObject("sql_ram_options_getByCode",array('code'=>$policyCode) ) ;
-		//}
-		//更新订单状态为待重发货 302
-		$params['status'] = '302' ;
-		$this->exeSql("sql_order_redostatusUpdate",$params) ;
+		$policyCode = $params['policyCode'];
+		if(!empty($policyCode)){
+			
+			$policy = $this->getObject("sql_ram_options_getByCode",array('code'=>$policyCode) ) ;
+			if($policy['IS_RESEND'] == 1){ //需要从发货
+				$this->exeSql("sql_order_ram_UpdatePickStatus",$params) ;
+			}
+			/*
+			if($policy['IS_REFUND'] == 1){ //是否需要退款状态
+				$this->exeSql("sql_ram_event_UpdateReFundStatus",$params) ;
+			}*/
+		}
 	}
-	
-	
 	
 	/**
 	 * Ram入库
@@ -142,6 +165,64 @@ class Ram extends AppModel {
 	public function doDangerUser($params){
 		$params['status'] = 'danger' ;
 		$this->exeSql("sql_saleuser_updateStatusByEmail",$params) ;
+	}
+	
+	/**
+	 * 添加到RMA订单从订单管理
+	 */
+	public function addRamFromOrder($params){
+		$status = $params['status'] ;
+		$orders = $params['orders'] ;
+		$loginId = $params['loginId'] ;
+		$memo = $params['memo'] ;
+		$orders = explode(",",$orders) ;
+		$index = 0 ;
+		foreach( $orders as $order ){
+			$index++ ;
+			//sql_ram_event_insert
+			
+			$item = explode("|",$order) ;
+			$orderId = $item[0] ;
+			$orderItemId = $item[1] ;
+			if(empty($orderId)) continue ;
+			
+			$orders = $SqlUtils->exeSql("sql_order_list",array('orderId'=>$orderId) ) ;
+			$order = $SqlUtils->formatObject($orders[0]) ;
+			
+			$random = date("His")+$index ;
+			
+			$defaultCode = "RMA-".date("Ymd")."-".$random ;
+			
+			$sqlParams = array("code"=>$defaultCode, 
+					"orderId"=>$orderId, 
+					"orderNo"=>$order['ORDER_NUMBER'], 
+					"causeCode"=>'', 
+					"policyCode"=>'', 
+					"loginId"=>'', 
+					"status"=>'', //状态为空
+					"memo"=>$memo) ;
+			
+			//保存订单进RAM
+			$this->exeSql("sql_ram_event_insert",$sqlParams) ;
+			
+			//更新订单状态为
+			
+			
+			//更新订单状态为RMA状态
+			$sql = $this->getDbSql("sql_order_status_delete") ;
+			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'AUDIT_STATUS'=>$status,"AUDIT_MEMO"=>$memo)) ;
+			$this->query($sql) ;
+			
+			$sql = $this->getDbSql("sql_order_status_insert") ;
+			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'AUDIT_STATUS'=>$status,"AUDIT_MEMO"=>$memo)) ;
+			$this->query($sql) ;
+			
+			$sql = $this->getDbSql("sql_order_track_insert") ;
+			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=> $this->auditStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
+		
+			$this->query($sql) ;
+			
+		}
 	}
 	
 }
