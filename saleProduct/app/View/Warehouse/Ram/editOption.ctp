@@ -88,6 +88,18 @@
 									</td>
 								</tr>
 								
+								<tr id="resendRow" style="<?php echo $result['TYPE']=='policy'?"":"display:none;";?>" >
+									<th>是否需要重退款：</th>
+									<td  colspan=3>
+										是：<input 
+											<?php echo $result['IS_REFUND']=='1'?"checked":"";?>
+											type="radio" name="isRefund" value="1"/>
+										否：<input
+											<?php echo $result['IS_REFUND']!='1'?"checked":"";?>
+										type="radio" name="isRefund" value="0"/>
+									</td>
+								</tr>
+								
 								<tr>
 									<th>备注：</th><td  colspan=3>
 										<textarea name="memo"  style="width:90%;height:40px;"><?php echo $result['MEMO'];?></textarea>
