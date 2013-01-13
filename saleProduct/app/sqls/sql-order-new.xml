@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+   <!--已完成订单-->
+   <entry key="nsql_order_doneList">
+   		select sc_amazon_order.* ,sc_amazon_order_status.ID,
+			sc_amazon_order_status.AUDIT_STATUS, 
+			sc_amazon_order_status.AUDIT_MEMO, 
+			sc_amazon_order_status.REAUDIT_STATUS, 
+			sc_amazon_order_status.REAUDIT_MEMO, 
+			sc_amazon_order_status.PICK_STATUS,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL,
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    as IS_PACKAGE
+		  from  sc_amazon_order_status ,sc_amazon_order
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = sc_amazon_order.sku
+		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id
+		   and sc_amazon_order_status.pick_status = '10'
+		   {@ and sc_amazon_order_status.audit_status = '#status#'}
+		   {@ and sc_amazon_order_status.rma_status = '#rmaStatus#'}
+		   {@ and sc_amazon_order.order_id = '#orderId#'}
+		   {@ and sc_amazon_order.buyer_name = '#userName#'}
+		   {@ and sc_amazon_order.buyer_email = '#email#'}
+		   {@ and sc_amazon_order.sku = '#sku#'}
+		   {@ and sc_amazon_order.order_number = '#orderNumber#'}
+		   {@ and sc_amazon_order.account_id = '#accountId#'}
+		   {@ and sc_amazon_order.service_status = '#serviceStatus#'}
+		   order by sc_amazon_order.order_number
+   </entry>
+   
+   <!--更新拣货状态，有ram发起-->
+   <entry key="sql_order_ram_UpdatePickStatus">
+   		update sc_amazon_order_status
+   			 set RMA_STATUS = '1',pick_status = ''
+   			 where order_id = '{@#orderId#}'
+   </entry>
+   
+   
+</properties>

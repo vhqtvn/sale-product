@@ -19,14 +19,16 @@
 		NAME, 
 		TYPE, 
 		MEMO,
-		IS_RESEND
+		IS_RESEND,
+		IS_REFUND
 		)
 		VALUES
 		('{@#code#}', 
 		'{@#name#}', 
 		'{@#type#}', 
 		'{@#memo#}', 
-		'{@#isResend#}'
+		'{@#isResend#}', 
+		'{@#isRefund#}'
 		)
    </entry>
    
@@ -36,7 +38,8 @@
 			NAME = '{@#name#}' , 
 			TYPE = '{@#type#}' , 
 			MEMO = '{@#memo#}' ,
-			IS_RESEND = '{@#isResend#}'
+			IS_RESEND = '{@#isResend#}',
+			IS_REFUND = '{@#isRefund#}'
 			
 			WHERE
 			CODE = '{@#code#}'  
@@ -46,7 +49,13 @@
   		select * from sc_ram_event where id = '{@#id#}'
    </entry>
    
-   
+   <entry key="sql_ram_event_getByOrderId">
+  		SELECT t.* FROM (
+		SELECT s1.* FROM sc_ram_event s1
+			 where s1.order_id = '{@#orderId#}'
+		 ORDER BY create_time DESC 
+		) t LIMIT 0,1;
+   </entry>
 	
    <entry key="sql_ram_events_list">
   		SELECT s1.* ,
@@ -105,6 +114,17 @@
 			WHERE
 			ID = '{@#id#}'
    </entry>
+   
+   
+    <entry key="sql_ram_event_confirmRefund">
+   		UPDATE sc_ram_event 
+			SET
+			refund_status = '{@#refundStatus#}'
+			,refund_value = '{@#refundValue#}'
+			WHERE
+			ID = '{@#id#}'
+   </entry>
+   
    
    <entry key="sql_ram_event_updateStatus">
    		UPDATE sc_ram_event 

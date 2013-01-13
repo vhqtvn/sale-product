@@ -422,6 +422,10 @@
 			   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
 			   {@ and sc_amazon_order_status.pick_status not in ('9','10','11','12') and '#status#' = '#status#'}
 			   {@ and sc_amazon_order_status.audit_status = '#status#'}
+			   {@ and sc_amazon_order_status.rma_status = 1 
+			   		and sc_amazon_order_status.pick_status not in ('9','10','11','12')
+			   		and '#rmaValue#' = '#rmaValue#'
+			   		}
 			  {@ and sc_amazon_order.order_id = '#orderId#'}
 			  {@ and sc_amazon_order.buyer_name = '#userName#'}
 			  {@ and sc_amazon_order.buyer_email = '#email#'}
