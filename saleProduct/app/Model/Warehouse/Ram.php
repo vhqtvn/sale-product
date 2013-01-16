@@ -81,6 +81,14 @@ class Ram extends AppModel {
 	}
 	
 	/**
+	 * 处理完成
+	 */
+	public function doFinish($params){
+		$params['status'] = 3 ;
+		$this->exeSql("sql_ram_event_updateStatus",$params) ;
+	}
+	
+	/**
 	 * 确认收到退货
 	 */
 	public function doUpdateRecevie($params){
@@ -113,12 +121,30 @@ class Ram extends AppModel {
 	 */
 	public function doSaveRam($params){
 		try{
+			$fileName = $_FILES['image']["name"] ;
+			if( !empty($fileName) ){
+				$myfile   = $_FILES['image']['tmp_name'] ;
+				$path = dirname(dirname(dirname(dirname(__FILE__))))."/images/bad_product/";
 			
-		//保存到RMA入库表
-		$this->exeSql("sql_warehouse_rma_insert",$params) ;
-		
-		//更新库存
-		$this->doRMAIn($params , 'in') ;
+				if( !file_exists($path) ) {
+					$this->creatdir($path) ;
+				}
+				$fileName = date('YmdHis').'_'.$fileName ;
+				$fileUrl = $path.$fileName;
+				move_uploaded_file($myfile,$fileUrl) ;
+				
+				$params['image'] = "/images/bad_product/".$fileName;
+			}
+			
+			if( empty( $params['ramId'] ) ){
+				$params['ramId'] = 0 ;
+			}
+	
+			//保存到RMA入库表
+			$this->exeSql("sql_warehouse_rma_insert",$params) ;
+			
+			//更新库存
+			$this->doRMAIn($params , 'in') ;
 		}catch(Exception $e){
 			print_r( $e ) ;
 		}

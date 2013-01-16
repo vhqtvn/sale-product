@@ -33,11 +33,19 @@
 		if(!empty($orderId)){
 			$orders = $SqlUtils->exeSql("sql_order_list",array('orderId'=>$orderId) ) ;
 		}
+		
+		$rma = null ;
+		if(!empty($ramId)){
+			$rma = $SqlUtils->getObject("sql_ram_event_getById",array('id'=>$ramId) ) ;
+		}
+		
+		if($orderId == 'bad'){//残品入库
+			
+		}
+		
+		
 	?>
 	
-	<script>
-	
-   </script>
 </head>
 
 <body class="container-popup">
@@ -48,24 +56,29 @@
 			<h2>入库单信息</h2>
 		</div>
 		<div class="container-fluid">
-
-	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	        	<input type="hidden" id="id" value="<?php echo $result['ID'];?>"/>
-	        	<input type="hidden" id="ramId" value="<?php echo $ramId;?>"/>
+	        <form id="personForm" action="/saleProduct/index.php/page/model/Warehouse.Ram.doSaveRam"
+	          								method="post" data-widget="validator" target="form-target"
+	         								enctype="multipart/form-data" class="form-horizontal" >
+	        	<input type="hidden" name="id" value="<?php echo $result['ID'];?>"/>
+	        	<input type="hidden" name="ramId" value="<?php echo $ramId;?>"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
-						<table class="form-table" >
+						<table class="form-table " >
 							<tbody>										   
 								<tr>
-									<th>货品：</th>
+									<th> 货品：<br/>
+									<?php if( !empty($orders) ){ ?>
+									<button class="btn btn-other">其他货品</button>
+									<?php } ?>
+									</th>
 									<td colspan=3>
 									<?php
 										if( !empty($orders) ){
 										?>
-										<table>
+										<table class="select-product-table">
 										<tr style="padding:0px;margin:0px;">
 											<th style="padding:0px;text-align:center;">选择</th>
 											<th style="padding:0px;text-align:center;">货品SKU</th>
@@ -94,26 +107,34 @@
 										}
 										?>
 									</table>
-										<?
-										}else{
-											?>
-											<input type="hidden" data-validator="required" id="realProductId" 
+										<? }?>
+										<span class="select-product hide">
+											<input type="hidden" id="realProductId"  name="realProductId" 
 											value=""/>
-											<input type="text" data-validator="required" id="realProductName" 
+											<input type="text" id="realProductName" name="realProductName" 
 											value=""/>
 											<button class="btn btn-select-product">选择</button>
-											<?php
-										}
-									?>
-									
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<th>RMA编码：</th>
+									<td colspan=3>
+										<input type="text" class="alert" data-validator="required" name="rmaCode" value="<?php echo $rma['CODE'];?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>质量：</th>
 									<td colspan=3>
-										良品&nbsp;<input type="radio" data-validator="required" name="quality" value="good"/>
+										良品&nbsp;<input type="radio" 
+										<?php echo $orderId=='good'?"checked":"" ?>
+										<?php echo $orderId=='bad'?"disabled":"" ?>
+										data-validator="required" name="quality" value="good"/>
 										&nbsp;&nbsp;&nbsp;&nbsp;
-										残品&nbsp;<input type="radio" data-validator="required" name="quality" value="bad"/>
+										残品&nbsp;<input type="radio"
+										<?php echo $orderId=='bad'?"checked":"" ?>
+										<?php echo $orderId=='good'?"disabled":"" ?>
+										 data-validator="required" name="quality" value="bad"/>
 									</td>
 								</tr>
 								<tr>
@@ -123,11 +144,17 @@
 									</td>
 								</tr>
 								<tr>
+									<th>货品图片：</th>
+									<td colspan=3>
+										<input type="file"  name="image" value=""/>
+									</td>
+								</tr>
+								<tr>
 									<th>目标仓库：</th>
 									<td colspan=3>
-									<input data-validator="required" type="hidden" id="warehouseId" 
+									<input data-validator="required" type="hidden" id="warehouseId"  name="warehouseId"
 										value=""/>
-									<input type="text" data-validator="required" id="warehouseName" readonly
+									<input type="text" data-validator="required" id="warehouseName" name="warehouseName" readonly
 										value=""/>
 									<button class="btn btn-warehouse">选择</button>
 									</td>
@@ -145,7 +172,6 @@
                     <div class="panel-foot">
 						<div class="form-actions">
 							<button type="button" class="btn btn-primary btn-save">保存</button>
-							<button type="button" class="btn btn-primary btn-save-continue">保存继续入库</button>
 						</div>
 					</div>
 				</div>
@@ -153,5 +179,6 @@
 		</div>
 	</div>
 	<div class="grid-content-rma" id="tab-rma" style="margin-top:5px;zoom:1;"></div>
+	<iframe style="width:0; height:0; border:0;display:none;" name="form-target"></iframe>
 </body>
 </html>

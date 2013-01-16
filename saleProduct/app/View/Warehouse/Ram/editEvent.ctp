@@ -102,6 +102,7 @@
 								}else if($isAuditPass){//审批
 								?>
 								<button type="button" class="btn btn-primary btn-save-track">保存轨迹</button>
+								<button type="button" class="btn btn-primary btn-finish">完成处理</button>
 								<?php
 								}else if($isComplete){//审批
 								}
@@ -111,7 +112,7 @@
 							</caption>
 							<tbody>	
 								<tr>
-									<th>编码：</th><td  colspan=3><input data-validator="required"
+									<th>RMA编码：</th><td  colspan=3><input data-validator="required"
 										<?php echo !$isInit?"readOnly":"" ;?>
 										 type="text" id="code"
 										value="<?php  
@@ -178,7 +179,6 @@
 												echo "<option $selected  value='".$cause['CODE']."'>".$cause['NAME']."</option>" ;
 											}
 										?>
-											<option value="other">其他决策</option>
 										</select>
 									</td>
 								</tr>

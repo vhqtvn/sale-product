@@ -41,7 +41,7 @@
 		<div class="container-fluid">
 
 	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	        <input type="hidden" id="id" value="<?php echo $result['ID'];?>"/>
+	      
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->

@@ -138,6 +138,14 @@ $(function(){
 			}
 		}) ;
 		
+		$(".btn-finish").click(function(){
+			var json = $("#personForm").toJson() ;
+			if(window.confirm("确认该RMA事件已经处理完成?")){
+				$.dataservice("model:Warehouse.Ram.doFinish",json,function(result){
+						window.location.reload();
+				});
+			}
+		}) ;
 		
 		//
 		var json = $("#personForm").toJson() ;
@@ -251,6 +259,13 @@ $(function(){
 		           	{align:"center",key:"QUANTITY",label:"数量",width:"50" },
 		           	//{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"50",format:function(val,record){
+		           		if(val){
+		           			val = val.replace(/%/g,'%25') ;
+		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           		}
+		           		return "" ;
+		           	}},
+		           	{align:"center",key:"IMAGE",label:"残品图片",width:"50",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
 		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;

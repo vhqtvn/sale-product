@@ -102,46 +102,47 @@ class PageController extends AppController {
 	
 	public function model($command,$arg1 = null ,$arg2 = null , $arg3 = null , $arg4 = null){
 		
-		$rs = str_replace(".","/",$command) ;
+			$rs = str_replace(".","/",$command) ;
+			
+			$user =  $this->getCookUser() ;
+	    	$params = $this->request->data  ;
+	    	$params['loginId'] = $user['LOGIN_ID'] ;
+	    	$params['arg1'] = $arg1 ;
+			$params['arg2'] = $arg2 ;
+			$params['arg3'] = $arg3 ;
+			$params['arg4'] = $arg4 ;
 		
-		$user =  $this->getCookUser() ;
-    	$params = $this->request->data  ;
-    	$params['loginId'] = $user['LOGIN_ID'] ;
-    	$params['arg1'] = $arg1 ;
-		$params['arg2'] = $arg2 ;
-		$params['arg3'] = $arg3 ;
-		$params['arg4'] = $arg4 ;
+			$as = explode(".",$command) ;
+			$clsName = "" ;
+			$method  = "" ;
+			$simpleClassName = "" ;
+	 		if( count($as)<=2 ){
+				$simpleClassName = $as[0] ;
+				$clsName = $as[0] ;
+				$method = $as[1] ;
+			}else{
+				$clsName = $as[0]."/".$as[1] ;
+				$simpleClassName = $as[1] ;
+				$method = $as[2] ;
+			}
+			
+			App::import("Model",$clsName) ;
+		
+			$r = new ReflectionClass($simpleClassName);
+			
+			$instance = $r->newInstance(); 
+			$method = $r->getMethod($method) ;
+			
+			$instance->request = $this->request ;
+			$instance->response = $this->response ;
 	
-		$as = explode(".",$command) ;
-		$clsName = "" ;
-		$method  = "" ;
-		$simpleClassName = "" ;
- 		if( count($as)<=2 ){
-			$simpleClassName = $as[0] ;
-			$clsName = $as[0] ;
-			$method = $as[1] ;
-		}else{
-			$clsName = $as[0]."/".$as[1] ;
-			$simpleClassName = $as[1] ;
-			$method = $as[2] ;
-		}
-		
-		App::import("Model",$clsName) ;
+			$result = $method->invoke($instance, $params,$user); 
+			
+			
+		    $this->set("result",$result) ;
+			$this->set("params",$params) ;
+			$this->set("user",$user) ;
 	
-		$r = new ReflectionClass($simpleClassName);
-		
-		$instance = $r->newInstance(); 
-		$method = $r->getMethod($method) ;
-		
-		$instance->request = $this->request ;
-		$instance->response = $this->response ;
-
-		$result = $method->invoke($instance, $params,$user); 
-		
-		
-	    $this->set("result",$result) ;
-		$this->set("params",$params) ;
-		$this->set("user",$user) ;
 		
 		$this->layout = "../$rs" ;
 

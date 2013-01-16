@@ -33,7 +33,6 @@
 		   {@ and sc_amazon_order.buyer_email = '#email#'}
 		   {@ and sc_amazon_order.sku = '#sku#'}
 		   {@ and sc_amazon_order.order_number = '#orderNumber#'}
-		   {@ and sc_amazon_order.account_id = '#accountId#'}
 		   {@ and sc_amazon_order.service_status = '#serviceStatus#'}
 		   order by sc_amazon_order.order_number
    </entry>

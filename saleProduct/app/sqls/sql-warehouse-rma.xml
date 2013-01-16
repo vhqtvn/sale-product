@@ -197,6 +197,7 @@
   		 and s1.real_product_id = s2.id
   		 {@ and s2.id = '#id#'}
   		  and s1.ram_id = '{@#rmaId#}'
+  		  
   		  order by create_time desc
    </entry>
    
@@ -205,25 +206,29 @@
 	(
 	TYPE,
 	RAM_ID, 
+	RAM_CODE,
 	QUALITY, 
 	QUANTITY, 
 	REAL_PRODUCT_ID, 
 	CREATOR, 
 	CREATE_TIME, 
 	MEMO, 
-	WAREHOUSE_ID
+	WAREHOUSE_ID,
+	IMAGE
 	)
 	VALUES
 	(
 	'in', 
 	'{@#ramId#}', 
+	'{@#rmaCode#}', 
 	'{@#quality#}', 
 	'{@#quantity#}', 
 	'{@#realProductId#}', 
 	'{@#loginId#}', 
 	NOW(), 
 	'{@#memo#}', 
-	'{@#warehouseId#}'
+	'{@#warehouseId#}', 
+	'{@#image#}'
 	)
    </entry>
 </properties>

@@ -59,6 +59,7 @@
 						<th></th>
 						<td>
 							<button class="btn btn-primary query" >查询</button>
+							<button class="btn btn-primary bad-in" >残品入库</button>
 						</td>
 					</tr>						
 				</table>	

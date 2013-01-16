@@ -7,34 +7,16 @@
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					if( window.confirm("确认保存信息准确吗？") ){
 						isAdd = true ;
+						$("#personForm").submit() ;
+						return ;
 						
-						var json = $("#personForm").toJson() ;
-						$.dataservice("model:Warehouse.Ram.doSaveRam",json,function(result){
-							window.opener.openCallback('edit') ;
-							window.close();
-						});
 					}
 					
 				};
 				return false ;
 			}) ;
 			
-			$(".btn-save-continue").click(function(){
-				if(isAdd) return ;
-				if( !$.validation.validate('#personForm').errorInfo ) {
-					if( window.confirm("确认保存信息准确吗？") ){
-						isAdd = true ;
-						
-						var json = $("#personForm").toJson() ;
-						$.dataservice("model:Warehouse.Ram.doSaveRam",json,function(result){
-							window.opener.openCallback('edit') ;
-							window.location.reload();
-						});
-					}
-					
-				};
-				return false ;
-			}) ;
+			
 	
 		var warehouseGridSelect = {
 				title:'仓库选择',
@@ -101,8 +83,31 @@
 		$("[name='realProductId']").click(function(){
 			var sku = $(this).parents("tr:first").find("[key='realSku']").text() ;
 			sku = $.trim(sku) ;
-			//$(".grid-content-rma").find("")
+			//$(".grid-content-rma").find("") ;
 		}) ;
+		
+		$(".btn-other").toggle(function(){
+			$(".select-product").show();
+			$(".select-product-table").hide();
+			$(".select-product-table").find(":input").attr("disabled","disabled").removeAttr("data-validator");
+			$(".select-product").find(":input").removeAttr("disabled").attr("data-validator","required");
+			return false;
+		},function(){
+			$(".select-product").hide();
+			$(".select-product-table").show();
+			$(".select-product-table").find(":input").removeAttr("disabled").attr("data-validator","required");
+			$(".select-product").find(":input").attr("disabled","disabled").removeAttr("data-validator");
+			return false;
+		}) ;
+		
+		if( $(".select-product-table").length ){
+			$(".select-product").hide() ;
+			$(".select-product-table").find(":input").removeAttr("disabled").attr("data-validator","required");
+			$(".select-product").find(":input").attr("disabled","disabled").removeAttr("data-validator");
+		}else{
+			$(".select-product").show();
+			$(".select-product").find(":input").removeAttr("disabled").attr("data-validator","required");
+		}
 		
 		
 		$(".grid-content-rma").llygrid({
@@ -120,8 +125,15 @@
 		           		}
 		           		return "" ;
 		           	}},
+		           	{align:"center",key:"IMAGE",label:"残品图片",width:"50",format:function(val,record){
+		           		if(val){
+		           			val = val.replace(/%/g,'%25') ;
+		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           		}
+		           		return "" ;
+		           	}},
 		           	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"130" },
-		           	{align:"center",key:"MEMO",label:"备注",width:"230"}
+		           	{align:"center",key:"MEMO",label:"备注",width:"200"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
@@ -131,7 +143,7 @@
 				 },
 				 title:"入库记录",
 				 indexColumn:false,
-				 querys:{sqlId:"sql_warehouse_rmaEdit_lists",rmaId:$("#ramId").val()},
+				 querys:{sqlId:"sql_warehouse_rmaEdit_lists",rmaId:$("[name='ramId']").val()},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
 				 	$(".grid-content-active").llygrid("reload",{planId:record.ID});

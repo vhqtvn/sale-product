@@ -24,9 +24,18 @@ $(function(){
 	$(".grid-content").llygrid({
 		columns:[
 			{key:"CODE",label:"编辑",width:"5%",format:function(val,record){
-				var html = [] ;
-				html.push("<a href='#' class='edit btn' val='"+val+"'>修改</a>&nbsp;&nbsp;") ;
-				return html.join("") ;
+				var status = record.STATUS ;
+				
+				if( status == 0 ){
+					return "<a href='#' class='edit btn' val='"+val+"'>修改</a>&nbsp;&nbsp;" ;
+				}else if(status == 1){
+					return "<a href='#' class='edit btn' val='"+val+"'>审批</a>&nbsp;&nbsp;"
+				}else if(status == 2){
+					return "<a href='#' class='edit btn' val='"+val+"'>处理</a>&nbsp;&nbsp;"
+				}else if(status == 3){
+					return "<a href='#' class='edit btn' val='"+val+"'>查看</a>&nbsp;&nbsp;"
+				}
+				
 			}},
 			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"center",format:{type:"json",content:{'0':"编辑中",1:"待审批",2:"审批完成",3:"处理完成"}}},
 			{key:"CODE",label:"编号",width:"14%",forzen:false,align:"center"},
