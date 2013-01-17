@@ -178,7 +178,16 @@ function formatGridData(data){
 						}
 						return "" ;
 					}},
-					{align:"right",key:"QUANTITY",label:"待拣数量", width:"30"},
+					{align:"right",key:"QUANTITY",label:"待拣数量", width:"30",format:function(val,record){
+						if(record.RMA_STATUS==1 || record.RMA_VALUE==10){
+			        		return record.RMA_RESHIP ;
+			        	}
+			        	return val ;
+					},render:function(record){
+							if(record.RMA_STATUS==1 || record.RMA_VALUE==10){
+								$(this).find("td[key='QUANTITY']").css("background","red") ;
+							}
+						}},
 					{align:"right",key:"PICKED_QUANTITY",label:"已拣数量", width:"30"}
 		         ],
 		        // 序号、产品SKU、名称、图片，位置、数量，完成状态，备注信息。拣货人

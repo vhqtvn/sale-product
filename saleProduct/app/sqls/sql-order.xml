@@ -342,6 +342,8 @@
 			sc_amazon_order_status.REAUDIT_STATUS, 
 			sc_amazon_order_status.REAUDIT_MEMO, 
 			sc_amazon_order_status.PICK_STATUS,
+			sc_amazon_order_status.RMA_STATUS,
+			sc_amazon_order_status.RMA_VALUE,
 			sc_amazon_account_product.ASIN,
 			sc_amazon_account_product.LOCAL_URL,
 			sc_real_product.REAL_SKU,
@@ -364,10 +366,18 @@
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku
 		  LEFT JOIN sc_real_product_rel
 		  ON sc_amazon_order.sku = sc_real_product_rel.sku
+		  and sc_amazon_order.account_id = sc_real_product_rel.account_id
 		  LEFT JOIN sc_real_product
 		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
 		where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
 		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
+		   and ( 
+		   	( sc_amazon_order_status.RMA_STATUS = 1 and sc_amazon_order_status.RMA_VALUE = 10 
+		   		and sc_amazon_order.RMA_RESHIP <> '' and sc_amazon_order.RMA_RESHIP <> '0')
+		   	or ( sc_amazon_order_status.RMA_STATUS is null || sc_amazon_order_status.RMA_STATUS = 0 
+		   		|| sc_amazon_order_status.RMA_STATUS = ''
+		   	 )
+		   )
 		  {@ and sc_amazon_order.order_id = '#orderId#'}
 		  {@ and sc_amazon_order.buyer_name = '#userName#'}
 		  {@ and sc_amazon_order.buyer_email = '#email#'}
@@ -381,7 +391,7 @@
 		  		 and sc_amazon_picked_order.order_id = sc_amazon_order.order_id
 		  		 and sc_amazon_picked_order.order_item_id = sc_amazon_order.order_item_id
 		  )}
-		  
+		  order by sc_amazon_order.ORDER_NUMBER 
 		 ]]>
     </entry>
     
@@ -416,6 +426,7 @@
 			  on sc_amazon_account_product.sku = sc_amazon_order.sku
 			  LEFT JOIN sc_real_product_rel
 			  ON sc_amazon_order.sku = sc_real_product_rel.sku
+			  and sc_amazon_order.account_id = sc_real_product_rel.account_id
 			  LEFT JOIN sc_real_product
 			  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
 			where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
@@ -425,13 +436,15 @@
 			   {@ and sc_amazon_order_status.rma_status = 1 
 			   		and sc_amazon_order_status.pick_status not in ('9','10','11','12')
 			   		and '#rmaValue#' = '#rmaValue#'
-			   		}
+			   		and ( sc_amazon_order.rma_reship is not null and sc_amazon_order.rma_reship >= 1 )
+			   }
+			  {@ and ( sc_amazon_order_status.rma_status is null or sc_amazon_order_status.rma_status  != 1 ) and '#unRmaValue#' = '#unRmaValue#'}
 			  {@ and sc_amazon_order.order_id = '#orderId#'}
 			  {@ and sc_amazon_order.buyer_name = '#userName#'}
 			  {@ and sc_amazon_order.buyer_email = '#email#'}
 			  {@ and sc_amazon_order.sku = '#sku#'}
 			  {@ and sc_amazon_order.order_number = '#orderNumber#'}
-		   {@ and sc_amazon_order.account_id = '#accountId#'}
+		   	  {@ and sc_amazon_order.account_id = '#accountId#'}
 			  {@ and sc_amazon_order_status.pick_status in ('9','10','11','12') and   '#pickStatus#'  = '#pickStatus#' }
 			  {@ and exists ( 
 			  		select 1 from sc_amazon_picked_order where
@@ -474,12 +487,14 @@
 			  on sc_amazon_account_product.sku = sc_amazon_order.sku
 			  LEFT JOIN sc_real_product_rel
 			  ON sc_amazon_order.sku = sc_real_product_rel.sku
+			  and sc_amazon_order.account_id = sc_real_product_rel.account_id
 			  LEFT JOIN sc_real_product
 			  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
 			where sc_amazon_order_status.order_id = sc_amazon_order.order_id and
 			   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id 
 			    and sc_amazon_order_status.pick_status not in ('9','10','11','12')  
 			    and sc_amazon_order_status.audit_status in ('5','6','7')
+			    {@ and ( sc_amazon_order_status.rma_status  is null or sc_amazon_order_status.rma_status  != 1 ) and '#unRmaValue#' = '#unRmaValue#'}
 			   {@ and sc_amazon_order.order_id = '#orderId#'}
 			   {@ and sc_amazon_order.buyer_name = '#userName#'}
 			   {@ and sc_amazon_order.buyer_email = '#email#'}
@@ -510,7 +525,10 @@
 		       t.NAME,
 		       t.ASIN,
 		       t.LOCAL_URL,
-		       t.QUANTITY_TO_SHIP QUANTITY
+		       t.QUANTITY_TO_SHIP QUANTITY,
+		       t.RMA_STATUS,
+			   t.RMA_VALUE,
+			   t.RMA_RESHIP
            FROM (
            
 				SELECT
@@ -530,7 +548,10 @@
 				       	THEN s2.PRODUCT_NAME ELSE s4.NAME END ) AS NAME,
 				       '' AS ASIN,
 				       '' AS LOCAL_URL,
-				       1 AS ITEM_COUNT
+				       1 AS ITEM_COUNT,
+				       s1.RMA_STATUS,
+				       s1.RMA_VALUE,
+				       s2.RMA_RESHIP
 				  FROM  sc_amazon_order_status s1
 					,sc_amazon_order s2
 					,sc_real_product_rel s3
@@ -538,6 +559,7 @@
 				WHERE 
 				   s1.order_id = s2.order_id 
 				   AND s1.pick_status = '9'
+				   and s3.account_id = s2.account_id
 				   AND s1.order_item_id = s2.order_item_id
 				   AND s2.sku = s3.sku
 				   AND s4.id = s3.real_id
@@ -561,7 +583,10 @@
 				       	THEN s2.PRODUCT_NAME ELSE s6.NAME END ) AS NAME,
 				       '' AS ASIN,
 				       '' AS LOCAL_URL,
-				       s5.QUANTITY AS ITEM_COUNT
+				       s5.QUANTITY AS ITEM_COUNT,
+				       s1.RMA_STATUS,
+				       s1.RMA_VALUE,
+				       (s2.RMA_RESHIP*s5.QUANTITY) AS RMA_RESHIP
 				  FROM  sc_amazon_order_status s1
 					,sc_amazon_order s2
 					,sc_real_product_rel s3
@@ -571,6 +596,7 @@
 				WHERE 
 				   s1.order_id = s2.order_id 
 				   AND s1.pick_status = '9'
+				   and s3.account_id = s2.account_id
 				   AND s1.order_item_id = s2.order_item_id
 				   AND s2.sku = s3.sku
 				   AND s4.id = s3.real_id
@@ -625,6 +651,7 @@
 		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
 		  LEFT JOIN sc_real_product_rel
 		  ON sc_amazon_order.sku = sc_real_product_rel.sku
+		  and sc_amazon_order.account_id = sc_real_product_rel.account_id
 		  LEFT JOIN sc_real_product
 		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
 		WHERE sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
@@ -647,7 +674,10 @@
 		       t.ASIN,
 		       t.MEMO,
 		       t.LOCAL_URL,
-		       SUM( t.QUANTITY_TO_SHIP * t.ITEM_COUNT ) AS QUANTITY
+		       SUM( t.QUANTITY_TO_SHIP * t.ITEM_COUNT ) AS QUANTITY,
+		       t.RMA_STATUS,
+			   t.RMA_VALUE,
+		       SUM( RMA_RESHIP * t.ITEM_COUNT ) AS RMA_QUANTITY
            FROM (
     
 		SELECT  s2.SKU ,
@@ -663,7 +693,10 @@
 		       	THEN s2.PRODUCT_NAME ELSE s4.NAME END ) AS NAME,
 		       '' AS ASIN,
 		       '' AS LOCAL_URL,
-		       1 AS ITEM_COUNT
+		       1 AS ITEM_COUNT,
+		       s1.RMA_STATUS,
+			   s1.RMA_VALUE,
+			  s2.RMA_RESHIP 
 		  FROM  sc_amazon_order_status s1
 			,sc_amazon_order s2
 			,sc_real_product_rel s3
@@ -671,6 +704,7 @@
 		WHERE 
 		   s1.order_id = s2.order_id 
 		   AND s1.pick_status = '9'
+		   and s3.account_id = s2.account_id
 		   AND s1.order_item_id = s2.order_item_id
 		   AND s2.sku = s3.sku
 		   AND s4.id = s3.real_id
@@ -696,7 +730,10 @@
 		       	THEN s2.PRODUCT_NAME ELSE s6.NAME END ) AS NAME,
 		       '' AS ASIN,
 		       '' AS LOCAL_URL,
-		       s5.QUANTITY AS ITEM_COUNT
+		       s5.QUANTITY AS ITEM_COUNT,
+		       s1.RMA_STATUS,
+			   s1.RMA_VALUE,
+			  s2.RMA_RESHIP 
 		  FROM  sc_amazon_order_status s1
 			,sc_amazon_order s2
 			,sc_real_product_rel s3
@@ -706,6 +743,7 @@
 		WHERE 
 		   s1.order_id = s2.order_id 
 		   AND s1.pick_status = '9'
+		   and s3.account_id = s2.account_id
 		   AND s1.order_item_id = s2.order_item_id
 		   AND s2.sku = s3.sku
 		   AND s4.id = s3.real_id
@@ -767,6 +805,7 @@
 		   AND s1.pick_status = '9'
 		   AND s1.order_item_id = s2.order_item_id
 		   AND s2.sku = s3.sku
+		   and s3.account_id = s2.account_id
 		   AND s4.id = s3.real_id
 		   AND s4.real_sku = s3.real_sku
 		   AND s5.picked_id = '{@#pickId#}'

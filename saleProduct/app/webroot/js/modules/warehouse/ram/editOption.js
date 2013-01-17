@@ -26,9 +26,9 @@
    		   $("[name='type']").click(function(){
    		   		var val = $(this).val() ;
    		   		if(val == 'cause'){
-   		   			$("#resendRow").hide();
+   		   			$(".resendRow").hide();
    		   		}else{
-   		   			$("#resendRow").show();
+   		   			$(".resendRow").show();
    		   		}
    		   });
    }) ;

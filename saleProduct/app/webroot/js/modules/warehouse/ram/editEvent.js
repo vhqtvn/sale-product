@@ -217,7 +217,8 @@ $(function(){
 			var tab = $('#tabs-default').tabs( {//$this->layout="index";
 				tabs:[
 					{label:'轨迹',content:"tab-track"},
-					{label:'RMA入库',content:"tab-rma"}
+					{label:'RMA入库',content:"tab-rma"},
+					{label:'关联RMA',content:"tab-rma-rel"}
 				] ,
 				select:function(event,ui){
 					var index = ui.index ;
@@ -225,6 +226,8 @@ $(function(){
 						$(".grid-content-track").llygrid("reload") ;
 					}else if(index==1){
 						$(".grid-content-rma").llygrid("reload") ;
+					}else if(index==2){
+						$(".grid-content-rma-rel").llygrid("reload") ;
 					}
 				}
 			} ) ;
@@ -246,7 +249,6 @@ $(function(){
 				 querys:{sqlId:"sql_ram_track_list",id:$("#id").val()},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
-				 	$(".grid-content-active").llygrid("reload",{planId:record.ID});
 				 }
 			}) ;
 			
@@ -286,10 +288,90 @@ $(function(){
 				 querys:{sqlId:"sql_warehouse_rmaEdit_lists",rmaId:$("#id").val()},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
-				 	$(".grid-content-active").llygrid("reload",{planId:record.ID});
+				 }
+			}) ;
+			
+			$(".grid-content-rma-rel").llygrid({
+				columns:[
+					{key:"CODE",label:"编辑",width:"50",format:function(val,record){
+						var status = record.STATUS ;
+						
+						if( status == 0 ){
+							return "<a href='#' class='edit btn' val='"+val+"'>修改</a>&nbsp;&nbsp;" ;
+						}else if(status == 1){
+							return "<a href='#' class='edit btn' val='"+val+"'>审批</a>&nbsp;&nbsp;"
+						}else if(status == 2){
+							return "<a href='#' class='edit btn' val='"+val+"'>处理</a>&nbsp;&nbsp;"
+						}else if(status == 3){
+							return "<a href='#' class='edit btn' val='"+val+"'>查看</a>&nbsp;&nbsp;"
+						}
+						
+					}},
+					{key:"STATUS",label:"状态",width:"50",forzen:false,align:"center",format:{type:"json",content:{'0':"编辑中",1:"待审批",2:"审批完成",3:"处理完成"}}},
+					{key:"CODE",label:"编号",width:"80",forzen:false,align:"center"},
+					{key:"ORDER_ID",label:"订单ID",width:"100",forzen:false,align:"center"},
+					{key:"ORDER_NO",label:"系统货号",width:"100",forzen:false,align:"center"},
+					{key:"REAL_SKU",label:"货品SKU",group:"货品",width:"80"},
+					{key:"IMAGE_URL",label:"图片",group:"货品",width:"40",format:{type:'func',funcName:"renderGridImg"}},
+		           	{key:"CAUSE_NAME",label:"原因",width:"100",align:"left"},
+		           	{key:"POLICY_NAME",label:"决策",width:"100",align:"left"},
+		           	{key:"MEMO",label:"备注",width:"100",align:"left"}
+		         ],
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+				 limit:10,
+				 pageSizes:[5,10,20,30],
+				 height:function(){
+				 	return 130 ;
+				 },
+				 title:"RAM事件列表",
+				 indexColumn:false,
+				 querys:{sqlId:"sql_ram_events_list_rel",orderId:($("#orderId").val()||"--"),id:$("#id").val()},
+				 loadMsg:"数据加载中，请稍候......",
+				 rowClick:function(row,record){
+				 	//$(".grid-content-active").llygrid("reload",{planId:record.ID});
 				 }
 			}) ;
 		}
+		
+		///////////////////////////保存重发货配置
+		$(".save-reship").click(function(){
+			var result = [] ;
+			$("[name='rmaReship']").each(function(){
+				var me = $(this) ;
+				var rmaReship = $(this).val() ;
+				var orderId   = $(this).attr("orderId") ;
+				var orderItemId = $(this).attr("orderItemId") ;
+				var params = {rmaReship:rmaReship,orderId:orderId,orderItemId:orderItemId} ;
+				result.push(params) ;
+			}) ;
+			$.dataservice("model:Warehouse.Ram.saveReship",{result:$.json.encode(result),resendStatus:0,id:$("#id").val()},function(result){
+				window.location.reload();
+			});
+			return false ;
+		}) ;
+		
+		$(".save-reship-finish").click(function(){
+			if(window.confirm("确认重发货货品数量已经设置完成?")){
+				var result = [] ;
+				$("[name='rmaReship']").each(function(){
+					var me = $(this) ;
+					var rmaReship = $(this).val() ;
+					var orderId   = $(this).attr("orderId") ;
+					var orderItemId = $(this).attr("orderItemId") ;
+					var params = {rmaReship:rmaReship,orderId:orderId,orderItemId:orderItemId} ;
+					result.push(params) ;
+				}) ;
+				$.dataservice("model:Warehouse.Ram.saveReship",{
+					result:$.json.encode(result),
+					resendStatus:1,
+					id:$("#id").val(),
+					orderId:$("#orderId").val()
+					},function(result){
+					window.location.reload();
+				});
+				return false ;
+			}
+		}) ;
 			
 		window.openCallback = function(){
 			$(".grid-content-rma").llygrid("reload");

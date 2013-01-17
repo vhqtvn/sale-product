@@ -76,7 +76,7 @@
 									</td>
 								</tr>
 								
-								<tr id="resendRow" style="<?php echo $result['TYPE']=='policy'?"":"display:none;";?>" >
+								<tr class="resendRow" style="<?php echo $result['TYPE']=='policy'?"":"display:none;";?>" >
 									<th>是否需要重发货：</th>
 									<td  colspan=3>
 										是：<input 
@@ -88,7 +88,7 @@
 									</td>
 								</tr>
 								
-								<tr id="resendRow" style="<?php echo $result['TYPE']=='policy'?"":"display:none;";?>" >
+								<tr class="resendRow" style="<?php echo $result['TYPE']=='policy'?"":"display:none;";?>" >
 									<th>是否需要重退款：</th>
 									<td  colspan=3>
 										是：<input 
@@ -97,6 +97,18 @@
 										否：<input
 											<?php echo $result['IS_REFUND']!='1'?"checked":"";?>
 										type="radio" name="isRefund" value="0"/>
+									</td>
+								</tr>
+								
+								<tr class="resendRow" style="<?php echo $result['TYPE']=='policy'?"":"display:none;";?>" >
+									<th>是否需要退货：</th>
+									<td  colspan=3>
+										是：<input 
+											<?php echo $result['IS_BACK']=='1'?"checked":"";?>
+											type="radio" name="isBack" value="1"/>
+										否：<input
+											<?php echo $result['IS_BACK']!='1'?"checked":"";?>
+										type="radio" name="isBack" value="0"/>
 									</td>
 								</tr>
 								

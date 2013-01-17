@@ -45,7 +45,12 @@ function formatGridData(data){
 						return "" ;
 					}},
 					{align:"left",key:"POSITION",label:"位置", width:"10%"},
-					{align:"right",key:"QUANTITY",label:"数量", width:"5%"},
+					{align:"right",key:"QUANTITY",label:"数量", width:"5%",format:function(val,record){
+						if(record.RMA_STATUS==1 || record.RMA_VALUE==10){
+			        		return record.RMA_QUANTITY ;
+			        	}
+			        	return val ;
+					}},
 					{align:"left",key:"MEMO",label:"备注信息", width:"13%"},
 					{align:"left",key:"STATUS",label:"完成状态", width:"8%"},
 					{align:"left",key:"PICKER",label:"拣货人", width:"5%"}

@@ -111,6 +111,17 @@
 			        {align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"10%"},
 		           	{align:"left",key:"REAL_SKU",label:"货品SKU", width:"10%"},
 			        {align:"left",key:"NAME",label:"货品名称", width:"10%"},
+			        {align:"center",key:"QUANTITY_PURCHASED",label:"购买数量", width:"8%"},
+			        {align:"center",key:"RMA_RESHIP",label:"重发数量", width:"8%",format:function(val,record){
+			        	//alert(record.RMA_STATUS+"  "+record.RMA_VALUE+"  "+record.RMA_RESHIP) ;
+			        	if(record.RMA_STATUS==1&& record.RMA_VALUE==10){
+			        		return val ;
+			        	}
+			        	},render:function(record){
+							if(record.RMA_STATUS==1 && record.RMA_VALUE==10){
+								$(this).find("td[key='RMA_RESHIP']").css("background","red") ;
+							}
+						}},
 		           	{align:"center",key:"IMAGE_URL",label:"货品图片",width:"4%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
@@ -128,7 +139,6 @@
 		           	{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
 		           	{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"},
 		           	{align:"center",key:"BUYER_PHONE_NUMBER",label:"BUYER_PHONE_NUMBER", width:"10%"},
-		           	{align:"center",key:"QUANTITY_PURCHASED",label:"QUANTITY_PURCHASED", width:"10%"},
 		           	{align:"center",key:"CURRENCY",label:"CURRENCY", width:"10%"},
 		           	{align:"center",key:"ITEM_PRICE",label:"ITEM_PRICE", width:"10%"},
 		           	{align:"center",key:"ITEM_TAX",label:"ITEM_TAX", width:"10%"}

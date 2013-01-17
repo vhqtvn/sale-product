@@ -199,52 +199,54 @@
 								</tr>
 								<?php }?>
 								<?php if($isAuditPass){?>
-								<tr>
-									<th>跟踪意见：</th><td  colspan=3>
-										<textarea name="trackMemo" 
-										style="width:90%;height:40px;"></textarea>
-									</td>
-								</tr>
-								<?php if( $selectedPolicy['IS_REFUND'] == 1 ){?>
-								<tr>
-									<th>是否已经退款：</th><td  colspan=3>
-										是<input type="radio" name="refundStatus"
-										<?php  echo $result['REFUND_STATUS'] == 1?'checked':"" ?>
-										<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
-										 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
-										否<input type="radio" name="refundStatus"
-											<?php  echo $result['REFUND_STATUS'] == 0?'checked':"" ?>
+									<tr>
+										<th>跟踪意见：</th><td  colspan=3>
+											<textarea name="trackMemo" 
+											style="width:90%;height:40px;"></textarea>
+										</td>
+									</tr>
+									<?php if( $selectedPolicy['IS_REFUND'] == 1 ){?>
+									<tr>
+										<th>是否已经退款：</th><td  colspan=3>
+											是<input type="radio" name="refundStatus"
+											<?php  echo $result['REFUND_STATUS'] == 1?'checked':"" ?>
 											<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
-										 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
-										 
-										 <?php  echo $result['REFUND_STATUS'] == 1?'<span class="alert alert-info">退款金额:'.$result['REFUND_VALUE'].'</span>' :"" ?>
-										 
-										 <span class="refund-action" style="display:none;">
-										 <input type="text" name="refundValue" placeHolder="请输入退款金额"/>
-										 <button class="btn btn-danger refundConfirm">确认</button>
-										 </span>
-									</td>
-								</tr>
-								<?php }?>
-								<tr>
-									<th>是否收到退货：</th><td  colspan=3>
-										是<input type="radio" name="isReceive"
-										<?php  echo $result['IS_RECEIVE'] == 1?'checked':"" ?>
-										<?php  echo $result['IS_RECEIVE'] == 1?' disabled':"" ?>
-										 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
-										否<input type="radio" name="isReceive"
-											<?php  echo $result['IS_RECEIVE'] == 0?'checked':"" ?>
+											 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
+											否<input type="radio" name="refundStatus"
+												<?php  echo $result['REFUND_STATUS'] == 0?'checked':"" ?>
+												<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
+											 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
+											 
+											 <?php  echo $result['REFUND_STATUS'] == 1?'<span class="alert alert-info">退款金额:'.$result['REFUND_VALUE'].'</span>' :"" ?>
+											 
+											 <span class="refund-action" style="display:none;">
+											 <input type="text" name="refundValue" placeHolder="请输入退款金额"/>
+											 <button class="btn btn-danger refundConfirm">确认</button>
+											 </span>
+										</td>
+									</tr>
+									<?php }?>
+									
+									<?php if( $selectedPolicy['IS_BACK'] == 1 ){?>
+									<tr>
+										<th>是否收到退货：</th><td  colspan=3>
+											是<input type="radio" name="isReceive"
+											<?php  echo $result['IS_RECEIVE'] == 1?'checked':"" ?>
 											<?php  echo $result['IS_RECEIVE'] == 1?' disabled':"" ?>
-										 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
-										<?php if($result['IN_STATUS'] != 1 ){?>
-										<button class="btn disabled ram-in" disabled>RMA入库</button>
-										<button class="btn btn-success disabled ram-in complete" disabled>RMA完成入库</button>
-										<?php }else{
-											echo "<span class='alert alert-success'>入库完成</span>" ;
- 										}?>
-									</td>
-								</tr>
-								
+											 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
+											否<input type="radio" name="isReceive"
+												<?php  echo $result['IS_RECEIVE'] == 0?'checked':"" ?>
+												<?php  echo $result['IS_RECEIVE'] == 1?' disabled':"" ?>
+											 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
+											<?php if($result['IN_STATUS'] != 1 ){?>
+											<button class="btn disabled ram-in" disabled>RMA入库</button>
+											<button class="btn btn-success disabled ram-in complete" disabled>RMA完成入库</button>
+											<?php }else{
+												echo "<span class='alert alert-success'>入库完成</span>" ;
+	 										}?>
+										</td>
+									</tr>
+									<?php }?>
 								<?php }?>
 								<?php if( !empty($orders) ){?>
 								<tr>
@@ -275,12 +277,21 @@
 											</table>
 										</div>
 										<div class="span7">
+											<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1 && $result['RESEND_STATUS'] != 1 ){?>
+												<div style="padding:0px 5px 5px 5px;">
+												<button class="btn save-reship">保存重发货设置</button>
+												<button class="btn btn-danger save-reship-finish">重发货配置完成</button>
+												</div>
+											<?php }?>
 											<table style="width:100%;">
 												<tr style="padding:0px;margin:0px;">
 													<th style="padding:0px;text-align:center;">货品SKU</th>
 													<th style="padding:0px;text-align:center;">货品名称</th>
 													<th style="padding:0px;text-align:center;">货品图片</th>
 													<th style="padding:0px;text-align:center;">购买数量</th>
+													<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1 ){?>
+													<th style="padding:0px;text-align:center;width:100px;">重发货数量</th>
+													<?php }?>
 												</tr>
 												<?php
 													foreach( $orders as $order ){
@@ -293,6 +304,15 @@
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['REAL_NAME']?></td>
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo "<img style='width:25px;height:25px;' src='/saleProduct/".$imageUrl."'>"?></td>
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['QUANTITY_TO_SHIP']?></td>
+															<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1   ){?>
+															<td style="padding-top:0px;padding-bottom:0px;">
+																<input type="text" class="alert alert-danger" style="width:85px;" 
+																	<?php echo $result['RESEND_STATUS'] == 1?"disabled":"";?>
+																	orderId="<?php echo $order['ORDER_ID']?>"
+																	orderItemId="<?php echo $order['ORDER_ITEM_ID']?>"
+																	name="rmaReship" value="<?php echo $order['RMA_RESHIP']?>"/>
+															</td>
+															<?php }?>
 														</tr>
 														<?php
 														//debug($order);
@@ -317,6 +337,8 @@
 		<div class="grid-content-track" id="tab-track" style="margin-top:5px;"></div>
 		
 		<div class="grid-content-rma" id="tab-rma" style="margin-top:5px;zoom:1;"></div>
+		
+		<div class="grid-content-rma-rel" id="tab-rma-rel" style="margin-top:5px;zoom:1;"></div>
 	
 	</div>
 </body>

@@ -66,11 +66,38 @@
 		  FROM sc_ram_event s1 , sc_amazon_order sao
 		  LEFT JOIN sc_real_product_rel srpr
 		  ON srpr.sku = sao.sku
+		  and srpr.account_id = sao.account_id
 		  LEFT JOIN sc_real_product srp
 		  on srp.id = srpr.real_id
 		  WHERE s1.order_id = sao.order_id
 		  {@ and s1.status = '#status#'}
+		  {@ and s1.order_id = '#orderId#'}
    </entry>
+   
+   <entry key="sql_ram_events_list_rel">
+  		SELECT s1.* ,
+		  srp.IMAGE_URL,
+		  srp.REAL_SKU,
+		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.cause_code ) AS CAUSE_NAME,
+		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.policy_code ) AS POLICY_NAME
+		  FROM sc_ram_event s1 , sc_amazon_order sao
+		  LEFT JOIN sc_real_product_rel srpr
+		  ON srpr.sku = sao.sku
+		  and srpr.account_id = sao.account_id
+		  LEFT JOIN sc_real_product srp
+		  on srp.id = srpr.real_id
+		  WHERE s1.order_id = sao.order_id
+		  {@ and s1.order_id = '#orderId#'}
+		  {@ and s1.id != '#id#'}
+		  
+   </entry>
+   
+   
+   <entry key="sql_saleuser_saveReship">
+  		update sc_amazon_order set rma_reship = '{@#rmaReship#}'
+  		where order_id = '{@#orderId#}' and order_item_id = '{@#orderItemId#}'
+   </entry>
+   
    
    <entry key="sql_ram_event_insert">	
 	INSERT INTO sc_ram_event 
@@ -130,6 +157,14 @@
    		UPDATE sc_ram_event 
 			SET
 			status = '{@#status#}'
+			WHERE
+			ID = '{@#id#}'
+   </entry>
+   
+    <entry key="sql_ram_event_updateResend">
+   		UPDATE sc_ram_event 
+			SET
+			RESEND_STATUS = '{@#resendStatus#}'
 			WHERE
 			ID = '{@#id#}'
    </entry>

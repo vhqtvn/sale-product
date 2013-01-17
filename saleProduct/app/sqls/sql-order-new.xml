@@ -44,5 +44,10 @@
    			 where order_id = '{@#orderId#}'
    </entry>
    
+   <entry key="sql_order_ram_status">
+   		update sc_amazon_order_status
+   			 set RMA_STATUS = '1',RMA_VALUE = '{@#rmaValue#}'
+   			 where order_id = '{@#orderId#}'
+   </entry>
    
 </properties>

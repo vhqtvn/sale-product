@@ -146,24 +146,21 @@ $(function(){
 			if(index == 0){//拣货单订单
 				$(".pick-btn").show() ;
 				$(".save-btn").html("移除出拣货单").removeClass("btn-success").addClass("btn-danger").attr("action","2");
-				$(".grid-content").llygrid("reload",{pickStatus:9,status:'',pickId:pickedId,rmaValue:''},true) ;
-			}/*else if(index == 1){//完成拣货单
-				$(".save-btn").hide();
-				$(".grid-content").llygrid("reload",{pickStatus:10,status:'',pickId:pickedId},true) ;
-			}*/else if(index == 1){//合格订单
-				$(".grid-content").llygrid("reload",{pickStatus:'',status:5,pickId:'',rmaValue:''
+				$(".grid-content").llygrid("reload",{pickStatus:9,status:'',pickId:pickedId,rmaValue:'',unRmaValue:''},true) ;
+			}else if(index == 1){//合格订单
+				$(".grid-content").llygrid("reload",{pickStatus:'',status:5,pickId:'',rmaValue:'',unRmaValue:'1'
 						,sqlId:"sql_order_list_picked_forselect"},true) ;
 			}else if(index == 2){//加急单
-				$(".grid-content").llygrid("reload",{pickStatus:'',status:6,pickId:'',rmaValue:''
+				$(".grid-content").llygrid("reload",{pickStatus:'',status:6,pickId:'',rmaValue:'',unRmaValue:'1'
 						,sqlId:"sql_order_list_picked_forselect"},true) ;
 			}else if(index == 3){//特殊但
-				$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:'',rmaValue:''
+				$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:'',rmaValue:'',unRmaValue:'1'
 						,sqlId:"sql_order_list_picked_forselect"},true) ;
 			}else if(index == 4){//特殊但
-				$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:'',rmaValue:''
+				$(".grid-content").llygrid("reload",{pickStatus:'',status:7,pickId:'',rmaValue:'',unRmaValue:'1'
 						,sqlId:"sql_order_list_picked_forselect.many"},true) ;
 			}else if(index == 5){//特殊但
-				$(".grid-content").llygrid("reload",{pickStatus:'',status:'',pickId:'',rmaValue:'10'
+				$(".grid-content").llygrid("reload",{pickStatus:'',status:'',pickId:'',rmaValue:'10',unRmaValue:''
 						,sqlId:"sql_order_list_picked_forselect"},true) ;
 			}
 		}

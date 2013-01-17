@@ -27,6 +27,9 @@ class Ram extends AppModel {
 		$this->doOrderRam($params) ;
 	}
 	
+	/**
+	 * 保存并审批事件
+	 */
 	public function doSaveAndAuditEvent($params){
 		if( empty( $params['id'] ) ){
 			$this->exeSql("sql_ram_event_insert",$params) ;
@@ -101,19 +104,7 @@ class Ram extends AppModel {
 	public function doCompleteRecevie($params){
 		//完成订单订单收货
 		$this->exeSql("sql_ram_event_completeRecieve",$params) ;
-		//订单重发
-		$policyCode = $params['policyCode'];
-		if(!empty($policyCode)){
-			
-			$policy = $this->getObject("sql_ram_options_getByCode",array('code'=>$policyCode) ) ;
-			if($policy['IS_RESEND'] == 1){ //需要从发货
-				$this->exeSql("sql_order_ram_UpdatePickStatus",$params) ;
-			}
-			/*
-			if($policy['IS_REFUND'] == 1){ //是否需要退款状态
-				$this->exeSql("sql_ram_event_UpdateReFundStatus",$params) ;
-			}*/
-		}
+		
 	}
 	
 	/**
@@ -191,6 +182,37 @@ class Ram extends AppModel {
 	public function doDangerUser($params){
 		$params['status'] = 'danger' ;
 		$this->exeSql("sql_saleuser_updateStatusByEmail",$params) ;
+	}
+	
+	/**
+	 * 保存从发货
+	 */
+	public function saveReship($params){
+		$result = $params['result'] ;
+		$json = json_decode($result) ;
+		
+		foreach($json as $item){
+			$rmaReship = $item->rmaReship ;
+			$orderId   = $item->orderId ;
+			$orderItemId   = $item->orderItemId ;
+			
+			$this->exeSql("sql_saleuser_saveReship",array(
+				"rmaReship"=>$rmaReship,
+				"orderId"=>$orderId,
+				"orderItemId"=>$orderItemId
+			)) ;
+		}
+		
+		if(  $params['resendStatus'] == 1 ){
+			$this->exeSql("sql_ram_event_updateResend",$params ) ;
+			
+			//更新拣货单状态
+			$this->exeSql("sql_order_ram_UpdatePickStatus",$params) ;
+			
+			//更新为可重发货状态
+			$params['rmaValue'] = 10 ;
+			$this->doOrderRam($params) ;
+		}
 	}
 	
 	/**

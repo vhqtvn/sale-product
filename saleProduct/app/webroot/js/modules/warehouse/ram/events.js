@@ -58,7 +58,7 @@ $(function(){
 		 querys:{sqlId:"sql_ram_events_list",status:0},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowClick:function(row,record){
-		 	$(".grid-content-active").llygrid("reload",{planId:record.ID});
+		 	//$(".grid-content-active").llygrid("reload",{planId:record.ID});
 		 }
 	}) ;
 
