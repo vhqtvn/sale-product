@@ -20,7 +20,8 @@
 		TYPE, 
 		MEMO,
 		IS_RESEND,
-		IS_REFUND
+		IS_REFUND,
+		IS_BACK
 		)
 		VALUES
 		('{@#code#}', 
@@ -28,7 +29,8 @@
 		'{@#type#}', 
 		'{@#memo#}', 
 		'{@#isResend#}', 
-		'{@#isRefund#}'
+		'{@#isRefund#}',
+		'{@#isBack#}'
 		)
    </entry>
    
@@ -39,7 +41,8 @@
 			TYPE = '{@#type#}' , 
 			MEMO = '{@#memo#}' ,
 			IS_RESEND = '{@#isResend#}',
-			IS_REFUND = '{@#isRefund#}'
+			IS_REFUND = '{@#isRefund#}',
+			IS_BACK='{@#isBack#}'
 			
 			WHERE
 			CODE = '{@#code#}'  

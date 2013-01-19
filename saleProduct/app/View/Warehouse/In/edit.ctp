@@ -23,6 +23,19 @@
 		echo $this->Html->script('modules/warehouse/in/edit');
 		echo $this->Html->script('calendar/WdatePicker');
 	
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
+		$inId = $params['arg1'];
+		
+		//获取
+		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
+		$status = $warehoseIn['STATUS'];
+		
+		$isRead = $status >= 10 ?true:false ;
+		
+		$isSended = $status >30?true:false ; 
+		
+		$defaultCode = "IN-".date("Ymd").'-'.date("His") ;
 	?>
 	
 	<script>
@@ -34,9 +47,6 @@
 	<!-- apply 主场景 -->
 	<div class="apply-page">
 		<!-- 页面标题 -->
-		<div class="page-title">
-			<h2>入库单信息</h2>
-		</div>
 		<div class="container-fluid">
 
 	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
@@ -46,10 +56,13 @@
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
-						<table class="form-table col4" >
+						<table class="form-table " >
+							<caption>基本信息</caption>
 							<tbody>										   
 								<tr>
-									<th>入库号：</th><td><input type="text" data-validator="required" id="inNumber" value="<?php echo $result['IN_NUMBER'];?>"/></td>
+									<th>入库号：</th><td><input type="text" 
+										<?php echo $isRead?"readOnly":"" ;?>
+										data-validator="required" id="inNumber" value="<?php echo empty($result['IN_NUMBER'])?$defaultCode:$result['IN_NUMBER'];?>"/></td>
 								
 									<th>负责人：</th>
 									<td>
@@ -57,56 +70,148 @@
 											value="<?php echo $result['CHARGER'];?>"/>
 									<input type="text" data-validator="required" id="chargerName" class="span2" readonly
 											value="<?php echo $result['CHARGER_NAME'];?>"/>
-									<button class="btn btn-charger">选择</button>
+										<?php if( !$isRead ){
+											echo '<button class="btn btn-charger">选择</button>' ;
+										}?>
+									
 									</td>
 								</tr>
 								<tr>
+									<th>备注：</th><td  colspan=3>
+										<textarea name="memo"  
+										<?php echo $isRead?"readOnly":"" ;?>
+										style="width:90%;height:50px;"><?php echo $result['MEMO'];?></textarea>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<table class="form-table " >
+							<caption>物流信息</caption>
+							<tbody>	
+								<tr>
 									<th>目标仓库：</th>
-									<td colspan=3>
+									<td>
 									<input data-validator="required" type="hidden" id="warehouseId" 
 										value="<?php echo $result['WAREHOUSE_ID'];?>"/>
 									<input type="text" data-validator="required" id="warehouseName" readonly
 										value="<?php echo $result['WAREHOUSE_NAME'];?>"/>
-									<button class="btn btn-warehouse">选择</button>
+										<?php if( !$isRead ){
+											echo '<button class="btn btn-warehouse">选择</button>' ;
+										}?>
 									</td>
-								</tr>
-								<tr>
-									<th>运输公司：</th><td colspan=3><input data-validator="required" type="text" id="shipCompany"
+									<th>运输公司：</th>
+									<td><input data-validator="required" type="text" id="shipCompany"
+										<?php echo $isRead?"readOnly":"" ;?>
 										value="<?php echo $result['SHIP_COMPANY'];?>"/></td>
 								</tr>
 								<tr>
-									<th>运输方式：</th><td colspan=3><input data-validator="required" type="text" id="shipType"
+									<th>运输方式：</th>
+									<td><input data-validator="required" type="text" id="shipType"
+										<?php echo $isRead?"readOnly":"" ;?>
 										value="<?php echo $result['SHIP_TYPE'];?>"/></td>
-								</tr>
-								<tr>
 									<th>达到港口：</th><td colspan=3><input type="text" id="arrivalPort" data-validator="required"
+										<?php echo $isRead?"readOnly":"" ;?>
 										value="<?php echo $result['ARRIVAL_PORT'];?>"/></td>
 								</tr>
 								<tr>
-									<th>发货时间：</th><td><input type="text" id="shipDate" data-widget="calendar" data-validator="required"
+									<th>发货时间：</th><td><input type="text" id="shipDate" 
+										data-widget="calendar"  
+										<?php echo $isSended?"readonly":"" ;?>
 										value="<?php echo $result['SHIP_DATE'];?>"/></td>
-									<th>预计到达时间：</th><td><input type="text" id="planArrivalDate" data-widget="calendar" data-validator="required"
+									<th>预计到达时间：</th><td><input type="text" id="planArrivalDate" data-widget="calendar" 
+										 
+										<?php echo $isSended?"readonly":"" ;?>
 										value="<?php echo $result['PLAN_ARRIVAL_DATE'];?>"/></td>
 								</tr>
 								<tr>
 									<th>运单号：</th><td><input type="text" id="shipNo"
+										<?php echo $isSended?"readonly":"" ;?>
 										value="<?php echo $result['SHIP_NO'];?>"/></td>
 			
 									<th>物流跟踪号：</th><td><input type="text" id="shipTracknumber"
+										<?php echo $isSended?"readonly":"" ;?>
 										value="<?php echo $result['SHIP_TRACKNUMBER'];?>"/></td>
 								</tr>
+								
+							</tbody>
+						</table>
+						
+						<table class="form-table " >
+							<caption>发货人信息</caption>
+							<tbody>	
 								<tr>
-									<th>备注：</th><td  colspan=3>
-										<textarea name="memo"  style="width:90%;height:100px;"><?php echo $result['MEMO'];?></textarea>
-									</td>
+									<th>公司名称：</th><td><input type="text" id="sendCompany"
+										<?php echo $isRead?"readonly":"" ;?> 
+										value="<?php echo $result['SEND_COMPANY'];?>"/></td>
+									<th>公司地址：</th><td><input type="text" id="sendCompanyAddress"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['SEND_COMPANY_ADDRESS'];?>"/></td>
+								</tr>
+								<tr>
+									<th>邮编：</th><td><input type="text" id="sendCompanyPost"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['SEND_COMPANY_POST'];?>"/></td>
+			
+									<th>国家：</th><td><input type="text" id="sendCompanyCountry"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['SEND_COMPANY_COUNTRY'];?>"/></td>
+								</tr><tr>
+									<th>联系人：</th><td><input type="text" id="sendCompanyContactor" 
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['SEND_COMPANY_CONTACTOR'];?>"/></td>
+									<th>联系电话：</th><td><input type="text" id="sendCompanyPhone" 
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['SEND_COMPANY_PHONE'];?>"/></td>
+								</tr>
+								<tr>
+									<th>Email：</th><td colspan=3><input type="text" id="sendCompanyEmail"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['SEND_COMPANY_EMAIL'];?>"/></td>
+								</tr>
+							</tbody>
+						</table>
+						
+						<table class="form-table " >
+							<caption>收货人信息</caption>
+							<tbody>
+								<tr>
+									<th>公司名称：</th><td><input type="text" id="receiveCompany"
+										<?php echo $isRead?"readonly":"" ;?> 
+										value="<?php echo $result['RECEIVE_COMPANY'];?>"/></td>
+									<th>公司地址：</th><td><input type="text" id="receiveCompanyAddress"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['RECEIVE_COMPANY_ADDRESS'];?>"/></td>
+								</tr>
+								<tr>
+									<th>邮编：</th><td><input type="text" id="receiveCompanyPost"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['RECEIVE_COMPANY_POST'];?>"/></td>
+			
+									<th>国家：</th><td><input type="text" id="receiveCompanyCountry"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['RECEIVE_COMPANY_COUNTRY'];?>"/></td>
+								</tr><tr>
+									<th>联系人：</th><td><input type="text" id="receiveCompanyContactor" 
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['RECEIVE_COMPANY_CONTACTOR'];?>"/></td>
+									<th>联系电话：</th><td><input type="text" id="receiveCompanyPhone" 
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['RECEIVE_COMPANY_PHONE'];?>"/></td>
+								</tr>
+								<tr>
+									<th>Email：</th><td colspan=3><input type="text" id="receiveCompanyEmail"
+										<?php echo $isRead?"readonly":"" ;?>
+										value="<?php echo $result['RECEIVE_COMPANY_EMAIL'];?>"/></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					
+					<div style="height:40px;">&nbsp;</div>
+					
 					<!-- panel脚部内容-->
-                    <div class="panel-foot">
-						<div class="form-actions col4">
+                    <div class="panel-foot" style="position:fixed;bottom:0px;right:0px;left:0px;z-index:1;background-color:#FFF;">
+						<div class="form-actions  ">
 							<button type="button" class="btn btn-primary btn-save">提&nbsp;交</button>
 						</div>
 					</div>

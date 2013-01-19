@@ -14,7 +14,7 @@
 						//保存基本信息
 						$.dataservice("model:Warehouse.Ram.doSaveOption",json,function(result){
 								window.opener.openCallback('editPlan') ;
-								window.close();
+								//window.close();
 						});
 					}
 				};

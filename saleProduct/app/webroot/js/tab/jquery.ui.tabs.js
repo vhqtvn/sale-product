@@ -36,7 +36,7 @@ $.widget("ui.__tabs", {
 		show: null,
 		deleteLast:false,
 		spinner: '<em>加载中&#8230;</em>',
-		tabTemplate: '<li><a href="#{href}" tabId="#{tabId}">#{img}<span>#{label}</span></a></li>',
+		tabTemplate: '<li><a href="#{href}" tabId="#{tabId}" customLabel="#{customLabel}" custom="#{custom}">#{img}<span>#{label}</span></a></li>',
 		closeTabTemplate:'<li><a href="#{href}" tabId="#{tabId}">#{img}<span>#{label}</span><b class="ui-icon ui-icon-close ui-tab-close"></b></a></li>'
 	},
 	_create: function() {
@@ -67,7 +67,7 @@ $.widget("ui.__tabs", {
 					}else{
 						href = this.url ;
 					}
-				} 
+				}
 				
 				var img = this.img?"<img src='"+this.img+"' class='ui-tab-img' align='absmiddle'></img>":"" ;
 				
@@ -76,6 +76,8 @@ $.widget("ui.__tabs", {
 							.replace(/#\{label\}/g, label)
 							.replace(/#\{img\}/g, img)
 							.replace(/#\{tabId\}/g, this.id||"")
+							.replace(/#\{custom\}/g, this.custom||"")
+							.replace(/#\{customLabel\}/g, label)
 				
 				html.push(_html) ;
 				

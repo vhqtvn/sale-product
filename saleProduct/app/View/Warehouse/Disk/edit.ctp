@@ -36,7 +36,7 @@
 			$planId = $result['PLAN_ID'] ;
 		}
 		
-		$defaultCode = "DA-".date("Ymd") ;
+		$defaultCode = "DA-".date("Ymd").'-'.date("His") ;
 	?>
 	
 	<style type="text/css">

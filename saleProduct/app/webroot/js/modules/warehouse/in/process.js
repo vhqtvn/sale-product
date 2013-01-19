@@ -1,11 +1,11 @@
 
 $(function(){
-	if($inStatus){ //验货完成
+	/*if($inStatus){ //验货完成
 		$(".sh").removeAttr("disabled").addClass("btn-success") ;
 		$(".rh").removeAttr("disabled")  ;;
 	}else{ //未验货完成
 		$(".sh").removeAttr("disabled")  ;;
-	}
+	}*/
 	
 	//确认入库
 	$(".btn-confirm-in").click(function(){
@@ -16,7 +16,20 @@ $(function(){
 			});
 		} ;
 	}) ;
-
+	
+	$(".btn-confirm-accept").click(function(){
+		if( $(".btn-validator-product").length ){
+			alert("还存在未验收完成的货品！");
+			return ;
+		}
+		
+		if(window.confirm("所有货品已经确认验收了吗?")){
+			$.dataservice("model:Warehouse.In.doStatus",{inId:inId,status:60},function(result){
+				window.location.reload();
+			});
+		} ;
+	}) ;
+	
 	$(".report-exception").toggle(function(){
 		$(this).parents("tr:first").next().show() ;
 	},function(){

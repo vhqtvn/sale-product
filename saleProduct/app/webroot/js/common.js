@@ -410,6 +410,8 @@ jQuery.request = function(params){
         			return ;
         		}
         	}
+        	
+        	response = response||{} ;
 
         	if( typeof response.returnCode != 'undefined' && response.returnCode != 200 ){
         		error(null , response.returnCode , response.error,url) ;

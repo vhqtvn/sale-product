@@ -21,6 +21,7 @@ class FormController extends AppController {
     	
     	$user =  $this->getCookUser() ;
     	$params = $this->request->data  ;
+    	
     	$params['loginId'] = $user['LOGIN_ID'] ;
     	$command = $params['CommandName'] ;
     	
@@ -49,6 +50,7 @@ class FormController extends AppController {
 				$method = $r->getMethod($method) ;
 				
 				$result = $method->invoke($instance, $params); 
+				$result = json_encode($result) ;
 			}catch(Exception $e){
 				echo $e->getMessage();
 			}
@@ -70,7 +72,7 @@ class FormController extends AppController {
     		$result = json_encode($result) ;
     	}
     	
-    	$this->response->type("json");
+    	$this->response->type("text");
 		$this->response->body(empty($result)?'':$result);
 		return $this->response;
     }

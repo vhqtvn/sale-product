@@ -10,11 +10,14 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
+		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('modules/warehouse/in/lists');
 		
 	?>
@@ -38,6 +41,8 @@
 		</table>					
 
 	</div>
-	<div class="grid-content"></div>
+
+	<div id="details_tab"></div>
+	<div class="grid-content" id="tab-content"></div>
 </body>
 </html>

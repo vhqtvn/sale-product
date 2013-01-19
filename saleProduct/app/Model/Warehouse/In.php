@@ -29,6 +29,8 @@ class In extends AppModel {
 	public function doStatus($params){
 		$inId = $params['inId'] ;
 		$this->exeSql("sql_warehouse_in_update_status",$params) ;
+		
+		$this->doSaveTrack($params) ;
 	}
 
 	public function doSave4Quantity($params){
@@ -72,8 +74,26 @@ class In extends AppModel {
 			$this->exeSql("sql_warehouse_box_product_update",$params) ;
 		}
 	}
-	
+	/**
+	 * '{@#IN_ID#}', 
+		'{@#STATUS#}', 
+		'{@#MEMO#}', 
+	 */
 	public function doSaveTrack($params){
+		if(!isset( $params['IN_ID'] )){
+			$params['IN_ID'] = $params['inId'] ;
+		}
+		
+		if(!isset( $params['STATUS'] )){
+			$params['STATUS'] = $params['status'] ;
+		}
+		
+		if(!isset( $params['MEMO'] )){
+			if(isset($params['memo'])){
+				$params['MEMO'] = $params['memo'] ;
+			}
+		}
+		
 		$this->exeSql("sql_warehouse_track_insert",$params) ;
 	}
 	
@@ -113,6 +133,12 @@ class In extends AppModel {
 		$this->exeSql("sql_warehouse_boxproduct_updateStatus",$params) ;
 	}
 	
+	/**
+	 * 加载入库单统计信息
+	 */
+	public function loadStatusCount(){
+		return $this->exeSql("sql_warehouse_in_loadStatusCount",array());
+	}
 	
 	/**
 	 * 执行计划入库操作
@@ -185,6 +211,6 @@ class In extends AppModel {
 		}
 		
 		//更新计划单为已入库完成
-		$this->doStatus( array('inId'=>$inId,'status'=>'1') ) ;
+		$this->doStatus( array('inId'=>$inId,'status'=>'70') ) ;
 	}
 }

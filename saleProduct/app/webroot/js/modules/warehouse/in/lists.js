@@ -1,27 +1,15 @@
 $(function(){
+		
 		$(".grid-content").llygrid({
 			columns:[
 				{align:"center",key:"ID",label:"编辑",width:"5%",format:function(val,record){
-					var html = [] ;
-					html.push("<a href='#' class='edit' val='"+val+"'>编辑</a>&nbsp;&nbsp;") ;
-					return html.join("") ;
-				}},
-				{align:"center",key:"ID",label:"状态",width:"10%",format:function(val,record){
-					var status = record.STATUS ;
-					var status1 = record.STATUS1 ;
-					var html = [] ;
-					
-					if(status1 >= 1){
-						html.push("验货中..&nbsp;<a href='#' class='action sh btn' val='"+val+"' status=sh>处理</a>&nbsp;&nbsp;") ;
+					if(record.STATUS < 10 ){
+						return "<a href='#' class='edit' val='"+val+"'>编辑</a>&nbsp;&nbsp;" ;
+					}else if(record.STATUS <70){
+						return "<a href='#' class='edit' val='"+val+"'>处理</a>&nbsp;&nbsp;" ;
 					}else{
-						if(!status){//未收货
-							html.push("等待入库&nbsp;<a href='#' class='action sh btn' val='"+val+"' status=rk>处理</a>&nbsp;&nbsp;") ;
-						}else if(status == 1){//收货完成//为入库
-							html.push("入库完成&nbsp;<a href='#' class='action rk btn' val='"+val+"'>查看</a>&nbsp;&nbsp;") ;
-						}
+						return "<a href='#' class='edit' val='"+val+"'>查看</a>&nbsp;&nbsp;" ;
 					}
-					
-					return html.join("") ;
 				}},
 				{align:"center",key:"IN_NUMBER",label:"入库号",width:"8%",forzen:false,align:"left"},
 	           	{align:"center",key:"CHARGER_NAME",label:"负责人",width:"6%",forzen:false,align:"left"},
@@ -40,16 +28,16 @@ $(function(){
 			 limit:10,
 			 pageSizes:[10,20,30,40],
 			 height:function(){
-			 	return $(window).height() - 150 ;
+			 	return $(window).height() - 200 ;
 			 },
 			 title:"入库计划列表",
 			 indexColumn:false,
-			 querys:{sqlId:"sql_warehouse_in_lists"},
+			 querys:{sqlId:"sql_warehouse_in_lists",status:"0"},
 			 loadMsg:"数据加载中，请稍候......"
 		}) ;
 		
 		$(".add-btn").click(function(){
-			openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.edit",760,530) ;
+			openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.edit",990,640) ;
 		}) ;
 		
 		$(".action").live("click",function(){
@@ -61,13 +49,78 @@ $(function(){
 			
 		});
 		
-		
-		
 		$(".edit").live("click",function(){
 			var val = $(this).attr("val") ;
-			openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editTab/"+val,760,590) ;
+			openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editTab/"+val,990,640) ;
 			return false;
 		}) ;
+		 
+		var tab = $('#details_tab').tabs( {
+			tabs:[
+				{label:'编辑中',content:"tab-content",custom:"0"},
+				{label:'待审批',content:"tab-content",custom:"10"},
+				{label:'待发货',content:"tab-content",custom:"20"},
+				{label:'已发货',content:"tab-content",custom:"30"},
+				{label:'到达海关',content:"tab-content",custom:"40"},
+				{label:'验货中',content:"tab-content",custom:"50"},
+				{label:'入库中',content:"tab-content",custom:"60"},
+				{label:'入库完成',content:"tab-content",custom:"70"}
+			] ,
+			//height:'500px',
+			select:function(event,ui){
+				var index = ui.index ;
+				tabIndex = index ;
+				renderAction(index);
+			}
+		} ) ; 
+		
+		function loadCount(){
+			$.dataservice("model:Warehouse.In.loadStatusCount",{},function(result){
+				$(result).each(function(){
+					var item = {} ;
+					for(var o in this){
+						var _ = this[o] ;
+						for(var o in _){
+							item[o] = _[o] ;
+						}
+					}
+					var el = $("[custom='"+item['STATUS']+"']") ;
+					if(el.length){
+						var cl = el.attr("customLabel");
+						var content = cl+"("+item['C']+")" ;
+						el.find("span").html(content) ;
+					}
+				}) ;
+				
+				setTimeout(function(){
+					loadCount() ;
+				},60000) ;
+			});
+		}
+		loadCount() ;
+	
+		
+		var tabIndex = 0 ;   	   	 
+		function renderAction(index){
+			$(".save-btn").show() ;
+			if(index == 0){//编辑中
+				$(".grid-content").llygrid("reload",{status:'0'},true) ;
+			}else if(index == 1){//待审批
+				$(".grid-content").llygrid("reload",{status:10},true) ;
+			}else if(index == 2){//待发货
+				$(".grid-content").llygrid("reload",{status:'20'},true) ;
+			}else if(index == 3){//已发货
+				$(".grid-content").llygrid("reload",{status:30},true) ;
+			}else if(index == 4){//到达海关
+				$(".grid-content").llygrid("reload",{status:'40'},true) ;
+			}else if(index == 5){//验货中
+				$(".grid-content").llygrid("reload",{status:50},true) ;
+			}else if(index == 6){//验货中
+				$(".grid-content").llygrid("reload",{status:60},true) ;
+			}else if(index == 7){//入库完成
+				$(".grid-content").llygrid("reload",{status:'70'},true) ;
+			}
+		}
 	
  });
  

@@ -16,6 +16,16 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('modules/warehouse/in/editBox');
+		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
+		$inId = $params['arg1'];
+		
+		//获取
+		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
+		$status = $warehoseIn['STATUS'];
+		
+		$isRead = $status >= 10 ?true:false ;
 	?>
   
    <script type="text/javascript">
@@ -30,11 +40,13 @@
 				<th>
 				</th>
 				<td>
-				</td>								
+				</td>			
+				<?php if(!$isRead){ ?>					
 				<td class="toolbar-btns">
 					<button class="add-box btn btn-primary">添加包装箱</button>
 					<button class="add-box-product btn btn-primary" disabled>添加包装箱产品</button>
 				</td>
+				<?php } ?>
 			</tr>						
 		</table>					
 

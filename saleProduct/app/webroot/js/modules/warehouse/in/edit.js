@@ -3,11 +3,11 @@
 			$(".btn-save").click(function(){
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
+					json.status = '0' ;
 					$.dataservice("model:Warehouse.In.doSave",json,function(result){
-						window.opener.openCallback('edit') ;
-						window.close();
+						window.top.opener.openCallback('edit') ;
+						(window.parent||window).location.reload() ;
 					});
-
 				};
 				return false ;
 			}) ;

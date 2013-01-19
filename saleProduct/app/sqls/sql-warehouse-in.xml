@@ -8,6 +8,8 @@
 		(SELECT COUNT(*)  FROM sc_warehouse_box_product s2 , sc_warehouse_box s3 
 		        WHERE s2.box_id = s3.id AND s3.in_id = s1.id AND ( s2.status IS NULL OR s2.status !=1 ) ) AS STATUS1
 		  FROM sc_warehouse_in s1
+		  where 1=1 
+		  {@ and s1.status = '#status#'}
    </entry>
    
    <entry key="sql_warehouse_in_getById">
@@ -41,7 +43,21 @@
 			MEMO = '{@#memo#}' , 
 			{@ IS_IN = '#isIn#' ,}
 			UPDATOR = '{@#loginId#}' , 
-			UPDATE_TIME = NOW()
+			UPDATE_TIME = NOW(),
+			send_company = '{@#sendCompany#}' , 
+			send_company_address = '{@#sendCompanyAddress#}' , 
+			send_company_post = '{@#sendCompanyPost#}' , 
+			send_company_country = '{@#sendCompanyCountry#}' , 
+			send_company_contactor = '{@#sendCompanyContactor#}' , 
+			send_company_phone = '{@#sendCompanyPhone#}' , 
+			send_company_email = '{@#sendCompanyEmail#}' , 
+			receive_company = '{@#receiveCompany#}' , 
+			receive_company_address = '{@#receiveCompanyAddress#}' , 
+			receive_company_post = '{@#receiveCompanyPost#}' , 
+			receive_company_country = '{@#receiveCompanyCountry#}' , 
+			receive_company_contactor = '{@#receiveCompanyContactor#}' , 
+			receive_company_phone = '{@#receiveCompanyPhone#}' , 
+			receive_company_email = '{@#receiveCompanyEmail#}'
 		WHERE
 		ID = '{@#id#}' 
    </entry>
@@ -61,7 +77,21 @@
 			PLAN_ARRIVAL_DATE,
 			MEMO,
 			CREATOR,
-			CREATE_TIME
+			CREATE_TIME,
+			SEND_COMPANY, 
+			SEND_COMPANY_ADDRESS, 
+			SEND_COMPANY_POST, 
+			SEND_COMPANY_COUNTRY, 
+			SEND_COMPANY_CONTACTOR, 
+			SEND_COMPANY_PHONE, 
+			SEND_COMPANY_EMAIL, 
+			RECEIVE_COMPANY, 
+			RECEIVE_COMPANY_ADDRESS, 
+			RECEIVE_COMPANY_POST, 
+			RECEIVE_COMPANY_COUNTRY, 
+			RECEIVE_COMPANY_CONTACTOR, 
+			RECEIVE_COMPANY_PHONE, 
+			RECEIVE_COMPANY_EMAIL
 			)
 			VALUES
 			(
@@ -77,7 +107,21 @@
 			'{@#planArrivalDate#}', 
 			'{@#memo#}',
 			'{@#loginId#}',
-			NOW()
+			NOW(),
+			'{@#sendCompany#}', 
+			'{@#sendCompanyAddress#}', 
+			'{@#sendCompanyPost#}', 
+			'{@#sendCompanyCountry#}', 
+			'{@#sendCompanyContactor#}', 
+			'{@#sendCompanyPhone#}', 
+			'{@#sendCompanyEmail#}', 
+			'{@#receiveCompany#}', 
+			'{@#receiveCompanyAddress#}', 
+			'{@#receiveCompanyPost#}', 
+			'{@#receiveCompanyCountry#}', 
+			'{@#receiveCompanyContactor#}', 
+			'{@#receiveCompanyPhone#}', 
+			'{@#receiveCompanyEmail#}'
 			)
    </entry>
    
@@ -115,6 +159,11 @@
    		where id = '{@#id#}'
    </entry>
    
+   <entry key="sql_warehouse_in_loadStatusCount">
+   		SELECT STATUS,COUNT(STATUS) AS C FROM sc_warehouse_in GROUP BY status
+   </entry>
+   
+   
    
    
    <entry key="sql_warehouse_in_products">
@@ -140,7 +189,10 @@
    
    
    <entry key="sql_warehouse_in_track_lists">
-   		select * from sc_warehouse_in_track where in_id = '{@#inId#}' order by create_time 
+   		select sc_warehouse_in_track.* ,
+   		(SELECT s2.NAME FROM sc_user s2 WHERE s2.login_id = sc_warehouse_in_track.CREATOR) AS CREATOR_NAME
+   		from sc_warehouse_in_track 
+   		where in_id = '{@#inId#}' order by create_time 
    </entry>
    
    <entry key="sql_warehouse_box_insert">
@@ -173,7 +225,6 @@
    </entry>
    
    <entry key="sql_warehouse_box_product_insert">
-	  
 		INSERT INTO sc_warehouse_box_product 
 			(
 			BOX_ID, 
@@ -215,7 +266,6 @@
 		NOW(), 
 		'{@#loginId#}'
 		)
-
    </entry>
    
    <entry key="sql_warehouse_in_update_status">	

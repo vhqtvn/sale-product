@@ -17,13 +17,10 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('modules/warehouse/in/process');
 		
-		$type = $params['arg2'] ;
-		if(empty($type)){
-			$type = 'sh';
-		}
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$in = $SqlUtils->getObject("sql_warehouse_in_getById",array('id'=>$params['arg1'] )) ;
-		$status = $in['STATUS'] ;
+		$status = $in['STATUS'] ;//50 验货 60 收货
+		$type = $status=='50'?'sh':'rk' ;
 	?>
   
    <script type="text/javascript">
@@ -119,18 +116,22 @@
 		<table style="width:380px;margin:0px auto;">
 			<tr>
 				<td>
-					<button class="btn btn-primary sh" disabled style="font-size:20px;padding:5px 10px;">收货确认</button>
+					<button class="btn btn-primary sh" 
+					<?php echo $status == 50 ?"":"disabled" ; ?>
+					style="font-size:20px;padding:5px 10px;">收货确认</button>
 				</td>
 				<td>
 					<div style="font-size:50px;font-weight:bold;margin-top:-10px;">———</div>
 				</td>
 				<td>
-					<button class="btn btn-primary rh" disabled style="font-size:20px;padding:5px 10px;">货品入库</button>
+					<button class="btn btn-primary rh" 
+					<?php echo $status == 60 ?"":"disabled" ; ?>
+					 style="font-size:20px;padding:5px 10px;">货品入库</button>
 				</td>
 			</tr>
 		</table>
 	</div>
-	<?php if($status == '1'){ //入库完成 ?>
+	<?php if($status == 70){ //入库完成 ?>
 	<div class="alert alert-success" style="font-weight:bold;font-size:20px;padding:5px 10px;position:absolute;right:10px;top:10px;">
 		入库完成</div>
 	<?php } ?>
@@ -139,6 +140,13 @@
 		<?php
 			
 			$boxs = $SqlUtils->exeSql("sql_warehouse_box_lists",array('inId'=>$params['arg1'] )) ;
+			
+			if($status != 60){ //收货完成
+			?>
+			<button class="btn btn-warning btn-confirm-accept" inId="<?php echo $params['arg1'] ;?>" 
+			style="font-size:20px;padding:5px 10px;position:absolute;right:10px;top:10px;">验收确认</button>
+			<?php			
+			}
 			
 			//计划单状态
 			$inStatus = true;
@@ -243,7 +251,7 @@
 			$inProducts = $SqlUtils->exeSql("sql_warehouse_in_products",array('inId'=>$params['arg1'] )) ;
 			$inStatus = true ;
 			
-			if($status != '1'){ //入库完成
+			if($status != 70){ //入库完成
 			?>
 			<button class="btn btn-warning btn-confirm-in" inId="<?php echo $params['arg1'] ;?>" 
 			style="font-size:20px;padding:5px 10px;position:absolute;right:10px;top:10px;">确认入库</button>
