@@ -21,6 +21,7 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
+		$loginId   = $user['LOGIN_ID'] ;
 		$inId = $params['arg1'];
 		
 		//获取
@@ -31,6 +32,63 @@
 	<script type="text/javascript">
      var inId = "<?php echo $inId;?>" ;
      var currentStatus = "<?php echo $warehoseIn['STATUS'];?>" ;
+     
+     function AuditAction(status , statusLabel){
+		if(window.confirm("确认【"+statusLabel+"】？")){
+			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
+			$.dataservice("model:Warehouse.In.doStatus",json,function(result){
+				window.location.reload();
+			});
+		}
+	}
+	
+	function productInWarehouse(){
+		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
+	}
+     
+     var flowData = [
+		{status:0,label:"编辑中",memo:true
+			<?php if( $security->hasPermission($loginId , 'IN_STATUS0')) { ?>
+			,actions:[{label:"提交审批",action:function(){ AuditAction(10,"提交审批") }}]
+			<?php };?>
+		},
+		{status:10,label:"待审批",memo:true
+			<?php if( $security->hasPermission($loginId , 'IN_STATUS10')) { ?>
+			,actions:[{label:"审批通过",action:function(){ AuditAction(20,"审批通过") } },
+				{label:"审批不通过",action:function(){ AuditAction(0,"审批不通过") } }]
+			<?php };?>
+		},
+		{status:20,label:"待发货",memo:true
+			<?php if( $security->hasPermission($loginId , 'IN_STATUS20')) { ?>
+			,actions:[{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }]
+			<?php };?>
+		},
+		{status:30,label:"已发货",memo:true
+			<?php if( $security->hasPermission($loginId , 'IN_STATUS30')) { ?>
+			,actions:[{label:"到达海关",action:function(){ AuditAction(40,"到达海关") } }]
+			<?php };?>
+		},
+		{status:40,label:"到达海关",memo:true
+			<?php if( $security->hasPermission($loginId , 'IN_STATUS40')) { ?>
+			,actions:[{label:"开始验货",action:function(){ AuditAction(50,"开始验货") } }]
+			<?php };?>
+		},
+		{status:50,label:"验货中"
+			<?php if( $security->hasPermission($loginId , 'IN_STATUS50')) { ?>
+			,actions:[{label:"货品验收",action:function(){ productInWarehouse() ; } } ]
+			<?php };?>
+		},
+		{status:60,label:"入库中"
+			<?php if( $security->hasPermission($loginId , 'IN_STATUS60')) { ?>
+			,actions:[
+				{label:"货品入库",action:function(){ productInWarehouse() }   }
+			]
+			<?php };?>
+		},
+		{status:70,label:"入库完成"
+			,actions:[{label:"查看入库货品",action:function(){ productInWarehouse();} } ]
+		}
+	] ;
     </script>
 	
 	<style type="text/css">
@@ -89,6 +147,10 @@
 			background:#ffd700;
 			display:none;
 		}
+		
+		.memo-control{
+			display:none;
+		}
 	</style>
 </head>
 
@@ -116,7 +178,6 @@
 		</table>
 		
 		<div class="flow-action">
-			<button class="btn btn-primary">执行待审批</button>
 		</div>
 	</center>
 	</div>

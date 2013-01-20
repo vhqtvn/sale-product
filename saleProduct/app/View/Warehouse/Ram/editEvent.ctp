@@ -45,7 +45,18 @@
 		}
 		
 		//1、提交审批 2、审批通过  3、重新编辑 
-		$defaultCode = "RMA-".date("Ymd")."-".date("His") ;
+		$defaultCode = null ;
+		if( empty($result['CODE']) ){
+			$index = $SqlUtils->getMaxValue("rma" , null , 1) ;
+			if( strlen($index) < 5 ){
+				$len = 5-strlen($index) ;
+				for($i=0 ;$i < $len ;$i++){
+					$index = '0'.$index ;
+				}
+			}
+			$defaultCode = "RMA-".date("ymd").'-'.$index ;
+		}
+		
 		
 		$status = $result["STATUS"] ;
 		
@@ -143,7 +154,7 @@
 								</tr>
 								
 								<tr>
-									<th>RAM原因：</th>
+									<th>RMA原因：</th>
 									<td>
 										<select name="causeCode" data-validator="required" <?php echo !$isInit?"disabled":"" ;?>>
 											<option value="">请选择</option>
@@ -160,7 +171,7 @@
 											<option value="other">其他原因</option>
 										</select>
 									</td>
-									<th>RAM决策：</th>
+									<th>RMA决策：</th>
 									<td>
 										<select name="policyCode" data-validator="required" <?php echo !$isInit?"disabled":"" ;?>>
 											<option value="">请选择</option>

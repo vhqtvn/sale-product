@@ -76,6 +76,7 @@ $(function(){
 		
 		function loadCount(){
 			$.dataservice("model:Warehouse.In.loadStatusCount",{},function(result){
+			
 				$(result).each(function(){
 					var item = {} ;
 					for(var o in this){

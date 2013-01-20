@@ -4,9 +4,17 @@
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
 					json.status = '0' ;
+					//shipDate
+					//planArrivalDate
+					json.shipDate = json.shipDate||"0000-00-00 00:00:00" ;
+					json.planArrivalDate = json.planArrivalDate||"0000-00-00 00:00:00" ;
 					$.dataservice("model:Warehouse.In.doSave",json,function(result){
 						window.top.opener.openCallback('edit') ;
-						(window.parent||window).location.reload() ;
+						if(window.parent == window){
+							window.close() ;
+						}else{
+							(window.parent||window).location.reload() ;
+						}
 					});
 				};
 				return false ;

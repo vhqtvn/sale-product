@@ -25,17 +25,32 @@
 	
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
+		$loginId   = $user['LOGIN_ID'] ;
 		$inId = $params['arg1'];
 		
+
 		//获取
 		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
 		$status = $warehoseIn['STATUS'];
 		
-		$isRead = $status >= 10 ?true:false ;
+		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
+		$isRead = $hasEditPermission?($status >= 10 ?true:false):true ;
 		
-		$isSended = $status >30?true:false ; 
+		$sendPermission = 
+			$security->hasPermission($loginId , 'IN_STATUS20')||$security->hasPermission($loginId , 'IN_STATUS30') ;
+		$isSended = $sendPermission?($status >30?true:false):true ; 
 		
-		$defaultCode = "IN-".date("Ymd").'-'.date("His") ;
+		$defaultCode = null ;
+		if( empty($result['IN_NUMBER']) ){
+			$index = $SqlUtils->getMaxValue("in" , null , 1) ;
+			if( strlen($index) < 5 ){
+				$len = 5-strlen($index) ;
+				for($i=0 ;$i < $len ;$i++){
+					$index = '0'.$index ;
+				}
+			}
+			$defaultCode = "IN-".date("ymd").'-'.$index ;
+		}
 	?>
 	
 	<script>
@@ -210,11 +225,13 @@
 					<div style="height:40px;">&nbsp;</div>
 					
 					<!-- panel脚部内容-->
+					<?php if( !$isSended || !$isRead ){?>
                     <div class="panel-foot" style="position:fixed;bottom:0px;right:0px;left:0px;z-index:1;background-color:#FFF;">
 						<div class="form-actions  ">
 							<button type="button" class="btn btn-primary btn-save">提&nbsp;交</button>
 						</div>
 					</div>
+					<?php }?>
 				</div>
 			</form>
 		</div>

@@ -19,13 +19,15 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
+		$loginId   = $user['LOGIN_ID'] ;
 		$inId = $params['arg1'];
 		
 		//获取
 		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
 		$status = $warehoseIn['STATUS'];
 		
-		$isRead = $status >= 10 ?true:false ;
+		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
+		$isRead = $hasEditPermission?($status >= 10 ?true:false):true ;
 	?>
   
    <script type="text/javascript">

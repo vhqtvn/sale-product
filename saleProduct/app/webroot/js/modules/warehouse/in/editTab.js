@@ -1,38 +1,4 @@
-function AuditAction(status , statusLabel){
-	if(window.confirm("确认【"+statusLabel+"】？")){
-		var json = {inId:inId,status:status,memo:$(".memo").val()} ;
-		$.dataservice("model:Warehouse.In.doStatus",json,function(result){
-			window.location.reload();
-		});
-	}
-}
-
-function productInWarehouse(){
-	openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
-}
-
 $(function(){
-	var flowData = [
-		{status:0,label:"编辑中",actions:[{label:"提交审批",action:function(){ AuditAction(10,"提交审批") }}]},
-		{status:10,label:"待审批",actionLabel:"执行审批"
-			,actions:[{label:"审批通过",action:function(){ AuditAction(20,"审批通过") } },
-				{label:"审批不通过",action:function(){ AuditAction(0,"审批不通过") } }]},
-		{status:20,label:"待发货"
-			,actions:[{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }]},
-		{status:30,label:"已发货"
-			,actions:[{label:"到达海关",action:function(){ AuditAction(40,"到达海关") } }]},
-		{status:40,label:"到达海关"
-			,actions:[{label:"开始验货",action:function(){ AuditAction(50,"开始验货") } }]},
-		{status:50,label:"验货中"
-			,actions:[{label:"货品验收",action:function(){ productInWarehouse() ; } } ]},
-		{status:60,label:"入库中"
-			,actions:[
-				{label:"货品入库",action:function(){ productInWarehouse() }   }
-			]},
-		{status:70,label:"入库完成"
-			,actions:[{label:"查看入库货品",action:function(){ productInWarehouse();} } ]}
-	] ;
-	
 	//初始化流程数据
 	var flow = new Flow() ;
 	flow.init(".flow-bar center",flowData) ;
@@ -91,6 +57,7 @@ var Flow = function(){
 		$(_data).each(function(index){
 			var statusClass = current == this.status ?"active":(this.status < current?"passed":"disabled") ;
 			var status = this.status ;
+			var isMemo = this.memo ;
 			var label = this.label ;
 			html =  itemTemplate.replace(/{statusClass}/g,statusClass)
 								.replace(/{status}/g,status)
@@ -102,9 +69,13 @@ var Flow = function(){
 			}
 			
 			
-			
 			if( current == this.status ){
 				var actions = this.actions ;
+				
+				if(this.memo && actions && actions.length >=1 ){
+					$(".memo-control").show();
+				}
+				
 				$(actions||[]).each(function(){
 					var me = this ;
 					$("<button class='btn btn-primary' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")

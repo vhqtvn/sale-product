@@ -20,6 +20,11 @@
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('modules/warehouse/in/lists');
 		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
+		$loginId   = $user['LOGIN_ID'] ;
+		
+		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
 	?>
   
 </head>
@@ -35,7 +40,9 @@
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary">查询</button>
+					<?php if($hasEditPermission){ ?>
 					<button class="add-btn btn">添加物流计划单</button>
+					<?php } ?>
 				</td>
 			</tr>						
 		</table>					
