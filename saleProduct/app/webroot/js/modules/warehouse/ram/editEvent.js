@@ -196,7 +196,7 @@ $(function(){
 				pagesize:10,
 				columns:[//显示列
 					{align:"center",key:"ORDER_ID",label:"订单编号",width:"150",query:true},
-					{align:"center",key:"ORDER_NUMBER",label:"系统货号",sort:true,width:"150",query:true},
+					{align:"center",key:"ORDER_NUMBER",label:"内部订单号",sort:true,width:"150",query:true},
 					{align:"center",key:"PRODUCT_NAME",label:"产品名称",sort:true,width:"150"},
 					{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"window.opener.renderProductImg"}},
 					{align:"center",key:"REAL_SKU",label:"货品SKU",sort:true,width:"50"}
@@ -310,7 +310,7 @@ $(function(){
 					{key:"STATUS",label:"状态",width:"50",forzen:false,align:"center",format:{type:"json",content:{'0':"编辑中",1:"待审批",2:"审批完成",3:"处理完成"}}},
 					{key:"CODE",label:"编号",width:"80",forzen:false,align:"center"},
 					{key:"ORDER_ID",label:"订单ID",width:"100",forzen:false,align:"center"},
-					{key:"ORDER_NO",label:"系统货号",width:"100",forzen:false,align:"center"},
+					{key:"ORDER_NO",label:"内部订单号",width:"100",forzen:false,align:"center"},
 					{key:"REAL_SKU",label:"货品SKU",group:"货品",width:"80"},
 					{key:"IMAGE_URL",label:"图片",group:"货品",width:"40",format:{type:'func',funcName:"renderGridImg"}},
 		           	{key:"CAUSE_NAME",label:"原因",width:"100",align:"left"},

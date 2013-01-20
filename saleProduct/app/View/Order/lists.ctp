@@ -52,7 +52,7 @@
 				<td>
 					<input type="text" name="orderId"/>
 				</td>
-				<th>系统货号：</th>
+				<th>内部订单号：</th>
 				<td>
 					<input type="text" name="orderNumber"/>
 				</td>

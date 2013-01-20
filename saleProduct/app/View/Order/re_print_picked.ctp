@@ -171,7 +171,7 @@
 	</div>
 	
 	<div class="search">
-		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="系统货号 或 产品SKU"/>
+		<input type="input" id="orderId" name="orderId" class="span4" placeHolder="内部订单号 或 产品SKU"/>
 		<button class="btn btn-search btn-primary" style="display:none;">search</button>
 		<div class="order-id alert alert-info"></div>
 		<div class="exception">

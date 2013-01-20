@@ -34,7 +34,7 @@ $(function(){
 	           		var memo = record.MEMO||"" ;
 	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 	        }},
-	        {align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"10%"},
+	        {align:"left",key:"ORDER_NUMBER",label:"内部订单号", width:"10%"},
            	{align:"left",key:"REAL_SKU",label:"货品SKU", width:"10%"},
 	        {align:"left",key:"NAME",label:"货品名称", width:"10%"},
            	{align:"center",key:"IMAGE_URL",label:"货品图片",width:"4%",format:function(val,record){

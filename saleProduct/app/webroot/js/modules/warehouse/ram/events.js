@@ -2,10 +2,10 @@ $(function(){
 	
 	var tab = $('#tabs-default').tabs( {//$this->layout="index";
 		tabs:[
-			{label:'编辑中',content:"tab-container"},
-			{label:'待审批',content:"tab-container"},
-			{label:'审批完成',content:"tab-container"},
-			{label:'处理完成',content:"tab-container"}
+			{label:'编辑中',content:"tab-container",custom:'0'},
+			{label:'待审批',content:"tab-container",custom:'1'},
+			{label:'审批完成',content:"tab-container",custom:'2'},
+			{label:'处理完成',content:"tab-container",custom:'3'}
 		] ,
 		select:function(event,ui){
 			var index = ui.index ;
@@ -20,6 +20,32 @@ $(function(){
 			}
 		}
 	} ) ;
+	
+	function loadCount(){
+		$.dataservice("model:Warehouse.Ram.loadStatusCount",{},function(result){
+		
+			$(result).each(function(){
+				var item = {} ;
+				for(var o in this){
+					var _ = this[o] ;
+					for(var o in _){
+						item[o] = _[o] ;
+					}
+				}
+				var el = $("[custom='"+item['STATUS']+"']") ;
+				if(el.length){
+					var cl = el.attr("customLabel");
+					var content = cl+"("+item['C']+")" ;
+					el.find("span").html(content) ;
+				}
+			}) ;
+			
+			setTimeout(function(){
+				loadCount() ;
+			},60000) ;
+		});
+	}
+	loadCount() ;
 	
 	$(".grid-content").llygrid({
 		columns:[
@@ -40,7 +66,7 @@ $(function(){
 			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"center",format:{type:"json",content:{'0':"编辑中",1:"待审批",2:"审批完成",3:"处理完成"}}},
 			{key:"CODE",label:"编号",width:"14%",forzen:false,align:"center"},
 			{key:"ORDER_ID",label:"订单ID",width:"14%",forzen:false,align:"center"},
-			{key:"ORDER_NO",label:"系统货号",width:"8%",forzen:false,align:"center"},
+			{key:"ORDER_NO",label:"内部订单号",width:"8%",forzen:false,align:"center"},
 			{key:"REAL_SKU",label:"货品SKU",group:"货品",width:"5%"},
 			{key:"IMAGE_URL",label:"图片",group:"货品",width:"3%",format:{type:'func',funcName:"renderGridImg"}},
            	{key:"CAUSE_NAME",label:"原因",width:"13%",align:"left"},
@@ -61,6 +87,11 @@ $(function(){
 		 	//$(".grid-content-active").llygrid("reload",{planId:record.ID});
 		 }
 	}) ;
+	
+	$(".query-btn").click(function(){
+		var json = $(".toolbar-auto").toJson() ;
+		$(".grid-content").llygrid("reload",json,true) ;
+	})
 
 	//添加选项
 	$(".add-btn").click(function(){

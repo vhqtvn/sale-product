@@ -10,7 +10,7 @@ $(function(){
 				}},
 				{key:"ID",label:"编辑",width:"8%",format:function(val,record){
 					var html = [] ;
-					html.push("<a href='#' class='add-active btn' val='"+val+"'>添加活动</a>&nbsp;&nbsp;") ;
+					html.push("<a href='#' class='add-active btn' val='"+val+"'>添加任务</a>&nbsp;&nbsp;") ;
 					return html.join("") ;
 				}},
 				{key:"NAME",label:"名称",width:"15%",forzen:false,align:"left"},
@@ -58,7 +58,7 @@ $(function(){
 					html.push("<a href='#' class='edit btn' val='"+val+"'>盘点明细</a>&nbsp;&nbsp;") ;
 					return html.join("") ;
 				}},
-				{key:"DISK_NO",label:"活动代码",width:"15%",forzen:false,align:"left"},
+				{key:"DISK_NO",label:"任务代码",width:"15%",forzen:false,align:"left"},
 				{key:"COUNT",label:"总数",group:"货品数量",width:"5%",forzen:false,align:"left"},
 				{key:"PASS_COUNT",label:"审批通过",group:"货品数量",width:"5%",forzen:false,align:"left"},
 				{key:"NOPASS_COUNT",label:"审批未通过",group:"货品数量",width:"7%",forzen:false,align:"left",format:function(val,record){
@@ -81,7 +81,7 @@ $(function(){
 			 height:function(){
 			 	return $(window).height() - 350 ;
 			 },
-			 title:"盘仓活动列表",
+			 title:"盘仓任务列表",
 			 indexColumn:false,
 			 querys:{sqlId:"sql_warehouse_disk_lists",planId:'-'},
 			 loadMsg:"数据加载中，请稍候......"

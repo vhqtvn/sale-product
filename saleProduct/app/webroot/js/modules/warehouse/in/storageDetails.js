@@ -35,7 +35,7 @@ $(function(){
 			columns:[
 				{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"100"},
 	           	{align:"center",key:"QUANTITY",label:"出库数量",width:"100"},
-	           	{align:"center",key:"ORDER_NUMBER",label:"系统货号",width:"100"},
+	           	{align:"center",key:"ORDER_NUMBER",label:"内部订单号",width:"100"},
 	           	{align:"center",key:"SKU",label:"订单产品SKU",width:"150"},
 	           	{align:"left",key:"PAYMENTS_DATE",label:"支付日期", width:"150" },
 	           	{align:"center",key:"ORDER_ID",label:"ORDER ID",width:"150" }

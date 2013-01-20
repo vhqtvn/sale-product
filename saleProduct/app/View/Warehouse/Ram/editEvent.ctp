@@ -144,7 +144,7 @@
 										<?php echo !$isInit?"style='display:none;'":"" ;?>
 										>选择</button>
 									</td>
-									<th>订单系统货号：</th><td><input data-validator="required" type="text" id="orderNo"
+									<th>订单内部订单号：</th><td><input data-validator="required" type="text" id="orderNo"
 										<?php echo !$isInit?"readOnly":"" ;?>
 										value="<?php if(empty($result['ORDER_NO'])){
 											echo $order['ORDER_NUMBER'] ;

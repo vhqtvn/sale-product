@@ -49,7 +49,7 @@ function formatGridData(data){
 						return _index++ ;
 					}},
 					{align:"left",key:"PICK_ID",label:"拣货号", width:"5%"},
-					{align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"8%"},
+					{align:"left",key:"ORDER_NUMBER",label:"内部订单号", width:"8%"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"6%"},
 					{align:"left",key:"NAME",label:"货品名称", width:"10%"},
 					{align:"center",key:"IMAGE_URL",label:"图片", width:"10%",format:function(val,record){

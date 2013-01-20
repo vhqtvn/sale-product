@@ -27,9 +27,22 @@
 <body>
 <div class="toolbar toolbar-auto">
 		<table>
-			<tr>							
+			<tr>
+				<th>
+					RMA编号:
+				</th>
+				<td>
+					<input type="text" name="rmaId" class="span2"/>
+				</td>
+				<th>
+					Order编号:
+				</th>
+				<td>
+					<input type="text" name="orderId" class="span2"/>
+				</td>								
 				<td class="toolbar-btns">
-					<button class="add-btn btn">添加RAM事件</button>
+					<button class="query-btn btn ">查询</button>
+					<button class="add-btn btn btn-primary">添加RAM事件</button>
 				</td>
 			</tr>						
 		</table>

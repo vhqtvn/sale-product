@@ -16,6 +16,10 @@ class Ram extends AppModel {
 		}
 	}
 	
+	function loadStatusCount(){
+		return $this->exeSql("sql_warehouse_rma_loadStatusCount",array());
+	}
+	
 	public function doSaveEvent($params){
 		if( empty( $params['id'] ) ){
 			$this->exeSql("sql_ram_event_insert",$params) ;

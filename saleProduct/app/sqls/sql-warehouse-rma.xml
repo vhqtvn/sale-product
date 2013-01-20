@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+    <entry key="sql_warehouse_rma_loadStatusCount">
+   		SELECT STATUS,COUNT(STATUS) AS C FROM sc_ram_event GROUP BY status
+   </entry>
+	
    <entry key="sql_ram_options_list">
   		select * from sc_ram_options order by type
    </entry>
@@ -74,7 +78,8 @@
 		  on srp.id = srpr.real_id
 		  WHERE s1.order_id = sao.order_id
 		  {@ and s1.status = '#status#'}
-		  {@ and s1.order_id = '#orderId#'}
+		  {@ and s1.order_id like '%#orderId#%'}
+		  {@ and s1.code like '%#rmaId#%'}
    </entry>
    
    <entry key="sql_ram_events_list_rel">

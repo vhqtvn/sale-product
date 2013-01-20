@@ -140,7 +140,7 @@ function formatGridData(data){
 					
 					$(".grid-content").llygrid("reload",{orderNumber:val}) ;
 					
-					$(".order-id").html("系统货号："+val) ;
+					$(".order-id").html("内部订单号："+val) ;
 				}
 				
 				
@@ -163,7 +163,7 @@ function formatGridData(data){
 						return _index++ ;
 					}},
 					{align:"left",key:"ORDER_ID",label:"订单编号", width:"60"},
-					{align:"left",key:"ORDER_NUMBER",label:"系统货号", width:"8%"},
+					{align:"left",key:"ORDER_NUMBER",label:"内部订单号", width:"8%"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"60",format:function(val,record){
 						if(record.P_TYPE == 1){
 							return "<font color=red>"+val+"</font>" ;

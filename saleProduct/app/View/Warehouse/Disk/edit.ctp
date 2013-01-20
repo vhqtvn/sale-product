@@ -139,7 +139,7 @@
 									</td>
 								</tr>
 								<tr>
-									<th>活动代码：</th><td><input data-validator="required" type="text" id="diskNo"
+									<th>任务代码：</th><td><input data-validator="required" type="text" id="diskNo"
 										value="<?php if( empty($result['DISK_NO']) ){
 												echo $defaultCode ;
 											   }else{
