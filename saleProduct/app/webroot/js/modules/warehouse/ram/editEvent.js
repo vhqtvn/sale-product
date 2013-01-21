@@ -198,7 +198,7 @@ $(function(){
 					{align:"center",key:"ORDER_ID",label:"订单编号",width:"150",query:true},
 					{align:"center",key:"ORDER_NUMBER",label:"内部订单号",sort:true,width:"150",query:true},
 					{align:"center",key:"PRODUCT_NAME",label:"产品名称",sort:true,width:"150"},
-					{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"window.opener.renderProductImg"}},
+					{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"renderGridImg"}},
 					{align:"center",key:"REAL_SKU",label:"货品SKU",sort:true,width:"50"}
 				]
 			}

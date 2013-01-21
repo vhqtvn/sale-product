@@ -186,7 +186,7 @@
 			           	
 			           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",
 			           		content:{'base':"基本类型",'package':"打包货品"}}},
-			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"window.opener.renderProductImg"}},
+			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"renderGridImg"}},
 			           	{align:"center",key:"MEMO",label:"备注",width:"20%"}
 			           	
 					]
