@@ -16,64 +16,14 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
+		
+		echo $this->Html->script('modules/users/list_groups');
 	?>
   
    <script type="text/javascript">
 
 
-	$(function(){
-			$(".action").live("click",function(){
-				var id = $(this).attr("val") ;
-				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/users/editGroup/"+id,400,300) ;
-				}else if( $(this).hasClass("del") ){
-					if(window.confirm("确认删除吗")){
-						$.ajax({
-							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
-							data:{id:id},
-							cache:false,
-							dataType:"text",
-							success:function(result,status,xhr){
-								$(".grid-content").llygrid("reload") ;
-							}
-						}); 
-					}
-				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/users/editGroup",400,300) ;
-				}else if( $(this).hasClass("assign") ){//分配权限
-					openCenterWindow("/saleProduct/index.php/users/assignFunctions/"+id,400,400) ;
-				} 
-				return false ;
-			})
-
-			$(".grid-content").llygrid({
-				columns:[
-		           	{align:"center",key:"ID",label:"编号", width:"5%",forzen:true},
-					{align:"center",key:"ID",label:"Actions", width:"20%",format:function(val,record){
-							var html = [] ;
-							var val = record["CODE"] ;
-							html.push("<a href='#' class='action update' val='"+val+"'>修改</a>&nbsp;") ;
-							html.push("<a href='#' class='action assign' val='"+val+"'>功能权限</a>&nbsp;") ;
-							//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
 	
-							return html.join("") ;
-					}},
-					{align:"center",key:"CODE",label:"代码", width:"15%"},
-		           	{align:"center",key:"NAME",label:"用户组名称",width:"20%",forzen:false,align:"left"}
-		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
-				 limit:20,
-				 pageSizes:[10,20,30,40],
-				 height:function(){
-				 	return $(window).height() - 200 ;
-				 },
-				 title:"用户组列表",
-				 indexColumn:false,
-				  querys:{sqlId:"sql_groups_list"},
-				 loadMsg:"数据加载中，请稍候......"
-			}) ;
-   	 });
    </script>
    
    <style>
@@ -85,8 +35,26 @@
 </head>
 <body>
 
-	<div class="grid-query-button">
-		<!--<button class="action add">添加用户</button>-->
+
+	<div class="toolbar toolbar-auto">
+		<table style="width:100%;" class="query-table">	
+			<tr>
+				<th>名称：</th>
+				<td>
+					<input type="text" id="name"/>
+				</td>
+				<th>代码：</th>
+				<td>
+					<input type="text" id="code"/>
+				</td>
+				<th></th>
+				<td>
+					<button class="btn btn-primary query" >查询</button>
+					<button class="btn btn-primary add-btn" >添加用户组</button>
+				</td>
+			</tr>						
+		</table>	
+		<hr style="margin:2px;"/>	
 	</div>
 	
 

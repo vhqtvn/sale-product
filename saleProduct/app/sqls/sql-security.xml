@@ -26,8 +26,43 @@
 			FROM sc_user 
    </entry>
    
+   <entry key="sql_security_group_insert">
+   	INSERT INTO sc_security_groups 
+			( 
+			NAME, 
+			CREATED,
+			CODE, 
+			MEMO
+			)
+			VALUES
+			(
+			'{@#name#}', 
+			NOW(), 
+			'{@#code#}', 
+			'{@#memo#}'
+			)
+   </entry>
+   
+   <entry key="sql_security_group_update">
+		UPDATE sc_security_groups 
+			SET
+			NAME = '{@#name#}' , 
+			MODIFIED = NOW() , 
+			CODE = '{@#code#}' , 
+			MEMO = '{@#memo#}'
+			WHERE
+			ID = '{@#id#}' 
+   </entry>
+   
    <entry key="sql_groups_list">
-		 SELECT * FROM sc_security_groups 
+		 SELECT * FROM sc_security_groups  
+		 	where 1=1 
+		 	{@ and code like '%#code#%'}
+		 	{@ and name like '%#name#%'}
+   </entry>
+   
+   <entry key="sql_groups_getById">
+		 SELECT * FROM sc_security_groups  where id = '{@#id#}'
    </entry>
    
    <entry key="sql_functions_list">

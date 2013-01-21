@@ -118,25 +118,32 @@
 
 </head>
 <body>
- <div style="border:1px solid #CCC;margin:3px;">
-	   <table border=0 cellPadding=3 cellSpacing=4 class="query-table" >
-		    <tr>
-		      <td>姓名：</td>
-		     <td><input name="name"  type="text"/></td>
-		     <td>邮箱：</td>
-		     <td><input name="email" type="text"/></td> 
-		     <td>状态：</td>
-		     <td><select name="status">
-				<option value="">-</option>
-				<option value="danger">风险客户</option>
-			</select></td> 
-		     <td colSpan=2 align=center>
-		     	<input type="button" class="btn btn-primary query-btn" value="查询">
-		     	<input type="button" class="btn btn-danger set-danger" value="设置为风险客户">
-		     </td> 
-		    </tr>
-		   </table>
-	</div>  
+
+	<div class="toolbar toolbar-auto">
+		<table style="width:100%;" class="query-table">	
+			<tr>
+				 <th>姓名：</th>
+			     <td><input name="name"  type="text" class="span2"/></td>
+			     <th>邮箱：</th>
+			     <td><input name="email" type="text" class="span2"/></td> 
+			     <th>状态：</th>
+			     <td><select name="status" class="span2">
+					<option value="">-</option>
+					<option value="danger">风险客户</option>
+				</select>
+				</td>
+				<th></th>
+				<td>
+					<input type="button" class="btn btn-primary query-btn" value="查询">
+		     		<input type="button" class="btn btn-danger set-danger" value="设置为风险客户">
+		     		
+		     		<input type="button" class="btn" value="导出">
+		     		<input type="button" class="btn" value="导入">
+				</td>
+			</tr>						
+		</table>
+	</div>
+  
 	<div class="grid-content">
 	
 	</div>

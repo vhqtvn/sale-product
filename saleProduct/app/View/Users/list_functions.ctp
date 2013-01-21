@@ -87,6 +87,10 @@
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
    	 });
+   	 
+   	 window.openCallback = function(){
+   	 	$(".grid-content").llygrid("reload",{},true) ;
+   	 }
    </script>
    
    <style>

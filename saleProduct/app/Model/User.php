@@ -220,4 +220,12 @@ class User extends AppModel {
 		$sql = " SELECT 1 as selected FROM sc_security_group_function WHERE group_code = '$code' and function_code = CONCAT('a___',$accountId) " ;
 		return $this->query($sql) ; 
 	}
+	
+	function editGroup($params){
+		if( empty( $params['id'] ) ){
+			$this->exeSql("sql_security_group_insert",$params) ;
+		}else{
+			$this->exeSql("sql_security_group_update",$params) ;
+		}
+	}
 }
