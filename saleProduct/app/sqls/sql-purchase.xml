@@ -76,6 +76,18 @@
 			
    </entry>
    
+    <entry key="sql_update_sc_purchase_plan_details">
+        update sc_purchase_plan_details 
+        	set plan_num = '{@#plan_num#}',
+				quote_price = '{@#quote_price#}',
+				providor = '{@#providor#}',
+				sample = '{@#sample#}',
+				area = '{@#area#}',
+				sample_code = '{@#sample_code#}',
+				memo = '{@#memo#}'
+				where id = '{@#id#}'
+   </entry>
+   
    <entry key="sql_marketing_test_list">
          SELECT  sc_marketing_test.* ,
 				( select sc_user.name from sc_user where sc_user.login_id = sc_marketing_test.creator ) as USERNAME

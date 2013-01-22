@@ -7,10 +7,11 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   		/*
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('../js/validator/jquery.validation');
+		
 		echo $this->Html->css('style-all');
 
 		echo $this->Html->script('jquery');
@@ -18,6 +19,17 @@
 		echo $this->Html->script('../grid/query');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('../grid/grid');
+		*/
+		
+		echo $this->Html->meta('icon');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/validator/jquery.validation');
+		echo $this->Html->css('default/style');
+
+		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('validator/jquery.validation');
 		
 		$id = $product[0]['sc_purchase_plan_details']["ID"] ;
@@ -49,12 +61,14 @@
 		}
    </style>
 
-   <script>
+   <script type="text/javascript">
 		$(function(){
-			
 			$("button").click(function(){
-				
-				$.ajax({
+				var json = $("#personForm").toJson() ;
+				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
+					alert(1231);
+				}) ;
+				/*$.ajax({
 					type:"post",
 					url:"/saleProduct/index.php/sale/savePurchasePlanProduct",
 					data:{
@@ -74,7 +88,7 @@
 						window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
 						window.close() ;
 					}
-				}); 
+				}); */
 			});
 			
 			$(".edit_supplier").click(function(){
@@ -85,73 +99,100 @@
    </script>
 
 </head>
-<body>
-	<input id="id" value='<?php echo $id ;?>' type="hidden"/>
-	<table class="table">
-		<tr>
-			<td>编号：</td><td><?php echo $id ;?></td>
-		</tr>
-		<tr>
-			<td>ASIN：</td><td><?php echo $asin ;?></td>
-		</tr>
-		<tr>
-			<td>标题：</td><td><?php echo $title ;?></td>
-		</tr>
-		<tr>
-			<td>采购数量：</td>
-			<td><input id="plan_num" type="text" value='<?php echo $plan_num ;?>' /></td>
-		</tr>
-		<tr>
-			<td>采购价：</td>
-			<td><input id="quote_price" type="text" value='<?php echo $quote_price ;?>' /></td>
-		</tr>
-		<tr>
-			<td>供应商：</td><td>
-			<select id="providor">
-				<option value="">--</option>
-			<?php
-				foreach($supplier as $suppli){
-					$temp = "" ;
-					if( $suppli['sc_supplier']['ID'] == $providor ){
-						$temp = "selected" ;
-					}
-					echo "<option $temp value='".$suppli['sc_supplier']['ID']."'>".$suppli['sc_supplier']['NAME']."</option>" ;
-				}
-			?>
-			</select>  <a href="/saleProduct/index.php/supplier/listsSelect/B00005NPOB" class="edit_supplier">编辑产品供应商</a>
-			</td>
-		</tr>
-		<tr>
-			<td>样品：</td><td>
-			<select id="sample">
-				<option value="0" <?php if($sample == 0 ) echo 'selected' ;?>>无</option>
-				<option value="1" <?php if($sample == 1 ) echo 'selected' ;?> >准备中</option>
-				<option value="2" <?php if($sample == 2 ) echo 'selected' ;?>>有</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td>样品编码：</td><td>
-			<input type="text" id="sample_code" value='<?php echo $sample_code ;?>' />(位置码+产品码组成，中间以下划线连接)
-			</td>
-		</tr>
-		<tr>
-			<td>采购地区：</td><td>
-			<select id="area">
-				<option value="china" <?php if($area == 'china' ) echo 'selected' ;?>>大陆</option>
-				<option value="taiwan" <?php if($area == 'taiwan' ) echo 'selected' ;?> >台湾</option>
-				<option value="american" <?php if($area == 'american' ) echo 'selected' ;?>>美国</option>
-			</select>
-			</td>
-		</tr>
-		<tr>
-			<td>采购原因：</td><td>
-			<textarea style="width:500px;height:80px;" id="memo"><?php echo $product[0]['sc_purchase_plan_details']['MEMO'] ;?></textarea>
-			</td>
-		</tr>
-		<tr>
-			<td></td><td><button class="btn btn-primary">保存</button></td>
-		</tr>
-	</table>
+
+
+<body class="container-popup">
+	<!-- apply 主场景 -->
+	<div class="apply-page">
+		<div class="container-fluid">
+
+	        <form id="personForm" action="#" data-widget="validator,ajaxform" class="form-horizontal" >
+	        	<input id="id" type="hidden" value='<?php echo $id ;?>' />
+				<!-- panel 头部内容  此场景下是隐藏的-->
+				<div class="panel apply-panel">
+					<!-- panel 中间内容-->
+					<div class="panel-content">
+						<!-- 数据列表样式 -->
+						<table class="form-table" >
+							<caption>采购产品信息</caption>
+							<tbody>										   
+								<tr>
+									<th>编号：</th><td><?php echo $id ;?></td>
+								</tr>
+								<tr>
+									<th>ASIN：</th><td><?php echo $asin ;?></td>
+								</tr>
+								<tr>
+									<th>标题：</th><td><?php echo $title ;?></td>
+								</tr>
+								<tr>
+									<th>采购数量：</th>
+									<td><input id="plan_num" type="text" value='<?php echo $plan_num ;?>' /></td>
+								</tr>
+								<tr>
+									<th>采购价：</th>
+									<td><input id="quote_price" type="text" value='<?php echo $quote_price ;?>' /></td>
+								</tr>
+								<tr>
+									<th>供应商：</th><td>
+									<select id="providor">
+										<option value="">--</option>
+									<?php
+										foreach($supplier as $suppli){
+											$temp = "" ;
+											if( $suppli['sc_supplier']['ID'] == $providor ){
+												$temp = "selected" ;
+											}
+											echo "<option $temp value='".$suppli['sc_supplier']['ID']."'>".$suppli['sc_supplier']['NAME']."</option>" ;
+										}
+									?>
+									</select>  
+									
+									<a href="javascript://" class="edit_supplier">编辑产品供应商</a>
+									</td>
+								</tr>
+								<tr>
+									<th>样品：</th><td>
+									<select id="sample">
+										<option value="0" <?php if($sample == 0 ) echo 'selected' ;?>>无</option>
+										<option value="1" <?php if($sample == 1 ) echo 'selected' ;?> >准备中</option>
+										<option value="2" <?php if($sample == 2 ) echo 'selected' ;?>>有</option>
+									</select>
+									</td>
+								</tr>
+								<tr>
+									<th>样品编码：</th><td>
+									<input type="text" id="sample_code" value='<?php echo $sample_code ;?>' />(位置码+产品码组成，中间以下划线连接)
+									</td>
+								</tr>
+								<tr>
+									<th>采购地区：</th><td>
+									<select id="area">
+										<option value="china" <?php if($area == 'china' ) echo 'selected' ;?>>大陆</option>
+										<option value="taiwan" <?php if($area == 'taiwan' ) echo 'selected' ;?> >台湾</option>
+										<option value="american" <?php if($area == 'american' ) echo 'selected' ;?>>美国</option>
+									</select>
+									</td>
+								</tr>
+								<tr>
+									<th>采购原因：</th><td>
+									<textarea style="width:500px;height:80px;" id="memo"><?php echo $product[0]['sc_purchase_plan_details']['MEMO'] ;?></textarea>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<!-- panel脚部内容-->
+                    <div class="panel-foot">
+						<div class="form-actions">
+							<button type="button" class="btn btn-primary">提&nbsp;交</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
 
 </html>

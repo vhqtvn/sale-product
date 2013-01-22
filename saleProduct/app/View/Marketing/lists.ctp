@@ -19,35 +19,11 @@
   
    <script type="text/javascript">
    	 var type = '4' ;//查询已经审批通过
-   
-     //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
 
 	$(function(){
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"编号", width:"5%"},
+		           //	{align:"center",key:"ID",label:"编号", width:"5%"},
 		           	{align:"center",key:"NAME",label:"试销计划名称",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"PLAN_TIME",label:"试销开始时间",width:"13%"},
 		           	{align:"center",key:"MEMO",label:"备注",width:"13%"},
@@ -97,7 +73,7 @@
 			
 			$(".grid-content-details").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"编号",width:"4%"},
+					//{align:"center",key:"ID",label:"编号",width:"4%"},
 		           	{align:"center",key:"ASIN",label:"ASIN", width:"10%",format:function(val,record){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
 		           	}},
@@ -105,7 +81,7 @@
 		           		
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
+		           			return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:20px;height:20px;'>" ;
 		           		}
 		           		return "" ;
 		           		
@@ -178,31 +154,6 @@
    	 
    </script>
    
-   <style>
-   		*{
-   			font:12px "微软雅黑";
-   		}
-   		
-   		.message{
-   			width:600px;
-   			border:1px solid #CCC;
-   			overflow:auto;
-   			margin:5px;
-   			height:200px;
-   			background:#000;
-   			color:#FFF;
-   			margin-bottom:0px;
-   		}
-   		
-   		.loading{
-   			width:600px;
-   			background:#000;
-   			color:#FFF;
-   			margin-top:-1px;
-   			display:hidden;
-   			margin-left:6px;
-   		}
-   </style>
 
 </head>
 <body>

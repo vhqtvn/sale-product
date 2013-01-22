@@ -152,6 +152,7 @@
 	}
 	
 	function adjustWidth(target){
+	
 			forzenWidth = $(".lly-grid-1-head",target).outerWidth(true);
 			$(".lly-grid-content",target).width( $(".lly-grid",target).width() ) ;
 
@@ -182,15 +183,17 @@
 			
 			//同步列宽
 			$(".lly-grid-1-head tr:first th",target).each(function(index){
-				
 				var width = $.browser.msie? $(this).width():$(this).outerWidth() ;
 				var width =  $(this).attr("_width")   ;
 				$(".lly-grid-1-body table tr td:eq("+index+")",target).width( width ) ;
 			}) ;
 			
 			$(".lly-grid-2-head tr:first th",target).each(function(index){
-				var width = $.browser.msie? $(this).width():$(this).outerWidth() ;
-				var width =  $(this).attr("_width")   ;
+				var width1 = $.browser.msie? $(this).width():$(this).outerWidth() ;
+				var width =  $(this).width() ;//$(this).attr("_width")   ;
+				//alert(width+"  "+width1+"  "+$(this).width())
+				//alert(width);
+				//alert
 				$(".lly-grid-2-body table tr td:eq("+index+")",target).width( width ) ;
 			}) ;
 	}
@@ -349,6 +352,11 @@
 		
 		
 		$(options.columns).each(function(index){
+			
+			if( this.permission ){//没权限，忽略
+				if( !this.permission()) return  ; 
+			}
+			
 			for(var o in $.llygrid.format){//format
 				if( this[o] && !this.format){
 					this.format = {type:o,content:this[o]} ;

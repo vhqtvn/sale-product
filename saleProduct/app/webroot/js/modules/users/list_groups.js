@@ -56,6 +56,11 @@ $(function(){
 			openCenterWindow("/saleProduct/index.php/page/forward/Users.editGroup/"+record.ID,580,300) ;
 		}) ;
 		
+		$(".assign").live("click",function(){
+			var record = $.llygrid.getRecord(this) ;
+			openCenterWindow("/saleProduct/index.php/users/assignFunctions/"+record.CODE,400,400) ;
+		}) ;
+		
 		$(".add-btn").click(function(){
 			openCenterWindow("/saleProduct/index.php/page/forward/Users.editGroup",580,300) ;
 		}) ;

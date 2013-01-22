@@ -107,8 +107,10 @@ class Sale extends AppModel {
 		$this->query($sql) ;
 	}
 	
-	public function savePurchasePlanProduct($data,$user){
-		$id = $data['id'] ;
+	public function savePurchasePlanProduct($data){
+		
+		$this->exeSql("sql_update_sc_purchase_plan_details" , $data ) ;
+		/*$id = $data['id'] ;
 		$plan_num = $data["plan_num"] ;
 		$quote_price = $data["quote_price"] ;
 		$providor = $data["providor"] ;
@@ -116,8 +118,6 @@ class Sale extends AppModel {
 		$sample_code = $data["sample_code"] ;
 		$area =   $data["area"] ;
 		$memo =   $data["memo"] ;
-		
-		print_r($data) ;
 		
 		$sql = "update sc_purchase_plan_details set plan_num = '$plan_num',
 				quote_price = '$quote_price',
@@ -128,7 +128,7 @@ class Sale extends AppModel {
 				memo = '$memo'
 				where id = '$id'
 			" ;
-		$this->query($sql) ;
+		$this->query($sql) ;*/
 	}
 	
 	public function updatePurchasePlanProductStatus($data,$user){
