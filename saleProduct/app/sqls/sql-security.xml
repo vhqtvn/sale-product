@@ -24,6 +24,7 @@
    <entry key="sql_user_list">
   SELECT sc_user.* , (select name from sc_security_groups where sc_security_groups.code = sc_user.group_code ) as GROUP_NAME
 			FROM sc_user 
+			where status = '1'
    </entry>
    
    <entry key="sql_security_group_insert">
@@ -54,6 +55,71 @@
 			ID = '{@#id#}' 
    </entry>
    
+   <entry key="sql_security_function_insert">
+   	INSERT INTO sc_security_function 
+				(
+				NAME, 
+				PARENT_ID, 
+				URL, 
+				TYPE,
+				CODE,
+				DISPLAY_ORDER
+				)
+				VALUES
+				(
+				'{@#name#}', 
+				'{@#parentId#}', 
+				'{@#url#}', 
+				'{@#type#}',
+				'{@#code#}',
+				'{@#displayOrder#}'
+				)
+   </entry>
+   
+   <entry key="sql_security_function_update">
+		UPDATE sc_security_function 
+					SET
+					NAME = '{@#name#}' , 
+					PARENT_ID = '{@#parentId#}' , 
+					URL = '{@#url#}' , 
+					TYPE = '{@#type#}' ,
+					CODE = '{@#code#}',
+					display_order = '{@#displayOrder#}'
+					
+					WHERE
+					ID = '{@#id#}' 
+   </entry>
+   
+   <entry key="sql_security_user_insert">
+   	insert sc_user(name,login_id,password,group_code,phone,email) 
+   		values('{@#name#}','{@#account#}','{@#password#}','{@#group#}','{@#phone#}','{@#email#}')
+   </entry>
+   
+   <entry key="sql_security_user_update">
+		UPDATE  sc_user 
+				SET
+				NAME = '{@#name#}' , 
+				{@PASSWORD = '#password#' ,} 
+				LOGIN_ID = '{@#account#}' , 
+				GROUP_CODE = '{@#group#}' , 
+				PHONE = '{@#phone#}' , 
+				EMAIL = '{@#email#}' 
+				WHERE
+				ID = '{@#id#}' 
+   </entry>
+   
+   <entry key="sql_security_user_disabled">
+		UPDATE  sc_user 
+				SET
+				status = '0'
+				where ID = '{@#id#}' 
+   </entry>
+   
+   <entry key="sql_security_user_getByUserName">
+		select * from sc_user where login_id = '{@#username#}' and status = 1
+   </entry>
+   
+   
    <entry key="sql_groups_list">
 		 SELECT * FROM sc_security_groups  
 		 	where 1=1 
@@ -66,12 +132,16 @@
    </entry>
    
    <entry key="sql_functions_list">
-		SELECT * FROM sc_security_function where 1=1 {@ and parent_id = '#id#'
+		SELECT s1.* ,
+		 (select name from sc_security_function s2 where s2.id = s1.parent_id ) as PARENT_NAME 
+		FROM sc_security_function s1 where 1=1 {@ and s1.parent_id = '#id#'
 		  or
-		  parent_id in (
+		  s1.parent_id in (
 		    select id from sc_security_function s1 where s1.parent_id = '#id#'
 		  )
 		}
+		{@ and name like '%#name#%'}
+		order by display_order
    </entry>
   
    <entry key="sql_union_seller">
@@ -97,5 +167,17 @@
    	SELECT s.* , concat(s.name,'[',s.id,']') AS TEXT FROM sc_security_function s  where s.parent_id is null or s.parent_id = ''
    </entry>
    
-   
+   <entry key="sql_security_getFunctionRelGroupsFrontByGroupCode">
+   	<![CDATA[	
+   	SELECT 
+		  sc_security_function.* 
+		 FROM sc_security_function where ( parent_id <> 'account' || parent_id IS NULL)
+		 and type = 'MENU'
+		 and code in (
+       		SELECT sc_security_group_function.function_code FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
+		   = sc_security_function.code AND sc_security_group_function.GROUP_CODE = '{@#code#}'
+		)
+		order by  display_order
+	]]>
+	</entry>
 </properties>

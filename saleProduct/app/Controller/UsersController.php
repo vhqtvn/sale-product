@@ -21,7 +21,13 @@ class UsersController extends AppController
             $md5passwd = md5($passwd) ;
         	
             //数据库查询对象 
-            $someone = $this->User->queryUserByUserName($this->data['username']);  
+            $someone = $this->User->queryUserByUserName($this->data['username']);
+            
+            if(empty($someone)){
+            	$this->set('error', true); 
+            	return ;
+            }
+              
             $dbpasswd = $someone[0]['sc_user']['PASSWORD'] ;
             
             if(!empty($dbpasswd) &&$dbpasswd == $md5passwd ){

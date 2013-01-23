@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>llygrid demo</title>
+    <title>功能编辑</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -15,46 +15,8 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
-		
+		echo $this->Html->script('modules/users/edit_function');
 	?>
-  
-  
-   <style>
-   		*{
-   			font:12px "微软雅黑";
-   		}
-
-		.rule-content-item{
-			clear:both;
-		}
-
-		.item-label,.item-relation,.item-value,.item-value{
-			float:left;
-		}
-   </style>
-
-   <script>
-		$(function(){
-			$("button").click(function(){
-				if( !$.validation.validate('#personForm').errorInfo ) {
-					var json = $("#personForm").toJson() ;
-				
-					$.ajax({
-						type:"post",
-						url:"/saleProduct/index.php/users/saveFunctoin",
-						data:json,
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							window.opener.openCallback() ;
-							window.close() ;
-						}
-					}); 
-				}
-			})
-		})
-   </script>
-
 </head>
 
 <body class="container-popup">
@@ -111,6 +73,10 @@
 								<tr>
 									<th>功能URL：</th><td><input type="text" id="url" 
 										value="<?php echo  $function[0]['sc_security_function']['URL'];?>"/></td>
+								</tr>
+								<tr>
+									<th>显示顺序：</th><td><input type="text" id="displayOrder" 
+										value="<?php echo  $function[0]['sc_security_function']['DISPLAY_ORDER'];?>"/></td>
 								</tr>
 							</tbody>
 						</table>

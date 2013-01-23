@@ -3,8 +3,7 @@ class User extends AppModel {
 	var $useTable = 'sc_user';
 	
 	function queryUserByUserName($username){
-		$sql = "select * from sc_user where login_id = '$username'" ;
-		return $this->query($sql) ;
+		return $this->exeSql("sql_security_user_getByUserName",array('username'=>$username)) ;
 	}
 	
 	function queryUserGroups(){
@@ -17,67 +16,37 @@ class User extends AppModel {
 		return $this->query($sql) ;
 	}
 	
-	function saveFunctoin($data){
-		if( empty( $data['id'] ) ){
-			$sql = "INSERT INTO sc_security_function 
-				(
-				NAME, 
-				PARENT_ID, 
-				URL, 
-				TYPE,
-				CODE
-				)
-				VALUES
-				(
-				'".$data['name']."', 
-				'".$data['parentId']."', 
-				'".$data['url']."', 
-				'".$data['type']."',
-				'".$data['code']."'
-				)
-			" ;
-			$this->query($sql) ;
+	
+	function editGroup($params){
+		if( empty( $params['id'] ) ){
+			$this->exeSql("sql_security_group_insert",$params) ;
 		}else{
-			$sql = "
-				UPDATE sc_security_function 
-					SET
-					NAME = '".$data['name']."' , 
-					PARENT_ID = '".$data['parentId']."' , 
-					URL = '".$data['url']."' , 
-					TYPE = '".$data['type']."' ,
-					CODE = '".$data['code']."'
-					
-					WHERE
-					ID = '".$data['id']."' " ;
-					
-					$this->query($sql) ;
+			$this->exeSql("sql_security_group_update",$params) ;
+		}
+	}
+	
+	function saveFunctoin($params){
+		if( empty( $params['id'] ) ){
+			$this->exeSql("sql_security_function_insert",$params) ;
+		}else{
+			$this->exeSql("sql_security_function_update",$params) ;
 		}
 	}
 	
 	function saveUser($user){
-
-		$id = $user["id"] ;
-		$name = $user["name"] ;
-		$loginId = $user["login_id"] ;
-		$password = $user["password"] ;
-		$group = $user["group"] ;
-		if( !empty($password) ){
-			$password = md5($password) ;
+		if(!empty($user["password"])){
+			$user["password"] = md5( $user["password"] ) ;
 		}
 		
-		$user1 = $this->queryUserByUserName($loginId) ;
-		if( $user1 != null ){
-			//update
-			$sql = "update sc_user set name = '$name',login_id='$loginId',group_code='$group'" ;
-			if(!empty($password)  ){
-				$sql = $sql.",password='$password'" ;
-			}
-			$sql = $sql." where id='$id'" ;
-			$this->query($sql) ;
+		if(empty($user['id'])){
+			$this->exeSql("sql_security_user_insert",$user) ;
 		}else{
-			$sql = "insert sc_user(name,login_id,password,group_code) values('$name','$loginId','$password','$group')" ;
-			$this->query($sql) ;
+			$this->exeSql("sql_security_user_update",$user) ;
 		}
+	}
+	
+	function disableUser($params){
+		$this->exeSql("sql_security_user_disabled",$params) ;
 	}
 	
 	function getFunctionRelGroups($code){
@@ -174,17 +143,7 @@ class User extends AppModel {
 	}
 	
 	function getFunctionRelGroupsFront($code){
-		$sql = " SELECT 
-		  sc_security_function.* 
-		 FROM sc_security_function where ( parent_id <> 'account' || parent_id IS NULL)
-		 and type = 'MENU'
-		 and code in (
-       		SELECT sc_security_group_function.function_code FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
-		   = sc_security_function.code AND sc_security_group_function.GROUP_CODE = '$code'
-		)
-		order by  parent_id" ;
-		 
-		 return $this->query($sql) ; 
+		return $this->exeSql("sql_security_getFunctionRelGroupsFrontByGroupCode",array('code'=>$code)) ;
 	}
 	
 		
@@ -221,11 +180,4 @@ class User extends AppModel {
 		return $this->query($sql) ; 
 	}
 	
-	function editGroup($params){
-		if( empty( $params['id'] ) ){
-			$this->exeSql("sql_security_group_insert",$params) ;
-		}else{
-			$this->exeSql("sql_security_group_update",$params) ;
-		}
-	}
 }
