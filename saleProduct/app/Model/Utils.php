@@ -64,6 +64,83 @@ class Utils extends AppModel {
 		return json_encode($results) ;
 	}
 	
+	public function formatTreeForRecords($records , $params = null,$keys=null){
+		$items = array() ;
+		$roots = array() ;
+		$keyMap = array() ;
+		$rootIds = array() ;
+		
+		foreach( $records as $record ){
+			$record = $this->formatObject($record) ;
+			$text = "" ;
+			if( isset($record['TEXT']) ){
+				$text = $record['TEXT'] ;
+			}else if( isset($record['NAME']) ){
+				$text = $record['NAME'] ;
+			}
+			
+			$pid = $record['PARENT_ID'] ;
+			$id = $record['ID'] ;
+			//$record = array('id'=>$id,'pid'=>$pid,'text'=>$text) ;
+			$record['id'] = $id ;
+			$record['pid'] = $pid ;
+			$record['text'] = $text ;
+			if(empty( $pid )){
+				$roots[] = $record ;
+			}
+			$keyMap[ $id ] = $record ;
+			
+			$items[] = $record ;
+		}
+		
+		
+		//{id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} 
+		foreach( $items as $item ){
+			$parentId 	= $item['pid'] ;
+			$id 		= $item['id'] ;
+			
+			if( !empty($parentId) ){
+				//获取父节点
+				if(isset($keyMap[$parentId])){
+					$parent = $keyMap[$parentId] ;
+				}else{
+					$parent = array() ;
+				}
+				
+				if( isset( $parent['childNodes'] ) ){
+					
+				}else{
+					$parent['childNodes'] = array() ;
+				}
+				
+				$parent['childNodes'][] = $item ;
+				
+				$keyMap[$parentId] = $parent ;
+			}
+		}
+		
+		$results = array() ;
+		foreach($roots as $root){
+			$id 		= $root['id'] ;
+			if( isset( $keyMap[$id] ) ){
+				$t = $keyMap[$id] ;
+				$cd = array() ;
+				if( !empty($t['childNodes']) ){
+					foreach($t['childNodes'] as $cnode){
+						$_id = $cnode['id'] ;
+						if(isset($keyMap[$_id])){
+							$cd[] = $keyMap[$_id] ;
+						}
+					} ;
+				}
+				$keyMap[$id]['childNodes'] = $cd ;
+				$results[] = $keyMap[$id] ;
+			}
+			//$results[] = $root ;
+		}
+		return json_encode($results) ;
+	}
+	
 	public function _processRowCompetetion($e , $details ,$type , $base , $numType){
 
 			$numberofresults   = $e->next_sibling ()->plaintext ;

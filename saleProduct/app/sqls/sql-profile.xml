@@ -27,7 +27,8 @@
     </entry>
     
     <entry key="sql_product_list">
-       		SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
+       		SELECT DISTINCT sc_product.ASIN, 
+				sc_product.TITLE,sc_product_flow_details.DAY_PAGEVIEWS,
 				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
 				sc_sale_fba.FBA_NUM,sc_sale_competition.TARGET_PRICE,
 				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,
@@ -60,7 +61,9 @@
     </entry>
     
     <entry key="sql_task_product_list">
-       		SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
+       		SELECT DISTINCT sc_product.ASIN, 
+				sc_product.TITLE
+       			,sc_product_flow_details.DAY_PAGEVIEWS,
 				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
 				sc_sale_fba.FBA_NUM,sc_sale_competition.TARGET_PRICE,
 				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,

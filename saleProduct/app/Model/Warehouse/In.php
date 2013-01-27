@@ -206,6 +206,10 @@ class In extends AppModel {
 			$quantity = $quantity + $badQuantity ;
 			$params1['badQuantity'] = $quantity ;
 			$this->exeSql("sql_saleproduct_bad_quantity_in",$params1) ;
+			
+			//将产品信息计入具体仓库库存
+			
+			//将残品信息计入具体仓库库存
 					
 			//$this->exeSql("sql_warehouse_storage_in_insert",$params1) ;
 		}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_suggest_list">
+       select * from sc_suggest 
+    </entry>
+    
+    <entry key="sql_suggest_getById">
+       select * from sc_suggest where id = '{@#id#}'
+    </entry>
+    
+    <entry key="sql_suggest_insert">
+       INSERT INTO  sc_suggest 
+			(
+			TITLE, 
+			MEMO, 
+			CREATOR, 
+			CREATE_TIME, 
+			TYPE
+			)
+			VALUES
+			(
+			'{@#title#}', 
+			'{@#memo#}', 
+			'{@#loginId#}', 
+			NOW(), 
+			'{@#type#}'
+			)
+    </entry>
+    
+    <entry key="sql_suggest_update">
+       UPDATE  sc_suggest 
+			SET
+			TITLE = '{@#title#}' , 
+			MEMO = '{@#memo#}' , 
+			TYPE = '{@#type#}' , 
+			{@ STATUS = '#status#' , }
+			UPDATOR = '{@#loginId#}' , 
+			UPDATE_TIME = NOW()
+			
+			WHERE
+			ID = '{@#id#}'
+    </entry>
+    
+</properties>

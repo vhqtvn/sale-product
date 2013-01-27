@@ -16,29 +16,6 @@
 	position: relative;
 	zoom:1;
 }
-.ui-dialog .ui-dialog-titlebar {
-	position: absolute;
-	top:0;
-	right:0;
-	z-index:100;
-	width:100%;
-}
-.ui-dialog .ui-dialog-titlebar-close{
-	right:1em;
-	top:0.7em;
-	padding:0;
-}
-.ui-dialog .ui-dialog-titlebar{
-	border-bottom:0;
-	padding:0;
-}
-.ui-dialog .ui-dialog-content{
-	overflow: hidden;
-	padding: 0;
-}
-.ui-dialog .ui-dialog-buttonpane {
-	margin:0;
-}
 /* inputpro
 ------------------------------------------------------- */
 .inputpro-img-span, .inputpro-img-span-bg{

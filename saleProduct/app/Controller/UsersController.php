@@ -9,7 +9,7 @@ class UsersController extends AppController
 	}
 
     function login()   
-    {   
+    {  
     	$status = $this->browser['status'] ;
     	
         $this->set('error', false);   

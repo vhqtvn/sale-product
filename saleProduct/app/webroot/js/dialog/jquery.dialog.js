@@ -76,6 +76,7 @@
 	$._dialog = function(options){
 		this.__id = new Date().getTime() ;
 		this.settings = options ;
+		this.settings.max = true ;
 		this.settings.iframe   = typeof(this.settings.iframe) == 'undefined'?true:this.settings.iframe ;
 		var me  = this ;
 	

@@ -1,0 +1,67 @@
+{
+    "CATEGORY":[{
+        "TITLE":"JQuery Windows",
+        "ITEM":[{
+            "TITLE":"Information",
+            "PATH":"info.html",
+            "ICON":"info.png",
+            "WIDTH":"640",
+            "HEIGHT":"480",
+            "RESIZABLE":"TRUE",
+            "SCROLLING":"TRUE",
+            "AUTOSTART":"TRUE"
+        },{
+            "TITLE":"License",
+            "PATH":"http://www.gnu.org/licenses/gpl-3.0.txt",
+            "ICON":"gpl.png",
+            "WIDTH":"660",
+            "HEIGHT":"400",
+            "RESIZABLE":"TRUE",
+            "SCROLLING":"TRUE",
+            "AUTOSTART":"TRUE"
+        }]
+    },{
+        "TITLE":"Data Format",
+        "ITEM":[{
+            "TITLE":"Example 1 - Title & Path",
+            "PATH":"example01.html#anchor"
+        },{
+            "TITLE":"Example 2 - Icon",
+            "PATH":"example02.html#anchor",
+            "ICON":"star.png"
+        },{
+            "TITLE":"Example 3 - Resizable",
+            "PATH":"example03.html#anchor",
+            "RESIZABLE":"TRUE"
+        },{
+            "TITLE":"Example 4 - Not Resizable",
+            "PATH":"example04.html#anchor",
+            "RESIZABLE":"FALSE"
+        },{
+            "TITLE":"Example 5 - Width & Height",
+            "PATH":"example05.html#anchor",
+            "WIDTH":"300",
+            "HEIGHT":"400"
+        },{
+            "TITLE":"Example 6 - Background Color",
+            "PATH":"example06.html#anchor",
+            "BACKGROUND":"#CDE"
+        },{
+            "TITLE":"Example 7 - Background Image",
+            "PATH":"example07.html#anchor",
+            "BACKGROUND":"#FFF url(example.jpg) repeat"
+        },{
+            "TITLE":"Example 8 - Scrolling",
+            "PATH":"example08.html#anchor",
+            "SCROLLING":"TRUE"
+        },{
+            "TITLE":"Example 9 - No Scrolling",
+            "PATH":"example09.html#anchor",
+            "SCROLLING":"FALSE"
+        },{
+            "TITLE":"Example 10 - Autostart",
+            "PATH":"example10.html#anchor",
+            "AUTOSTART":"TRUE"
+        }]
+    }]
+}

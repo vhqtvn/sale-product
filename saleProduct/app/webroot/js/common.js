@@ -62,7 +62,7 @@ jQuery.open = function(){//url,width,height,params,callback,fixParams
 	jQuery.dialogReturnValue("__init__");
 	params = params||{} ;
 	fixParams = fixParams||{} ;
-	params.showType = "open" ;
+	//params.showType = "open" ;
 	if( jQuery.dialog  && (params.showType == 'dialog' || !params.showType ) ){
 		var opts = {
 			width:width,
