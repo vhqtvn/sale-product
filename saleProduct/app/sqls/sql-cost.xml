@@ -21,6 +21,77 @@
     	uncategory：1
     -->
    
+   <entry key="sql_cost_product_insert">
+   	 INSERT INTO sc_product_cost 
+			( 
+			TYPE, 
+			PURCHASE_COST, 
+			ASIN, 
+			BEFORE_LOGISTICS_COST, 
+			TARIFF, 
+			AMAZON_FEE, 
+			VARIABLE_CLOSURE_COST, 
+			OORDER_PROCESSING_FEE, 
+			USPS_COST, 
+			TAG_COST, 
+			PACKAGE_COST, 
+			STABLE_COST, 
+			WAREHOURSE_COST, 
+			LOST_FEE, 
+			LABOR_COST, 
+			SERVICE_COST, 
+			OTHER_COST,
+			TOTAL_COST
+			)
+			VALUES
+			(
+			'{@#TYPE#}', 
+			'{@#PURCHASE_COST#}', 
+			'{@#ASIN#}', 
+			'{@#BEFORE_LOGISTICS_COST#}', 
+			'{@#TARIFF#}', 
+			'{@#AMAZON_FEE#}', 
+			'{@#VARIABLE_CLOSURE_COST#}', 
+			'{@#OORDER_PROCESSING_FEE#}', 
+			'{@#USPS_COST#}', 
+			'{@#TAG_COST#}', 
+			'{@#PACKAGE_COST#}', 
+			'{@#STABLE_COST#}', 
+			'{@#WAREHOURSE_COST#}', 
+			'{@#LOST_FEE#}', 
+			'{@#LABOR_COST#}', 
+			'{@#SERVICE_COST#}', 
+			'{@#OTHER_COST#}',
+			'{@#TOTAL_COST#}'
+			) 
+   </entry>
+   
+   <entry key="sql_cost_product_update">
+   	 UPDATE sc_product_cost 
+		SET
+		{@ TYPE = '#TYPE#',}
+		{@ PURCHASE_COST = '#PURCHASE_COST#' , }
+		{@ ASIN = '#ASIN#' , }
+		{@ BEFORE_LOGISTICS_COST = '#BEFORE_LOGISTICS_COST#' , }
+		{@ TARIFF = '#TARIFF#' , }
+		{@ AMAZON_FEE = '#AMAZON_FEE#' , }
+		{@ VARIABLE_CLOSURE_COST = '#VARIABLE_CLOSURE_COST#' , }
+		{@ OORDER_PROCESSING_FEE = '#OORDER_PROCESSING_FEE#' , }
+		{@ USPS_COST = '#USPS_COST#' , }
+		{@ TAG_COST = '#TAG_COST#' , }
+		{@ PACKAGE_COST = '#PACKAGE_COST#' , }
+		{@ STABLE_COST = '#STABLE_COST#' , }
+		{@ WAREHOURSE_COST = '#WAREHOURSE_COST#' , }
+		{@ LOST_FEE = '#LOST_FEE#' , }
+		{@ LABOR_COST = '#LABOR_COST#' , }
+		{@ SERVICE_COST = '#SERVICE_COST#' , }
+		{@ OTHER_COST = '#OTHER_COST#' ,}
+		{@ TOTAL_COST = '#TOTAL_COST#' ,}
+		ID = '{@#ID#}'
+		WHERE
+		ID = '{@#ID#}'
+   </entry>
+   
    <entry key="sql_cost_product_list">
    SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
 				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,

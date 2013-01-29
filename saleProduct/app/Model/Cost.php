@@ -31,50 +31,11 @@ class Cost extends AppModel {
 						ID = '".$data['ID']."'
 					" ;
 			$this->query($sql) ;
+			
+			$this->exeSql("sql_cost_product_update",$data) ;
 		}else{
-			$sql = "INSERT INTO sc_product_cost 
-					( 
-					TYPE, 
-					PURCHASE_COST, 
-					ASIN, 
-					BEFORE_LOGISTICS_COST, 
-					TARIFF, 
-					AMAZON_FEE, 
-					VARIABLE_CLOSURE_COST, 
-					OORDER_PROCESSING_FEE, 
-					USPS_COST, 
-					TAG_COST, 
-					PACKAGE_COST, 
-					STABLE_COST, 
-					WAREHOURSE_COST, 
-					LOST_FEE, 
-					LABOR_COST, 
-					SERVICE_COST, 
-					OTHER_COST,
-					TOTAL_COST
-					)
-					VALUES
-					(
-					'".$data['TYPE']."', 
-					'".$data['PURCHASE_COST']."', 
-					'".$data['ASIN']."', 
-					'".$data['BEFORE_LOGISTICS_COST']."', 
-					'".$data['TARIFF']."', 
-					'".$data['AMAZON_FEE']."', 
-					'".$data['VARIABLE_CLOSURE_COST']."', 
-					'".$data['OORDER_PROCESSING_FEE']."', 
-					'".$data['USPS_COST']."', 
-					'".$data['TAG_COST']."', 
-					'".$data['PACKAGE_COST']."', 
-					'".$data['STABLE_COST']."', 
-					'".$data['WAREHOURSE_COST']."', 
-					'".$data['LOST_FEE']."', 
-					'".$data['LABOR_COST']."', 
-					'".$data['SERVICE_COST']."', 
-					'".$data['OTHER_COST']."',
-					'".$data['TOTAL_COST']."'
-					) " ;
-			$this->query($sql) ;
+			$this->exeSql("sql_cost_product_insert",$data) ;
+			
 		}
 	}
 	

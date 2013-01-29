@@ -6,12 +6,15 @@ $(function() {
 	var tab = $('#tabs-default').tabs( {//$this->layout="index";
 		tabs:[
 			{label:'基本信息',content:'base-tab'},
-			{label:'上架货品信息<button class="btn add-unitProduct" onclick="addUnitProduct();return false;">添加货品</button>',content:'product-tab'}
+			{label:'上架货品信息',content:'product-tab'}
 		] ,
 		height:'230px',
 		select:function(event,ui){
 			if(ui.index == 1){
+				$(".add-unitProduct").show();
 				$(".product-grid").llygrid("reload",{},true)
+			}else{
+				$(".add-unitProduct").hide();
 			}
 		}
 	} ) ;

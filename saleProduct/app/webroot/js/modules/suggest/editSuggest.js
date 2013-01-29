@@ -6,7 +6,7 @@ $(function(){
 			
 			$.dataservice("model:Suggest.saveSuggest",json,function(result){
 					window.opener.openCallback('') ;
-					//window.close();
+					window.close();
 			});
 		}
 	})

@@ -4,8 +4,8 @@ $(function(){
 			var json = $("#personForm").toJson() ;
 			
 			$.dataservice("model:User.saveFunctoin",json,function(result){
-					//window.opener.openCallback('') ;
-					//window.close();
+					window.opener.openCallback('') ;
+					window.close();
 			});
 		/*
 			$.ajax({

@@ -3,7 +3,7 @@ $(function() {
 
 	$(".save").click(function() {
 		WDesign.save(function(){
-			
+			window.location.reload();
 		});
 	});
 	
@@ -14,7 +14,7 @@ var blockIndex = 0 ;
 
 function getBlockId(){
 	blockIndex++ ;
-	return warehouseId+"_"+blockIndex ;
+	return warehouseId+"_"+$blockIndex+'_'+blockIndex ;
 }
 
 var WDesign = {
@@ -56,6 +56,7 @@ var WDesign = {
 			$(".design-area").find("[key]").each(function() {
 				var item = {};
 				var pleft = $(".design-area").offset().left;
+				var blockId = $(this).attr("blockId");
 				var text = $(this).text();
 				var key = $(this).attr("key");
 				var offset = $(this).offset();
@@ -66,6 +67,7 @@ var WDesign = {
 				item.width = $(this).width();
 				item.height = $(this).height();
 				item.code = '' ;
+				item.id = blockId ;
 	
 				result.push(item);
 			});
@@ -77,9 +79,13 @@ var WDesign = {
 			cursor : 'crosshair'
 		});
 		
-		$(".design-area .block[key='hw']").live("click",function(){
+		$(".design-area .block").live("click",function(){
 			$(".active").removeClass("active");
 			$(this).addClass("active");
+			$(".btn-delete").removeAttr("disabled").removeClass("disabled");
+		}) ;
+		
+		$(".design-area .block[key='hw']").live("click",function(){
 			var blockId = $(this).attr("blockId");
 			$.dataservice("sqlId:sql_warehouse_itemGetById",{id:blockId}
 			,function(resp){
@@ -92,6 +98,16 @@ var WDesign = {
 				$("#code").val( rowMap['CODE'] ) ;
 				$("#memo").val( rowMap['MEMO'] ) ;
 			});
+			
+			
+		}) ;
+		
+		$(".btn-delete").click(function(){
+			var blockId = $(".block.active").attr("blockId");
+			if( window.confirm("确认删除吗？")){
+				$(".block.active").remove() ;
+				$(".btn-delete").attr("disabled","disabled").addClass("disabled");
+			}
 		}) ;
 		
 		$(".save-config").click(function(){
@@ -101,6 +117,7 @@ var WDesign = {
 			$.dataservice("model:Warehouse.Design.saveHw",{id:blockId,code:code,memo:memo,warehouseId:warehouseId}
 			,function(){
 				alert("保存成功！");	
+				window.location.reload();
 			})
 		}) ;
 	

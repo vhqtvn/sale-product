@@ -23,6 +23,7 @@
 		
 		$units = json_encode($units) ;
 		
+		$blockIndex = date('YmdHis') ;
 	?>
   
    <script type="text/javascript">
@@ -31,6 +32,7 @@
    
    <script type="text/javascript">
    	var designText = <?php echo $warehouse['DESIGN_TEXT'] ;?> ;
+   	var $blockIndex = <?php echo $blockIndex ;?> ;
    </script>
    
    <script type="text/javascript">
@@ -84,7 +86,7 @@
 		.w-rkm{background:yellow ;}
 		.w-ckm{background:yellow ;}
 		.w-td{background:#EEE ;}
-		.w-kw{background:#ffd700 ;z-index:1;}
+		.w-kw{background:#eceeed ;z-index:1;}
 		.w-hj{background:#c0c0c0 ;z-index:2}
 		.w-hw{background:blue ;z-index:3;color:#FFF;font-size:12px;}
 		
@@ -118,6 +120,8 @@
 			<div class="block w-kw"  key="kw">库位</div>
 			<div class="block w-hj"  key="hj">货架</div>
 			<div class="block w-hw"  key="hw">货位</div>
+			<hr/>
+			<button class="btn  btn-danger btn-larger btn-delete disabled" disabled="disabled">&nbsp;&nbsp;删&nbsp;&nbsp;除&nbsp;&nbsp;</button>
 		  </div>
 		</div>
 		<div class="span10">

@@ -81,7 +81,7 @@
 								<?php } ?>
 								<tr>
 									<th>备注：</th><td>
-										<textarea name="name" style="width:80%;height:130px;"><?php echo  $u['MEMO'];?></textarea>
+										<textarea name="memo" style="width:80%;height:130px;"><?php echo  $u['MEMO'];?></textarea>
 									</td>
 								</tr>
 								

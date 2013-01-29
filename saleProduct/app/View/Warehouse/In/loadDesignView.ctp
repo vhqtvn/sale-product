@@ -67,7 +67,7 @@
 		.w-rkm{background:yellow ;}
 		.w-ckm{background:yellow ;}
 		.w-td{background:#EEE ;}
-		.w-kw{background:#ffd700 ;z-index:1;}
+		.w-kw{background:#eceeed ;z-index:1;}
 		.w-hj{background:#c0c0c0 ;z-index:2}
 		.w-hw{background:blue ;z-index:3;color:#FFF;font-size:12px;}
 		
@@ -91,6 +91,13 @@
 			top:2px;
 			right:2px;
 		}
+		
+		.add-unitProduct{
+			position:absolute;
+			right:50px;
+			top:5px;
+			z-index:100;
+		}
 	</style>
 
 </head>
@@ -103,7 +110,8 @@
 		</div>
 	</div>
 	<div class="row-fluid">
-		<div class="span12">
+		<div class="span12" style="position:relative;">
+			<button class="btn  btn-primary add-unitProduct" style="display:none;" onclick="addUnitProduct();return false;">添加库位货品</button>
 			<div id="tabs-default"></div>
 			<div id="base-tab">
 				<input type="hidden" id="blockId"  value=""/>
@@ -128,7 +136,6 @@
 			</div>
 			
 			<div id="product-tab">
-				
 				<div class="product-grid" style="width:800px"></div>
 			</div>
 				
