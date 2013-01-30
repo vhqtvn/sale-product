@@ -44,7 +44,28 @@
 						<option value="0">未处理</option>
 						<option value="1">已处理</option>
 						<option value="2">暂不处理</option>
+						<option value="3">处理中</option>
 						<option value="">全部</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>重要程度：</th>
+				<td>
+					<select name="importantLevel"  class="span2">
+						<option value="">-选择-</option>
+						<option value="1">非常重要</option>
+						<option value="2">重要</option>
+						<option value="3">不重要</option>
+					</select>
+				</td>
+				<th>紧急程度：</th>
+				<td>
+					<select name="eneryLevel"  class="span2">
+						<option value="">--</option>
+						<option value="1">非常紧急</option>
+						<option value="2">紧急</option>
+						<option value="3">不紧急</option>
 					</select>
 				</td>
 				<th></th>

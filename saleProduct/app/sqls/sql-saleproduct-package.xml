@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+    
+    <entry key="sql_package_group_list">
+		select * from sc_package_group where 1=1
+		{@ and name like '%#name#%'}
+		{@ and code = '#code#'}
+	</entry>
+	
+	<entry key="sql_package_group_getById">
+		select * from sc_package_group where id = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_package_group_insert">
+		INSERT INTO  sc_package_group 
+			( 
+			NAME, 
+			MEMO, 
+			CREATOR, 
+			CREATE_TIME
+			)
+			VALUES
+			( 
+			'{@#name#}', 
+			'{@#memo#}', 
+			'{@#loginId#}', 
+			NOW()
+			)
+	</entry>
+	
+	<entry key="sql_package_group_update">
+		UPDATE  sc_package_group 
+			SET
+			NAME = '{@#name#}' , 
+			MEMO = '{@#memo#}' 
+			
+			WHERE
+				ID = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_package_group_item_list">
+		select * from sc_package_group_item where 1=1
+		{@ and group_id = '#groupId#'}
+	</entry>
+	
+	<entry key="sql_package_group_item_getById">
+		select * from sc_package_group_item where id = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_package_group_item_insert">
+		INSERT INTO sc_package_group_item 
+			(
+			GROUP_ID, 
+			NAME, 
+			FROM_WEIGHT, 
+			TO_WEIGHT, 
+			PACKAGING_WEIGHT, 
+			WIDTH, 
+			HEIGHT, 
+			LENGTH
+			)
+			VALUES
+			(
+			'{@#groupId#}', 
+			'{@#name#}', 
+			'{@#fromWeight#}', 
+			'{@#toWeight#}', 
+			'{@#packagingWeight#}', 
+			'{@#width#}', 
+			'{@#height#}', 
+			'{@#length#}'
+			)
+	</entry>
+	
+	<entry key="sql_package_group_item_update">
+		UPDATE  sc_package_group_item 
+			SET
+			GROUP_ID = '{@#groupId#}' , 
+			NAME = '{@#name#}' , 
+			FROM_WEIGHT = '{@#fromWeight#}' , 
+			TO_WEIGHT = '{@#toWeight#}' , 
+			PACKAGING_WEIGHT = '{@#packagingWeight#}' , 
+			WIDTH = '{@#width#}' , 
+			HEIGHT = '{@#height#}' , 
+			LENGTH = '{@#length#}'
+			
+			WHERE
+			ID = '{@#id#}' 
+	</entry>
+
+</properties>

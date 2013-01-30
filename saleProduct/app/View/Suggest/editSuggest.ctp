@@ -60,10 +60,33 @@
 										</select>
 									</td>
 								</tr>
+								
 								<tr>
 									<th>标题：</th>
 									<td><input type="text"  data-validator="required"
 										id="title" value="<?php echo  $u['TITLE'];?>"/></td>
+								</tr>
+								<tr>
+									<th>重要程度：</th>
+									<td>
+										<select name="importantLevel" >
+											<option value=''>--选择--</option>
+											<option value="1"  <?php echo $u['IMPORTANT_LEVEL']=='1'?'selected':'' ;?>>非常重要</option>
+											<option value="2"  <?php echo $u['IMPORTANT_LEVEL']=='2'?'selected':'' ;?>>重要</option>
+											<option value="3"  <?php echo $u['IMPORTANT_LEVEL']=='3'?'selected':'' ;?>>不重要</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th>紧急程度：</th>
+									<td>
+										<select name="eneryLevel" >
+											<option value=''>--选择--</option>
+											<option value="1"  <?php echo $u['ENERY_LEVEL']=='1'?'selected':'' ;?>>非常紧急</option>
+											<option value="2"  <?php echo $u['ENERY_LEVEL']=='2'?'selected':'' ;?>>紧急</option>
+											<option value="3"  <?php echo $u['ENERY_LEVEL']=='3'?'selected':'' ;?>>不紧急</option>
+										</select>
+									</td>
 								</tr>
 								<?php
 									if(!empty($suggestId)){
@@ -75,6 +98,7 @@
 											<option value="0"  <?php echo $u['STATUS']=='0'?'selected':'' ;?>>未处理</option>
 											<option value="1"  <?php echo $u['STATUS']=='1'?'selected':'' ;?>>已处理</option>
 											<option value="2"  <?php echo $u['STATUS']=='2'?'selected':'' ;?>>暂不处理</option>
+											<option value="3"  <?php echo $u['STATUS']=='3'?'selected':'' ;?>>处理中</option>
 										</select>
 									</td>
 								</tr>

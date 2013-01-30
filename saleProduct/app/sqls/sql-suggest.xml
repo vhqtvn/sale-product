@@ -2,6 +2,12 @@
 <properties>
     <entry key="sql_suggest_list">
        select * from sc_suggest 
+       where 1=1
+       {@ and title like '%#title#%'}
+       {@ and status = '#status#'}
+       {@ and type = '#type#'}
+       {@ and important_Level = '#importantLevel#'}
+       {@ and enery_Level = '#eneryLevel#'}
     </entry>
     
     <entry key="sql_suggest_getById">
@@ -15,7 +21,9 @@
 			MEMO, 
 			CREATOR, 
 			CREATE_TIME, 
-			TYPE
+			TYPE,
+			IMPORTANT_LEVEL,
+			ENERY_LEVEL
 			)
 			VALUES
 			(
@@ -23,7 +31,9 @@
 			'{@#memo#}', 
 			'{@#loginId#}', 
 			NOW(), 
-			'{@#type#}'
+			'{@#type#}',
+			'{@#importantLevel#}',
+			'{@#eneryLevel#}'
 			)
     </entry>
     
@@ -35,7 +45,9 @@
 			TYPE = '{@#type#}' , 
 			{@ STATUS = '#status#' , }
 			UPDATOR = '{@#loginId#}' , 
-			UPDATE_TIME = NOW()
+			UPDATE_TIME = NOW(),
+			IMPORTANT_LEVEL = '{@#importantLevel#}' ,
+			ENERY_LEVEL = '{@#eneryLevel#}'
 			
 			WHERE
 			ID = '{@#id#}'

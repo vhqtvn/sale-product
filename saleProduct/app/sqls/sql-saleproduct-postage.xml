@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+
+	<entry key="sql_postage_vender_list">
+		select * from sc_postage_vendor where 1=1
+		{@ and name like '%#name#%'}
+		{@ and code = '#code#'}
+	</entry>
+	
+	<entry key="sql_postage_vender_getById">
+		select * from sc_postage_vendor where id = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_postage_vendor_insert">
+		INSERT INTO  sc_postage_vendor 
+			( 
+			CODE, 
+			NAME, 
+			MEMO
+			)
+			VALUES
+			( 
+			'{@#code#}', 
+			'{@#name#}', 
+			'{@#memo#}'
+			)
+	</entry>
+	
+	<entry key="sql_postage_vendor_update">
+		UPDATE  sc_postage_vendor 
+			SET 
+			CODE = '{@#code#}' , 
+			NAME = '{@#name#}' , 
+			MEMO = '{@#memo#}'
+			
+			WHERE
+			ID = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_postage_services_getById">
+		select * from sc_postage_services where id = '{@#id#}'
+	</entry>
+	
+	
+	
+	<entry key="sql_postage_services_list">
+		select * from sc_postage_services where vendor_id = '{@#vendorId#}'
+	</entry>
+	
+	<entry key="sql_postage_services_insert">
+		INSERT INTO sc_postage_services 
+			( 
+			NAME, 
+			TAG, 
+			COUNTRY, 
+			CODE, 
+			VENDOR_ID,  
+			CREATOR, 
+			CREATE_TIME, 
+			MEMO
+			)
+			VALUES
+			( 
+			'{@#name#}', 
+			'{@#tag#}', 
+			'{@#country#}', 
+			'{@#code#}', 
+			'{@#vendorId#}', 
+			'{@#loginId#}', 
+			NOW(), 
+			'{@#memo#}'
+			)
+	</entry>
+	
+	<entry key="sql_postage_services_update">
+		UPDATE  sc_postage_services 
+			SET
+			NAME = '{@#name#}' , 
+			TAG = '{@#tag#}' , 
+			COUNTRY = '{@#country#}' , 
+			CODE = '{@#code#}' , 
+			VENDOR_ID = '{@#vendorId#}' , 
+			MEMO = '{@#memo#}'
+			WHERE
+			ID = '{@#id#}'
+	</entry>
+	
+</properties>
