@@ -17,7 +17,9 @@
    
    <entry key="sql_saleproduct_getById">
  			select sc_real_product.*,
-			(select s.name from sc_product_category s where s.id = sc_real_product.category_id ) as CATEGORY_NAME
+			(select s.name from sc_product_category s where s.id = sc_real_product.category_id ) as CATEGORY_NAME,
+			(SELECT NAME FROM sc_postage_services sps WHERE sps.id = sc_real_product.postage_service_id) AS POSTAGE_SERVICE_NAME,
+  			(SELECT NAME FROM sc_package_group spg WHERE spg.id = sc_real_product.package_group_id) AS PACKAGE_GROUP_NAME	
 			from sc_real_product   where id='{@#realProductId#}'
    </entry>
    
@@ -62,7 +64,9 @@
 		HEIGHT,
 		TYPE,
 		STATUS,
-		CATEGORY_ID
+		CATEGORY_ID,
+		PACKAGE_GROUP_ID,
+		POSTAGE_SERVICE_ID
 		)
 		VALUES
 		('{@#sku#}', 
@@ -82,7 +86,9 @@
 		'{@#height#}',
 		'{@#type#}',
 		1,
-		'{@#categoryId#}'
+		'{@#categoryId#}',
+		'{@#packageGroupId#}',
+		'{@#postageServiceId#}'
 		)
    </entry>
    
@@ -95,23 +101,24 @@
  		
 	UPDATE sc_real_product 
 	SET 
-	{@ IMAGE_URL = '#imageUrl#',}
-	NAME = '{@#name#}' , 
-	MEMO = '{@#memo#}' , 
-	URL = '{@#url#}',
-	PACKAGE_TYPE = '{@#packageType#}',
-	WARNING_QUANTITY = '{@#warningQuantity#}',
-	SECURITY_QUANTITY = '{@#securityQuantity#}',
-	WEIGHT = '{@#weight#}',
-	WEIGHT_UNIT = '{@#weightUnit#}',
-	LENGTH = '{@#length#}',
-	WIDTH = '{@#width#}',
-	HEIGHT = '{@#height#}',
-	REAL_SKU = '{@#sku#}',
-	CATEGORY_ID = '{@#categoryId#}'
+		{@ IMAGE_URL = '#imageUrl#',}
+		NAME = '{@#name#}' , 
+		MEMO = '{@#memo#}' , 
+		URL = '{@#url#}',
+		PACKAGE_TYPE = '{@#packageType#}',
+		WARNING_QUANTITY = '{@#warningQuantity#}',
+		SECURITY_QUANTITY = '{@#securityQuantity#}',
+		WEIGHT = '{@#weight#}',
+		WEIGHT_UNIT = '{@#weightUnit#}',
+		LENGTH = '{@#length#}',
+		WIDTH = '{@#width#}',
+		HEIGHT = '{@#height#}',
+		REAL_SKU = '{@#sku#}',
+		CATEGORY_ID = '{@#categoryId#}',
+		PACKAGE_GROUP_ID = '{@#packageGroupId#}',
+		POSTAGE_SERVICE_ID = '{@#postageServiceId#}'
 	WHERE
-	 ID = '{@#id#}';
-		)
+	 	ID = '{@#id#}'
    </entry>
    
    <entry key="sql_saleproduct_selelctsku_list">

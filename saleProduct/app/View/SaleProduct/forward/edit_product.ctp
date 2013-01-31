@@ -17,60 +17,14 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
+		echo $this->Html->script('modules/saleproduct/edit_product');
 
-	?>
-  
-   <style>
-   		*{
-   			font:12px "微软雅黑";
-   		}
-
-		.rule-content-item{
-			clear:both;
-		}
-
-		.item-label,.item-relation,.item-value,.item-value{
-			float:left;
-		}
-   </style>
-
-   <script>
-		$(function(){
-			if( $("#login_id").val()  ){
-				$("#login_id").attr("disabled",true) ;
-			}
-			
-			var categoryTreeSelect = {
-					title:'产品分类选择页面',
-					valueField:"#categoryId",
-					labelField:"#categoryName",
-					key:{value:'id',label:'text'},//对应value和label的key
-					multi:false ,
-					tree:{
-						title:"产品分类选择页面",
-						method : 'post',
-						asyn : true, //异步
-						rootId  : 'root',
-						rootText : '根节点',
-						CommandName : 'sqlId:sql_saleproduct_categorytree',
-						recordFormat:true,
-						params : {
-						}
-					}
-			   } ;
-			   
-			$(".select-category").listselectdialog( categoryTreeSelect) ;
-		});
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
 		
-		function uploadSuccess(){
-			if(window.opener){
-				window.opener.location.reload() ;
-				window.close() ;
-			}else{
-				window.location.reload();
-			}
-		}
-   </script>
+		$groups = $SqlUtils->exeSql("sql_package_group_list",array() ) ;
+		
+	?>
 
 </head>
 
@@ -78,9 +32,6 @@
 	<!-- apply 主场景 -->
 	<div class="apply-page">
 		<!-- 页面标题 -->
-		<div class="page-title">
-			<h2>货品编辑</h2>
-		</div>
 		<div class="container-fluid">
 
 	        <form id="personForm" action="/saleProduct/index.php/saleProduct/saveProduct"
@@ -92,8 +43,8 @@
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
-						<table class="form-table col4" >
-							<!--<caption>基本信息</caption>-->
+						<table class="form-table" >
+							<caption>基本属性</caption>
 							<tbody>
 								<tr>
 									<th>类型：</th>
@@ -132,28 +83,6 @@
 										name="securityQuantity" value="<?php echo $item['SECURITY_QUANTITY']?>"/></td>
 								</tr>
 								<tr>
-									<th>重量：</th>
-									<td colspan=3><input type="text" name="weight" style="width:50px;" value="<?php echo $item['WEIGHT']?>"/>
-									<select name="weightUnit" style="width:150px;">
-										<option value="lb" <?php if($item['WEIGHT_UNIT']=='lb')echo 'selected';?>  >pound</option>
-										<option value="oz" <?php if($item['WEIGHT_UNIT']=='oz')echo 'selected';?> >ounce</option>
-									</select>
-									</td>
-								</tr>
-								<tr>
-									<th>包装类型：</th>
-									<td colspan=3><input type="text" name="packageType"  value="<?php echo $item['PACKAGE_TYPE']?>"/>
-									</td>
-								</tr>
-								<tr>
-									<th>长X宽X高(cm)：</th>
-									<td colspan=3><input type="text" name="length" style="width:50px;" value="<?php echo $item['LENGTH']?>"/>
-									X<input type="text" name="width" style="width:50px;" value="<?php echo $item['WIDTH']?>"/>
-									X<input type="text" name="height" style="width:50px;" value="<?php echo $item['HEIGHT']?>"/>
-									
-									</td>
-								</tr>
-								<tr>
 									<th>产品图片：</th>
 									<td colspan=3><input type="file" name="imageUrl"/>
 									<?php
@@ -170,11 +99,59 @@
 								</tr>
 							</tbody>
 						</table>
+						
+						<table class="form-table" >
+							<caption>物流属性</caption>
+							<tbody>
+								<tr>
+									<th>重量：</th>
+									<td><input type="text" name="weight" style="width:50px;" value="<?php echo $item['WEIGHT']?>"/>
+									<select name="weightUnit" style="width:150px;">
+										<option value="lb" <?php if($item['WEIGHT_UNIT']=='lb')echo 'selected';?>  >pound</option>
+										<option value="oz" <?php if($item['WEIGHT_UNIT']=='oz')echo 'selected';?> >ounce</option>
+									</select>
+									</td>
+									<th>长X宽X高(cm)：</th>
+									<td><input type="text" name="length" style="width:50px;" value="<?php echo $item['LENGTH']?>"/>
+									X<input type="text" name="width" style="width:50px;" value="<?php echo $item['WIDTH']?>"/>
+									X<input type="text" name="height" style="width:50px;" value="<?php echo $item['HEIGHT']?>"/>
+									
+									</td>
+								</tr>
+								<tr>
+									<th>默认物流服务：</th>
+									<td colspan=3>
+										<input type="hidden"  id="postageServiceId" name="postageServiceId" value="<?php echo $item['POSTAGE_SERVICE_ID']?>"/>
+										<input type="text" id="postageServiceName" name="postageServiceName" value="<?php echo $item['POSTAGE_SERVICE_NAME']?>"/>
+										<button class="btn select-postage">选择</button>
+									</td>
+								</tr>
+								<tr>
+									<th>包装类型：</th>
+									<td colspan=3>
+										<select id="packageGroupId" name="packageGroupId">
+											<option value="">--请选择--</option>
+											<?php
+												$defGroupId = $item['PACKAGE_GROUP_ID'] ;
+												
+												foreach( $groups as $group ){
+													$group = $SqlUtils->formatObject($group) ;
+													$val = $group['ID'] ;
+													$label = $group['NAME'] ;
+													$isSelected = $defGroupId == $val?"selected":"" ;
+													echo "<option $isSelected value='$val'>$label</option>" ;
+												}
+											?>
+										</select>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
-						<div class="form-actions col4">
+						<div class="form-actions">
 							<button type="submit" class="btn btn-primary">提&nbsp;交</button>
 						</div>
 					</div>

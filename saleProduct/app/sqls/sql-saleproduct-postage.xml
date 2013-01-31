@@ -87,4 +87,28 @@
 			ID = '{@#id#}'
 	</entry>
 	
+	<entry key="sql_postage_services_update">
+		UPDATE  sc_postage_services 
+			SET
+			NAME = '{@#name#}' , 
+			TAG = '{@#tag#}' , 
+			COUNTRY = '{@#country#}' , 
+			CODE = '{@#code#}' , 
+			VENDOR_ID = '{@#vendorId#}' , 
+			MEMO = '{@#memo#}'
+			WHERE
+			ID = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_postage_vendor_tree">
+		select ID , name as text , NAME from sc_postage_vendor
+	</entry>
+	
+	<entry key="sql_postage_service_grid">
+		select * from sc_postage_services
+		where vendor_id = '{@#vendorId#}'
+	</entry>
+	
+	
+	
 </properties>

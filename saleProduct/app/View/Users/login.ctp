@@ -11,14 +11,12 @@
 		<meta name="description" content="Survs is a collaborative tool that enables you to create online surveys with simplicity and elegance.">
 		<meta name="robots" content="noodp,noydir">
 		 
-    <script type="text/javascript" async="" src="./Survs - Login_files/ga.js"></script><script type="text/javascript" src="./Survs - Login_files/rot13.js"></script>
 	<link rel="stylesheet" type="text/css" href="/saleProduct/app/webroot/css/home.css">
-<script type="text/javascript" src="./Survs - Login_files/prototype.js"></script>
 </head>
     <body class="small login">
     	<div id="wrapper">
-	<div id="header"><h1><a href="https://www.survs.com/">Survs - Collaborative Online Survey Tool, Web Survey Software</a></h1></div>
-    <div class="container">
+	<div id="header"></div>
+    <div class="container" style="margin-top:30%;">
     	<div id="topcorners"><div class="cleft"></div><div class="cright"></div></div>
     	<div id="content">
 			

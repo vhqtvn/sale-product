@@ -2,7 +2,7 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/details/"+id,900,600) ;
+					openCenterWindow("/saleProduct/index.php/saleProduct/details/"+id,900,650) ;
 				}else if( $(this).hasClass("giveup") ){
 					var type = $(this).attr("type");
 					var message = type == 1?"确认将该货品作废吗":"确认恢复该货品吗？"
@@ -20,7 +20,7 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",730,540) ;
+					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",800,620) ;
 				}else if( $(this).hasClass("inout") ){//货品出入库明细
 					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,850,600) ;
 				}else if( $(this).hasClass("assign") ){//货品出入库明细

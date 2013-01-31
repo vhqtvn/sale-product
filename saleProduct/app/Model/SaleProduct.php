@@ -35,7 +35,7 @@ class SaleProduct extends AppModel {
 		$db->_queryCache = array() ;
 		
 		$data['loginId'] = $user['LOGIN_ID'] ;
-		print_r( $data ) ;
+		
 		$sku = $data['sku'] ;
 		$id =  $data['id'] ;
 		$item = $this->getSaleProductById($data['id']) ;
@@ -44,6 +44,7 @@ class SaleProduct extends AppModel {
 			$sql = $this->getDbSql("sql_saleproduct_update") ;
 			$sql = $this->getSql($sql,$data) ;
 			$this->query($sql) ;
+			
 			
 			//更新引用表
 			$sql = "update sc_real_product_rel set real_sku = '$sku' where real_id = '$id'" ;
