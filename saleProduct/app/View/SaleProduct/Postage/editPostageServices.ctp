@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>物流商编辑</title>
+    <title>物流服务编辑</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -37,7 +37,7 @@
 	<div class="apply-page">
 		<!-- 页面标题 -->
 		<div class="page-title">
-			<h2>物流商编辑</h2>
+			<h2>物流服务编辑</h2>
 		</div>
 		<div class="container-fluid">
 

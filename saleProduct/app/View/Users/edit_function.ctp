@@ -16,6 +16,8 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('modules/users/edit_function');
+		
+		
 	?>
 </head>
 

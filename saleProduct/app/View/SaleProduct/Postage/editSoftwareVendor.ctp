@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>物流商编辑</title>
+    <title>物流软件商编辑</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -15,7 +15,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
-		echo $this->Html->script('modules/saleproduct/postage/editPostageVendor');
+		echo $this->Html->script('modules/saleproduct/postage/editSoftwareVendor');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -26,7 +26,7 @@
 		$record = null ;
 		$vendorId = $params['arg1'] ;
 		if(!empty($vendorId)){
-			$record = $SqlUtils->getObject("sql_postage_vender_getById",array('id'=>$vendorId) ) ;
+			$record = $SqlUtils->getObject("sql_postage_software_vender_getById",array('id'=>$vendorId) ) ;
 		}
 	?>
 </head>
@@ -36,7 +36,7 @@
 	<div class="apply-page">
 		<!-- 页面标题 -->
 		<div class="page-title">
-			<h2>物流商编辑</h2>
+			<h2>物流软件商编辑</h2>
 		</div>
 		<div class="container-fluid">
 
@@ -47,7 +47,7 @@
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
-						<table class="form-table col2" >
+						<table class="form-table" >
 							<caption>基本信息</caption>
 							<tbody>										   
 								<tr>
@@ -59,21 +59,20 @@
 										value="<?php echo  $record['CODE'];?>"/></td>
 								</tr>
 								<tr>
-									<th>物流软件商：</th>
-									<td>
-										<select name="softwareId" id="softwareId">
-											<option value="">--选择--</option>
-											<?php
-												$softVendors = $SqlUtils->exeSql("sql_postage_software_vender_list" , array()) ;
-												$softwareId = $record['SOFTWARE_ID'] ;
-												foreach($softVendors as $svendor){
-													$svendor = $SqlUtils->formatObject($svendor) ;
-													$selected = $softwareId == $svendor['ID']?"selected":"" ;
-													echo "<option $selected value='".$svendor['ID']."'>".$svendor['NAME']."</option>" ;
-												}
-											?>
-										</select>
-									</td>
+									<th>获取数据SQL：</th><td><input type="text" id="dataSql"  
+										value="<?php echo  $record['DATA_SQL'];?>"/></td>
+								</tr>
+								<tr>
+									<th>回写结果表：</th><td><input type="text" id="resultTable"  
+										value="<?php echo  $record['RESULT_TABLE'];?>"/></td>
+								</tr>
+								<tr>
+									<th>数据库连接用户名：</th><td><input type="text" id="dbUser"  
+										value="<?php echo  $record['DB_USER'];?>"/></td>
+								</tr>
+								<tr>
+									<th>数据库连接密码：</th><td><input type="text" id="dbPassword"  
+										value="<?php echo  $record['DB_PASSWORD'];?>"/></td>
 								</tr>
 								<tr>
 									<th>备注：</th>
@@ -87,7 +86,7 @@
 					
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
-						<div class="form-actions col2">
+						<div class="form-actions">
 							<button type="button" class="btn btn-primary">提&nbsp;交</button>
 						</div>
 					</div>

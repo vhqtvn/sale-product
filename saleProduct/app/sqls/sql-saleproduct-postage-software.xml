@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+
+	<entry key="sql_postage_software_vender_list">
+		select * from sc_postage_software_vendor where 1=1
+		{@ and name like '%#name#%'}
+		{@ and code = '#code#'}
+	</entry>
+	
+	<entry key="sql_postage_software_vender_getById">
+		select * from sc_postage_software_vendor where id = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_postage_software_vendor_insert">
+		INSERT INTO  sc_postage_software_vendor 
+			( 
+			NAME, 
+			CODE, 
+			MEMO, 
+			DATA_SQL, 
+			RESULT_TABLE, 
+			DB_USER, 
+			DB_PASSWORD
+			)
+			VALUES
+			( 
+			'{@#name#}', 
+			'{@#code#}', 
+			'{@#memo#}', 
+			'{@#dataSql#}', 
+			'{@#resultTable#}', 
+			'{@#dbUser#}', 
+			'{@#dbPassword#}'
+			)
+	</entry>
+	
+	<entry key="sql_postage_software_vendor_update">
+		UPDATE sc_postage_software_vendor 
+			SET
+			name = '{@#name#}' , 
+			code = '{@#code#}' , 
+			memo = '{@#memo#}' , 
+			data_sql = '{@#dataSql#}' , 
+			result_table = '{@#resultTable#}' , 
+			db_user = '{@#dbUser#}' , 
+			db_password = '{@#dbPassword#}'
+			
+			WHERE
+			ID = '{@#id#}'
+	</entry>
+	
+</properties>

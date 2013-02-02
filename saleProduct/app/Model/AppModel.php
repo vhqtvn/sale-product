@@ -237,7 +237,17 @@ class AppModel extends Model {
 	    					foreach($cArray as $c){
 	    						if( $i2 > 0 && $i2 % 2 == 1 ){
 	    							$key = trim($c) ;
-	    							if( isset($query[$key]) &&($query[$key]=='0' || !empty($query[$key])) ){
+	    							$defaultValue = '' ;
+	    							$keyarray = explode(':',$key) ;
+
+	    							$key = $keyarray[0] ;
+	    							if( count($keyarray) >=2 ){
+	    								$defaultValue = $keyarray[1] ;
+	    							}
+	    							
+	    							if( isset($query[$key]) &&( $query[$key]=='0' || !empty($query[$key]) 
+	    								|| !empty($defaultValue) || $defaultValue == '0' ) ){
+	    								
 	    								$kValue = $query[$key] ;
 	    								//格式化$kValue,防止sql特殊字符
 	    								$kValue = str_replace("'","\'",$kValue);
@@ -246,6 +256,10 @@ class AppModel extends Model {
 	    								}else{
 	    									$kValue = utf8_encode($kValue) ;
 	    								}
+	    								if(empty($kValue)){
+	    									$kValue = $defaultValue ;
+	    								}
+
 	    								$clause .=  $kValue ;
 	    								$isTrue = true ;
 	    							}else{
@@ -267,6 +281,7 @@ class AppModel extends Model {
 	    		$index++ ;
 	    	} 
 	    	//echo $parseSql;
+	    	
 	    	return $parseSql ;
 		}
 		

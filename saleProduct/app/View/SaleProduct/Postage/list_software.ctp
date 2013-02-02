@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>物流商列表</title>
+    <title>物流软件商列表</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
@@ -16,7 +16,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
-		echo $this->Html->script('modules/saleproduct/postage/list_postage');
+		echo $this->Html->script('modules/saleproduct/postage/list_software');
 	?>
   
 </head>
@@ -38,7 +38,7 @@
 				<th></th>
 				<td>
 					<button class="btn btn-primary query" >查询</button>
-					<button class="action add btn btn-primary">添加物流商</button>
+					<button class="action add btn btn-primary">添加物流软件商</button>
 				</td>
 			</tr>						
 		</table>

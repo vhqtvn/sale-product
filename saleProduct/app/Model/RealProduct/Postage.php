@@ -10,6 +10,14 @@ class Postage extends AppModel {
 		}
 	}
 	
+	public function doSaveSoftwareVendor($params){
+		if( empty( $params['id'] ) ){
+			$this->exeSql("sql_postage_software_vendor_insert",$params) ;
+		}else{
+			$this->exeSql("sql_postage_software_vendor_update",$params) ;
+		}
+	}
+	
 	public function delPostageVendor($params){
 		
 	}

@@ -45,7 +45,8 @@ $(function(){
 			}},
 			{align:"left",key:"NAME",label:"名称",width:"15%"},
 			{align:"left",key:"CODE",label:"代码",width:"15%"},
-			{align:"left",key:"MEMO",label:"备注",width:"47%"}
+			{align:"left",key:"SOFTWARE_NAME",label:"物流软件商",width:"15%"},
+			{align:"left",key:"MEMO",label:"备注",width:"27%"}
          ],
          ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 		 limit:20,
