@@ -129,6 +129,10 @@
   		select * from sc_warehouse_box where id = '{@#boxId#}'
    </entry>
    
+   <entry key="sql_warehouse_box_product_getById">
+  		select * from sc_warehouse_box_product where id = '{@#boxProductId#}'
+   </entry>
+   
    <entry key="sql_warehouse_box_lists">
   		select * from sc_warehouse_box where in_id = '{@#inId#}'
    </entry>
@@ -222,6 +226,18 @@
 
    
    <entry key="sql_warehouse_box_update">	
+	   	UPDATE sc_warehouse_box 
+		SET
+		BOX_NUMBER = '{@#BOX_NUMBER#}' , 
+		SHIP_FEE = '{@#SHIP_FEE#}' , 
+		WEIGHT = '{@#WEIGHT#}' , 
+		LENGTH = '{@#LENGTH#}' , 
+		WIDTH = '{@#WIDTH#}' , 
+		HEIGHT = '{@#HEIGHT#}' , 
+		MEMO = '{@#MEMO#}'
+		
+		WHERE
+		ID = '{@#id#}'
    </entry>
    
    <entry key="sql_warehouse_box_product_insert">
@@ -246,6 +262,7 @@
    </entry>
    
    <entry key="sql_warehouse_box_product_update">	
+   		
    </entry>
    
    <entry key="sql_warehouse_track_insert">

@@ -27,39 +27,24 @@
 					First-Class Letter Large Envelp（Flat）
 					First-Class Package Service
 					Priority Mail*/
-					{align:"left",key:"MAIL_CLASS",label:"MAIL CLASS", width:"10%",
+					{align:"left",key:"MAIL_CLASS",label:"MAIL CLASS", width:"200",
 						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],valFormat:function(val,record){
-							return val||'FCPS' ;
-						},
-						/*
-						 FIRST CLASS PACKAGE SERVICE 
-							FIRST CLASS LARGE ENVELOPS FLAT 
-							PRIORITY MAIL 
-							PRIORITY MAIL FLAT RATE MAIL ENVELOPE 
-							PRIORITY MAIL SMALL FLAT RATE BOX 
-							PRIORITY MAIL MIDUM FLAT RATE BOX
-							PRIORITY MAIL LARGE FLAT RATE BOX
-							PARCEL POST MAIL 
-							FLC:First Class Letter
-							*/
-						data:[{value:'FCPS',text:'FCPS:FIRST CLASS PACKAGE SERVICE'},
-							{value:'FCLEF',text:'FCLEF:FIRST CLASS LARGE ENVELOPS FLAT'},
-							{value:'PM',text:'PM:Priority Mail'},
-							{value:'PMFRME',text:'PMFRME:PRIORITY MAIL FLAT RATE MAIL ENVELOPE'},
-							{value:'PMSFRB',text:'PMSFRB:PRIORITY MAIL SMALL FLAT RATE BOX'},
-							{value:'PMMFRB',text:'PMMFRB:PRIORITY MAIL MIDUM FLAT RATE BOX'},
-							{value:'PMLFRB',text:'PMLFRB:PRIORITY MAIL LARGE FLAT RATE BOX'},
-							{value:'PPM',text:'PPM:PARCEL POST MAIL'},
-							{value:'FLC',text:'FLC:First Class Letter'}
-							]}},
-					{align:"left",key:"TRACKING_TYPE",label:"TRACKING", width:"10%",
+							return record.MAIL_CLASS || record.POSTAGE_SERVICE_ID||"" ;
+						},data:serviceJson}},
+					{align:"left",key:"TRACKING_TYPE",label:"TRACKING", width:"130",
 						format:{type:"editor",renderType:"select",fields:['ORDER_ID'],valFormat:function(val,record){
 							return val||'2' ;
 						},
 						data:[{value:'1',text:'1:none'},{value:'2',text:'2:Delivery Confirmation'},{value:'3',text:'3:Signature Confirmation'}]}},
-					{align:"left",key:"LENGTH",label:"LENGTH", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
-					{align:"left",key:"WIDTH",label:"WIDTH", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
-					{align:"left",key:"HEIGHT",label:"HEIGHT", width:"6%",format:{type:"editor",fields:['ORDER_ID']}},
+					{align:"left",key:"LENGTH",label:"LENGTH", width:"6%",format:{type:"editor",fields:['ORDER_ID'],valFormat:function(val,record){
+						return record.REAL_LENGTH||record.LENGTH||'' ;
+					}}},
+					{align:"left",key:"WIDTH",label:"WIDTH", width:"6%",format:{type:"editor",fields:['ORDER_ID'],valFormat:function(val,record){
+						return record.REAL_WIDTH||record.WIDTH||'' ;
+					}}},
+					{align:"left",key:"HEIGHT",label:"HEIGHT", width:"6%",format:{type:"editor",fields:['ORDER_ID'],valFormat:function(val,record){
+						return record.REAL_HEIGHT||record.HEIGHT||'' ;
+					}}},
 					{align:"left",key:"WEIGHT",label:"WEIGHT", width:"6%",format:{type:"editor",fields:['ORDER_ID'],valFormat:function(val,record){
 						var realWeight = record['REAL_WEIGHT'] ;
 						var weight = record['WEIGHT'] ;

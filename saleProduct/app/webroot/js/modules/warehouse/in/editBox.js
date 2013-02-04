@@ -5,21 +5,24 @@
 		$(".message,.loading").hide() ;
 			$(".grid-content").llygrid({
 				columns:[
-		           	//{align:"center",key:"ID",label:"编号", width:"9%"},
-		           	{align:"center",key:"BOX_NUMBER",label:"包装箱编号",width:"20%",forzen:false,align:"left"},
+		           	{align:"center",key:"ID",label:"编辑",width:"5%",permission:function(){
+		           		return !$isRead ;
+		           	},format:function(val,record){
+							return "<a href='#' class='edit-box' val='"+val+"'>编辑</a>&nbsp;&nbsp;" ;
+					}},
+		           	{align:"center",key:"BOX_NUMBER",label:"包装箱编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"SHIP_FEE",label:"运输费用",width:"13%"},
 		           	{align:"center",key:"WEIGHT",label:"重量",width:"8%"},
 		           	{align:"center",key:"TOTAL",label:"尺寸(长X宽X高)",width:"15%",format:function(val,record){
 		           		return (record['LENGTH']||'-') +'X'+ (record['WIDGH']||'-') +"X"+(record['HEIGHT']||'-') ;
 		           	}},
-		           	{align:"center",key:"STATUS12",label:"备注",width:"7%"}
+		           	{align:"center",key:"MEMO",label:"备注",width:"33%"}
 		         ],
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:120,
 				 title:"",
-				 autoWidth:true,
 				 querys:{sqlId:"sql_warehouse_box_lists",inId:inId},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
@@ -33,6 +36,11 @@
 
 			$(".grid-content-details").llygrid({
 				columns:[
+					{align:"center",key:"ID",label:"编辑",width:"5%",permission:function(){
+		           		return !$isRead ;
+		           	},format:function(val,record){
+							return "<a href='#' class='edit-box-product' val='"+val+"'>编辑</a>&nbsp;&nbsp;" ;
+					}},
 				    {align:"center",key:"BOX_NUMBER",label:"包装箱",width:"5%"},
 		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
 	           		{align:"center",key:"SKU",label:"SKU",width:"5%"},
@@ -62,8 +70,21 @@
 				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxPage/"+inId,550,420) ;
 			}) ;
 			
+			$(".edit-box").live("click",function(){
+				var boxId = $(this).attr("val") ;
+				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxPage/"+inId+"/"+boxId,550,420) ;
+				return false ;
+			}) ;
+			
+			
+			
 			$(".add-box-product").live("click",function(){
 				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440) ;
+			})
+			
+			$(".edit-box-product").live("click",function(){
+				var boxPId = $(this).attr("val") ;
+				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+boxPId,550,440) ;
 			})
 			
    	 });

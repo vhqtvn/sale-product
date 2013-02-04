@@ -90,7 +90,7 @@
 						
 								<tr>
 									<th>备注：</th><td>
-										<textarea name="memo"  style="width:90%;height:100px;"><?php echo $result['MEMO'];?></textarea>
+										<textarea name="MEMO" id="MEMO"  style="width:90%;height:100px;"><?php echo $result['MEMO'];?></textarea>
 									</td>
 								</tr>
 							</tbody>

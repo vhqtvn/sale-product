@@ -256,7 +256,7 @@ class AppModel extends Model {
 	    								}else{
 	    									$kValue = utf8_encode($kValue) ;
 	    								}
-	    								if(empty($kValue)){
+	    								if(empty($kValue) && $kValue != '0'){
 	    									$kValue = $defaultValue ;
 	    								}
 

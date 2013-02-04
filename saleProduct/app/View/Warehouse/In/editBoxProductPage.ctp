@@ -16,7 +16,6 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('grid/query');
 		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
@@ -124,7 +123,7 @@
 						
 								<tr>
 									<th>备注：</th><td>
-										<textarea name="memo"  style="width:90%;height:100px;"><?php echo $result['MEMO'];?></textarea>
+										<textarea name="MEMO" id="MEMO" style="width:90%;height:100px;"><?php echo $result['MEMO'];?></textarea>
 									</td>
 								</tr>
 							</tbody>

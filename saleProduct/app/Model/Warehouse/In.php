@@ -44,7 +44,7 @@ class In extends AppModel {
 		if(empty($boxProductId)){
 			return null ;
 		}else{
-			$result = $this->getObject("sql_warehouse_box_getById",array('boxProductId'=>$boxProductId)) ;
+			$result = $this->getObject("sql_warehouse_box_product_getById",array('boxProductId'=>$boxProductId)) ;
 			return $result ;
 		}
 	}

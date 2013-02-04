@@ -137,7 +137,13 @@
 				    AND s1.id = s2.real_id
 				    AND s2.sku = sc_amazon_order.sku
 				    AND s2.account_id = sc_amazon_order.account_id )
-				    as IS_PACKAGE
+				    as IS_PACKAGE,
+			sc_real_product.POSTAGE_SERVICE_ID,
+		   (select sps.name from sc_postage_services sps where sps.id = sc_real_product.postage_service_id)
+		   			as POSTAGE_SERVICE_NAME,
+		   sc_real_product.LENGTH as REAL_LENGTH,
+		   sc_real_product.WIDTH as REAL_WIDTH,
+		   sc_real_product.HEIGHT as REAL_HEIGHT
 		  from sc_amazon_order
 		  left join sc_real_product 
 		  on sc_real_product.real_sku in (
@@ -182,7 +188,13 @@
 				    AND s1.id = s2.real_id
 				    AND s2.sku = sc_amazon_order.sku
 				    AND s2.account_id = sc_amazon_order.account_id )
-				    as IS_PACKAGE
+				    as IS_PACKAGE,
+			sc_real_product.POSTAGE_SERVICE_ID,
+		   (select sps.name from sc_postage_services sps where sps.id = sc_real_product.postage_service_id)
+		   			as POSTAGE_SERVICE_NAME,
+		   sc_real_product.LENGTH as REAL_LENGTH,
+		   sc_real_product.WIDTH as REAL_WIDTH,
+		   sc_real_product.HEIGHT as REAL_HEIGHT
 		  from sc_amazon_order
 		  left join sc_real_product 
 		  on sc_real_product.real_sku in (
@@ -233,7 +245,13 @@
 				    AND s1.id = s2.real_id
 				    AND s2.sku = sc_amazon_order.sku
 				    AND s2.account_id = sc_amazon_order.account_id )
-				    as IS_PACKAGE
+				    as IS_PACKAGE,
+			sc_real_product.POSTAGE_SERVICE_ID,
+		   (select sps.name from sc_postage_services sps where sps.id = sc_real_product.postage_service_id)
+		   			as POSTAGE_SERVICE_NAME,
+		   sc_real_product.LENGTH as REAL_LENGTH,
+		   sc_real_product.WIDTH as REAL_WIDTH,
+		   sc_real_product.HEIGHT as REAL_HEIGHT
 		  from  sc_amazon_order_status ,sc_amazon_order
 		  left join sc_amazon_account_product 
 		  on sc_amazon_account_product.sku = sc_amazon_order.sku

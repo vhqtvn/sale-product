@@ -26,12 +26,34 @@
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
+		//sql_postage_service_getForOrder
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
+		 
+		$result = $SqlUtils->exeSql("sql_postage_service_getForOrder",array( ) ) ;
+	
+		$reocrds = array() ;
+		$reocrds[] =array('value'=>'','text'=>'') ;
+		foreach( $result as $item){
+			$item = $SqlUtils->formatObject($item) ;
+			$reocrds[] = $item ;
+		} 
 	?>
+	<script type="text/javascript">
+		var serviceJson = <?php echo json_encode($reocrds) ;?> ;
+	
+	</script>
 	
 	<style type="text/css">
+		
 		.lly-grid-cell-update{
 			background:#DFA;
 			font-weight:blod;
+			width:90%;
+		}
+		
+		.lly-grid-cell-input{
+			width:90%;
 		}
 </style>
 </head>

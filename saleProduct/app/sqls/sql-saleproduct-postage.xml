@@ -2,6 +2,13 @@
 <properties>
     <entry key="sql_">
     </entry>
+    
+    <entry key="sql_postage_service_getForOrder">
+    SELECT sps.id AS value ,
+      CONCAT(spv.name ,':' , sps.name ) AS text
+ 	FROM sc_postage_services sps , sc_postage_vendor spv
+ 	WHERE sps.vendor_id = spv.id
+    </entry>
 
 	<entry key="sql_postage_vender_list">
 		select spv.* ,
