@@ -16,7 +16,6 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('grid/query');
 		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
