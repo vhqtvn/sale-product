@@ -1087,3 +1087,9 @@ var renderGridImg = function(val,record){
 function viewSupplier(id){
 	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,600,500) ;
 }
+
+$(".product-detail").live("click",function(){
+	var asin = $(this).attr("asin") ;
+	openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+	return false;
+}) ;

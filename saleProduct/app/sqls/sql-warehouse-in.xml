@@ -130,7 +130,10 @@
    </entry>
    
    <entry key="sql_warehouse_box_product_getById">
-  		select * from sc_warehouse_box_product where id = '{@#boxProductId#}'
+  		select swbp.*,
+  		(select srp.name from sc_real_product srp where srp.id = swbp.real_product_id ) as NAME,
+  		(select srp.real_sku from sc_real_product srp where srp.id = swbp.real_product_id ) as SKU
+  		 from sc_warehouse_box_product swbp where swbp.id = '{@#boxProductId#}'
    </entry>
    
    <entry key="sql_warehouse_box_lists">
