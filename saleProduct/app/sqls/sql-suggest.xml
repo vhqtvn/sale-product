@@ -8,6 +8,7 @@
        {@ and type = '#type#'}
        {@ and important_Level = '#importantLevel#'}
        {@ and enery_Level = '#eneryLevel#'}
+       order by id desc
     </entry>
     
     <entry key="sql_suggest_getById">

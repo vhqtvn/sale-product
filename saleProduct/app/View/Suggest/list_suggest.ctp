@@ -41,11 +41,12 @@
 				<th>状态：</th>
 				<td>
 					<select name="status"  class="span2">
+						<option value="">全部</option>
 						<option value="0">未处理</option>
 						<option value="1">已处理</option>
 						<option value="2">暂不处理</option>
 						<option value="3">处理中</option>
-						<option value="">全部</option>
+						
 					</select>
 				</td>
 			</tr>

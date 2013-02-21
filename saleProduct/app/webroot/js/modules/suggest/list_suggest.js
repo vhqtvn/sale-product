@@ -33,10 +33,17 @@ $(function(){
 					var val = record["LOGIN_ID"] ;
 					html.push("<a href='#' class='action update' val='"+val+"'>修改</a>&nbsp;") ;
 					//html.push("<a href='#' class='action del' val='"+val+"'>删除</a>") ;
-
 					return html.join("") ;
+			},render:function( record ){
+					 var status = record.STATUS ;
+				     var color =  status== 1 ?'green':
+					  			(status == '0'?'pink': 
+					  				(status== '2'?'#CCC':
+					  					(status == '3'?'blue':''))) ;
+				  
+					  $(this).find(" td[key='STATUS']").css("background",color) ;
+					   
 			}},
-           	//{align:"center",key:"ID",label:"ID", width:"5%" },
 			{align:"left",key:"STATUS",label:"状态",width:"5%",format:{type:'json',content:{'0':'未处理','1':'已处理','2':'暂不处理','3':'处理中'}}},
 			{align:"left",key:"TYPE",label:"类型",width:"5%",format:{type:'json',content:{'1':'需求','2':'问题'}}},
 			{align:"left",key:"IMPORTANT_LEVEL",label:"重要程度",width:"7%",format:{type:'json',content:{'1':'非常重要','2':'重要','3':'不重要'}}},
@@ -44,7 +51,7 @@ $(function(){
            	{align:"center",key:"TITLE",label:"标题",width:"20%",align:"left"},
            	{align:"center",key:"MEMO",label:"备注",width:"20%"},
            	{align:"center",key:"CREATOR",label:"创建人",width:"10%"},
-           	{align:"left",key:"CREATE_TIME",label:"创建时间",width:"10%"}
+           	{align:"left",key:"CREATE_TIME",label:"创建时间",width:"13%"}
          ],
          ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 		 limit:20,
@@ -54,7 +61,7 @@ $(function(){
 		 },
 		 title:"需求问题列表",
 		 indexColumn:false,
-		  querys:{sqlId:"sql_suggest_list",status:"0"},
+		  querys:{sqlId:"sql_suggest_list",status:""},
 		 loadMsg:"数据加载中，请稍候......"
 	}) ;
 });
