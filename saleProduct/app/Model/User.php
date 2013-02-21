@@ -33,6 +33,25 @@ class User extends AppModel {
 		}
 	}
 	
+	/**
+	 * 密码重置
+	 */
+	function passwordReset($params){
+		
+		$user = $this->getUser() ;
+		
+		if(!empty($params["oldpassword"])){
+			if( $user['PASSWORD'] ==  md5( $params["oldpassword"] )  ){
+					$newpassword = md5( $params["newpassword"] ) ;
+					$this->exeSql("sql_security_user_password_reset",array('password'=>$newpassword , 'id'=>$user['ID'])) ;
+			}else{
+				return "old password is incorrent!" ;
+			}
+		}
+		
+		
+	}
+	
 	function saveUser($user){
 		if(!empty($user["password"])){
 			$user["password"] = md5( $user["password"] ) ;

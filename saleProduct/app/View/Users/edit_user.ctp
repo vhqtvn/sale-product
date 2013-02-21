@@ -99,7 +99,7 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
 						<div class="form-actions col2">
-							<button type="button" class="btn btn-primary">提&nbsp;交</button>
+							<button type="button" class="btn btn-primary save-user">提&nbsp;交</button>
 						</div>
 					</div>
 				</div>

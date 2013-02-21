@@ -49,23 +49,24 @@
 		$purchase_cost_view 	= $security->hasPermission($loginId , 'purchase_cost_view') ;
 		$confirm_purchase 	= $security->hasPermission($loginId , 'confirm_purchase') ;
 		
-		
 	?>
 	
 	<script type="text/javascript">
+
+	    var flag = <?php echo $flag ; ?> ; 
 		var loginId = <?php echo $flag == 1?"''":"'lixh'" ?> ;//'lixh' ;
 	
-		var $create_pp = <? echo $create_pp?"true":"false" ;?> ;
-		var $add_pp_product = <? echo $add_pp_product?"true":"false" ;?> ;
-		var $add_pp_audit_product = <? echo $add_pp_audit_product?"true":"false" ;?> ;
-		var $export_pp = <? echo $export_pp?"true":"false" ;?> ;
-		var $print_pp = <? echo $print_pp?"true":"false" ;?> ;
-		var $edit_pp_product = <? echo $edit_pp_product?"true":"false" ;?> ;
-		var $delete_pp_product = <? echo $delete_pp_product?"true":"false" ;?> ;
-		var $apply_purchase = <? echo $apply_purchase?"true":"false" ;?> ;
-		var $audit_purchase = <? echo $audit_purchase?"true":"false" ;?> ;
-		var $purchase_cost_view = <? echo $purchase_cost_view?"true":"false" ;?> ;
-		var $confirm_purchase = <? echo $confirm_purchase?"true":"false" ;?> ;
+		var $create_pp = <?php echo $create_pp?"true":"false" ;?> ;
+		var $add_pp_product = <?php echo $add_pp_product?"true":"false" ;?> ;
+		var $add_pp_audit_product = <?php echo $add_pp_audit_product?"true":"false" ;?> ;
+		var $export_pp = <?php echo $export_pp?"true":"false" ;?> ;
+		var $print_pp = <?php echo $print_pp?"true":"false" ;?> ;
+		var $edit_pp_product = <?php echo $edit_pp_product?"true":"false" ;?> ;
+		var $delete_pp_product = <?php echo $delete_pp_product?"true":"false" ;?> ;
+		var $apply_purchase = <?php echo $apply_purchase?"true":"false" ;?> ;
+		var $audit_purchase = <?php echo $audit_purchase?"true":"false" ;?> ;
+		var $purchase_cost_view = <?php echo $purchase_cost_view?"true":"false" ;?> ;
+		var $confirm_purchase = <?php echo $confirm_purchase?"true":"false" ;?> ;
 		
 		var img1 = '<?php echo $this->Html->image('example.gif',array("title"=>"未处理")) ?>' ;
 		var img2 = '<?php echo $this->Html->image('apply.png',array("title"=>"申请采购")) ?>' ;

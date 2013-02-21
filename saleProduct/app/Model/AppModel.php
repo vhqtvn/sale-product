@@ -212,7 +212,18 @@ class AppModel extends Model {
 			return $sql ;
 		}
 		
+		public function getUser(){
+			App::import('Component','Session');
+			// $session = new SessionComponent(new ComponentCollection());
+			$user =  SessionComponent::read("product.sale.user") ;
+			return $user ;
+		}
+		
 		public function getSql($sql , $query){
+  			 $user =  $this->getUser() ; 
+  			 
+  			 $userId = $user['LOGIN_ID'] ;
+			
 			$domain =  $_SERVER['SERVER_NAME'] ;
 			$query['domain'] = $domain ;
 			
@@ -241,11 +252,32 @@ class AppModel extends Model {
 	    							$keyarray = explode(':',$key) ;
 
 	    							$key = $keyarray[0] ;
+	    							
+	    							
 	    							if( count($keyarray) >=2 ){
 	    								$defaultValue = $keyarray[1] ;
 	    							}
 	    							
-	    							if( isset($query[$key]) &&( $query[$key]=='0' || !empty($query[$key]) 
+	    							
+	    							if( strpos($key, '$') === 0 ){//权限环境变量
+	    							//	echo 111111111111;
+	    								$evnKey = substr( $key , 1 ) ;
+	    							//	echo $evnKey ;
+	    								//查询权限变量
+	    								$evnObj = $this->getObject("sql_security_find_dataSecurity",array('code'=>$evnKey , 'loginId'=>$userId)) ;
+	    							//	debug($evnObj) ;
+	    								if( isset($evnObj['URL'])  && !empty($evnObj['URL']) || !empty($defaultValue) || $defaultValue == '0' ){
+	    									
+	    									$evnValue = $evnObj['URL'] ;
+	    									$evnValue = str_replace('#loginId#',"'$userId'",$evnValue);
+	    									
+	    									$clause .=  $evnValue  ;
+	    									$isTrue = true ;
+	    								}else{
+		    								$isTrue = false ;
+		    								break ;
+		    							}
+	    							}else  if( isset($query[$key]) &&( $query[$key]=='0' || !empty($query[$key]) 
 	    								|| !empty($defaultValue) || $defaultValue == '0' ) ){
 	    								
 	    								$kValue = $query[$key] ;
@@ -280,7 +312,7 @@ class AppModel extends Model {
 	    		}
 	    		$index++ ;
 	    	} 
-	    	//echo $parseSql;
+	    //	echo $parseSql;
 	    	
 	    	return $parseSql ;
 		}

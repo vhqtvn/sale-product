@@ -96,7 +96,7 @@
 				cache:false,
 				dataType:"text",
 				success:function(result,status,xhr){
-					alert("删除成功!");
+					alert("添加成功!");
 					$(".grid-content").llygrid("reload",{},true) ;
 				}
 			});

@@ -63,7 +63,8 @@
 				URL, 
 				TYPE,
 				CODE,
-				DISPLAY_ORDER
+				DISPLAY_ORDER,
+				OPERATION_CODE
 				)
 				VALUES
 				(
@@ -72,7 +73,8 @@
 				'{@#url#}', 
 				'{@#type#}',
 				'{@#code#}',
-				'{@#displayOrder#}'
+				'{@#displayOrder#}',
+				'{@#operationCode#}'
 				)
    </entry>
    
@@ -84,7 +86,8 @@
 					URL = '{@#url#}' , 
 					TYPE = '{@#type#}' ,
 					CODE = '{@#code#}',
-					display_order = '{@#displayOrder#}'
+					display_order = '{@#displayOrder#}',
+				OPERATION_CODE = '{@#operationCode#}'
 					
 					WHERE
 					ID = '{@#id#}' 
@@ -104,6 +107,14 @@
 				GROUP_CODE = '{@#group#}' , 
 				PHONE = '{@#phone#}' , 
 				EMAIL = '{@#email#}' 
+				WHERE
+				ID = '{@#id#}' 
+   </entry>
+   
+   <entry key="sql_security_user_password_reset">
+		UPDATE  sc_user 
+				SET
+				PASSWORD ='{@#password#}'
 				WHERE
 				ID = '{@#id#}' 
    </entry>
@@ -156,7 +167,19 @@
 		 AND s1.function_code = '{@#code#}'
    </entry> 
    
-   
+   <!-- 数据权限查询，通过用户ID和function Code -->
+   <entry key="sql_security_find_dataSecurity">
+		SELECT ssf.* FROM sc_security_function ssf,
+			sc_security_group_function ssgf,
+			sc_security_groups ssg,
+			sc_user su
+			 WHERE ssf.type = 'DATA'
+			 AND ssf.CODE = ssgf.FUNCTION_CODE
+			 AND ssf.OPERATION_CODE = '{@#code#}'
+			 AND ssgf.GROUP_CODE = ssg.CODE
+			 AND su.GROUP_CODE = ssg.CODE
+			 AND su.LOGIN_ID = '{@#loginId#}'
+   </entry>
    
    <entry key="sql_warning_list">
 		SELECT * FROM sc_account_product_warning where 1=1 {@ and account_id = '#accountId#'} 

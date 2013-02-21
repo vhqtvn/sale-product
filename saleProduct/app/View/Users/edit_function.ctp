@@ -49,16 +49,24 @@
 									<th>功能类别：</th><td>
 										<select id="type"   data-validator="required">
 											<?php
-												if( $function[0]['sc_security_function']['TYPE'] == 'MENU'){
-													echo "<option value='MENU' selected>菜单</option>
-													<option value='FUNCTION'>功能</option>";
-												}else if( $function[0]['sc_security_function']['TYPE'] == 'FUNCTION'){
-													echo "<option value='MENU' >菜单</option>
-													<option value='FUNCTION' selected>功能</option>";
-												}else{
-													echo "<option value='' >-</option><option value='MENU' >菜单</option>
-													<option value='FUNCTION'>功能</option>";
-												}
+												$type = $function[0]['sc_security_function']['TYPE']  ;
+												$menuSelected = '' ;
+												$functionSelected = '' ;
+												$dataSelected = '' ;
+												
+												if( $type== 'MENU'){
+													$menuSelected = 'selected' ;
+												}else if( $type == 'FUNCTION'){
+													$functionSelected = 'selected' ;
+												} else if( $type == 'DATA'){
+													$dataSelected = 'selected' ;
+												} 
+												
+												echo "<option value='' >-</option>
+												<option value='MENU'  $menuSelected>菜单</option>
+												<option value='FUNCTION' $functionSelected>功能</option>
+												<option value='DATA' $dataSelected>数据权限</option>";
+												 
 											?>
 											
 										</select>
@@ -69,11 +77,15 @@
 										value="<?php echo  $function[0]['sc_security_function']['PARENT_ID'];?>"/></td>
 								</tr>
 								<tr>
-									<th>功能编码：</th><td><input type="text" id="code"  data-validator="required"
+									<th>功能编码（唯一）：</th><td><input type="text" id="code"  data-validator="required"
 										value="<?php echo  $function[0]['sc_security_function']['CODE'];?>"/></td>
 								</tr>
 								<tr>
-									<th>功能URL：</th><td><input type="text" id="url" 
+									<th>数据分组编码：</th><td><input type="text" id="operationCode" 
+										value="<?php echo  $function[0]['sc_security_function']['OPERATION_CODE'];?>"/></td>
+								</tr>
+								<tr>
+									<th>功能URL或表达式：</th><td><input type="text" id="url" 
 										value="<?php echo  $function[0]['sc_security_function']['URL'];?>"/></td>
 								</tr>
 								<tr>
