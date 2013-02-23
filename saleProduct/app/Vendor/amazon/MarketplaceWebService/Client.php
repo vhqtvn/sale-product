@@ -287,6 +287,21 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
     $response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
     return $response;
   }
+  
+  public function getFbaInventryReport($request , $account , $reportType)
+  {
+  	if (!$request instanceof MarketplaceWebService_Model_GetReportRequest) {
+  		require_once (VENDOR_PATH.'/amazon/MarketplaceWebService/Model/GetReportRequest.php');
+  		$request = new MarketplaceWebService_Model_GetReportRequest($request);
+  	}
+  	require_once (VENDOR_PATH.'/amazon/MarketplaceWebService/Model/GetReportResponse.php');
+  
+  	$httpResponse = $this->invoke($this->convertGetReport($request), $request->getReport(),null , $account ,$reportType );
+  
+  	$response = MarketplaceWebService_Model_GetReportResponse::fromXML($httpResponse['ResponseBody']);
+  	$response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
+  	return $response;
+  }
 
   /**
    * Get Report Schedule Count
@@ -966,6 +981,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	  
 	    while(!feof($handle)){
 	        $row =  fgets($handle, 1024);
+	        
 	        if($HeadArray == null){
 	        	$HeadArray = split( "\t" ,$row  ) ;
 	        }else{
@@ -1019,6 +1035,47 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 						'pendingQuantity'=>$pendingQuantity,
 						'itemCondition'=>$itemCondition
 					),2) ;
+	        	}else if( !empty( $reportType ) && $reportType == '_GET_AFN_INVENTORY_DATA_' ){
+	        		/**
+	        		 * 'seller-sku' => 'WI-Contr-0-W',
+						'fulfillment-channel-sku' => 'X000DX9ZND',
+						'asin' => 'B005UI9BT8',
+						'condition-type' => 'NewItem',
+						'Warehouse-Condition-code' => 'SELLABLE',
+						'Quantity Available' => '0
+	        		 */
+	        		debug($productItem) ;
+	        		/*$asin 		= $productItem['product-id'] ;
+		        	$sku  		= $productItem['seller-sku'] ;
+		        	$listingId  = $productItem['listing-id'] ;
+		        	$quantity  	= $productItem['quantity'] ;
+		        	$price  	= $productItem['price'] ;
+		        	$fulfillment  = $productItem['fulfillment-channel'] ;
+		        	$pendingQuantity  = $productItem['pending-quantity'] ;
+		        	$itemCondition = $productItem['item-condition'] ;
+		    */
+	        		$asin 		= $productItem['asin'] ;
+	        		$sku  		= $productItem['seller-sku'] ;
+	        		$quantity  	= $productItem['Quantity Available'] ;
+	        		$sellable 	= $productItem['Warehouse-Condition-code'] ;
+	        		
+	        		$fulfillment = "AMAZON_NA" ;
+	        		
+	        		if( 'SELLABLE' == $sellable ){
+		        			if(empty($asin)){
+		        				$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+		        			}
+		        			
+		        			$amazonAccount->saveAccountProductByAsyn(array(
+		        					'ASIN'=>$asin,
+		        					'SKU'=>$sku,
+		        					'accountId'=>$accountId,
+		        					'FBA_SELLABLE'=>$sellable,
+		        					'fulfillment'=>$fulfillment,
+		        					'quantity'=>$quantity
+		        			),3) ;
+	        		}
+	        		
 	        	}
 	        	
 	        	
