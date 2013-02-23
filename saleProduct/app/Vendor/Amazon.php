@@ -459,5 +459,134 @@ class Amazon {
 	}
 
 	
+	public function getFBAInventory1($accountId){ //_GET_AFN_INVENTORY_DATA_
+		$config = array (
+			  'ServiceURL' =>  "https://mws.amazonservices.com",
+			  'ProxyHost' => null,
+			  'ProxyPort' => -1,
+			  'MaxErrorRetry' => 3,
+			);
+		
+		 $service = new MarketplaceWebService_Client(
+		     $this->AWS_ACCESS_KEY_ID, 
+		     $this->AWS_SECRET_ACCESS_KEY, 
+		     $config,
+		     $this->APPLICATION_NAME,
+		     $this->APPLICATION_VERSION);
+		     
+		$marketplaceIdArray = array("Id" => array($this->MARKETPLACE_ID));  
+		
+		 $parameters = array (
+		   'Merchant' => $this->MERCHANT_ID,
+		   'MarketplaceIdList' => $marketplaceIdArray,
+		   'ReportType' => '_GET_AFN_INVENTORY_DATA_',
+		   'ReportOptions' => 'ShowSalesChannel=true'
+		 );
+		 
+		 $request = new MarketplaceWebService_Model_RequestReportRequest($parameters); 
+		 
+		 $return = null ;
+		 
+	     try {
+	          $response = $service->requestReport($request);
+	          
+	            if ($response->isSetRequestReportResult()) { 
+	                $requestReportResult = $response->getRequestReportResult();
+	                
+	                if ($requestReportResult->isSetReportRequestInfo()) {
+	                      $reportRequestInfo = $requestReportResult->getReportRequestInfo();
+	                      $reportRequestId = "" ;
+	                      $reportType = "" ;
+	                      if ($reportRequestInfo->isSetReportRequestId()) {
+	                          $reportRequestId =  $reportRequestInfo->getReportRequestId() ;
+	                      }
+	                      if ($reportRequestInfo->isSetReportType()) {
+	                      	  $reportType =  $reportRequestInfo->getReportType() ;
+	                      }
+	                      
+	                      if( $reportRequestId != "" ){
+	                      	 $return = array('reportRequestId'=>$reportRequestId,'reportType'=>'_GET_AFN_INVENTORY_DATA_') ;
+	                      }
+	                  }
+	            } 
+	     } catch (MarketplaceWebService_Exception $ex) {
+	     }
+	     
+	     return $return ;
+	}
+	
+	public function getFBAInventory2( $accountId , $reportRequestId ){
+		$config = array (
+				'ServiceURL' =>  "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
+	
+		$service = new MarketplaceWebService_Client(
+				$this->AWS_ACCESS_KEY_ID,
+				$this->AWS_SECRET_ACCESS_KEY,
+				$config,
+				$this->APPLICATION_NAME,
+				$this->APPLICATION_VERSION);
+	
+		$ReportRequestIdList = array("Id" => array($reportRequestId));
+	
+		$parameters = array (
+				'Merchant' => $this->MERCHANT_ID,
+				'ReportRequestIdList' => $ReportRequestIdList,
+				'Acknowledged' => false,
+		);
+	
+		$request = new MarketplaceWebService_Model_GetReportListRequest($parameters);
+	
+		$return = null ;
+	
+		try {
+			$response = $service->getReportList($request);
+	
+			if ($response->isSetGetReportListResult()) {
+				$getReportListResult = $response->getGetReportListResult();
+				$reportInfoList = $getReportListResult->getReportInfoList();
+				foreach ($reportInfoList as $reportInfo) {
+					if ($reportInfo->isSetReportId()){
+						$reportId = $reportInfo->getReportId() ;
+						$return = array("reportId"=>$reportId,'reportType'=>'_GET_AFN_INVENTORY_DATA_') ;
+					}
+				}
+			}
+		} catch (MarketplaceWebService_Exception $ex) {
+		}
+	
+		return $return ;
+	}
+	
+	public function getFBAInventory3( $accountId ,$reportId){
+		$config = array (
+				'ServiceURL' => "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
+	
+		$service = new MarketplaceWebService_Client(
+				$this->AWS_ACCESS_KEY_ID,
+				$this->AWS_SECRET_ACCESS_KEY,
+				$config,
+				$this->APPLICATION_NAME,
+				$this->APPLICATION_VERSION);
+	
+		$parameters = array (
+				'Merchant' => $this->MERCHANT_ID,
+				'Report' => @fopen('php://memory', 'rw+'),
+				'ReportId' => $reportId //"7383292363"//$reportId,
+		);
+		$request = new MarketplaceWebService_Model_GetReportRequest($parameters);
+	
+		try {
+			$response = $service->getFbaInventryReport($request,$accountId,"_GET_AFN_INVENTORY_DATA_");
+		} catch (MarketplaceWebService_Exception $ex) {
+		}
+	}
 }
 ?>
