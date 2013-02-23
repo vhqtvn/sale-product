@@ -2,7 +2,7 @@
 
 class HomeController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
-    var $uses = array('Salegrid');
+    var $uses = array('Salegrid','Widget');
     
     function beforeFilter() {
 		parent::beforeFilter();
@@ -11,6 +11,10 @@ class HomeController extends AppController {
 
 	public function index() {
 		$this->layout="index";
+    }
+    
+    public function widgets(){
+    	
     }
     
     public function phone(){

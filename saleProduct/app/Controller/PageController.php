@@ -144,7 +144,7 @@ class PageController extends AppController {
 			$this->set("user",$user) ;
 	
 		
-		$this->layout = "../$rs" ;
+		    $this->layout = "../$rs" ;
 
 	}
 }

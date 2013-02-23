@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<!-- 我的采购列表 -->
+    <entry key="sql_widget_purchase_my">
+        select count(*) c from (
+			    SELECT  sc_purchase_plan.* ,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and ( sc_purchase_plan_details.status = 1 or sc_purchase_plan_details.status is null ) ) as STATUS1,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and  sc_purchase_plan_details.status = 2  ) as STATUS2,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 3 ) as STATUS3,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 4 ) as STATUS4,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 5 ) as STATUS5
+               FROM sc_purchase_plan 
+               where  creator = '{@#loginId#}'
+           )  t where   ( ( status1 != 0 or  status2 != 0 or  status3 != 0 )
+               or ( STATUS4 = 0 and STATUS5 = 0)
+               )
+    </entry>
+
+   <!-- 我执行的采购列表 -->
+   <entry key="sql_widget_purchase_myexecutor">
+         select count(*) c from (
+			    SELECT  sc_purchase_plan.* ,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and ( sc_purchase_plan_details.status = 1 or sc_purchase_plan_details.status is null ) ) as STATUS1,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and  sc_purchase_plan_details.status = 2  ) as STATUS2,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 3 ) as STATUS3,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 4 ) as STATUS4,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 5 ) as STATUS5
+               FROM sc_purchase_plan 
+               where   executor = '{@#loginId#}'
+           )  t where   ( ( status1 != 0 or  status2 != 0 or  status3 != 0 ) 
+               )
+    </entry>
+    
+   <!-- 所有采购列表 -->
+   <entry key="sql_widget_purchase_all">
+       select count(*) c from (
+			    SELECT  sc_purchase_plan.* ,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and ( sc_purchase_plan_details.status = 1 or sc_purchase_plan_details.status is null ) ) as STATUS1,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and  sc_purchase_plan_details.status = 2  ) as STATUS2,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 3 ) as STATUS3,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 4 ) as STATUS4,
+							( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+									and sc_purchase_plan_details.status = 5 ) as STATUS5
+               FROM sc_purchase_plan  
+           )  t where    ( ( status1 != 0 or  status2 != 0 or  status3 != 0 )
+               or ( STATUS4 = 0 and STATUS5 = 0)
+               )
+    </entry>
+    
+</properties>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<!-- 未审核单品订单 -->
+    <entry key="sql_widget_order_nostatus_one">
+    <![CDATA[
+        SELECT COUNT(*) AS c FROM (
+		SELECT sc_amazon_order.* ,
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    AS IS_PACKAGE
+		  FROM sc_amazon_order
+		  LEFT JOIN sc_real_product 
+		  ON sc_real_product.real_sku IN (
+		  	 SELECT s.real_sku FROM sc_real_product_rel s 
+		  	 WHERE s.sku = sc_amazon_order.sku
+		  	 AND s.account_id = sc_amazon_order.account_id
+		  )
+		  LEFT JOIN sc_amazon_account_product 
+		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
+		  WHERE  NOT EXISTS (
+		  	SELECT 1 FROM sc_amazon_order_status WHERE 
+		  	sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id
+		  )
+	) t
+	WHERE ( t.C <= 1 AND t.IS_PACKAGE IS NULL )
+	]]>
+    </entry>
+    
+    <!-- 多品订单 -->
+    <entry key="sql_widget_order_nostatus_many">
+    <![CDATA[
+        SELECT COUNT(*) AS c FROM (
+		SELECT sc_amazon_order.* ,
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = sc_amazon_order.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = sc_amazon_order.sku
+				    AND s2.account_id = sc_amazon_order.account_id )
+				    AS IS_PACKAGE
+		  FROM sc_amazon_order
+		  LEFT JOIN sc_real_product 
+		  ON sc_real_product.real_sku IN (
+		  	 SELECT s.real_sku FROM sc_real_product_rel s 
+		  	 WHERE s.sku = sc_amazon_order.sku
+		  	 AND s.account_id = sc_amazon_order.account_id
+		  )
+		  LEFT JOIN sc_amazon_account_product 
+		  ON sc_amazon_account_product.sku = sc_amazon_order.sku
+		  WHERE  NOT EXISTS (
+		  	SELECT 1 FROM sc_amazon_order_status WHERE 
+		  	sc_amazon_order_status.order_id = sc_amazon_order.order_id AND
+		   sc_amazon_order_status.order_item_id = sc_amazon_order.order_item_id
+		  )
+	) t
+	WHERE  ( t.C > 1 or (t.IS_PACKAGE is not null) )
+	]]>
+    </entry>
+    
+    <!-- 连货单 -->
+    <entry key="sql_widget_order_picked_my">
+    <![CDATA[
+       SELECT COUNT(*) c FROM sc_amazon_picked sap WHERE sap.status <> '1'
+			AND creator = '{@#loginId#}'
+	]]>
+    </entry>
+    
+    <entry key="sql_widget_order_picked_all">
+    <![CDATA[
+       SELECT COUNT(*) c FROM sc_amazon_picked sap WHERE sap.status <> '1'
+	]]>
+    </entry>
+
+</properties>

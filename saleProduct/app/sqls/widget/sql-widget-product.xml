@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	
+    <!-- 产品专员 -->
+    <entry key="sql_widget_product_cpzy_my">
+    <![CDATA[
+       SELECT COUNT(*) c FROM (
+			SELECT sc_product_filter.* ,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status IN (1,2)) AS STATUS12,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 3 ) AS  STATUS3,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 4) AS  STATUS4,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 5 ) AS  STATUS5,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 6 ) AS  STATUS6,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 7 ) AS  STATUS7,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME 
+			  FROM sc_product_filter
+			  where creator = '{@#loginId#}'
+		) t WHERE t.STATUS12 > 0
+	]]>
+    </entry>
+    
+    <!-- 产品专员 -->
+    <entry key="sql_widget_product_cpzy_all">
+    <![CDATA[
+       SELECT COUNT(*) c FROM (
+			SELECT sc_product_filter.* ,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status IN (1,2)) AS STATUS12,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 3 ) AS  STATUS3,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 4) AS  STATUS4,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 5 ) AS  STATUS5,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 6 ) AS  STATUS6,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 7 ) AS  STATUS7,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME 
+			  FROM sc_product_filter
+		) t WHERE t.STATUS12 > 0
+	]]>
+    </entry>
+    
+    <!-- 产品经理 -->
+    <entry key="sql_widget_product_cpjl">
+    <![CDATA[
+      SELECT COUNT(*) c FROM (
+			SELECT sc_product_filter.* ,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status IN (1,2)) AS STATUS12,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 3 ) AS  STATUS3,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 4) AS  STATUS4,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 5 ) AS  STATUS5,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 6 ) AS  STATUS6,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 7 ) AS  STATUS7,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME 
+			  FROM sc_product_filter
+		) t WHERE t.STATUS4 > 0
+	]]>
+    </entry>
+    
+    <!-- 总经理 -->
+    <entry key="sql_widget_product_zjl">
+    <![CDATA[
+       SELECT COUNT(*) c FROM (
+			SELECT sc_product_filter.* ,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status IN (1,2)) AS STATUS12,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 3 ) AS  STATUS3,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 4) AS  STATUS4,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 5 ) AS  STATUS5,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 6 ) AS  STATUS6,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 7 ) AS  STATUS7,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME 
+			  FROM sc_product_filter
+		) t WHERE t.STATUS6 > 0
+	]]>
+    </entry>
+
+</properties>

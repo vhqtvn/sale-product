@@ -169,7 +169,7 @@
 						</table>
 						
 						<div class="alert alert-info area" style="width:50%;">
-						总成本:&nbsp;<input type="text" id="TOTAL_COST" readonly="readOnly" value="<?php echo $productCost[0]["sc_product_cost"]["TOTAL_COST"];?>"/>
+						总成本:&nbsp;<input type="text" id="TOTAL_COST" readonly="readOnly"  value="<?php echo $productCost[0]["sc_product_cost"]["TOTAL_COST"];?>"/>
 						</div>
 					</div>
 					

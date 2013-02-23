@@ -75,7 +75,7 @@ class OrderController extends AppController {
     /**
      * 新订单列表
      */
-    public function lists($accountId,$status = null){
+    public function lists($accountId=null,$status = null){
     	$this->set("accountId",$accountId);
     	$this->set("status",$status);
     }
@@ -83,7 +83,7 @@ class OrderController extends AppController {
     /**
      * 处理中列表
      */
-    public function doingLists($accountId,$status = null){
+    public function doingLists($accountId=null,$status = null){
     	$this->set("accountId",$accountId);
     	$this->set("status",$status);
     }
