@@ -289,6 +289,8 @@ class Amazonaccount extends AppModel {
 		$listingId = "" ;
 		$fulfillment = "" ;
 		$pendingQuantity = "" ;
+		$FBA_SELLABLE = '' ;
+		$price = '' ;
 		
 		if(isset($data['listingId']))
 			$listingId = $data['listingId'] ;
@@ -296,11 +298,17 @@ class Amazonaccount extends AppModel {
 			$fulfillment = $data['fulfillment'] ;
 		if(isset($data['pendingQuantity']))
 			$pendingQuantity = $data['pendingQuantity'] ;
+		if( isset($data['price']) ){
+			$price = $data['price'] ;
+		}
+		if( isset($data['FBA_SELLABLE']) ){
+			$FBA_SELLABLE = $data['FBA_SELLABLE'] ;
+		}
 			
 		if(empty($data['ASIN']))
 			return ;
 		
-		if( !empty($tt) && count($tt) >= 1){
+		if( !empty($tt) && count($tt) >= 1){//数据存在
 			if($type == 2){
 				$sql = " UPDATE sc_amazon_account_product 
 					SET 
@@ -315,12 +323,23 @@ class Amazonaccount extends AppModel {
 					ASYN_STATUS = 'Y'
 					WHERE
 					account_id = '".$data['accountId']."' and SKU = '".$data['SKU']."' " ;
-			}else{
+			}else if($type == 1){
 				$sql = " UPDATE sc_amazon_account_product 
 					SET 
 					ASIN = '".$data['ASIN']."' ,
 					PRICE = '".$data['price']."' ,
 					QUANTITY = '".$data['quantity']."',
+					STATUS = 'Y',
+					ASYN_STATUS = 'Y'
+					WHERE
+					account_id = '".$data['accountId']."' and SKU = '".$data['SKU']."' " ;
+			}else if($type == 3){
+				$sql = " UPDATE sc_amazon_account_product 
+					SET 
+					ASIN = '".$data['ASIN']."' ,
+					QUANTITY = '".$data['quantity']."',
+					FULFILLMENT_CHANNEL = '$fulfillment' , 
+					FBA_SELLABLE = '".$data['FBA_SELLABLE']."',
 					STATUS = 'Y',
 					ASYN_STATUS = 'Y'
 					WHERE
@@ -341,20 +360,22 @@ class Amazonaccount extends AppModel {
 						PADDENT_QUANTITY, 
 						QUANTITY,
 						STATUS,
-						ASYN_STATUS
+						ASYN_STATUS,
+						FBA_SELLABLE
 						)
 						VALUES
 						(
 						'".$data['accountId']."', 
 						'".$data['ASIN']."', 
-						'".$data['price']."', 
+						'".$price."', 
 						NOW(),  
 						'".$data['SKU']."', 
 						'$listingId', 
 						'$fulfillment', 
 						'$pendingQuantity',
 						'".$data['quantity']."', 
-						'Y','Y'
+						'Y','Y',
+						'$FBA_SELLABLE'
 						)
 					 " ;
 				$this->query($sql) ;
