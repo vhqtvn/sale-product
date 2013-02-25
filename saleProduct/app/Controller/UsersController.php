@@ -119,7 +119,7 @@ class UsersController extends AppController
 		} ;
 		
 		//获取过滤规则信息
-		$securitys2 = $this->User->getFilterRules( $code , $id ) ;  
+		$securitys2 = $this->User->getFilterRules( $code  ) ;  
 		
 		$this->set("accountSecuritys",$accountSecuritys) ;
 		$this->set("accountSecuritys1",$accountSecuritys1) ;

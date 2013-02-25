@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <!-- 连货单 -->
+    <entry key="sql_widget_goods_inventory">
+    <![CDATA[
+       SELECT 'normal' AS TYPE , COUNT(*) AS c FROM sc_real_product
+		WHERE quantity > warning_quantity
+		UNION 
+		SELECT 'warning' AS TYPE , COUNT(*) AS c FROM sc_real_product
+		WHERE quantity <= warning_quantity AND quantity > SECURITY_QUANTITY
+		UNION 
+		SELECT 'danger' AS TYPE , COUNT(*) AS c FROM sc_real_product
+		WHERE  quantity <= SECURITY_QUANTITY
+	]]>
+    </entry>
+    
+</properties>

@@ -214,8 +214,8 @@ class AppModel extends Model {
 		
 		public function getUser(){
 			App::import('Component','Session');
-			// $session = new SessionComponent(new ComponentCollection());
-			$user =  SessionComponent::read("product.sale.user") ;
+			 $session = new SessionComponent(new ComponentCollection());
+			$user =  $session->read("product.sale.user") ;
 			return $user ;
 		}
 		

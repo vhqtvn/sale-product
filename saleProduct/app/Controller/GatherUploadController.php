@@ -31,6 +31,7 @@ class GatherUploadController extends AppController {
 			
 			$this->Tasking->stop("gather_seller",$id,"") ;
 		}catch(Exception $e){
+		
 			$this->Log->saveLog($this->taskId,"error::::::::".$e->getMessage()) ;
 			$this->Tasking->stop("gather_seller",$id,"") ;
 		}	

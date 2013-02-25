@@ -8,6 +8,8 @@ $(function(){
 	
 	Widget.inplan() ;
 	
+	Widget.goods() ;
+	
 	$(".widget-action").live("click",function(){
 		var url = $(this).attr("href") ;
 		openCenterWindow(url,1000,650) ;
@@ -62,5 +64,15 @@ var Widget = {
 				}) ;
 				
 			});
+		},
+		
+		goods:function(){
+			$.dataservice("model:Widget.GoodsWidget.load",{},function(result){
+				$(result).each(function(){
+					var type = this.TYPE ;
+					var val = this.c ;
+					$("."+type+"-goods").html( "<a class='widget-action'  href='/saleProduct/index.php/saleProduct/lists' target='_blank'>" +val+"</a>") ;
+				}) ;
+			}) ;
 		}
 }

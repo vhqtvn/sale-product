@@ -349,19 +349,22 @@ class GatherData extends AppModel {
 		$sellerurl = $service->getSellerUrl($id);
 		$url = $sellerurl[0]['sc_seller']['url'];
 		
+		
 		for ($j = 1; $j < 200; $j++) {
 			$log->savelog($logId,"from [".($url . "&page=" . $j)."] get products") ;
 			$snoopy = new Snoopy;
 			$snoopy->agent =  $this->getAgent($j) ;
 			$snoopy->referer = $url ;
 			$snoopy->rawheaders["Pragma"] = "no-cache";
+			echo $url . "&page=" . $j;
 			if( $snoopy->fetch($url . "&page=" . $j) ){
 				$Result = $snoopy->results ;
+				
 				$html = new simple_html_dom();
 				$html->load( $Result ,true ,false );
 				//$html = file_get_html($url . "&page=" . $j); 
 				try{
-					$products = $html->find('.product');
+					$products = $html->find('.product,.prod');
 					
 					if (count($products) <= 0) {
 						break;

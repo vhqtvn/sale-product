@@ -103,6 +103,44 @@
 						</div>
 					</div>
 					<!-- panel 内容结束 -->
+					
+					<!-- panel内容开始 -->
+					<div class="panel">
+						<div class="panel-head">
+							<div class="row-fluid">
+								<div class="span6 first">							
+									<h2>货品库存状态</h2>
+								</div>
+								<div class="span6">
+                                	<div class="pull-right">
+                                    </div>
+								</div>
+							</div>
+							<a href="#" class="toggle"></a>
+						</div>
+						<div class="panel-content">
+							<!-- 数据列表默认样式 start -->						
+							<table class="table table-striped table-condensed">
+								<tbody>
+									<tr>
+										<th>正常库存</th>
+										<td class="normal-goods">加载中...</td>
+									</tr>
+									<tr>
+										<th>低于告警库存</th>
+										<td class="warning-goods">加载中...</td>
+									</tr>
+									<tr>
+										<th>低于安全库存</th>
+										<td class="danger-goods">加载中...</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- 数据列表默认样式 end -->
+									
+						</div>
+					</div>
+					<!-- panel 内容结束 -->
                     
                     
 				</div>
@@ -152,7 +190,7 @@
 						<div class="panel-head">
 							<div class="row-fluid">
 								<div class="span6 first">							
-									<h2>库存信息</h2>
+									<h2>入库计划</h2>
 								</div>
 								<div class="span6">
                                 	<div class="pull-right">
@@ -163,7 +201,6 @@
 						</div>
 						<div class="panel-content">
 							<table class="table table-striped table-condensed">
-								<caption>入库计划</caption>
 								<tbody>
 									<tr>
 										<th>编辑中</th>
