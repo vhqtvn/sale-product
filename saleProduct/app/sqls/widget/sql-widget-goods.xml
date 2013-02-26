@@ -3,14 +3,20 @@
     <!-- 连货单 -->
     <entry key="sql_widget_goods_inventory">
     <![CDATA[
-       SELECT 'normal' AS TYPE , COUNT(*) AS c FROM sc_real_product
-		WHERE quantity > warning_quantity
-		UNION 
-		SELECT 'warning' AS TYPE , COUNT(*) AS c FROM sc_real_product
-		WHERE quantity <= warning_quantity AND quantity > SECURITY_QUANTITY
-		UNION 
-		SELECT 'danger' AS TYPE , COUNT(*) AS c FROM sc_real_product
-		WHERE  quantity <= SECURITY_QUANTITY
+      SELECT 'normal' AS TYPE , COUNT(*) AS c FROM sc_real_product
+	WHERE quantity > warning_quantity
+	UNION 
+	SELECT 'warning' AS TYPE , COUNT(*) AS c FROM sc_real_product
+	WHERE quantity <= warning_quantity AND quantity > SECURITY_QUANTITY
+	UNION 
+	SELECT 'danger' AS TYPE , COUNT(*) AS c FROM sc_real_product
+	WHERE  quantity <= SECURITY_QUANTITY
+	UNION 
+	SELECT 'warningnoset' AS TYPE , COUNT(*) AS c FROM sc_real_product
+	WHERE ( warning_quantity IS NULL  or warning_quantity = 0 )
+	UNION 
+	SELECT 'dangernoset' AS TYPE , COUNT(*) AS c FROM sc_real_product
+	WHERE  ( SECURITY_QUANTITY IS NULL  or SECURITY_QUANTITY = 0 )
 	]]>
     </entry>
     
