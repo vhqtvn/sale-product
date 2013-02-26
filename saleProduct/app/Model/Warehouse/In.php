@@ -51,7 +51,12 @@ class In extends AppModel {
 	
 	public function editTrack(){}
 	
+	/**
+	 * 保存入库单
+	 * @param unknown_type $params
+	 */
 	public function doSave($params){
+	
 		if( empty( $params['id'] ) ){
 			$this->exeSql("sql_warehouse_in_insert",$params) ;
 		}else{
@@ -138,6 +143,10 @@ class In extends AppModel {
 	 */
 	public function loadStatusCount(){
 		return $this->exeSql("sql_warehouse_in_loadStatusCount",array());
+	}
+	
+	public function loadStatusCount4Out(){
+		return $this->exeSql("sql_warehouse_out_loadStatusCount",array());
 	}
 	
 	/**

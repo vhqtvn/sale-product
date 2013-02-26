@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>入库单计划编辑</title>
+    <title>出库单编辑</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -29,26 +29,26 @@
 		
 
 		//获取
-		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
-		$status = $warehoseIn['STATUS'];
+		$result = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
+		$status = $result['STATUS'];
 		
-		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
+		$hasEditPermission = $security->hasPermission($loginId , 'OUT_STATUS0') ;
 		$isRead = $hasEditPermission?($status >= 10 ?true:false):true ;
 		
 		$sendPermission = 
-			$security->hasPermission($loginId , 'IN_STATUS20')||$security->hasPermission($loginId , 'IN_STATUS30') ;
+			$security->hasPermission($loginId , 'OUT_STATUS200')||$security->hasPermission($loginId , 'OUT_STATUS300') ;
 		$isSended = $sendPermission?($status >30?true:false):true ; 
 		
 		$defaultCode = null ;
 		if( empty($result['IN_NUMBER']) ){
-			$index = $SqlUtils->getMaxValue("in" , null , 1) ;
+			$index = $SqlUtils->getMaxValue("out" , null , 1) ;
 			if( strlen($index) < 5 ){
 				$len = 5-strlen($index) ;
 				for($i=0 ;$i < $len ;$i++){
 					$index = '0'.$index ;
 				}
 			}
-			$defaultCode = "IN-".date("ymd").'-'.$index ;
+			$defaultCode = "OUT-".date("ymd").'-'.$index ;
 		}
 	?>
 	
@@ -64,8 +64,8 @@
 		<div class="container-fluid">
 
 	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	             <input type="hidden" id="id" value="<?php echo $result['ID'];?>"/>
-	            <input type="hidden" id="type" value="in"/>
+	        	<input type="hidden" id="id" value="<?php echo $result['ID'];?>"/>
+	        	<input type="hidden" id="type" value="out"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
@@ -75,7 +75,7 @@
 							<caption>基本信息</caption>
 							<tbody>										   
 								<tr>
-									<th>入库号：</th><td><input type="text" 
+									<th>出库号：</th><td><input type="text" 
 										<?php echo $isRead?"readOnly":"" ;?>
 										data-validator="required" id="inNumber" value="<?php echo empty($result['IN_NUMBER'])?$defaultCode:$result['IN_NUMBER'];?>"/></td>
 								
@@ -104,15 +104,11 @@
 							<caption>物流信息</caption>
 							<tbody>	
 								<tr>
-									<th>目标仓库：</th>
+									<th>目标地址：</th>
 									<td>
-									<input data-validator="required" type="hidden" id="warehouseId" 
+									<input type="text" data-validator="required" id="warehouseId" 
+									<?php echo $isRead?"readOnly":"" ;?>
 										value="<?php echo $result['WAREHOUSE_ID'];?>"/>
-									<input type="text" data-validator="required" id="warehouseName" readonly
-										value="<?php echo $result['WAREHOUSE_NAME'];?>"/>
-										<?php if( !$isRead ){
-											echo '<button class="btn btn-warehouse">选择</button>' ;
-										}?>
 									</td>
 									<th>运输公司：</th>
 									<td><input data-validator="required" type="text" id="shipCompany"
@@ -124,12 +120,9 @@
 									<td><input data-validator="required" type="text" id="shipType"
 										<?php echo $isRead?"readOnly":"" ;?>
 										value="<?php echo $result['SHIP_TYPE'];?>"/></td>
-									<th>达到港口：</th><td colspan=3><input type="text" id="arrivalPort" data-validator="required"
-										<?php echo $isRead?"readOnly":"" ;?>
-										value="<?php echo $result['ARRIVAL_PORT'];?>"/></td>
 								</tr>
 								<tr>
-									<th>发货时间：</th><td><input type="text" id="shipDate" 
+									<th>出库时间：</th><td><input type="text" id="shipDate" 
 										data-widget="calendar"  
 										<?php echo $isSended?"readonly":"" ;?>
 										value="<?php echo $result['SHIP_DATE'];?>"/></td>

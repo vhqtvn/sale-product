@@ -54,7 +54,9 @@ $(function(){
 		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:400,
+				 height:function(){
+					 return $(window).height() - 140 ;
+				 },
 				 title:"用户列表",
 				 indexColumn:false,
 				 querys:{sqlId:"sql_functions_list"},

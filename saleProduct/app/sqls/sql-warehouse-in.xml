@@ -9,6 +9,8 @@
 		        WHERE s2.box_id = s3.id AND s3.in_id = s1.id AND ( s2.status IS NULL OR s2.status !=1 ) ) AS STATUS1
 		  FROM sc_warehouse_in s1
 		  where 1=1 
+		  and s1.type = 'in'
+		  {@ and s1.IN_NUMBER like '%#inNumber#%'}
 		  {@ and s1.status = '#status#'}
    </entry>
    
@@ -41,7 +43,7 @@
 			PLAN_ARRIVAL_DATE = '{@#planArrivalDate#}' , 
 			{@REAL_ARRIVAL_DATE = '#realArrivalDate#' , }
 			MEMO = '{@#memo#}' , 
-			{@ IS_IN = '#isIn#' ,}
+			{@ TYPE = '#type#' ,}
 			UPDATOR = '{@#loginId#}' , 
 			UPDATE_TIME = NOW(),
 			send_company = '{@#sendCompany#}' , 
@@ -76,6 +78,7 @@
 			SHIP_DATE, 
 			PLAN_ARRIVAL_DATE,
 			MEMO,
+			TYPE,
 			CREATOR,
 			CREATE_TIME,
 			SEND_COMPANY, 
@@ -106,6 +109,7 @@
 			'{@#shipDate#}', 
 			'{@#planArrivalDate#}', 
 			'{@#memo#}',
+			'{@#type#}',
 			'{@#loginId#}',
 			NOW(),
 			'{@#sendCompany#}', 
@@ -167,7 +171,9 @@
    </entry>
    
    <entry key="sql_warehouse_in_loadStatusCount">
-   		SELECT STATUS,COUNT(STATUS) AS C FROM sc_warehouse_in GROUP BY status
+   		SELECT STATUS,COUNT(STATUS) AS C FROM sc_warehouse_in
+   		where type = 'in'
+   		 GROUP BY status
    </entry>
    
    

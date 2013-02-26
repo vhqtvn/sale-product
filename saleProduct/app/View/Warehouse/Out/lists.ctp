@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>入库计划列表</title>
+    <title>出库计划列表</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
@@ -18,13 +18,13 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('tab/jquery.ui.tabs');
-		echo $this->Html->script('modules/warehouse/in/lists');
+		echo $this->Html->script('modules/warehouse/out/lists');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		$loginId   = $user['LOGIN_ID'] ;
 		
-		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
+		$hasEditPermission = $security->hasPermission($loginId , 'OUT_STATUS0') ;
 	?>
   
 </head>
@@ -33,15 +33,15 @@
 		<table class="query-table">
 			<tr>
 				<th>
-					入库号:
+					出库号:
 				</th>
 				<td>
 					<input type="text" name="inNumber"/>
-				</td>								
+				</td>							
 				<td class="toolbar-btns">
-					<button class="query-btn btn btn-primary" >查询</button>
+					<button class="query-btn btn btn-primary">查询</button>
 					<?php if($hasEditPermission){ ?>
-					<button class="add-btn btn">添加物流计划单</button>
+					<button class="add-btn btn">添加出库单</button>
 					<?php } ?>
 				</td>
 			</tr>						
