@@ -90,11 +90,22 @@
 					<tr>
 						<th>名称：</th>
 						<td>
-							<input type="text" id="name"/>
+							<input type="text" id="name" class="span2"/>
 						</td>
 						<th>SKU：</th>
 						<td>
-							<input type="text" id="sku"/>
+							<input type="text" id="sku" class="span2"/>
+						</td>
+						<th>库存状态：</th>
+						<td>
+							<select class="span2" id="status">
+								<option value="">所有</option>
+								<option value="1">正常库存</option>
+								<option value="2">低于告警库存</option>
+								<option value="3">低于安全库存</option>
+								<option value="4">告警库存未设置</option>
+								<option value="5">安全库存未设置</option>
+							</select>
 						</td>
 						<th></th>
 						<td>
