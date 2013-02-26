@@ -134,6 +134,14 @@
 										<th>低于安全库存</th>
 										<td class="danger-goods">加载中...</td>
 									</tr>
+									<tr>
+										<th>未设置告警库存</th>
+										<td class="warningnoset-goods">加载中...</td>
+									</tr>
+									<tr>
+										<th>未设置安全库存</th>
+										<td class="dangernoset-goods">加载中...</td>
+									</tr>
 								</tbody>
 							</table>
 							<!-- 数据列表默认样式 end -->
