@@ -54,7 +54,7 @@
 	<script type="text/javascript">
 
 	    var flag = <?php echo $flag ; ?> ; 
-		var loginId = <?php echo $flag == 1?"''":"'lixh'" ?> ;//'lixh' ;
+		var loginId = <?php echo $flag == 1?"''":"'$loginId'" ?> ;
 	
 		var $create_pp = <?php echo $create_pp?"true":"false" ;?> ;
 		var $add_pp_product = <?php echo $add_pp_product?"true":"false" ;?> ;

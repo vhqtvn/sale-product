@@ -8,7 +8,7 @@
 
 	$(function(){
 		   var sqlKey = flag == 1 ?'sql_purchase_plan_list':'sql_purchase_plan_list_executor' ;
-
+		  
 			$(".grid-content").llygrid({
 				columns:[
 		           	{align:"center",key:"ID",label:"",width:"5%",format:function(val,record){
@@ -69,7 +69,7 @@
 				 height:130,
 				 title:"筛选列表",
 				 indexColumn:false,
-				 querys:{loginId:loginId,sqlId:sqlKey},
+				 querys:{executor:loginId,sqlId:sqlKey},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
 				 	if(isLinkClick){
