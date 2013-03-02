@@ -35,6 +35,7 @@
 			CHARGER = '{@#charger#}' , 
 			WAREHOUSE_ID = '{@#warehouseId#}' , 
 			SHIP_COMPANY = '{@#shipCompany#}' , 
+			OUT_TARGET='{@#outTarget#}',
 			SHIP_TYPE = '{@#shipType#}' , 
 			SHIP_NO = '{@#shipNo#}' , 
 			SHIP_TRACKNUMBER = '{@#shipTracknumber#}' , 
@@ -70,6 +71,7 @@
 			IN_NUMBER, 
 			CHARGER, 
 			WAREHOUSE_ID, 
+			OUT_TARGET,
 			SHIP_COMPANY, 
 			SHIP_TYPE, 
 			SHIP_NO, 
@@ -101,6 +103,7 @@
 			'{@#inNumber#}', 
 			'{@#charger#}', 
 			'{@#warehouseId#}', 
+			'{@#outTarget#}',
 			'{@#shipCompany#}', 
 			'{@#shipType#}', 
 			'{@#shipNo#}', 
@@ -256,6 +259,7 @@
 			QUANTITY, 
 			DELIVERY_TIME, 
 			PRODUCT_TRACKCODE, 
+			INVENTORY_TYPE,
 			MEMO
 			)
 			VALUES
@@ -265,12 +269,22 @@
 			'{@#QUANTITY#}', 
 			'{@#DELIVERY_TIME#}', 
 			'{@#PRODUCT_TRACKCODE#}', 
+			'{@#inventoryType#}', 
 			'{@#MEMO#}'
 			)
    </entry>
    
    <entry key="sql_warehouse_box_product_update">	
-   		
+   		update sc_warehouse_box_product 
+				set
+				REAL_PRODUCT_ID ='{@#REAL_PRODUCT_ID#}', 
+				QUANTITY = '{@#QUANTITY#}', 
+				DELIVERY_TIME ='{@#DELIVERY_TIME#}', 
+				PRODUCT_TRACKCODE =	'{@#PRODUCT_TRACKCODE#}', 
+				MEMO = '{@#MEMO#}',
+				INVENTORY_TYPE ='{@#inventoryType#}'
+				where
+				ID = '{@#id#}' ;
    </entry>
    
    <entry key="sql_warehouse_track_insert">

@@ -20,7 +20,7 @@
 		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('calendar/WdatePicker');
-	
+		
 	?>
 	<script type="text/javascript">
    	var boxId = '<?php echo $params['arg1'] ;?>' ;	 
@@ -77,9 +77,7 @@
 	<!-- apply 主场景 -->
 	<div class="apply-page">
 		<!-- 页面标题 -->
-		<div class="page-title">
-			<h2>包装箱信息</h2>
-		</div>
+	
 		<div class="container-fluid">
 
 	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
@@ -105,6 +103,16 @@
 								<tr>
 									<th>货品名称：</th>
 									<td><input type="text" data-validator="required" readonly id="NAME" value="<?php echo $result['NAME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>入库类型：</th><td>
+									普通库存<input type="radio"  name="inventoryType"   data-validator="required" 
+									<?php echo ($result['INVENTORY_TYPE']==1)?"checked":"" ?>
+									value="1" style="margin-top:1px;"/>  
+									FBA库存<input type="radio"   name="inventoryType"   data-validator="required" 
+									<?php echo ($result['INVENTORY_TYPE']== 2)?"checked":"" ?>
+									value="2"  style="margin-top:1px;"/>
+									</td>
 								</tr>
 								<tr>
 									<th>货品数量：</th><td><input data-validator="required" type="text" id="QUANTITY"

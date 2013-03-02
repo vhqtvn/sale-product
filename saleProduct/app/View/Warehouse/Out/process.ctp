@@ -195,6 +195,12 @@
 									$inStatus = false ;
 									echo '<button class="btn btn-success btn-validator-product" style="margin-top:2px;margin-left:10px;">货品确认</button>' ;
 								}
+								
+								if( $product['INVENTORY_TYPE'] == 1 ){
+									echo "<div class='alert alert-info' style='width:50px;font-weight:bold;margin-top:5px;'>普通库存</div>" ;
+								}else if( $product['INVENTORY_TYPE'] == 2 ){
+									echo "<div class='alert alert-info' style='width:50px;font-weight:bold;margin-top:5px;'>FBA库存</div>" ;
+								}
 							?>
 						</td>
 					</tr>

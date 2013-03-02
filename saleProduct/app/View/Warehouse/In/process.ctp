@@ -297,16 +297,14 @@
 							<div class="qt">
 								<div class='qt-label'>合格数量：</div>
 								<div class='qt-value'><?php echo $product['GEN_QUANTITY'] ?></div>
-								<div style="border:1px solid #CCC;padding:2px 5px; ">
-									普通库存<input type="radio"  name="inventoryType"  
-									<?php echo $status == 70 ?"disabled":"" ; ?>
-									<?php echo ($product['INVENTORY_TYPE']==1|| $product['INVENTORY_TYPE']!=2)?"checked":"" ?>
-									value="1" style="margin-top:1px;"/>  
-									FBA库存<input type="radio"   name="inventoryType"  
-									<?php echo ($product['INVENTORY_TYPE']== 2)?"checked":"" ?>
-									<?php echo $status == 70 ?"disabled":"" ; ?>
-									value="2"  style="margin-top:1px;"/>
-								</div>
+									<?php 
+											if( $product['INVENTORY_TYPE'] == 1 ){
+												echo "<div class='alert alert-info' style='width:50px;font-weight:bold;margin-top:5px;'>普通库存</div>" ;
+											}else if( $product['INVENTORY_TYPE'] == 2 ){
+												echo "<div class='alert alert-info' style='width:50px;font-weight:bold;margin-top:5px;'>FBA库存</div>" ;
+											}
+								  ?>
+								  <input type="hidden" name="inventoryType" value="<?php echo $product['INVENTORY_TYPE'] ?>"/>
 							</div>
 							<?php if(!empty($product['WASTE_QUANTITY'])){ ?>
 							<div class="qt" style="clear:left;margin-top:30px;">

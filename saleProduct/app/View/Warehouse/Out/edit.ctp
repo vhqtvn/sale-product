@@ -102,13 +102,30 @@
 						</table>
 						<table class="form-table " >
 							<caption>物流信息</caption>
-							<tbody>	
-								<tr>
-									<th>目标地址：</th>
+							<tbody>
+							  <tr>
+								<th>出库货品仓库：</th>
 									<td>
-									<input type="text" data-validator="required" id="warehouseId" 
+										<select  data-validator="required"   id="warehouseId"  <?php echo $isRead?"disabled":"" ;?>>
+										    	<option value="">--选择--</option>
+											   <?php 
+											     // sql_warehouse_lists
+											     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
+					                             foreach($warehouses as $w){
+					                             	  $w = $SqlUtils->formatObject( $w ) ;
+					                             	  $selected = $result['WAREHOUSE_ID'] == $w['ID'] ?"selected":"" ;
+					                             	  echo "<option $selected value='".$w['ID']."'>".$w['NAME']."</option>" ;
+					                             }
+											   ?>
+											</select>
+									</td>
+								</tr>	
+								<tr>
+									<th>出库目标地址：</th>
+									<td>
+									<input type="text" data-validator="required" id="outTarget" 
 									<?php echo $isRead?"readOnly":"" ;?>
-										value="<?php echo $result['WAREHOUSE_ID'];?>"/>
+										value="<?php echo $result['OUT_TARGET'];?>"/>
 									</td>
 									<th>运输公司：</th>
 									<td><input data-validator="required" type="text" id="shipCompany"

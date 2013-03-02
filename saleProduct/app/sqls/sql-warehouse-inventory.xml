@@ -54,6 +54,7 @@
 		DISK_ID = '{@#diskId#}' AND
 		WAREHOUSE_ID = '{@#warehouseId#}' AND 
 		REAL_PRODUCT_ID = '{@#goodsId#}'
+		and INVENTORY_TYPE = '{@#inventoryType#}'
    </entry>
    
    <!--入库操作-->
