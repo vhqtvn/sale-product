@@ -16,6 +16,9 @@ class Inventory extends AppModel {
 		$details =  json_decode( $params['details'] ) ;
 		foreach( $details as $item ){
 			
+			$db =& ConnectionManager::getDataSource($this->useDbConfig);
+			$db->_queryCache = array() ;
+			
 			$goodsId = $item->goodsId ;
 			$quantity = $item->quantity ;
 			$badQuantity = $item->badQuantity ;
@@ -56,7 +59,6 @@ class Inventory extends AppModel {
 				continue ;
 				//$this->exeSql("sql_warehouse_storage_in_update",$query) ;
 			}
-			
 			
 			//查找该产品对应库存
 			$typeInventory = $this->getObject("sql_warehouse_inventory_type_get", $query)  ;
@@ -146,6 +148,9 @@ class Inventory extends AppModel {
 		$warehouseId = $params['warehouseId'] ;
 		$details =  json_decode( $params['details'] ) ;
 		foreach( $details as $item ){
+			
+			$db =& ConnectionManager::getDataSource($this->useDbConfig);
+			$db->_queryCache = array() ;
 	
 			$goodsId = $item->goodsId ;
 			$quantity = $item->quantity ;
@@ -224,6 +229,9 @@ class Inventory extends AppModel {
 		//查询订单库存
 		$items = $this->exeSql("sql_order_storage_getByOrderId",array('orderId'=>$orderId)) ;
 		foreach( $items as $item ){
+			$db =& ConnectionManager::getDataSource($this->useDbConfig);
+			$db->_queryCache = array() ;
+			
 			$item = $this->formatObject($item) ;
 			$realId = $item['REAL_ID'] ;
 			$quantity = $item['QUANTITY'] ;
