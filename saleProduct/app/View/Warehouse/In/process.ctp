@@ -214,7 +214,13 @@
 									echo '<button class="btn btn-danger report-exception" style="margin-top:2px;margin-left:10px;">报告异常</button>' ;
 								}
 							?>
-							
+							<?php 
+											if( $product['INVENTORY_TYPE'] == 1 ){
+												echo "<div class='alert alert-info' style='width:50px;font-weight:bold;margin-top:5px;'>普通库存</div>" ;
+											}else if( $product['INVENTORY_TYPE'] == 2 ){
+												echo "<div class='alert alert-info' style='width:50px;font-weight:bold;margin-top:5px;'>FBA库存</div>" ;
+											}
+								  ?>
 						</td>
 					</tr>
 					<tr class="exception-error" style="display:none;">
