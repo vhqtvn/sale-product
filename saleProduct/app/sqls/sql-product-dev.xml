@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+   
+    <entry key="sql_pdev_upload_list">
+		select * from sc_upload
+		order by id desc
+    </entry>
+   
+</properties>

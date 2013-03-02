@@ -18,29 +18,6 @@
 	?>
   
    <script type="text/javascript">
-   //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
 
 	$(function(){
 			$(".grid-content").llygrid({
@@ -50,13 +27,13 @@
 		           	{align:"center",key:"NAME",label:"任务名称",width:"30%",forzen:false,align:"left"},
 		           	{align:"center",key:"UPLOAD_TIME",label:"添加时间",width:"30%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/upload"},
+		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:150,
 				 title:"上传列表",
 				 indexColumn:true,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{sqlId:"sql_pdev_upload_list"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
@@ -73,7 +50,7 @@
 				 height:150,
 				 title:"商家列表",
 				 indexColumn:true,
-				 querys:{name:"hello",name2:"world"},
+				 querys:{},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 
