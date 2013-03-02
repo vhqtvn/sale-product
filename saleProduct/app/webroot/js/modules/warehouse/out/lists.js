@@ -13,8 +13,11 @@ $(function(){
 				}},
 				{align:"center",key:"IN_NUMBER",label:"出库号",width:"12%",forzen:false,align:"left"},
 	           	{align:"center",key:"CHARGER_NAME",label:"负责人",width:"6%",forzen:false,align:"left"},
-	           	{align:"center",key:"WAREHOUSE_NAME",label:"出库目的地",width:"15%",format:function(val,record){
+	        	{align:"center",key:"WAREHOUSE_NAME",label:"出库仓库",width:"15%",format:function(val,record){
 	           		return val || record.WAREHOUSE_ID;
+	           	}},
+	           	{align:"center",key:"OUT_TARGET",label:"出库目的地",width:"15%",format:function(val,record){
+	           		return val;
 	           	}},
 	           	{align:"center",key:"SHIP_COMPANY",label:"运输公司",width:"15%"},
 	           	{align:"center",key:"SHIP_TYPE",label:"运输方式",width:"10%"},
