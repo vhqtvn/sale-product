@@ -15,7 +15,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/warehouse/in/process');
+		echo $this->Html->script('modules/warehouse/out/process');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$in = $SqlUtils->getObject("sql_warehouse_in_getById",array('id'=>$params['arg1'] )) ;
@@ -115,39 +115,21 @@
 	</style>
 </head>
 <body>
-	<div class="flow-toolbar toolbar">
-		<table style="width:380px;margin:0px auto;">
-			<tr>
-				<td>
-					<button class="btn btn-primary sh" 
-					<?php echo $status == 50 ?"":"disabled" ; ?>
-					style="font-size:20px;padding:5px 10px;">收货确认</button>
-				</td>
-				<td>
-					<div style="font-size:50px;font-weight:bold;margin-top:-10px;">———</div>
-				</td>
-				<td>
-					<button class="btn btn-primary rh" 
-					<?php echo $status == 60 ?"":"disabled" ; ?>
-					 style="font-size:20px;padding:5px 10px;">货品入库</button>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<?php if($status == 70){ //入库完成 ?>
+	<div style="height:40px;"></div>
+	<?php if($status == 300){ //入库完成 ?>
 	<div class="alert alert-success" style="font-weight:bold;font-size:20px;padding:5px 10px;position:absolute;right:10px;top:10px;">
-		入库完成</div>
+		出库完成</div>
 	<?php } ?>
-				
-	<?php if($type=='sh'){ //sh start?>		
+					
+	
 		<?php
 			
 			$boxs = $SqlUtils->exeSql("sql_warehouse_box_lists",array('inId'=>$params['arg1'] )) ;
 			
-			if($status != 60){ //收货完成
+			if($status < 300){ //收货完成
 			?>
 			<button class="btn btn-warning btn-confirm-accept" inId="<?php echo $params['arg1'] ;?>" 
-			style="font-size:20px;padding:5px 10px;position:absolute;right:10px;top:10px;">验收确认</button>
+			style="font-size:20px;padding:5px 10px;position:absolute;right:10px;top:10px;">出库确认</button>
 			<?php			
 			}
 			
@@ -182,6 +164,8 @@
 				?>
 					<tr>
 						<td style="width:12%;">
+							<input type="hidden" name="id" value="<?php echo $product['ID'];?>" />
+							<input type="hidden" name="quantity" value="<?php echo $product['QUANTITY'] ?>" />
 							<img style="width:75px;height:75px;" src="<?php echo $imgUrl;?>"/>
 						</td>
 						<td style="width:30%;">
@@ -207,34 +191,14 @@
 							<?php
 								if( $product['STATUS'] == 1 ){
 									echo '<div style="text-align:center;margin:5px;clear:both;"><img src="/saleProduct/app/webroot/img/m/button-check.png"/></div>' ;
-									echo '<button class="btn report-exception" style="margin-top:2px;margin-left:10px;">查看异常</button>' ;
 								}else{
 									$inStatus = false ;
-									echo '<button class="btn btn-success btn-validator-product" style="margin-top:2px;margin-left:10px;">确认验货</button>' ;
-									echo '<button class="btn btn-danger report-exception" style="margin-top:2px;margin-left:10px;">报告异常</button>' ;
+									echo '<button class="btn btn-success btn-validator-product" style="margin-top:2px;margin-left:10px;">货品确认</button>' ;
 								}
 							?>
-							
 						</td>
 					</tr>
-					<tr class="exception-error" style="display:none;">
-						<input type="hidden" name="id" value="<?php echo $product['ID'];?>" />
-						<input type="hidden" name="quantity" value="<?php echo $product['QUANTITY'] ?>" />
-						<td colspan=3>
-							<input type="text" name="wasteQuantity" value="<?php echo $product['WASTE_QUANTITY'] ?>" placeholder="残品数量" class="alert-danger" 
-								style="width:67px;margin-top:2px;margin-left:20px;"/>
-							<textarea style="width:300px;" name="exceptionMemo" placeholder="备注信息"><?php echo $product['EXCEPTION_MEMO'] ?></textarea>
-						</td>
-						<td>
-							<?php
-								if( $product['STATUS'] == 1 ){
-								}else{
-									echo '<button class="btn btn-danger save-waste">保存异常信息</button>' ;
-								}
-							?>
-							
-						</td>
-					</tr>
+					
 				<?php			
 				} 
 				?>
@@ -247,87 +211,6 @@
 		<script>
 		 $inStatus = '<?php echo $inStatus?>' ;
 		</script>
-	<?php }//sh end  ?>	
-	
-	<?php if($type=='rk'){ //rk start?>		
-		<?php
-			$inProducts = $SqlUtils->exeSql("sql_warehouse_in_products",array('inId'=>$params['arg1'] )) ;
-			$inStatus = true ;
-			
-			if($status != 70){ //入库完成
-			?>
-			<button class="btn btn-warning btn-confirm-in" inId="<?php echo $params['arg1'] ;?>" 
-			style="font-size:20px;padding:5px 10px;position:absolute;right:10px;top:10px;">确认入库</button>
-			<?php			
-			}
-		?>
-		
-		<div class="box row-fluid">
-			<div class="box-content span8" style="width:96%;">
-				<table class="table" style="table-layout:fixed;">
-			<?php
-				foreach($inProducts as $product){
-					$product = $SqlUtils->formatObject($product) ;
-				
-					$imgUrl = '/saleProduct/'.$product['IMAGE_URL'] ;
-					
-					/*'IN_ID', 
-					'WAREHOUSE_ID', 
-					'REAL_PRODUCT_ID', 
-					'QUANTITY', 
-					'CREATE_TIME', 
-					'CREATOR', 
-					'DELIVERY_TIME'*/
-				?>
-					<tr class="rk-product-row">
-						<td style="width:12%;">
-							<input type="hidden" name="goodsId" value="<?php echo $product['REAL_PRODUCT_ID'];?>"/>
-							<input type="hidden" name="quantity" value="<?php echo $product['GEN_QUANTITY'];?>"/>
-							<input type="hidden" name="badQuantity" value="<?php echo $product['WASTE_QUANTITY'];?>"/>
-							<?php if( !empty($product['IMAGE_URL'] ) ){ ?>
-							<img style="width:75px;height:75px;" src="<?php echo $imgUrl;?>"/>
-							<?php } ?>
-						</td>
-						<td style="width:30%;">
-								<div class="product-title"><?php echo $product['NAME'] ?></div>
-								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><?php echo $product['SKU'] ?></div></div>
-						</td>
-						<td style="width:25%;"><?php echo $product['P_MEMO'] ?></td>
-						<td style="width:20%;">
-							<div class="qt">
-								<div class='qt-label'>合格数量：</div>
-								<div class='qt-value'><?php echo $product['GEN_QUANTITY'] ?></div>
-								<div style="border:1px solid #CCC;padding:2px 5px; ">
-									普通库存<input type="radio"  name="inventoryType"  
-									<?php echo $status == 70 ?"disabled":"" ; ?>
-									<?php echo ($product['INVENTORY_TYPE']==1|| $product['INVENTORY_TYPE']!=2)?"checked":"" ?>
-									value="1" style="margin-top:1px;"/>  
-									FBA库存<input type="radio"   name="inventoryType"  
-									<?php echo ($product['INVENTORY_TYPE']== 2)?"checked":"" ?>
-									<?php echo $status == 70 ?"disabled":"" ; ?>
-									value="2"  style="margin-top:1px;"/>
-								</div>
-							</div>
-							<?php if(!empty($product['WASTE_QUANTITY'])){ ?>
-							<div class="qt" style="clear:left;margin-top:30px;">
-								<div class='qt-label'>残品数量：</div>
-								<div class='qt-value'>
-										<span style="color:red;"><?php echo $product['WASTE_QUANTITY'] ?></span>
-								</div>
-							</div>
-							<?php	 } ?>
-								
-						</td>
-					</tr>
-				<?php			
-				} 
-				?>
-				</table>
-			</div>
-		</div>
-		<script>
-		 $inStatus = '<?php echo $inStatus?>' ;
-		</script>
-	<?php }//rk end  ?>	
+
 </body>
 </html>

@@ -96,8 +96,20 @@
 						<td>
 							<input type="text" id="sku" class="span2"/>
 						</td>
-						<th>库存状态：</th>
+						<th>仓库：</th>
 						<td>
+						    <select class="span2"  id="warehouseId">
+						    	<option value="">全部</option>
+						   <?php 
+						     // sql_warehouse_lists
+						     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
+                             foreach($warehouses as $w){
+                             	  $w = $SqlUtils->formatObject( $w ) ;
+                             	  echo "<option value='".$w['ID']."'>".$w['NAME']."</option>" ;
+                             }
+						   ?>
+							</select>
+						   <!--
 							<select class="span2" id="status">
 								<option value="">所有</option>
 								<option value="1">正常库存</option>
@@ -106,6 +118,7 @@
 								<option value="4">告警库存未设置</option>
 								<option value="5">安全库存未设置</option>
 							</select>
+						  -->
 						</td>
 						<th></th>
 						<td>

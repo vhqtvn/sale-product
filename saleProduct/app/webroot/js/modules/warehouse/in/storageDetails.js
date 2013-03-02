@@ -10,9 +10,10 @@ $(function(){
 	           		if( record.DISK_ID ) return "盘点" ;
 	           		return "计划" ;
 	           	}},
-	           	{align:"center",key:"TYPE",label:"类型",width:"40",format:{type:"json",content:{'in':"入库",'out':'出库'}}},
-	           	{align:"right",key:"IN_QUANTITY",label:"入库数量",width:"60"},
-	           	{align:"right",key:"OUT_QUANTITY",label:"出库数量",width:"60"},
+	           	{align:"center",key:"TYPE",label:"出入库",width:"40",format:{type:"json",content:{'in':"入库",'out':'出库'}}},
+	        	{align:"center",key:"INVENTORY_TYPE",label:"库存类型",width:"60",format:{type:"json",content:{'1':"普通库存",'2':'FBA库存'}}},
+	           	{align:"right",key:"IN_QUANTITY",label:"良品数量",width:"60"},
+	        	{align:"right",key:"BAD_IN_QUANTITY",label:"残品数量",width:"60"},
 	           	{align:"center",key:"CREATOR_NAME",label:"操作用户", width:"60"},
 	           	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"100"},
 	           	{align:"center",key:"IN_NUMBER",label:"计划入库单号",width:"100"},

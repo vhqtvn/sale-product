@@ -59,6 +59,9 @@
 	        <form id="personForm" action="/saleProduct/index.php/page/model/Warehouse.Ram.doSaveRam"
 	          								method="post" data-widget="validator" target="form-target"
 	         								enctype="multipart/form-data" class="form-horizontal" >
+	         	
+	         	<button type="button" class="btn btn-primary btn-save" style="position:absolute;top:5px;right:20px;">保存</button>							
+	         								
 	        	<input type="hidden" name="id" value="<?php echo $result['ID'];?>"/>
 	        	<input type="hidden" name="ramId" value="<?php echo $ramId;?>"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
@@ -107,7 +110,7 @@
 										}
 										?>
 									</table>
-										<? }?>
+										<?php  }?>
 										<span class="select-product hide">
 											<input type="hidden" id="realProductId"  name="realProductId" 
 											value=""/>
@@ -166,13 +169,6 @@
 								</tr>
 							</tbody>
 						</table>
-					</div>
-					
-					<!-- panel脚部内容-->
-                    <div class="panel-foot">
-						<div class="form-actions">
-							<button type="button" class="btn btn-primary btn-save">保存</button>
-						</div>
 					</div>
 				</div>
 			</form>

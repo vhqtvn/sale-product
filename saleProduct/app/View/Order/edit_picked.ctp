@@ -15,7 +15,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');	
-
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$defaultName = "P".date("YmdHi") ;
 	?>
 	
@@ -65,6 +65,23 @@
 									<th>名称：</th>
 									<td>
 										<input data-validator="required" type="text" name="name" value="<?php echo $defaultName;?>" class="span4"/>
+									</td>
+								</tr>
+								<tr>
+									<th>仓库：</th>
+									<td>
+										<select  data-validator="required"   id="warehouseId"   name="warehouseId">
+										    	<option value="">--选择--</option>
+											   <?php 
+											     // sql_warehouse_lists
+											     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
+					                             foreach($warehouses as $w){
+					                             	  $w = $SqlUtils->formatObject( $w ) ;
+					                             	  $selected = $result['WAREHOUSE_ID'] == $w['ID'] ?"selected":"" ;
+					                             	  echo "<option $selected value='".$w['ID']."'>".$w['NAME']."</option>" ;
+					                             }
+											   ?>
+											</select>
 									</td>
 								</tr>
 								<tr>

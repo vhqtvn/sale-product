@@ -981,3 +981,18 @@ function buildUrl(url, paramObject) {
     }
     return url;
 }
+
+$(function(){
+	$(".btn").live("click",function(){
+		var me = $(this)
+		$(this).attr("disabled","disabled");
+		setTimeout(function(){
+			me.removeAttr("disabled");
+		},5000) ;
+	}) ;
+	
+	$("a[disabled]").live('click',function(event){
+		event.stopPropagation();
+		return false ;
+	}) ;
+}) ;

@@ -42,8 +42,8 @@
 		}
 	}
 	
-	function productInWarehouse(){
-		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
+	function productOutWarehouse(status){
+		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Out.process/"+inId+"/"+status,860,630) ;
 	}
      
      var flowData = [
@@ -60,7 +60,10 @@
 		},
 		{status:200,label:"待出库",memo:true
 			<?php if( $security->hasPermission($loginId , 'OUT_STATUS200')) { ?>
-			,actions:[{label:"出库完成",action:function(){ AuditAction(300,"出库完成") } }]
+			,actions:[{label:"出库确认",action:function(){ 
+				productOutWarehouse(300);
+				//AuditAction(300,"出库完成") ;
+			} }]
 			<?php };?>
 		},
 		{status:300,label:"出库完成",memo:true

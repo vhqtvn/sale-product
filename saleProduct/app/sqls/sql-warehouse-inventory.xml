@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+
+    <entry key="sql_warehouse_inventory_type_get">
+       select * from sc_goods_inventory where goods_id = '{@#goodsId#}' and warehouse_id = '{@#warehouseId#}' and type = '{@#inventoryType#}'
+    </entry>
+
+   <!-- 出库列表 -->
+   <entry key="sql_warehouse_inventory_type_insert">
+  		INSERT INTO  sc_goods_inventory 
+			(
+				GOODS_ID, 
+				TYPE, 
+				QUANTITY, 
+				BAD_QUANTITY, 
+				WAREHOUSE_ID
+			)
+			VALUES
+			(
+				'{@#goodsId#}', 
+				'{@#inventoryType#}', 
+				'{@#quantity#}', 
+				'{@#badQuantity#}', 
+				'{@#warehouseId#}'
+			)
+   </entry>
+   
+   <entry key="sql_warehouse_inventory_type_update">
+  		UPDATE  sc_goods_inventory 
+			SET
+				goods_id = '{@#goodsId#}' , 
+				type = '{@#inventoryType#}' , 
+				quantity = '{@#quantity#}' , 
+				bad_quantity = '{@#badQuantity#}' , 
+				warehouse_id = '{@#warehouseId#}'
+			WHERE
+				id = '{@#id#}' 
+   </entry>
+   
+   <!-- 更新库存到货品表 -->
+   <entry key="sql_warehouse_inventory_update">
+  		UPDATE  sc_real_product
+			SET
+				quantity = '{@#quantity#}' , 
+				bad_quantity = '{@#badQuantity#}'
+			WHERE
+				id = '{@#goodsId#}' 
+   </entry>
+   
+   <entry key="sql_warehouse_storage_in_find">
+   		select * from sc_warehouse_storage_details
+   		WHERE
+		IN_ID = '{@#inId#}' AND 
+		DISK_ID = '{@#diskId#}' AND
+		WAREHOUSE_ID = '{@#warehouseId#}' AND 
+		REAL_PRODUCT_ID = '{@#goodsId#}'
+   </entry>
+   
+   <!--入库操作-->
+   <entry key="sql_warehouse_storage_in_insert">	
+   		INSERT INTO sc_warehouse_storage_details 
+		(
+		IN_ID, 
+		DISK_ID,
+		WAREHOUSE_ID, 
+		REAL_PRODUCT_ID,
+		TYPE,
+		IN_QUANTITY,
+		BAD_IN_QUANTITY, 
+		CREATE_TIME, 
+		CREATOR, 
+		MEMO,
+		INVENTORY_TYPE
+		)
+		VALUES
+		(
+		'{@#inId#}', 
+		'{@#diskId#}', 
+		'{@#warehouseId#}', 
+		'{@#goodsId#}',
+		'{@#type#}',
+		'{@#quantity#}',
+		'{@#badQuantity#}', 
+		NOW(), 
+		'{@#loginId#}', 
+		'{@#memo#}',
+		'{@#inventoryType#}'
+		);
+   </entry>
+   
+   <entry key="sql_warehouse_storage_in_update">	
+   		UPDATE  sc_warehouse_storage_details 
+		SET
+		IN_QUANTITY = '{@#quantity#}'
+		WHERE
+		IN_ID = '{@#inId#}' AND 
+		DISK_ID='{@#diskId#}' AND
+		WAREHOUSE_ID = '{@#warehouseId#}' AND 
+		REAL_PRODUCT_ID = '{@#goodsId#}' 
+   </entry>
+   
+   <entry key="sql_warehouse_getId_byOrderId">	
+		   SELECT * FROM (
+		SELECT sap.* FROM sc_amazon_picked sap,sc_amazon_picked_order sapo
+		WHERE sap.ID = sapo.PICKED_ID AND sapo.ORDER_ID = '{@#orderId#}'
+		AND sap.WAREHOUSE_ID != ''
+		ORDER BY sap.create_time DESC
+		) t LIMIT 0,1
+  </entry>
+   
+</properties>

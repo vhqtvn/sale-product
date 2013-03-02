@@ -7,6 +7,7 @@ $(function(){
 	}*/
 	
 	//确认入库
+	/*
 	$(".btn-confirm-in").click(function(){
 		if(window.confirm("确认列表产品已入库吗?")){
 			var records = [] ;
@@ -20,19 +21,19 @@ $(function(){
 				//window.location.reload();
 			});
 		} ;
-	}) ;
+	}) ;*/
 	
 	$(".btn-confirm-accept").click(function(){
 		if( $(".btn-validator-product").length ){
 			alert("还存在未验收完成的货品！");
 			return ;
 		}
-		
-		if(window.confirm("所有货品已经确认验收了吗?")){
-			$.dataservice("model:Warehouse.In.doStatus",{inId:inId,status:60},function(result){
+		if(window.confirm("确认列表产品已出库吗?")){
+			$.dataservice("model:Warehouse.In.doOut",{warehouseId:warehouseId,inId:inId},function(result){//确认收货
+				//window.location.reload();
 				window.location.reload();
-			});
-		} ;
+			 });
+		}
 	}) ;
 	
 	$(".report-exception").toggle(function(){
@@ -52,7 +53,7 @@ $(function(){
 	//确认验货
     $(".btn-validator-product").click(function(){
     	if(window.confirm("确认验货吗?")){
-    		var json = $(this).parents("tr:first").next().toJson() ;
+    		var json = $(this).parents("tr:first").toJson() ;
     		json.wasteQuantity = json.wasteQuantity||0 ;
 			json.genQuantity = json.quantity - (json.wasteQuantity||0) ;
 			json.status = 1 ;

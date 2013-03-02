@@ -16,8 +16,6 @@ $(function(){
 			//renderAction(index);
 		}
 	} ) ;
-	
-	//
 }) ;
 
 var Flow = function(){

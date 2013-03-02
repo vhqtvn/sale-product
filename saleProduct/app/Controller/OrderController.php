@@ -246,10 +246,10 @@ class OrderController extends AppController {
     }
     
     //二次分拣是将订单设置为异常订单
-    public function repickedException(){
+    public function repickedException($pickedId = null){
     	$params = $this->request->data  ;
     	$user =  $this->getCookUser() ;
-    	$result = $this->OrderService->repickedException($params,$user ) ;
+    	$result = $this->OrderService->repickedException($params,$user,$pickedId ) ;
     	
     	$this->response->type("json");
 		$this->response->body($result?1:0);

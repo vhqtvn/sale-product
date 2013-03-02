@@ -174,6 +174,11 @@ class AppController extends Controller {
 		             $mobile_browser = true;
 		            $mobile_browser_type = "1"; //Smart Phone
 		        break;
+		        
+		        case (preg_match('/ipad/i',$user_agent)); //iPhone or iPod ||preg_match('/ipad/i',$user_agent)
+			        $mobile_browser = false;
+			        $mobile_browser_type = "0"; //Smart Phone
+		        break;
 		
 		        case (preg_match('/android/i',$user_agent)); //Android
 		            $mobile_browser = true;

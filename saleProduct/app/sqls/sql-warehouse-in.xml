@@ -167,6 +167,7 @@
    			status = '{@#status#}'
    			,waste_quantity = '{@#wasteQuantity#}'
    			,gen_quantity = '{@#genQuantity#}'
+   			{@ ,inventory_type = '#inventoryType#'}
    		where id = '{@#id#}'
    </entry>
    
@@ -176,16 +177,13 @@
    		 GROUP BY status
    </entry>
    
-   
-   
-   
    <entry key="sql_warehouse_in_products">
 		SELECT s1.* , s2.NAME , s2.REAL_SKU as SKU , s2.IMAGE_URL
 			,s2.MEMO as P_MEMO
 		   		FROM (
 					SELECT 
 					       s1.REAL_PRODUCT_ID  ,
-					       s1.DELIVERY_TIME,
+					       s1.INVENTORY_TYPE,
 					       SUM(s1.quantity) AS QUANTITY,
 					       SUM(s1.gen_quantity) AS GEN_QUANTITY,
 					       SUM(s1.waste_quantity) AS WASTE_QUANTITY,
@@ -193,7 +191,8 @@
 					  FROM sc_warehouse_box_product s1 , sc_warehouse_box swb
 					  WHERE swb.id = s1.box_id
 					       AND swb.in_id = '{@#inId#}'
-					  GROUP BY  s1.real_product_id,s1.DELIVERY_TIME 		
+					  GROUP BY  s1.real_product_id,
+					  s1.INVENTORY_TYPE
 		   		) s1,
 		   		 sc_real_product s2
 		   		 WHERE   s1.real_product_id = s2.id 
@@ -305,58 +304,7 @@
    		where id='{@#bpId#}'
    </entry>
    
-   <entry key="sql_warehouse_storage_in_find">	
-   		select * from sc_warehouse_storage_details
-   		WHERE
-		IN_ID = '{@#inId#}' AND 
-		WAREHOUSE_ID = '{@#warehouseId#}' AND 
-		REAL_PRODUCT_ID = '{@#realProductId#}' and
-		DELIVERY_TIME = '{@#deliveryTime#}'
-		
-   </entry>
    
-   <!--入库操作-->
-   <entry key="sql_warehouse_storage_in_insert">	
-   		INSERT INTO sc_warehouse_storage_details 
-		(
-		IN_ID, 
-		DISK_ID,
-		WAREHOUSE_ID, 
-		REAL_PRODUCT_ID,
-		TYPE,
-		IN_QUANTITY,
-		BAD_IN_QUANTITY, 
-		CREATE_TIME, 
-		CREATOR, 
-		DELIVERY_TIME,
-		MEMO
-		)
-		VALUES
-		(
-		'{@#inId#}', 
-		'{@#diskId#}',
-		'{@#warehouseId#}', 
-		'{@#realProductId#}',
-		'{@#type#}',
-		'{@#genQuantity#}',
-		'{@#badInQuantity#}', 
-		NOW(), 
-		'{@#loginId#}', 
-		'{@#deliveryTime#}',
-		'{@#memo#}'
-		);
-   </entry>
-   
-   <entry key="sql_warehouse_storage_in_update">	
-   		UPDATE  sc_warehouse_storage_details 
-		SET
-		IN_QUANTITY = '{@#genQuantity#}'
-		WHERE
-		IN_ID = '{@#inId#}' AND 
-		WAREHOUSE_ID = '{@#warehouseId#}' AND 
-		REAL_PRODUCT_ID = '{@#realProductId#}' and
-		DELIVERY_TIME = '{@#deliveryTime#}'
-   </entry>
    
    <entry key="sql_warehouse_storage_detailsByProduct">	
    	 	SELECT 

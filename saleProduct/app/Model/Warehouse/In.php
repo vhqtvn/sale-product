@@ -162,68 +162,56 @@ class In extends AppModel {
 		//检查是否已经入库
 		
 		$in = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
-		if(!empty($in) && $in['STATUS'] == 1){
+		if(!empty($in) && $in['STATUS'] == 70){ //已经入库
 			return "has storaged!" ;
 		}
 		
-		$inProducts = $this->exeSql("sql_warehouse_in_products",$params) ;
-		
-		foreach($inProducts as $product){
-			$db->_queryCache = array() ;
-			$product = $this->formatObject($product) ;
-			
-			$warehouseId = $product['WAREHOUSE_ID'] ;
-			$realProductId = $product['REAL_PRODUCT_ID'] ;
-			$genQuantity = $product['GEN_QUANTITY'] ;
-			$badQuantity = $product['WASTE_QUANTITY'] ;
-			
-			$params1 = array('inId'=>$inId,
-						'warehouseId'=>$warehouseId,
-						'realProductId'=>$realProductId
-						,'genQuantity'=>$genQuantity
-						,'loginId'=>$params['loginId']
-						,'badInQuantity'=>$badQuantity
-						,'deliveryTime'=>$product['DELIVERY_TIME']
-						,'type'=>'in'
-					) ;
-					
-			$result = $this->getObject("sql_warehouse_storage_in_find",$params1) ;
-			if(empty($result)){
-				$this->exeSql("sql_warehouse_storage_in_insert",$params1) ;
-			}else{
-				$this->exeSql("sql_warehouse_storage_in_update",$params1) ;
-			}
-
-			//将产品信息计入总库存
-			$p = $this->getObject("sql_saleproduct_getById",$params1) ;
-			
-			$quantity = $p['QUANTITY'] ;
-			if(empty($quantity)){
-				$quantity = 0 ;
-			}
-			
-			$quantity = $quantity + $genQuantity ;
-			$params1['genQuantity'] = $quantity ;
-			
-			$this->exeSql("sql_saleproduct_quantity_in",$params1) ;
-			
-			//将残品信息计入库存
-			$quantity = $p['BAD_QUANTITY'] ;
-			if(empty($quantity)){
-				$quantity = 0 ;
-			}
-			$quantity = $quantity + $badQuantity ;
-			$params1['badQuantity'] = $quantity ;
-			$this->exeSql("sql_saleproduct_bad_quantity_in",$params1) ;
-			
-			//将产品信息计入具体仓库库存
-			
-			//将残品信息计入具体仓库库存
-					
-			//$this->exeSql("sql_warehouse_storage_in_insert",$params1) ;
-		}
+		$inventory  = ClassRegistry::init("Inventory") ;
+		$inventory->in( $params ) ;
 		
 		//更新计划单为已入库完成
 		$this->doStatus( array('inId'=>$inId,'status'=>'70') ) ;
+	}
+	
+	/**
+	 * 出库操作
+	 * @param unknown_type $params
+	 */
+	public function doOut($params){
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$db->_queryCache = array() ;
+		
+		$inId = $params['inId'] ;
+		
+		$in = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+		if(!empty($in) && $in['STATUS'] == 400){ //已经出库
+			return "has Out of the warehouse!" ;
+		}
+		
+		//获取要出库的产品
+		$products = $this->exeSql("sql_warehouse_in_products", array('inId'=>$inId)) ;
+		
+		$inventory  = ClassRegistry::init("Inventory") ;
+		
+		foreach($products as $product  ){
+			$product = $this->formatObject( $product ) ;
+		
+			$inventoryParams = array() ;
+			$inventoryParams['warehouseId'] =$params['warehouseId']  ;//warehouseId
+			$inventoryParams['inId']  = $params['inId'] ;
+			
+			$details = array() ;
+			$details[] = array(
+					'goodsId'=>$product['REAL_PRODUCT_ID']  ,
+					'quantity'=>$product['GEN_QUANTITY'] ,
+					'badQuantity'=>0 ,
+					'inventoryType'=>$product['INVENTORY_TYPE']
+			) ;
+			$inventoryParams['details'] =  json_encode( $details ) ;
+		    $inventory->out( $inventoryParams ) ;
+		}
+		
+		
+		$this->doStatus( array('inId'=>$inId,'status'=>'300') ) ;
 	}
 }

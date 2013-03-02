@@ -47,9 +47,7 @@
 						html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
 						return html.join("") ;
 					}},
-		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,reocrd){
-		           		return "<a href='"+reocrd.URL+"' target='_blank'>"+val+"</a>" ;
-		           	}},
+		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
 		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
 		           		if( record.LAST_ASSIGN_TIME &&( val >= record.LAST_ASSIGN_TIME ) ){
@@ -59,6 +57,8 @@
 		           		return "<img title='未分配' src='/saleProduct/app/webroot/img/error.gif'>"  ;
 		           	}},
 		           	{align:"center",key:"QUANTITY",label:"总",group:"库存",width:"5%" },
+		        	{align:"center",key:"COMMON_QUANTITY",label:"普通",group:"库存",width:"5%" },
+		        	{align:"center",key:"FBA_QUANTITY",label:"FBA",group:"库存",width:"5%" },
 		           	{align:"center",key:"SECURITY_QUANTITY",label:"安全",group:"库存",width:"5%" },
 		           	{align:"center",key:"LOCK_QUANTITY",label:"锁定",group:"库存",width:"5%" },
 		           	{align:"center",key:"ASSIGN_QUANTITY",label:"可分配",group:"库存",width:"5%",format:function(val, record){

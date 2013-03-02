@@ -252,8 +252,11 @@ class OrderService extends AppModel {
 		
 		//更新库存为出库
 		if( $status == '10' ){
-			$Warehouse  = ClassRegistry::init("Warehouse") ;
-			$Warehouse->doOrderOut( $orderId ) ;
+			$inventory  = ClassRegistry::init("Inventory") ;
+			$inventory->orderOut( $orderId,$pickedId ) ;
+			
+			//$Warehouse  = ClassRegistry::init("Warehouse") ;
+			//$Warehouse->doOrderOut( $orderId ) ;
 		}
 
 		return true ;
@@ -412,6 +415,7 @@ class OrderService extends AppModel {
 				(
 				NAME, 
 				MEMO, 
+				WAREHOUSE_ID,
 				CREATOR, 
 				CREATE_TIME
 				)
@@ -419,6 +423,7 @@ class OrderService extends AppModel {
 				(
 				'$name', 
 				'$memo', 
+				'".$params['warehouseId']."'
 				'$loginId', 
 				NOW()
 				)" ;

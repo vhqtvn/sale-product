@@ -138,8 +138,10 @@ class Ram extends AppModel {
 			//保存到RMA入库表
 			$this->exeSql("sql_warehouse_rma_insert",$params) ;
 			
+			$inventory  = ClassRegistry::init("Inventory") ;
+			$inventory->ramIn($params , 'in') ;
 			//更新库存
-			$this->doRMAIn($params , 'in') ;
+			//$this->doRMAIn($params , 'in') ;
 		}catch(Exception $e){
 			print_r( $e ) ;
 		}
@@ -148,15 +150,20 @@ class Ram extends AppModel {
 	/**
 	 * RMA入库
 	 */
+	/*
 	public function doRMAIn($params,$type){
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
+		//入库库存
 		$inQuantity = $params['quantity'] ;
+		
+		//将产品库存计入
 		
 		//将产品信息计入总库存
 		$p = $this->getObject("sql_saleproduct_getById",$params) ;
 		
+		//总库存
 		$quantity = $p['QUANTITY'] ;
 		$badQuantity = $p['BAD_QUANTITY'] ;
 		
@@ -178,7 +185,7 @@ class Ram extends AppModel {
 			$params['badQuantity'] = $quantity ;
 			$this->exeSql("sql_saleproduct_bad_quantity_in",$params) ;
 		}
-	}
+	}*/
 	
 	/**
 	 * 用户加入风险客户

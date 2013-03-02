@@ -66,6 +66,7 @@ class Disk extends AppModel {
 	public function doAudit($params){
 		//判断是否已经执行了盘点
 		//$params['status'] = 1 ;
+		$inventory  = ClassRegistry::init("Inventory") ;
 		
 		$passProductIds = $params['passProductIds'] ;
 		
@@ -82,26 +83,53 @@ class Disk extends AppModel {
 			
 			$lossNum = $detail['LOSS_NUM'] ;
 			$gainNum = $detail['GAIN_NUM'] ;
+			
 			if( !empty($lossNum) ){//盘点出库
+					$inventoryParams = array() ;
+					$inventoryParams['warehouseId'] =$disk['WAREHOUSE_ID']  ;//warehouseId
+					$inventoryParams['diskId']  = $params['diskId'] ;
+					
+					$details = array() ;
+					$details[] = array(
+							'goodsId'=>$detail['REAL_ID']  ,
+							'quantity'=>$lossNum ,
+							'badQuantity'=>0 ,
+							'inventoryType'=>'1' //普通库存
+					) ;
+					$inventoryParams['details'] =  json_encode( $details ) ;
+				    $inventory->out( $inventoryParams ) ;
 				
-				$this->doDiskIn(array(
+				/*$this->doDiskIn(array(
 					'realProductId'=>$detail['REAL_ID'],
 					'QUANTITY'=>$lossNum,
 					'diskId'=>$params['diskId'],
 					'warehouseId'=>$disk['WAREHOUSE_ID'],
 					'status'=>'1'
-				),'out') ;
+				),'out') ;*/
 			}
 			
 			if( !empty($gainNum) ){//盘点入库
+				$inventoryParams = array() ;
+				$inventoryParams['warehouseId'] =$disk['WAREHOUSE_ID']  ;
+				$inventoryParams['diskId']  = $params['diskId'] ;
 				
-				$this->doDiskIn(array(
+				$details = array() ;
+				$details[] = array(
+						'goodsId'=>$detail['REAL_ID']  ,
+						'quantity'=>$gainNum ,
+						'badQuantity'=>0 ,
+						'inventoryType'=>'1' //普通库存
+				) ;
+				
+				$inventoryParams['details'] =  json_encode( $details ) ;
+				$inventory->in( $inventoryParams ) ;
+				/*$this->doDiskIn(array(
 					'realProductId'=>$detail['REAL_ID'],
 					'QUANTITY'=>$gainNum,
 					'diskId'=>$params['diskId'],
 					'warehouseId'=>$disk['WAREHOUSE_ID'],
 					'status'=>'1'
-				),'in') ;
+				),'in') ;*/
 			}
 			
 			$this->exeSql("sql_warehouse_disk_details_updateStatus",array('status'=>'1','id'=>$ddId)) ;
@@ -112,6 +140,7 @@ class Disk extends AppModel {
 	/**
 	 * 盘点入库操作
 	 */
+	/*
 	public function doDiskIn($params,$type){
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
@@ -145,6 +174,6 @@ class Disk extends AppModel {
 		//更新明细
 		$this->exeSql("sql_warehouse_disk_in_insert",$params) ;
 		
-	}
+	}*/
 	
 }

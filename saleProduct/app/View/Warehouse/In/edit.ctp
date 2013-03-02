@@ -106,13 +106,18 @@
 								<tr>
 									<th>目标仓库：</th>
 									<td>
-									<input data-validator="required" type="hidden" id="warehouseId" 
-										value="<?php echo $result['WAREHOUSE_ID'];?>"/>
-									<input type="text" data-validator="required" id="warehouseName" readonly
-										value="<?php echo $result['WAREHOUSE_NAME'];?>"/>
-										<?php if( !$isRead ){
-											echo '<button class="btn btn-warehouse">选择</button>' ;
-										}?>
+										<select  data-validator="required"   id="warehouseId"  <?php echo $isRead?"disabled":"" ;?>>
+										    	<option value="">--选择--</option>
+											   <?php 
+											     // sql_warehouse_lists
+											     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
+					                             foreach($warehouses as $w){
+					                             	  $w = $SqlUtils->formatObject( $w ) ;
+					                             	  $selected = $result['WAREHOUSE_ID'] == $w['ID'] ?"selected":"" ;
+					                             	  echo "<option $selected value='".$w['ID']."'>".$w['NAME']."</option>" ;
+					                             }
+											   ?>
+											</select>
 									</td>
 									<th>运输公司：</th>
 									<td><input data-validator="required" type="text" id="shipCompany"

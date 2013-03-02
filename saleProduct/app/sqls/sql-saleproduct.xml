@@ -36,7 +36,13 @@
     <entry key="sql_saleproduct_list">
  			SELECT sc_real_product.*,
 		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id
-		        	and status = 1 ) AS LOCK_QUANTITY
+		        	and status = 1 ) AS LOCK_QUANTITY ,
+		        ( select sum(quantity) from sc_goods_inventory sgi where sgi.goods_id = sc_real_product.id  and type = '1'
+		           {@ and warehouse_id = '#warehouseId#' }
+		         )  as COMMON_QUANTITY,
+		         ( select sum(quantity) from sc_goods_inventory sgi where sgi.goods_id = sc_real_product.id  and type = '2'
+		            {@ and warehouse_id = '#warehouseId#' }
+		          )  as FBA_QUANTITY
 		         from sc_real_product where 1=1
  			{@ and type='#type#'}
  			{@ and status='#status#'}
