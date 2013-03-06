@@ -31,6 +31,7 @@
 		$email ="" ;
 		$qq ="" ;
 		$products = "" ;
+		$memo = '' ;
 		
 		 if( $supplier !=null){
 		 	$id =$supplier[0]['sc_supplier']["ID"] ;
@@ -45,6 +46,7 @@
 			$email  =$supplier[0]['sc_supplier']["EMAIL"] ;
 			$qq  =$supplier[0]['sc_supplier']["QQ"] ;
 			$products  =$supplier[0]['sc_supplier']["PRODUCTS"] ;
+			$memo = $supplier[0]['sc_supplier']["MEMO"]; 
 		 }
 	?>
 	
@@ -65,10 +67,11 @@
    </style>
 
    <script>
+		var asin = '<?php echo $asin;?>' ;
+   
    	    var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
 	    var treeMap  = {} ;
-	    var asin = '' ;
-	
+	  
 	    <?php
 	    	$ss = explode(",",$products) ;
 	    
@@ -115,10 +118,10 @@
 					var vals = $('#default-tree').tree().getSelectedIds()  ;
 					
 					json.products = vals.join(",") ;
-					
+				
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/supplier/saveSupplier",
+						url:"/saleProduct/index.php/supplier/saveSupplier/"+asin,
 						data:json,
 						cache:false,
 						dataType:"text",
@@ -171,7 +174,7 @@
 			<td>网址：</td><td><input type="text" id="url" value="<?php echo $url;?>"/></td>
 		</tr>
 		<tr>
-			<td>备注：</td><td><textarea id="memo" style="width:300px;height:100px;"><?php echo $supplier[0]['sc_supplier']["MEMO"];?></textarea></td>
+			<td>备注：</td><td><textarea id="memo" style="width:300px;height:100px;"><?php echo $memo;?></textarea></td>
 		</tr>
 		<tr>
 			<td></td><td><button type="submit" class="btn btn-primary">保存</button></td>

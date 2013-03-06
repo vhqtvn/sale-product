@@ -7,5 +7,32 @@
 		  {@ #$VIEW_PU# }
 		order by id desc
     </entry>
+    
+        <entry key="sql_product_upload">
+       		SELECT sc_upload.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_upload.id ) as TOTAL,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_upload.uploador limit 0,1 ) as USERNAME
+              FROM sc_upload 
+              where 1=1 
+              {@ #$VIEW_PU# }
+              {@and sc_upload.group_id = '#groupId#' }
+               order by upload_time desc 
+    </entry>
+    
+    <entry key="sql_product_upload_count_fornocategory">
+       		select count(*) c from sc_upload
+       		 where 1=1 
+              {@ #$VIEW_PU# }
+              and ( sc_upload.group_id is null or sc_upload.group_id = '')
+    </entry>
+    
+        <entry key="sql_product_upload_more">
+       		SELECT sc_upload.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_upload.id ) as TOTAL,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_upload.uploador  limit 0,1 ) as USERNAME
+              FROM sc_upload 
+              where 1=1 
+              {@ #$VIEW_PU# }
+              and ( sc_upload.group_id is null or sc_upload.group_id = '')
+               order by upload_time desc 
+    </entry>
    
 </properties>

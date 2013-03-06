@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>llygrid demo</title>
+    <title>上传产品列表</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
@@ -20,6 +20,13 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('layout/jquery.layout');
 		echo $this->Html->script('tree/jquery.tree');
+		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
+		
+		$otherCount = $SqlUtils->getObject("sql_product_upload_count_fornocategory",array()) ;
+		
+		$count = $otherCount['c'] ;
 	?>
   
    <script type="text/javascript">
@@ -50,6 +57,9 @@
 	var currentGroup = "" ;
 
 	$(function(){
+
+		treeData.childNodes.push( {id:"more",text:"未分类任务组(<?php echo $count;?>)",isExpand:true,childNodes:[]}  ) ;
+		
 		//上传任务组列表
 		$('#default-tree').tree({//tree为容器ID
 			source:'array',
@@ -57,10 +67,13 @@
 			onNodeClick:function(id,text,record){
 				if( id == 'root' ){
 					currentGroup = "" ;
-					$(".grid-content").llygrid("reload",{groupId:""}) ;
+					$(".grid-content").llygrid("reload",{groupId:"",sqlId:"sql_product_upload"}) ;
+				}else if( id == 'more' ){
+					currentGroup = "" ;
+					$(".grid-content").llygrid("reload",{groupId:"",sqlId:"sql_product_upload_more"}) ;
 				}else{
 					currentGroup = record ;
-					$(".grid-content").llygrid("reload",{groupId:id}) ;
+					$(".grid-content").llygrid("reload",{groupId:id,sqlId:"sql_product_upload"}) ;
 				}
 			}
        }) ;

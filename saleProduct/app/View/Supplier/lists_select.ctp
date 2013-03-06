@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>llygrid demo</title>
+    <title>商品供应商</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
@@ -22,30 +22,6 @@
    <script type="text/javascript">
    
    var asin = '<?php echo $asin;?>' ;
-   
-   //result.records , result.totalRecord
- 	function formatGridData(data){
- 		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-   }
 
 	$(function(){
 			$(".grid-content").llygrid({
@@ -101,8 +77,12 @@
 				$(".grid-content").llygrid("reload",querys) ;	
 			}) ;
 			
+			$(".select-btn").click(function(){
+				openCenterWindow("/saleProduct/index.php/supplier/add/asin/"+asin , 800,600) ;
+			}) ;
+
 			$(".add-btn").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/add/",400,300) ;
+				openCenterWindow("/saleProduct/index.php/supplier/add/asin/"+asin , 800,600) ;
 			}) ;
 			
 			$(".save-product-supplier").click(function(){
@@ -113,7 +93,7 @@
 				
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/supplier/saveProductSupplier",
+					url:"/saleProduct/index.php/supplier/saveProductSupplier/"+asin,
 					data:{
 						asin:asin,
 						suppliers:suppliers.join(",")

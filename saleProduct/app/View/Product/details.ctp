@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>llygrid demo</title>
+    <title>产品供应商</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -147,8 +147,12 @@
 			}) ;
 			
 			
-			$(".supplier").click(function(){
+			$(".supplier-select").click(function(){
 				openCenterWindow("/saleProduct/index.php/supplier/listsSelect/<?php echo $asin?>",800,600) ;
+			}) ;
+
+			$(".supplier").click(function(){
+				openCenterWindow("/saleProduct/index.php/supplier/add/asin/<?php echo $asin?>",800,600) ;
 			}) ;
 			
 			
@@ -584,6 +588,7 @@
 		</div>
 		<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
 			<button class="supplier btn">添加产品供应商</button>
+			<button class="supplier-select btn">选择产品供应商</button>
 			<table class="table table-bordered">
 				<tr>
 					<th>操作</th>
