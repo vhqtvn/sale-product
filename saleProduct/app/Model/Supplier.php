@@ -9,12 +9,14 @@ class Supplier extends AppModel {
 		return $this->query($sql) ;
 	}
 	
-	public function saveSupplier($data,$user){
+	public function saveSupplier($data,$user,$asin=null){
 		$loginId = $user['LOGIN_ID'] ;
 		
-		print_r($data) ;
+		$id = '' ;
 		
 		if( isset($data['id']) && !empty($data["id"]) ){
+			$id = $data['id'] ;
+			
 			$sql = " update sc_supplier set 
 					name = '".$data['name']."' ,
 					address = '".$data['address']."' ,
@@ -32,12 +34,23 @@ class Supplier extends AppModel {
 					" ;
 			$this->query($sql) ;
 		}else{
-			$sql = "insert into sc_supplier(name,address,url,contactor,phone,mobile,fax,zip_code,email,qq,memo,products,creator,create_time)
-			values('".$data['name']."','".$data['address']."','".$data['url']."','".$data['contactor']."'
+			$time = explode ( " ", microtime () );
+			$time = $time [1] . ($time [0] * 1000);
+			$time2 = explode ( ".", $time );
+			$time = $time2 [0];
+			$id  = $time ;
+			
+			$sql = "insert into sc_supplier(id,name,address,url,contactor,phone,mobile,fax,zip_code,email,qq,memo,products,creator,create_time)
+			values('$id','".$data['name']."','".$data['address']."','".$data['url']."','".$data['contactor']."'
 			,'".$data['phone']."','".$data['mobile']."','".$data['fax']."','".$data['zip_code']."','".$data['email']."'
 			,'".$data['qq']."','".$data['memo']."','".$data['products']."','$loginId',NOW())" ;
 			
 			$this->query($sql) ;
+		}
+		
+		if(!empty($asin)){//保存到产品
+		    $sql="insert into sc_product_supplier(supplier_id,asin,status) values('$id','$asin','valid')" ;
+		    $this->query($sql) ;
 		}
 	}
 	

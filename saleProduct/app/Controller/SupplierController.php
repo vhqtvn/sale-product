@@ -16,16 +16,31 @@ class SupplierController extends AppController {
 	 	$this->set("suppliers",$suppliers) ;
 	 }
 	 
-	 public function add($id = null){
-	 	$this->set("id",$id) ;
-	 	$Supplier = null ;
-	 	if( !empty($id) ){
-			 $Supplier =  $this->Supplier->getSupplier( $id  ) ;
-		}
-		$this->set("supplier",$Supplier) ;
-		
-		$categorys = $this->Product->getProductCategory();  
-    	$this->set("categorys",$categorys) ;
+	 public function add($id = null, $idValue = null ){
+	 	if( $id == 'asin' ){
+	 		$this->set("asin",$idValue) ;
+	 		$this->set("id",'') ;
+	 		$Supplier = null ;
+	 		if( !empty($id) ){
+	 			$Supplier =  $this->Supplier->getSupplier( $id  ) ;
+	 		}
+	 		$this->set("supplier",$Supplier) ;
+	 		
+	 		$categorys = $this->Product->getProductCategory();
+	 		$this->set("categorys",$categorys) ;
+	 	}else{
+	 		$this->set("asin",'') ;
+	 		$this->set("id",$id) ;
+	 		$Supplier = null ;
+	 		if( !empty($id) ){
+	 			$Supplier =  $this->Supplier->getSupplier( $id  ) ;
+	 		}
+	 		$this->set("supplier",$Supplier) ;
+	 		
+	 		$categorys = $this->Product->getProductCategory();
+	 		$this->set("categorys",$categorys) ;
+	 	}
+	 	
 	 }
 	 
 	 
@@ -49,10 +64,12 @@ class SupplierController extends AppController {
     	$this->set("categorys",$categorys) ;
 	 }
 
-	 public function saveSupplier(){
+	 public function saveSupplier($asin=null){
  		$user =  $this->getCookUser() ;
  	
-		$this->Supplier->saveSupplier($this->request->data,$user) ;
+		$this->Supplier->saveSupplier($this->request->data,$user,$asin) ;
+		
+	
 
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;

@@ -3,6 +3,8 @@
    
     <entry key="sql_pdev_upload_list">
 		select * from sc_upload
+		where 1=1
+		  {@ #$VIEW_PU# }
 		order by id desc
     </entry>
    

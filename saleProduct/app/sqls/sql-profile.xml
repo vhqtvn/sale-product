@@ -16,7 +16,9 @@
        		SELECT sc_upload.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_upload.id ) as TOTAL,
 				( select sc_user.name from sc_user where sc_user.login_id = sc_upload.uploador ) as USERNAME
               FROM sc_upload 
-              where 1=1 {@and sc_upload.group_id = '#groupId#' }
+              where 1=1 
+              {@ #$VIEW_PU# }
+              {@and sc_upload.group_id = '#groupId#' }
                order by upload_time desc 
     </entry>
     
