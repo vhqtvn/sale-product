@@ -8,6 +8,15 @@
 		order by id desc
     </entry>
     
+    <entry key="sql_pdev_setSupplierFlag">
+    UPDATE  sc_product_supplier 
+					SET
+					IS_USED = '1'
+					WHERE
+					SUPPLIER_ID = '{@#supplierId#}'  and
+					ASIN = '{@#asin#}'
+		</entry>
+    
         <entry key="sql_product_upload">
        		SELECT sc_upload.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_upload.id ) as TOTAL,
 				( select sc_user.name from sc_user where sc_user.login_id = sc_upload.uploador limit 0,1 ) as USERNAME

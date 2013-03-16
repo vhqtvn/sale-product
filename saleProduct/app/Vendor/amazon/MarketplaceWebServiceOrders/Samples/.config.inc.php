@@ -24,8 +24,8 @@ Secret Key: SLphDgs4s6mKbEY5nIYuVPO8R7J/5Q/tdin4ip9C
     * Access Key ID and Secret Acess Key ID, obtained from:
     * http://aws.amazon.com
     ***********************************************************************/
-    define('AWS_ACCESS_KEY_ID', 'AKIAI54EOFL7VGEJBJ7Q123');
-    define('AWS_SECRET_ACCESS_KEY', 'SLphDgs4s6mKbEY5nIYuVPO1238R7J/5Q/tdin4ip9C');  
+    define('AWS_ACCESS_KEY_ID', 'AKIAIH6QJLC3MI3TJEVA');
+    define('AWS_SECRET_ACCESS_KEY', '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');  
 
    /************************************************************************
     * REQUIRED
@@ -33,7 +33,7 @@ Secret Key: SLphDgs4s6mKbEY5nIYuVPO8R7J/5Q/tdin4ip9C
     * All MWS requests must contain a User-Agent header. The application
     * name and version defined below are used in creating this value.
     ***********************************************************************/
-    define('APPLICATION_NAME', 'Ameripower123');
+    define('APPLICATION_NAME', 'Cyberkin');
     define('APPLICATION_VERSION', '1.0.0');
 
    /************************************************************************
@@ -42,8 +42,8 @@ Secret Key: SLphDgs4s6mKbEY5nIYuVPO8R7J/5Q/tdin4ip9C
     * All MWS requests must contain the seller's merchant ID and
     * marketplace ID.
     ***********************************************************************/
-    define ('MERCHANT_ID', 'A1N36FBTGR123BD37');
-    define ('MARKETPLACE_ID', 'ATVPDKIK123X0DER');
+    define ('MERCHANT_ID', 'A3A3DZ03XONGGK');
+    define ('MARKETPLACE_ID', 'ATVPDKIKX0DER');
 
 
    /************************************************************************ 

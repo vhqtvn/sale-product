@@ -76,7 +76,7 @@ $serviceUrl = "https://mws.amazonservices.com/Orders/2011-01-01";
  $request->setSellerId(MERCHANT_ID);
 
  // List all orders udpated after a certain date
- $request->setCreatedAfter(new DateTime('2011-05-21 12:00:00', new DateTimeZone('UTC')));
+ $request->setCreatedAfter(new DateTime('2013-03-11 01:00:00', new DateTimeZone('UTC')));
 
  // Set the marketplaces queried in this ListOrdersRequest
  $marketplaceIdList = new MarketplaceWebServiceOrders_Model_MarketplaceIdList();
@@ -117,6 +117,9 @@ $serviceUrl = "https://mws.amazonservices.com/Orders/2011-01-01";
                 if ($response->isSetListOrdersResult()) { 
                     echo("            ListOrdersResult\n");
                     $listOrdersResult = $response->getListOrdersResult();
+                    
+                    print_r( $listOrdersResult ) ;
+                    
                     if ($listOrdersResult->isSetNextToken()) 
                     {
                         echo("                NextToken\n");

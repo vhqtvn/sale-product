@@ -19,7 +19,7 @@
 /**
  *  @see MarketplaceWebServiceOrders_Model
  */
-require_once ('MarketplaceWebServiceOrders/Model.php');  
+require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model.php');  
 
     
 

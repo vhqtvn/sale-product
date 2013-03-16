@@ -273,6 +273,22 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
     return $response;
   }
   
+  public function getFeedReport($request , $account , $reportType)
+  {
+  	if (!$request instanceof MarketplaceWebService_Model_GetReportRequest) {
+  		require_once (VENDOR_PATH.'/amazon/MarketplaceWebService/Model/GetReportRequest.php');
+  		$request = new MarketplaceWebService_Model_GetReportRequest($request);
+  	}
+  	require_once (VENDOR_PATH.'/amazon/MarketplaceWebService/Model/GetReportResponse.php');
+  
+  	$httpResponse = $this->invokeForFeed($this->convertGetReport($request), $request->getReport(),null , $account ,$reportType );
+  
+  	$response = MarketplaceWebService_Model_GetReportResponse::fromXML($httpResponse['ResponseBody']);
+  	$response->setResponseHeaderMetadata($httpResponse['ResponseHeaderMetadata']);
+  	return $response;
+  }
+  
+  
   public function getProductReport($request , $account , $reportType)
   {
     if (!$request instanceof MarketplaceWebService_Model_GetReportRequest) {
@@ -823,6 +839,88 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 
     return base64_encode($md5Hash);
   }
+  
+  /**
+   * Invoke request and return response
+   */
+  private function invokeForFeed(array $converted, $dataHandle = null, $contentMd5 = null,$accountId = null,$reportType = null)
+  {
+  
+  	$parameters = $converted[CONVERTED_PARAMETERS_KEY];
+  	$actionName = $parameters["Action"];
+  	$response = array();
+  	$responseBody = null;
+  	$statusCode = 200;
+  
+  	/* Submit the request and read response body */
+  	try {
+  
+  		// Ensure the endpoint URL is set.
+  		if (empty($this->config['ServiceURL'])) {
+  			throw new MarketplaceWebService_Exception(
+  					array('ErrorCode' => 'InvalidServiceUrl',
+  							'Message' => "Missing serviceUrl configuration value. You may obtain a list of valid MWS URLs by consulting the MWS Developer's Guide, or reviewing the sample code published along side this library."));
+  		}
+  
+  		/* Add required request parameters */
+  		$parameters = $this->addRequiredParameters($parameters);
+  		$converted[CONVERTED_PARAMETERS_KEY] = $parameters;
+  
+  		$shouldRetry = false;
+  		$retries = 0;
+  		do {
+  			try {
+  				//if( $type == "requestReport" ){
+  				$response = $this->performRequestForFeedGet($actionName, $converted, $dataHandle, $contentMd5,$accountId,$reportType );
+  				//}else{
+  				//	 $response = $this->performRequest($actionName, $converted, $dataHandle, $contentMd5);
+  				//}
+  
+  
+  				$httpStatus = $response['Status'];
+  
+  				switch ($httpStatus) {
+  					case 200:
+  						$shouldRetry = false;
+  						break;
+  
+  					case 500:
+  					case 503:
+  						require_once(VENDOR_PATH.'/amazon/MarketplaceWebService/Model/ErrorResponse.php');
+  						$errorResponse = MarketplaceWebService_Model_ErrorResponse::fromXML($response['ResponseBody']);
+  
+  						// We will not retry throttling errors since this would just add to the throttling problem.
+  						$shouldRetry = ($errorResponse->getError()->getCode() === 'RequestThrottled')
+  						? false : true;
+  
+  						if ($shouldRetry && $retries <= $this->config['MaxErrorRetry']) {
+  							$this->pauseOnRetry(++$retries);
+  						} else {
+  							throw $this->reportAnyErrors($response['ResponseBody'], $response['Status'], null, $response['ResponseHeaderMetadata']);
+  						}
+  						break;
+  
+  					default:
+  						$shouldRetry = false;
+  					throw $this->reportAnyErrors($response['ResponseBody'], $response['Status'], null, $response['ResponseHeaderMetadata']);
+  					break;
+  				}
+  
+  				/* Rethrow on deserializer error */
+  			} catch (Exception $e) {
+  				require_once (VENDOR_PATH.'/amazon/MarketplaceWebService/Exception.php');
+  				throw new MarketplaceWebService_Exception(array('Exception' => $e, 'Message' => $e->getMessage()));
+  			}
+  
+  		} while ($shouldRetry);
+  
+  	} catch (MarketplaceWebService_Exception $se) {
+  		throw $se;
+  	} catch (Exception $t) {
+  		throw new MarketplaceWebService_Exception(array('Exception' => $t, 'Message' => $t->getMessage()));
+  	}
+  	return array('ResponseBody' => $response['ResponseBody'], 'ResponseHeaderMetadata' => $response['ResponseHeaderMetadata']);
+  }
 
   /**
    * Invoke request and return response
@@ -957,6 +1055,68 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
   }
   
   
+  private function performRequestForFeedGet($action, array $converted, $dataHandle = null, $contentMd5 = null,$accountId = null,$reportType = null) {
+  
+  	$curlOptions = $this->configureCurlOptions($action, $converted, $dataHandle, $contentMd5);
+  
+  	if (is_null($curlOptions[CURLOPT_RETURNTRANSFER]) || !$curlOptions[CURLOPT_RETURNTRANSFER]) {
+  		$curlOptions[CURLOPT_RETURNTRANSFER] = true;
+  		//$curlOptions[CURLOPT_SSL_VERIFYPEER] = false;
+  		//$curlOptions[CURLOPT_VERBOSE] = true;
+  	}
+  
+  	$U1002 = $curlOptions["10002"] ;
+  	$U1005 = $curlOptions["10015"] ;
+  
+  	$html  = "" ;
+  	$HeadArray = null ;
+  	if (RequestType::getRequestType($action) === RequestType::POST_DOWNLOAD) {
+  		$handle = fopen($U1002."?".$U1005, 'r');
+  		$content = '';
+  
+  		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+  		$log  = ClassRegistry::init("Log") ;
+  		
+  		$amazonFeedProcess  = ClassRegistry::init("AmazonFeedProcess") ;
+  
+  		while(!feof($handle)){
+  			$row =  fgets($handle, 1024);
+  
+  			if($HeadArray == null){
+  				$HeadArray = split( "\t" ,$row  ) ;
+  			}else{
+  				$array = split( "\t" ,$row  ) ;
+  				$productItem = array() ;
+  				foreach($HeadArray as  $k => $v ){
+  					$productItem[trim($v)] = $array[$k] ;
+  				} ;
+  				
+  				//callback
+  				$amazonFeedProcess->process( $reportType,$productItem ,$HeadArray,$accountId);
+  				
+  				/*if( !empty( $reportType ) && $reportType == '_GET_FLAT_FILE_OPEN_LISTINGS_DATA_' ){
+  					
+  				}else if( !empty( $reportType ) && $reportType == '_GET_MERCHANT_LISTINGS_DATA_' ){
+  					
+  				}else if( !empty( $reportType ) && $reportType == '_GET_AFN_INVENTORY_DATA_' ){}*/
+  			}
+  		}
+  
+  		if( !empty( $reportType ) ){
+  			//$amazonAccount->updateAccountAsyn3($accountId,array("reportType"=>$reportType)) ;
+  		}
+  		$html = $this->getDownloadResponseDocumentForGet( $action ) ;
+  		fclose($handle);
+  	}else{
+  		$html = file_get_contents($U1002."?".$U1005);
+  	}
+  
+  	return array (
+  			'Status' => "200",
+  			'ResponseBody' => $html,
+  			'ResponseHeaderMetadata' => array());
+  }
+  
    private function performRequestForGet($action, array $converted, $dataHandle = null, $contentMd5 = null,$accountId = null,$reportType = null) {
 	
     $curlOptions = $this->configureCurlOptions($action, $converted, $dataHandle, $contentMd5);
@@ -978,6 +1138,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	   
 	    $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
 	    $log  = ClassRegistry::init("Log") ;
+	    $amazonFeedProcess  = ClassRegistry::init("AmazonFeedProcess") ;
 	  
 	    while(!feof($handle)){
 	        $row =  fgets($handle, 1024);
@@ -990,7 +1151,10 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	        	foreach($HeadArray as  $k => $v ){
 	        		$productItem[trim($v)] = $array[$k] ;
 	        	} ;
-	        	if( !empty( $reportType ) && $reportType == '_GET_FLAT_FILE_OPEN_LISTINGS_DATA_' ){
+	        	
+	        	$amazonFeedProcess->process( $reportType,$productItem ,$HeadArray,$accountId);
+	        	
+	        	/*if( !empty( $reportType ) && $reportType == '_GET_FLAT_FILE_OPEN_LISTINGS_DATA_' ){
 		        	$asin 		= $productItem['asin'] ;
 		        	$sku  		= $productItem['sku'] ;
 		        	$quantity  	= $productItem['quantity'] ;
@@ -1036,24 +1200,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 						'itemCondition'=>$itemCondition
 					),2) ;
 	        	}else if( !empty( $reportType ) && $reportType == '_GET_AFN_INVENTORY_DATA_' ){
-	        		/**
-	        		 * 'seller-sku' => 'WI-Contr-0-W',
-						'fulfillment-channel-sku' => 'X000DX9ZND',
-						'asin' => 'B005UI9BT8',
-						'condition-type' => 'NewItem',
-						'Warehouse-Condition-code' => 'SELLABLE',
-						'Quantity Available' => '0
-	        		 */
-	        		debug($productItem) ;
-	        		/*$asin 		= $productItem['product-id'] ;
-		        	$sku  		= $productItem['seller-sku'] ;
-		        	$listingId  = $productItem['listing-id'] ;
-		        	$quantity  	= $productItem['quantity'] ;
-		        	$price  	= $productItem['price'] ;
-		        	$fulfillment  = $productItem['fulfillment-channel'] ;
-		        	$pendingQuantity  = $productItem['pending-quantity'] ;
-		        	$itemCondition = $productItem['item-condition'] ;
-		    */
+	        		
 	        		$asin 		= $productItem['asin'] ;
 	        		$sku  		= $productItem['seller-sku'] ;
 	        		$quantity  	= $productItem['Quantity Available'] ;
@@ -1075,10 +1222,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 		        					'quantity'=>$quantity
 		        			),3) ;
 	        		}
-	        		
-	        	}
-	        	
-	        	
+	        	}*/
 	        }
 	    }
 	    
@@ -1088,7 +1232,10 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	    $html = $this->getDownloadResponseDocumentForGet( $action ) ;
 	    fclose($handle);
     }else{
+    	echo $U1002."?".$U1005;
     	$html = file_get_contents($U1002."?".$U1005);
+    	
+    	debug($html);
     }
 	
     return array (

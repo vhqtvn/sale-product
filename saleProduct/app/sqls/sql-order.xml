@@ -846,7 +846,6 @@
 		INSERT INTO sc_amazon_order_status 
 		( 
 		ORDER_ID, 
-		ORDER_ITEM_ID, 
 		AUDIT_STATUS, 
 		AUDIT_MEMO, 
 		REAUDIT_STATUS, 
@@ -856,7 +855,6 @@
 		VALUES
 		( 
 		{@'#ORDER_ID#'}, 
-		{@'#ORDER_ITEM_ID#'}, 
 		'{@#AUDIT_STATUS#}', 
 		'{@#AUDIT_MEMO#}', 
 		'{@#REAUDIT_STATUS#}', 
@@ -869,7 +867,6 @@
 		DELETE FROM sc_amazon_order_status 
 		WHERE
 		order_id = {@'#ORDER_ID#'}
-		and order_item_id = {@'#ORDER_ITEM_ID#'}
     </entry>
     
     <entry key="sql_order_track_insert">
@@ -879,8 +876,7 @@
 			ACT_TIME, 
 			MESSAGE, 
 			STATUS, 
-			ORDER_ID, 
-			ORDER_ITEM_ID
+			ORDER_ID
 		)
 		VALUES
 		( 
@@ -888,8 +884,7 @@
 			NOW(), 
 			'{@#MESSAGE#}', 
 			'{@#STATUS#}', 
-			'{@#ORDER_ID#}', 
-			'{@#ORDER_ITEM_ID#}'
+			'{@#ORDER_ID#}'
 		)
     </entry>
     

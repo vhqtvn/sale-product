@@ -18,7 +18,7 @@
 /**
  *  @see MarketplaceWebServiceOrders_Model
  */
-require_once ('MarketplaceWebServiceOrders/Model.php');  
+require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model.php');  
 
     
 
@@ -100,6 +100,7 @@ class MarketplaceWebServiceOrders_Model_OrderItem extends MarketplaceWebServiceO
         );
         parent::__construct($data);
     }
+    
 
         /**
      * Gets the value of the ASIN property.

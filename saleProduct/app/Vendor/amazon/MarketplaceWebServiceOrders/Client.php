@@ -19,7 +19,7 @@
 /**
  *  @see MarketplaceWebServiceOrders_Interface
  */
-require_once ('MarketplaceWebServiceOrders/Interface.php');
+require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Interface.php');
 
 /**
  * This contains the Order Retrieval API section of the Marketplace Web Service.
@@ -220,10 +220,10 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     public function listOrdersByNextToken($request)
     {
         if (!$request instanceof MarketplaceWebServiceOrders_Model_ListOrdersByNextTokenRequest) {
-            require_once ('MarketplaceWebServiceOrders/Model/ListOrdersByNextTokenRequest.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrdersByNextTokenRequest.php');
             $request = new MarketplaceWebServiceOrders_Model_ListOrdersByNextTokenRequest($request);
         }
-        require_once ('MarketplaceWebServiceOrders/Model/ListOrdersByNextTokenResponse.php');
+        require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrdersByNextTokenResponse.php');
         return MarketplaceWebServiceOrders_Model_ListOrdersByNextTokenResponse::fromXML($this->_invoke($this->_convertListOrdersByNextToken($request)));
     }
 
@@ -246,10 +246,10 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     public function listOrderItemsByNextToken($request)
     {
         if (!$request instanceof MarketplaceWebServiceOrders_Model_ListOrderItemsByNextTokenRequest) {
-            require_once ('MarketplaceWebServiceOrders/Model/ListOrderItemsByNextTokenRequest.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrderItemsByNextTokenRequest.php');
             $request = new MarketplaceWebServiceOrders_Model_ListOrderItemsByNextTokenRequest($request);
         }
-        require_once ('MarketplaceWebServiceOrders/Model/ListOrderItemsByNextTokenResponse.php');
+        require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrderItemsByNextTokenResponse.php');
         return MarketplaceWebServiceOrders_Model_ListOrderItemsByNextTokenResponse::fromXML($this->_invoke($this->_convertListOrderItemsByNextToken($request)));
     }
 
@@ -270,10 +270,10 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     public function getOrder($request)
     {
         if (!$request instanceof MarketplaceWebServiceOrders_Model_GetOrderRequest) {
-            require_once ('MarketplaceWebServiceOrders/Model/GetOrderRequest.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/GetOrderRequest.php');
             $request = new MarketplaceWebServiceOrders_Model_GetOrderRequest($request);
         }
-        require_once ('MarketplaceWebServiceOrders/Model/GetOrderResponse.php');
+        require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/GetOrderResponse.php');
         return MarketplaceWebServiceOrders_Model_GetOrderResponse::fromXML($this->_invoke($this->_convertGetOrder($request)));
     }
 
@@ -295,10 +295,10 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     public function listOrderItems($request)
     {
         if (!$request instanceof MarketplaceWebServiceOrders_Model_ListOrderItemsRequest) {
-            require_once ('MarketplaceWebServiceOrders/Model/ListOrderItemsRequest.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrderItemsRequest.php');
             $request = new MarketplaceWebServiceOrders_Model_ListOrderItemsRequest($request);
         }
-        require_once ('MarketplaceWebServiceOrders/Model/ListOrderItemsResponse.php');
+        require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrderItemsResponse.php');
         return MarketplaceWebServiceOrders_Model_ListOrderItemsResponse::fromXML($this->_invoke($this->_convertListOrderItems($request)));
     }
 
@@ -319,10 +319,10 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     public function listOrders($request)
     {
         if (!$request instanceof MarketplaceWebServiceOrders_Model_ListOrdersRequest) {
-            require_once ('MarketplaceWebServiceOrders/Model/ListOrdersRequest.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrdersRequest.php');
             $request = new MarketplaceWebServiceOrders_Model_ListOrdersRequest($request);
         }
-        require_once ('MarketplaceWebServiceOrders/Model/ListOrdersResponse.php');
+        require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ListOrdersResponse.php');
         return MarketplaceWebServiceOrders_Model_ListOrdersResponse::fromXML($this->_invoke($this->_convertListOrders($request)));
     }
 
@@ -345,10 +345,10 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     public function getServiceStatus($request)
     {
         if (!$request instanceof MarketplaceWebServiceOrders_Model_GetServiceStatusRequest) {
-            require_once ('MarketplaceWebServiceOrders/Model/GetServiceStatusRequest.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/GetServiceStatusRequest.php');
             $request = new MarketplaceWebServiceOrders_Model_GetServiceStatusRequest($request);
         }
-        require_once ('MarketplaceWebServiceOrders/Model/GetServiceStatusResponse.php');
+        require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/GetServiceStatusResponse.php');
         return MarketplaceWebServiceOrders_Model_GetServiceStatusResponse::fromXML($this->_invoke($this->_convertGetServiceStatus($request)));
     }
 
@@ -381,12 +381,14 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
             do {
                 try {
                         $response = $this->_httpPost($parameters);
+                        
+                        //debug( $response )  ;
                         if ($response['Status'] === 200) {
                             $shouldRetry = false;
                         } else {
                             if ($response['Status'] === 500 || $response['Status'] === 503) {
                             	
-                            	require_once('MarketplaceWebServiceOrders/Model/ErrorResponse.php');
+                            	require_once(VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model/ErrorResponse.php');
                             	$errorResponse = MarketplaceWebServiceOrders_Model_ErrorResponse::fromXML($response['ResponseBody']);
                             	
                             	$errors = $errorResponse->getError();
@@ -406,11 +408,11 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
                        }
                 /* Rethrow on deserializer error */
                 } catch (Exception $e) {
-                    require_once ('MarketplaceWebServiceOrders/Exception.php');
+                    require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
                     if ($e instanceof MarketplaceWebServiceOrders_Exception) {
                         throw $e;
                     } else {
-                        require_once ('MarketplaceWebServiceOrders/Exception.php');
+                        require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
                         throw new MarketplaceWebServiceOrders_Exception(array('Exception' => $e, 'Message' => $e->getMessage()));
                     }
                 }
@@ -440,7 +442,7 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
                 $code = $errorMatcherOne[2];
                 $message = $errorMatcherOne[3];
 
-                require_once ('MarketplaceWebServiceOrders/Exception.php');
+                require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
                 $ex = new MarketplaceWebServiceOrders_Exception(array ('Message' => $message, 'StatusCode' => $status, 'ErrorCode' => $code,
                                                            'ErrorType' => 'Unknown', 'RequestId' => $requestId, 'XML' => $responseBody));
 
@@ -450,7 +452,7 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
                 $code = $errorMatcherTwo[1];
                 $message = $errorMatcherTwo[2];
                 $requestId = $errorMatcherTwo[4];
-                require_once ('MarketplaceWebServiceOrders/Exception.php');
+                require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
                 $ex = new MarketplaceWebServiceOrders_Exception(array ('Message' => $message, 'StatusCode' => $status, 'ErrorCode' => $code,
                                                               'ErrorType' => 'Unknown', 'RequestId' => $requestId, 'XML' => $responseBody));
             } elseif (preg_match('@<Error><Type>(.*)</Type><Code>(.*)</Code><Message>(.*)</Message>.*</Error>.*(<Error>)?.*<RequestId>(.*)</RequestId>@mi',
@@ -460,16 +462,16 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
                 $code = $errorMatcherThree[2];
                 $message = $errorMatcherThree[3];
                 $requestId = $errorMatcherThree[5];
-                require_once ('MarketplaceWebServiceOrders/Exception.php');
+                require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
                 $ex = new MarketplaceWebServiceOrders_Exception(array ('Message' => $message, 'StatusCode' => $status, 'ErrorCode' => $code,
                                                               'ErrorType' => $type, 'RequestId' => $requestId, 'XML' => $responseBody));
 
             } else {
-                require_once ('MarketplaceWebServiceOrders/Exception.php');
+                require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
                 $ex = new MarketplaceWebServiceOrders_Exception(array('Message' => 'Internal Error', 'StatusCode' => $status));
             }
         } else {
-            require_once ('MarketplaceWebServiceOrders/Exception.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
             $ex = new MarketplaceWebServiceOrders_Exception(array('Message' => 'Internal Error', 'StatusCode' => $status));
         }
         return $ex;
@@ -542,7 +544,7 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
             $delay = (int) (pow(4, $retries) * 100000) ;
             usleep($delay);
         } else {
-            require_once ('MarketplaceWebServiceOrders/Exception.php');
+            require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Exception.php');
             throw new MarketplaceWebServiceOrders_Exception (array ('Message' => "Maximum number of retry attempts reached :  $retries", 'StatusCode' => $status));
         }
     }

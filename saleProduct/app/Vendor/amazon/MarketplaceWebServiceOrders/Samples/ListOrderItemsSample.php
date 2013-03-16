@@ -77,7 +77,7 @@ $serviceUrl = "https://mws.amazonservices.com/Orders/2011-01-01";
  ***********************************************************************/
  $request = new MarketplaceWebServiceOrders_Model_ListOrderItemsRequest();
  $request->setSellerId(MERCHANT_ID);
- $request->setAmazonOrderId('103-6939559-7905015');
+ $request->setAmazonOrderId('112-1888819-0566613');
  // @TODO: set request. Action can be passed as MarketplaceWebServiceOrders_Model_ListOrderItemsRequest
  // object or array of parameters
  invokeListOrderItems($service, $request);
@@ -118,6 +118,8 @@ $serviceUrl = "https://mws.amazonservices.com/Orders/2011-01-01";
                         $orderItems = $listOrderItemsResult->getOrderItems();
                         $memberList = $orderItems->getOrderItem();
                         foreach ($memberList as $member) {
+                        	print_r( $member ) ;
+                        	
                             echo("                    member\n");
                             if ($member->isSetASIN()) 
                             {

@@ -1,5 +1,949 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_sc_order_findById">
+			select * from sc_order where order_id = '{@#orderId#}'
+	</entry>
+	
+	<entry key="sql_sc_order_item_findById">
+			select * from sc_order_item where order_id = '{@#orderId#}' and order_item_id =  '{@#orderItemId#}' 
+	</entry>
+	
+	    <entry key="sql_sc_order_user_insert">	 
+    INSERT INTO sc_amazon_order_user 
+	(EMAIL, 
+	NAME, 
+	PHONE, 
+	STATUS, 
+	ADDRESS_1, 
+	ADDRESS_2, 
+	ADDRESS_3, 
+	CITY, 
+	STATE, 
+	POSTAL_CODE, 
+	COUNTRY
+	)
+	VALUES
+	('{@#BuyerEmail#}', 
+	'{@#BuyerName#}', 
+	'',
+	'', 
+	'{@#AddressLine1#}', 
+	'{@#AddressLine2#}', 
+	'{@#AddressLine3#}', 
+	'{@#City#}', 
+	'{@#StateOrRegion#}', 
+	'{@#PostalCode#}', 
+	'{@#Country#}'
+	)
+    </entry>
+	
+	<entry key="sql_sc_order_insert">
+	INSERT INTO sc_order 
+		(ORDER_ID, 
+		ORDER_NUMBER, 
+		PURCHASE_DATE, 
+		LAST_UPDATE_DATE, 
+		ORDER_STATUS, 
+		FULFILLMENT_CHANNEL, 
+		SALES_CHANNEL, 
+		ORDER_CHANNEL, 
+		SHIPMENT_SERVICE_LEVEL_CATEGORY, 
+		SHIP_SERVICE_LEVEL, 
+		BUYER_NAME, 
+		BUYER_EMAIL, 
+		SHIPPER_NAME, 
+		ADDRESS_LINE1, 
+		ADDRESS_LINE2, 
+		ADDRESS_LINE3, 
+		CITY, 
+		COUNTRY, 
+		DISTRICT, 
+		STATE_OR_REGION, 
+		POSTAL_CODE, 
+		COUNTRY_CODE, 
+		PHONE, 
+		CURRENCY_CODE, 
+		AMOUNT, 
+		SHIPPED_NUM, 
+		UNSHIPPED_NUM
+		)
+		VALUES
+		('{@#OrderId#}', 
+		'{@#OrderNumber#}', 
+		'{@#PurchaseDate#}', 
+		'{@#LastUpdateDate#}', 
+		'{@#OrderStatus#}', 
+		'{@#FulfillmentChannel#}', 
+		'{@#SalesChannel#}', 
+		'{@#OrderChannel#}', 
+		'{@#ShipmentServiceLevelCategory#}', 
+		'{@#ShipServiceLevel#}', 
+		'{@#BuyerName#}', 
+		'{@#BuyerEmail#}', 
+		'{@#ShipperName#}', 
+		'{@#AddressLine1#}', 
+		'{@#AddressLine2#}', 
+		'{@#AddressLine3#}', 
+		'{@#City#}', 
+		'{@#Country#}', 
+		'{@#District#}', 
+		'{@#StateOrRegion#}', 
+		'{@#PostalCode#}', 
+		'{@#CountryCode#}', 
+		'{@#Phone#}', 
+		'{@#CurrencyCode#}', 
+		'{@#Amount#}', 
+		'{@#ShippedNum#}', 
+		'{@#UnshippedNum#}'
+		)
+	</entry>
+	
+	<entry key="sql_sc_order_update">
+		UPDATE sc_order 
+			SET 
+			PURCHASE_DATE = '{@#PurchaseDate#}' , 
+			LAST_UPDATE_DATE = '{@#LastUpdateDate#}' , 
+			ORDER_STATUS = '{@#OrderStatus#}' , 
+			FULFILLMENT_CHANNEL = '{@#FulfillmentChannel#}' , 
+			SALES_CHANNEL = '{@#SalesChannel#}' , 
+			ORDER_CHANNEL = '{@#OrderChannel#}' , 
+			SHIPMENT_SERVICE_LEVEL_CATEGORY = '{@#ShipmentServiceLevelCategory#}' , 
+			SHIP_SERVICE_LEVEL = '{@#ShipServiceLevel#}' , 
+			BUYER_NAME = '{@#BuyerName#}' , 
+			BUYER_EMAIL = '{@#BuyerEmail#}' , 
+			SHIPPER_NAME = '{@#ShipperName#}' , 
+			ADDRESS_LINE1 = '{@#AddressLine1#}' , 
+			ADDRESS_LINE2 = '{@#AddressLine2#}' , 
+			ADDRESS_LINE3 = '{@#AddressLine3#}' , 
+			CITY = '{@#City#}' , 
+			COUNTRY = '{@#Country#}' , 
+			DISTRICT = '{@#District#}' , 
+			STATE_OR_REGION = '{@#StateOrRegion#}' , 
+			POSTAL_CODE = '{@#PostalCode#}' , 
+			COUNTRY_CODE = '{@#CountryCode#}' , 
+			PHONE = '{@#Phone#}' , 
+			CURRENCY_CODE = '{@#CurrencyCode#}' , 
+			AMOUNT = '{@#Amount#}' , 
+			SHIPPED_NUM = '{@#ShippedNum#}' , 
+			UNSHIPPED_NUM = '{@#UnshippedNum#}'
+			WHERE
+			ORDER_ID = '{@#OrderId#}'
+	</entry>
+	
+	<entry key="sql_sc_order_item_insert">
+		INSERT INTO  sc_order_item 
+		(Order_Item_Id, 
+		Order_ID, 
+		ASIN, 
+		Seller_SKU, 
+		Title, 
+		Quantity_Ordered, 
+		Quantity_Shipped, 
+		Gift_Message_Text, 
+		Item_Price_Currency_Code, 
+		Item_Price_Amount, 
+		Shipping_Price_Currency_Code, 
+		Shipping_Price_Amount, 
+		Gift_Wrap_Price_Currency_Code, 
+		Gift_Wrap_Price_Amount, 
+		Item_Tax_Currency_Code, 
+		Item_Tax_Amount, 
+		Shipping_Tax_Currency_Code, 
+		Shipping_Tax_Amount, 
+		Gift_Wrap_Tax_Currency_Code, 
+		Gift_Wrap_Tax_Amount, 
+		Shipping_Discount_Currency_Code, 
+		Shipping_Discount_Amount, 
+		Promotion_Discount_Currency_Code, 
+		Promotion_Discount_Amount
+		)
+		VALUES
+		('{@#OrderItemId#}', 
+		'{@#OrderId#}', 
+		'{@#Asin#}', 
+		'{@#SellerSku#}', 
+		'{@#Title#}', 
+		'{@#QuantityOrdered#}', 
+		'{@#QuantityShipped#}', 
+		'{@#GiftMessageText#}', 
+		'{@#ItemPriceCurrencyCode#}', 
+		'{@#ItemPriceAmount#}', 
+		'{@#ShippingPriceCurrency_Code#}', 
+		'{@#ShippingPriceAmount#}', 
+		'{@#GiftWrapPriceCurrencyCode#}', 
+		'{@#GiftWrapPriceAmount#}', 
+		'{@#ItemTaxCurrencyCode#}', 
+		'{@#ItemTaxAmount#}', 
+		'{@#ShippingTaxCurrencyCode#}', 
+		'{@#ShippingTaxAmount#}', 
+		'{@#GiftWrapTaxCurrencyCode#}', 
+		'{@#GiftWrapTaxAmount#}', 
+		'{@#ShippingDiscountCurrencyCode#}', 
+		'{@#ShippingDiscountAmount#}', 
+		'{@#PromotionDiscountCurrency_Code#}', 
+		'{@#PromotionDiscountAmount#}'
+		)
+	</entry>
+	
+	<entry key="sql_sc_order_item_update">
+		
+		UPDATE sc_order_item 
+			SET
+			ASIN = '{@#Asin#}' , 
+			Seller_SKU = '{@#SellerSku#}' , 
+			Title = '{@#Title#}' , 
+			Quantity_Ordered = '{@#QuantityOrdered#}' , 
+			Quantity_Shipped = '{@#QuantityShipped#}' , 
+			Gift_Message_Text = '{@#GiftMessageText#}' , 
+			Item_Price_Currency_Code = '{@#ItemPriceCurrencyCode#}' , 
+			Item_Price_Amount = '{@#ItemPriceAmount#}' , 
+			Shipping_Price_Currency_Code = '{@#ShippingPriceCurrencyCode#}' , 
+			Shipping_Price_Amount = '{@#ShippingPriceAmount#}' , 
+			Gift_Wrap_Price_Currency_Code = '{@#GiftWrapPriceCurrencyCode#}' , 
+			Gift_Wrap_Price_Amount = '{@#GiftWrapPriceAmount#}' , 
+			Item_Tax_Currency_Code = '{@#ItemTaxCurrencyCode#}' , 
+			Item_Tax_Amount = '{@#ItemTaxAmount#}' , 
+			Shipping_Tax_Currency_Code = '{@#ShippingTaxCurrencyCode#}' , 
+			Shipping_Tax_Amount = '{@#ShippingTaxAmount#}' , 
+			Gift_Wrap_Tax_Currency_Code = '{@#GiftWrapTaxCurrencyCode#}' , 
+			Gift_Wrap_Tax_Amount = '{@#GiftWrapTaxAmount#}' , 
+			Shipping_Discount_Currency_Code = '{@#ShippingDiscountCurrencyCode#}' , 
+			Shipping_Discount_Amount = '{@#ShippingDiscountAmount#}' , 
+			Promotion_Discount_Currency_Code = '{@#PromotionDiscountCurrencyCode#}' , 
+			Promotion_Discount_Amount = '{@#PromotionDiscountAmount#}'
+			
+			WHERE
+			Order_Item_Id = '{@#OrderItemId#}'  AND Order_ID = '{@#OrderId#}' 
+	</entry>
+	
+	
+	<entry key="sql_sc_order_list">
+	    SELECT so.* ,
+			 (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS 
+		  FROM sc_order so
+		   WHERE 1=1  
+		    {@ and so.ORDER_STATUS = '#status#'}
+		    {@ and so.fulfillment_channel = '#type#'}
+		    {@ and so.order_id = '#orderId#'}
+	</entry>
+	
+	<entry key="sql_sc_order_item_list">
+	    SELECT soi.* ,
+	    			s4.*
+		  FROM sc_order_item soi
+				 LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+		   WHERE 1=1 
+		    {@ and soi.order_id = '#orderId#'}
+	</entry>
+	
+	<entry key="sql_sc_order_list_one">
+    <![CDATA[
+		  select  so.*,
+		      (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS 
+		   from sc_order so 
+		   where so.ORDER_STATUS = '{@#status#}'
+		  and so.fulfillment_channel = 'MFN'
+		  and so.unshipped_num <=1
+	]]>
+	</entry>
+	
+	<entry key="sql_sc_order_list_many">
+    <![CDATA[
+		 select  so.*,
+		      (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS 
+		   from sc_order so where 
+		   so.ORDER_STATUS = '{@#status#}'
+		   and so.fulfillment_channel = 'MFN'
+		  and so.unshipped_num > 1
+	]]>
+	</entry>
+	
+	<entry key="sql_sc_order_list_unshipped">
+	<![CDATA[
+		  select so.* ,
+			   (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+		                    	FROM sc_order_item soi
+		                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+					 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+					WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+				 ) AS ORDER_PRODUCTS,
+				 (SELECT SUM( s4.length*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				AND (soi.Quantity_Ordered - soi.Quantity_Shipped) <= 1				
+				GROUP BY soi.order_id	 
+			 ) AS REAL_LENGTH,
+	          (SELECT SUM( s4.width*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				AND (soi.Quantity_Ordered - soi.Quantity_Shipped) <= 1
+				GROUP BY soi.order_id	 
+			 ) AS REAL_WIDTH,
+	          (SELECT SUM( s4.height*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				AND (soi.Quantity_Ordered - soi.Quantity_Shipped) <= 1
+				GROUP BY soi.order_id	 
+			 ) AS REAL_HEIGHT,
+		  (SELECT SUM( s4.weight*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				GROUP BY soi.order_id	 
+			 ) AS REAL_WEIGHT
+		  from 
+		  sc_amazon_order_status saos ,
+		  sc_order so 
+		  where 
+		  	so.ORDER_STATUS in ('Unshipped','PartiallyShipped')
+		   and saos.order_id = so.order_id
+		   and so.fulfillment_channel = 'MFN'
+		   {@ and saos.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
+		   {@ and saos.audit_status = '#status#'}
+	]]>
+	</entry>
+	
+	<entry key="sql_sc_order_list_unshipped_one">
+    <![CDATA[
+		  select so.*,
+		  (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+				 (SELECT SUM( s4.length*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				AND (soi.Quantity_Ordered - soi.Quantity_Shipped) <= 1				
+				GROUP BY soi.order_id	 
+			 ) AS REAL_LENGTH,
+	          (SELECT SUM( s4.width*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				AND (soi.Quantity_Ordered - soi.Quantity_Shipped) <= 1
+				GROUP BY soi.order_id	 
+			 ) AS REAL_WIDTH,
+	          (SELECT SUM( s4.height*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				AND (soi.Quantity_Ordered - soi.Quantity_Shipped) <= 1
+				GROUP BY soi.order_id	 
+			 ) AS REAL_HEIGHT,
+		  (SELECT SUM( s4.weight*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				GROUP BY soi.order_id	 
+			 ) AS REAL_WEIGHT
+		   from sc_order so where so.ORDER_STATUS  in ('Unshipped','PartiallyShipped')
+		  and so.unshipped_num <=1
+		  and so.fulfillment_channel = 'MFN'
+		  and so.order_id not in (
+		  		select order_id from sc_amazon_order_status
+		  )
+	]]>
+	</entry>
+	
+	<entry key="sql_sc_order_list_unshipped_many">
+    <![CDATA[
+		  select so.*, 
+		    (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+		  (SELECT SUM( s4.weight*( soi.Quantity_Ordered - soi.Quantity_Shipped) )
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id 
+				GROUP BY soi.order_id	 
+			 ) AS REAL_WEIGHT
+		  from sc_order so where so.ORDER_STATUS  in ('Unshipped','PartiallyShipped')
+		  and  so.unshipped_num > 1
+		  and so.fulfillment_channel = 'MFN'
+		  and  so.order_id not in (
+		  		select order_id from sc_amazon_order_status
+		  )
+	]]>
+	</entry>
+	
+	<entry key="sql_sc_order_list_picked">
+	<![CDATA[
+		  select so.* , 
+		    (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+			  (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id and so.order_id and soi.rma_reship is not null group by soi.order_id)
+			   as RMA_RESHIP
+		  from sc_order so , 
+		  sc_amazon_order_status saos 
+		  where 
+		   saos.order_id = so.order_id
+		   and so.fulfillment_channel = 'MFN'
+		   and ( 
+		   	(  saos.RMA_STATUS = 1 and  saos.RMA_VALUE = 10 
+		   		and exists (
+			   			select 1 from sc_order_item soi where 
+			   			soi.order_id = so.order_id and
+			   			soi.rma_reship is not null and soi.rma_reship >=1
+			   		))
+		   	or ( saos.RMA_STATUS is null || saos.RMA_STATUS = 0 
+		   		|| saos.RMA_STATUS = ''
+		   	 )
+		   )
+		   {@ and so.order_id = '#orderId#'}
+		  {@ and so.buyer_name = '#userName#'}
+		  {@ and so.buyer_email = '#email#'}
+		  {@ and so.order_number = '#orderNumber#'}
+		  {@ and so.account_id = '#accountId#'}
+		  {@ and saos.pick_status =  '#pickStatus#' }
+		  {@ and exists ( 
+		  		select 1 from sc_amazon_picked_order where
+		  		 picked_id = '#pickId#'
+		  		 and sc_amazon_picked_order.order_id = so.order_id
+		  )}
+		  order by so.ORDER_NUMBER 
+	]]>
+	</entry>
+	
+	
+	
+    <entry key="sql_sc_order_list_picked_forselect">
+    <![CDATA[
+       select so.* , 
+		    (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+			 (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id and so.order_id and soi.rma_reship is not null group by soi.order_id)
+			   as RMA_RESHIP
+		  from sc_order so , sc_amazon_order_status saos 
+		  where 
+		   saos.order_id = so.order_id
+		   and so.fulfillment_channel = 'MFN'
+		   {@ and saos.pick_status not in ('9','10','11','12') and '#status#' = '#status#'}
+			   {@ and saos.audit_status = '#status#'}
+			   {@ and saos.rma_status = 1 
+			   		and saos.pick_status not in ('9','10','11','12')
+			   		and '#rmaValue#' = '#rmaValue#'
+			   		and exists (
+			   			select 1 from sc_order_item soi where 
+			   			soi.order_id = so.order_id and
+			   			soi.rma_reship is not null and soi.rma_reship >=1
+			   		)
+			   }
+			  {@ and ( saos.rma_status is null or saos.rma_status  != 1 ) and '#unRmaValue#' = '#unRmaValue#'}
+			  {@ and so.order_id = '#orderId#'}
+			  {@ and so.buyer_name = '#userName#'}
+			  {@ and so.buyer_email = '#email#'}
+			  {@ and so.order_number = '#orderNumber#'}
+		   	  {@ and so.account_id = '#accountId#'}
+			  {@ and saos.pick_status in ('9','10','11','12') and   '#pickStatus#'  = '#pickStatus#' }
+			  {@ and exists ( 
+			  		select 1 from sc_amazon_picked_order where
+			  		 picked_id = '#pickId#'
+			  		 and sc_amazon_picked_order.order_id = so.order_id
+			  )}  order by so.order_number,saos.PICK_STATUS desc
+		 ]]>
+    </entry>
+    
+    <entry key="sql_sc_order_list_picked_forselect.many">
+    <![CDATA[
+    	select so.* , 
+		    (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+			  (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id and so.order_id and soi.rma_reship is not null group by soi.order_id)
+			   as RMA_RESHIP
+		  from sc_order so , sc_amazon_order_status saos 
+		  where 
+		   saos.order_id = so.order_id
+		   and so.fulfillment_channel = 'MFN'
+		  and saos.pick_status not in ('9','10','11','12')  
+			    and saos.audit_status in ('5','6','7')
+			    {@ and ( saos.rma_status  is null or saos.rma_status  != 1 ) and '#unRmaValue#' = '#unRmaValue#'}
+			   {@ and so.order_id = '#orderId#'}
+			   {@ and so.buyer_name = '#userName#'}
+			   {@ and so.buyer_email = '#email#'}
+			   {@ and so.order_number = '#orderNumber#'}
+		   {@ and so.account_id = '#accountId#'}
+			    order by  so.order_number,saos.PICK_STATUS desc
+		 ]]>
+    </entry>
+    
+	
+	<entry key="sql_sc_order_picked_list">
+    <![CDATA[
+    	SELECT * FROM (
+				SELECT sc_amazon_picked.*  , sc_user.name AS USERNAME ,
+			( SELECT COUNT(1) FROM sc_amazon_picked_order WHERE picked_id = sc_amazon_picked.id
+		  		AND order_id IN (SELECT order_id FROM sc_order)
+		 	) AS TOTAL
+		 FROM sc_amazon_picked , sc_user WHERE 
+		 sc_amazon_picked.creator = sc_user.login_id
+		 {@ and sc_amazon_picked.account_id = '#accountId#'}
+			ORDER BY sc_amazon_picked.id DESC
+		) t
+	 ]]>
+    </entry>
+    
+    <entry key="sql_sc_order_list_picked_export">
+    <![CDATA[
+       SELECT t.SKU ,
+		t.REAL_SKU,
+		       t.IMAGE_URL,
+		       t.POSITION,
+		       t.BARCODE,
+		       t.P_TYPE,
+		       t.NAME,
+		       t.ASIN,
+		       t.MEMO,
+		       t.LOCAL_URL,
+		       SUM( t.QUANTITY_TO_SHIP * t.ITEM_COUNT ) AS QUANTITY,
+		       t.RMA_STATUS,
+			   t.RMA_VALUE,
+		       SUM( RMA_RESHIP * t.ITEM_COUNT ) AS RMA_QUANTITY
+           FROM (
+    
+		SELECT  soi.SELLER_SKU AS SKU ,
+		         ( soi.Quantity_Ordered - soi.Quantity_Shipped) AS QUANTITY_TO_SHIP,
+		        s4.REAL_SKU ,
+		        (CASE WHEN ( s4.REAL_SKU IS NULL OR  s4.REAL_SKU = '')
+		       	   THEN '1' ELSE '2' END ) AS P_TYPE ,
+		        s4.IMAGE_URL ,
+		        s4.POSITION,
+		        s4.BARCODE,
+		        s4.MEMO,
+		        (CASE WHEN ( s4.NAME IS NULL OR  s4.NAME = '') 
+		       	THEN soi.Title ELSE s4.NAME END ) AS NAME,
+		       '' AS ASIN,
+		       '' AS LOCAL_URL,
+		       1 AS ITEM_COUNT,
+		       s1.RMA_STATUS,
+			   s1.RMA_VALUE,
+			  soi.RMA_RESHIP
+		  FROM  sc_amazon_order_status s1
+			,sc_order s2 /*sc_amazon_order*/
+			,sc_order_item soi
+			,sc_real_product_rel s3
+			,sc_real_product s4
+		WHERE 
+		   s1.order_id = s2.order_id 
+		   AND s2.order_id = soi.order_id
+		   AND s1.pick_status = '9'
+		   AND s3.account_id = s2.account_id
+		   AND soi.seller_sku = s3.sku
+		   AND s4.id = s3.real_id
+		   AND s4.real_sku = s3.real_sku
+		   AND s4.type = 'base'
+		   AND EXISTS ( 
+		  		SELECT 1 FROM sc_amazon_picked_order WHERE
+		  		 picked_id = '{@#pickId#}'
+		  		 AND sc_amazon_picked_order.order_id = s2.order_id
+		  )
+		  UNION ALL
+		  SELECT  soi.SELLER_SKU AS SKU ,
+		          ( soi.Quantity_Ordered - soi.Quantity_Shipped) AS QUANTITY_TO_SHIP,
+		       s6.REAL_SKU ,
+		       (CASE WHEN ( s6.REAL_SKU IS NULL OR  s6.REAL_SKU = '')
+		       	 THEN '1' ELSE '2' END ) AS P_TYPE ,
+		       s6.IMAGE_URL ,
+		       s6.POSITION,
+		       s6.BARCODE,
+		       s6.MEMO,
+		        (CASE WHEN ( s6.NAME IS NULL OR  s6.NAME = '') 
+		       	THEN soi.Title ELSE s6.NAME END ) AS NAME,
+		       '' AS ASIN,
+		       '' AS LOCAL_URL,
+		       s5.QUANTITY AS ITEM_COUNT,
+		       s1.RMA_STATUS,
+			   s1.RMA_VALUE,
+			  soi.RMA_RESHIP 
+		  FROM  sc_amazon_order_status s1
+			,sc_order s2 /*sc_amazon_order*/
+			,sc_order_item soi
+			,sc_real_product_rel s3
+			,sc_real_product s4
+			,sc_real_product_composition s5
+			,sc_real_product s6
+		WHERE 
+		   s1.order_id = s2.order_id 
+		   AND s2.order_id = soi.order_id
+		   AND s1.pick_status = '9'
+		   AND s3.account_id = s2.account_id
+		   AND soi.seller_sku = s3.sku
+		   AND s4.id = s3.real_id
+		   AND s4.real_sku = s3.real_sku
+		   AND s4.type = 'package'
+		   AND s5.composition_id = s4.id
+		   AND s5.ref_id = s6.id
+		   AND s5.ref_sku = s6.real_sku
+		   AND EXISTS ( 
+		  		SELECT 1 FROM sc_amazon_picked_order WHERE
+		  		 picked_id =  '{@#pickId#}'
+		  		 AND sc_amazon_picked_order.order_id = s2.order_id
+		  )
+            ) t GROUP BY t.REAL_SKU
+		 ]]>
+    </entry>
+	
+	<entry key="sql_sc_order_list_picked_print">
+    <![CDATA[
+         SELECT t.SKU ,
+		t.REAL_SKU,
+		       t.IMAGE_URL,
+		       t.POSITION,
+		       t.BARCODE,
+		       t.P_TYPE,
+		       t.NAME,
+		       t.ASIN,
+		       t.MEMO,
+		       t.LOCAL_URL,
+		       SUM( t.QUANTITY_TO_SHIP * t.ITEM_COUNT ) AS QUANTITY,
+		       t.RMA_STATUS,
+			   t.RMA_VALUE,
+		       SUM( RMA_RESHIP * t.ITEM_COUNT ) AS RMA_QUANTITY
+           FROM (
+    
+		SELECT  soi.SELLER_SKU AS SKU ,
+		         ( soi.Quantity_Ordered - soi.Quantity_Shipped) AS QUANTITY_TO_SHIP,
+		        s4.REAL_SKU ,
+		        (CASE WHEN ( s4.REAL_SKU IS NULL OR  s4.REAL_SKU = '')
+		       	   THEN '1' ELSE '2' END ) AS P_TYPE ,
+		        s4.IMAGE_URL ,
+		        s4.POSITION,
+		        s4.BARCODE,
+		        s4.MEMO,
+		        (CASE WHEN ( s4.NAME IS NULL OR  s4.NAME = '') 
+		       	THEN soi.Title ELSE s4.NAME END ) AS NAME,
+		       '' AS ASIN,
+		       '' AS LOCAL_URL,
+		       1 AS ITEM_COUNT,
+		       s1.RMA_STATUS,
+			   s1.RMA_VALUE,
+			  soi.RMA_RESHIP 
+		  FROM  sc_amazon_order_status s1
+			,sc_order s2 /*sc_amazon_order*/
+			,sc_order_item soi
+			,sc_real_product_rel s3
+			,sc_real_product s4
+		WHERE 
+		   s1.order_id = s2.order_id 
+		   AND s2.order_id = soi.order_id
+		   AND s1.pick_status = '9'
+		   AND s3.account_id = s2.account_id
+		   AND soi.seller_sku = s3.sku
+		   AND s4.id = s3.real_id
+		   AND s4.real_sku = s3.real_sku
+		   AND s4.type = 'base'
+		   AND EXISTS ( 
+		  		SELECT 1 FROM sc_amazon_picked_order WHERE
+		  		 picked_id = '{@#pickId#}'
+		  		 AND sc_amazon_picked_order.order_id = s2.order_id
+		  )
+		  UNION ALL
+		  SELECT  soi.SELLER_SKU AS SKU ,
+		          ( soi.Quantity_Ordered - soi.Quantity_Shipped) AS QUANTITY_TO_SHIP,
+		       s6.REAL_SKU ,
+		       (CASE WHEN ( s6.REAL_SKU IS NULL OR  s6.REAL_SKU = '')
+		       	 THEN '1' ELSE '2' END ) AS P_TYPE ,
+		       s6.IMAGE_URL ,
+		       s6.POSITION,
+		       s6.BARCODE,
+		       s6.MEMO,
+		        (CASE WHEN ( s6.NAME IS NULL OR  s6.NAME = '') 
+		       	THEN soi.Title ELSE s6.NAME END ) AS NAME,
+		       '' AS ASIN,
+		       '' AS LOCAL_URL,
+		       s5.QUANTITY AS ITEM_COUNT,
+		       s1.RMA_STATUS,
+			   s1.RMA_VALUE,
+			  soi.RMA_RESHIP 
+		  FROM  sc_amazon_order_status s1
+			,sc_order s2 /*sc_amazon_order*/
+			,sc_order_item soi
+			,sc_real_product_rel s3
+			,sc_real_product s4
+			,sc_real_product_composition s5
+			,sc_real_product s6
+		WHERE 
+		   s1.order_id = s2.order_id 
+		   AND s2.order_id = soi.order_id
+		   AND s1.pick_status = '9'
+		   AND s3.account_id = s2.account_id
+		   AND soi.seller_sku = s3.sku
+		   AND s4.id = s3.real_id
+		   AND s4.real_sku = s3.real_sku
+		   AND s4.type = 'package'
+		   AND s5.composition_id = s4.id
+		   AND s5.ref_id = s6.id
+		   AND s5.ref_sku = s6.real_sku
+		   AND EXISTS ( 
+		  		SELECT 1 FROM sc_amazon_picked_order WHERE
+		  		 picked_id =  '{@#pickId#}'
+		  		 AND sc_amazon_picked_order.order_id = s2.order_id
+		  )
+            ) t GROUP BY t.REAL_SKU
+		 ]]>
+    </entry>
+	
+	
+	<entry key="sql_sc_order_list_repicked_print">
+    <![CDATA[
+    SELECT t.* FROM ( 
+    
+		  SELECT 
+		       t.ORDER_ID,
+		       t.ORDER_ITEM_ID,
+		       t.ORDER_NUMBER,
+		       t.SKU ,
+		       t.REAL_SKU,
+		       t.IMAGE_URL,
+		       t.POSITION,
+		       t.P_TYPE,
+		       t.BARCODE,
+		       t.MEMO,
+		       t.NAME,
+		       t.ASIN,
+		       t.LOCAL_URL,
+		       t.QUANTITY_TO_SHIP QUANTITY,
+		       t.RMA_STATUS,
+			   t.RMA_VALUE,
+			   t.RMA_RESHIP
+           FROM (
+           
+				SELECT
+				        s2.ORDER_ID,
+			            soi.ORDER_ITEM_ID,
+		                soi.SELLER_SKU as SKU ,
+		               ( soi.Quantity_Ordered - soi.Quantity_Shipped) AS QUANTITY_TO_SHIP,
+		                s2.ORDER_NUMBER,
+				        s4.REAL_SKU ,
+				        (CASE WHEN ( s4.REAL_SKU IS NULL OR  s4.REAL_SKU = '')
+				       	   THEN '1' ELSE '2' END ) AS P_TYPE ,
+				        s4.IMAGE_URL ,
+				        s4.POSITION,
+				        s4.BARCODE,
+				        s4.MEMO,
+				        (CASE WHEN ( s4.NAME IS NULL OR  s4.NAME = '') 
+				       	THEN soi.TITLE ELSE s4.NAME END ) AS NAME,
+				       '' AS ASIN,
+				       '' AS LOCAL_URL,
+				       1 AS ITEM_COUNT,
+				       s1.RMA_STATUS,
+				       s1.RMA_VALUE,
+				       soi.RMA_RESHIP
+				  FROM  sc_amazon_order_status s1
+					,sc_order s2
+					,sc_order_item soi
+					,sc_real_product_rel s3
+					,sc_real_product s4
+				WHERE 
+				   s1.order_id = s2.order_id 
+				   AND s2.order_id = soi.order_id
+				   AND s1.pick_status = '9'
+				   and s3.account_id = s2.account_id
+				   AND soi.seller_sku = s3.sku
+				   AND s4.id = s3.real_id
+				   AND s4.real_sku = s3.real_sku
+				   AND s4.type = 'base'
+				   AND s2.order_number = '{@#orderNumber#}'
+				  UNION ALL
+				  SELECT s2.ORDER_ID,
+			            soi.ORDER_ITEM_ID,
+		                soi.SELLER_SKU as SKU ,
+		                (   ( soi.Quantity_Ordered - soi.Quantity_Shipped) *s5.QUANTITY) AS QUANTITY_TO_SHIP,
+		                s2.ORDER_NUMBER,
+				       s6.REAL_SKU ,
+				       (CASE WHEN ( s6.REAL_SKU IS NULL OR  s6.REAL_SKU = '')
+				       	 THEN '1' ELSE '2' END ) AS P_TYPE ,
+				       s6.IMAGE_URL ,
+				       s6.POSITION,
+				       s6.BARCODE,
+				       s6.MEMO,
+				        (CASE WHEN ( s6.NAME IS NULL OR  s6.NAME = '') 
+				       	THEN soi.TITLE ELSE s6.NAME END ) AS NAME,
+				       '' AS ASIN,
+				       '' AS LOCAL_URL,
+				       s5.QUANTITY AS ITEM_COUNT,
+				       s1.RMA_STATUS,
+				       s1.RMA_VALUE,
+				       (soi.RMA_RESHIP*s5.QUANTITY) AS RMA_RESHIP
+				  FROM  sc_amazon_order_status s1
+					,sc_order s2
+					,sc_order_item soi
+					,sc_real_product_rel s3
+					,sc_real_product s4
+					,sc_real_product_composition s5
+					,sc_real_product s6
+				WHERE 
+				   s1.order_id = s2.order_id 
+				   AND s2.order_id = soi.order_id
+				   AND s1.pick_status = '9'
+				   and s3.account_id = s2.account_id
+				   AND soi.seller_sku = s3.sku
+				   AND s4.id = s3.real_id
+				   AND s4.real_sku = s3.real_sku
+				   AND s4.type = 'package'
+				   AND s5.composition_id = s4.id
+				   AND s5.ref_id = s6.id
+				   AND s5.ref_sku = s6.real_sku
+				   AND s2.order_number = '{@#orderNumber#}'
+  
+            ) t ORDER BY t.real_sku
+		 
+     ) t  LIMIT 0,1000
+		 ]]>
+    </entry>
+    
+    
+     <entry key="sql_sc_order_list_repicked_outwarehouse">
+    <![CDATA[
+    	SELECT 
+		       t.ORDER_ID,
+		       t.ORDER_ITEM_ID,
+		       t.SKU ,
+		       t.REAL_SKU,
+		       t.IMAGE_URL,
+		       t.POSITION,
+		       t.P_TYPE,
+		       t.BARCODE,
+		       t.NAME,
+		       t.ASIN,
+		       t.LOCAL_URL,
+		       t.QUANTITY_TO_SHIP AS QUANTITY
+           FROM (
+			SELECT 
+		       so.ORDER_ID,
+			   soi.ORDER_ITEM_ID,
+		       soi.SELLER_SKU as SKU ,
+		       ( soi.Quantity_Ordered - soi.Quantity_Shipped) AS QUANTITY_TO_SHIP,
+		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
+		       	 THEN soi.SELLER_SKU ELSE sc_real_product.REAL_SKU END ) AS REAL_SKU,
+		       (CASE WHEN ( sc_real_product.REAL_SKU IS NULL OR  sc_real_product.REAL_SKU = '')
+		       	 THEN '1' ELSE '2' END ) AS P_TYPE,
+		       (CASE WHEN ( sc_real_product.IMAGE_URL IS NULL OR  sc_real_product.IMAGE_URL = '') 
+		       	THEN sc_amazon_account_product.LOCAL_URL ELSE sc_real_product.IMAGE_URL END ) AS IMAGE_URL,
+		       sc_real_product.POSITION,
+		       sc_real_product.BARCODE,
+		        (CASE WHEN ( sc_real_product.NAME IS NULL OR  sc_real_product.NAME = '') 
+		       	THEN soi.TITLE ELSE sc_real_product.NAME END ) AS NAME,
+		       sc_amazon_account_product.ASIN,
+		       sc_amazon_account_product.LOCAL_URL
+		  FROM  
+		  sc_amazon_order_status saos ,
+		  sc_order so,
+		  sc_order_item soi
+		  LEFT JOIN sc_amazon_account_product 
+		  ON sc_amazon_account_product.sku = soi.seller_sku
+		  LEFT JOIN sc_real_product_rel
+		  ON soi.seller_sku = sc_real_product_rel.sku
+		  and so.account_id = sc_real_product_rel.account_id
+		  LEFT JOIN sc_real_product
+		  ON sc_real_product.real_sku = sc_real_product_rel.real_sku
+		WHERE saos.order_id = so.order_id AND
+		   so.order_id = soi.order_id and
+		   saos.order_item_id = soi.order_item_id 
+		   AND saos.pick_status = '12'
+		   AND so.order_id = '{@#orderId#}'
+            ) t order by t.real_sku
+    ]]>
+    </entry>
+    
+    <entry key="sql_sc_order_doneList">
+   		select so.* ,
+   		 (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+   			saos.ID,
+			saos.AUDIT_STATUS, 
+			saos.AUDIT_MEMO, 
+			saos.REAUDIT_STATUS, 
+			saos.REAUDIT_MEMO, 
+			saos.PICK_STATUS,
+			sc_amazon_account_product.ASIN,
+			sc_amazon_account_product.LOCAL_URL,
+			 (  SELECT COUNT(s1.order_id) c FROM sc_amazon_order s1 
+			   	  WHERE s1.order_id = so.order_id
+			   	  GROUP BY s1.order_id
+			   	  ) AS C,
+			   	  (SELECT 2 FROM sc_real_product s1,sc_real_product_rel s2
+				WHERE s1.type = 'package'
+				    AND s1.id = s2.real_id
+				    AND s2.sku = soi.seller_sku
+				    AND s2.account_id = so.account_id )
+				    as IS_PACKAGE
+		  from  sc_amazon_order_status saos ,
+		  			sc_order so
+		  left join  sc_order_item soi
+		  on soi.order_id = so.order_id
+		  left join sc_amazon_account_product 
+		  on sc_amazon_account_product.sku = soi.seller_sku
+		where saos.order_id = so.order_id
+		   and saos.pick_status = '10'
+		   {@ and saos.audit_status = '#status#'}
+		   {@ and saos.rma_status = '#rmaStatus#'}
+		   {@ and so.order_id = '#orderId#'}
+		   {@ and so.buyer_name = '#userName#'}
+		   {@ and so.buyer_email = '#email#'}
+		   {@ and soi.seller_sku = '#sku#'}
+		   {@ and so.order_number = '#orderNumber#'}
+		   {@ and so.service_status = '#serviceStatus#'}
+		   order by so.order_number
+   </entry>
+    
+    
+    
+    
+    
+    
+	
+	
+	
    <!--已完成订单-->
    <entry key="nsql_order_doneList">
    		select sc_amazon_order.* ,sc_amazon_order_status.ID,

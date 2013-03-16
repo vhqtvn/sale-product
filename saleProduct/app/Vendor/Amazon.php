@@ -38,6 +38,139 @@ class Amazon {
 		$this->APPLICATION_ID       = $APPLICATION_ID;
 	}
 	
+	public function getFeedReport1($accountId ,$reportType){
+		$config = array (
+				'ServiceURL' =>  "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
+		
+		$service = new MarketplaceWebService_Client(
+				$this->AWS_ACCESS_KEY_ID,
+				$this->AWS_SECRET_ACCESS_KEY,
+				$config,
+				$this->APPLICATION_NAME,
+				$this->APPLICATION_VERSION);
+		
+		$marketplaceIdArray = array("Id" => array($this->MARKETPLACE_ID));
+		
+		$parameters = array (
+				'Merchant' => $this->MERCHANT_ID,
+				'MarketplaceIdList' => $marketplaceIdArray,
+				'ReportType' => $reportType,
+				'ReportOptions' => 'ShowSalesChannel=true'
+		);
+		
+		$request = new MarketplaceWebService_Model_RequestReportRequest($parameters);
+		
+		$return = null ;
+		
+		try {
+			$response = $service->requestReport($request);
+		
+			if ($response->isSetRequestReportResult()) {
+				$requestReportResult = $response->getRequestReportResult();
+		
+				if ($requestReportResult->isSetReportRequestInfo()) {
+					$reportRequestInfo = $requestReportResult->getReportRequestInfo();
+					$reportRequestId = "" ;
+					$reportType = "" ;
+					if ($reportRequestInfo->isSetReportRequestId()) {
+						$reportRequestId =  $reportRequestInfo->getReportRequestId() ;
+					}
+					if ($reportRequestInfo->isSetReportType()) {
+						$reportType =  $reportRequestInfo->getReportType() ;
+					}
+		
+					if( $reportRequestId != "" ){
+						$return = array('reportRequestId'=>$reportRequestId,'reportType'=>$reportType) ;
+					}
+				}
+			}
+		} catch (MarketplaceWebService_Exception $ex) {
+		}
+		
+		return $return ;
+		
+	}
+	
+	public function getFeedReport2($accountId ,$reportType,$reportRequestId){
+		$config = array (
+				'ServiceURL' =>  "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
+		
+		$service = new MarketplaceWebService_Client(
+				$this->AWS_ACCESS_KEY_ID,
+				$this->AWS_SECRET_ACCESS_KEY,
+				$config,
+				$this->APPLICATION_NAME,
+				$this->APPLICATION_VERSION);
+		
+		$ReportRequestIdList = array("Id" => array($reportRequestId));
+		
+		$parameters = array (
+				'Merchant' => $this->MERCHANT_ID,
+				'ReportRequestIdList' => $ReportRequestIdList,
+				'Acknowledged' => false,
+		);
+		
+		$request = new MarketplaceWebService_Model_GetReportListRequest($parameters);
+		
+		$return = null ;
+		
+		try {
+			$response = $service->getReportList($request);
+		
+			if ($response->isSetGetReportListResult()) {
+				$getReportListResult = $response->getGetReportListResult();
+				$reportInfoList = $getReportListResult->getReportInfoList();
+				foreach ($reportInfoList as $reportInfo) {
+					if ($reportInfo->isSetReportId()){
+						$reportId = $reportInfo->getReportId() ;
+						$return = array("reportId"=>$reportId,'reportType'=>$reportType) ;
+					}
+				}
+			}
+		} catch (MarketplaceWebService_Exception $ex) {
+		}
+		
+		return $return ;
+	}
+	
+	public function getFeedReport3($accountId ,$reportType,$reportId){
+		$config = array (
+				'ServiceURL' => "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
+		
+		$service = new MarketplaceWebService_Client(
+				$this->AWS_ACCESS_KEY_ID,
+				$this->AWS_SECRET_ACCESS_KEY,
+				$config,
+				$this->APPLICATION_NAME,
+				$this->APPLICATION_VERSION);
+		
+		$parameters = array (
+				'Merchant' => $this->MERCHANT_ID,
+				'Report' => @fopen('php://memory', 'rw+'),
+				'ReportId' => $reportId //"7383292363"//$reportId,
+		);
+		$request = new MarketplaceWebService_Model_GetReportRequest($parameters);
+		
+		try {
+			$response = $service->getFeedReport($request,$accountId,$reportType);
+		} catch (MarketplaceWebService_Exception $ex) {
+		}
+	}
+	
+	
+	
 		/**
 	 * step1
 	 * 发送report请求,获取产品信息

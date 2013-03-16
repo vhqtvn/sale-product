@@ -19,7 +19,7 @@
 /**
  *  @see MarketplaceWebServiceOrders_Model
  */
-require_once ('MarketplaceWebServiceOrders/Model.php');  
+require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model.php');  
 
     
 
@@ -69,6 +69,7 @@ class MarketplaceWebServiceOrders_Model_ListOrdersResponse extends MarketplaceWe
      */
     public static function fromXML($xml)
     {
+    	
         $dom = new DOMDocument();
         $dom->loadXML($xml);
         $xpath = new DOMXPath($dom);

@@ -63,7 +63,7 @@ class OrderService extends AppModel {
 		$type = $params['type'] ;
 		$value = $params['value'] ;
 		$orderId = $params['orderId'] ;
-		$sql = "update sc_amazon_order set $type = '$value' where order_id = '$orderId'" ;
+		$sql = "update sc_order set $type = '$value' where order_id = '$orderId'" ;
 		return $this->query($sql) ;
 	}
 	
@@ -174,7 +174,7 @@ class OrderService extends AppModel {
 		foreach( $orders as $order ){
 			$item = explode("|",$order) ;
 			$orderId = $item[0] ;
-			$orderItemId = $item[1] ;
+			$orderItemId = '' ;//$item[1] ;
 			
 			$sql = $this->getDbSql("sql_order_status_delete") ;
 			$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'AUDIT_STATUS'=>$status,"AUDIT_MEMO"=>$memo)) ;
@@ -229,10 +229,10 @@ class OrderService extends AppModel {
 		$memo = "[$type]$memo" ;
 		
 		if( $orderId  == null ){
-			$sql = "select * from sc_amazon_order where order_number = '$orderNumber' limit 0,1 " ;
+			$sql = "select * from sc_order where order_number = '$orderNumber' limit 0,1 " ;
 			$result = $this->query($sql) ;
 			if( empty($result) ) return false ;
-			$orderId = $result[0]['sc_amazon_order']['ORDER_ID'] ;
+			$orderId = $result[0]['sc_order']['ORDER_ID'] ;
 		}
 		
 		$clause = "" ;
@@ -280,12 +280,10 @@ class OrderService extends AppModel {
 				$sql = "
 				INSERT INTO sc_amazon_picked_order 
 					(ORDER_ID, 
-					ORDER_ITEM_ID, 
 					PICKED_ID
 					)
 					VALUES
 					('$orderId', 
-					'$orderItemId', 
 					'$pickedId'
 					)" ;
 			
@@ -293,19 +291,19 @@ class OrderService extends AppModel {
 				
 				//修改订单状态为拣货中 9
 				$status = 9 ;
-				$sql = "update sc_amazon_order_status set pick_status = '9' where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
+				$sql = "update sc_amazon_order_status set pick_status = '9' where order_id = '$orderId'" ;
 				$this->query($sql) ;
 				
 				$sql = $this->getDbSql("sql_order_track_insert") ;
 				$sql = $this->getSql($sql,array('ORDER_ID'=>$orderId,'ORDER_ITEM_ID'=>$orderItemId,'STATUS'=> $this->pickStatus[$status],"MESSAGE"=>$memo,'ACTOR'=>$loginId)) ;
 				$this->query($sql) ;		
 			}else if( $action == 2 ){//从拣货单删除
-				$sql = "delete from sc_amazon_picked_order where order_id = '$orderId' and ORDER_ITEM_ID='$orderItemId' and picked_id = '$pickedId'" ;
+				$sql = "delete from sc_amazon_picked_order where order_id = '$orderId'  and picked_id = '$pickedId'" ;
 				$this->query($sql) ;
 				
 				//修改订单状态为拣货中 9
 				$status = '' ;
-				$sql = "update sc_amazon_order_status set pick_status = '' where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
+				$sql = "update sc_amazon_order_status set pick_status = '' where order_id = '$orderId' " ;
 				$this->query($sql) ;
 				$memo = "从拣货单中移除" ;
 				$sql = $this->getDbSql("sql_order_track_insert") ;
@@ -314,7 +312,7 @@ class OrderService extends AppModel {
 			}else if( $action == 3){//完成拣货
 				//修改订单状态为拣货中 9
 				$status = 10 ;
-				$sql = "update sc_amazon_order_status set pick_status = '$status' where order_id = '$orderId' and order_item_id = '$orderItemId'" ;
+				$sql = "update sc_amazon_order_status set pick_status = '$status' where order_id = '$orderId'" ;
 				$this->query($sql) ;
 				
 				$sql = $this->getDbSql("sql_order_track_insert") ;

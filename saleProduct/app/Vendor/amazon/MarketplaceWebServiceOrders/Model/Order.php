@@ -18,7 +18,7 @@
 /**
  *  @see MarketplaceWebServiceOrders_Model
  */
-require_once ('MarketplaceWebServiceOrders/Model.php');  
+require_once (VENDOR_PATH.'/amazon/MarketplaceWebServiceOrders/Model.php');  
 
     
 
@@ -69,6 +69,10 @@ class MarketplaceWebServiceOrders_Model_Order extends MarketplaceWebServiceOrder
      * <li>OrderTotal: MarketplaceWebServiceOrders_Model_Money</li>
      * <li>NumberOfItemsShipped: int</li>
      * <li>NumberOfItemsUnshipped: int</li>
+     * 
+     * ShipmentServiceLevelCategory
+     * BuyerName
+     * BuyerEmail
      *
      * </ul>
      */
@@ -88,10 +92,78 @@ class MarketplaceWebServiceOrders_Model_Order extends MarketplaceWebServiceOrder
         'OrderTotal' => array('FieldValue' => null, 'FieldType' => 'MarketplaceWebServiceOrders_Model_Money'),
         'NumberOfItemsShipped' => array('FieldValue' => null, 'FieldType' => 'int'),
         'NumberOfItemsUnshipped' => array('FieldValue' => null, 'FieldType' => 'int'),
+        		'ShipmentServiceLevelCategory' => array('FieldValue' => null, 'FieldType' => 'string'),
+        		'BuyerName' => array('FieldValue' => null, 'FieldType' => 'string'),
+        		'BuyerEmail' => array('FieldValue' => null, 'FieldType' => 'string')
         );
         parent::__construct($data);
     }
+    
+    public function getShipmentServiceLevelCategory()
+    {
+    	return $this->_fields['ShipmentServiceLevelCategory']['FieldValue'];
+    }
 
+    public function setShipmentServiceLevelCategory($value)
+    {
+    	$this->_fields['ShipmentServiceLevelCategory']['FieldValue'] = $value;
+    	return $this;
+    }
+
+    public function withShipmentServiceLevelCategory($value)
+    {
+    	$this->setShipmentServiceLevelCategory($value);
+    	return $this;
+    }
+    
+    public function isSetShipmentServiceLevelCategory()
+    {
+    	return !is_null($this->_fields['ShipmentServiceLevelCategory']['FieldValue']);
+    }
+    
+    public function getBuyerName()
+    {
+    	return $this->_fields['BuyerName']['FieldValue'];
+    }
+    
+    public function setBuyerName($value)
+    {
+    	$this->_fields['BuyerName']['FieldValue'] = $value;
+    	return $this;
+    }
+    
+    public function withBuyerName($value)
+    {
+    	$this->setBuyerName($value);
+    	return $this;
+    }
+    
+    public function isSetBuyerName()
+    {
+    	return !is_null($this->_fields['BuyerName']['FieldValue']);
+    }
+    
+    public function getBuyerEmail()
+    {
+    	return $this->_fields['BuyerEmail']['FieldValue'];
+    }
+    
+    public function setBuyerEmail($value)
+    {
+    	$this->_fields['BuyerEmail']['FieldValue'] = $value;
+    	return $this;
+    }
+    
+    public function withBuyerEmail($value)
+    {
+    	$this->setBuyerEmail($value);
+    	return $this;
+    }
+
+    public function isSetBuyerEmail()
+    {
+    	return !is_null($this->_fields['BuyerEmail']['FieldValue']);
+    }
         /**
      * Gets the value of the AmazonOrderId property.
      * 

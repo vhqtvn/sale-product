@@ -67,8 +67,15 @@ $(function(){
 			{key:"CODE",label:"编号",width:"14%",forzen:false,align:"center"},
 			{key:"ORDER_ID",label:"订单ID",width:"14%",forzen:false,align:"center"},
 			{key:"ORDER_NO",label:"内部订单号",width:"8%",forzen:false,align:"center"},
-			{key:"REAL_SKU",label:"货品SKU",group:"货品",width:"5%"},
-			{key:"IMAGE_URL",label:"图片",group:"货品",width:"3%",format:{type:'func',funcName:"renderGridImg"}},
+			{align:"left",key:"ORDER_PRODUCTS",label:"订单货品", width:"10%",format:function(val,record){
+	      		val = val||"" ;
+	      		var html = [] ;
+	      		$( val.split(";") ).each(function(index,item){
+	      			var array = item.split("|") ;
+	      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+	      		})  ;
+	      		return html.join("") ;
+	      	}},
            	{key:"CAUSE_NAME",label:"原因",width:"13%",align:"left"},
            	{key:"POLICY_NAME",label:"决策",width:"10%",align:"left"},
            	{key:"MEMO",label:"备注",width:"17%",align:"left"}

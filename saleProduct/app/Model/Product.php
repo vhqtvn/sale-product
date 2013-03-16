@@ -20,6 +20,11 @@ class Product extends AppModel {
 		
 	}
 	
+	function setSupplierFlag($params){
+		$sql="sql_pdev_setSupplierFlag";
+		$this->exeSql($sql, $params) ;
+	}
+	
 	function saveProductCategory($ids , $asin ){
 		//删除所有
 		$sql = "delete from sc_product_category_rel where asin = '$asin'" ;

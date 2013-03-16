@@ -64,19 +64,24 @@
 		) t LIMIT 0,1;
    </entry>
 	
+	<!-- 
+	 srp.IMAGE_URL,
+		  srp.REAL_SKU,
+	 -->
    <entry key="sql_ram_events_list">
   		SELECT s1.* ,
-		  srp.IMAGE_URL,
-		  srp.REAL_SKU,
+		  (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE sao.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
 		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.cause_code ) AS CAUSE_NAME,
 		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.policy_code ) AS POLICY_NAME
-		  FROM sc_ram_event s1 , sc_amazon_order sao
-		  LEFT JOIN sc_real_product_rel srpr
-		  ON srpr.sku = sao.sku
-		  and srpr.account_id = sao.account_id
-		  LEFT JOIN sc_real_product srp
-		  on srp.id = srpr.real_id
-		  WHERE s1.order_id = sao.order_id
+		  FROM sc_ram_event s1
+		  LEFT JOIN sc_order sao
+		  ON s1.order_id = sao.order_id
+		  WHERE 1=1
 		  {@ and s1.status = '#status#'}
 		  {@ and s1.order_id like '%#orderId#%'}
 		  {@ and s1.code like '%#rmaId#%'}
@@ -102,7 +107,7 @@
    
    
    <entry key="sql_saleuser_saveReship">
-  		update sc_amazon_order set rma_reship = '{@#rmaReship#}'
+  		update sc_order_item set rma_reship = '{@#rmaReship#}'
   		where order_id = '{@#orderId#}' and order_item_id = '{@#orderItemId#}'
    </entry>
    
