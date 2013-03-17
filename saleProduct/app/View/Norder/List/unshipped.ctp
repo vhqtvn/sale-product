@@ -6,12 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
-	<script type="text/javascript">
-     var accountId = "<?php echo $accountId;?>" ;
-     var status = "<?php echo $status;?>"
-    </script>
    <?php
-			echo $this->Html->meta('icon');
+		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -22,7 +18,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
-		echo $this->Html->script('modules/norder/lists');
+		echo $this->Html->script('modules/norder/lists_shipped');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
@@ -40,8 +36,7 @@
 		} 
 	?>
 	<script type="text/javascript">
-		var serviceJson = <?php echo json_encode($reocrds) ;?> ;
-	
+		var status = '<?php echo $params['arg1'];?>' ;
 	</script>
 	
 	<style type="text/css">
@@ -109,30 +104,6 @@
 			</tr>						
 		</table>	
 		<hr style="margin:2px;"/>
-		<table style="width:100%;">
-			<tr><th style="width:100px">审核操作：</th>
-				<td>
-					<button class="btn btn-primary save-btn" status="5">合格订单</button>
-					<button class="btn btn-primary save-btn" status="4">外购订单</button>
-					<button class="btn btn-danger save-btn" status="3">待退单</button>
-					<!--
-					<button class="btn btn-danger save-btn" status="2">风险客户</button>
-					-->
-					<button class="btn btn-danger save-btn" status="6">加急单</button>
-					<button class="btn btn-danger save-btn" status="7">特殊单</button>
-					
-				</td>
-				<td style="text-align:right;">
-					
-				</td>
-			</tr>	
-			<tr>
-				<th>备注：</th>
-				<td colspan=2>
-					<textarea id="memo" style="width:100%;height:50px;"></textarea>
-				</td>
-			</tr>					
-		</table>	
 	</div>	
 	
 	<div id="details_tab">

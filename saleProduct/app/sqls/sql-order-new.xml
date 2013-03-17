@@ -130,6 +130,59 @@
 			ORDER_ID = '{@#OrderId#}'
 	</entry>
 	
+	<entry key="sql_sc_order_item_insert_feed">
+		INSERT INTO  sc_order_item 
+		(Order_Item_Id, 
+		Order_ID, 
+		Seller_SKU, 
+		Title, 
+		Quantity_Ordered, 
+		Item_Price_Currency_Code, 
+		Item_Price_Amount, 
+		Shipping_Price_Currency_Code, 
+		Shipping_Price_Amount, 
+		Item_Tax_Currency_Code, 
+		Item_Tax_Amount, 
+		Shipping_Tax_Currency_Code, 
+		Shipping_Tax_Amount
+		)
+		VALUES
+		('{@#order-item-id#}', 
+		'{@#order-id#}', 
+		'{@#sku#}', 
+		'{@#product-name#}', 
+		'{@#quantity-purchased#}', 
+		'{@#currency#}', 
+		'{@#item-price#}', 
+		'{@#currency#}', 
+		'{@#shipping-price#}', 
+		'{@#currency#}', 
+		'{@#item-tax#}', 
+		'{@#currency#}', 
+		'{@#shipping-tax#}'
+		)
+	</entry>
+	
+	<entry key="sql_sc_order_item_update_feed">
+		
+		UPDATE sc_order_item 
+			SET
+			ASIN = '{@#asin#}' , 
+			Seller_SKU = '{@#sku#}' , 
+			Title = '{@#product-name#}' , 
+			Quantity_Ordered = '{@#quantity-purchased#}' , 
+			Item_Price_Currency_Code = '{@#currency#}' , 
+			Item_Price_Amount = '{@#item-price#}' , 
+			Shipping_Price_Currency_Code = '{@#currency#}' , 
+			Shipping_Price_Amount = '{@#shipping-price#}' , 
+			Item_Tax_Currency_Code = '{@#currency#}' , 
+			Item_Tax_Amount = '{@#item-tax#}' , 
+			Shipping_Tax_Currency_Code = '{@#currency#}' , 
+			Shipping_Tax_Amount = '{@#shipping-tax#}' 
+			WHERE
+			Order_Item_Id = '{@#order-item-id#}'  AND Order_ID = '{@#order-id#}' 
+	</entry>
+	
 	<entry key="sql_sc_order_item_insert">
 		INSERT INTO  sc_order_item 
 		(Order_Item_Id, 

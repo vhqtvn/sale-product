@@ -40,7 +40,7 @@ class AmazonOrder {
 	 * 保存订单
 	 * @param unknown_type $order
 	 */
-	function getOrderItems($orderId){
+	function getOrderItems($orderId,$accountId){
 		$config = array (
 				'ServiceURL' => "https://mws.amazonservices.com/Orders/2011-01-01",
 				'ProxyHost' => null,
@@ -213,7 +213,7 @@ class AmazonOrder {
 		$BuyerEmail = null,
 		$MaxResultsPerPage = null
 	 */
-	public function getOrders($querys=array()){
+	public function getOrders($querys=array(),$accountId){
 		$config = array (
 				'ServiceURL' => "https://mws.amazonservices.com/Orders/2011-01-01",
 				'ProxyHost' => null,
@@ -236,7 +236,7 @@ class AmazonOrder {
 		//$MaxResultsPerPage = 50 ;
 		
 		if( ! isset( $querys['LastUpdatedAfter']  ) ){
-			$querys['LastUpdatedAfter'] = date("Y-m-d H:i:s", time()-8*60*60) ;
+			$querys['LastUpdatedAfter'] = date( "Y-m-d H:i:s", time()-8*60*60 ) ;
 		}
 		
 		//debug( $LastUpdatedAfter ) ;
@@ -250,7 +250,6 @@ class AmazonOrder {
 		}
 		
 		if(!empty( $querys['LastUpdatedAfter']  )){
-			echo 123123123;
 			$request->setLastUpdatedAfter(new DateTime(  $querys['LastUpdatedAfter']  , new DateTimeZone('UTC')));
 		}
 		
@@ -415,10 +414,10 @@ class AmazonOrder {
 						
 						$NOrderService  = ClassRegistry::init("NOrderService") ;
 						
-						$NOrderService->saveOrder($record) ;
+						$NOrderService->saveOrder($record,$accountId) ;
 						
 						try{
-						 $this->getOrderItems($record['OrderId']) ;
+						 //$this->getOrderItems($record['OrderId']) ;
 						}catch(MarketplaceWebServiceOrders_Exception $e){
 							//
 						}
@@ -426,7 +425,7 @@ class AmazonOrder {
 				}
 				
 				if( !empty($nextToken) ){
-					$this->getOrdersByNextToken($nextToken) ;
+					$this->getOrdersByNextToken($nextToken,$accountId) ;
 				}
 			}
 			
@@ -440,7 +439,7 @@ class AmazonOrder {
 		}
 	}
 	
-	function getOrdersByNextToken($nextToken){
+	function getOrdersByNextToken($nextToken,$accountId){
 		$config = array (
 				'ServiceURL' => "https://mws.amazonservices.com/Orders/2011-01-01",
 				'ProxyHost' => null,
@@ -594,10 +593,10 @@ class AmazonOrder {
 				
 						$NOrderService  = ClassRegistry::init("NOrderService") ;
 				
-						$NOrderService->saveOrder($record) ;
+						$NOrderService->saveOrder($record,$accountId) ;
 				
 						try{
-							$this->getOrderItems($record['OrderId']) ;
+							//$this->getOrderItems($record['OrderId']) ;
 						}catch(MarketplaceWebServiceOrders_Exception $e){
 							//
 						}
@@ -605,7 +604,7 @@ class AmazonOrder {
 			}
 			
 			if( !empty($nextToken) ){
-				$this->getOrdersByNextToken($nextToken) ;
+				$this->getOrdersByNextToken($nextToken,$accountId) ;
 			}
 		}
 		

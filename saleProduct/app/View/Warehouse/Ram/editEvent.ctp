@@ -32,16 +32,19 @@
 		
 		$loginId   = $user['LOGIN_ID'] ;
 		
-		$result = null ;
-		$eventId = $params['arg1'] ;
-		if(!empty($eventId)){
-			$result = $SqlUtils->getObject("sql_ram_event_getById",array('id'=>$eventId) ) ;
-		}
+		$orderId =$params['arg1'] ;
+
 		
-		$orderId = $result['ORDER_ID'] ;
-		if(empty($result)){
-			$orderId = $eventId ;
-			$result = $SqlUtils->getObject("sql_ram_event_getByOrderId",array('orderId'=>$eventId) ) ;
+		
+		if( !empty($orderId) ){
+			
+			$result = $SqlUtils->getObject("sql_ram_event_getById",array('id'=>$orderId) ) ;
+			if(empty($result)){
+				$result = $SqlUtils->getObject("sql_ram_event_getByOrderId",array('orderId'=>$orderId) ) ;
+			}else{
+				$orderId = $result['ORDER_ID'] ;
+			}
+				
 		}
 		
 		//1、提交审批 2、审批通过  3、重新编辑 
@@ -72,12 +75,14 @@
 		$isComplete = $status == '3' ;
 		
 		
-		$orders = null ;
 		$order = null ;
+		$orderItems = null ;
 		if(!empty($orderId)){
-			$orders = $SqlUtils->exeSql("sql_order_list",array('orderId'=>$orderId) ) ;
-			$order = $SqlUtils->formatObject($orders[0]) ;
+			$order = $SqlUtils->getObject("sql_sc_order_list",array('orderId'=>$orderId) ) ;
+			$orderItems = $SqlUtils->exeSql("sql_sc_order_item_list",array('orderId'=>$orderId) ) ;
 		}
+		
+		
 	?>
 </head>
 
@@ -259,7 +264,7 @@
 									</tr>
 									<?php }?>
 								<?php }?>
-								<?php if( !empty($orders) ){?>
+								<?php if( !empty($orderItems) ){?>
 								<tr>
 								<td colspan=4 style="text-align:left;">
 									<div class="row-fluid">
@@ -305,22 +310,22 @@
 													<?php }?>
 												</tr>
 												<?php
-													foreach( $orders as $order ){
+													foreach( $orderItems as $order ){
 														$order = $SqlUtils->formatObject($order) ;
 														$imageUrl = $order['IMAGE_URL'] ;
 														$imageUrl = str_replace("%" , "%25",$imageUrl) ;
 														?>
 														<tr style="padding:0px;margin:0px;">
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['REAL_SKU']?></td>
-															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['REAL_NAME']?></td>
+															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['NAME']?></td>
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo "<img style='width:25px;height:25px;' src='/saleProduct/".$imageUrl."'>"?></td>
-															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['QUANTITY_TO_SHIP']?></td>
+															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['Quantity_Ordered']?></td>
 															<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1   ){?>
 															<td style="padding-top:0px;padding-bottom:0px;">
 																<input type="text" class="alert alert-danger" style="width:85px;" 
 																	<?php echo $result['RESEND_STATUS'] == 1?"disabled":"";?>
-																	orderId="<?php echo $order['ORDER_ID']?>"
-																	orderItemId="<?php echo $order['ORDER_ITEM_ID']?>"
+																	orderId="<?php echo $order['Order_ID']?>"
+																	orderItemId="<?php echo $order['Order_Item_Id']?>"
 																	name="rmaReship" value="<?php echo $order['RMA_RESHIP']?>"/>
 															</td>
 															<?php }?>

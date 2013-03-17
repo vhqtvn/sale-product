@@ -958,7 +958,6 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
         	//	 $response = $this->performRequest($actionName, $converted, $dataHandle, $contentMd5);
         	//}
          
-           
           $httpStatus = $response['Status'];
       
           switch ($httpStatus) {
@@ -1071,7 +1070,9 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
   	$html  = "" ;
   	$HeadArray = null ;
   	if (RequestType::getRequestType($action) === RequestType::POST_DOWNLOAD) {
+  		
   		$handle = fopen($U1002."?".$U1005, 'r');
+  	
   		$content = '';
   
   		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
@@ -1080,8 +1081,8 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
   		$amazonFeedProcess  = ClassRegistry::init("AmazonFeedProcess") ;
   
   		while(!feof($handle)){
-  			$row =  fgets($handle, 1024);
-  
+  			$row =  fgets($handle, 3072);
+  		//	debug($row) ;
   			if($HeadArray == null){
   				$HeadArray = split( "\t" ,$row  ) ;
   			}else{
@@ -1109,6 +1110,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
   		fclose($handle);
   	}else{
   		$html = file_get_contents($U1002."?".$U1005);
+  		
   	}
   
   	return array (

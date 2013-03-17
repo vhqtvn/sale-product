@@ -24,7 +24,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
-		echo $this->Html->script('modules/order/doing_lists');
+		echo $this->Html->script('modules/norder/doing_lists');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('layout/jquery.layout');

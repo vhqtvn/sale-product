@@ -21,6 +21,9 @@
 		$group=  $user["GROUP_CODE"] ;
 		$username = $user["NAME"] ;
 		
+		$security  = ClassRegistry::init("Security") ;
+		$hasSetSupplierPermission = $security->hasPermission($user['LOGIN_ID'] , 'SET_PRODUCT_SUPPLIER_FLAG') ;
+		
 	?>
 	<?php
 		$product = $details[0]['sc_product'] ;
@@ -124,6 +127,10 @@
  	.p-label{
  		margin:0px 10px;
  		font-weight:bold;
+ 	}
+ 	
+ 	.used-clz{
+		background:pink;
  	}
  </style>
  
@@ -437,6 +444,19 @@
 				] ,
 				height:'500px'
 			} ) ;
+
+			$(".used").click(function(){
+				var supplierId=$(this).attr("supplierId");
+				var asin  ='<?php echo $asin?>';
+
+				if(window.confirm("确认采用？")){
+					$.dataservice("model:Product.setSupplierFlag",{supplierId:supplierId,asin:asin},function(result){
+						window.location.reload();
+					});
+				}
+				
+				
+			});
 		}) ;
 	</script>
 	<div id="details_tab">
@@ -618,9 +638,19 @@
 						$urls = "<img src='/saleProduct/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>" ;
 					}
 					
-					echo "<tr>
-						<td rowspan=2><a href='#' class='update-supplier' supplierId='".$supplier['sc_supplier']['ID']."' >修改询价</a></td>
-						<td><a href='#' supplier-id='".$supplier['sc_supplier']['ID']."'>".$supplier['sc_supplier']['NAME']."</a></td>
+					$isUsed = "" ;
+					if( $hasSetSupplierPermission ){
+						$isUsed = $supplier['sc_product_supplier']['IS_USED'] == 1?"":"<button class='btn used' supplierId='".$supplier['sc_supplier']['ID']."'>采用</button>" ;
+					}
+					
+					
+					$usedClz = $supplier['sc_product_supplier']['IS_USED'] == 1?"used-clz":"" ;
+					echo "<tr class='$usedClz'>
+						<td rowspan=2 ><a href='#' class='update-supplier' supplierId='".$supplier['sc_supplier']['ID']."' >修改询价</a></td>
+						<td>
+						<a href='#' supplier-id='".$supplier['sc_supplier']['ID']."'>".$supplier['sc_supplier']['NAME']."</a>
+						$isUsed
+						</td>
 						<td>".$supplier['sc_product_supplier']['WEIGHT']."</td>
 						<td>".$supplier['sc_product_supplier']['CYCLE']."</td>
 						<td>".$supplier['sc_product_supplier']['PACKAGE']."</td>
@@ -633,7 +663,7 @@
 						<td rowspan=2>
 						  $urls
 						</td>
-					</tr><tr>
+					</tr><tr class='$usedClz'>
 						<td colspan=10>".$supplier['sc_product_supplier']['MEMO']."
 						</td>
 						

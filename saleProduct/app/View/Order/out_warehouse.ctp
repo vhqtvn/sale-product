@@ -23,7 +23,7 @@
 		echo $this->Html->script('jquery.hotkeys');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/order/out_warehouse');
+		echo $this->Html->script('modules/norder/out_warehouse');
 		echo $this->Html->script('grid/query');
 	
 	?>

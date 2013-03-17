@@ -22,7 +22,7 @@
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/order/print_picked');
+		echo $this->Html->script('modules/norder/print_picked');
 		echo $this->Html->script('grid/query');
 		
 	?>

@@ -38,7 +38,7 @@ class Amazon {
 		$this->APPLICATION_ID       = $APPLICATION_ID;
 	}
 	
-	public function getFeedReport1($accountId ,$reportType){
+	public function getFeedReport1($accountId ,$reportType,$querys =array()){
 		$config = array (
 				'ServiceURL' =>  "https://mws.amazonservices.com",
 				'ProxyHost' => null,
@@ -55,14 +55,27 @@ class Amazon {
 		
 		$marketplaceIdArray = array("Id" => array($this->MARKETPLACE_ID));
 		
+		
+		//if( ! isset( $querys['LastUpdatedAfter']  ) ){
+			//$querys['LastUpdatedAfter'] = date("Y-m-d H:i:s", time()-12*60*60) ;
+		//}
+		
+		$StartDate = new DateTime('now', new DateTimeZone('UTC')) ;
+		$StartDate->modify( '-12 hour' );
+		
 		$parameters = array (
 				'Merchant' => $this->MERCHANT_ID,
 				'MarketplaceIdList' => $marketplaceIdArray,
 				'ReportType' => $reportType,
-				'ReportOptions' => 'ShowSalesChannel=true'
+				'ReportOptions' => 'ShowSalesChannel=true',
+				'StartDate'=>$StartDate
 		);
 		
 		$request = new MarketplaceWebService_Model_RequestReportRequest($parameters);
+		
+		if(!empty( $querys['LastUpdatedAfter']  )){
+			//$request->setLastUpdatedAfter(new DateTime(  $querys['LastUpdatedAfter']  , new DateTimeZone('UTC')));
+		}
 		
 		$return = null ;
 		
