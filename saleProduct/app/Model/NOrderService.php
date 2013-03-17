@@ -2,7 +2,7 @@
 class NOrderService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
-	function saveOrder($order){
+	function saveOrder($order,$accountId){
 		
 		$orderId = $order['OrderId'] ;
 		$record = $this->getObject("sql_sc_order_findById", array("orderId"=>$orderId)) ;
@@ -15,6 +15,7 @@ class NOrderService extends AppModel {
 			//保存
 			$orderNumber = $this->getMaxValue("order",$orderId,'1000000000') ;
 			$order['OrderNumber'] = $orderNumber ;
+			$order['accountId'] = $accountId ;
 			$this->exeSql("sql_sc_order_insert", $order) ;
 			
 			try{
@@ -41,6 +42,16 @@ class NOrderService extends AppModel {
 				$this->exeSql("sql_sc_order_item_insert_feed", $orderItem) ;
 			}else{
 				$this->exeSql("sql_sc_order_item_insert", $orderItem) ;
+			}
+			
+			//查询REAL_SKU
+			$realItem = $this->getObject("sql_getRealSku_ByOrderItemId",$orderItem) ;
+			if( !empty( $realItem ) ){
+				$orderItem['realSku'] = $realItem['REAL_SKU'] ;
+				$orderItem['realId'] = $realItem['REAL_ID'] ;
+			
+				//插入订单库存表
+				$this->exeSql( "sql_order_storage_insert" , $orderItem ) ;
 			}
 			
 		}else{

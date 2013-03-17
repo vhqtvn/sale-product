@@ -17,6 +17,8 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
 		
+		
+		$domain =  $account[0]['sc_amazon_account']['DOMAIN'];
 	?>
 	
    <style>
@@ -76,7 +78,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>操作主机：</td><td><input type="text" disabled="disabled" id="DOMAIN" value="<?php echo $_SERVER['SERVER_NAME'];?>"/></td>
+			<td>操作主机：</td><td><input type="text"  id="DOMAIN" value="<?php echo $domain;?>"/></td>
 		</tr>
 		<tr>
 			<td>AWS_ACCESS_KEY_ID：</td><td><input type="text" id="AWS_ACCESS_KEY_ID" value="<?php echo $account[0]['sc_amazon_account']['AWS_ACCESS_KEY_ID'];?>"/></td>

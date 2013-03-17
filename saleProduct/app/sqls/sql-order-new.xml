@@ -65,7 +65,8 @@
 		CURRENCY_CODE, 
 		AMOUNT, 
 		SHIPPED_NUM, 
-		UNSHIPPED_NUM
+		UNSHIPPED_NUM,
+		ACCOUNT_ID
 		)
 		VALUES
 		('{@#OrderId#}', 
@@ -94,7 +95,8 @@
 		'{@#CurrencyCode#}', 
 		'{@#Amount#}', 
 		'{@#ShippedNum#}', 
-		'{@#UnshippedNum#}'
+		'{@#UnshippedNum#}',
+		'{@#accountId#}'
 		)
 	</entry>
 	

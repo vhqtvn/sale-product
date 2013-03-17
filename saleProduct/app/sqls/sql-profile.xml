@@ -111,11 +111,11 @@
     	SELECT sc_amazon_account.*,( select count(1) from sc_amazon_account_product where
 				sc_amazon_account_product.account_id = sc_amazon_account.id ) as TOTAL
 		,( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account.creator ) as USERNAME
-		FROM sc_amazon_account where 1=1 {@ and domain = '#domain#'}
+		FROM sc_amazon_account where 1=1 
     </entry>
     
     <entry key="sql_account_list_count">
-    	SELECT count(*) FROM sc_amazon_account where 1=1 {@ and domain = '#domain#'}
+    	SELECT count(*) FROM sc_amazon_account where 1=1 
     </entry>
     
     <entry key="sql_account_config">

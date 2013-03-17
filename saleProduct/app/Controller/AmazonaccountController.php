@@ -92,7 +92,7 @@ class AmazonaccountController extends AppController {
 	  */
 	 public function add($id = null){
 	 	if( !empty($id) ){
-	 		$this->set("account",$this->Amazonaccount->getAccount($id)  ) ;
+	 		$this->set("account",$this->Amazonaccount->getAccountIngoreDomainById($id)  ) ;
 	 	}else{
 	 		$this->set("account",null ) ;
 	 	}

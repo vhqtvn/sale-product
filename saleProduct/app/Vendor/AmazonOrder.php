@@ -236,7 +236,7 @@ class AmazonOrder {
 		//$MaxResultsPerPage = 50 ;
 		
 		if( ! isset( $querys['LastUpdatedAfter']  ) ){
-			$querys['LastUpdatedAfter'] = date( "Y-m-d H:i:s", time()-8*60*60 ) ;
+			$querys['LastUpdatedAfter'] = date( "Y-m-d H:i:s", time()-16*60*60 ) ;
 		}
 		
 		//debug( $LastUpdatedAfter ) ;

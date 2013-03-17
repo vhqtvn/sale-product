@@ -45,6 +45,7 @@ class MysecurityComponent extends Component {
 			|| $url == 'users/logout' 
 			|| $this->startsWith($url,"gatherLevel") 
 			|| $this->startsWith($url,"taskAsynAmazon") 
+			|| $this->startsWith($url,"amazon/listOrders")
 		){
 			return true ;
 		}

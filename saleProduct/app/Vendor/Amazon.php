@@ -61,7 +61,7 @@ class Amazon {
 		//}
 		
 		$StartDate = new DateTime('now', new DateTimeZone('UTC')) ;
-		$StartDate->modify( '-12 hour' );
+		$StartDate->modify( '-16 hour' );
 		
 		$parameters = array (
 				'Merchant' => $this->MERCHANT_ID,
