@@ -394,4 +394,89 @@ class TaskAsynAmazonController extends AppController {
 
 		return $this->response ;
 	}
+	
+	//////////////////////////order info////////////////////////////////
+	/**
+	 * 开始同步产品信息
+	 * @param unknown_type $accountId
+	 */
+	public function startAsynOrder($accountId){
+		$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_FLAT_FILE_ORDERS_DATA_") ;
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		$user    = array("LOGIN_ID"=>"cron") ;
+		$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] ,
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+				$account['APPLICATION_NAME'] ,
+				$account['APPLICATION_VERSION'] ,
+				$account['MERCHANT_ID'] ,
+				$account['MARKETPLACE_ID'] ,
+				$account['MERCHANT_IDENTIFIER']
+		) ;
+		if( empty($accountAsyn) ){//未开始采集
+			$request = $amazon->getFeedReport1($accountId, "_GET_FLAT_FILE_ORDERS_DATA_")  ;
+			if( !empty($request) ){
+				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
+			}
+		}else{
+			$requestReportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_REQUEST_ID"] ;
+			$reportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_ID"] ;
+			$status = $accountAsyn[0]["sc_amazon_account_asyn"]["STATUS"] ;
+			if(empty($requestReportId)){
+				$request = $amazon->getFeedReport1($accountId, "_GET_FLAT_FILE_ORDERS_DATA_") ;
+				if( !empty($request) ){
+					$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
+				}
+			}
+		}
+	
+		$this->response->type("json") ;
+		$this->response->body( "success")   ;
+	
+		return $this->response ;
+	}
+	
+	public function asynOrder($accountId){
+		$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_FLAT_FILE_ORDERS_DATA_") ;
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		$user    = array("LOGIN_ID"=>"cron") ;
+		$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] ,
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+				$account['APPLICATION_NAME'] ,
+				$account['APPLICATION_VERSION'] ,
+				$account['MERCHANT_ID'] ,
+				$account['MARKETPLACE_ID'] ,
+				$account['MERCHANT_IDENTIFIER']
+		) ;
+	
+		if( empty($accountAsyn) ){//未开始采集
+		}else{
+			$requestReportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_REQUEST_ID"] ;
+			$reportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_ID"] ;
+			$status = $accountAsyn[0]["sc_amazon_account_asyn"]["STATUS"] ;
+			if(empty($requestReportId)){
+				//do nothing
+			}else{
+				if( empty($reportId) ){//获取reportId
+					$request = $amazon->getFeedReport2($accountId, "_GET_FLAT_FILE_ORDERS_DATA_",$requestReportId) ;
+					print_r($request) ;
+					if( !empty($request) ){
+						$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
+					}
+				}else if(empty($status)){//获取产品数据
+					$request = $amazon->getFeedReport3($accountId, "_GET_FLAT_FILE_ORDERS_DATA_" , $reportId ) ;
+	
+					$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_FLAT_FILE_ORDERS_DATA_") , $user) ;
+				}
+			}
+		}
+	
+		$this->response->type("json") ;
+		$this->response->body( "success")   ;
+	
+		return $this->response ;
+	}
 }

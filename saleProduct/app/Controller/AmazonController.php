@@ -61,10 +61,7 @@ class AmazonController extends AppController {
     		$querys['LastUpdatedBefore'] = $params["LastUpdatedBefore"] ;
     	}
     	
-    	$startTime = $params['startTime'] ;
-    	$endTime = $params['endTime'] ;
-    	
-    	$request = $amazon->getOrders($querys ) ;
+    	$request = $amazon->getOrders($querys ,$accountId) ;
     
     	/*if( !empty($request) ){
     		$user =  $this->getCookUser() ;
@@ -90,7 +87,7 @@ class AmazonController extends AppController {
     			$account['MERCHANT_IDENTIFIER']
     	) ;
     
-    	$request = $amazon->getOrderItems( $orderId ) ;
+    	$request = $amazon->getOrderItems( $orderId ,$accountId) ;
     
     	/*if( !empty($request) ){
     	 $user =  $this->getCookUser() ;
@@ -413,8 +410,10 @@ class AmazonController extends AppController {
 	 			$account['MARKETPLACE_ID'] ,
 	 			$account['MERCHANT_IDENTIFIER']
 	 	) ;
-	 
-	 	$request = $amazon->getFeedReport1($accountId,$reportType) ;
+	 	
+	 	$params = $this->request->data  ;
+	 	
+	 	$request = $amazon->getFeedReport1($accountId,$reportType,$params) ;
 	 	if( !empty($request) ){
 	 		$user =  $this->getCookUser() ;
 	 		$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;

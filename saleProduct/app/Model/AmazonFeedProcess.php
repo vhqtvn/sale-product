@@ -9,9 +9,36 @@ class AmazonFeedProcess extends AppModel {
 			$this->_process_GET_MERCHANT_LISTINGS_DATA_($reportType, $productItem, $HeadArray, $accountId) ;
 		}else if( !empty( $reportType ) && $reportType == '_GET_AFN_INVENTORY_DATA_' ){
 			$this->_process_GET_AFN_INVENTORY_DATA_($reportType, $productItem, $HeadArray, $accountId) ;
+		}else if( !empty( $reportType ) && $reportType == '_GET_FLAT_FILE_ORDERS_DATA_' ){
+			$this->_process_GET_FLAT_FILE_ORDERS_DATA_($reportType, $productItem, $HeadArray, $accountId) ;
 		}
+	}
+	
+	/**
+	 * 保存订单项  
+	 * @param unknown_type $reportType
+	 * @param unknown_type $productItem
+	 * @param unknown_type $HeadArray
+	 * @param unknown_type $accountId
+	 */
+	function _process_GET_FLAT_FILE_ORDERS_DATA_( $reportType,$productItem ,$HeadArray,$accountId ){
 		
-		debug($productItem);
+		debug( $productItem ) ;
+		
+		$NOrderService = ClassRegistry::init("NOrderService") ;
+		$log  = ClassRegistry::init("Log") ;
+	
+		/*
+		$asin 		= $productItem['asin'] ;
+		$sku  		= $productItem['sku'] ;
+		$quantity  	= $productItem['quantity'] ;
+		$price  	= $productItem['price'] ;
+	
+		if(empty($asin)){
+			$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+		}*/
+	
+		$NOrderService->saveOrderItem( $productItem , true ) ;
 	}
 	
 	function _process_GET_FLAT_FILE_OPEN_LISTINGS_DATA_( $reportType,$productItem ,$HeadArray,$accountId ){

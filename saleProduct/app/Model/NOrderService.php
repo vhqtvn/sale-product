@@ -28,18 +28,28 @@ class NOrderService extends AppModel {
 		}
 	}
 	
-	function saveOrderItem($orderItem){
+	function saveOrderItem($orderItem,$isFeed = false){
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
-		$orderId = $orderItem['OrderId'] ;
-		$orderItemId = $orderItem['OrderItemId'] ;
+		$orderId = $orderItem['order-id'] ;
+		$orderItemId = $orderItem['order-item-id'] ;
 		$record = $this->getObject("sql_sc_order_item_findById", array("orderId"=>$orderId,'orderItemId'=>$orderItemId)) ;
 	
 		if(empty($record)){//item未添加
-			$this->exeSql("sql_sc_order_item_insert", $orderItem) ;
+			if( $isFeed ){
+				$this->exeSql("sql_sc_order_item_insert_feed", $orderItem) ;
+			}else{
+				$this->exeSql("sql_sc_order_item_insert", $orderItem) ;
+			}
+			
 		}else{
-			$this->exeSql("sql_sc_order_item_update", $orderItem)  ;
+			if( $isFeed ){
+				$this->exeSql("sql_sc_order_item_update_feed", $orderItem)  ;
+			}else{
+				$this->exeSql("sql_sc_order_item_update", $orderItem)  ;
+			}
+		
 		}
 	}
 }
