@@ -487,6 +487,7 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     {
 
         $query = $this->_getParametersAsString($parameters);
+        
         $url = parse_url ($this->_config['ServiceURL']);
 	$uri = array_key_exists('path', $url) ? $url['path'] : null;
         if (!isset ($uri)) {
@@ -555,7 +556,13 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
     private function _addRequiredParameters(array $parameters)
     {
         $parameters['AWSAccessKeyId'] = $this->_awsAccessKeyId;
-        $parameters['Timestamp'] = $this->_getFormattedTimestamp();
+         $time = new DateTime('now', new DateTimeZone('UTC')) ;
+        
+        $time->modify( '+6 hour +40 minute +31 second' );
+        
+        $parameters['Timestamp'] = $this->getFormattedTimestamp($time);
+        
+        //$parameters['Timestamp'] = $this->_getFormattedTimestamp();
         $parameters['Version'] = self::SERVICE_VERSION;
         $parameters['SignatureVersion'] = $this->_config['SignatureVersion'];
         if ($parameters['SignatureVersion'] > 1) {

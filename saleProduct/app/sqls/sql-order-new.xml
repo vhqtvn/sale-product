@@ -285,6 +285,7 @@
 		   WHERE 1=1  
 		    {@ and so.ORDER_STATUS = '#status#'}
 		    {@ and so.fulfillment_channel = '#type#'}
+		     {@ and so.account_id = '#accountId#'}
 		    {@ and so.order_id = '#orderId#'}
 		    order by so.last_update_date desc
 	</entry>

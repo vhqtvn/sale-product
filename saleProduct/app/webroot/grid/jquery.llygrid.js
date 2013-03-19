@@ -501,6 +501,7 @@
 		} ) ;
 		
 		function renderPage(records , totalRecord , p){
+			records = records||[] ;
 			var options = target.data("options") ;
 			var _ = records.slice(0,p.limit) ;
 			createBody(target,_ , p) ;
@@ -913,3 +914,46 @@
 	  	}
 	}
 })(jQuery) ;
+
+
+function formatGridData(data){
+		var records = data.record ;
+ 		var count   = data.count ;
+ 		
+ 		count = count[0][0]["count(*)"] ;
+ 		
+		var array = [] ;
+		$(records).each(function(){
+			var row = {} ;
+			for(var o in this){
+				var _ = this[o] ;
+				for(var o1 in _){
+					row[o1] = _[o1] ;
+				}
+			}
+			array.push(row) ;
+		}) ;
+	
+		var ret = {records: array,totalRecord:count } ;
+			
+		return ret ;
+	}
+
+var renderGridImg = function(val,record){
+	if(val){
+		val = val.replace(/%/g,'%25') ;
+		return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+	}
+	return "" ;
+}
+	
+//common action 
+function viewSupplier(id){
+	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,600,500) ;
+}
+
+$(".product-detail").live("click",function(){
+	var asin = $(this).attr("asin") ;
+	openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+	return false;
+}) ;

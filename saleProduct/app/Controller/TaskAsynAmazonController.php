@@ -8,6 +8,7 @@ ini_set("post_max_size", "24M");
 App :: import('Vendor', 'Snoopy');
 App :: import('Vendor', 'simple_html_dom');
 App :: import('Vendor', 'Amazon');
+App :: import('Vendor', 'AmazonOrder');
 
 class TaskAsynAmazonController extends AppController {
 	
@@ -474,6 +475,81 @@ class TaskAsynAmazonController extends AppController {
 			}
 		}
 	
+		$this->response->type("json") ;
+		$this->response->body( "success")   ;
+	
+		return $this->response ;
+	}
+	
+	
+	
+	public function listOrders($accountId){
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+	
+		debug($account) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		$amazon = new AmazonOrder(
+				$account['AWS_ACCESS_KEY_ID'] ,
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+				$account['APPLICATION_NAME'] ,
+				$account['APPLICATION_VERSION'] ,
+				$account['MERCHANT_ID'] ,
+				$account['MARKETPLACE_ID'] ,
+				$account['MERCHANT_IDENTIFIER']
+		) ;
+	
+		/**
+		 $createAfter=null,
+		 $createBefore=null,
+		 $LastUpdatedAfter=null,
+		 $LastUpdatedBefore=null,
+		 $OrderStatus = null,
+		 $FulfillmentChannel=null,
+		 $BuyerEmail = null,
+		 $MaxResultsPerPage = null
+		 */
+		$querys = array() ;
+		$params = $this->request->data  ;
+		if( isset($params["LastUpdatedAfter"]) ){
+			$querys['LastUpdatedAfter'] = $params["LastUpdatedAfter"] ;
+		}
+		if( isset($params["LastUpdatedBefore"]) ){
+			$querys['LastUpdatedBefore'] = $params["LastUpdatedBefore"] ;
+		}
+	
+		$request = $amazon->getOrders($querys ,$accountId) ;
+	
+		/*if( !empty($request) ){
+		 $user =  $this->getCookUser() ;
+		$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
+		}
+		*/
+		$this->response->type("json") ;
+		$this->response->body( "success")   ;
+	
+		return $this->response ;
+	}
+	
+	public function listOrderItems($accountId,$orderId){
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		$amazon = new AmazonOrder(
+				$account['AWS_ACCESS_KEY_ID'] ,
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+				$account['APPLICATION_NAME'] ,
+				$account['APPLICATION_VERSION'] ,
+				$account['MERCHANT_ID'] ,
+				$account['MARKETPLACE_ID'] ,
+				$account['MERCHANT_IDENTIFIER']
+		) ;
+	
+		$request = $amazon->getOrderItems( $orderId ,$accountId) ;
+	
+		/*if( !empty($request) ){
+		 $user =  $this->getCookUser() ;
+		$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
+		}
+		*/
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
 	

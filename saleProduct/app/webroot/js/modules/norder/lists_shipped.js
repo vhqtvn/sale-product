@@ -1,5 +1,10 @@
 	$(function(){
 			var sqlId = "sql_sc_order_list" ;
+			
+			$("td[key='ORDER_ID']").live("click",function(){
+				var orderId = $.trim( $(this).text() ) ;
+				openCenterWindow("/saleProduct/index.php/page/forward/Norder.details/"+orderId,800,600) ;
+			}) ;
 
 			$(".grid-content").llygrid({
 				columns:[

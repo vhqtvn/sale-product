@@ -510,6 +510,7 @@
 		} ) ;
 		
 		function renderPage(records , totalRecord , p){
+			records = records||[] ;
 			var options = target.data("options") ;
 			options.records = records ;
 			var _ = records.slice(0,p.limit) ;
