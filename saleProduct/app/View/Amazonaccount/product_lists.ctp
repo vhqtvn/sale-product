@@ -65,29 +65,6 @@
    
    var accountId = '<?php echo $accountId ;?>' ;
    
-   //result.records , result.totalRecord
- 	function formatGridData(data){
- 		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-   }
 	var currentAccountId = accountId ;
 	var currentCategoryId = "" ;
 	var currentCategoryText = "" ;
@@ -163,8 +140,7 @@
 			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
 			           	{align:"center",key:"SKU",label:"SKU",width:"8%"},
 			           	{align:"center",key:"QUANTITY",label:"库存",width:"6%"},
-			           	{align:"center",key:"FEED_QUANTITY",label:'库存<?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?>',width:"6%",format:{type:'editor',fields:['SKU']}},
-			            {align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
+			           	 {align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
 			            {align:"center",key:"FEED_PRICE",label:'Price<?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?>',group:'价格',width:"6%",format:{type:'editor',fields:['SKU']}},
 			           	{align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
 			           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"8%",format:function(val,record){

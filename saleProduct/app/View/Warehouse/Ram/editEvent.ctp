@@ -33,11 +33,10 @@
 		$loginId   = $user['LOGIN_ID'] ;
 		
 		$orderId =$params['arg1'] ;
-
+		$result  = null ;
 		
 		
 		if( !empty($orderId) ){
-			
 			$result = $SqlUtils->getObject("sql_ram_event_getById",array('id'=>$orderId) ) ;
 			if(empty($result)){
 				$result = $SqlUtils->getObject("sql_ram_event_getByOrderId",array('orderId'=>$orderId) ) ;

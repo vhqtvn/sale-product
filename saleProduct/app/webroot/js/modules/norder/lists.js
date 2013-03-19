@@ -58,6 +58,7 @@
 			      		})  ;
 			      		return html.join("") ;
 			      	}},
+			      	{align:"left",key:"ACCOUNT_NAME",label:"账号", width:"8%"},
 					{align:"center",key:"SHIPPED_NUM",label:"发货数量", width:"6%"},
 					{align:"center",key:"UNSHIPPED_NUM",label:"未发货数量", width:"6%"},
 					{align:"center",key:"AMOUNT",label:"金额", width:"4%" ,align:'right'},

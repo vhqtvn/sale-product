@@ -149,7 +149,7 @@ class AmazonaccountController extends AppController {
 	  * 产品列表
 	  */
 	 public function productLists($id  ){
-	 	$account = $this->Amazonaccount->getAccount($id);  
+	 	$account = $this->Amazonaccount->getAccountIngoreDomainById($id);  
 	 	$account = $account[0]['sc_amazon_account'] ;
 	 	
 	 	$this->set('accountId', $account["ID"]);
@@ -162,7 +162,7 @@ class AmazonaccountController extends AppController {
 	 }
 	 
 	 public function productListsPrice($id  ){
-	 	$account = $this->Amazonaccount->getAccount($id);  
+	 	$account = $this->Amazonaccount->getAccountIngoreDomainById($id);  
 	 	$account = $account[0]['sc_amazon_account'] ;
 	 	
 	 	$this->set('accountId', $account["ID"]);
@@ -175,7 +175,7 @@ class AmazonaccountController extends AppController {
 	 }
 	 
 	 public function productListsQuantity($id  ){
-	 	$account = $this->Amazonaccount->getAccount($id);  
+	 	$account = $this->Amazonaccount->getAccountIngoreDomainById($id);  
 	 	$account = $account[0]['sc_amazon_account'] ;
 	 	
 	 	$this->set('accountId', $account["ID"]);

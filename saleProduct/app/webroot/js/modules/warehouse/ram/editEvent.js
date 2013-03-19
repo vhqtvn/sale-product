@@ -190,16 +190,24 @@ $(function(){
 			grid:{
 				title:"订单选择",
 				params:{
-					sqlId:"sql_order_list"
+					sqlId:"sql_sc_order_list",
+					status:"shipped"
 				},
 				ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
 				pagesize:10,
 				columns:[//显示列
 					{align:"center",key:"ORDER_ID",label:"订单编号",width:"150",query:true},
 					{align:"center",key:"ORDER_NUMBER",label:"内部订单号",sort:true,width:"150",query:true},
-					{align:"center",key:"PRODUCT_NAME",label:"产品名称",sort:true,width:"150"},
-					{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"renderGridImg"}},
-					{align:"center",key:"REAL_SKU",label:"货品SKU",sort:true,width:"50"}
+					{align:"left",key:"ACCOUNT_NAME",label:"账号", width:"8%"},
+					{align:"left",key:"ORDER_PRODUCTS",label:"订单货品", width:"10%",format:function(val,record){
+			      		val = val||"" ;
+			      		var html = [] ;
+			      		$( val.split(";") ).each(function(index,item){
+			      			var array = item.split("|") ;
+			      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+			      		})  ;
+			      		return html.join("") ;
+			      	}}
 				]
 			}
 	    } ;
