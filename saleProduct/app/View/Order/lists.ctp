@@ -72,15 +72,15 @@
 			<tr>
 				<th>订单号：</th>
 				<td>
-					<input type="text" name="orderId"/>
+					<input type="text" name="orderId" class="span2"/>
 				</td>
 				<th>内部订单号：</th>
 				<td>
-					<input type="text" name="orderNumber"/>
+					<input type="text" name="orderNumber" class="span2"/>
 				</td>
 				<th>账号：</th>
 				<td>
-					<select name="accountId">
+					<select name="accountId" class="span2">
 		     		<option value="">--选择--</option>
 			     	<?php
 			     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
@@ -96,11 +96,13 @@
 			<tr>
 				<th>日期：</th>
 				<td>
-					<input type="text" name="dateTime" data-widget="calendar"/>
+					<input type="text" name="startTime" data-widget="calendar" class="span2"/>
+					到
+					<input type="text" name="endTime" data-widget="calendar" class="span2"/>
 				</td>
 				<th>SKU：</th>
 				<td>
-					<input type="text" name="sku"/>
+					<input type="text" name="sku" class="span2"/>
 				</td>
 				<th></th>
 				<td>
