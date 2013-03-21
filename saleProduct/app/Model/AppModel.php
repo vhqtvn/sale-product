@@ -313,7 +313,7 @@ class AppModel extends Model {
 	    		$index++ ;
 	    	} 
 	    //	echo $parseSql;
-	    	
+	    	//echo $parseSql ;
 	    	return $parseSql ;
 		}
 		
