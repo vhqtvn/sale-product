@@ -273,6 +273,7 @@
 	
 	
 	<entry key="sql_sc_order_list">
+	<![CDATA[
 	    SELECT so.* ,
 	         (select name from sc_amazon_account where id = so.account_id) as ACCOUNT_NAME,
 			 (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
@@ -287,7 +288,18 @@
 		    {@ and so.fulfillment_channel = '#type#'}
 		     {@ and so.account_id = '#accountId#'}
 		    {@ and so.order_id = '#orderId#'}
+		     {@ and so.order_id = '#ORDER_ID#'}
+		      {@ and so.ORDER_NUMBER = '#ORDER_NUMBER#'}
+		    {@ and so.order_number = '#orderNumber#'}
+		    {@ and date(so.LAST_UPDATE_DATE) >=date( '#startTime#')}
+		     {@ and date(so.LAST_UPDATE_DATE) <= date('#endTime#') }
+		     {@ 
+		       and exists (
+		         select 1 from sc_order_item soi where soi.seller_sku = '#sku#'
+		       )
+		     }
 		    order by so.last_update_date desc
+    ]]>
 	</entry>
 	
 	<entry key="sql_sc_order_item_list">
@@ -383,6 +395,15 @@
 		   {@ and saos.pick_status not in ( '9','10' ) and '#status#' = '#status#'}
 		   {@ and saos.audit_status = '#status#'}
 		    {@ and so.account_id = '#accountId#'}
+		    {@ and so.order_id = '#orderId#'}
+		    {@ and so.order_number = '#orderNumber#'}
+		    {@ and date(so.LAST_UPDATE_DATE) >=date( '#startTime#')}
+		     {@ and date(so.LAST_UPDATE_DATE) <= date('#endTime#') }
+		     {@ 
+		       and exists (
+		         select 1 from sc_order_item soi where soi.seller_sku = '#sku#'
+		       )
+		     }
 		     order by so.LAST_UPDATE_DATE desc
 	]]>
 	</entry>
@@ -435,6 +456,16 @@
 		  		select order_id from sc_amazon_order_status
 		  )
 		   {@ and so.account_id = '#accountId#'}
+		    {@ and so.account_id = '#accountId#'}
+		    {@ and so.order_id = '#orderId#'}
+		    {@ and so.order_number = '#orderNumber#'}
+		    {@ and  so.LAST_UPDATE_DATE >=  '#startTime#' }
+		     {@ and  so.LAST_UPDATE_DATE <=  '#endTime#' }
+		     {@ 
+		       and exists (
+		         select 1 from sc_order_item soi where soi.seller_sku = '#sku#'
+		       )
+		     }
 		   order by so.LAST_UPDATE_DATE desc
 	]]>
 	</entry>
@@ -463,6 +494,16 @@
 		  		select order_id from sc_amazon_order_status
 		  )
 		   {@ and so.account_id = '#accountId#'}
+		    {@ and so.account_id = '#accountId#'}
+		    {@ and so.order_id = '#orderId#'}
+		    {@ and so.order_number = '#orderNumber#'}
+		    {@ and  so.LAST_UPDATE_DATE >=  '#startTime#' }
+		    {@ and  so.LAST_UPDATE_DATE <=  '#endTime#' }
+		    {@ 
+		       and exists (
+		         select 1 from sc_order_item soi where soi.seller_sku = '#sku#'
+		       )
+		     }
 		    order by so.LAST_UPDATE_DATE desc
 	]]>
 	</entry>
