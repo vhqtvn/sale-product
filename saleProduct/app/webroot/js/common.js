@@ -996,3 +996,8 @@ $(function(){
 		return false ;
 	}) ;
 }) ;
+
+//common action 
+function viewSupplier(id){
+	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,800,580) ;
+}

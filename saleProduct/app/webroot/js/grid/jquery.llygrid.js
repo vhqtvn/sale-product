@@ -1083,10 +1083,16 @@ var renderGridImg = function(val,record){
 	}
 	return "" ;
 }
+
+$("[supplier-id]").live("click",function(){
+	var supplierId = $(this).attr("supplier-id") ;
+	openCenterWindow("/saleProduct/index.php/supplier/view/"+supplierId,800,580) ;
+	return false ;
+})
 	
 //common action 
 function viewSupplier(id){
-	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,600,500) ;
+	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,800,580) ;
 }
 
 $(".product-detail").live("click",function(){

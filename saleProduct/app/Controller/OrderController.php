@@ -5,7 +5,7 @@ App :: import('Vendor', 'Amazon');
  */
 class OrderController extends AppController {
 	
-	var $uses = array('OrderService','Amazonaccount','SqlUtils');
+	var $uses = array('OrderService','Amazonaccount','SqlUtils','Utils');
 	
 	public function doUpload($accountId){
 		
@@ -146,11 +146,14 @@ class OrderController extends AppController {
 				 	$account['MERCHANT_IDENTIFIER'] 
 			) ;
 			
+		    //build url
+			$url = $this->Utils->buildUrl($account,"taskAsynAmazon") ;
+			
 			//$result = $amazon->updateOrderTrackNumber( $accountId,$feed,$user['LOGIN_ID'] ) ;
 			
 			//更新订单状态为已发货
 			//$this->Amazonaccount->saveAccountFeed($result) ;
-			$this->OrderService->updateTrackNumberStatus($params,$user ,$accountId) ;
+			//$this->OrderService->updateTrackNumberStatus($params,$user ,$accountId) ;
     	} ;
     	
     	$this->response->type("json");

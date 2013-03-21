@@ -528,7 +528,7 @@ class Amazon {
 								"feed"=>""
                         );
                         
-                        //$amazon->saveAccountFeed($array) ;
+                      //  $amazon->saveAccountFeed($array) ;
 		
                     } 
                 } 

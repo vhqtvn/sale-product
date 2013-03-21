@@ -90,13 +90,7 @@
 			setTimeout(function(){
 				$(".grid-content").llygrid(gridConfig) ;
 			},200) ;
-			
-			$(".product-detail").live("click",function(){
-				var asin = $(this).attr("asin") ;
-				var sku = $(this).attr("sku") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
-			}) ;
-			
+
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
 					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"}}) ;	

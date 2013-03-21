@@ -946,6 +946,12 @@ var renderGridImg = function(val,record){
 	}
 	return "" ;
 }
+
+$("[supplier-id]").live("click",function(){
+	var supplierId = $(this).attr("supplier-id") ;
+	openCenterWindow("/saleProduct/index.php/supplier/view/"+supplierId,600,500) ;
+	return false ;
+})
 	
 //common action 
 function viewSupplier(id){

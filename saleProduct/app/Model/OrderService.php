@@ -510,7 +510,7 @@ class OrderService extends AppModel {
 			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
 			$trackNumber = $order[0]['TN'] ;	
 			
-			$sql = "update sc_amazon_order set TN_STATUS = '1' where ORDER_ID='$orderId'" ;
+			$sql = "update sc_order set TN_STATUS = '1' where ORDER_ID='$orderId'" ;
 			$this->query($sql) ;
 			
 			$status = $this->tnStatus['1'] ;

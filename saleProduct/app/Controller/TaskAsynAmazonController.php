@@ -19,6 +19,28 @@ class TaskAsynAmazonController extends AppController {
 	
 	var $uses = array('Task', 'Config','Amazonaccount','Utils','Warning');
 	
+	public function saveTrackNumberToAamazon( $accountId ){
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		
+		$account = $account[0]['sc_amazon_account'] ;
+		$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] ,
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+				$account['APPLICATION_NAME'] ,
+				$account['APPLICATION_VERSION'] ,
+				$account['MERCHANT_ID'] ,
+				$account['MARKETPLACE_ID'] ,
+				$account['MERCHANT_IDENTIFIER']
+		) ;
+		
+		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+		$feed = $this->OrderService->getTrackNumberFeed(array(),array() ,$accountId,$MerchantIdentifier) ;
+		
+		$result = $amazon->updateOrderTrackNumber( $accountId,$feed,"cron") ;
+		$this->Amazonaccount->saveAccountFeed($result) ;
+		$this->OrderService->updateTrackNumberStatus(array(),array('LOGIN_ID'=>'cron') ,$accountId) ;
+	}
+	
 	public function formatAmazonProducts($accountId){
 
 		$where = " where sc_amazon_account_product.status = 'Y'  " ;
@@ -486,7 +508,6 @@ class TaskAsynAmazonController extends AppController {
 	public function listOrders($accountId){
 		$account = $this->Amazonaccount->getAccount($accountId) ;
 	
-		debug($account) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		$amazon = new AmazonOrder(
 				$account['AWS_ACCESS_KEY_ID'] ,

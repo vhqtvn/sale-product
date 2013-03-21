@@ -80,12 +80,17 @@
 	 
     
     <entry key="sql_order_can_do_ship">
+    
     	SELECT  
-    	s1.ORDER_ID,
-        s1.ORDER_ITEM_ID,
-        s1.ORDER_NUMBER,
-        s1.SKU,
-        s2.TRACK_NUMBER, 
+    	        s1.ORDER_ID,
+                s1.ORDER_NUMBER,
+                (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE s1.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+                s2.TRACK_NUMBER, 
 		s2.SHIPPING_FEE, 
 		s2.TRANSACTION_ID, 
 		s2.MAIL_CLASS, 
@@ -99,36 +104,34 @@
 		s2.WIDTH, 
 		s2.HEIGHT, 
 		s2.BILLED_WEIGHT, 
-		s2.ACTUAL_WEIGHT,
-		s3.REAL_SKU,
-		s3.NAME as REAL_NAME,
-		s3.IMAGE_URL
-	 FROM sc_amazon_order s1
+		s2.ACTUAL_WEIGHT
+	 FROM sc_order s1
 	LEFT JOIN sc_order_result s2 
 	ON s1.order_id = s2.order_id
-	left join sc_real_product s3
-		  on s3.real_sku in (
-		  	 select s.real_sku from sc_real_product_rel s 
-		  	 where s.sku = s1.sku
-		  	 and s.account_id = s1.account_id
-		  )
-	WHERE 	account_id = '{@#accountId#}'
-		AND EXISTS (
-			SELECT 1 FROM sc_amazon_order_status WHERE 
-				sc_amazon_order_status.pick_status = '10'
-				AND sc_amazon_order_status.order_id = s1.order_id
-		)
-		AND (tn_status IS NULL OR tn_status = '')
-		order by s1.ORDER_NUMBER
+	WHERE 	{@ account_id = '#accountId#' and }
+	{@ s1.order_id = '#orderId#' and }
+	{@ s1.order_number = '#orderNumber#' and }
+		   EXISTS (
+		SELECT 1 FROM sc_amazon_order_status WHERE 
+			sc_amazon_order_status.pick_status = '10'
+			AND sc_amazon_order_status.order_id = s1.order_id
+	)
+	AND (tn_status IS NULL OR tn_status = '')
+	ORDER BY s1.ORDER_NUMBER
+	
     </entry>
     
     <entry key="sql_order_has_do_ship">
     	SELECT  
-    	s1.ORDER_ID,
-        s1.ORDER_ITEM_ID,
-        s1.ORDER_NUMBER,
-        s1.SKU,
-        s2.TRACK_NUMBER, 
+    	 s1.ORDER_ID,
+                s1.ORDER_NUMBER,
+                (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE s1.order_id = soi.order_id GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS ,
+                s2.TRACK_NUMBER, 
 		s2.SHIPPING_FEE, 
 		s2.TRANSACTION_ID, 
 		s2.MAIL_CLASS, 
@@ -142,10 +145,7 @@
 		s2.WIDTH, 
 		s2.HEIGHT, 
 		s2.BILLED_WEIGHT, 
-		s2.ACTUAL_WEIGHT,
-		s3.REAL_SKU,
-		s3.NAME as REAL_NAME,
-		s3.IMAGE_URL
+		s2.ACTUAL_WEIGHT
 	 FROM sc_amazon_order s1
 	LEFT JOIN sc_order_result s2 
 	ON s1.order_id = s2.order_id
@@ -155,8 +155,10 @@
 		  	 where s.sku = s1.sku
 		  	 and s.account_id = s1.account_id
 		  )
-	WHERE 	account_id = '{@#accountId#}'
-		AND tn_status = '1'
+	WHERE 	{@ account_id = '#accountId#' and }
+	{@ s1.order_id = '#orderId#' and }
+	{@ s1.order_number = '#orderNumber#' and }
+		 tn_status = '1'
 		{@
 			and exists(
 			  select 1 from sc_amazon_order_download_details s4

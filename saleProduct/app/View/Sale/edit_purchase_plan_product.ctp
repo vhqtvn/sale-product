@@ -66,7 +66,8 @@
 			$("button").click(function(){
 				var json = $("#personForm").toJson() ;
 				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
-					alert(1231);
+					window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
+					window.close() ;
 				}) ;
 				/*$.ajax({
 					type:"post",

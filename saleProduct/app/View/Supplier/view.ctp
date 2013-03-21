@@ -12,7 +12,7 @@
 		echo $this->Html->css('../grid/grid');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/tree/jquery.tree');
-		echo $this->Html->css('style-all');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');

@@ -2,6 +2,12 @@
 class Utils extends AppModel {
 	var $useTable = 'sc_user';
 	
+	public function buildUrl( $account , $action  ){
+		$domain = $account['DOMAIN'] ;
+		$url = "http://".$domain."/saleProductTask/index.php/".$action+"/".$account['ID'] ;
+		return $url ;
+	}
+	
 	/**
 	 * 格式化为树格式 ID , TEXT ,PARENT_ID
 	 */
