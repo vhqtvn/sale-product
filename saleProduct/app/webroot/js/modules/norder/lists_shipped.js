@@ -1,11 +1,6 @@
 	$(function(){
 			var sqlId = "sql_sc_order_list" ;
 			
-			$("td[key='ORDER_ID']").live("click",function(){
-				var orderId = $.trim( $(this).text() ) ;
-				openCenterWindow("/saleProduct/index.php/page/forward/Norder.details/"+orderId,800,600) ;
-			}) ;
-
 			$(".grid-content").llygrid({
 				columns:[
 				      	{align:"center",key:"ORDER_ID",label:"Order Id", width:"15%"},
@@ -19,6 +14,7 @@
 				      		})  ;
 				      		return html.join("") ;
 				      	}},
+				      	{align:"left",key:"ORDER_STATUS",label:"状态", width:"8%"},
 				    	{align:"left",key:"ACCOUNT_NAME",label:"账号", width:"8%"},
 						{align:"center",key:"SHIPPED_NUM",label:"发货数量", width:"6%"},
 						{align:"center",key:"UNSHIPPED_NUM",label:"未发货数量", width:"6%"},

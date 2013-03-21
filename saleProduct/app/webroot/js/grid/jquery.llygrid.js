@@ -1094,3 +1094,8 @@ $(".product-detail").live("click",function(){
 	openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
 	return false;
 }) ;
+
+$("td[key='ORDER_ID']").live("click",function(){
+	var orderId = $.trim( $(this).text() ) ;
+	openCenterWindow("/saleProduct/index.php/page/forward/Norder.details/"+orderId,800,600) ;
+}) ;
