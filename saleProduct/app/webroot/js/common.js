@@ -983,7 +983,7 @@ function buildUrl(url, paramObject) {
 }
 
 $(function(){
-	$(".btn").live("click",function(){
+	$(".btn:not([type='submit'])").live("click",function(){
 		var me = $(this)
 		$(this).attr("disabled","disabled");
 		setTimeout(function(){
