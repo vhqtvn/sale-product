@@ -195,7 +195,13 @@ class AmazonController extends AppController {
     public function getProductReport1($accountId){
     	$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
-    	$amazon = new Amazon(
+    	
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/startAsynAmazonProducts") ;
+    	$random = date("U") ;
+    	
+    	file_get_contents($url."?".$random);
+    	
+    	/*$amazon = new Amazon(
 				$account['AWS_ACCESS_KEY_ID'] , 
 				$account['AWS_SECRET_ACCESS_KEY'] ,
 			 	$account['APPLICATION_NAME'] ,
@@ -209,7 +215,7 @@ class AmazonController extends AppController {
 		if( !empty($request) ){
 			$user =  $this->getCookUser() ;
 			$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
-		}
+		}*/
 		
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
@@ -219,6 +225,14 @@ class AmazonController extends AppController {
     
     public function getProductReport2($accountId){
     	$account = $this->Amazonaccount->getAccount($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    	
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/asynAmazonProducts") ;
+    	$random = date("U") ;
+    	
+    	file_get_contents($url."?".$random);
+    	
+    	/*$account = $this->Amazonaccount->getAccount($accountId) ;
     	$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
     	
     	$account = $account[0]['sc_amazon_account'] ;
@@ -237,7 +251,7 @@ class AmazonController extends AppController {
 			
 			$user =  $this->getCookUser() ;
 			$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
-		}
+		}*/
 		
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
@@ -247,6 +261,14 @@ class AmazonController extends AppController {
     
     public function getProductReport3($accountId){
     	$account = $this->Amazonaccount->getAccount($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    	
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/asynAmazonProducts") ;
+    	$random = date("U") ;
+    	
+    	file_get_contents($url."?".$random);
+    	
+    	/*$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
     	$amazon = new Amazon(
 				$account['AWS_ACCESS_KEY_ID'] , 
@@ -267,7 +289,7 @@ class AmazonController extends AppController {
 		//if( !empty($request) ){
 			$user =  $this->getCookUser() ;
 			$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") , $user) ;
-		//}
+		//}*/
 		
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
@@ -277,6 +299,14 @@ class AmazonController extends AppController {
     
     public function getProductActiveReport1($accountId){
     	$account = $this->Amazonaccount->getAccount($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    	
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/startAsynAmazonActiveProducts") ;
+    	$random = date("U") ;
+    	
+    	file_get_contents($url."?".$random);
+    	
+    	/*$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
     	$amazon = new Amazon(
 				$account['AWS_ACCESS_KEY_ID'] , 
@@ -295,12 +325,21 @@ class AmazonController extends AppController {
 		}
 		
 		$this->response->type("json") ;
-		$this->response->body( "success")   ;
+		$this->response->body( "success")   ;*/
 
 		return $this->response ;
     }
     
     public function getProductActiveReport2($accountId){
+    	
+    	$account = $this->Amazonaccount->getAccount($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    	
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/asynAmazonActiveProducts") ;
+    	$random = date("U") ;
+    	
+    	file_get_contents($url."?".$random);
+    	/*
     	$account = $this->Amazonaccount->getAccount($accountId) ;
     	$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_MERCHANT_LISTINGS_DATA_") ;
     	
@@ -320,7 +359,7 @@ class AmazonController extends AppController {
 			$user =  $this->getCookUser() ;
 			$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
 		}
-		
+		*/
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
 
@@ -328,6 +367,14 @@ class AmazonController extends AppController {
     }
     
     public function getProductActiveReport3($accountId){
+    	$account = $this->Amazonaccount->getAccount($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    	
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/asynAmazonActiveProducts") ;
+    	$random = date("U") ;
+    	
+    	file_get_contents($url."?".$random);
+    	/*
     	$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
     	$amazon = new Amazon(
@@ -347,7 +394,7 @@ class AmazonController extends AppController {
 			$user =  $this->getCookUser() ;
 			$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_MERCHANT_LISTINGS_DATA_") , $user) ;
 		//}
-		
+		*/
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
 

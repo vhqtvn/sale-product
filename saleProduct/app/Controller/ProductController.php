@@ -129,7 +129,6 @@ class ProductController extends AppController {
 		$this->set('suppliers', $suppliers);
 	}
 
-	///saleProduct/index.php/product/index
 	public function seller(){
 	}
 	

@@ -22,6 +22,8 @@
 
 App::uses('Controller', 'Controller');
 
+//include('config/config_controller.php');
+
 /**
  * Application Controller
  *
@@ -61,8 +63,8 @@ class AppController extends Controller {
 				if($status == 1){
 					if( $this->endsWith($url,"index.php/")
 					||$this->endsWith($url,"index.php")
-					|| $this->endsWith($url,"saleProduct/")
-					|| $this->endsWith($url,"saleProduct") ){
+					|| $this->endsWith($url,fileContextPath."/")
+					|| $this->endsWith($url,fileContextPath) ){
 						$this->redirect("/home/phone");
 					} ;
 				}

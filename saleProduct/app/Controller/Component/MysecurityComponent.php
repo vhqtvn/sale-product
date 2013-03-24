@@ -45,13 +45,12 @@ class MysecurityComponent extends Component {
 			|| $url == 'users/logout' 
 			|| $this->startsWith($url,"gatherLevel") 
 			|| $this->startsWith($url,"taskAsynAmazon") 
-			|| $this->startsWith($url,"amazon/listOrders")
+			|| $this->startsWith($url,"gatherCategory")
 		){
 			return true ;
 		}
 		
 		return false ;
-		
 	}
 	
 	public function isAllow( $url , $user ) {

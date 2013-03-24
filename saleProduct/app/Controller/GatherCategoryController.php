@@ -20,6 +20,17 @@ class GatherCategoryController extends AppController {
 						'GatherMarketing',"Amazonaccount","Log","Tasking");
 	public $taskId = null ;
 	
+	public function doGather($accountId , $categoryId){
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		
+		$url = $this->Utils->buildUrl($account,"gatherCategory/execute") ;
+		$url = $url.'/'.$categoryId ;
+		$random = date("U") ;
+		
+		file_get_contents($url."?".$random);
+	}
+	
 	/**
 	 * 执营销集分类采集
 	 */

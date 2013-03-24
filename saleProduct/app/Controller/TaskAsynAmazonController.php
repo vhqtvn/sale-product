@@ -17,7 +17,7 @@ class TaskAsynAmazonController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Task', 'Config','Amazonaccount','Utils','Warning');
+	var $uses = array('Task', 'Config','Amazonaccount','Utils','Warning','Log','OrderService');
 	
 	public function saveTrackNumberToAamazon( $accountId ){
 		$account = $this->Amazonaccount->getAccount($accountId) ;
@@ -35,6 +35,10 @@ class TaskAsynAmazonController extends AppController {
 		
 		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
 		$feed = $this->OrderService->getTrackNumberFeed(array(),array() ,$accountId,$MerchantIdentifier) ;
+		
+		debug( $feed ) ;
+		
+		$this->Log->savelog("tn2amazon", "Account[$accountId] feed::$feed" );
 		
 		$result = $amazon->updateOrderTrackNumber( $accountId,$feed,"cron") ;
 		$this->Amazonaccount->saveAccountFeed($result) ;
