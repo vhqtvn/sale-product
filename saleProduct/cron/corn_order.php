@@ -1,3 +1,5 @@
 <?php
+include_once ('corn_config.php');
+
 $random = date("U") ;
-file_get_contents("http://www.smarteseller.com/saleProduct/index.php/taskAsynAmazon/listOrders/5?".$random);
+file_get_contents("http://".domain."/".context."/index.php/taskAsynAmazon/listOrders/".accountId."?".$random);

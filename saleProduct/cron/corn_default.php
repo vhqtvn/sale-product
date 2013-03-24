@@ -1,3 +1,6 @@
 <?php
+include_once ('corn_config.php');
+
 $random = date("U") ;
-file_get_contents("http://www.smarteseller.com/saleProduct/index.php/gatherLevel/execute/5/-?".$random);
+
+file_get_contents("http://".domain."/".context."/index.php/gatherLevel/execute/".accountId."/-?".$random);
