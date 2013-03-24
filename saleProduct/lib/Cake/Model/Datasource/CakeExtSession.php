@@ -22,7 +22,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('Hash', 'Utility');
+App::uses('HashExt', 'Utility');
 App::uses('Security', 'Utility');
 
 /**
@@ -33,7 +33,7 @@ App::uses('Security', 'Utility');
  *
  * @package       Cake.Model.Datasource
  */
-class CakeSession {
+class CakeExtSession {
 
 /**
  * True if the Session is still valid
@@ -202,7 +202,7 @@ class CakeSession {
  * @return boolean True if session has been started.
  */
 	public static function started() {
-		return isset($_SESSION) && session_id();
+		return isset($_COOKIE)  ;
 	}
 
 /**
@@ -218,7 +218,7 @@ class CakeSession {
 		if (empty($name)) {
 			return false;
 		}
-		$result = Hash::get($_SESSION, $name);
+		$result = HashExt::get($_COOKIE, $name);
 		return isset($result);
 	}
 
@@ -247,7 +247,7 @@ class CakeSession {
  */
 	public static function delete($name) {
 		if (self::check($name)) {
-			self::_overwrite($_SESSION, Hash::remove($_SESSION, $name));
+			self::_overwrite($_COOKIE, HashExt::remove($_COOKIE, $name));
 			return (self::check($name) == false);
 		}
 		self::_setError(2, __d('cake_dev', "%s doesn't exist", $name));
@@ -366,9 +366,9 @@ class CakeSession {
 		if (empty($name)) {
 			return false;
 		}
-		//$result = Hash::get($_SESSION, $name);
+		//$result = HashExt::get($_COOKIE, $name);
 		
-		$result = Hash::get($_COOKIE, $name);
+		$result = HashExt::get($_COOKIE, $name);
 		
 		print_r($result) ;
 
@@ -382,11 +382,11 @@ class CakeSession {
 /**
  * Returns all session variables.
  *
- * @return mixed Full $_SESSION array, or false on error.
+ * @return mixed Full $_COOKIE array, or false on error.
  */
 	protected static function _returnSessionVars() {
-		if (!empty($_SESSION)) {
-			return $_SESSION;
+		if (!empty($_COOKIE)) {
+			return $_COOKIE;
 		}
 		self::_setError(2, 'No Session vars set');
 		return false;
@@ -411,8 +411,8 @@ class CakeSession {
 			$write = array($name => $value);
 		}
 		foreach ($write as $key => $val) {
-			self::_overwrite($_SESSION, Hash::insert($_SESSION, $key, $val));
-			if (Hash::get($_SESSION, $key) !== $val) {
+			self::_overwrite($_COOKIE, HashExt::insert($_COOKIE, $key, $val));
+			if (HashExt::get($_COOKIE, $key) !== $val) {
 				return false;
 			}
 		}
@@ -437,7 +437,7 @@ class CakeSession {
  * @return void
  */
 	public static function clear() {
-		$_SESSION = null;
+		$_COOKIE = null;
 		self::$id = null;
 		self::start();
 		self::renew();
@@ -459,7 +459,7 @@ class CakeSession {
 		if (isset($sessionConfig['defaults'])) {
 			$defaults = self::_defaultConfig($sessionConfig['defaults']);
 			if ($defaults) {
-				$sessionConfig = Hash::merge($defaults, $sessionConfig);
+				$sessionConfig = HashExt::merge($defaults, $sessionConfig);
 			}
 		}
 		if (!isset($sessionConfig['ini']['session.cookie_secure']) && env('HTTPS')) {
@@ -484,7 +484,7 @@ class CakeSession {
 			$sessionConfig['ini']['session.cookie_httponly'] = 1;
 		}
 
-		if (empty($_SESSION)) {
+		if (empty($_COOKIE)) {
 			if (!empty($sessionConfig['ini']) && is_array($sessionConfig['ini'])) {
 				foreach ($sessionConfig['ini'] as $setting => $value) {
 					if (ini_set($setting, $value) === false) {
@@ -611,8 +611,8 @@ class CakeSession {
  */
 	protected static function _startSession() {
 		if (headers_sent()) {
-			if (empty($_SESSION)) {
-				$_SESSION = array();
+			if (empty($_COOKIE)) {
+				$_COOKIE = array();
 			}
 		} else {
 			// For IE<=8

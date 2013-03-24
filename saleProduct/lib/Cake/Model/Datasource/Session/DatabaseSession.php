@@ -92,9 +92,11 @@ class DatabaseSession implements CakeSessionHandlerInterface {
  * @return mixed The value of the key or false if it does not exist
  */
 	public function read($id) {
+		echo $id ;
 		$row = $this->_model->find('first', array(
 			'conditions' => array($this->_model->primaryKey => $id)
 		));
+		print_r($row) ;
 
 		if (empty($row[$this->_model->alias]['data'])) {
 			return false;
