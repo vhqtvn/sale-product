@@ -2,6 +2,23 @@
 class NOrderService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	function synTn2Amazon($params){
+		$Amazonaccount = ClassRegistry::init("Amazonaccount") ;
+		$Utils = ClassRegistry::init("Utils") ;
+		
+		$accountId = $params['accountId'] ;
+		
+		$account = $Amazonaccount->getAccount($accountId) ;
+		if( !empty($account) ){
+			$account = $account[0]['sc_amazon_account'] ;
+			debug($account) ;
+			$url = $Utils->buildUrl($account,"taskAsynAmazon/saveTrackNumberToAamazon") ;
+			$random = date("U") ;
+			
+			file_get_contents($url."?".$random);
+		}
+	}
+	
 	function saveOrder($order,$accountId){
 		
 		$orderId = $order['OrderId'] ;
@@ -17,7 +34,7 @@ class NOrderService extends AppModel {
 			$order['OrderNumber'] = $orderNumber ;
 			$order['accountId'] = $accountId ;
 			$this->exeSql("sql_sc_order_insert", $order) ;
-			
+		
 			try{
 				$this->exeSql("sql_sc_order_user_insert", $record) ;
 			}catch(Exception $e){

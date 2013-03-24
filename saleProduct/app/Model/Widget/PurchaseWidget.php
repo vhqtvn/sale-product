@@ -20,9 +20,9 @@ class PurchaseWidget extends AppModel {
 			$all = $this->getObject("sql_widget_purchase_all", array('loginId'=>$user['LOGIN_ID'])) ;
 			
 			return array(
-					'my'					=>array('value'=>$my['c'],'url'=>'/saleProduct/index.php/sale/purchaseList/1')
-					,'myexecutor'	=>array('value'=>$myexecutor['c'],'url'=>'/saleProduct/index.php/sale/purchaseList/2')
-					,'all'					=>array('value'=>$all['c'],'url'=>'/saleProduct/index.php/sale/purchaseList/1')
+					'my'					=>array('value'=>$my['c'],'url'=>'/sale/purchaseList/1')
+					,'myexecutor'	=>array('value'=>$myexecutor['c'],'url'=>'/sale/purchaseList/2')
+					,'all'					=>array('value'=>$all['c'],'url'=>'/sale/purchaseList/1')
 				) ;
 	}
 	

@@ -556,8 +556,8 @@ class OrderService extends AppModel {
 			if(empty($shippingMethod))	{
 				$shippingMethod = "First Class Mail" ;
 			}else{
-				if(isset($shipMethod[$shippingMethod])){
-					$shippingMethod = $shipMethod[$shippingMethod]  ;
+				if(isset($this->shipMethod[$shippingMethod])){
+					$shippingMethod = $this->shipMethod[$shippingMethod]  ;
 				}else{
 					$shippingMethod = "First Class Mail" ;
 				}
@@ -594,13 +594,23 @@ EOD;
 		
 		$index = 0 ;
 		foreach($orders as $order1){
-			$order = $order1['sc_amazon_order'] ;
+			$order = $this->formatObject($order1) ;
+			//debug($order) ;
 			$index++ ;
 			$orderId = $order['ORDER_ID'] ;
-			$orderItemId = $order['ORDER_ITEM_ID'] ;
-			$shippingMethod = $order['SHIP_SERVICE_LEVEL'] ;
-			$trackNumber = $order1[0]['TN'] ;
-			$carrierCode = $order['CARRIER_CODE'] ;
+			$trackNumber = $order['TRACK_NUMBER'] ;
+			
+			$mailClass = $order['MAIL_CLASS'] ;
+			//get shippingMethod and carrierCode
+			$shippingMethod = "" ;
+			$carrierCode = "" ;
+			if( !empty($mailClass) ){
+				$postageService = $this->getObject("sql_postage_service_getForAsynToAmazon", array('postageServiceId'=>$mailClass)) ;
+				//debug($postageService) ;
+				$shippingMethod = $postageService['SHIP_METHOD_LEVEL'] ;
+				$carrierCode = $postageService['CARRIER_CODE'] ;
+			}
+			
 			if(empty($carrierCode)){
 				$carrierCode = "USPS" ;
 			}
@@ -609,36 +619,41 @@ EOD;
 			if(empty($shippingMethod))	{
 				$shippingMethod = "First Class Mail" ;
 			}else{
-				if(isset($shipMethod[$shippingMethod])){
-					$shippingMethod = $shipMethod[$shippingMethod]  ;
+				if(isset($this->shipMethod[ $shippingMethod] )){
+					$shippingMethod = $this->shipMethod[$shippingMethod]  ;
 				}else{
 					$shippingMethod = "First Class Mail" ;
 				}
 			}
-////////////////////////////////////////////////////////////////////////////
+			
+			//getOrderItem
+			//$orderItems = $this->exeSql("sql_sc_order_item_list", array("orderId"=>$orderId)) ;
+		//	if( !empty($orderItems) ){
+				////////////////////////////////////////////////////////////////////////////
+//<Item>
+//						<AmazonOrderItemCode>$orderItemId</AmazonOrderItemCode>
+//				   </Item>
 $Feed .= <<<EOD
 	<Message>
-		<MessageID>$index</MessageID>
-		<OrderFulfillment>
-			<AmazonOrderID>$orderId</AmazonOrderID> 
-			<FulfillmentDate>$FulfillmentDate</FulfillmentDate> 
-			<FulfillmentData>
-				<CarrierCode>$carrierCode</CarrierCode> 
-				<ShippingMethod>$shippingMethod</ShippingMethod> 
-				<ShipperTrackingNumber>$trackNumber</ShipperTrackingNumber> 
-			</FulfillmentData>
-			<Item>
-				<AmazonOrderItemCode>$orderItemId</AmazonOrderItemCode>
-			</Item>
-		</OrderFulfillment>
+			<MessageID>$index</MessageID>
+			<OrderFulfillment>
+					<AmazonOrderID>$orderId</AmazonOrderID>
+					<FulfillmentDate>$FulfillmentDate</FulfillmentDate>
+					<FulfillmentData>
+						<CarrierCode>$carrierCode</CarrierCode>
+						<ShippingMethod>$shippingMethod</ShippingMethod>
+						<ShipperTrackingNumber>$trackNumber</ShipperTrackingNumber>
+				   </FulfillmentData>
+			</OrderFulfillment>
 	</Message>
 EOD;
-///////////////////////////////////////////////////
-	
-		}
+///////////////////////////////////////////////////				
+			}
+	//	}
 $Feed .= <<<EOD
 </AmazonEnvelope>
 EOD;
+
 		return $Feed ;
 	}	
 	

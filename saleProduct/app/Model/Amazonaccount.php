@@ -191,6 +191,7 @@ class Amazonaccount extends AppModel {
 						URL, 
 						CODE,
 						DOMAIN,  
+						CONTEXT,
 						CREATOR, 
 						CREATE_TIME, 
 						AWS_ACCESS_KEY_ID, 
@@ -207,6 +208,7 @@ class Amazonaccount extends AppModel {
 						'".$data['URL']."', 
 						'".$data['CODE']."', 
 						'".$data['DOMAIN']."', 
+						'".$data['CONTEXT']."', 
 						'".$loginId."', 
 						NOW(), 
 						'".$data['AWS_ACCESS_KEY_ID']."', 
@@ -226,6 +228,7 @@ class Amazonaccount extends AppModel {
 				URL = '".$data['URL']."' , 
 				CODE = '".$data['CODE']."' ,
 				DOMAIN = '".$data['DOMAIN']."' ,  
+				CONTEXT = '".$data['CONTEXT']."' ,  
 				AWS_ACCESS_KEY_ID = '".$data['AWS_ACCESS_KEY_ID']."' , 
 				AWS_SECRET_ACCESS_KEY = '".$data['AWS_SECRET_ACCESS_KEY']."' , 
 				APPLICATION_NAME = '".$data['APPLICATION_NAME']."' , 
@@ -535,22 +538,24 @@ class Amazonaccount extends AppModel {
 	}
 	
 	function getAccountProductsForLevel($accountId,$level){
-		
+		$where1 = '' ;
 		$where = " AND sc_amazon_product_category.gather_level='$level' " ;
 		if($level == '-'){
-			$where = " AND sc_amazon_product_category.gather_level not in ('A','B','C','D') " ;
+			$where = '' ;
+			$where1 = " AND(  sc_amazon_product_category.gather_level is null or sc_amazon_product_category.gather_level not in ('A','B','C','D')  )" ;
 		}
 		$sql = "SELECT DISTINCT sc_amazon_account_product.ASIN,sc_amazon_account_product.ITEM_CONDITION
-						FROM sc_amazon_product_category ,
-						sc_amazon_product_category_rel ,
-						sc_amazon_account_product
+						FROM sc_amazon_account_product
+						LEFT JOIN sc_amazon_product_category_rel
+						ON sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
+						LEFT JOIN sc_amazon_product_category 
+						ON sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
+						AND  sc_amazon_product_category.account_id = '$accountId'
+						$where1
 						WHERE
-				sc_amazon_account_product.sku = sc_amazon_product_category_rel.sku
-				and sc_amazon_account_product.account_id = '$accountId'
-				and sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
-				and sc_amazon_account_product.status = 'Y'
-				AND sc_amazon_product_category.account_id = '$accountId' $where ";
-			
+						sc_amazon_account_product.account_id = '$accountId'
+						$where  ";
+		
 		$array = $this->query($sql);
 	
 		return $array ;

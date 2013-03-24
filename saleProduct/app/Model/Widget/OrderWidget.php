@@ -21,10 +21,10 @@ class OrderWidget extends AppModel {
 			$pickedAll = $this->getObject("sql_widget_order_picked_all", array('loginId'=>$user['LOGIN_ID'])) ;
 			
 			return array(
-					'orderOne'					=>array('value'=>$orderOne['c'],'url'=>'/saleProduct/index.php/order/lists/')
-					,'orderMany'					=>array('value'=>$orderMany['c'],'url'=>'/saleProduct/index.php/order/lists/')
-					,'pickedMy'					=>array('value'=>$pickedMy['c'],'url'=>'/saleProduct/index.php/order/doingLists')
-					,'pickedAll'					=>array('value'=>$pickedAll['c'],'url'=>'/saleProduct/index.php/order/doingLists')
+					'orderOne'					=>array('value'=>$orderOne['c'],'url'=>'/order/lists/')
+					,'orderMany'					=>array('value'=>$orderMany['c'],'url'=>'/order/lists/')
+					,'pickedMy'					=>array('value'=>$pickedMy['c'],'url'=>'/order/doingLists')
+					,'pickedAll'					=>array('value'=>$pickedAll['c'],'url'=>'/order/doingLists')
 				) ;
 	}
 }

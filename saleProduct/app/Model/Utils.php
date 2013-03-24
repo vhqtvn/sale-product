@@ -4,7 +4,8 @@ class Utils extends AppModel {
 	
 	public function buildUrl( $account , $action  ){
 		$domain = $account['DOMAIN'] ;
-		$url = "http://".$domain."/saleProductTask/index.php/".$action+"/".$account['ID'] ;
+		$context = $account['CONTEXT'] ;
+		$url = "http://".$domain."/".$context."/index.php/".$action."/".$account['ID'] ;
 		return $url ;
 	}
 	

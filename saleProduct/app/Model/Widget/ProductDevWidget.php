@@ -21,10 +21,10 @@ class ProductDevWidget extends AppModel {
 		$zjl = $this->getObject("sql_widget_product_zjl", array('loginId'=>$user['LOGIN_ID'])) ;
 	
 		return array(
-				'cpzyMy'					=>array('value'=>$cpzyMy['c'],'url'=>'/saleProduct/index.php/sale/filter/1')
-				,'cpzyAll'					=>array('value'=>$cpzyAll['c'],'url'=>'/saleProduct/index.php/sale/filter/1')
-				,'cpjl'							=>array('value'=>$cpjl['c'],'url'=>'/saleProduct/index.php/sale/filter/2')
-				,'zjl'							=>array('value'=>$zjl['c'],'url'=>'/saleProduct/index.php/sale/filter/3')
+				'cpzyMy'					=>array('value'=>$cpzyMy['c'],'url'=>'/sale/filter/1')
+				,'cpzyAll'					=>array('value'=>$cpzyAll['c'],'url'=>'/sale/filter/1')
+				,'cpjl'							=>array('value'=>$cpjl['c'],'url'=>'/sale/filter/2')
+				,'zjl'							=>array('value'=>$zjl['c'],'url'=>'/sale/filter/3')
 		) ;
 	}
 }

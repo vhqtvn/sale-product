@@ -84,6 +84,8 @@
     	SELECT  
     	        s1.ORDER_ID,
                 s1.ORDER_NUMBER,
+                s1.MAIL_CLASS,
+                s1.SHIPMENT_SERVICE_LEVEL_CATEGORY,
                 (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
 	                    	FROM sc_order_item soi
 	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
@@ -93,7 +95,6 @@
                 s2.TRACK_NUMBER, 
 		s2.SHIPPING_FEE, 
 		s2.TRANSACTION_ID, 
-		s2.MAIL_CLASS, 
 		s2.POSTMARK_DATE, 
 		s2.TRANSACTION_DATETIME, 
 		s2.GROUP_CODE, 
