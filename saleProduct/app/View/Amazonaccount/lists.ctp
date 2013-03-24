@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 			echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -62,7 +64,7 @@
 		           	{align:"center",key:"CODE",label:"账户Code",width:"15%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"8%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:200,
@@ -74,12 +76,12 @@
 			
 
 			$(".register").click(function(){
-				openCenterWindow("/saleProduct/index.php/amazonaccount/add",650,530) ;
+				openCenterWindow(contextPath+"/amazonaccount/add",650,530) ;
 			}) ;
 			
 			$(".edit-account").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/amazonaccount/add/"+val,650,530) ;
+				openCenterWindow(contextPath+"/amazonaccount/add/"+val,650,530) ;
 			}) ;
 		
    	 });

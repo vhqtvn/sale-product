@@ -6,6 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
@@ -34,7 +36,7 @@
 		$(function(){
 			
 			$(".select-p").click(function(){
-				openCenterWindow("/saleProduct/index.php/saleProduct/forward/select/<?php echo $id;?>",750,500) ;
+				openCenterWindow(contextPath+"/saleProduct/forward/select/<?php echo $id;?>",750,500) ;
 			});
 			
 			$(".save-btn").click(function(){
@@ -43,7 +45,7 @@
 					json.sqlId = "sql_saleproduct_composition_save" ;
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/form/ajaxSave",
+						url:contextPath+"/form/ajaxSave",
 						data:json,
 						cache:false,
 						dataType:"text",

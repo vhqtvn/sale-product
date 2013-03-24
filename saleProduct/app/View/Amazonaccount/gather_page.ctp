@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/tree/jquery.tree');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -68,10 +70,10 @@
 				onNodeClick:function(id,text,record){
 					if( id == 'root' ){
 						currentCategoryName = "全部" ;
-						$("#gatherIfr").attr("src","/saleProduct/index.php/amazonaccount/gatherDoPage/<?php echo $accountId;?>") ;
+						$("#gatherIfr").attr("src",contextPath+"/amazonaccount/gatherDoPage/<?php echo $accountId;?>") ;
 					}else{
 						currentCategoryName = text ;
-						$("#gatherIfr").attr("src","/saleProduct/index.php/amazonaccount/gatherDoPage/<?php echo $accountId;?>/"+id) ;
+						$("#gatherIfr").attr("src",contextPath+"/amazonaccount/gatherDoPage/<?php echo $accountId;?>/"+id) ;
 					}
 				}
 	       }) ;
@@ -82,7 +84,7 @@
 <body style="magin:0px;padding:0px;">
 	<div data-widget="layout" style="width:100%;height:100%;">
 		<div region="center" split="true" border="true" title="产品采集" style="padding:2px;">
-			<iframe id="gatherIfr" name="gatherIfr" src="/saleProduct/index.php/amazonaccount/gatherDoPage/<?php echo $accountId;?>" style="width:100%;height:500px;" frameborder=0></iframe>
+			<iframe id="gatherIfr" name="gatherIfr" src="<?php echo $contextPath;?>/amazonaccount/gatherDoPage/<?php echo $accountId;?>" style="width:100%;height:500px;" frameborder=0></iframe>
 		</div>
 		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:200px;">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>

@@ -10,7 +10,7 @@ $(function(){
 		if( $(this).hasClass("update") ){
 			
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Postage.editSoftwareVendor/"+record.ID,650,500) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Postage.editSoftwareVendor/"+record.ID,650,500) ;
 			
 		}else if( $(this).hasClass("del") ){
 			var record = $.llygrid.getRecord(this) ;
@@ -20,7 +20,7 @@ $(function(){
 				});
 			}
 		}else if( $(this).hasClass("add") ){
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Postage.editSoftwareVendor",650,500) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Postage.editSoftwareVendor",650,500) ;
 		}
 		return false ;
 	})
@@ -42,7 +42,7 @@ $(function(){
 			{align:"left",key:"DB_PASSWORD",label:"数据库密码",width:"10%"},
 			{align:"left",key:"MEMO",label:"备注",width:"20%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){

@@ -2,7 +2,7 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/details/"+id,900,650) ;
+					openCenterWindow(contextPath+"/saleProduct/details/"+id,900,650) ;
 				}else if( $(this).hasClass("giveup") ){
 					var type = $(this).attr("type");
 					var message = type == 1?"确认将该货品作废吗":"确认恢复该货品吗？"
@@ -10,7 +10,7 @@
 					if(window.confirm(message)){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/saleProduct/giveup/"+id+"/"+type,
+							url:contextPath+"/saleProduct/giveup/"+id+"/"+type,
 							data:{id:id},
 							cache:false,
 							dataType:"text",
@@ -20,11 +20,11 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",800,620) ;
+					openCenterWindow(contextPath+"/saleProduct/forward/edit_product/",800,620) ;
 				}else if( $(this).hasClass("inout") ){//货品出入库明细
-					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.storageDetails/"+id,850,600) ;
+					openCenterWindow(contextPath+"/page/forward/Warehouse.In.storageDetails/"+id,850,600) ;
 				}else if( $(this).hasClass("assign") ){//货品出入库明细
-					openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.assign/"+id,850,600) ;
+					openCenterWindow(contextPath+"/page/forward/Warehouse.In.assign/"+id,850,600) ;
 				}
 				return false ;
 			});
@@ -51,10 +51,10 @@
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
 		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
 		           		if( record.LAST_ASSIGN_TIME &&( val >= record.LAST_ASSIGN_TIME ) ){
-							return '<img title="已经分配" src="/saleProduct/app/webroot/img/success.gif">';
+							return '<img title="已经分配" src="/'+fileContextPath+'/app/webroot/img/success.gif">';
 				
 		           		}
-		           		return "<img title='未分配' src='/saleProduct/app/webroot/img/error.gif'>"  ;
+		           		return "<img title='未分配' src='/"+fileContextPath+"/app/webroot/img/error.gif'>"  ;
 		           	}},
 		           	{align:"center",key:"QUANTITY",label:"总",group:"库存",width:"5%" },
 		        	{align:"center",key:"COMMON_QUANTITY",label:"普通",group:"库存",width:"5%" },
@@ -76,7 +76,7 @@
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
@@ -94,7 +94,7 @@
 						}
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

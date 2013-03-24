@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
@@ -45,7 +47,7 @@
 				
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/sale/savePurchasePlan",
+						url:contextPath+"/sale/savePurchasePlan",
 						data:json,
 						cache:false,
 						dataType:"text",
@@ -59,7 +61,7 @@
 			}) ;
 			
 			$(".add-on").click(function(){
-				openCenterWindow("/saleProduct/index.php/users/selectUsers",600,400) ;
+				openCenterWindow(contextPath+"/users/selectUsers",600,400) ;
 			}) ;
 			
 			$( "#plan_time" ).datepicker({dateFormat:"yy-mm-dd"});

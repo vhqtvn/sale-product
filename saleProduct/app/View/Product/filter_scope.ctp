@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 			echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -27,7 +29,7 @@
 		           	{align:"center",key:"NAME",label:"任务名称",width:"30%",forzen:false,align:"left"},
 		           	{align:"center",key:"UPLOAD_TIME",label:"添加时间",width:"30%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:150,
@@ -44,7 +46,7 @@
 		           	{align:"center",key:"NAME",label:"商家名称",width:"30%",forzen:false,align:"left"},
 		           	{align:"center",key:"CREATE_TIME",label:"添加时间",width:"30%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/sellerUpload"},
+		         ds:{type:"url",content:contextPath+"/grid/sellerUpload"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:150,

@@ -10,7 +10,7 @@ $(function(){
 		if( $(this).hasClass("update") ){
 			
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Postage.editPostageVendor/"+record.ID,600,400) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Postage.editPostageVendor/"+record.ID,600,400) ;
 			
 		}else if( $(this).hasClass("del") ){
 			var record = $.llygrid.getRecord(this) ;
@@ -20,13 +20,13 @@ $(function(){
 				});
 			}
 		}else if( $(this).hasClass("add") ){
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Postage.editPostageVendor",600,400) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Postage.editPostageVendor",600,400) ;
 		}else if( $(this).hasClass("addServices") ){
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Postage.editPostageServices/"+record.ID,600,500) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Postage.editPostageServices/"+record.ID,600,500) ;
 		}else if( $(this).hasClass("updateServices") ){
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Postage.editPostageServices/"+currentVendorId+"/"+record.ID,600,500) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Postage.editPostageServices/"+currentVendorId+"/"+record.ID,600,500) ;
 			
 		}
 		return false ;
@@ -48,7 +48,7 @@ $(function(){
 			{align:"left",key:"SOFTWARE_NAME",label:"物流软件商",width:"15%"},
 			{align:"left",key:"MEMO",label:"备注",width:"27%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
@@ -82,7 +82,7 @@ $(function(){
 			{align:"left",key:"COUNTRY",label:"国家",width:"15%"},
 			{align:"left",key:"MEMO",label:"备注",width:"27%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){

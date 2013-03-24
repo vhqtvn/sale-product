@@ -6,6 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -69,13 +71,13 @@
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
 		           	{align:"center",key:"MEMO",label:"备注",width:"35%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -89,7 +91,7 @@
 			}) ;
 				
 	    	$(".add-composition").click(function(){
-	    		openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_composition/<?php echo $id;?>",550,300) ;
+	    		openCenterWindow(contextPath+"/saleProduct/forward/edit_composition/<?php echo $id;?>",550,300) ;
 	    	}) ;   
 	    	
 	    	$(".del").live('click',function(){
@@ -97,7 +99,7 @@
 	    		if(window.confirm("确认删除吗？")){
 	    			$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/saleProduct/deleteComposition",
+						url:contextPath+"/saleProduct/deleteComposition",
 						data:record,
 						cache:false,
 						dataType:"text",

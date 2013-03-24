@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -54,7 +56,7 @@
 		var relations = [] ;
 		$.ajax({
 			type:"get",
-			url:"/saleProduct/index.php/grid/configitem",
+			url:contextPath+"/grid/configitem",
 			data:{start:0,limit:1000,curPage:0,end:0},
 			cache:false,
 			dataType:"text",
@@ -116,7 +118,7 @@
 			var name   = $("#ruleName").val() ;
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/product/saveScript",
+				url:contextPath+"/product/saveScript",
 				data:{id:id,name:name,scripts:scripts},
 				cache:false,
 				dataType:"text",

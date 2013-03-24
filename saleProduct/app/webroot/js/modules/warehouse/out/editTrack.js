@@ -21,7 +21,7 @@ $(function(){
            	{align:"center",key:"CREATE_TIME",label:"时间",width:"8%"},
            	{align:"center",key:"CREATOR_NAME",label:"操作人",width:"8%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
@@ -34,7 +34,7 @@ $(function(){
 	}) ;
 	
 	$(".add-track").live("click",function(){
-		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.addTrack/"+inId,550,420) ;
+		openCenterWindow(contextPath+"/page/forward/Warehouse.In.addTrack/"+inId,550,420) ;
 	}) ;
  });
  

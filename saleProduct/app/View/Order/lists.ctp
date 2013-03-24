@@ -7,10 +7,12 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
 	<script type="text/javascript">
-     var accountId = "<?php echo $accountId;?>" ;
-     var status = "<?php echo $status;?>"
+     var accountId = "" ;
+     var status = ""
     </script>
    <?php
+   include_once ('config/config.php');
+   
 			echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');

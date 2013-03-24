@@ -54,7 +54,7 @@ function formatGridData(data){
 					{align:"left",key:"NAME",label:"货品名称", width:"10%"},
 					{align:"center",key:"IMAGE_URL",label:"图片", width:"10%",format:function(val,record){
 						if(val){
-							return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'/>" ;
+							return "<img src='/"+fileContextPath+"/"+val+"' style='width:50px;height:50px;'/>" ;
 						}
 						return "" ;
 					}},
@@ -83,7 +83,7 @@ function formatGridData(data){
 		         ],
 		        // 序号、产品SKU、名称、图片，位置、数量，完成状态，备注信息。拣货人
 
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 				 limit:1000,
 				 pageSizes:[1000],
 				/* height:function(){

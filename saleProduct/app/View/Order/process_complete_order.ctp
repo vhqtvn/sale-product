@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
@@ -36,7 +38,7 @@
 					json.type = json.type||"" ;
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/order/saveRedoOrder",
+						url:contextPath+"/order/saveRedoOrder",
 						data:json,
 						cache:false,
 						dataType:"text",

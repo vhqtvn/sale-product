@@ -6,6 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -52,7 +54,7 @@
 			           		}else{
 			           			return "" ;
 			           		}
-			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
@@ -71,7 +73,7 @@
 			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" }
 			           	
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+			         ds:{type:"url",content:contextPath+"/grid/query"},
 					 limit:10,
 					 pageSizes:[10,15,20,30,40],
 					 height:350,
@@ -93,7 +95,7 @@
 
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
-					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"}}) ;	
+					{ds:{type:"url",content:contextPath+"/grid/query/"}}) ;	
 			}) ;
 			
 			function getQueryCondition(){
@@ -108,11 +110,11 @@
 			}
 			
 			$(".add-channel-product").click(function(){
-				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $id;?>/1",1000,640) ;
+				openCenterWindow(contextPath+"/saleProduct/bindProduct/<?php echo $id;?>/1",1000,640) ;
 			}) ;
 			
 			$(".add-sku").click(function(){
-				openCenterWindow("/saleProduct/index.php/saleProduct/bindProduct/<?php echo $id;?>/2",1000,640) ;
+				openCenterWindow(contextPath+"/saleProduct/bindProduct/<?php echo $id;?>/2",1000,640) ;
 			}) ;
    	 });
    </script>

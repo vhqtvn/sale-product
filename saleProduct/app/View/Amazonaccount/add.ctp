@@ -2,12 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>供应商</title>
+    <title>Amazon账户</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-		
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
@@ -35,7 +36,10 @@
 		}
 		
 		input{
-			width:300px;
+			width:98%;
+		}
+		.table th, .table td{
+			padding:5px 8px;
 		}
    </style>
 
@@ -49,7 +53,7 @@
 
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/amazonaccount/saveAccount",
+						url:contextPath+"/amazonaccount/saveAccount",
 						data:json,
 						cache:false,
 						dataType:"text",
@@ -67,9 +71,9 @@
 <body>
 <form id="personForm" action="#" data-widget="validator,ajaxform">
 <input type="hidden" id="ID" value="<?php echo $account[0]['sc_amazon_account']['ID'];?>"/>
-	<table class="table">
+	<table class="table table-bordered">
 		<tr>
-			<td style="width:150px;">账户名称：</td><td><input data-validator="required" type="text" id="NAME" value="<?php echo $account[0]['sc_amazon_account']['NAME'];?>"/></td>
+			<td style="width:170px;">账户名称：</td><td><input data-validator="required" type="text" id="NAME" value="<?php echo $account[0]['sc_amazon_account']['NAME'];?>"/></td>
 		</tr>
 		<tr>
 			<td>账户CODE：</td><td><input data-validator="required" type="text" id="CODE" value="<?php echo $account[0]['sc_amazon_account']['CODE'];?>"/>
@@ -79,6 +83,9 @@
 		</tr>
 		<tr>
 			<td>操作主机：</td><td><input type="text"  id="DOMAIN" value="<?php echo $domain;?>"/></td>
+		</tr>
+		<tr>
+			<td>定时任务上下文：</td><td><input type="text"  id="CONTEXT" value="<?php echo $account[0]['sc_amazon_account']['CONTEXT'];?>"/></td>
 		</tr>
 		<tr>
 			<td>AWS_ACCESS_KEY_ID：</td><td><input type="text" id="AWS_ACCESS_KEY_ID" value="<?php echo $account[0]['sc_amazon_account']['AWS_ACCESS_KEY_ID'];?>"/></td>

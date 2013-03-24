@@ -10,7 +10,7 @@
 		           		return '<a href="#" class="select-product"  pickId="'+record.ID+'">'+img+'</a>&nbsp;'+val+"<strong>（"+record.TOTAL+"）</strong>" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -31,13 +31,13 @@
 			}) ;
 			
 			$(".btn-outwarehouse").click(function(){
-				openCenterWindow("/saleProduct/index.php/order/outWarehouse",850,450) ;
+				openCenterWindow(contextPath+"/order/outWarehouse",850,450) ;
 			}) ;
 			
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/order/editPicked",600,400) ;
+					openCenterWindow(contextPath+"/order/editPicked",600,400) ;
 				} 
 				return false ;
 			}) ;
@@ -48,19 +48,19 @@
 				var status = $(this).attr("status");
 				
 				if( action == 4 ){//打印拣货单
-					openCenterWindow("/saleProduct/index.php/order/printPicked/"+currentPickId,950,650) ;
+					openCenterWindow(contextPath+"/order/printPicked/"+currentPickId,950,650) ;
 					return ;
 				}else if( action == 5 ){//二次分拣
-					openCenterWindow("/saleProduct/index.php/order/rePrintPicked/"+currentPickId+"/1",950,550) ;
+					openCenterWindow(contextPath+"/order/rePrintPicked/"+currentPickId+"/1",950,550) ;
 					return ;
 				}else if( action == 10 ){//导出
-					openCenterWindow("/saleProduct/index.php/order/exportPicked/"+currentPickId+"/1",950,550) ;
+					openCenterWindow(contextPath+"/order/exportPicked/"+currentPickId+"/1",950,550) ;
 					return ;
 				}else if( action == 6 ){//确认发货
 					if( window.confirm("确认发货并更新TN到Amazon？") ){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/order/saveTrackNumberToAamazon/"+currentPickId ,
+							url:contextPath+"/order/saveTrackNumberToAamazon/"+currentPickId ,
 							data:{},
 							cache:false,
 							dataType:"text",
@@ -86,7 +86,7 @@
 			
 			$(".select-product").live("click",function(){
 				var pickId = $(this).attr("pickId") ;
-				openCenterWindow("/saleProduct/index.php/order/selectPickedProduct/"+pickId,1000,600) ;
+				openCenterWindow(contextPath+"/order/selectPickedProduct/"+pickId,1000,600) ;
 			})
 
 			//var sqlId = "sql_order_doing_list" ;
@@ -105,7 +105,7 @@
 		           		}else{
 		           			return "" ;
 		           		}
-		           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+		           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 		           	}},
 			        {align:"center",key:"RMA_RESHIP",label:"重发数量", width:"8%",format:function(val,record){
 			        	//alert(record.RMA_STATUS+"  "+record.RMA_VALUE+"  "+record.RMA_RESHIP) ;
@@ -124,7 +124,7 @@
 				      		var html = [] ;
 				      		$( val.split(";") ).each(function(index,item){
 				      			var array = item.split("|") ;
-				      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+				      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
 				      		})  ;
 				      		return html.join("") ;
 				      	}},
@@ -137,7 +137,7 @@
 						{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
 						{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

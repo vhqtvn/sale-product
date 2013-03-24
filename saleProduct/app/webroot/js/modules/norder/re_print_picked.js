@@ -9,7 +9,7 @@
 		passed:function(orderId){
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/order/repickedException/" ,
+				url:contextPath+"/order/repickedException/" ,
 				data:{type:'',memo:'',orderId:orderId,status:12},//9拣货 11异常 10完成 12拣货完成
 				cache:false,
 				dataType:"text",
@@ -49,7 +49,7 @@
 				if( window.confirm("确认订单为异常订单吗？") ){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/order/repickedException/" ,
+						url:contextPath+"/order/repickedException/" ,
 						data:{type:type,memo:memo,orderId:orderId,status:11},
 						cache:false,
 						dataType:"text",
@@ -152,7 +152,7 @@
 					{align:"left",key:"MEMO",label:"备注", width:"90"},
 					{align:"center",key:"IMAGE_URL",label:"图片", width:"45",format:function(val,record){
 						if(val){
-							return "<img src='/saleProduct/"+val+"' style='width:50px;height:50px;'/>" ;
+							return "<img src='/"+fileContextPath+"/"+val+"' style='width:50px;height:50px;'/>" ;
 						}
 						return "" ;
 					}},
@@ -170,7 +170,7 @@
 		         ],
 		        // 序号、产品SKU、名称、图片，位置、数量，完成状态，备注信息。拣货人
 
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 				 limit:1000,
 				 pageSizes:[1000],
 				/* height:function(){

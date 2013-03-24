@@ -6,6 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -101,12 +103,12 @@
 						currentCategoryId = "" ;
 						currentCategoryText = "" ;
 						$(".grid-content").llygrid("reload",getQueryCondition(),
-							{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+							{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 					}else{
 						currentCategoryId = id ;
 						currentCategoryText = text ;
 						$(".grid-content").llygrid("reload",getQueryCondition(),
-							{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+							{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 					}
 				}
 	       }) ;
@@ -130,7 +132,7 @@
 			           		}else{
 			           			return "" ;
 			           		}
-			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
@@ -149,7 +151,7 @@
 			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" }
 			           	
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+			         ds:{type:"url",content:contextPath+"/grid/query"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
@@ -186,7 +188,7 @@
 				if( window.confirm("确认保存？") ){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/saleProduct/saveSelectedProducts/" ,
+						url:contextPath+"/saleProduct/saveSelectedProducts/" ,
 						data:{items:items.join(","),unitems:unitems.join(","),id:'<?php echo $realId;?>'},
 						cache:false,
 						dataType:"text",
@@ -203,12 +205,12 @@
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				var sku = $(this).attr("sku") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
 			}) ;
 			
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
-					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+					{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			function getQueryCondition(){

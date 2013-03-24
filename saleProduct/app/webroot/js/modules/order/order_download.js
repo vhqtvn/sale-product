@@ -38,10 +38,10 @@ var Page = {
 		}) ;
 	},
 	download:function(){
-		window.location.href = "/saleProduct/index.php/order/doDownloadOrder/"+accountId;
+		window.location.href = contextPath+"/order/doDownloadOrder/"+accountId;
 	},
 	reDownload:function(id){ //重新下载
-		window.location.href = "/saleProduct/index.php/order/doDownloadOrder/"+accountId+"/"+id;
+		window.location.href = contextPath+"/order/doDownloadOrder/"+accountId+"/"+id;
 		return false ;
 	},
 	asynTn2Amazon:function(){
@@ -55,7 +55,7 @@ var Page = {
 		           		return '<a href="#" class="redownload">'+img+'</a>&nbsp;'+val+"<strong></strong>" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -109,7 +109,7 @@ var Page = {
 		           		}else{
 		           			return "" ;
 		           		}
-		           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+		           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 		           	}},
 		           	{align:"center",key:"ORDER_ID",label:"ORDER_ID", width:"20%"},
 		           	{align:"center",key:"ORDER_ITEM_ID",label:"ORDER_ITEM_ID", width:"15%"},
@@ -119,7 +119,7 @@ var Page = {
 		           	{align:"center",key:"TRANSACTION_ID",label:"TRANSACTION_ID",sort:true, width:"20%"},
 		           	{align:"center",key:"MAIL_CLASS",label:"MAIL_CLASS", width:"30%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

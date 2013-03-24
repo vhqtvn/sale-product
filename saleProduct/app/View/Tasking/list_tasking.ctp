@@ -6,6 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 
@@ -87,7 +89,7 @@
 			            	return "<a href='#' taskId='"+val+"'>查看</a>" ;
 			            }}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+			         ds:{type:"url",content:contextPath+"/grid/query"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
@@ -105,9 +107,9 @@
 			
 			$("[taskingId]").live('click',function(){
 				$taskId = $(this).attr("taskingId") ;
-				var url = "/saleProduct/index.php/tasking/stop/"+ $taskId ;
+				var url = contextPath+"/tasking/stop/"+ $taskId ;
 				if($(this).hasClass("btn-danger")){
-					url = "/saleProduct/index.php/tasking/stop/"+ $taskId+"/1" ;
+					url = contextPath+"/tasking/stop/"+ $taskId+"/1" ;
 				}
 				
 	 			$.ajax({
@@ -124,7 +126,7 @@
 	 		
 	 		$("[taskId]").live("click",function(){
 				var taskId = $(this).attr("taskId") ;
-				openCenterWindow("/saleProduct/index.php/log/taskLog/"+taskId,600,480) ;
+				openCenterWindow(contextPath+"/log/taskLog/"+taskId,600,480) ;
 				return false ;
 			})
 			

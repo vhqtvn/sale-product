@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
@@ -62,7 +64,7 @@
 				
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/amazonaccount/saveAccountProduct",
+						url:contextPath+"/amazonaccount/saveAccountProduct",
 						data:json,
 						cache:false,
 						dataType:"text",

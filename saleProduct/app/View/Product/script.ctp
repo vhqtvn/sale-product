@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -50,12 +52,12 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/product/editScript/"+id,800,600) ;
+					openCenterWindow(contextPath+"/product/editScript/"+id,800,600) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
+							url:contextPath+"/product/deleteScript/"+id,
 							data:{id:id},
 							cache:false,
 							dataType:"text",
@@ -65,7 +67,7 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/product/editScript",800,600) ;
+					openCenterWindow(contextPath+"/product/editScript",800,600) ;
 				} 
 				return false ;
 			})
@@ -83,7 +85,7 @@
 		           	{align:"center",key:"NAME",label:"NAME",width:"40%",forzen:false,align:"left"},
 		           	{align:"center",key:"SCRIPTS",label:"SCRIPTS",width:"40%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:200,

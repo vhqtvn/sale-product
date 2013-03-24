@@ -10,7 +10,7 @@ $(function(){
 		if( $(this).hasClass("update") ){
 			
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Package.editPackageGroup/"+record.ID,600,400) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Package.editPackageGroup/"+record.ID,600,400) ;
 			
 		}else if( $(this).hasClass("del") ){
 			var record = $.llygrid.getRecord(this) ;
@@ -20,13 +20,13 @@ $(function(){
 				});
 			}
 		}else if( $(this).hasClass("add") ){
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Package.editPackageGroup",600,400) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Package.editPackageGroup",600,400) ;
 		}else if( $(this).hasClass("addServices") ){
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Package.editPackageGroupItem/"+record.ID,620,400) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Package.editPackageGroupItem/"+record.ID,620,400) ;
 		}else if( $(this).hasClass("updateServices") ){
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/SaleProduct.Package.editPackageGroupItem/"+currentVendorId+"/"+record.ID,620,400) ;
+			openCenterWindow(contextPath+"/page/forward/SaleProduct.Package.editPackageGroupItem/"+currentVendorId+"/"+record.ID,620,400) ;
 			
 		}
 		return false ;
@@ -46,7 +46,7 @@ $(function(){
 			{align:"left",key:"NAME",label:"名称",width:"15%"},
 			{align:"left",key:"MEMO",label:"备注",width:"47%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
@@ -82,7 +82,7 @@ $(function(){
 			{align:"left",key:"WIDTH",label:"宽",width:"5%"},
 			{align:"left",key:"HEIGHT",label:"高",width:"5%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){

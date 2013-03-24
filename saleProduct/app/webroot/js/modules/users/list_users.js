@@ -5,7 +5,7 @@ $(function(){
 		if( $(this).hasClass("update") ){
 			
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/users/editUser/"+id,600,430) ;
+			openCenterWindow(contextPath+"/users/editUser/"+id,600,430) ;
 			
 		}else if( $(this).hasClass("del") ){
 			
@@ -16,7 +16,7 @@ $(function(){
 				});
 			}
 		}else if( $(this).hasClass("add") ){
-			openCenterWindow("/saleProduct/index.php/users/editUser",600,430) ;
+			openCenterWindow(contextPath+"/users/editUser",600,430) ;
 		} 
 		return false ;
 	})
@@ -39,7 +39,7 @@ $(function(){
            	{align:"left",key:"EMAIL",label:"邮箱",width:"20%"},
            	{align:"center",key:"GROUP_NAME",label:"用户组",width:"10%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){

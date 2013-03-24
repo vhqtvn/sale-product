@@ -25,7 +25,7 @@ $(function(){
 			{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
 			{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
@@ -45,7 +45,7 @@ $(function(){
 		
 		if( action == 4 ){//打印拣货单
 			alert("合并打印拣货单");
-			openCenterWindow("/saleProduct/index.php/order/printPicked/"+pickedId,950,650) ;
+			openCenterWindow(contextPath+"/order/printPicked/"+pickedId,950,650) ;
 			return ;
 		}
 	
@@ -72,7 +72,7 @@ $(function(){
 		if( window.confirm(msg) ){
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/order/savePickedOrder/"+pickedId ,
+				url:contextPath+"/order/savePickedOrder/"+pickedId ,
 				data:{status:status,orders:orders.join(","),memo:$("#memo").val(),action:action},
 				cache:false,
 				dataType:"text",

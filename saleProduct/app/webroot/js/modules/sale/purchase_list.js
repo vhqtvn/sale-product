@@ -63,7 +63,7 @@
 						return "" ;
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/<?php echo $flag;?>"},
+		         ds:{type:"url",content:contextPath+"/grid/query/<?php echo $flag;?>"},
 				 limit:5,
 				 pageSizes:[5,10,20,30,40],
 				 height:130,
@@ -101,13 +101,13 @@
 			
 			$(".print-product").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/sale/purchaseListPrint/"+val,1000,700) ;
+				openCenterWindow(contextPath+"/sale/purchaseListPrint/"+val,1000,700) ;
 			}) ;
 			
 			
 			$(".export-product").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				$("#exportIframe").attr("src","/saleProduct/index.php/sale/exportForPurchasePlanDetails/"+val) ;
+				$("#exportIframe").attr("src",contextPath+"/sale/exportForPurchasePlanDetails/"+val) ;
 			}) ;
 			
 			
@@ -117,24 +117,24 @@
 			
 			$(".add-outer-product").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/sale/addPurchasePlanOuterProduct/"+val,600,400) ;
+				openCenterWindow(contextPath+"/sale/addPurchasePlanOuterProduct/"+val,600,400) ;
 			});
 			
 			
 			$(".add-product").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow("/saleProduct/index.php/sale/selectPurchaseProduct/"+val,1020,600) ;
+				openCenterWindow(contextPath+"/sale/selectPurchaseProduct/"+val,1020,600) ;
 			}) ;
 			
 			
 			$(".edit_purchase_plan").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow("/saleProduct/index.php/sale/createPurchasePlan/"+val,600,400) ;
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,400) ;
 				return false;
 			}) ;
 			
 			$(".create-plan").click(function(){
-				openCenterWindow("/saleProduct/index.php/sale/createPurchasePlan/",600,400) ;
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,400) ;
 			}) ;
 			
 			$(".grid-content-details").llygrid({
@@ -144,21 +144,21 @@
 						var status = record.STATUS ;
 						var html = [] ;
 						if($edit_pp_product && (!status ||status < 2) )
-							html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><img src="/saleProduct/app/webroot/img/edit.png"/></a>&nbsp;') ;
+							html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
 						if($delete_pp_product && (!status ||status < 2))
-							html.push('<a href="#" title="删除" class="del-action" asin="'+record.ASIN+'" planId="'+record.PLAN_ID+'"  val="'+val+'"><img src="/saleProduct/app/webroot/img/delete.gif"/></a>&nbsp;') ;
+							html.push('<a href="#" title="删除" class="del-action" asin="'+record.ASIN+'" planId="'+record.PLAN_ID+'"  val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/delete.gif"/></a>&nbsp;') ;
 						
 						if( $apply_purchase && ( !status || status == 1||status == 4 ) ){
-							html.push('|<a href="#" title="申请采购" class="paction" planId="'+record.PLAN_ID+'" status="2" val="'+val+'"><img src="/saleProduct/app/webroot/img/apply.png"/></a>&nbsp;') ;
+							html.push('|<a href="#" title="申请采购" class="paction" planId="'+record.PLAN_ID+'" status="2" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/apply.png"/></a>&nbsp;') ;
 						}
 						
 						if( $audit_purchase && status == 2){
-							html.push('|<a href="#" title="审批通过" class="paction"  planId="'+record.PLAN_ID+'" status="3" val="'+val+'"><img src="/saleProduct/app/webroot/img/success.gif"/></a>&nbsp;') ;
-							html.push('<a href="#" title="审批不通过" class="paction" planId="'+record.PLAN_ID+'" status="4" val="'+val+'"><img src="/saleProduct/app/webroot/img/error.gif"/></a>&nbsp;') ;
+							html.push('|<a href="#" title="审批通过" class="paction"  planId="'+record.PLAN_ID+'" status="3" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/success.gif"/></a>&nbsp;') ;
+							html.push('<a href="#" title="审批不通过" class="paction" planId="'+record.PLAN_ID+'" status="4" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/error.gif"/></a>&nbsp;') ;
 						}
 						
 						if($confirm_purchase && status == 3){
-							html.push('|<a href="#" title="已采购" class="paction" planId="'+record.PLAN_ID+'" status="5" val="'+val+'"><img src="/saleProduct/app/webroot/img/pkg.gif"/></a>&nbsp;') ;
+							html.push('|<a href="#" title="已采购" class="paction" planId="'+record.PLAN_ID+'" status="5" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pkg.gif"/></a>&nbsp;') ;
 						}
 						return html.join("") ;
 						
@@ -194,7 +194,7 @@
 		           		
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 		           		}
 		           		return "" ;
 		           		
@@ -335,7 +335,7 @@
 		            {align:"center",key:"SAMPLE_CODE",label:"样品编码",width:"8%"}
 		           	
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -358,13 +358,13 @@
 			$(".cost").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				var type = $(this).attr("type") ;
-				openCenterWindow("/saleProduct/index.php/cost/view/"+asin+"/"+type,600,600) ;
+				openCenterWindow(contextPath+"/cost/view/"+asin+"/"+type,600,600) ;
 				return false ;
 			}) ;
 			
 			$(".edit-action").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow("/saleProduct/index.php/sale/editPurchasePlanProduct/"+val,750,580) ;
+				openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,750,580) ;
 			}) ;
 			
 			$(".paction").live("click",function(){
@@ -378,7 +378,7 @@
 				if(window.confirm("确认执行该操作【"+opName+"】吗？")){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/sale/updatePurchasePlanProductStatus",
+						url:contextPath+"/sale/updatePurchasePlanProductStatus",
 						data:{
 							id:val,
 							status:status
@@ -406,7 +406,7 @@
 				if(window.confirm("确认删除该采购产品["+asin+"]吗？")){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/sale/deletePurchasePlanProduct",
+						url:contextPath+"/sale/deletePurchasePlanProduct",
 						data:{
 							id:val
 						},
@@ -423,12 +423,12 @@
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			})
 			
 			$(".process-action").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/sale/productFilter/"+val+"/"+type,900,600) ;
+				openCenterWindow(contextPath+"/sale/productFilter/"+val+"/"+type,900,600) ;
 			}) ;
 			
    	 });

@@ -55,7 +55,7 @@
 					{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
 					{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
+		         ds:{type:"url",content:contextPath+"/grid/query/"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -88,7 +88,7 @@
 					return ;
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/order/saveAudit" ,
+						url:contextPath+"/order/saveAudit" ,
 						data:{status:status,orders:orders.join(","),memo:$("#memo").val()},
 						cache:false,
 						dataType:"text",
@@ -103,7 +103,7 @@
 			}) ;
 			
 			$(".export").click(function(){
-				openCenterWindow("/saleProduct/index.php/order/selectExportOrder/",1000,600) ;
+				openCenterWindow(contextPath+"/order/selectExportOrder/",1000,600) ;
 			}) ;
 			
 			$(".query").click(function(){

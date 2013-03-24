@@ -10,7 +10,7 @@ $(function(){
 		if( $(this).hasClass("update") ){
 			
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/Suggest.editSuggest/"+record.ID,600,500) ;
+			openCenterWindow(contextPath+"/page/forward/Suggest.editSuggest/"+record.ID,600,500) ;
 			
 		}else if( $(this).hasClass("del") ){
 			
@@ -21,7 +21,7 @@ $(function(){
 				});
 			}
 		}else if( $(this).hasClass("add") ){
-			openCenterWindow("/saleProduct/index.php/page/forward/Suggest.editSuggest",600,500) ;
+			openCenterWindow(contextPath+"/page/forward/Suggest.editSuggest",600,500) ;
 		} 
 		return false ;
 	})
@@ -53,7 +53,7 @@ $(function(){
            	{align:"center",key:"CREATOR",label:"创建人",width:"10%"},
            	{align:"left",key:"CREATE_TIME",label:"创建时间",width:"13%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){

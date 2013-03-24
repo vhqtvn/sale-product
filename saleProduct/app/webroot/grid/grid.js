@@ -966,5 +966,5 @@ jQuery.fn.toJson = function(beforeExtend,afterExtend,params) {
 
 //common action 
 function viewSupplier(id){
-	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,600,500) ;
+	openCenterWindow(contextPath+"/supplier/view/"+id,600,500) ;
 }

@@ -26,7 +26,7 @@ $(function(){
 	           	}},
 	           	{key:"MEMO",label:"备注",width:"20%"}
 	         ],
-	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:10,
 			 pageSizes:[5,10,20,30],
 			 height:function(){
@@ -43,12 +43,12 @@ $(function(){
 	
 		//添加选项
 		$(".add-btn").click(function(){
-			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editOption",780,530) ;
+			openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editOption",780,530) ;
 		}) ;
 		
 		$(".edit").live("click",function(){
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editOption/"+record.CODE,780,530) ;
+			openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editOption/"+record.CODE,780,530) ;
 			return false;
 		}) ;
 		

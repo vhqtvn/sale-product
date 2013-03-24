@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -72,7 +74,7 @@
 		           		return val ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
@@ -86,7 +88,7 @@
 <body>
 
    <div style="border:1px solid #CCC;margin:3px;" class="toolbar">
-	    <form action="/saleProduct/index.php/order/doUpload/<?php echo $accountId;?>"
+	    <form action="<?php echo $contextPath;?>/order/doUpload/<?php echo $accountId;?>"
 	    	data-widget="validator" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
 		   <table border=0 cellPadding=3 cellSpacing=4 >
 		    <tr>

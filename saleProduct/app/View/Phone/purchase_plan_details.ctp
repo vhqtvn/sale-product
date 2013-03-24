@@ -1,5 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
+<?php 
+include_once ('config/config.php');
+
+?>
  <title>采购产品列表</title>
 <style type="text/css">
 	table{
@@ -33,13 +37,13 @@
     ?>
     <tr>
     	<td><?php echo $index;?></td>
-		<td><a href="/saleProduct/index.php/phone/productDetails/<?php echo $record['ASIN'];?>"><?php echo $record['ASIN'];?></a></td>
+		<td><a href="<?php echo $contextPath;?>/phone/productDetails/<?php echo $record['ASIN'];?>"><?php echo $record['ASIN'];?></a></td>
 		<td><?php echo $title;?></td>
 		<td>
 		<?php if(empty($localUrl)){}else{
 			$localUrl = str_replace("%" , "%25",$localUrl) ;
 		?>
-		<img src='<?php echo '/saleProduct/'.$localUrl;?>'>
+		<img src='<?php echo '/'.$fileContextPath.'/'.$localUrl;?>'>
 		<?php
 		}?>
 		</td>

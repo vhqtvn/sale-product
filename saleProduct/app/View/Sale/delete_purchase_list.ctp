@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -57,7 +59,7 @@
 		           		
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
 		           		}
 		           		return "" ;
 		           		
@@ -78,7 +80,7 @@
 		           	<?php	
 		           	}?>
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:300,
@@ -98,7 +100,7 @@
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			})
    	 });
    	 

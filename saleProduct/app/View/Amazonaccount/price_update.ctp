@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -21,9 +23,9 @@
   	$(function(){
   		var tab = $('#tabs-default').tabs( {
 			tabs:[
-				{label:'价格列表更新',url:'/saleProduct/index.php/amazonaccount/productListsPrice/<?php echo $accountId?>',iframe:true},
-				{label:'价格上传更新',url:'/saleProduct/index.php/amazon/priceimportPage/<?php echo $accountId?>',iframe:true,id:"testId"},
-				{label:'更新日志',url:'/saleProduct/index.php/amazon/priceimportLog/<?php echo $accountId?>',iframe:true}
+				{label:'价格列表更新',url:contextPath+'/amazonaccount/productListsPrice/<?php echo $accountId?>',iframe:true},
+				{label:'价格上传更新',url:contextPath+'/amazon/priceimportPage/<?php echo $accountId?>',iframe:true,id:"testId"},
+				{label:'更新日志',url:contextPath+'/amazon/priceimportLog/<?php echo $accountId?>',iframe:true}
 			] ,
 			height:'500px'
 		} ) ;

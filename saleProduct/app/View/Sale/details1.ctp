@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -161,7 +163,7 @@
 			if( window.confirm("确认执行该操作吗？") ){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/sale/productFlowProcess" ,
+					url:contextPath+"/sale/productFlowProcess" ,
 					data:{description:val,filterId:filterId,asin:asin,status:status,strategy:strategy},
 					cache:false,
 					dataType:"text",
@@ -210,7 +212,7 @@
 			$(".base-gather").click(function(){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/gatherProduct/execute/<?php echo $product["ASIN"]?>",
+					url:contextPath+"/gatherProduct/execute/<?php echo $product["ASIN"]?>",
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -222,17 +224,17 @@
 			}) ;
 			
 			$(".supplier").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/listsSelect/<?php echo $product["ASIN"]?>",800,600) ;
+				openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $product["ASIN"]?>",800,600) ;
 			}) ;
 			
 			
 			$(".category").click(function(){
-				openCenterWindow("/saleProduct/index.php/product/assignCategory/<?php echo $product["ASIN"]?>",400,500) ;
+				openCenterWindow(contextPath+"/product/assignCategory/<?php echo $product["ASIN"]?>",400,500) ;
 			}) ;
 			
 			$(".update-supplier").click(function(){
 				var supplierId = $(this).attr("supplierId") ;
-				openCenterWindow("/saleProduct/index.php/supplier/updateProductSupplierPage/<?php echo $product["ASIN"]?>/"+supplierId,650,600) ;
+				openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/<?php echo $product["ASIN"]?>/"+supplierId,650,600) ;
 				return false;
 			}) ;
 			
@@ -247,7 +249,7 @@
 				if( window.confirm("确认执行该操作吗？") ){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/sale/productTestStatus" ,
+						url:contextPath+"/sale/productTestStatus" ,
 						data:{description:val,asin:asin,testStatus:testStatus},
 						cache:false,
 						dataType:"text",
@@ -413,8 +415,8 @@
 					{label:'基本信息',content:"baseinfo-tab"},
 					{label:'竞争信息',content:"competetion-tab"},
 					{label:'供应商(询价)',content:"supplier-tab",iframe:true},
-					{label:'产品分类',url:"/saleProduct/index.php/product/assignCategory/<?php echo $asin?>",iframe:true},
-					{label:'产品成本',url:"/saleProduct/index.php/cost/listAsin/<?php echo $asin?>",iframe:true}
+					{label:'产品分类',url:contextPath+"/product/assignCategory/<?php echo $asin?>",iframe:true},
+					{label:'产品成本',url:contextPath+"/cost/listAsin/<?php echo $asin?>",iframe:true}
 				] ,
 				height:'500px'
 			} ) ;
@@ -433,7 +435,7 @@
 						<?php
 							foreach( $imgs as $img ){
 								$url = str_replace("%" , "%25",$img['LOCAL_URL']) ;
-								echo "<img src='/saleProduct/".$url."'>" ;
+								echo "<img src='/".$fileContextPath."/".$url."'>" ;
 							} ;
 						?>
 					</td>
@@ -542,7 +544,7 @@
 						echo "<tr>
 					<td>".$comp['TYPE']."</td>
 					<td><a href='".$comp["SELLER_URL"]."' target='_blank'>".$comp['SELLER_NAME']."</a></td>
-					<td><a href='".$comp["SELLER_URL"]."' target='_blank'><img src='/saleProduct/".$url."'></a></td>
+					<td><a href='".$comp["SELLER_URL"]."' target='_blank'><img src='/".$fileContextPath."/".$url."'></a></td>
 					<td>".$sellerPrice."</td>
 					<td>".$comp['SELLER_SHIP_PRICE']."</td>
 					<td>".$total."</td>
@@ -557,7 +559,7 @@
 						echo "<tr>
 						<td>".$f['TYPE']."</td>
 						<td><a href='".$f["SELLER_URL"]."' target='_blank'>".$f['SELLER_NAME']."</a></td>
-						<td><a href='".$f["SELLER_URL"]."' target='_blank'><img src='/saleProduct/".$url."'></a></td>
+						<td><a href='".$f["SELLER_URL"]."' target='_blank'><img src='/".$fileContextPath."/".$url."'></a></td>
 						<td>".$sellerPrice."</td>
 						<td>".$f['SELLER_SHIP_PRICE']."</td>
 			            <td>".$total."</td>
@@ -589,13 +591,13 @@
 					if( $supplier['sc_product_supplier']['URL'] != '' ){
 						if( $supplier['sc_product_supplier']['IMAGE'] != "" ){
 							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>
-								<img src='/saleProduct/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>
+								<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>
 							</a>" ;
 						}else{
 							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>产品网址</a>" ;
 						}
 					}else if($supplier['sc_product_supplier']['IMAGE'] != ""){
-						$urls = "<img src='/saleProduct/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>" ;
+						$urls = "<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>" ;
 					}
 					
 					echo "<tr>

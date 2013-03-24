@@ -20,7 +20,7 @@ $(function() {
 	} ) ;
 
 	$(".design-view").click(function(){
-		openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.loadDesign/"+warehouseId,1000,700) ;
+		openCenterWindow(contextPath+"/page/model/Warehouse.In.loadDesign/"+warehouseId,1000,700) ;
 	}) ;
 	
 	$(".product-grid").llygrid({
@@ -33,11 +33,11 @@ $(function() {
 			           		}else{
 			           			return "" ;
 			           		}
-			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 		           	{align:"center",key:"UNIT_QUANTITY",label:"数量",sort:true, width:"20%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
+		         ds:{type:"url",content:contextPath+"/grid/query/"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -54,7 +54,7 @@ $(function() {
 	
 	
 function addUnitProduct(){
-	openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Design.loadUnitProduct/"+warehouseId,800,600) ;
+	openCenterWindow(contextPath+"/page/forward/Warehouse.Design.loadUnitProduct/"+warehouseId,800,600) ;
 	return false ;
 } ;
 	

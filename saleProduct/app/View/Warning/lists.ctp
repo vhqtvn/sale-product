@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 			echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -51,12 +53,12 @@ var accountId = '<?php echo $accountId;?>' ;
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/warning/add/"+accountId+"/"+id,600,400) ;
+					openCenterWindow(contextPath+"/warning/add/"+accountId+"/"+id,600,400) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
+							url:contextPath+"/product/deleteScript/"+id,
 							data:{id:id},
 							cache:false,
 							dataType:"text",
@@ -66,7 +68,7 @@ var accountId = '<?php echo $accountId;?>' ;
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/warning/add/"+accountId,600,400) ;
+					openCenterWindow(contextPath+"/warning/add/"+accountId,600,400) ;
 				} 
 				return false ;
 			})
@@ -85,7 +87,7 @@ var accountId = '<?php echo $accountId;?>' ;
 		           	{align:"center",key:"VALUE1",label:"阀值1",width:"10%"},
 		           	{align:"center",key:"VALUE2",label:"阀值2",width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,

@@ -3,7 +3,7 @@
 		
 		    $(".btn-startRma").live("click",function(){
 		    	var orderId = $(this).attr("orderId") ;
-		    	openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent/"+orderId,830,480) ;
+		    	openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent/"+orderId,830,480) ;
 		    }) ;
 		 
 			$(".grid-content").llygrid({
@@ -22,7 +22,7 @@
 		           		}else{
 		           			return "" ;
 		           		}
-		           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+		           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 		           	}},
 		           	{align:"center",key:"QUANTITY_PURCHASED",label:"购买数量", width:"8%"},
 			        {align:"center",key:"RMA_RESHIP",label:"重发数量", width:"8%",format:function(val,record){
@@ -63,7 +63,7 @@
 		           	{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"},
 		           	{align:"center",key:"BUYER_PHONE_NUMBER",label:"BUYER_PHONE_NUMBER", width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

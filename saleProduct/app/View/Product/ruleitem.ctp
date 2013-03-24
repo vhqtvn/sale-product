@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -64,7 +66,7 @@
 		           	{align:"center",key:"TYPE",label:"类型",width:"10%"}
 					
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
@@ -75,12 +77,12 @@
 			}) ;
 
 			$(".add-config").click(function(){
-				openCenterWindow("/saleProduct/index.php/config/add/" ,450,350) ;
+				openCenterWindow(contextPath+"/config/add/" ,450,350) ;
 			}) ;
 			
 			$(".edit-config").live('click',function(){
 				var id = $(this).attr("val");
-				openCenterWindow("/saleProduct/index.php/config/add/"+id ,450,350) ;
+				openCenterWindow(contextPath+"/config/add/"+id ,450,350) ;
 				return false;
 			}) ;
 			
@@ -89,7 +91,7 @@
 				if(window.confirm("确认删除吗？")){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/config/deleteConfigItem/"+id,
+						url:contextPath+"/config/deleteConfigItem/"+id,
 						data:{},
 						cache:false,
 						dataType:"text",

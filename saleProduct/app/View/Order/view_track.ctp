@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -56,7 +58,7 @@
 		           	{align:"center",key:"ACT_TIME",label:"时间",width:"30%"},
 		           	{align:"center",key:"USERNAME",label:"操作用户",width:"20%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:350,
@@ -74,7 +76,7 @@
 		           	{align:"center",key:"ACT_TIME",label:"时间",width:"30%"},
 		           	{align:"center",key:"USERNAME",label:"操作用户",width:"20%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:350,

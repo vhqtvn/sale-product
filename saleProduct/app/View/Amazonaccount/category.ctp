@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/tree/jquery.tree');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -138,7 +140,7 @@
         	
         	$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/amazonaccount/saveCategory/"+accountId,
+				url:contextPath+"/amazonaccount/saveCategory/"+accountId,
 				data:ids,
 				cache:false,
 				dataType:"text",
@@ -163,7 +165,7 @@
         	
         	$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/amazonaccount/saveCategory/"+accountId,
+				url:contextPath+"/amazonaccount/saveCategory/"+accountId,
 				data:ids,
 				cache:false,
 				dataType:"text",
@@ -176,7 +178,7 @@
         function loadCategoryWarning(categoryId,callback){
         	$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/warning/getByCategoryId/"+categoryId,
+				url:contextPath+"/warning/getByCategoryId/"+categoryId,
 				data:{},
 				cache:false,
 				dataType:"text",

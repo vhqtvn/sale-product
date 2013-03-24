@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -98,8 +100,8 @@
 					return html.join("") ;
 					}}
 		         ],
-		         //ds:{type:"url",content:"/saleProduct/index.php/grid/upload"},
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         //ds:{type:"url",content:contextPath+"/grid/upload"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
@@ -113,9 +115,9 @@
 				var id = currentGroup.id ;
 				var text = currentGroup.name ;
 				if(id){
-					openCenterWindow("/saleProduct/index.php/product/uploadPage/"+id+"/"+text,600,400) ;
+					openCenterWindow(contextPath+"/product/uploadPage/"+id+"/"+text,600,400) ;
 				}else
-					openCenterWindow("/saleProduct/index.php/product/uploadPage",600,400) ;
+					openCenterWindow(contextPath+"/product/uploadPage",600,400) ;
 			}) ;
 			
 			
@@ -124,7 +126,7 @@
 				var id = $(this).attr("val") ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/gatherUpload/taskAll/"+id,
+					url:contextPath+"/gatherUpload/taskAll/"+id,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -136,14 +138,14 @@
 			
 			$(".show-products").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/product/index/"+val,900,600) ;
+				openCenterWindow(contextPath+"/product/index/"+val,900,600) ;
 			}) ;
    	 });
    	 
    	 function uploadSuccess(id){
    	 	$.ajax({
 			type:"post",
-			url:"/saleProduct/index.php/gatherUpload/taskAll/"+taskId,
+			url:contextPath+"/gatherUpload/taskAll/"+taskId,
 			data:{},
 			cache:false,
 			dataType:"text",

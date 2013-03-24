@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
@@ -166,7 +168,7 @@
         	var ids = $('#default-tree').tree().getSelectedIds() ;
         	$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/users/saveAssignFunctions/"+code+"/"+ids,
+				url:contextPath+"/users/saveAssignFunctions/"+code+"/"+ids,
 				data:{},
 				cache:false,
 				dataType:"text",

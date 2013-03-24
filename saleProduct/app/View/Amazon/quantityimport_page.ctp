@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -51,7 +53,7 @@
 			var feedId = $(this).attr("feedSubmissionId") ;
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/amazon/getFeedSubmissionResult/"+accountId+"/"+feedId,
+				url:contextPath+"/amazon/getFeedSubmissionResult/"+accountId+"/"+feedId,
 				data:{},
 				cache:false,
 				dataType:"text",
@@ -70,7 +72,7 @@
 
 </head>
 <body>
-	<form action="/saleProduct/index.php/amazonaccount/doUploadAmazonQuantity" method="post" target="form-target" enctype="multipart/form-data">
+	<form action="<?php echo $contextPath;?>/amazonaccount/doUploadAmazonQuantity" method="post" target="form-target" enctype="multipart/form-data">
 	<table class="table table-bordered">
 		<caption>库存更新</caption>
 		<tr>

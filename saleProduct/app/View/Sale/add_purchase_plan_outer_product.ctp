@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
@@ -41,7 +43,7 @@
 			$("button").click(function(){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/sale/savePurchasePlanProducts",
+					url:contextPath+"/sale/savePurchasePlanProducts",
 					data:{
 						planId:planId,
 						asins:$.trim($("textarea").val())

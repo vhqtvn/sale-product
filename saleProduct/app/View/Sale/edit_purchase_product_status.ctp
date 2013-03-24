@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
@@ -43,7 +45,7 @@
 				
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/sale/savePurchasePlanProduct",
+					url:contextPath+"/sale/savePurchasePlanProduct",
 					data:{
 						id:$("#id").val(),
 						plan_num:$("#plan_num").val(),
@@ -64,7 +66,7 @@
 			});
 			
 			$(".edit_supplier").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/listsSelect/<?php echo $asin ;?>",800,600) ;
+				openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $asin ;?>",800,600) ;
 				return false;
 			}) ;
 		})

@@ -512,7 +512,7 @@ jQuery.dataservice = function(commandName , params , callback , reqParams ){
 	reqParams.data 		= params ;
 	reqParams.type		= 'post' ;
 	reqParams.noblock 	= reqParams.noblock === false?false:true ;
-	reqParams.url 		= "/saleProduct/index.php/form/dataService" ;
+	reqParams.url 		= contextPath+"/form/dataService" ;
 	reqParams.dataType 	= commandName?'json':"text" ;
 	//alert(reqParams.url);
 	//process callback
@@ -999,5 +999,5 @@ $(function(){
 
 //common action 
 function viewSupplier(id){
-	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,800,580) ;
+	openCenterWindow(contextPath+"/supplier/view/"+id,800,580) ;
 }

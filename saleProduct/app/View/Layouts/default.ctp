@@ -1,1 +1,1 @@
-﻿<?php print_r( trim( $this->fetch('content') ) ); ?>
+<?php print_r( trim( $this->fetch('content') ) ); ?>

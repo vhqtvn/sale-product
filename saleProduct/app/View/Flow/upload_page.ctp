@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
@@ -89,7 +91,7 @@
   </div>
  <div style="clear:both;"></div>
   <div class="attachment-area tab-content" style="display:block">
-	  <form action="/saleProduct/index.php/task/doUpload" method="post" target="form-target" enctype="multipart/form-data">
+	  <form action="<?php echo $contextPath;?>/task/doUpload" method="post" target="form-target" enctype="multipart/form-data">
 	   <table border=0 cellPadding=3 cellSpacing=4 width=80%>
 	    <tr>
 	     <td width=10% nowrap>产品附件</td>
@@ -104,7 +106,7 @@
    </div>
    
    <div class="inputin-area tab-content">
-	  <form action="/saleProduct/index.php/task/doUploadForInput" method="post" target="form-target">
+	  <form action="<?php echo $contextPath;?>/task/doUploadForInput" method="post" target="form-target">
 	   <table border=0 cellPadding=3 cellSpacing=4 width=80%>
 	    <tr>
 	     <td width=10% nowrap>产品名称</td>

@@ -13,6 +13,8 @@
      	var status = "5" ;
 	</script>
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -73,10 +75,10 @@
 		
 		function printPicked(){
 			
-			window.location.href = "/saleProduct/index.php/order/doExportPicked/<?php echo $pickId;?>"
+			window.location.href = contextPath+"/order/doExportPicked/<?php echo $pickId;?>"
 					/*$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/order/exportPicked/<?php echo $pickId;?>" ,
+						url:contextPath+"/order/exportPicked/<?php echo $pickId;?>" ,
 						data:{},
 						cache:false,
 						dataType:"text",

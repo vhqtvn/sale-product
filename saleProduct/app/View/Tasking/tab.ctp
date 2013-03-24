@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -22,8 +24,8 @@
   	$(function(){
   		var tab = $('#tabs-default').tabs( {
 			tabs:[
-				{label:'运行中的任务',url:'/saleProduct/index.php/tasking/listTasking/<?php echo $accountId?>',iframe:true},
-				{label:'任务执行历史',url:'/saleProduct/index.php/tasking/listTasked/<?php echo $accountId?>',iframe:true,id:"testId"}
+				{label:'运行中的任务',url:contextPath+'/tasking/listTasking/<?php echo $accountId?>',iframe:true},
+				{label:'任务执行历史',url:contextPath+'/tasking/listTasked/<?php echo $accountId?>',iframe:true,id:"testId"}
 			] ,
 			height:'500px'
 		} ) ;

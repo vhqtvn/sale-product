@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -80,7 +82,7 @@
 		           		return "<a href='#' class='update-state' feedSubmissionId='"+record.FEEDSUBMISSION_ID+"'>更新<a>" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/amazongrid/productFeedHistory/"+accountId},
+		         ds:{type:"url",content:contextPath+"/amazongrid/productFeedHistory/"+accountId},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:250,

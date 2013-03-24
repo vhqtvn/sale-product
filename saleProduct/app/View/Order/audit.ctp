@@ -7,7 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-		
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
@@ -47,7 +48,7 @@
 
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/amazonaccount/saveAccount",
+						url:contextPath+"/amazonaccount/saveAccount",
 						data:json,
 						cache:false,
 						dataType:"text",

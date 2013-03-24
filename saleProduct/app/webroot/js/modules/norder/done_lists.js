@@ -3,7 +3,7 @@
 		
 		    $(".btn-startRma").live("click",function(){
 		    	var orderId = $(this).attr("orderId") ;
-		    	openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent/"+orderId,830,480) ;
+		    	openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent/"+orderId,830,480) ;
 		    }) ;
 		 
 			$(".grid-content").llygrid({
@@ -23,7 +23,7 @@
 			      		var html = [] ;
 			      		$( val.split(";") ).each(function(index,item){
 			      			var array = item.split("|") ;
-			      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+			      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
 			      		})  ;
 			      		return html.join("") ;
 			      	}},
@@ -35,7 +35,7 @@
 					{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
 					{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

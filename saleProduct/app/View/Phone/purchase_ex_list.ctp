@@ -1,5 +1,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
+<?php 
+include_once ('config/config.php');
+
+?>
  <title>采购执行列表</title>
 <style type="text/css">
 	table{
@@ -15,7 +19,7 @@
     		$record = $record['t'] ;
     ?>
     <tr>
-		<td><a href="/saleProduct/index.php/phone/purchasePlanDetails/<?php echo $record['ID'];?>"><?php echo $record['NAME'];?></a></td>
+		<td><a href="<?php echo $contextPath;?>/phone/purchasePlanDetails/<?php echo $record['ID'];?>"><?php echo $record['NAME'];?></a></td>
 	</tr> 
     <?		
     	}

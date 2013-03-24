@@ -8,6 +8,8 @@
 
 	
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -43,7 +45,7 @@
 	}
 	
 	function productInWarehouse(){
-		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
+		openCenterWindow(contextPath+"/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
 	}
      
      var flowData = [

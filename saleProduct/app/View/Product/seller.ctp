@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -67,7 +69,7 @@
 						return html.join("") ;
 					}}
 		         ],
-		          ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		          ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -80,12 +82,12 @@
 			}) ;
 
 			$(".register").click(function(){
-				openCenterWindow("/saleProduct/index.php/seller/add",600,400) ;
+				openCenterWindow(contextPath+"/seller/add",600,400) ;
 			}) ;
 			
 			$(".show-products").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/product/index/"+val,900,600) ;
+				openCenterWindow(contextPath+"/product/index/"+val,900,600) ;
 			}) ;
 			
 			var currentGather = null ;
@@ -93,7 +95,7 @@
 				var id = $(this).attr("val") ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/gatherUpload/sellerAsins/"+id,
+					url:contextPath+"/gatherUpload/sellerAsins/"+id,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -108,7 +110,7 @@
 					var id = record.ID ;
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/seller/deleteById/"+id,
+						url:contextPath+"/seller/deleteById/"+id,
 						data:{},
 						cache:false,
 						dataType:"text",

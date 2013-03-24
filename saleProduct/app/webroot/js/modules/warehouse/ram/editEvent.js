@@ -169,7 +169,7 @@ $(function(){
 			var json = $("#personForm").toJson() ;
 			var orderId = json.orderId ;
 			var ramId = json.id ;
-			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.addRma/"+orderId+"/"+ramId,830,600) ;
+			openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.addRma/"+orderId+"/"+ramId,830,600) ;
 		}) ;
 		
 		$(".btn-dangerUser").click(function(){
@@ -193,7 +193,7 @@ $(function(){
 					sqlId:"sql_sc_order_list",
 					status:"shipped"
 				},
-				ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+				ds:{type:"url",content:contextPath+"/grid/query"},
 				pagesize:10,
 				columns:[//显示列
 					{align:"center",key:"ORDER_ID",label:"订单编号",width:"150",query:true},
@@ -204,7 +204,7 @@ $(function(){
 			      		var html = [] ;
 			      		$( val.split(";") ).each(function(index,item){
 			      			var array = item.split("|") ;
-			      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+			      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
 			      		})  ;
 			      		return html.join("") ;
 			      	}}
@@ -215,7 +215,7 @@ $(function(){
 	    window.renderProductImg = function(val,record){
        		if(val){
        			val = val.replace(/%/g,'%25') ;
-       			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+       			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
        		}
        		return "" ;
        	}
@@ -246,7 +246,7 @@ $(function(){
 		           	{key:"CREATE_TIME",label:"时间",width:"150",align:"left"},
 		           	{key:"CREATOR_NAME",label:"操作用户",width:"100",align:"left"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:10,
 				 pageSizes:[5,10,20,30],
 				 height:function(){
@@ -271,21 +271,21 @@ $(function(){
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"50",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
 		           	{align:"center",key:"IMAGE",label:"残品图片",width:"50",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
 		           	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"130" },
 		           	{align:"center",key:"MEMO",label:"备注",width:"250"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:10,
 				 pageSizes:[5,10,20,30],
 				 height:function(){
@@ -325,7 +325,7 @@ $(function(){
 		           	{key:"POLICY_NAME",label:"决策",width:"100",align:"left"},
 		           	{key:"MEMO",label:"备注",width:"100",align:"left"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:10,
 				 pageSizes:[5,10,20,30],
 				 height:function(){

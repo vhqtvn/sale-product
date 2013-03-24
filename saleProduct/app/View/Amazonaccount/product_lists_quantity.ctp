@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -140,7 +142,7 @@
 			           		return pm ;
 			           	}}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+			         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:350,
@@ -153,7 +155,7 @@
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin+"/"+accountId,950,650) ;
 			}) ;
 			
 			$(".query-btn").click(function(){
@@ -226,7 +228,7 @@
 					
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/amazonaccount/saveAccountProductFeed",
+					url:contextPath+"/amazonaccount/saveAccountProductFeed",
 					data:{type:key,sku:sku,value:val,accountId:currentAccountId},
 					cache:false,
 					dataType:"text",
@@ -240,7 +242,7 @@
 				if( window.confirm("是否确认提交库存更新?") ){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/amazonaccount/doAmazonQuantity",
+						url:contextPath+"/amazonaccount/doAmazonQuantity",
 						data:{accountId:currentAccountId},
 						cache:false,
 						dataType:"text",

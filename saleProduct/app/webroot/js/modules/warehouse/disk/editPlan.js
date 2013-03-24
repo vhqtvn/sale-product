@@ -71,7 +71,7 @@
 					params:{
 						sqlId:"sql_user_list_forwarehouse"
 					},
-					ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+					ds:{type:"url",content:contextPath+"/grid/query"},
 					pagesize:10,
 					columns:[//显示列
 						{align:"center",key:"ID",label:"编号",width:"100"},
@@ -100,7 +100,7 @@
 					params:{
 						sqlId:"sql_warehouse_lists"
 					},
-					ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+					ds:{type:"url",content:contextPath+"/grid/query"},
 					pagesize:10,
 					columns:[//显示列
 						{align:"center",key:"ID",label:"编号",width:"100"},

@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -160,7 +162,7 @@
 				$boxProducts = $SqlUtils->exeSql("sql_warehouse_box_products",array('boxId'=>$boxId )) ;
 				foreach($boxProducts as $product){
 					$product = $SqlUtils->formatObject($product) ;
-					$imgUrl = '/saleProduct/'.$product['IMAGE_URL'] ;
+					$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
 				?>
 					<tr>
 						<td style="width:12%;">
@@ -190,7 +192,7 @@
 							</div>
 							<?php
 								if( $product['STATUS'] == 1 ){
-									echo '<div style="text-align:center;margin:5px;clear:both;"><img src="/saleProduct/app/webroot/img/m/button-check.png"/></div>' ;
+									echo '<div style="text-align:center;margin:5px;clear:both;"><img src="/'.$fileContextPath.'/app/webroot/img/m/button-check.png"/></div>' ;
 								}else{
 									$inStatus = false ;
 									echo '<button class="btn btn-success btn-validator-product" style="margin-top:2px;margin-left:10px;">货品确认</button>' ;

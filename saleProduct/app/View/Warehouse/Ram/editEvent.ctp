@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
@@ -317,7 +319,7 @@
 														<tr style="padding:0px;margin:0px;">
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['REAL_SKU']?></td>
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['NAME']?></td>
-															<td style="padding-top:0px;padding-bottom:0px;"><?php echo "<img style='width:25px;height:25px;' src='/saleProduct/".$imageUrl."'>"?></td>
+															<td style="padding-top:0px;padding-bottom:0px;"><?php echo "<img style='width:25px;height:25px;' src='/".$fileContextPath."/".$imageUrl."'>"?></td>
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['Quantity_Ordered']?></td>
 															<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1   ){?>
 															<td style="padding-top:0px;padding-bottom:0px;">

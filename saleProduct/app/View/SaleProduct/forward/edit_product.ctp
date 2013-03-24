@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
@@ -34,7 +36,7 @@
 		<!-- 页面标题 -->
 		<div class="container-fluid">
 
-	        <form id="personForm" action="/saleProduct/index.php/saleProduct/saveProduct"
+	        <form id="personForm" action="<?php echo $contextPath;?>/saleProduct/saveProduct"
 	          method="post" target="form-target" data-widget="validator"
 	         enctype="multipart/form-data" class="form-horizontal" >
 	        	<input type="hidden" id="id" name="id" value="<?php echo $item['ID']?>"/>
@@ -87,7 +89,7 @@
 									<td colspan=3><input type="file" name="imageUrl"/>
 									<?php
 									if( $item['IMAGE_URL'] ){
-										echo "<img src='/saleProduct/".$item['IMAGE_URL']."' style='width:50px;height:40px;'>" ;
+										echo "<img src='/".$fileContextPath."/".$item['IMAGE_URL']."' style='width:50px;height:40px;'>" ;
 									}?>
 									</td>
 								</tr>

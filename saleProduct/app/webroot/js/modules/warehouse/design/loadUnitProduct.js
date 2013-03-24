@@ -3,7 +3,7 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/details/"+id,900,600) ;
+					openCenterWindow(contextPath+"/saleProduct/details/"+id,900,600) ;
 				}else if( $(this).hasClass("giveup") ){
 					var type = $(this).attr("type");
 					var message = type == 1?"确认将该货品作废吗":"确认恢复该货品吗？"
@@ -11,7 +11,7 @@
 					if(window.confirm(message)){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/saleProduct/giveup/"+id+"/"+type,
+							url:contextPath+"/saleProduct/giveup/"+id+"/"+type,
 							data:{id:id},
 							cache:false,
 							dataType:"text",
@@ -21,7 +21,7 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/forward/edit_product/",700,500) ;
+					openCenterWindow(contextPath+"/saleProduct/forward/edit_product/",700,500) ;
 				}
 				return false ;
 			});
@@ -40,12 +40,12 @@
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

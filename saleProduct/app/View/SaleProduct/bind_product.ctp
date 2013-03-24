@@ -8,6 +8,8 @@
 
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -38,7 +40,7 @@
    				$page = "bindSkuDetails" ;
    			}
    			
-			echo "tabs.push( {label:'".$account['NAME']."',url:'/saleProduct/index.php/saleProduct/$page/".$account['ID']."/$id/$type',iframe:true}) ;" ;
+			echo "tabs.push( {label:'".$account['NAME']."',url:'".$contextPath."/saleProduct/$page/".$account['ID']."/$id/$type',iframe:true}) ;" ;
 		} ;
    ?>
   	$(function(){

@@ -36,7 +36,7 @@
 		           	{align:"center",key:"PHONE",label:"管理员联系电话",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"EMAIL",label:"邮箱",width:"20%",forzen:false,align:"left"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:200,
@@ -50,7 +50,7 @@
 				var val = $(this).attr("val") ;
 				$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/form/ajaxSave/" ,
+				url:contextPath+"/form/ajaxSave/" ,
 				data:{warehouseManageId:val,sqlId:"sql_warehouse_manage_delete"},
 				cache:false,
 				dataType:"text",
@@ -75,7 +75,7 @@
 					params:{
 						sqlId:"sql_user_list_forwarehouse"
 					},
-					ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+					ds:{type:"url",content:contextPath+"/grid/query"},
 					pagesize:10,
 					columns:[//显示列
 						{align:"center",key:"ID",label:"编号",width:"100"},
@@ -91,7 +91,7 @@
 			var label = args.label ;
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/warehouse/saveManage/" ,
+				url:contextPath+"/warehouse/saveManage/" ,
 				data:{value:value.join(","),warehouseId:warehouseId},
 				cache:false,
 				dataType:"text",

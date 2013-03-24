@@ -43,7 +43,7 @@ $(function(){
            		}else{
            			return "" ;
            		}
-           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
            	}},
            	{align:"center",key:"ORDER_ID",label:"ORDER_ID", width:"15%"},
            	{align:"center",key:"ORDER_ITEM_ID",label:"ORDER_ITEM_ID", width:"12%"},
@@ -59,7 +59,7 @@ $(function(){
            	{align:"center",key:"ITEM_PRICE",label:"ITEM_PRICE", width:"10%"},
            	{align:"center",key:"ITEM_TAX",label:"ITEM_TAX", width:"10%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
@@ -79,7 +79,7 @@ $(function(){
 		
 		if( action == 4 ){//打印拣货单
 			alert("合并打印拣货单");
-			openCenterWindow("/saleProduct/index.php/order/printPicked/"+pickedId,950,650) ;
+			openCenterWindow(contextPath+"/order/printPicked/"+pickedId,950,650) ;
 			return ;
 		}
 	
@@ -106,7 +106,7 @@ $(function(){
 		if( window.confirm(msg) ){
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/order/savePickedOrder/"+pickedId ,
+				url:contextPath+"/order/savePickedOrder/"+pickedId ,
 				data:{status:status,orders:orders.join(","),memo:$("#memo").val(),action:action},
 				cache:false,
 				dataType:"text",

@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -73,7 +75,7 @@
 			           		}else{
 			           			return "" ;
 			           		}
-			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
@@ -115,7 +117,7 @@
 			           		return val||"-" ;
 			           	}}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
+			         ds:{type:"url",content:contextPath+"/grid/query/"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
@@ -133,26 +135,26 @@
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				var sku = $(this).attr("sku") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
 			}) ;
 			
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
-					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+					{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			$(".checked-btn").click(function(){
 				var querys = getQueryCondition() ;
 				querys.checked = 1 ;
 				$(".grid-content").llygrid("reload",querys,
-					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+					{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			$(".unchecked-btn").click(function(){
 				var querys = getQueryCondition() ;
 				querys.checked = 0 ;
 				$(".grid-content").llygrid("reload",querys,
-					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+					{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			
@@ -162,7 +164,7 @@
 				
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/amazonaccount/saveCategoryProducts" ,
+					url:contextPath+"/amazonaccount/saveCategoryProducts" ,
 					data:{checked_skus:checked.join(","),unchecked_skus:nochecked.join(","),accountId:currentAccountId,categoryId:currentCategoryId},
 					cache:false,
 					dataType:"text",

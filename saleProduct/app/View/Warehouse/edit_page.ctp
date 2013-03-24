@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
@@ -46,7 +48,7 @@
 					json.sqlId = "sql_warehouse_update" ;
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/form/ajaxSave",
+						url:contextPath+"/form/ajaxSave",
 						data:json,
 						cache:false,
 						dataType:"text",
@@ -61,8 +63,8 @@
 			var tab = $('#tabs-default').tabs( {//$this->layout="index";
 				tabs:[
 					{label:'基本信息',content:"base-info"},
-					{label:'仓库管理员',url:"/saleProduct/index.php/warehouse/managePage/<?php echo $id;?>",iframe:true},
-					{label:'仓库单元',url:"/saleProduct/index.php/warehouse/unitPage/<?php echo $id;?>",iframe:true}
+					{label:'仓库管理员',url:contextPath+"/warehouse/managePage/<?php echo $id;?>",iframe:true},
+					{label:'仓库单元',url:contextPath+"/warehouse/unitPage/<?php echo $id;?>",iframe:true}
 				] ,
 				height:'500px'
 			} ) ;

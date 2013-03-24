@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
@@ -177,7 +179,7 @@
 						if( !empty($deskDetails) ){
 							foreach($deskDetails as $detail){
 								$product = $SqlUtils->formatObject($detail) ;
-								$imgUrl = '/saleProduct/'.$product['IMAGE_URL'] ;
+								$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
 								$id = $product['ID'] ;
 								$paperNum = $product['PAPER_NUM']  ;//账面库存
 								$realNum  = $product['REAL_NUM'] ;//实际库存

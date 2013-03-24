@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -79,7 +81,7 @@
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"6%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
+		         ds:{type:"url",content:contextPath+"/grid/query/"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:400,
@@ -91,7 +93,7 @@
 			
 			$(".action-update").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/supplier/add/"+id,800,600) ;
+				openCenterWindow(contextPath+"/supplier/add/"+id,800,600) ;
 			});
 			
 			$(".action-del").live("click",function(){
@@ -99,7 +101,7 @@
 				if(window.confirm("确认删除吗？")){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/supplier/del/"+id,
+						url:contextPath+"/supplier/del/"+id,
 						data:{},
 						cache:false,
 						dataType:"text",
@@ -126,7 +128,7 @@
 			}) ;
 			
 			$(".add-btn").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/add/",800,600) ;
+				openCenterWindow(contextPath+"/supplier/add/",800,600) ;
 			}) ;
    	 });
    </script>

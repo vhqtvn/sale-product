@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
@@ -54,7 +56,7 @@
 				
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/supplier/saveProductSupplierXJ",
+						url:contextPath+"/supplier/saveProductSupplierXJ",
 						data:json,
 						cache:false,
 						dataType:"text",
@@ -76,7 +78,7 @@
 
 </head>
 <body>
-<form action="/saleProduct/index.php/supplier/saveProductSupplierXJ" id="personForm" data-widget="validator"
+<form action="<?php echo $contextPath;?>/supplier/saveProductSupplierXJ" id="personForm" data-widget="validator"
 	method="post"  enctype="multipart/form-data">
 		   
 	<input type="hidden" id="id" name="id" value="<?php echo $productSupplier[0]['sc_product_supplier']['ID'];?>"/>

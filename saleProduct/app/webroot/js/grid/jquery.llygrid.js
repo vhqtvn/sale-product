@@ -1079,29 +1079,29 @@ function formatGridData(data){
 var renderGridImg = function(val,record){
 	if(val){
 		val = val.replace(/%/g,'%25') ;
-		return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 	}
 	return "" ;
 }
 
 $("[supplier-id]").live("click",function(){
 	var supplierId = $(this).attr("supplier-id") ;
-	openCenterWindow("/saleProduct/index.php/supplier/view/"+supplierId,800,580) ;
+	openCenterWindow(contextPath+"/supplier/view/"+supplierId,800,580) ;
 	return false ;
 })
 	
 //common action 
 function viewSupplier(id){
-	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,800,580) ;
+	openCenterWindow(contextPath+"/supplier/view/"+id,800,580) ;
 }
 
 $(".product-detail").live("click",function(){
 	var asin = $(this).attr("asin") ;
-	openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+	openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 	return false;
 }) ;
 
 $("td[key='ORDER_ID']").live("click",function(){
 	var orderId = $.trim( $(this).text() ) ;
-	openCenterWindow("/saleProduct/index.php/page/forward/Norder.details/"+orderId,800,600) ;
+	openCenterWindow(contextPath+"/page/forward/Norder.details/"+orderId,800,600) ;
 }) ;

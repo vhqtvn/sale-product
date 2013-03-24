@@ -11,6 +11,8 @@
      var status = ""
     </script>
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -78,9 +80,8 @@
 						<td>
 							<button class="btn btn-primary query" >查询</button>
 							<button class="download btn btn-primary">下载订单处理信息</button>
-							<!--
-							<button class="btn btn-danger toamazon" disabled>同步AMAZON</button>
-							-->
+							
+							<button class="btn btn-danger toamazon" >同步AMAZON</button>
 						</td>
 					</tr>						
 				</table>	

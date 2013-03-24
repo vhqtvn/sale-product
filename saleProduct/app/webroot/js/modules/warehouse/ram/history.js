@@ -12,21 +12,21 @@
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"50",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
 		           	{align:"center",key:"IMAGE",label:"残品图片",width:"50",format:function(val,record){
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 		           		}
 		           		return "" ;
 		           	}},
 		           	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"130" },
 		           	{align:"center",key:"MEMO",label:"备注",width:"100"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[20],
 				 height:function(){

@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		
@@ -67,7 +69,7 @@
 		           		return "<a href='"+val+"' target='_blank'>"+val+"</a>" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/supplier/grid/"},
+		         ds:{type:"url",content:contextPath+"/supplier/grid/"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:200,
@@ -87,7 +89,7 @@
 			
 			$(".action-update").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/supplier/add/"+id,400,300) ;
+				openCenterWindow(contextPath+"/supplier/add/"+id,400,300) ;
 			})
 			
 			$(".query-btn").click(function(){
@@ -100,7 +102,7 @@
 			}) ;
 			
 			$(".add-btn").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/add/",400,300) ;
+				openCenterWindow(contextPath+"/supplier/add/",400,300) ;
 			}) ;
 			
 			$(".save-product-supplier").click(function(){

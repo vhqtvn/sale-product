@@ -22,8 +22,8 @@
         params.startupHandler();
         $('.gradient').css('filter','none');
         
-        backgroundImage = '/saleProduct/app/webroot/js/modules/index/wallpaper.jpg' ;
-		startIcon = '/saleProduct/app/webroot/js/modules/index/start.png' ;
+        backgroundImage = '/'+fileContextPath+'/app/webroot/js/modules/index/wallpaper.jpg' ;
+		startIcon = '/'+fileContextPath+'/app/webroot/js/modules/index/start.png' ;
         var windows_desktop = $('<div>').appendTo('body').css({
             'position':'absolute',
             'top':'0px',

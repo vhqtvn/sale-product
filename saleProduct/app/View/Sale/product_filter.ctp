@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui');
 		echo $this->Html->css('../grid/grid');
@@ -68,7 +70,7 @@
 		           			val = val.replace(/%/g,'%25') ;
 		           		}
 		           		
-		           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
+		           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
 		           	}},
 		           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
 		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
@@ -123,7 +125,7 @@
 						}
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/salegrid/filter/"+id},
+		         ds:{type:"url",content:contextPath+"/salegrid/filter/"+id},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:400,
@@ -136,12 +138,12 @@
 			$(".process-action").live("click",function(){
 				var FILTER_ID = $(this).attr("val") ;
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/sale/details1/"+FILTER_ID+"/"+asin+"/"+type,950,650) ;
+				openCenterWindow(contextPath+"/sale/details1/"+FILTER_ID+"/"+asin+"/"+type,950,650) ;
 			}) ;
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			})
 			
 			$(".query-btn").click(function(){

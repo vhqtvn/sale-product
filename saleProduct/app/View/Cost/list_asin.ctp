@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -104,7 +106,7 @@
 					}?>
 		           	
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:100,
@@ -125,12 +127,12 @@
 			
 			$(".edit-action").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/cost/add/"+currentAsin+"/"+id,680,650) ;
+				openCenterWindow(contextPath+"/cost/add/"+currentAsin+"/"+id,680,650) ;
 			})
 			
 			
 			$(".add-cost").click(function(){
-				 	openCenterWindow("/saleProduct/index.php/cost/add/<?php echo $asin;?>",680,650) ;
+				 	openCenterWindow(contextPath+"/cost/add/<?php echo $asin;?>",680,650) ;
 			}) ;
    	 });
    </script>

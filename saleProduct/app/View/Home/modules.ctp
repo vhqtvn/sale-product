@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -38,7 +40,7 @@
 				if(this.id == menuId){
 					$(this.childNodes).each(function(){
 						//alert($.json.encode(this));
-						var imgRoot = "/saleProduct/app/webroot/css/default/module/index/" ;
+						var imgRoot = "/"+fileContextPath+"/app/webroot/css/default/module/index/" ;
 						var html = '<li><a href="'+this.URL+'"><img src="'+imgRoot+'t2.png" />'+this.text+'</a></li>'  ;
 						var menu = $(html).appendTo($("#nav")) ;
 						
@@ -68,7 +70,7 @@
 				
 				var href = $(this).attr("href") ;
 				if(href){
-					$("#home").attr("src","/saleProduct/index.php/"+href);
+					$("#home").attr("src",contextPath+"/"+href);
 				}
 				
 				return false ;

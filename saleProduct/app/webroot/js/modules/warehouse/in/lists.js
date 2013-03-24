@@ -24,7 +24,7 @@ $(function(){
 	           	{align:"center",key:"REAL_ARRIVAL_DATE",label:"实际到达日期",width:"10%"},
 	           	{align:"center",key:"MEMO",label:"备注",width:"10%"}
 	         ],
-	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:10,
 			 pageSizes:[10,20,30,40],
 			 height:function(){
@@ -37,14 +37,14 @@ $(function(){
 		}) ;
 		
 		$(".add-btn").click(function(){
-			openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.edit",990,640) ;
+			openCenterWindow(contextPath+"/page/model/Warehouse.In.edit",990,640) ;
 		}) ;
 		
 		$(".action").live("click",function(){
 			var record = $.llygrid.getRecord(this) ;
 			var id = record.ID ;
 			var status = $(this).attr("status")||"";
-			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.In.process/"+id+"/"+status,860,630) ;
+			openCenterWindow(contextPath+"/page/forward/Warehouse.In.process/"+id+"/"+status,860,630) ;
 			return false;
 			
 		});
@@ -57,7 +57,7 @@ $(function(){
 		
 		$(".edit").live("click",function(){
 			var val = $(this).attr("val") ;
-			openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editTab/"+val,990,640) ;
+			openCenterWindow(contextPath+"/page/model/Warehouse.In.editTab/"+val,990,640) ;
 			return false;
 		}) ;
 		 

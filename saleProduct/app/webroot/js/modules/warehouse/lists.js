@@ -14,7 +14,7 @@ $(function(){
            	{align:"center",key:"ZIPCODE",label:"邮编",width:"10%"},
            	{align:"center",key:"MEMO",label:"备注",width:"20%"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:10,
 		 pageSizes:[10,20,30,40],
 		 height:200,
@@ -26,21 +26,21 @@ $(function(){
 	
 	$(".design").live("click",function(){
 		var val = $(this).attr("val") ;
-		openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.loadDesign/"+val,1000,700) ;
+		openCenterWindow(contextPath+"/page/model/Warehouse.In.loadDesign/"+val,1000,700) ;
 	}) ;
 	
 	$(".view").live("click",function(){
 		var val = $(this).attr("val") ;
-		openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.loadDesignView/"+val,830,700) ;
+		openCenterWindow(contextPath+"/page/model/Warehouse.In.loadDesignView/"+val,830,700) ;
 	}) ;
 	
 	$(".add").click(function(){
-		openCenterWindow("/saleProduct/index.php/warehouse/addPage",650,530) ;
+		openCenterWindow(contextPath+"/warehouse/addPage",650,530) ;
 	}) ;
 	
 	$(".edit").live("click",function(){
 		var val = $(this).attr("val") ;
-		openCenterWindow("/saleProduct/index.php/warehouse/editPage/"+val,650,530) ;
+		openCenterWindow(contextPath+"/warehouse/editPage/"+val,650,530) ;
 		return false;
 	}) ;
 });

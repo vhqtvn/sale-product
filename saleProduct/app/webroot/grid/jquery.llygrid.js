@@ -942,24 +942,24 @@ function formatGridData(data){
 var renderGridImg = function(val,record){
 	if(val){
 		val = val.replace(/%/g,'%25') ;
-		return "<img src='/saleProduct/"+val+"' style='width:30px;height:30px;'>" ;
+		return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
 	}
 	return "" ;
 }
 
 $("[supplier-id]").live("click",function(){
 	var supplierId = $(this).attr("supplier-id") ;
-	openCenterWindow("/saleProduct/index.php/supplier/view/"+supplierId,600,500) ;
+	openCenterWindow(contextPath+"/supplier/view/"+supplierId,600,500) ;
 	return false ;
 })
 	
 //common action 
 function viewSupplier(id){
-	openCenterWindow("/saleProduct/index.php/supplier/view/"+id,600,500) ;
+	openCenterWindow(contextPath+"/supplier/view/"+id,600,500) ;
 }
 
 $(".product-detail").live("click",function(){
 	var asin = $(this).attr("asin") ;
-	openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+	openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 	return false;
 }) ;

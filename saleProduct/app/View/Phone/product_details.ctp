@@ -10,6 +10,8 @@
 </style>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->script('jquery');
 		
@@ -89,7 +91,7 @@
 			$(".base-gather").click(function(){
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/gatherProduct/execute/<?php echo $asin?>",
+					url:contextPath+"/gatherProduct/execute/<?php echo $asin?>",
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -146,7 +148,7 @@
 						<?php
 							foreach( $imgs as $img ){
 								$url = str_replace("%" , "%25",$img['LOCAL_URL']) ;
-								echo "<img src='/saleProduct/".$url."'>" ;
+								echo "<img src='/".$fileContextPath."/".$url."'>" ;
 							} ;
 						?>
 					</td>
@@ -251,7 +253,7 @@
 						echo "<tr>
 					<td>".$comp['TYPE']."</td>
 					<td><a href='".$comp["SELLER_URL"]."' target='_blank'>".$comp['SELLER_NAME']."</a></td>
-					<td><a href='".$comp["SELLER_URL"]."' target='_blank'><img src='/saleProduct/".$url."'></a></td>
+					<td><a href='".$comp["SELLER_URL"]."' target='_blank'><img src='/".$fileContextPath."/".$url."'></a></td>
 					<td>".$sellerPrice."</td>
 					<td>".$comp['SELLER_SHIP_PRICE']."</td>
 					<td>".$total."</td>
@@ -266,7 +268,7 @@
 						echo "<tr>
 						<td>".$f['TYPE']."</td>
 						<td><a href='".$f["SELLER_URL"]."' target='_blank'>".$f['SELLER_NAME']."</a></td>
-						<td><a href='".$f["SELLER_URL"]."' target='_blank'><img src='/saleProduct/".$url."'></a></td>
+						<td><a href='".$f["SELLER_URL"]."' target='_blank'><img src='/".$fileContextPath."/".$url."'></a></td>
 						<td>".$sellerPrice."</td>
 						<td>".$f['SELLER_SHIP_PRICE']."</td>
 			            <td>".$total."</td>
@@ -298,13 +300,13 @@
 					if( $supplier['sc_product_supplier']['URL'] != '' ){
 						if( $supplier['sc_product_supplier']['IMAGE'] != "" ){
 							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>
-								<img src='/saleProduct/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>
+								<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>
 							</a>" ;
 						}else{
 							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>产品网址</a>" ;
 						}
 					}else if($supplier['sc_product_supplier']['IMAGE'] != ""){
-						$urls = "<img src='/saleProduct/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>" ;
+						$urls = "<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>" ;
 					}
 					
 					echo "<tr>

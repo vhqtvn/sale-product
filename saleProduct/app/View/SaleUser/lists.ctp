@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -24,12 +26,12 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/users/editUser/"+id,600,400) ;
+					openCenterWindow(contextPath+"/users/editUser/"+id,600,400) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
+							url:contextPath+"/product/deleteScript/"+id,
 							data:{id:id},
 							cache:false,
 							dataType:"text",
@@ -39,7 +41,7 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/saleProduct/editProduct",600,400) ;
+					openCenterWindow(contextPath+"/saleProduct/editProduct",600,400) ;
 				} 
 				return false ;
 			})
@@ -68,7 +70,7 @@
 		           	}},
 		           	{align:"center",key:"POSTAL_CODE",label:"邮编",width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -91,7 +93,7 @@
 				var nochecked = $(".grid-content").llygrid("getSelectedValue",{key:"EMAIL",checked:false},true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/saleUser/setDanger" ,
+					url:contextPath+"/saleUser/setDanger" ,
 					data:{checked_emails:checked.join(","),unchecked_emails:nochecked.join(",")},
 					cache:false,
 					dataType:"text",

@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 			echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -60,7 +62,7 @@
 		           	{align:"center",key:"CREATE_TIME",label:"CREATE_TIME", width:"10%"},
 		           	{align:"center",key:"CREATOR",label:"CREATOR", width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+taskId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+taskId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,

@@ -3,7 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <?php 
+        include_once ('config/config.php');
         
+        ?>
         <title>LOGIN</title>
         <link rel="shortcut icon" href="">
         <meta name="author" content="Survs">
@@ -11,7 +14,7 @@
 		<meta name="description" content="Survs is a collaborative tool that enables you to create online surveys with simplicity and elegance.">
 		<meta name="robots" content="noodp,noydir">
 		 
-	<link rel="stylesheet" type="text/css" href="/saleProduct/app/webroot/css/home.css">
+	<link rel="stylesheet" type="text/css" href="/<?php echo $fileContextPath;?>/app/webroot/css/home.css">
 </head>
     <body class="small login">
     	<div id="wrapper">

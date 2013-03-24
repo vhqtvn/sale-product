@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -65,7 +67,7 @@
 		          //{align:"center",key:"TYPE",label:"类型",width:"10%"}
 					
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:250,
@@ -81,7 +83,7 @@
 				$(this).html("请求处理中.....").attr("diasbled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/amazon/getProduct"+flag+"Report1/"+accountId,
+					url:contextPath+"/amazon/getProduct"+flag+"Report1/"+accountId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -95,7 +97,7 @@
 				$(this).html("请求处理中.....").attr("diasbled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/amazon/getProduct"+flag+"Report2/"+accountId,
+					url:contextPath+"/amazon/getProduct"+flag+"Report2/"+accountId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -109,7 +111,7 @@
 				$(this).html("请求处理中.....").attr("diasbled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/amazon/getProduct"+flag+"Report3/"+accountId,
+					url:contextPath+"/amazon/getProduct"+flag+"Report3/"+accountId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -125,7 +127,7 @@
 		function getStatus(){
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/amazon/getProduct"+flag+"Asyns/"+accountId,
+				url:contextPath+"/amazon/getProduct"+flag+"Asyns/"+accountId,
 				data:{},
 				cache:false,
 				dataType:"text",

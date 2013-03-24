@@ -4,6 +4,8 @@
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../ligerUI/lib/ligerUI/skins/Aqua/css/ligerui-all');
 		echo $this->Html->script('jquery');
@@ -60,7 +62,7 @@
 				$code = $sfs['CODE'] ;
 				$name = $sfs['NAME'] ;
 				$pid  = $sfs['PARENT_ID'] ;
-				$url  = "/saleProduct/index.php/product/rule/$id" ;
+				$url  = $contextPath+"/product/rule/$id" ;
 				echo " var item$index = {id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} ;" ;
 				
 				echo " itemCache.push( item$index ) ;" ;
@@ -141,9 +143,6 @@
 			});
 		})
 		
-		///saleProduct/index.php/grid/scriptitem
-		///saleProduct/index.php/product/rule/"+this.ID
-
             var tab = null;
             var accordion = null;
             var tree = null;
@@ -208,8 +207,8 @@
     .l-winbar{ background:#2B5A76; height:30px; position:absolute; left:0px; bottom:0px; width:100%; z-index:99999;}
     .space{ color:#E7E7E7;}
     /* 顶部 */ 
-    .l-topmenu{ margin:0; padding:0; height:31px; line-height:31px; background:url('/saleProduct/app/webroot/ligerUI/lib/images/top.jpg') repeat-x bottom;  position:relative; border-top:1px solid #1D438B;  }
-    .l-topmenu-logo{ color:#E7E7E7; padding-left:35px; line-height:26px;background:url('/saleProduct/app/webroot/ligerUI/lib/images/topicon.gif') no-repeat 10px 5px;}
+    .l-topmenu{ margin:0; padding:0; height:31px; line-height:31px; background:url('/<?php echo $fileContextPath;?>/app/webroot/ligerUI/lib/images/top.jpg') repeat-x bottom;  position:relative; border-top:1px solid #1D438B;  }
+    .l-topmenu-logo{ color:#E7E7E7; padding-left:35px; line-height:26px;background:url('/<?php echo $fileContextPath;?>/app/webroot/ligerUI/lib/images/topicon.gif') no-repeat 10px 5px;}
     .l-topmenu-welcome{  position:absolute; height:24px; line-height:24px;  right:30px; top:2px;color:#070A0C;}
     .l-topmenu-welcome a{ color:#E7E7E7; text-decoration:underline} 
 
@@ -228,7 +227,7 @@
     <div class="l-topmenu-logo">
     	产品营销系统
     	 <div class="logout" >
-    	 	<a href="/saleProduct/index.php/users/logout">退出</a>
+    	 	<a href="<?php echo $contextPath;?>/users/logout">退出</a>
     	 	<a><?php 
     	 	if( isset($User) ){
     	 		echo $User["NAME"] ;
@@ -246,7 +245,7 @@
         <div position="center" id="framecenter"> 
 	   
             <div tabid="home" title="我的主页" style="height:300px" >
-                <iframe frameborder="0" name="home" id="home" src="/saleProduct/index.php/home/widgets"></iframe>
+                <iframe frameborder="0" name="home" id="home" src="<?php echo $contextPath;?>/home/widgets"></iframe>
             </div> 
         </div> 
         

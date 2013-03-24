@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -23,9 +25,9 @@
   	$(function(){
   		var tab = $('#tabs-default').tabs( {
 			tabs:[
-				{label:'产品基本信息同步（从账户同步）',url:'/saleProduct/index.php/amazonaccount/asynPage/common/<?php echo $accountId?>',iframe:true},
-				{label:'产品数据同步（从账户同步）',url:'/saleProduct/index.php/amazonaccount/asynPage/active/<?php echo $accountId?>',iframe:true,id:"testId"},
-				{label:'产品数据采集',url:'/saleProduct/index.php/amazonaccount/gatherPage/<?php echo $accountId?>',iframe:true,id:"testId"}
+				{label:'产品基本信息同步（从账户同步）',url:contextPath+'/amazonaccount/asynPage/common/<?php echo $accountId?>',iframe:true},
+				{label:'产品数据同步（从账户同步）',url:contextPath+'/amazonaccount/asynPage/active/<?php echo $accountId?>',iframe:true,id:"testId"},
+				{label:'产品数据采集',url:contextPath+'/amazonaccount/gatherPage/<?php echo $accountId?>',iframe:true,id:"testId"}
 			] ,
 			height:'500px'
 		} ) ;

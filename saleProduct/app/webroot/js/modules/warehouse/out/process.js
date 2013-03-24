@@ -43,11 +43,11 @@ $(function(){
 	}) ;
 	
 	$(".sh").click(function(){
-		window.location.href = "/saleProduct/index.php/page/forward/Warehouse.In.process/"+inId+"/sh" ;
+		window.location.href = contextPath+"/page/forward/Warehouse.In.process/"+inId+"/sh" ;
 	}) ;
 	
 	$(".rh").click(function(){
-		window.location.href = "/saleProduct/index.php/page/forward/Warehouse.In.process/"+inId+"/rk" ;
+		window.location.href = contextPath+"/page/forward/Warehouse.In.process/"+inId+"/rk" ;
 	}) ;
 
 	//确认验货

@@ -72,7 +72,7 @@ $(function(){
 	      		var html = [] ;
 	      		$( val.split(";") ).each(function(index,item){
 	      			var array = item.split("|") ;
-	      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+	      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
 	      		})  ;
 	      		return html.join("") ;
 	      	}},
@@ -80,7 +80,7 @@ $(function(){
            	{key:"POLICY_NAME",label:"决策",width:"10%",align:"left"},
            	{key:"MEMO",label:"备注",width:"17%",align:"left"}
          ],
-         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:10,
 		 pageSizes:[5,10,20,30],
 		 height:function(){
@@ -102,12 +102,12 @@ $(function(){
 
 	//添加选项
 	$(".add-btn").click(function(){
-		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent",880,330) ;
+		openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent",880,330) ;
 	}) ;
 	
 	$(".edit").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
-		openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Ram.editEvent/"+record.ID,880,650) ;
+		openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent/"+record.ID,880,650) ;
 		return false;
 	}) ;
 		

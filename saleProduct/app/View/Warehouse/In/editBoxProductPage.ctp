@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
@@ -49,7 +51,7 @@
 					params:{
 						sqlId:"sql_saleproduct_list"
 					},
-					ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+					ds:{type:"url",content:contextPath+"/grid/query"},
 					pagesize:10,
 					columns:[//显示列
 						{align:"center",key:"REAL_SKU",label:"SKU",sort:true,width:"100"},

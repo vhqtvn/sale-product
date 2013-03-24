@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 
@@ -20,28 +22,7 @@
 	?>
 
    <script>
-    function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
+   
    
    		var accountId = '<?php echo $accountId;?>' ;
    		var categoryId = '<?php echo $categoryId;?>' ;
@@ -56,7 +37,7 @@
 				$(this).html("正在处理中......").attr("disabled",true) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/gatherCategory/execute/"+accountId+"/"+ categoryId,
+					url:contextPath+"/gatherCategory/doGather/"+accountId+"/"+ categoryId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -115,7 +96,7 @@
 			            	return "<a href='#' taskId='"+val+"'>查看</a>" ;
 			            }}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
+			         ds:{type:"url",content:contextPath+"/grid/query/"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:240,
@@ -137,9 +118,9 @@
 			
 			$("[taskingId]").live('click',function(){
 				$taskId = $(this).attr("taskingId") ;
-				var url = "/saleProduct/index.php/tasking/stop/"+ $taskId ;
+				var url = contextPath+"/tasking/stop/"+ $taskId ;
 				if($(this).hasClass("btn-danger")){
-					url = "/saleProduct/index.php/tasking/stop/"+ $taskId+"/1" ;
+					url = contextPath+"/tasking/stop/"+ $taskId+"/1" ;
 				}
 				
 	 			$.ajax({
@@ -156,7 +137,7 @@
 	 		
 	 		$("[taskId]").live("click",function(){
 				var taskId = $(this).attr("taskId") ;
-				openCenterWindow("/saleProduct/index.php/log/taskLog/"+taskId,600,480) ;
+				openCenterWindow(contextPath+"/log/taskLog/"+taskId,600,480) ;
 				return false ;
 			}) ;
 			

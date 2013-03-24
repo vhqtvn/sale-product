@@ -22,7 +22,7 @@ var Widget = {
 		puchase:function(){
 			$.dataservice("model:Widget.PurchaseWidget.load",{},function(result){
 				for(var o in result){
-					$("."+o+"-purchase").html( "<a class='widget-action' href='"+result[o].url+"' target='_blank'>" +result[o].value+"</a>") ;
+					$("."+o+"-purchase").html( "<a class='widget-action' href='"+contextPath+result[o].url+"' target='_blank'>" +result[o].value+"</a>") ;
 				}
 			})
 		},
@@ -30,7 +30,7 @@ var Widget = {
 		order:function(){
 			$.dataservice("model:Widget.OrderWidget.load",{},function(result){
 				for(var o in result){
-					$("."+o+"-order").html( "<a class='widget-action'  href='"+result[o].url+"' target='_blank'>" +result[o].value+"</a>") ;
+					$("."+o+"-order").html( "<a class='widget-action'  href='"+contextPath+result[o].url+"' target='_blank'>" +result[o].value+"</a>") ;
 				}
 			})
 		},
@@ -38,7 +38,7 @@ var Widget = {
 		product:function(){
 			$.dataservice("model:Widget.ProductDevWidget.load",{},function(result){
 				for(var o in result){
-					$("."+o+"-product").html( "<a class='widget-action'  href='"+result[o].url+"' target='_blank'>" +result[o].value+"</a>") ;
+					$("."+o+"-product").html( "<a class='widget-action'  href='"+contextPath+result[o].url+"' target='_blank'>" +result[o].value+"</a>") ;
 				}
 			}) ;
 		},
@@ -60,7 +60,7 @@ var Widget = {
 				$(".inplan").html("-") ;
 				
 				$(items).each(function(){
-					$("."+this.STATUS+"-inplan").html( "<a class='widget-action'  href='/saleProduct/index.php/page/forward/Warehouse.In.lists' target='_blank'>" +this.C+"</a>") ;
+					$("."+this.STATUS+"-inplan").html( "<a class='widget-action'  href='"+contextPath+"/page/forward/Warehouse.In.lists' target='_blank'>" +this.C+"</a>") ;
 				}) ;
 				
 			});
@@ -71,7 +71,7 @@ var Widget = {
 				$(result).each(function(){
 					var type = this.TYPE ;
 					var val = this.c ;
-					$("."+type+"-goods").html( "<a class='widget-action'  href='/saleProduct/index.php/saleProduct/lists' target='_blank'>" +val+"</a>") ;
+					$("."+type+"-goods").html( "<a class='widget-action'  href='"+contextPath+"/saleProduct/lists' target='_blank'>" +val+"</a>") ;
 				}) ;
 			}) ;
 		}

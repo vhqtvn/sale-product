@@ -20,7 +20,8 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('../grid/grid');
 		*/
-		
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -71,7 +72,7 @@
 				}) ;
 				/*$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/sale/savePurchasePlanProduct",
+					url:contextPath+"/sale/savePurchasePlanProduct",
 					data:{
 						id:$("#id").val(),
 						plan_num:$("#plan_num").val(),
@@ -93,7 +94,7 @@
 			});
 			
 			$(".edit_supplier").click(function(){
-				openCenterWindow("/saleProduct/index.php/supplier/listsSelect/<?php echo $asin ;?>",800,600) ;
+				openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $asin ;?>",800,600) ;
 				return false;
 			}) ;
 		})

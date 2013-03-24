@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -32,7 +34,7 @@
 		}) ;
 		
 		$(".select-scope").click(function(){
-			openCenterWindow("/saleProduct/index.php/product/filterScope",800,600) ;
+			openCenterWindow(contextPath+"/product/filterScope",800,600) ;
 		}) ;
 		
 		$(".grid-query-button .save-result").click(function(){
@@ -45,7 +47,7 @@
 
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/grid/saveFilterResult",
+					url:contextPath+"/grid/saveFilterResult",
 					data:params ,
 					cache:false,
 					dataType:"text",
@@ -71,7 +73,7 @@
 		           		}else{
 		           			return "" ;
 		           		}
-		           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
+		           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
 		           	}},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
 		           		return "<a target='_blank' href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"'>"+val+"</a>" ;
@@ -84,7 +86,7 @@
 	           	{align:"center",key:"REVIEWS_NUM",label:"Reviews数量",width:"8%"},
 	           	{align:"center",key:"QUALITY_POINTS",label:"质量分",width:"7%"}
 	         ],
-	         ds:{type:"url",content:"/saleProduct/index.php/grid/rule"},
+	         ds:{type:"url",content:contextPath+"/grid/rule"},
 			 limit:20,
 			 pageSizes:[10,20,30,40],
 			 height:400,
@@ -109,7 +111,7 @@
 	
 	$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			})
 
 	 //result.records , result.totalRecord

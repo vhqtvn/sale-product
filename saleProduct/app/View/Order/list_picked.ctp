@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -53,12 +55,12 @@
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/users/editFunction/"+id,600,400) ;
+					openCenterWindow(contextPath+"/users/editFunction/"+id,600,400) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
+							url:contextPath+"/product/deleteScript/"+id,
 							data:{id:id},
 							cache:false,
 							dataType:"text",
@@ -68,14 +70,14 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/order/editPicked",600,400) ;
+					openCenterWindow(contextPath+"/order/editPicked",600,400) ;
 				} 
 				return false ;
 			}) ;
 			
 			$(".select-product").live("click",function(){
 				var pickId = $(this).attr("pickId") ;
-				openCenterWindow("/saleProduct/index.php/order/selectPickedProduct/"+pickId,1000,600) ;
+				openCenterWindow(contextPath+"/order/selectPickedProduct/"+pickId,1000,600) ;
 			})
 			
 			$(".grid-content").llygrid({
@@ -95,7 +97,7 @@
 		           		return val ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,

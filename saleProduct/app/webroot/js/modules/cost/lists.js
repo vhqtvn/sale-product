@@ -24,7 +24,7 @@
 		           	{align:"center",key:"QUALITY_POINTS",label:"质量分",width:"5%"}
 		           	
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
+		         ds:{type:"url",content: contextPath+"/grid/query/"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
 				 height:200,
@@ -88,7 +88,7 @@
 				    	,permission:function(){return $COST_VIEW_OTHER;}} 
 					
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:100,
@@ -109,12 +109,12 @@
 			
 			$(".edit-action").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/cost/add/"+currentAsin+"/"+id,680,650) ;
+				openCenterWindow(contextPath+"/cost/add/"+currentAsin+"/"+id,680,650) ;
 			})
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			})
 			
 			$(".query-btn").click(function(){
@@ -135,7 +135,7 @@
 			
 			$(".add-cost").click(function(){
 				if(currentAsin){
-				 	openCenterWindow("/saleProduct/index.php/cost/add/"+currentAsin,680,650) ;
+				 	openCenterWindow(contextPath+"/cost/add/"+currentAsin,680,650) ;
 				}else{
 					
 					alert("请选择某个产品！");

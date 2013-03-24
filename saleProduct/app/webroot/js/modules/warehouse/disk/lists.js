@@ -21,7 +21,7 @@ $(function(){
 	           	{key:"CHARGER",label:"经办人",width:"8%"},
 	           	{key:"MEMO",label:"备注",width:"15%"}
 	         ],
-	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:5,
 			 pageSizes:[5,10,20,30],
 			 height:function(){
@@ -75,7 +75,7 @@ $(function(){
 	           	{key:"PROCESSOR",label:"经办人",width:"8%"},
 	           	{key:"MEMO",label:"备注",width:"25%"}
 	         ],
-	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:10,
 			 pageSizes:[5,10,20,30],
 			 height:function(){
@@ -91,7 +91,7 @@ $(function(){
 		 * 添加计划
 		 */
 		$(".add-btn").click(function(){
-			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Disk.editPlan",780,530) ;
+			openCenterWindow(contextPath+"/page/forward/Warehouse.Disk.editPlan",780,530) ;
 		}) ;
 		
 		/**
@@ -100,14 +100,14 @@ $(function(){
 		$(".add-active").live("click",function(){
 			var record = $.llygrid.getRecord(this) ;
 			window.currentPlan=record ;
-			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Disk.edit",780,530) ;
+			openCenterWindow(contextPath+"/page/forward/Warehouse.Disk.edit",780,530) ;
 			return false;
 		}) ;
 		
 		
 		$(".edit").live("click",function(){
 			var val = $(this).attr("val") ;
-			openCenterWindow("/saleProduct/index.php/page/forward/Warehouse.Disk.edit/"+val,860,650) ;
+			openCenterWindow(contextPath+"/page/forward/Warehouse.Disk.edit/"+val,860,650) ;
 			return false;
 		}) ;
 	

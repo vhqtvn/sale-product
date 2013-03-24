@@ -12,12 +12,12 @@ $(function(){
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
 				if( $(this).hasClass("update") ){
-					openCenterWindow("/saleProduct/index.php/users/editFunction/"+id,600,450) ;
+					openCenterWindow(contextPath+"/users/editFunction/"+id,600,450) ;
 				}else if( $(this).hasClass("del") ){
 					if(window.confirm("确认删除吗")){
 						$.ajax({
 							type:"post",
-							url:"/saleProduct/index.php/product/deleteScript/"+id,
+							url:contextPath+"/product/deleteScript/"+id,
 							data:{id:id},
 							cache:false,
 							dataType:"text",
@@ -27,7 +27,7 @@ $(function(){
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow("/saleProduct/index.php/users/editFunction",600,450) ;
+					openCenterWindow(contextPath+"/users/editFunction",600,450) ;
 				} 
 				return false ;
 			})
@@ -51,7 +51,7 @@ $(function(){
 		           	{align:"left",key:"CODE",label:"功能编码",width:"20%"},
 		            {align:"left",key:"TYPE",label:"类别",width:"6%"} 
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

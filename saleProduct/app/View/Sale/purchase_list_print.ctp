@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui-print');
 		echo $this->Html->css('../grid/grid-print');
@@ -65,7 +67,7 @@
 		           		var localUrl = (record.LOCAL_URL+"").replace(/\%/g,"%25") ;
 		           		
 		           		if(localUrl && localUrl != 'null')
-		           			localUrl = '<img src="/saleProduct/'+localUrl+'"/>' ;
+		           			localUrl = '<img src="/'+fileContextPath+'/'+localUrl+'"/>' ;
 		           		else
 		           			localUrl = '' ;
 		           		
@@ -119,7 +121,7 @@
 		           		return "" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/salegrid/purchasePlanPrints"},
+		         ds:{type:"url",content:contextPath+"/salegrid/purchasePlanPrints"},
 				 limit:1000,
 				 //height:300,
 				 title:"",

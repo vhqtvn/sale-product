@@ -29,7 +29,7 @@ $(function(){
 	           		return _.join(":");
 	           	}}
 	         ],
-	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:100,
 			 pageSizes:[100],
 			 height:function(){
@@ -54,7 +54,7 @@ $(function(){
 	           	{align:"left",key:"PAYMENTS_DATE",label:"支付日期", width:"200" },
 	           	{align:"center",key:"ORDER_ID",label:"ORDER ID",width:"150" }
 	         ],
-	         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:100,
 			 pageSizes:[100],
 			 height:function(){

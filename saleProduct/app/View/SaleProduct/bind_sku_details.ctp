@@ -6,6 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		
@@ -54,7 +56,7 @@
 			if(window.confirm("确认添加SKU吗？")){
 				$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/saleProduct/saveSkuToRealProduct/" ,
+						url:contextPath+"/saleProduct/saveSkuToRealProduct/" ,
 						data:{accountId:accountId,skus:$("#skus").val(),id:'<?php echo $id;?>'},
 						cache:false,
 						dataType:"text",
@@ -70,7 +72,7 @@
 			if(window.confirm("确认删除引用吗？")){
 				$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/saleProduct/deleteRelProduct/" ,
+						url:contextPath+"/saleProduct/deleteRelProduct/" ,
 						data:{accountId:record.REL_ACCOUNT_ID,sku:record.REL_SKU,realSku:record.REL_REAL_SKU},
 						cache:false,
 						dataType:"text",
@@ -103,13 +105,13 @@
 			           		}else{
 			           			return "" ;
 			           		}
-			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
 			           	}}
 			         ],
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+			         ds:{type:"url",content:contextPath+"/grid/query"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:320,

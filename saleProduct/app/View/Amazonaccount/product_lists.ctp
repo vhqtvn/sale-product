@@ -6,6 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
+    include_once ('config/config.php');
+    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
@@ -77,12 +79,12 @@
 						currentCategoryId = "" ;
 						currentCategoryText = "" ;
 						$(".grid-content").llygrid("reload",getQueryCondition(),
-							{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+							{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 					}else{
 						currentCategoryId = id ;
 						currentCategoryText = text ;
 						$(".grid-content").llygrid("reload",getQueryCondition(),
-							{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+							{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 					}
 				}
 	       }) ;
@@ -121,7 +123,7 @@
 			           		}else{
 			           			return "" ;
 			           		}
-			           		return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
+			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
@@ -172,8 +174,8 @@
 			           	{align:"center",key:"FBA_COST",label:"总成本",group:"FBA",width:"6%"}//,
 			           	//{align:"center",key:"FBA_LOWER",label:"最低销售价",group:"FBA",width:"10%"}*/
 			         ],
-			         //ds:{type:"url",content:"/saleProduct/index.php/amazongrid/product/"+accountId},
-			         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+			         //ds:{type:"url",content:contextPath+"/amazongrid/product/"+accountId},
+			         ds:{type:"url",content:contextPath+"/grid/query"},
 					 limit:15,
 					 pageSizes:[15,20,30,40],
 					 height:420,
@@ -194,28 +196,28 @@
 			
 			$(".edit-account-product").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/amazonaccount/editAccountProduct/"+val,600,480) ;
+				openCenterWindow(contextPath+"/amazonaccount/editAccountProduct/"+val,600,480) ;
 			}) ;
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				var sku = $(this).attr("sku") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
 			}) ;
 			
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
-					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}}) ;	
+					{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
 			}) ;
 			
 			$(".query-reply-btn").click(function(){
 				$(".grid-content").llygrid("reload",{accountId:currentAccountId,reply:'1',sqlId:"sql_account_product_double_list"},
-					{ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId}} ) ;	
+					{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}} ) ;	
 			}) ;
 			
 			$(".product-category-btn").click(function(){
 				if( currentCategoryId ){
-					openCenterWindow("/saleProduct/index.php/amazonaccount/assignCategoryProduct/"+accountId+"/"+currentCategoryId,950,650) ;
+					openCenterWindow(contextPath+"/amazonaccount/assignCategoryProduct/"+accountId+"/"+currentCategoryId,950,650) ;
 				}
 			}) ;
 			
@@ -286,7 +288,7 @@
 					
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/amazonaccount/saveAccountProductFeed",
+					url:contextPath+"/amazonaccount/saveAccountProductFeed",
 					data:{type:key,sku:sku,value:val,accountId:currentAccountId},
 					cache:false,
 					dataType:"text",

@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -38,7 +40,7 @@
 						return html.join("") ;
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},//salegrid/purchasePlan
+		         ds:{type:"url",content:contextPath+"/grid/query"},//salegrid/purchasePlan
 				 limit:5,
 				 pageSizes:[10,20,30,40],
 				 height:100,
@@ -54,21 +56,21 @@
 			
 			$(".export-product").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				$("#exportIframe").attr("src","/saleProduct/index.php/marketing/exportForMarketingTestDetails/"+val) ;
+				$("#exportIframe").attr("src",contextPath+"/marketing/exportForMarketingTestDetails/"+val) ;
 			}) ;
 			
 			$(".add-product").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow("/saleProduct/index.php/marketing/selectMarketingTestProducts/"+val,1050,600) ;
+				openCenterWindow(contextPath+"/marketing/selectMarketingTestProducts/"+val,1050,600) ;
 			}) ;
 			
 			$(".add-outer-product").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/marketing/addMarketingTestOuterProduct/"+val,600,400) ;
+				openCenterWindow(contextPath+"/marketing/addMarketingTestOuterProduct/"+val,600,400) ;
 			})
 			
 			$(".create-plan").click(function(){
-				openCenterWindow("/saleProduct/index.php/marketing/createMarketingTestPlan/",600,400) ;
+				openCenterWindow(contextPath+"/marketing/createMarketingTestPlan/",600,400) ;
 			}) ;
 			
 			$(".grid-content-details").llygrid({
@@ -81,7 +83,7 @@
 		           		
 		           		if(val){
 		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/saleProduct/"+val+"' onclick='showImg(this)' style='width:20px;height:20px;'>" ;
+		           			return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:20px;height:20px;'>" ;
 		           		}
 		           		return "" ;
 		           		
@@ -101,7 +103,7 @@
 						
 					}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:300,
@@ -121,7 +123,7 @@
 			
 			$(".edit-action").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow("/saleProduct/index.php/marketing/editMarketingTestProduct/"+val,600,450) ;
+				openCenterWindow(contextPath+"/marketing/editMarketingTestProduct/"+val,600,450) ;
 			}) ;
 
 			$(".del-action").live("click",function(){
@@ -131,7 +133,7 @@
 				if(window.confirm("确认删除该试销产品["+asin+"]吗？")){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/marketing/deleteMarketingTestProduct",
+						url:contextPath+"/marketing/deleteMarketingTestProduct",
 						data:{
 							id:val
 						},
@@ -147,7 +149,7 @@
 			
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
-				openCenterWindow("/saleProduct/index.php/product/details/"+asin,950,650) ;
+				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			});
 			
    	 });

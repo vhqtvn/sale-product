@@ -8,6 +8,8 @@
 
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -26,10 +28,10 @@
   		var realId ='<?php echo $id;?>' ;
   		var tab = $('#tabs-default').tabs( {//$this->layout="index";
 			tabs:[
-				{label:'基本信息',url:"/saleProduct/index.php/saleProduct/forward/edit_product/"+realId,iframe:true},
-				{label:'渠道产品信息',url:"/saleProduct/index.php/saleProduct/forward/channel/"+realId,iframe:true}
+				{label:'基本信息',url:contextPath+"/saleProduct/forward/edit_product/"+realId,iframe:true},
+				{label:'渠道产品信息',url:contextPath+"/saleProduct/forward/channel/"+realId,iframe:true}
 				<?php if($item['TYPE'] == 'package'){?>
-					,{label:'打包货品信息',url:"/saleProduct/index.php/saleProduct/forward/composition/"+realId,iframe:true}
+					,{label:'打包货品信息',url:contextPath+"/saleProduct/forward/composition/"+realId,iframe:true}
 				<?php } ?>
 			] ,
 			height:'588x'

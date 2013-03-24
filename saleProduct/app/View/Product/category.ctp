@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/tree/jquery.tree');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -88,7 +90,7 @@
         	
         	$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/product/saveCategory/",
+				url:contextPath+"/product/saveCategory/",
 				data:ids,
 				cache:false,
 				dataType:"text",
@@ -108,7 +110,7 @@
         	
         	$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/product/saveCategory/",
+				url:contextPath+"/product/saveCategory/",
 				data:ids,
 				cache:false,
 				dataType:"text",

@@ -10,7 +10,7 @@ $(function(){
 		/*
 			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/users/saveFunctoin",
+				url:contextPath+"/users/saveFunctoin",
 				data:json,
 				cache:false,
 				dataType:"text",

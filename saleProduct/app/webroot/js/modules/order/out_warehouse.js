@@ -12,7 +12,7 @@ $(function(){
 				//$(".grid-content").llygrid("reload",{orderId:val}) ;
 				$.ajax({
 					type:"post",
-					url:"/saleProduct/index.php/order/repickedException/" ,
+					url:contextPath+"/order/repickedException/" ,
 					data:{type:'',memo:'',orderNumber:val,status:10},
 					cache:false,
 					dataType:"text",

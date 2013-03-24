@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+        include_once ('config/config.php');
+        
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -75,7 +77,7 @@
 <body>
 <form id="personForm" action="#" data-widget="validator,ajaxform">
 
-	<form action="/saleProduct/index.php/task/doUploadAmazonQuantity" method="post" target="form-target" enctype="multipart/form-data">
+	<form action="<?php echo $contextPath;?>/task/doUploadAmazonQuantity" method="post" target="form-target" enctype="multipart/form-data">
 	<table class="table table-bordered">
 		<caption>库存更新</caption>
 		<tr>
@@ -90,7 +92,7 @@
 	</table>
 	</form>
 	
-	<form action="/saleProduct/index.php/task/doUploadAmazonPrice" method="post" target="form-target" enctype="multipart/form-data">
+	<form action="<?php echo $contextPath;?>/task/doUploadAmazonPrice" method="post" target="form-target" enctype="multipart/form-data">
 	<table class="table table-bordered">
 		<caption>价格更新</caption>
 		<tr>

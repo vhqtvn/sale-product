@@ -10,7 +10,7 @@
 				      		var html = [] ;
 				      		$( val.split(";") ).each(function(index,item){
 				      			var array = item.split("|") ;
-				      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+				      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
 				      		})  ;
 				      		return html.join("") ;
 				      	}},
@@ -18,13 +18,13 @@
 				    	{align:"left",key:"ACCOUNT_NAME",label:"账号", width:"8%"},
 						{align:"center",key:"SHIPPED_NUM",label:"发货数量", width:"6%"},
 						{align:"center",key:"UNSHIPPED_NUM",label:"未发货数量", width:"6%"},
-						{align:"center",key:"AMOUNT",label:"金额", width:"4%" ,align:'right'},
+						{align:"center",key:"AMOUNT",label:"金额", width:"4%" ,align:'right',sort:true},
 						{align:"center",key:"PURCHASE_DATE",label:"Purchase Date",sort:true, width:"15%"},
 				    	{align:"center",key:"LAST_UPDATE_DATE",label:"Last Update Date",sort:true, width:"15%"},
 						{align:"center",key:"BUYER_EMAIL",label:"BUYER_EMAIL", width:"30%"},
 						{align:"center",key:"BUYER_NAME",label:"BUYER_NAME", width:"10%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"},
+		         ds:{type:"url",content:contextPath+"/grid/query/"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -32,7 +32,7 @@
 				 },
 				 title:"订单信息列表",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:'',status:status},
+				 querys:{sqlId:sqlId,accountId:'',status:status,type:type},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
@@ -50,28 +50,27 @@
 						return ;
 					}	
 				
-				var text = $.trim( $(this).text() ) ;
+				    var text = $.trim( $(this).text() ) ;
 				
-				if( window.confirm("确认将选择产品添加到["+text+"]中吗？") ){
-					
-					$.ajax({
-						type:"post",
-						url:"/saleProduct/index.php/order/saveAudit" ,
-						data:{status:status,orders:orders.join(","),memo:$("#memo").val()},
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							alert("保存成功!");
-							window.location.reload();
-						}
-					});
-				}
+				    if( window.confirm("确认将选择产品添加到["+text+"]中吗？") ){
+						$.ajax({
+							type:"post",
+							url:contextPath+"/order/saveAudit" ,
+							data:{status:status,orders:orders.join(","),memo:$("#memo").val()},
+							cache:false,
+							dataType:"text",
+							success:function(result,status,xhr){
+								alert("保存成功!");
+								window.location.reload();
+							}
+						});
+					}
 				
 				
 			}) ;
 			
 			$(".export").click(function(){
-				openCenterWindow("/saleProduct/index.php/order/selectExportOrder/",1000,600) ;
+				openCenterWindow(contextPath+"/order/selectExportOrder/",1000,600) ;
 			}) ;
 			
 			$(".query").click(function(){

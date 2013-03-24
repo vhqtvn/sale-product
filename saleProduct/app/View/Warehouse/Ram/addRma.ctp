@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
@@ -56,7 +58,7 @@
 			<h2>入库单信息</h2>
 		</div>
 		<div class="container-fluid">
-	        <form id="personForm" action="/saleProduct/index.php/page/model/Warehouse.Ram.doSaveRam"
+	        <form id="personForm" action="<?php echo $contextPath;?>/page/model/Warehouse.Ram.doSaveRam"
 	          								method="post" data-widget="validator" target="form-target"
 	         								enctype="multipart/form-data" class="form-horizontal" >
 	         	
@@ -101,7 +103,7 @@
 													<input type="radio" data-validator="required" name="realProductId" value="<?php echo $order['REAL_ID']?>"></td>
 													<td key="realSku"><?php echo $order['REAL_SKU']?></td>
 													<td ><?php echo $order['REAL_NAME']?></td>
-													<td ><?php echo "<img style='width:25px;height:25px;' src='/saleProduct/".$imageUrl."'>"?></td>
+													<td ><?php echo "<img style='width:25px;height:25px;' src='/".$fileContextPath."/".$imageUrl."'>"?></td>
 													<td ><?php echo $order['QUANTITY_TO_SHIP']?></td>
 												</tr>
 												<?php

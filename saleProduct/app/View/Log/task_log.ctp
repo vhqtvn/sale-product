@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 			echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -54,7 +56,7 @@
 		           	{align:"left",key:"MESSAGE",label:"内容", width:"80%"},
 		           	{align:"center",key:"LOG_TIME",label:"时间", width:"15%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/log/taskLogGrid/<?php echo $taskId?>"},
+		         ds:{type:"url",content:contextPath+"/log/taskLogGrid/<?php echo $taskId?>"},
 				 limit:15,
 				 pageSizes:[15,20,30,40],
 				 height:380,

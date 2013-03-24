@@ -38,14 +38,22 @@ var Page = {
 		}) ;
 	},
 	download:function(){
-		window.location.href = "/saleProduct/index.php/order/doDownloadOrder/"+accountId;
+		window.location.href = contextPath+"/order/doDownloadOrder/"+accountId;
 	},
 	reDownload:function(id){ //重新下载
-		window.location.href = "/saleProduct/index.php/order/doDownloadOrder/"+accountId+"/"+id;
+		window.location.href = contextPath+"/order/doDownloadOrder/"+accountId+"/"+id;
 		return false ;
 	},
 	asynTn2Amazon:function(){
-	
+		//getAllCount
+		$("[name='accountId']").find("option").each(function(){
+			var accountId = $(this).attr("value") ;
+			if(accountId){
+				$.dataservice("model:NOrderService.synTn2Amazon",{accountId:accountId},function(result){
+					
+				}) ;
+			}
+		});
 	},
 	loadDownloadGrid:function(){
 		$("#picked-grid-content").llygrid({
@@ -55,7 +63,7 @@ var Page = {
 		           		return '<a href="#" class="redownload">'+img+'</a>&nbsp;'+val+"<strong></strong>" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
@@ -106,7 +114,7 @@ var Page = {
 			      		var html = [] ;
 			      		$( val.split(";") ).each(function(index,item){
 			      			var array = item.split("|") ;
-			      			item&& html.push("<img src='/saleProduct"+array[0]+"' style='width:25px;height:25px;'>") ;
+			      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
 			      		})  ;
 			      		return html.join("") ;
 			      	}},
@@ -116,7 +124,7 @@ var Page = {
 		           	{align:"center",key:"TRANSACTION_ID",label:"TRANSACTION_ID",sort:true, width:"20%"},
 		           	{align:"center",key:"MAIL_CLASS",label:"MAIL_CLASS", width:"30%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query/"+accountId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"+accountId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){

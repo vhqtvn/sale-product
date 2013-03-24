@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('style-all');
 		echo $this->Html->css('tab/jquery.ui.tabs');
@@ -98,7 +100,7 @@
  			$taskId = $(this).attr("taskingId") ;
  			$.ajax({
 				type:"post",
-				url:"/saleProduct/index.php/tasking/stop/"+ $taskId,
+				url:contextPath+"/tasking/stop/"+ $taskId,
 				data:{},
 				cache:false,
 				dataType:"text",

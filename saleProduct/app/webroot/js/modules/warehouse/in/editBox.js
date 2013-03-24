@@ -18,7 +18,7 @@
 		           	}},
 		           	{align:"center",key:"MEMO",label:"备注",width:"33%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:120,
@@ -50,7 +50,7 @@
 	           		{align:"center",key:"PRODUCT_TRACKCODE",label:"产品跟踪码",width:"6%"},
 	           		{align:"center",key:"MEMO",label:"备注",width:"6%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:200,
@@ -64,28 +64,28 @@
 				var FILTER_ID = $(this).attr("val") ;
 				var asin = $(this).attr("asin") ;
 				var status = $(this).attr("status") ;
-				openCenterWindow("/saleProduct/index.php/sale/details1/"+FILTER_ID+"/"+asin+"/"+type+"/"+status,950,650) ;
+				openCenterWindow(contextPath+"/sale/details1/"+FILTER_ID+"/"+asin+"/"+type+"/"+status,950,650) ;
 			}) ;
 			
 			$(".add-box").live("click",function(){
-				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxPage/"+inId,550,420) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId,550,420) ;
 			}) ;
 			
 			$(".edit-box").live("click",function(){
 				var boxId = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxPage/"+inId+"/"+boxId,550,420) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId+"/"+boxId,550,420) ;
 				return false ;
 			}) ;
 			
 			
 			
 			$(".add-box-product").live("click",function(){
-				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440) ;
 			})
 			
 			$(".edit-box-product").live("click",function(){
 				var boxPId = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+boxPId,550,440) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+boxPId,550,440) ;
 			})
 			
    	 });

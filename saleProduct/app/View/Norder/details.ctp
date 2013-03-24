@@ -8,6 +8,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
@@ -169,7 +171,7 @@
 				  					<th>
 				  						<?php 
 				  							if( !empty( $item['IMAGE_URL'] ) ){
-				  								echo "<img src='/saleProduct".$item['IMAGE_URL']."'>" ;
+				  								echo "<img src='/".$fileContextPath."".$item['IMAGE_URL']."'>" ;
 				  							}
 				  						?>
 				  					</th>

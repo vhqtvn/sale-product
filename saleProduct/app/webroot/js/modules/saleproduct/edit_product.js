@@ -44,7 +44,7 @@ $(function(){
 				params:{
 					sqlId:"sql_postage_service_grid"
 				},
-				ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+				ds:{type:"url",content:contextPath+"/grid/query"},
 				pagesize:10,
 				columns:[//显示列
 					//{align:"center",key:"ID",label:"编号",width:"100"},

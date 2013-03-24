@@ -13,6 +13,8 @@
      	var status = "5" ;
 	</script>
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/grid/jquery.llygrid-print');
@@ -77,7 +79,7 @@
 				if( window.confirm("确认打印拣货单吗，打印后拣货单将不再能编辑？") ){
 					$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/order/updatePickedStatus/<?php echo $pickId;?>" ,
+						url:contextPath+"/order/updatePickedStatus/<?php echo $pickId;?>" ,
 						data:{},
 						cache:false,
 						dataType:"text",
@@ -92,7 +94,7 @@
 			?>
 				$.ajax({
 						type:"post",
-						url:"/saleProduct/index.php/order/updatePickedStatus/<?php echo $pickId;?>" ,
+						url:contextPath+"/order/updatePickedStatus/<?php echo $pickId;?>" ,
 						data:{},
 						cache:false,
 						dataType:"text",

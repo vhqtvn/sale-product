@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+   include_once ('config/config.php');
+   
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
@@ -54,7 +56,7 @@
 		           	{align:"center",key:"CREATE_TIME",label:"上传时间",width:"30%"},
 		           	{align:"center",key:"USERNAME",label:"上传用户",width:"30%"}
 		         ],
-		         ds:{type:"url",content:"/saleProduct/index.php/grid/query"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:400,
@@ -67,7 +69,7 @@
 	
 			$(".show-details").live("click",function(){
 				var taskId = $(this).attr("val") ;
-				openCenterWindow("/saleProduct/index.php/flow/lists/"+taskId,900,600) ;
+				openCenterWindow(contextPath+"/flow/lists/"+taskId,900,600) ;
 				return false ;
 			}) ;
 			
@@ -128,7 +130,7 @@
 <body>
 
    <div style="border:1px solid #CCC;margin:3px;">
-	    <form action="/saleProduct/index.php/taskUpload/doFlowUpload" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
+	    <form action="<?php echo $contextPath;?>/taskUpload/doFlowUpload" method="post" target="form-target" enctype="multipart/form-data" onsubmit="return validateForm()">
 		   <table border=0 cellPadding=3 cellSpacing=4 >
 		    <tr>
 		     <td>流量文件：</td>

@@ -7,6 +7,8 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
+  		include_once ('config/config.php');
+  		 
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -99,7 +101,7 @@
 	</div>
 	
   <div id="attachment" class="attachment-area tab-content" style="display:block">
-	  <form action="/saleProduct/index.php/gatherUpload/uploadAsins" method="post" target="form-target" enctype="multipart/form-data">
+	  <form action="<?php echo $contextPath;?>/gatherUpload/uploadAsins" method="post" target="form-target" enctype="multipart/form-data">
 	  	<input name="groupId" value='<?php echo $id ;?>' type="hidden"/>
 	   <table class="table table-bordered">
 	    <tr>
@@ -119,7 +121,7 @@
    </div>
    
    <div id="inputs" class="inputin-area tab-content">
-	  <form action="/saleProduct/index.php/gatherUpload/inputAsins" method="post" target="form-target">
+	  <form action="<?php echo $contextPath;?>/gatherUpload/inputAsins" method="post" target="form-target">
 	   <input name="groupId" value='<?php echo $id ;?>' type="hidden"/>
 	   <table class="table table-bordered">
 	    <tr>

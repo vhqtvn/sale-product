@@ -2,6 +2,8 @@
 
 <h1>Add Post</h1>
 <?php
+include_once ('config/config.php');
+
 echo $this->Form->create('Post');
 echo $this->Form->input('title');
 echo $this->Form->input('body', array('rows' => '3'));

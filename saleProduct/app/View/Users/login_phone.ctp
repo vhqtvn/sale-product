@@ -1,5 +1,9 @@
 <html>
 <head>
+<?php 
+include_once ('config/config.php');
+
+?>
 <style type="text/css">
    input{
    	font-size:70px;
