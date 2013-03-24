@@ -19,6 +19,8 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+include('config/config_controller.php');
+
 /**
  * CakePHP Debug Level:
  *
@@ -179,7 +181,7 @@
 	*/
 	Configure::write('Session', array(
         'defaults' => 'database',
-        'cookie'=>'saleProduct',
+        'cookie'=>fileContextPath,
         'handler' => array(
             'engine' => 'CookiedbSession',
             'model' => 'cake_session',

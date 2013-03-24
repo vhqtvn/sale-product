@@ -67,8 +67,20 @@ class DATABASE_CONFIG {
 		'password' => '',
 		'database' => 'sale_product1',
 		'prefix' => '',
-		'encoding' => 'utf8'
+		'encoding' => 'UTF8'
 	);
+	
+	public $gbk = array(
+		'datasource' => 'Database/Mysql',
+		'persistent' => false,
+		'host' => 'localhost',
+		'login' => 'root',
+		'password' => '',
+		'database' => 'sale_product1',
+		'prefix' => '',
+		'encoding' => 'GBK'
+	);
+	
 
 	public $test = array(
 		'datasource' => 'Database/Mysql',
