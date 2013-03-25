@@ -11,7 +11,7 @@ App :: import('Vendor', 'AmazonOrder');
 class AmazonController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Amazonaccount', 'Config');
+    var $uses = array('Amazonaccount', 'Config','Utils');
     
     public function priceimportPage($accountId){
     	$this->set("accountId",$accountId) ;
