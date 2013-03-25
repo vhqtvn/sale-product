@@ -58,6 +58,16 @@ class Sale extends AppModel {
 		} ;
 	}
 	
+	public function deletePurchasePlan( $params,$user ){
+		$planId = $params['planId'] ;
+	
+		//删除计划产品
+		//$this->exeSql("sql_delete_sc_pp_product", $params) ;
+		
+		//删除计划
+		$this->exeSql( "sql_delete_sc_pp" , $params ) ;
+	}
+	
 	public function deletePurchasePlanProduct($data,$user){
 		$id = $data["id"] ;
 		$loginId = $user["LOGIN_ID"] ;

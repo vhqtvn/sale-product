@@ -57,6 +57,23 @@ $(function(){
 			return false ;
 		}) ;
 		
+		$(".btn-delete").click(function(){
+			if( !$.validation.validate('#personForm').errorInfo ) {
+				if(window.confirm("确认删除RMA事件吗?")){
+					
+					var json = $("#personForm").toJson() ;
+					
+					//保存基本信息
+					$.dataservice("model:Warehouse.Ram.deleteEvent",json,function(result){
+							window.opener.openCallback('editPlan') ;
+							window.close();
+					});
+				}
+			};
+			
+			return false ;
+		}) ;
+		
 		$(".btn-aduitNotPass").click(function(){
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;

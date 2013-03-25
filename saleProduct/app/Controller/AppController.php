@@ -81,6 +81,15 @@ class AppController extends Controller {
 		
 	}
 	
+	function requestMap(){
+		$query = $this->request->query ;
+		$params = $this->request->data ;
+		foreach($query as $key=>$value){
+			$params[$key] = $value ;
+		}
+		return $params ;
+	}
+	
 	function startsWith($haystack, $needle)
 	{
 	    $length = strlen($needle);

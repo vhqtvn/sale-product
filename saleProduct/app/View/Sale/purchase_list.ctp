@@ -40,6 +40,7 @@
 		$security  = ClassRegistry::init("Security") ;
 		
 		$create_pp 				= $security->hasPermission($loginId , 'create_pp') ;
+		$delete_pp 				= $security->hasPermission($loginId , 'delete_pp') ;
 		$add_pp_product 		= $security->hasPermission($loginId , 'add_pp_product') ;
 		$add_pp_audit_product	= $security->hasPermission($loginId , 'add_pp_audit_product') ;
 		$export_pp 				= $security->hasPermission($loginId , 'export_pp') ;
@@ -59,6 +60,7 @@
 		var loginId = <?php echo $flag == 1?"''":"'$loginId'" ?> ;
 	
 		var $create_pp = <?php echo $create_pp?"true":"false" ;?> ;
+		var $delete_pp = <?php echo $delete_pp?"true":"false" ;?> ;
 		var $add_pp_product = <?php echo $add_pp_product?"true":"false" ;?> ;
 		var $add_pp_audit_product = <?php echo $add_pp_audit_product?"true":"false" ;?> ;
 		var $export_pp = <?php echo $export_pp?"true":"false" ;?> ;

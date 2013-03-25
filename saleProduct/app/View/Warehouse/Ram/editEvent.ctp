@@ -107,12 +107,16 @@
 							<div style="text-align:right;float:right;margin-top:1px;">
 							<?php
 								if( $isInit ){
+									if(!empty($result['CODE'])){
 								?>
+								<button type="button" class="btn btn-primary btn-delete">删&nbsp;除</button>
+								<?php } ?>
 								<button type="button" class="btn btn-primary btn-save">保&nbsp;存</button>
 								<button type="button" class="btn btn-primary btn-save-audit">保存并提交审批</button>
 								<?php
 								}else if($isAudit){//审批
 								?>
+								<button type="button" class="btn btn-primary btn-delete">删&nbsp;除</button>
 								<button type="button" class="btn btn-primary btn-aduitPass">审批通过</button>
 								<button type="button" class="btn btn-primary btn-aduitNotPass">审批不通过</button>
 								<?php

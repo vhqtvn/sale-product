@@ -31,6 +31,12 @@ class Ram extends AppModel {
 		$this->doOrderRam($params) ;
 	}
 	
+	public function deleteEvent($params){
+		$ramId = $params['id'] ;
+		$this->exeSql("sql_ram_delete_track",array('ramId'=>$ramId)) ;
+		$this->exeSql("sql_ram_delete_event",array('ramId'=>$ramId)) ;
+	}
+	
 	/**
 	 * 保存并审批事件
 	 */

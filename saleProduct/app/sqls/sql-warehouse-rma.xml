@@ -279,4 +279,12 @@
 	'{@#image#}'
 	)
    </entry>
+   
+   <entry key="sql_ram_delete_event">
+  		delete from sc_ram_event where id = '{@#ramId#}'
+   </entry>
+   
+   <entry key="sql_ram_delete_track">
+  		delete from sc_ram_track where id = '{@#ramId#}'
+   </entry>
 </properties>

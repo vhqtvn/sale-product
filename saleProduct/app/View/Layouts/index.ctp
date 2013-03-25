@@ -62,7 +62,7 @@
 				$code = $sfs['CODE'] ;
 				$name = $sfs['NAME'] ;
 				$pid  = $sfs['PARENT_ID'] ;
-				$url  = $contextPath+"/product/rule/$id" ;
+				$url  = $contextPath."/product/rule/$id" ;
 				echo " var item$index = {id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} ;" ;
 				
 				echo " itemCache.push( item$index ) ;" ;
@@ -86,7 +86,7 @@
 				
 				foreach( $security as $Record1 ){
 					$sfs1 = $Record1['sc_security_function']  ;
-
+					
 					$id   = $sfs1['ID'] ;
 					$code = $sfs1['CODE'] ;
 					$name = $sfs1['NAME'] ;
@@ -116,7 +116,7 @@
 				}) ;
 			}
 		}) ;
-		
+
 		$(function(){
 			$("#tree1").ligerTree({
 			    data : indexdata,

@@ -11,16 +11,18 @@
 		  
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"",width:"5%",format:function(val,record){
+		           	{align:"center",key:"ID",label:"",width:"7%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						if( status == 1){
-							html.push("<a href='#' class='edit_purchase_plan' val='"+val+"'>修改</a>&nbsp;") ;
+							if( $delete_pp ) html.push("<a href='#' class='delete_purchase_plan' val='"+val+"'>删除</a>&nbsp;") ;
+							if( $create_pp ) html.push("<a href='#' class='edit_purchase_plan' val='"+val+"'>修改</a>&nbsp;") ;
+
 							return html.join("") ;
 						}
 						return "" ;
 					},permission:function(){
-						return $create_pp ;
+						return $create_pp || $delete_pp ;
 					}},
 		           	{align:"center",key:"NAME",label:"采购计划名称",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"PLAN_TIME",label:"计划采购时间",width:"9%"},
@@ -46,8 +48,8 @@
 		           	{align:"center",key:"STATUS5",label:img5,group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=5>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"EXECUTOR_NAME",label:"执行人",width:"6%"},
-		           	{align:"center",key:"USERNAME",label:"创建人",width:"6%"},
+		           	{align:"center",key:"EXECUTOR_NAME",label:"执行人",width:"4%"},
+		           	{align:"center",key:"USERNAME",label:"创建人",width:"4%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"},
 					{align:"center",key:"ID",label:"操作",width:"20%",format:function(val,record){
 						var status = record.STATUS ;
@@ -132,6 +134,17 @@
 				openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,400) ;
 				return false;
 			}) ;
+			
+			$(".delete_purchase_plan").live("click",function(){
+				var val = $(this).attr("val") ;//采购计划ID
+				if(window.confirm("确认删除该采购计划吗？")){
+					$.dataservice("model:Sale.deletePurchasePlan",{planId:val},function(){
+						window.location.reload() ;
+					}) ;
+					
+				}
+			}) ;
+			
 			
 			$(".create-plan").click(function(){
 				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,400) ;

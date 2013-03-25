@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_delete_sc_pp">
+    	UPDATE SC_PURCHASE_PLAN SET status = '2' where id = '{@#planId#}'
+    </entry>
+
+   
+</properties>

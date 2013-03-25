@@ -534,7 +534,9 @@ class TaskAsynAmazonController extends AppController {
 		 $MaxResultsPerPage = null
 		 */
 		$querys = array() ;
-		$params = $this->request->data  ;
+		
+		$params = $this->requestMap()  ;
+	
 		if( isset($params["LastUpdatedAfter"]) ){
 			$querys['LastUpdatedAfter'] = $params["LastUpdatedAfter"] ;
 		}
