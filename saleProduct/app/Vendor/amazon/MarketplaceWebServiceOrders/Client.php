@@ -382,7 +382,7 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
                 try {
                         $response = $this->_httpPost($parameters);
                         
-                        //debug( $response )  ;
+                        debug( $response )  ;
                         if ($response['Status'] === 200) {
                             $shouldRetry = false;
                         } else {

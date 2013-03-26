@@ -571,7 +571,7 @@ class TaskAsynAmazonController extends AppController {
 		) ;
 	
 		$request = $amazon->getOrderItems( $orderId ,$accountId) ;
-	
+	  // debug($request) ;
 		/*if( !empty($request) ){
 		 $user =  $this->getCookUser() ;
 		$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;

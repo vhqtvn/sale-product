@@ -60,7 +60,7 @@ class AmazonOrder {
 		$request->setAmazonOrderId( $orderId );
 		
 		$response = $service->listOrderItems( $request );
-		
+		//debug($response) ;
 		if ($response->isSetListOrderItemsResult()) {
 			$listOrderItemsResult = $response->getListOrderItemsResult();
 			

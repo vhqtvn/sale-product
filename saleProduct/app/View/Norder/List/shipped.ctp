@@ -43,6 +43,9 @@
 		if( status == 'fba' ){
 			type = 'AFN' ;
 			status = '' ;
+		}else if(!status){
+			type = '' ;
+			status = '' ;
 		}
 	</script>
 	

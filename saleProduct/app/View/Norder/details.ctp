@@ -27,7 +27,7 @@
 		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
-		echo $this->Html->script('modules/warehouse/ram/editEvent');
+		echo $this->Html->script('modules/norder/details');
 		echo $this->Html->script('calendar/WdatePicker');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
@@ -43,7 +43,7 @@
 		//debug($items) ;
 		//echo $orderId ;
 		//echo $loginId ;
-		
+		debug( $order) ;
 	?>
 	<style>
 		.table th, .table td{
@@ -56,17 +56,24 @@
 	<!-- apply 主场景 -->
 	<div class="apply-page">
 		<div class="container-fluid">
-			<table class="table table-bordered">
-				<caption>基本信息</caption>
+			<table class="table table-bordered base-table">
+				<caption>
+					基本信息
+					<button class="btn btn-primary asyn-details" style="float:right;">同步明细信息</button>
+				</caption>
 				<tr>
 					<th>内部订单号：</th>
-					<td><?php echo $order['ORDER_NUMBER']?></td>
+					<td><?php echo $order['ORDER_NUMBER']?>(<?php  echo $order['FULFILLMENT_CHANNEL']?>)</td>
 					<th>账户：</th>
-					<td><?php echo $order['ACCOUNT_NAME']?></td>
+					<td>
+					<input type="hidden"  id="accountId"  value="<?php echo $order['ACCOUNT_ID'] ?>"/>
+					<?php echo $order['ACCOUNT_NAME']?></td>
 				</tr>
 				<tr>
 					<th>订单编号：</th>
-					<td><?php echo $order['ORDER_ID']?></td>
+					<td>
+					<input type="hidden"  id="orderId"  value="<?php echo $order['ORDER_ID'] ?>"/>
+					<?php echo $order['ORDER_ID']?></td>
 					<th>订单状态：</th>
 					<td><?php echo $order['ORDER_STATUS']?></td>
 				</tr>
@@ -139,14 +146,14 @@
 				  ?>
 				  	<tr>
 				  		<td style="width:100%;">
-				  			<table style="width:100%;" class="table table-bordered">
-				  				<caption><?php  echo $item['Title'] ;?>
+				  			<div class="alert alert-success" style="margin:2px;font-weight:bold;"><?php  echo $item['Title'] ;?>
 				  					<?php 
 				  						if( !empty($item['NAME']) ){
 				  							echo "（".$item['NAME']."）" ;
 				  						}
 				  					?>
-				  				</caption>
+				  				</div>
+				  			<table style="width:100%;" class="table table-bordered">
 				  				<tr>
 				  					<th>Order Item Id</th>
 				  					<td><?php echo $item['Order_Item_Id'] ;?></td>
