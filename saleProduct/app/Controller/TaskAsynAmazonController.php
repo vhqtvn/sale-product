@@ -297,6 +297,7 @@ class TaskAsynAmazonController extends AppController {
 	 * @param unknown_type $accountId
 	 */
 	public function startAsynAmazonActiveProducts($accountId){
+	
 		$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_MERCHANT_LISTINGS_DATA_") ;
 		$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
@@ -310,12 +311,12 @@ class TaskAsynAmazonController extends AppController {
 			 	$account['MARKETPLACE_ID'] ,
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
-		if( empty($accountAsyn) ){//未开始采集
+		//if( empty($accountAsyn) ){//未开始采集
 			$request = $amazon->getProductActiveReport1($accountId) ;
 			if( !empty($request) ){
 				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
 			}
-		}else{
+		/*}else{
 			$requestReportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_REQUEST_ID"] ;
 			$reportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_ID"] ;
 			$status = $accountAsyn[0]["sc_amazon_account_asyn"]["STATUS"] ;
@@ -325,12 +326,12 @@ class TaskAsynAmazonController extends AppController {
 					$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
 				}
 			}
-		}
+		}*/
 		
-		$this->response->type("json") ;
-		$this->response->body( "success")   ;
+		//$this->response->type("json") ;
+	//	$this->response->body( "success")   ;
 
-		return $this->response ;
+	//	return $this->response ;
 	}
 		
 	

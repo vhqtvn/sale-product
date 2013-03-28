@@ -95,10 +95,10 @@
 		
 		table .cell-div input{
 			border:1px solid #CCC;
-			width:100px;
+			width:50px;
 			margin:1px 3px;
 			padding:2px 3px;
-			background:#EFEFEF;
+			/*background:#EFEFEF;*/
 		}
 	</style>
 </head>
@@ -136,6 +136,10 @@
 							<div class="qt">
 								<div class='qt-label'>锁定库存：</div>
 								<div class='qt-value' style="color:red;font-size:13px;"><?php echo $product['LOCK_QUANTITY'];?></div>
+							</div>
+							<div class="qt">
+								<div class='qt-label'>账号库存：</div>
+								<div class='qt-value account-quantity' ></div>
 							</div>
 							<div class="qt">
 								<div class='qt-label'>可分配库存：</div>

@@ -32,6 +32,17 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$categorys = $SqlUtils->exeSql("sql_saleproduct_categorytree",array() ) ;
+		
+		$security  = ClassRegistry::init("Security") ;
+		
+		$user = $this->Session->read("product.sale.user") ;
+		$loginId = $user["LOGIN_ID"] ;
+		
+		$product_add = $security->hasPermission($loginId , 'product_add') ;
+		$product_edit = $security->hasPermission($loginId , 'product_edit') ;
+		$product_giveup = $security->hasPermission($loginId , 'product_giveup') ;
+		$view_giveup_product = $security->hasPermission($loginId , 'view_giveup_product') ;
+		$product_stock_quanity_assign = $security->hasPermission($loginId , 'product_stock_quanity_assign') ;
 
 		$user = $this->Session->read("product.sale.user") ;
 		$loginId = $user["GROUP_CODE"] ;
@@ -45,6 +56,12 @@
 	?>
 	
 	<script type="text/javascript">
+		$product_edit = <?php echo $product_edit?'true':'false';?> ;
+		$product_giveup = <?php echo $product_giveup?'true':'false';?> ;
+		$view_giveup_product = <?php echo $view_giveup_product?'true':'false';?> ;
+		$product_stock_quanity_assign = <?php echo $product_stock_quanity_assign?'true':'false';?> ;
+	
+	
 	    var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
 	    var treeMap  = {} ;
 	
@@ -125,7 +142,9 @@
 						<th></th>
 						<td>
 							<button class="btn btn-primary query" >查询</button>
+							<?php if( $product_add ){ ?>
 							<button class="action add btn btn-primary">添加货品</button>
+							<?php  } ?>
 						</td>
 					</tr>						
 				</table>	

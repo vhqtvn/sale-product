@@ -8,7 +8,8 @@ $(function(){
 				{align:"left",key:"SKU",label:"SKU",width:"15%",format:function(val,record){
 					return val||record.REL_SKU ;
 				}},
-	           	{align:"center",key:"ASSIGN_QUANTITY",label:"库存数量",width:"15%",format:{type:"editor"}},
+	           	{align:"center",key:"ASSIGN_QUANTITY",label:"分配库存",width:"8%",format:{type:"editor"}},
+	        	{align:"center",key:"QUANTITY",label:"账户库存",width:"8%"},
 	           	{align:"left",key:"ASIN",label:"ASIN", width:"12%",format:function(val,record){
 	           		var memo = record.MEMO||"" ;
 	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
@@ -39,7 +40,14 @@ $(function(){
 			 title:"",
 			 indexColumn:false,
 			 querys:{id:realProductId,sqlId:"sql_saleproduct_channel_list"},
-			 loadMsg:"数据加载中，请稍候......"
+			 loadMsg:"数据加载中，请稍候......",
+			 loadAfter:function(){
+				 var quantity = 0 ;
+				 $("td[key='QUANTITY']").each(function(){
+					 quantity += parseInt($.trim( $(this).text() )||"0") ;
+				 }) ;
+				 $(".account-quantity").html(quantity) ;
+			 }
 		} ;
    
 	setTimeout(function(){

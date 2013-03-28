@@ -156,7 +156,7 @@
 					{align:"left",key:"ID",label:"操作",forzen:false,width:"9%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
-						if($edit_pp_product && (!status ||status < 2) )
+						if($edit_pp_product && (!status ||status < 5) )
 							html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
 						if($delete_pp_product && (!status ||status < 2))
 							html.push('<a href="#" title="删除" class="del-action" asin="'+record.ASIN+'" planId="'+record.PLAN_ID+'"  val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/delete.gif"/></a>&nbsp;') ;

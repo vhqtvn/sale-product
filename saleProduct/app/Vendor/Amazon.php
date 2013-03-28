@@ -319,6 +319,7 @@ class Amazon {
 	}
 	
 	public function getProductActiveReport1( $accountId ){
+		echo 123123;
 		 $config = array (
 			  'ServiceURL' =>  "https://mws.amazonservices.com",
 			  'ProxyHost' => null,

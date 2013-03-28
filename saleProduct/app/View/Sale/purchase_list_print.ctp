@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+  		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/redmond/ui-print');
@@ -84,10 +84,11 @@
 		           		return html ;
 		           	} },
 		           	{align:"center",key:"ASIN",label:"供应商信息", width:"150",format:function(val,record){
+			           	var isUsed = record.IS_USED?'（采用）':"" ;
 		           		var html = '\
 		           		<div>\
 							<div class="product-provider">\
-								<label>供应商名称：</label>\
+								<label>供应商名称'+isUsed+'：</label>\
 								<div class="label-content">'+(record.PROVIDOR_NAME||"")+'</div>\
 								<label>联系人：</label>\
 								<div class="label-content">'+(record.PROVIDOR_CONTACTOR||"")+'</div>\
@@ -99,7 +100,6 @@
 		           		return html ;
 		           	} },
 		           	{align:"center",key:"ASIN",label:"采购信息", width:"70",format:function(val,record){
-		           		
 		           		var totalPrice = record.QUOTE_PRICE * record.PLAN_NUM ;
 		           		if(totalPrice) totalPrice = totalPrice.toFixed(2) ;
 		           		

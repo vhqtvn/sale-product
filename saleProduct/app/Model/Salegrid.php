@@ -171,6 +171,8 @@ class Salegrid extends AppModel {
                 (select sc_supplier.name from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_NAME,
                 (select sc_supplier.contactor from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_CONTACTOR,
                 (select sc_supplier.phone from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_PHONE,
+                (select sps.is_used from sc_product_supplier sps where sps.asin = sc_product.asin
+                        and sps.supplier_id = sc_purchase_plan_details.PROVIDOR  ) as IS_USED,
 				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL
                FROM sc_purchase_plan_details , sc_product
 			$where

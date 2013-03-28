@@ -111,7 +111,7 @@ class AmazonOrder {
 						}
 						if ($itemPrice->isSetAmount())
 						{
-							$item['ItemPriceAmount'] = $itemPrice->getCurrencyCode() ;
+							$item['ItemPriceAmount'] = $itemPrice->getAmount() ;
 						}
 					}
 					if ($member->isSetShippingPrice()) {

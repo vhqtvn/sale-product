@@ -39,14 +39,16 @@
 					{align:"center",key:"ID",label:"操作", width:"25%",format:function(val,record){
 						var html = [] ;
 						if(tabIndex < 2){
-							html.push("<a href='#' class='action update btn' val='"+val+"'>编辑</a>&nbsp;") ;
-							
+							if( $product_edit ){
+								html.push("<a href='#' class='action update btn' val='"+val+"'>编辑</a>&nbsp;") ;
+							}
 						}
-						
-						html.push("<a href='#' class='action inout btn' val='"+val+"'>出入库</a>&nbsp;") ;
-						html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
+						if( $product_stock_quanity_assign  ){
+							html.push("<a href='#' class='action inout btn' val='"+val+"'>出入库</a>&nbsp;") ;
+							html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
+						}
 						return html.join("") ;
-					}},
+					},permission:function(){ return $product_edit||$product_stock_quanity_assign ; }},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
 		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
@@ -92,7 +94,7 @@
 							html.push("<a href='#' class='action giveup btn'  val='"+val+"' type=2>恢复</a>") ;
 							return html.join("") ;
 						}
-					}}
+					},permission:function(){ return $product_giveup ; }}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
@@ -109,12 +111,16 @@
    	 });
    	 
    	 $(function(){
+   		 	var tabs = [
+   						{label:'基本货品',content:"tab-content"},
+   						{label:'打包货品',content:"tab-content"}
+   					] ;
+   		 	if( $view_giveup_product ){
+   		 		tabs.push( {label:'作废货品',content:"tab-content"} ) ;
+   		 	}
+   		 
 			var tab = $('#details_tab').tabs( {
-				tabs:[
-					{label:'基本货品',content:"tab-content"},
-					{label:'打包货品',content:"tab-content"},
-					{label:'作废货品',content:"tab-content"}
-				] ,
+				tabs: tabs,
 				//height:'500px',
 				select:function(event,ui){
 					var index = ui.index ;

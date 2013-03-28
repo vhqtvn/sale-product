@@ -1131,10 +1131,15 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
     
     $U1002 = $curlOptions["10002"] ;
     $U1005 = $curlOptions["10015"] ;
-	
+    
+    echo $U1002."?".$U1005 ;
+    
 	$html  = "" ;
 	$HeadArray = null ;
 	if (RequestType::getRequestType($action) === RequestType::POST_DOWNLOAD) {
+		
+		
+		
     	$handle = fopen($U1002."?".$U1005, 'r');
 	    $content = '';
 	   

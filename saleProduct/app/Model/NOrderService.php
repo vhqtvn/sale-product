@@ -50,8 +50,20 @@ class NOrderService extends AppModel {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
-		$orderId = $orderItem['order-id'] ;
-		$orderItemId = $orderItem['order-item-id'] ;
+		$orderId = "" ;
+		$orderItemId = "" ;
+		
+		if( $isFeed ){
+			$orderId = $orderItem['order-id'] ;
+			$orderItemId = $orderItem['order-item-id'] ;
+		}else{
+			$orderId = $orderItem['OrderId'] ;
+			$orderItemId = $orderItem['OrderItemId'] ;
+			$orderItem['order-id'] = $orderId; 
+			$orderItem['order-item-id'] = $orderItemId;
+			$orderItem['quantity-to-ship'] = $orderItem['QuantityOrdered'] ;
+		}
+		
 		$record = $this->getObject("sql_sc_order_item_findById", array("orderId"=>$orderId,'orderItemId'=>$orderItemId)) ;
 	
 		if(empty($record)){//item未添加
