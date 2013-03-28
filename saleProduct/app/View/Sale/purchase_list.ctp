@@ -46,6 +46,7 @@
 		$export_pp 				= $security->hasPermission($loginId , 'export_pp') ;
 		$print_pp 				= $security->hasPermission($loginId , 'print_pp') ;
 		$edit_pp_product 		= $security->hasPermission($loginId , 'edit_pp_product') ;
+		$reedit_pp_product 		= $security->hasPermission($loginId , 'reedit_pp_product') ;
 		$delete_pp_product 		= $security->hasPermission($loginId , 'delete_pp_product') ;
 		$apply_purchase 		= $security->hasPermission($loginId , 'apply_purchase') ;
 		$audit_purchase 	= $security->hasPermission($loginId , 'audit_purchase') ;
@@ -66,6 +67,7 @@
 		var $export_pp = <?php echo $export_pp?"true":"false" ;?> ;
 		var $print_pp = <?php echo $print_pp?"true":"false" ;?> ;
 		var $edit_pp_product = <?php echo $edit_pp_product?"true":"false" ;?> ;
+		var $reedit_pp_product = <?php echo $reedit_pp_product?"true":"false" ;?> ;
 		var $delete_pp_product = <?php echo $delete_pp_product?"true":"false" ;?> ;
 		var $apply_purchase = <?php echo $apply_purchase?"true":"false" ;?> ;
 		var $audit_purchase = <?php echo $audit_purchase?"true":"false" ;?> ;
