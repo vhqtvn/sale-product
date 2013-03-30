@@ -1,5 +1,5 @@
 <?php 
 	
 	define ('domain', 'www.smarteseller.com');
-	define ('context', 'saleProductTask');
+	define ('context', 'saleProduct');
 	define ('accountId', '5');

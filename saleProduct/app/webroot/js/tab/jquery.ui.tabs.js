@@ -812,6 +812,10 @@ $.widget("ui.__tabs", {
 			if (o.cache) {
 				$.data(a, 'cache.tabs', true); 
 			}
+			if(this.options.height && $.isFunction(this.options.height)){
+				this.options.height = this.options.height() ;
+			};
+			
 			$(this._sanitizeSelector(a.hash)).html("<iframe frameborder=0 height='"+this.options.height+"' width=100% src='"+url+"'></iframe>");
 			this._cleanup();
 		}else  this.xhr = $.ajax($.extend({}, o.ajaxOptions, {

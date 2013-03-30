@@ -43,7 +43,7 @@
 		//debug($items) ;
 		//echo $orderId ;
 		//echo $loginId ;
-		debug( $order) ;
+		//debug( $order) ;
 	?>
 	<style>
 		.table th, .table td{

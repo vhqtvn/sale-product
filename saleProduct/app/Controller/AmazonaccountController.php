@@ -5,7 +5,7 @@ App :: import('Vendor', 'Amazon');
 class AmazonaccountController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Amazonaccount', 'Config','Tasking','Warning');
+    var $uses = array('Amazonaccount', 'Config','Tasking','Warning','Utils');
    
     /**
      * 数据采集管理
@@ -252,14 +252,14 @@ class AmazonaccountController extends AppController {
 	 	$this->set("account",$this->Amazonaccount->getAccount($accountId,$categoryId)  ) ;
 	 }
 	 
-	  public function doAmazonPrice(){
+	 public function doAmazonPrice(){
 	 	$params = $this->request->data  ;
 		$accountId = $params["accountId"] ;
 		
 		$user =  $this->getCookUser() ;
 		$loginId = $user["LOGIN_ID"] ;
 		
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		
 		$products = $this->Amazonaccount->listAccountUpdatableProductForPrice( $account["ID"] ) ;
@@ -280,7 +280,10 @@ class AmazonaccountController extends AppController {
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
 		
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
+		file_get_contents($url."?feed=".urlencode($Feed));
+		
+		/*$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
     	$amazon = new Amazon(
 				$account['AWS_ACCESS_KEY_ID'] , 
@@ -294,14 +297,14 @@ class AmazonaccountController extends AppController {
 		
 		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
 		
-		$this->Amazonaccount->saveAccountFeed($result) ;
+		$this->Amazonaccount->saveAccountFeed($result) ;*/
 
 		$this->response->type("html");
-		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
+		$this->response->body("success");
 		return $this->response;
 	 }
 	 
-	 public function doAmazonQuantity(){
+	/* public function doAmazonQuantity(){
 	 	
 	 	$id = "UC_Quantity_".date('U') ;
 	 	
@@ -342,19 +345,20 @@ class AmazonaccountController extends AppController {
 		
 		$result = $amazon->updateInventory($accountId,$Feed,$loginId) ;
 		
-		print_r($result) ;
 		$this->Amazonaccount->saveAccountFeed($result) ;
 
 		$this->response->type("html");
 		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
 		return $this->response;
 
-	 }
+	 }*/
 	 
 	
 	/**
 	 * 更新库存
 	 */
+	 
+	 /*
 	public function doUploadAmazonQuantity(){
 		$params = $this->request->data  ;
 		$accountId = $params["accountId"] ;
@@ -412,13 +416,13 @@ class AmazonaccountController extends AppController {
 		$this->response->type("html");
 		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
 		return $this->response;
-	}
+	}*/
 
 	public function doUploadAmazonPrice(){
 		$params = $this->request->data  ;
 		$accountId = $params["accountId"] ;
 		
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		
 		$fileName = $_FILES['priceFile']["name"] ;
@@ -451,8 +455,11 @@ class AmazonaccountController extends AppController {
 		fclose($file_handle);
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
+		
+		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
+		file_get_contents($url."?feed=".urlencode($Feed));
 
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		/*$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
     	$amazon = new Amazon(
 				$account['AWS_ACCESS_KEY_ID'] , 
@@ -466,10 +473,10 @@ class AmazonaccountController extends AppController {
 		
 		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
 		
-		$this->Amazonaccount->saveAccountFeed($result) ;
+		$this->Amazonaccount->saveAccountFeed($result) ;*/
 
 		$this->response->type("html");
-		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
+		$this->response->body("success");
 		return $this->response;
 	}
 	

@@ -29,6 +29,76 @@ class AmazonController extends AppController {
     	$this->set("accountId",$accountId) ;
     }
     
+    /**
+     * 库存分配
+     */
+    public function quantity(){
+    	$id = "UC_Quantity_".date('U') ;
+    	
+    	$params = $this->requestMap()  ;
+    	//$accountId = $params["accountId"] ;
+    	
+    	$user =  $this->getCookUser() ;
+    	$loginId = $user["LOGIN_ID"] ;
+    	
+    	foreach( $params as $key=>$value ){
+    		$accountId = $key ;
+    		$skuQuantity = $value ;
+    	
+    		$_products = array() ;
+    		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId)  ;
+    		$account = $account[0]['sc_amazon_account']  ;
+    		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+    		foreach ( $skuQuantity as $kq ){
+    			$_products[] = array("SKU"=>$kq['sku'],"FEED_QUANTITY"=>$kq['quantity']) ;
+    		}
+    		$Feed = $this->Amazonaccount->getQuantityFeed($MerchantIdentifier , $_products) ;
+    	
+    		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/quantity") ;
+    		file_get_contents($url."?feed=".urlencode($Feed));
+    		//echo $Feed;
+    	 }
+    		
+    	 $this->response->type("html");
+    	 $this->response->body("");
+    	 return $this->response;
+    }
+    
+    /**
+     * 价格调整
+     */
+    public function price($accountId){
+    	$id = "UC_Price_".date('U') ;
+    
+    	$params = $this->requestMap()  ;
+    	//$accountId = $params["accountId"] ;
+    
+    	$user =  $this->getCookUser() ;
+    	$loginId = $user["LOGIN_ID"] ;
+    
+    	foreach( $params as $key=>$value ){
+    		$accountId = $key ;
+    		$skuQuantity = $value ;
+    
+    		$_products = array() ;
+    		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId)  ;
+    		$account = $account[0]['sc_amazon_account']  ;
+    		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+    		foreach ( $skuQuantity as $kq ){
+    			$_products[] = array("SKU"=>$kq['sku'],"FEED_QUANTITY"=>$kq['quantity']) ;
+    		}
+    		$Feed = $this->Amazonaccount->getQuantityFeed($MerchantIdentifier , $_products) ;
+    
+    		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/quantity") ;
+    		file_get_contents($url."?feed=".urlencode($Feed));
+    		//echo $Feed;
+    	}
+    
+    	$this->response->type("html");
+    	$this->response->body("");
+    	return $this->response;
+    }
+    
     public function listOrders($accountId){
     	$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;

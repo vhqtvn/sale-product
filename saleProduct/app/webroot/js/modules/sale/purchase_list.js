@@ -156,8 +156,12 @@
 					{align:"left",key:"ID",label:"操作",forzen:false,width:"9%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
-						if($edit_pp_product && (!status ||status < 5) )
+						if( ($edit_pp_product && (!status ||status < 3))
+								||( $reedit_pp_product &&  status >=3 && status <5   )
+						){
 							html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
+						}
+						
 						if($delete_pp_product && (!status ||status < 2))
 							html.push('<a href="#" title="删除" class="del-action" asin="'+record.ASIN+'" planId="'+record.PLAN_ID+'"  val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/delete.gif"/></a>&nbsp;') ;
 						
@@ -377,7 +381,9 @@
 			
 			$(".edit-action").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,750,580) ;
+				openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,750,580,function(){
+					$(".grid-content-details").llygrid("reload",{},true) ;
+				}) ;
 			}) ;
 			
 			$(".paction").live("click",function(){
@@ -399,7 +405,7 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							$(".grid-content-details").llygrid("reload",{planId:planId}) ;
+							$(".grid-content-details").llygrid("reload",{},true) ;
 						}
 					}); 
 				}

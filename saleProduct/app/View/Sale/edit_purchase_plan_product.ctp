@@ -67,7 +67,7 @@
 			$("button").click(function(){
 				var json = $("#personForm").toJson() ;
 				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
-					window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
+					//window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
 					window.close() ;
 				}) ;
 				/*$.ajax({
@@ -87,7 +87,7 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
+						//window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
 						window.close() ;
 					}
 				}); */

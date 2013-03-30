@@ -367,64 +367,71 @@
 <body style="magin:0px;padding:0px;">
 	<div data-widget="layout" style="width:100%;height:100%;">
 		<div region="center" split="true" border="true" title="产品列表" style="padding:2px;">
-			<div class="query-bar">
-			   <ul>
-			   	 <li><label>ASIN:</label><input type="text" name="asin" style="width:100px"/></li>
-			   	 <li><label>名称:</label><input type="text" name="title" style="width:100px"/></li>
-			   	 <li><label>库存:</label>从<input type="text" name="quantity1" style="width:50px"/>到<input type="text" name="quantity2" style="width:50px"/></li>
-			   	 <li><label>价格:</label>从<input type="text" name="price1" style="width:50px"/>到<input type="text" name="price2" style="width:50px"/></li>
-			   	 <li><label>销售渠道:</label><select name='fulfillmentChannel'>
-					<option value=''>全部</option>
-					<option value='AMAZON_NA'>Amazon</option>
-					<option value='Merchant'>Merchant</option>
-					<option value='-'>未知</option>
-				</select></li>
-				<li><label>使用程度:</label><select name='itemCondition'>
-					<option value=''>全部</option>
-					<option value=11>New</option>
-					<option value=1>Used</option>
-					<option value='-'>未知</option>
-				</select></li>
-				 <li><label>FM商品:</label><select name='isFM'>
-					<option value=''>全部</option>
-					<option value="FM">FM</option>
-					<option value="NEW">NEW</option>
-				</select></li>
-				 <li>
-				 <label>排名:</label><select name='pm'>
-					<option value=''>全部</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="other">其他</option>
-				</select>
-				 </li>
-				 <li>
-				 <label>地区限制:</label>
-				 <select name='limitArea'>
-					<option value=''>全部</option>
-					<option value="1">包括非美国地区</option>
-					<option value="2">限美国</option>
-				 </select>
-				 </li>
-				 <li>
-				 <label>预警:</label>
-				 <select name='warning'>
-					<option value=''>全部</option>
-					<option value="rights_warning">维权预警</option>
-					<option value="ranking_warning">排名预警</option>
-				 </select>
-				 </li>
-				 <li>
-				 	<button class="btn btn-primary btn-mini query-btn">查询</button>
-				 	<button class="btn btn-primary btn-mini query-reply-btn">重复产品过滤</button>
-				 	<button class="btn btn-primary btn-mini product-category-btn">编辑分类产品</button>
-				 </li>
-			   </ul>
-			
+			<div class="toolbar toolbar-auto query-bar">
+				<table style="width:100%;" class="query-table">	
+					<tr>
+						<th>ASIN:</th>
+						<td>
+							<input type="text" name="asin" style="width:100px"/>
+						</td>
+						<th>名称:</th>
+						<td>
+							<input type="text" name="title" style="width:100px"/>
+						</td>
+						<th>价格:</th>
+						<td>
+							从<input type="text" name="price1" style="width:50px"/>到<input type="text" name="price2" style="width:50px"/>
+						</td>
+						<th>销售渠道:</th>
+						<td>
+							<select name='fulfillmentChannel'  class="span2">
+								<option value=''>全部</option>
+								<option value='AMAZON_NA'>Amazon</option>
+								<option value='Merchant'>Merchant</option>
+								<option value='-'>未知</option>
+							</select>
+						</td>
+					</tr>
+					<tr>	
+						<th>使用程度:</th>
+						<td>
+							<select name='itemCondition'  style="width:100px">
+								<option value=''>全部</option>
+								<option value=11>New</option>
+								<option value=1>Used</option>
+								<option value='-'>未知</option>
+							</select>
+						</td>
+						<th>FM商品:</th>
+						<td>
+							<select name='isFM'   style="width:100px">
+								<option value=''>全部</option>
+								<option value="FM">FM</option>
+								<option value="NEW">NEW</option>
+							</select>
+						</td>
+						<th>排名:</th>
+						<td>
+							<select name='pm'   style="width:100px">
+								<option value=''>全部</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="other">其他</option>
+							</select>
+						</td>
+						<td colspan="2">
+							<button class="btn btn-primary query query-btn" >查询</button>
+							
+							<button class="btn btn-primary btn-mini query-reply-btn">重复产品过滤</button>
+				 			<button class="btn btn-primary btn-mini product-category-btn">编辑分类产品</button>
+						</td>
+					</tr>						
+				</table>
 			</div>
+			
 			<div style="clear:both;height:5px;"></div>
 			<div class="grid-content" style="width:99%;">
 			</div>

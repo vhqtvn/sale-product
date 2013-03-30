@@ -31,7 +31,7 @@
 					{align:"center",key:"ID",label:"名称", width:"5%",format:{type:'checkbox',callback:function(record){
 						var checked = $(this).attr("checked");
 						if(checked){
-							$(".product-list ul").append("<li supplier='"+record.ID+"'>"+record.NAME+"</li>") ;
+							$(".product-list ul").append("<li class='alert alert-success' supplier='"+record.ID+"'>"+record.NAME+"</li>") ;
 						}else{
 							$(".product-list ul").find("[supplier='"+record.ID+"']").remove() ;
 						}
@@ -50,8 +50,8 @@
 		         ds:{type:"url",content:contextPath+"/supplier/grid/"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
-				 height:200,
-				 title:"产品列表",
+				 height:270,
+				 title:"供应商列表",
 				 indexColumn:true,
 				 querys:{},
 				 loadMsg:"数据加载中，请稍候......",
@@ -125,33 +125,49 @@
    		
    		.product-list ul li{
    			float:left;
-   			width:auto;
-   			background:#AACCDD;
-   			padding:2px;
-   			border:1px solid #00ff00;
-   			cursor:pointer;
-   			margin:2px;
+   			margin:2px 5px;
+   			padding:5px 10px;
    		}
    </style>
 
 </head>
 <body>
-	<div class="query-bar">
-		<label>供应商名称:</label><input type="text" name="name"/>
-		<button class="query-btn">查询</button>
-		<button class="add-btn">添加供应商</button>
+	<div class="toolbar toolbar-auto query-bar">
+		<table>
+			<tr>
+				<th>
+					供应商名称:
+				</th>
+				<td>
+					<input type="text" name="name"/>
+				</td>							
+				<td class="toolbar-btns">
+					<button class="query-btn btn">查询</button>
+					<button class="add-btn btn btn-primary">添加供应商</button>
+				</td>
+			</tr>						
+		</table>
 	</div>
+	
 	<div class="grid-content">
 	</div>
-	<div class="product-list" style="border:1px solid #CCC;width:100%;height:100px;">
+	<div class="product-list" style="border:1px solid #CCC;width:100%;height:100px;margin:10px 0px;">
      		<ul>
      			<?php
      				foreach($suppliers as $supplier){
-     					echo "<li supplier='".$supplier['sc_supplier']['ID']."'>".$supplier['sc_supplier']['NAME']."</li>" ;
+     					echo "<li supplier='".$supplier['sc_supplier']['ID']."' class='alert alert-success'>".$supplier['sc_supplier']['NAME']."</li>" ;
      				} ;
      			?>
      		</ul>
      </div>
-     <button class="save-product-supplier">保存产品供应商</button>
+     
+     <div class="panel-foot">
+						<div class="form-actions col2">
+							
+							<button class="save-product-supplier btn-primary btn">保存产品供应商</button>
+							
+							<button onclick="window.close();" class="btn">关&nbsp;闭</button>
+						</div>
+					</div>
 </body>
 </html>

@@ -66,6 +66,10 @@
 		.item-label,.item-relation,.item-value,.item-value{
 			float:left;
 		}
+		
+		.table-bordered tr td,.table-bordered tr th{
+			padding:5px;
+		}
    </style>
 
    <script>
@@ -141,46 +145,53 @@
 <body>
 <form id="personForm" action="#" data-widget="validator,ajaxform">
 <input type="hidden" id="id" value="<?php echo $id;?>"/>
-	<table>
+	<table class="table table-bordered">
+		<caption>供应商信息</caption>
 		<tr>
-			<td>供应商名称：</td><td><input  data-validator="required" type="text" id="name" value="<?php echo $name;?>"/></td>
-			<td rowspan=11 style="width:100px;vertical-align:top;">
-				<div id="default-tree" class="tree" style="padding: 5px; "></div>
+			<th>供应商名称：</th>
+			<td><input  data-validator="required" type="text" id="name" value="<?php echo $name;?>"/></td>
+			<td rowspan=11 style="width:140px;vertical-align:top;">
+				<div id="default-tree" class="tree" style="padding: 5px;overflow-y:auto;overflow-x:hidden;height:460px; "></div>
 			</td>
 		</tr>
 		<tr>
-			<td>供应商地址：</td><td><input  data-validator="required" type="text" id="address" value="<?php echo $address;?>"/></td>
+			<th>供应商地址：</th><td><input  data-validator="required" type="text" id="address" value="<?php echo $address;?>"/></td>
 		</tr>
 		<tr>
-			<td>联系人：</td><td><input type="text" id="contactor" value="<?php echo $contactor;?>"/></td>
+			<th>联系人：</th><td><input type="text" id="contactor" value="<?php echo $contactor;?>"/></td>
 		</tr>
 		<tr>
-			<td>联系电话：</td><td><input type="text" id="phone" value="<?php echo $phone;?>"/></td>
+			<th>联系电话：</th><td><input type="text" id="phone" value="<?php echo $phone;?>"/></td>
 		</tr>
 		<tr>
-			<td>手机：</td><td><input type="text" id="mobile" value="<?php echo $mobile;?>"/></td>
+			<th>手机：</th><td><input type="text" id="mobile" value="<?php echo $mobile;?>"/></td>
 		</tr>
 		<tr>
-			<td>传真：</td><td><input type="text" id="fax" value="<?php echo $fax;?>"/></td>
+			<th>传真：</th><td><input type="text" id="fax" value="<?php echo $fax;?>"/></td>
 		</tr>
 		<tr>
-			<td>QQ/MSN/Skype：</td><td><input type="text" id="qq" value="<?php echo $qq;?>"/></td>
+			<th>QQ/MSN/Skype：</th><td><input type="text" id="qq" value="<?php echo $qq;?>"/></td>
 		</tr>
 		<tr>
-			<td>Email：</td><td><input type="text" id="email" value="<?php echo $email;?>"/></td>
+			<th>Email：</th><td><input type="text" id="email" value="<?php echo $email;?>"/></td>
 		</tr>
 		<tr>
-			<td>邮编：</td><td><input type="text" id="zip_code" value="<?php echo $zip_code;?>"/></td>
+			<th>邮编：</th><td><input type="text" id="zip_code" value="<?php echo $zip_code;?>"/></td>
 		</tr>
 		<tr>
-			<td>网址：</td><td><input type="text" id="url" value="<?php echo $url;?>"/></td>
+			<th>网址：</th><td><input type="text" id="url" value="<?php echo $url;?>"/></td>
 		</tr>
 		<tr>
-			<td>备注：</td><td><textarea id="memo" style="width:300px;height:100px;"><?php echo $memo;?></textarea></td>
-		</tr>
-		<tr>
-			<td></td><td><button type="submit" class="btn btn-primary">保存</button></td>
+			<th>备注：</th><td><textarea id="memo" style="width:300px;height:80px;"><?php echo $memo;?></textarea></td>
 		</tr>
 	</table>
+	
+					<div class="panel-foot">
+						<div class="form-actions col2">
+							<button  type="submit" class="btn btn-primary">提&nbsp;交</button>
+							
+							<button onclick="window.close();" class="btn">关&nbsp;闭</button>
+						</div>
+					</div>
 </form>
 </html>

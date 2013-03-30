@@ -45,15 +45,18 @@ var Page = {
 		return false ;
 	},
 	asynTn2Amazon:function(){
+		if(window.confirm("确认同步到Amazon吗?")){
+			$("[name='accountId']").find("option").each(function(){
+				var accountId = $(this).attr("value") ;
+				if(accountId){
+						$.dataservice("model:NOrderService.synTn2Amazon",{accountId:accountId},function(result){
+							
+						}) ;
+				}
+			});
+		}
 		//getAllCount
-		$("[name='accountId']").find("option").each(function(){
-			var accountId = $(this).attr("value") ;
-			if(accountId){
-				$.dataservice("model:NOrderService.synTn2Amazon",{accountId:accountId},function(result){
-					
-				}) ;
-			}
-		});
+			
 	},
 	loadDownloadGrid:function(){
 		$("#picked-grid-content").llygrid({

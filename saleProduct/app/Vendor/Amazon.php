@@ -8,6 +8,8 @@ require_once("amazon/MarketplaceWebService/Model/SubmitFeedRequest.php");
 require_once("amazon/MarketplaceWebService/Model/GetFeedSubmissionResultRequest.php");
 require_once("amazon/MarketplaceWebService/Exception.php");
 
+ include('config/config_mock.php');
+
 class Amazon {
 	var $AWS_ACCESS_KEY_ID ; 
 	var $AWS_SECRET_ACCESS_KEY ;
@@ -51,7 +53,7 @@ class Amazon {
 				$this->AWS_SECRET_ACCESS_KEY,
 				$config,
 				$this->APPLICATION_NAME,
-				$this->APPLICATION_VERSION);
+				$this->APPLICATION_VERSION );
 		
 		$marketplaceIdArray = array("Id" => array($this->MARKETPLACE_ID));
 		
@@ -319,7 +321,7 @@ class Amazon {
 	}
 	
 	public function getProductActiveReport1( $accountId ){
-		echo 123123;
+
 		 $config = array (
 			  'ServiceURL' =>  "https://mws.amazonservices.com",
 			  'ProxyHost' => null,
@@ -451,15 +453,61 @@ class Amazon {
 	
 	
 	public function updatePrice( $accountId ,$feed , $loginId ){
-	     return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_PRODUCT_PRICING_DATA_");
+	     
+	     $result = array() ;
+	     if( mock_updatePrice ){
+	     	$result  = array(
+	     			'feedsubmissionId'=>'xxxx_mock',
+	     			'loginId' =>'mock',
+	     			'type'=>'_POST_PRODUCT_PRICING_DATA_',
+	     			'accountId'=>$accountId,
+	     			'status'=>'Complete',
+	     			'message'=>'',
+	     			'feed'=>$feed
+	     	) ;
+	     }else{
+	     	$result = $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_PRODUCT_PRICING_DATA_");
+	     }
+	     // return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_INVENTORY_AVAILABILITY_DATA_");
+	     return $result ;
 	}
 	
 	public function updateInventory($accountId,$feed,$loginId){
-	     return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_INVENTORY_AVAILABILITY_DATA_");
+		$result = array() ;
+		if( mock_updateInventory ){
+			$result  = array(
+					'feedsubmissionId'=>'xxxx_mock',
+					'loginId' =>'mock',
+					'type'=>'_POST_INVENTORY_AVAILABILITY_DATA_',
+					'accountId'=>$accountId,
+					'status'=>'Complete',
+					'message'=>'',
+					'feed'=>$feed
+			) ;
+		}else{
+			$result = $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_INVENTORY_AVAILABILITY_DATA_");
+		}
+	    // return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_INVENTORY_AVAILABILITY_DATA_");
+	    return $result ;
 	}
 	
 	public function updateOrderTrackNumber( $accountId ,$feed , $loginId ){
-	     return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_ORDER_FULFILLMENT_DATA_");
+		$result = array() ;
+		if( mock_updateOrderTrackNumber ){
+			$result  = array(
+					'feedsubmissionId'=>'xxxx_mock',
+					'loginId' =>'mock',
+					'type'=>'_POST_ORDER_FULFILLMENT_DATA_',
+					'accountId'=>$accountId,
+					'status'=>'Complete',
+					'message'=>'',
+					'feed'=>$feed
+			) ;
+		}else{
+			$result = $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_ORDER_FULFILLMENT_DATA_");
+		}
+		// return $this->postFeedSubmission($accountId ,$feed , $loginId ,"_POST_INVENTORY_AVAILABILITY_DATA_");
+		return $result ;
 	}
 	
 	public function postFeedSubmission( $accountId ,$feed , $loginId ,$feedType){

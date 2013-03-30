@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -43,7 +43,7 @@
 			-webkit-border-radius: 11px;
 			border-radius: 11px;
 			padding:10px;
-			background:#EEBBCC;
+			background:#EEE;
 			
 		}
 		
@@ -71,7 +71,8 @@
 		.pd>div{
 			float:left;
 		}
-		.pd,.qt{clear:both;padding-top:3px;}
+		.qt{float:left;padding:2px 6px;border-right:2px solid #CCC;}
+		.pd{padding-top:3px;}
 		.pd .pd-label{
 			width:40%;
 			font-weight:bold;
@@ -119,31 +120,40 @@
 						<td style="width:12%;">
 							<img style="width:75px;height:75px;" src="<?php echo $imgUrl;?>"/>
 						</td>
-						<td style="width:30%;">
+						<td style="width:40%;">
 								<div class="product-title"><?php echo $product['NAME'] ?></div>
 								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><?php echo $product['REAL_SKU'] ?></div></div>
 						</td>
-						<td style="width:25%;"><?php echo $product['MEMO'] ?></td>
-						<td style="width:20%;">
+						<td><?php echo $product['MEMO'] ?></td>
+					</tr>
+					<tr>
+						<td colspan=3>
 							<div class="qt">
 								<div class='qt-label'>总库存：</div>
-								<div class='qt-value' style="color:red;font-size:15px;"><?php echo $product['QUANTITY'] ?></div>
+								<div class='qt-value total-quantity' style="color:red;font-size:15px;"><?php echo $product['QUANTITY'] ?></div>
 							</div>
 							<div class="qt">
 								<div class='qt-label'>安全库存：</div>
-								<div class='qt-value' style="color:red;font-size:13px;"><?php echo $product['SECURITY_QUANTITY'] ?></div>
+								<div class='qt-value security-quantity' style="color:red;font-size:13px;"><?php echo $product['SECURITY_QUANTITY'] ?></div>
 							</div>
 							<div class="qt">
-								<div class='qt-label'>锁定库存：</div>
-								<div class='qt-value' style="color:red;font-size:13px;"><?php echo $product['LOCK_QUANTITY'];?></div>
+								<div class='qt-label'>待发货数量：</div>
+								<div class='qt-value account-will-shipped-quantity' style="color:red;font-size:13px;"></div>
 							</div>
 							<div class="qt">
 								<div class='qt-label'>账号库存：</div>
 								<div class='qt-value account-quantity' ></div>
 							</div>
-							<div class="qt">
+							<div class="qt" style="margin-bottom:0px;">
 								<div class='qt-label'>可分配库存：</div>
-								<div class='qt-value'><?php echo $product['QUANTITY'] - $product['SECURITY_QUANTITY'] - $product['LOCK_QUANTITY'] ?></div>
+								<div class='qt-value assignable-quantity'>--</div>
+							</div>
+							<div class="qt" style="margin-bottom:0px;">
+								<div class='qt-label'>已分配库存：</div>
+								<div class='qt-value assigned-quantity'>--</div>
+							</div>
+							<div class="qt">
+								<button class="btn btn-primary assgin-btn btn-danger">分配库存</button>
 							</div>
 						</td>
 					</tr>

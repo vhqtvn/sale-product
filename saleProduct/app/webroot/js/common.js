@@ -95,7 +95,7 @@ jQuery.open = function(){//url,width,height,params,callback,fixParams
 		
 	}else if(!jQuery.browser.msie || params.showType == 'open'){
 		
-		var win = openCenterWindow(url, width, height);
+		var win = _openCenterWindow(url, width, height);
 		window._dialogArguments = params ;
 		
 		var _callbak = function(){
@@ -167,11 +167,20 @@ function showCenterModalDialog(URL,dlgWidth,dlgHeight,arg){
     return window.showModalDialog(URL,arg,form);
 }
 
-function openCenterWindow(URL,wndWidth,wndHeight){
+function _openCenterWindow(URL,wndWidth,wndHeight){
 	var wndLeft = (window.screen.width-wndWidth)/2;
 	var wndTop  = (window.screen.height-wndHeight)/2;
 	var form    = "width=" + wndWidth + ",height=" + wndHeight + ",left=" + wndLeft + ",top=" + wndTop + ",resizable=yes";
 	 return window.open(URL,'',form);        
+}
+
+function openCenterWindow(URL,wndWidth,wndHeight,callback){
+	callback = callback||function(){} ;
+	return $.open(URL, wndWidth ,wndHeight ,  callback ) ;
+	/*var wndLeft = (window.screen.width-wndWidth)/2;
+	var wndTop  = (window.screen.height-wndHeight)/2;
+	var form    = "width=" + wndWidth + ",height=" + wndHeight + ",left=" + wndLeft + ",top=" + wndTop + ",resizable=yes";
+	 return window.open(URL,'',form);   */     
 }
 
 /*******************************************

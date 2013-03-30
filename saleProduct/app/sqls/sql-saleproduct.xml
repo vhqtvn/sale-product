@@ -180,7 +180,11 @@
 		SELECT  sc_amazon_account_product.*,
 		sc_real_product_rel.sku AS REL_SKU,
 		sc_real_product_rel.QUANTITY as ASSIGN_QUANTITY,
-		(SELECT NAME FROM sc_amazon_account WHERE id = sc_real_product_rel.account_id ) AS CHANNEL_NAME
+		(SELECT NAME FROM sc_amazon_account WHERE id = sc_real_product_rel.account_id ) AS CHANNEL_NAME,
+		( select sum(sc.Quantity_Ordered)   from sc_order_item sc where sc.seller_sku = sc_amazon_account_product.sku ) as ORDER_NUM,
+		( select sum(sc.Quantity_Ordered - sc.Quantity_Shipped )   from sc_order_item sc,sc_order so
+			 where sc.seller_sku = sc_amazon_account_product.sku
+			and    sc.order_id = so.order_id and so.order_status in ('Unshipped','PartiallyShipped') and so.FULFILLMENT_CHANNEL = 'MFN' ) as UNSHIPPED_NUM
 		 FROM sc_real_product_rel
 		 LEFT JOIN sc_amazon_account_product 
 		 ON sc_real_product_rel.sku = sc_amazon_account_product.sku

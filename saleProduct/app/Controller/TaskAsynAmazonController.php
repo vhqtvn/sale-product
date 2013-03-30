@@ -36,8 +36,6 @@ class TaskAsynAmazonController extends AppController {
 		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
 		$feed = $this->OrderService->getTrackNumberFeed(array(),array() ,$accountId,$MerchantIdentifier) ;
 		
-		debug( $feed ) ;
-		
 		$this->Log->savelog("tn2amazon", "Account[$accountId] feed::$feed" );
 		
 		$result = $amazon->updateOrderTrackNumber( $accountId,$feed,"cron") ;
@@ -546,18 +544,18 @@ class TaskAsynAmazonController extends AppController {
 		}
 	
 		$request = $amazon->getOrders($querys ,$accountId) ;
-	
-		/*if( !empty($request) ){
-		 $user =  $this->getCookUser() ;
-		$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
-		}
-		*/
+
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
 	
 		return $this->response ;
 	}
 	
+	/**
+	 * 订单明细同步
+	 * @param unknown_type $accountId
+	 * @param unknown_type $orderId
+	 */
 	public function listOrderItems($accountId,$orderId){
 		$account = $this->Amazonaccount->getAccount($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
@@ -572,15 +570,93 @@ class TaskAsynAmazonController extends AppController {
 		) ;
 	
 		$request = $amazon->getOrderItems( $orderId ,$accountId) ;
-	  // debug($request) ;
-		/*if( !empty($request) ){
-		 $user =  $this->getCookUser() ;
-		$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
-		}
-		*/
+
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
 	
 		return $this->response ;
+	}
+	
+	/**
+	 * 价格更新
+	 */
+	public function price(){
+		$params = $this->request->data  ;
+		$accountId = $params["accountId"] ;
+	
+		$user =  $this->getCookUser() ;
+		$loginId = $user["LOGIN_ID"] ;
+	
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+	
+		$products = $this->Amazonaccount->listAccountUpdatableProductForPrice( $account["ID"] ) ;
+	
+		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+	
+		$id = "UC_Price_".date('U') ;
+	
+		$_products = array() ;
+		for( $i = 0 ;$i < count($products) ;$i++  ){
+			$product = $products[$i]['sc_amazon_account_product'] ;
+	
+			$sku = $product["SKU"] ;
+			$price = $product["FEED_PRICE"] ;
+	
+			$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price) ;
+		}
+	
+		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
+	
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] ,
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+				$account['APPLICATION_NAME'] ,
+				$account['APPLICATION_VERSION'] ,
+				$account['MERCHANT_ID'] ,
+				$account['MARKETPLACE_ID'] ,
+				$account['MERCHANT_IDENTIFIER']
+		) ;
+	
+		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
+	
+		$this->Amazonaccount->saveAccountFeed($result) ;
+	
+		$this->response->type("html");
+		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
+		return $this->response;
+	}
+	
+	/**
+	 * 库存更新
+	 */
+	public function quantity( $accountId  ){
+	
+		$id = "UC_Quantity_".date('U') ;
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+		
+		$params = $this->requestMap()  ;
+		$Feed = $params['feed'] ;
+		
+		$amazon = new Amazon(
+					$account['AWS_ACCESS_KEY_ID'] ,
+					$account['AWS_SECRET_ACCESS_KEY'] ,
+					$account['APPLICATION_NAME'] ,
+					$account['APPLICATION_VERSION'] ,
+					$account['MERCHANT_ID'] ,
+					$account['MARKETPLACE_ID'] ,
+					$account['MERCHANT_IDENTIFIER']
+		) ;
+		$result = $amazon->updateInventory($accountId,$Feed,"cron") ;
+		
+		$this->Amazonaccount->saveAccountFeed($result) ;
+		
+		$this->response->type("html");
+		$this->response->body("success");
+		return $this->response;
+	
 	}
 }

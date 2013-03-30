@@ -8,10 +8,10 @@ class NOrderService extends AppModel {
 		
 		$accountId = $params['accountId'] ;
 		
-		$account = $Amazonaccount->getAccount($accountId) ;
+		$account = $Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		if( !empty($account) ){
 			$account = $account[0]['sc_amazon_account'] ;
-			debug($account) ;
+			
 			$url = $Utils->buildUrl($account,"taskAsynAmazon/saveTrackNumberToAamazon") ;
 			$random = date("U") ;
 			

@@ -19,7 +19,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 	?>
-   <script>
+   <script type="text/javascript">
   	$(function(){
   		var tab = $('#tabs-default').tabs( {
 			tabs:[
@@ -27,7 +27,9 @@
 				{label:'价格上传更新',url:contextPath+'/amazon/priceimportPage/<?php echo $accountId?>',iframe:true,id:"testId"},
 				{label:'更新日志',url:contextPath+'/amazon/priceimportLog/<?php echo $accountId?>',iframe:true}
 			] ,
-			height:'500px'
+			height:function(){
+				return ($(window).height()-65)+"px";
+			}
 		} ) ;
   	})
   </script>
