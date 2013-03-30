@@ -15,7 +15,7 @@
  *  Generated: Thu May 07 13:07:36 PDT 2009
  *
  */
-
+include_once("config/config_amazon.php");
 /**
  *  @see MarketplaceWebService_Interface
  */;
@@ -1557,7 +1557,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
     
     $time = new DateTime('now', new DateTimeZone('UTC')) ;
  
-	$time->modify( '+6 hour +40 minute +31 second' );
+	$time->modify(  TIME_ZONE_DIFFERENCE );
     
     $parameters['Timestamp'] = $this->getFormattedTimestamp($time);
     

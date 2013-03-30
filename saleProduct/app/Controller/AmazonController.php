@@ -107,13 +107,13 @@ class AmazonController extends AppController {
     	
     	$queryString = "?1=1" ;
     	if( isset($params["LastUpdatedAfter"]) ){
-    		$queryString = '&LastUpdatedAfter='.$params["LastUpdatedAfter"] ;
+    		$queryString .= '&LastUpdatedAfter='.$params["LastUpdatedAfter"] ;
     	}
     	if( isset($params["LastUpdatedBefore"]) ){
-    		$queryString = '&LastUpdatedBefore='.$params["LastUpdatedBefore"] ;
+    		$queryString .= '&LastUpdatedBefore='.$params["LastUpdatedBefore"] ;
     	}
     	
-    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/listOrder") ;
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/listOrders") ;
     	
     	file_get_contents($url.$queryString);
     	

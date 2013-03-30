@@ -15,7 +15,7 @@
  *  Generated: Fri Jan 21 18:53:17 UTC 2011
  * 
  */
-
+include_once("config/config_amazon.php");
 /**
  *  @see MarketplaceWebServiceOrders_Interface
  */
@@ -557,7 +557,7 @@ class MarketplaceWebServiceOrders_Client implements MarketplaceWebServiceOrders_
         $parameters['AWSAccessKeyId'] = $this->_awsAccessKeyId;
          $time = new DateTime('now', new DateTimeZone('UTC')) ;
         
-        $time->modify( '+6 hour +40 minute +31 second' );
+        $time->modify(  TIME_ZONE_DIFFERENCE );
         
         $parameters['Timestamp'] = $this->getFormattedTimestamp($time);
         

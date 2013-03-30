@@ -14,7 +14,7 @@
  *  Marketplace Web Service Products PHP5 Library
  * 
  */
-
+include_once("config/config_amazon.php");
 /**
  *  @see MarketplaceWebServiceProducts_Interface
  */
