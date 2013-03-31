@@ -21,7 +21,7 @@ class GatherCategoryController extends AppController {
 	public $taskId = null ;
 	
 	public function doGather($accountId , $categoryId){
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		
 		$url = $this->Utils->buildUrl($account,"gatherCategory/execute") ;

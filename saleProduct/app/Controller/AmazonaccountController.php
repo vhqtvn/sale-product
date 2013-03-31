@@ -235,7 +235,7 @@ class AmazonaccountController extends AppController {
 	 	$this->set('accountId', $id);
 	 	$this->set('code', $code);
 	 	
-	 	$this->set("account",$this->Amazonaccount->getAccount($id)  ) ;
+	 	$this->set("account",$this->Amazonaccount->getAccountIngoreDomainById($id)  ) ;
 	 	
     	$categorys = $this->Amazonaccount->getAmazonProductCategory($id);  
     	$this->set("categorys",$categorys) ;
@@ -249,7 +249,7 @@ class AmazonaccountController extends AppController {
 	 	$this->set("lastGatherTask",$lastGatherTask) ;
 	 	$this->set('accountId', $accountId);
 	 	$this->set('categoryId', $categoryId );
-	 	$this->set("account",$this->Amazonaccount->getAccount($accountId,$categoryId)  ) ;
+	 	$this->set("account",$this->Amazonaccount->getAccountIngoreDomainById($accountId,$categoryId)  ) ;
 	 }
 	 
 	 public function doAmazonPrice(){
