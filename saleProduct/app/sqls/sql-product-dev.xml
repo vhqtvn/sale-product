@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
    
+   
+      <entry key="sql_pdev_filter">
+	SELECT sc_product_filter.* ,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status IN (1,2)) AS STATUS12,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 3 ) AS  STATUS3,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 4) AS  STATUS4,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 5 ) AS  STATUS5,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 6 ) AS  STATUS6,
+			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 7 ) AS  STATUS7,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME 
+	  FROM sc_product_filter
+	  where 1=1
+	  	 {@ #$VIEW_PRODUCT_FILTER# }
+	  ORDER BY sc_product_filter.create_time desc
+   </entry>
+
+   <entry key="sql_pdev_filter_details">
+SELECT sp.*, 
+	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
+	spfd.id AS FILTER_ID, 
+	spfd.status AS STATUS,
+	spfd1.DAY_PAGEVIEWS,
+	ssc.FM_NUM,
+	ssc.NM_NUM,
+	ssc.UM_NUM,
+	ssf.FBA_NUM,
+	ssp.REVIEWS_NUM,
+	ssp.QUALITY_POINTS,
+	ssc.TARGET_PRICE
+FROM  sc_product_filter_details spfd,sc_product sp 
+	LEFT JOIN sc_sale_competition ssc  ON ssc.asin = sp.asin
+	LEFT JOIN sc_sale_fba  ssf ON ssf.asin = sp.asin
+	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
+        LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
+WHERE sp.asin = spfd.asin
+    {@  and sp.title like '%#title#%'}
+    {@  and sp.asin = '#asin#'}
+    {@  and spfd.status in ( #status#) }
+    {@  and spfd.task_id = '#taskId#' }
+   </entry>
+   
+   
     <entry key="sql_pdev_upload_list">
 		select * from sc_upload
 		where 1=1

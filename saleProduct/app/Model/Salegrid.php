@@ -2,7 +2,7 @@
 class Salegrid extends AppModel {
 	var $useTable = "sc_election_rule" ;
 
-
+   /*
 	function getFilterRecords($query=null , $id ){
 		$limit =  $query["limit"] ;
 		$curPage =  $query["curPage"] ;
@@ -70,7 +70,7 @@ class Salegrid extends AppModel {
 			where sc_product.asin = sc_product_filter_details.asin  ".$where." and sc_product_filter_details.task_id = '".$id."'";
 		$array = $this->query($sql);
 		return $array ;
-	}
+	}*/
 	
 	function getFilterTaskRecords($query=null,$type,$user){
 		$limit =  $query["limit"] ;

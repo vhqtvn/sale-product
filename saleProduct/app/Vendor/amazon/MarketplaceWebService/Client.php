@@ -1148,7 +1148,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	    $amazonFeedProcess  = ClassRegistry::init("AmazonFeedProcess") ;
 	  
 	    while(!feof($handle)){
-	        $row =  fgets($handle, 1024);
+	        $row =  fgets($handle, 10240);
 	        
 	        if($HeadArray == null){
 	        	$HeadArray = split( "\t" ,$row  ) ;
