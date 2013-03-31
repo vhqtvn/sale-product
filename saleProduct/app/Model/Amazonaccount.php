@@ -460,7 +460,9 @@ class Amazonaccount extends AppModel {
 	function getAccountAsyn($accountId,$reportType){
 		$sql = "SELECT * FROM sc_amazon_account_asyn where account_id = '$accountId'
 		and report_type = '$reportType'
-		and ( status is null or status = '') ";
+		and ( status is null or status = '')
+       AND TIMESTAMPDIFF(HOUR,CREATE_TIME,NOW()) < 1
+		";
 		$array = $this->query($sql);
 		return $array ;
 	}

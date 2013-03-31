@@ -97,7 +97,16 @@ class Tasking extends AppModel {
 				where id = '$id'" ;
 			$this->query($sql) ;
 		
-			$sql = "insert into sc_tasked select sc_tasking.* , NOW() as end_time from sc_tasking
+			$sql = "insert into sc_tasked(ID, 
+	TASK_TYPE, 
+	ASIN, 
+	ACCOUNT_ID, 
+	MESSAGE, 
+	FORCE_STOP, 
+	START_TIME, 
+	EXECUTOR, 
+	END_TIME 
+	) select sc_tasking.* , NOW() as end_time from sc_tasking
 					where id = '$id'" ;
 	 		$this->query($sql) ;
 	 		
