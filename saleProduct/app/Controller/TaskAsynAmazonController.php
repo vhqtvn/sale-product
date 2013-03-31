@@ -580,7 +580,7 @@ class TaskAsynAmazonController extends AppController {
 	/**
 	 * 价格更新
 	 */
-	public function price(){
+/*	public function price(){
 		$params = $this->request->data  ;
 		$accountId = $params["accountId"] ;
 	
@@ -627,7 +627,7 @@ class TaskAsynAmazonController extends AppController {
 		$this->response->type("html");
 		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
 		return $this->response;
-	}
+	}*/
 	
 	/**
 	 * 库存更新
@@ -654,6 +654,37 @@ class TaskAsynAmazonController extends AppController {
 		
 		$this->Amazonaccount->saveAccountFeed($result) ;
 		
+		$this->response->type("html");
+		$this->response->body("success");
+		return $this->response;
+	
+	}
+	
+	/**
+	 * 库存更新
+	 */
+	public function price( $accountId  ){
+	
+		$id = "UC_Quantity_".date('U') ;
+		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+	
+		$params = $this->requestMap()  ;
+		$Feed = $params['feed'] ;
+	
+		$amazon = new Amazon(
+				$account['AWS_ACCESS_KEY_ID'] ,
+				$account['AWS_SECRET_ACCESS_KEY'] ,
+				$account['APPLICATION_NAME'] ,
+				$account['APPLICATION_VERSION'] ,
+				$account['MERCHANT_ID'] ,
+				$account['MARKETPLACE_ID'] ,
+				$account['MERCHANT_IDENTIFIER']
+		) ;
+		$result = $amazon->updatePrice($accountId,$Feed,"cron") ;
+	
+		$this->Amazonaccount->saveAccountFeed($result) ;
+	
 		$this->response->type("html");
 		$this->response->body("success");
 		return $this->response;

@@ -253,35 +253,45 @@ class AmazonaccountController extends AppController {
 	 }
 	 
 	 public function doAmazonPrice(){
-	 	$params = $this->request->data  ;
-		$accountId = $params["accountId"] ;
-		
-		$user =  $this->getCookUser() ;
-		$loginId = $user["LOGIN_ID"] ;
-		
-		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
-		$account = $account[0]['sc_amazon_account'] ;
-		
-		$products = $this->Amazonaccount->listAccountUpdatableProductForPrice( $account["ID"] ) ;
-		
-		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-		
-		$id = "UC_Price_".date('U') ;
-		
-		$_products = array() ;
-		for( $i = 0 ;$i < count($products) ;$i++  ){
-			$product = $products[$i]['sc_amazon_account_product'] ;
-
-			$sku = $product["SKU"] ;
-			$price = $product["FEED_PRICE"] ;
-			
-			$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price) ;
-		}
-		
-		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
-		
-		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
-		file_get_contents($url."?feed=".urlencode($Feed));
+	 	try{
+	 		$params = $this->request->data  ;
+	 		$accountId = $params["accountId"] ;
+	 		
+	 		$user =  $this->getCookUser() ;
+	 		$loginId = $user["LOGIN_ID"] ;
+	 		
+	 		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
+	 		$account = $account[0]['sc_amazon_account'] ;
+	 		
+	 		$products = $this->Amazonaccount->listAccountUpdatableProductForPrice( $account["ID"] ) ;
+	 		
+	 		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+	 		
+	 		$id = "UC_Price_".date('U') ;
+	 		
+	 		$_products = array() ;
+	 		for( $i = 0 ;$i < count($products) ;$i++  ){
+	 			$product = $products[$i]['sc_amazon_account_product'] ;
+	 		
+	 			$sku = $product["SKU"] ;
+	 			$price = $product["FEED_PRICE"] ;
+	 		
+	 			$_products[] = array("SKU"=>$sku,"FEED_PRICE"=>$price) ;
+	 		}
+	 		
+	 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
+	 		
+	 		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
+	 		echo $url."?feed=".urlencode($Feed) ;
+	 		file_get_contents($url."?feed=".urlencode($Feed));
+	 		
+	 	}catch(Exception $e){
+	 		
+	 		$this->response->type("html");
+	 		$this->response->body( $e);
+	 		return $this->response;
+	 	}
+	 	
 		
 		/*$account = $this->Amazonaccount->getAccount($accountId) ;
     	$account = $account[0]['sc_amazon_account'] ;
