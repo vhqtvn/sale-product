@@ -151,16 +151,31 @@
     </entry>
     
     <entry key="sql_gather_category_task">
-    	SELECT t.* , sc_tasking_type.NAME FROM (
-			SELECT sc_tasking.* , '' AS END_TIME , 1 as TYPE FROM sc_tasking WHERE task_type = 'gather_category' AND 
+        SELECT t.* , sc_tasking_type.NAME FROM (
+			SELECT sc_tasking.ID, 
+				sc_tasking.TASK_TYPE, 
+				sc_tasking.ASIN, 
+				sc_tasking.ACCOUNT_ID, 
+				sc_tasking.MESSAGE, 
+				sc_tasking.FORCE_STOP, 
+				sc_tasking.START_TIME, 
+				sc_tasking.EXECUTOR , '' AS END_TIME , 1 AS TYPE FROM sc_tasking WHERE task_type = 'gather_category'  AND 
 			{@ account_id = '#accountId#'}
 			{@ AND ASIN = '#categoryId#' }
-			UNION
-			SELECT sc_tasked.* , 2 as TYPE FROM sc_tasked WHERE task_type = 'gather_category' AND 
+						UNION
+						SELECT sc_tasked.ID, 
+				sc_tasked.TASK_TYPE, 
+				sc_tasked.ASIN, 
+				sc_tasked.ACCOUNT_ID, 
+				sc_tasked.MESSAGE, 
+				sc_tasked.FORCE_STOP, 
+				sc_tasked.START_TIME, 
+				sc_tasked.EXECUTOR ,
+			        sc_tasked.END_TIME, 2 AS TYPE FROM sc_tasked WHERE task_type = 'gather_category'  AND 
 			{@ account_id = '#accountId#'}
 			{@ AND ASIN = '#categoryId#' }
-				  order by END_TIME desc
-			) t , sc_tasking_type where sc_tasking_type.code = t.task_type order by t.type , t.END_TIME desc
+							  ORDER BY END_TIME DESC
+						) t , sc_tasking_type WHERE sc_tasking_type.code = t.task_type ORDER BY t.type , t.END_TIME DESC
     </entry>
     
     
