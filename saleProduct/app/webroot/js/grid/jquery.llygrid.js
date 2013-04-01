@@ -1102,6 +1102,7 @@ $(".product-detail").live("click",function(){
 }) ;
 
 $("td[key='ORDER_ID']").live("click",function(){
+	if( $(this).find(":input").length ) return ;
 	var orderId = $.trim( $(this).text() ) ;
 	openCenterWindow(contextPath+"/page/forward/Norder.details/"+orderId,800,600) ;
 }) ;

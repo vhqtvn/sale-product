@@ -225,7 +225,52 @@ class Inventory extends AppModel {
 		//sql_order_storage_getByOrderId
 		//根据订单ID，通过拣货单获取仓库ID
 		$warehouse = $this->getObject("sql_warehouse_getId_byOrderId",array('orderId'=>$orderId)) ;
+		$warehouseId = $warehouse['WAREHOUSE_ID'] ;
 		
+		$items = $this->exeSql( "sql_sc_order_item_findByOrderId" , array('orderId'=>$orderId) ) ;
+		foreach( $items as $item ){
+			$db =& ConnectionManager::getDataSource($this->useDbConfig);
+			$db->_queryCache = array() ;
+			
+			$item = $this->formatObject($item) ;
+			$realId = $item['REAL_ID'] ;
+			$quantity = $item['QUANTITY'] ;
+			
+			//获取货品信息
+			$goods = $this->getObject("sql_saleproduct_getById", array('goodsId'=>$realId,'realProductId'=>$realId)) ;
+			
+			//更新类型库存出库
+			$query = array(
+					'warehouseId'=>$warehouse['WAREHOUSE_ID'] ,
+					'goodsId'=>$realId ,
+					'quantity'=>$quantity,
+					'badQuantity'=>0,
+					'inventoryType'=>'1',
+					'type'=>'out'
+			) ;
+			//查找该产品对应库存
+			$typeInventory = $this->getObject("sql_warehouse_inventory_type_get", $query)  ;
+			
+			//将库存插入到具体类型
+			if( empty($typeInventory) ){
+				//	$this->exeSql("sql_warehouse_inventory_type_insert", $query) ;
+			}else{
+				$query['quantity'] =   $typeInventory['QUANTITY']  - $quantity;
+				$query['badQuantity'] =  $typeInventory['BAD_QUANTITY'] - 0;
+				$query['id'] = $typeInventory['ID'] ;
+			
+				$this->exeSql("sql_warehouse_inventory_type_update", $query) ;
+			}
+			
+			//更新库存到货品表
+			$query['quantity'] = $goods['QUANTITY'] -  $quantity  ;
+			$query['badQuantity'] =  $goods['BAD_QUANTITY']  ;
+			//	debug( $query  );
+			
+			$this->exeSql("sql_warehouse_inventory_update", $query) ;
+		}
+		
+		/*
 		//查询订单库存
 		$items = $this->exeSql("sql_order_storage_getByOrderId",array('orderId'=>$orderId)) ;
 		foreach( $items as $item ){
@@ -272,10 +317,10 @@ class Inventory extends AppModel {
 			
 			//更新仓库库存减少
 			//$this->exeSql("sql_saleproduct_quantity_out",array('realProductId'=>$realId,"quantity"=>$quantity)) ;
-		}
+		}*/
 		//sql_order_storage_shipped
 		//更新为已经出库
-		$this->exeSql("sql_order_storage_shipped",array('orderId'=>$orderId)) ;
+		//$this->exeSql("sql_order_storage_shipped",array('orderId'=>$orderId)) ;
 	}
 	
 }

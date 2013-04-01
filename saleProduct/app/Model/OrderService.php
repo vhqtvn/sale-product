@@ -421,7 +421,7 @@ class OrderService extends AppModel {
 				(
 				'$name', 
 				'$memo', 
-				'".$params['warehouseId']."'
+				'".$params['warehouseId']."',
 				'$loginId', 
 				NOW()
 				)" ;

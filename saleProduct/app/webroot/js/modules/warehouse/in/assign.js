@@ -7,10 +7,16 @@ $(function(){
 				{align:"left",key:"SKU",label:"SKU",width:"15%",format:function(val,record){
 					return val||record.REL_SKU ;
 				}},
-	           	{align:"center",key:"ASSIGN_QUANTITY",label:"分配库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
-	           		return record.QUANTITY ;
-	           	}}},
-	           	{align:"center",key:"QUANTITY",label:"账户库存",width:"8%"},
+	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
+	           		return record.QUANTITY||0 ;
+	           	}},render:function(record){
+	           		if( record.FULFILLMENT_CHANNEL.indexOf("AMAZON") !=-1){
+	           			$(this).find("[key='ASSIGN_QUANTITY']").html("&nbsp;&nbsp;"+(record.QUANTITY||0)) ;
+	           			$(this).addClass("alert alert-danger");
+	           		}
+	           	}},
+	           	{align:"center",key:"QUANTITY",label:"账户库存",width:"7%"},
+	           	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
 	           	{align:"center",key:"UNSHIPPED_NUM",label:"待发货数量",width:"8%"},
 	        	{align:"center",key:"ORDER_NUM",label:"订单数量",width:"8%"},
 	           	{align:"left",key:"ASIN",label:"ASIN", width:"12%",format:function(val,record){
@@ -35,8 +41,12 @@ $(function(){
 			 loadAfter:function(){
 				 var quantity = 0 ;
 				 $("td[key='QUANTITY']").each(function(){
-					 quantity += parseInt($.trim( $(this).text() )||"0") ;
+					 var record = $(this).parents("tr:first").data("record");
+					 if( record.FULFILLMENT_CHANNEL == 'Merchant' ){
+						 quantity += parseInt($.trim( $(this).text() )||"0") ;
+					 }
 				 }) ;
+				 
 				 $(".account-quantity").html(quantity) ;
 				 
 				 quantity = 0 ;
