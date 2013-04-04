@@ -57,9 +57,13 @@ class Sale extends AppModel {
 	
 			foreach( explode(",", $skus) as $sku ){
 				try{
-					if( empty($sku) ) continue ;
+					    if( empty($sku) ) continue ;
 						$query = array( 'sku'=>$sku , 'planId'=>$planId , 'loginId'=> $loginId ) ;
-						$this->exeSql("sql_insert_purchasePlanProducts", $query);
+						//判断是否存在
+						$ps = $this->getObject("sql_purchasePlanProductsIsExists", $query) ;
+						if(empty($ps)){
+							$this->exeSql("sql_insert_purchasePlanProducts", $query);
+						}
 				}catch(Exception $e){ }
 			};
 	}

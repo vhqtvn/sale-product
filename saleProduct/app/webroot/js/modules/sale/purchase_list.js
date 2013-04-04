@@ -158,28 +158,30 @@
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
 					{align:"left",key:"ID",label:"操作",forzen:false,width:"9%",format:function(val,record){
+						var isSku = record.SKU?true:false ;
+						
 						var status = record.STATUS ;
 						var html = [] ;
 						if( ($edit_pp_product && (!status ||status < 3))
 								||( $reedit_pp_product &&  status >=3 && status <5   )
 						){
-							html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
+							isSku && html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
 						}
 						
 						if($delete_pp_product && (!status ||status < 2))
 							html.push('<a href="#" title="删除" class="del-action" asin="'+record.ASIN+'" planId="'+record.PLAN_ID+'"  val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/delete.gif"/></a>&nbsp;') ;
 						
 						if( $apply_purchase && ( !status || status == 1||status == 4 ) ){
-							html.push('|<a href="#" title="申请采购" class="paction" planId="'+record.PLAN_ID+'" status="2" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/apply.png"/></a>&nbsp;') ;
+							isSku && html.push('|<a href="#" title="申请采购" class="paction" planId="'+record.PLAN_ID+'" status="2" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/apply.png"/></a>&nbsp;') ;
 						}
 						
 						if( $audit_purchase && status == 2){
-							html.push('|<a href="#" title="审批通过" class="paction"  planId="'+record.PLAN_ID+'" status="3" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/success.gif"/></a>&nbsp;') ;
-							html.push('<a href="#" title="审批不通过" class="paction" planId="'+record.PLAN_ID+'" status="4" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/error.gif"/></a>&nbsp;') ;
+							isSku && html.push('|<a href="#" title="审批通过" class="paction"  planId="'+record.PLAN_ID+'" status="3" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/success.gif"/></a>&nbsp;') ;
+							isSku && html.push('<a href="#" title="审批不通过" class="paction" planId="'+record.PLAN_ID+'" status="4" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/error.gif"/></a>&nbsp;') ;
 						}
 						
 						if($confirm_purchase && status == 3){
-							html.push('|<a href="#" title="已采购" class="paction" planId="'+record.PLAN_ID+'" status="5" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pkg.gif"/></a>&nbsp;') ;
+							isSku && html.push('|<a href="#" title="已采购" class="paction" planId="'+record.PLAN_ID+'" status="5" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pkg.gif"/></a>&nbsp;') ;
 						}
 						return html.join("") ;
 						
@@ -208,7 +210,9 @@
 						
 						return html.join("") ;
 					}},
-		           	{align:"center",key:"SKU",label:"货品SKU", width:"8%"},
+		           	{align:"center",key:"SKU",label:"货品SKU", width:"8%",format:function(val,record){
+		           		return val || ("<span style='color:red' title='该ASIN未关联货品ＳＫＵ，请进行关联再操作！'>"+record.ASIN+"</span>") ;
+		           	}},
 		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"6%"},

@@ -76,11 +76,14 @@
 			srp.name as TITLE,
 			srp.IMAGE_URL,
 			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME
-		FROM sc_purchase_plan_details sppd , sc_real_product srp
+		FROM sc_purchase_plan_details sppd 
+		left join sc_real_product srp
+		on sppd.SKU = srp.real_sku
 		WHERE 1=1 
-			AND sppd.SKU = srp.real_sku
 			{@AND sppd.plan_id = '#planId#'}
 			{@AND sppd.id = '#id#'}
+		   {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
    </entry>
    
    <entry key="sql_purchase_plan_details_list">

@@ -4,6 +4,11 @@
     	UPDATE SC_PURCHASE_PLAN SET status = '2' where id = '{@#planId#}'
     </entry>
     
+    <entry key="sql_purchasePlanProductsIsExists">
+    	select * from sc_purchase_plan_details
+    	where plan_id = '{@#planId#}' and  sku = '{@#sku#}'
+    </entry>
+    
     <entry key="sql_insert_purchasePlanProducts">
     	INSERT INTO sc_purchase_plan_details 
 				(
