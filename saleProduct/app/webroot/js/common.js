@@ -175,7 +175,6 @@ function _openCenterWindow(URL,wndWidth,wndHeight){
 }
 
 function openCenterWindow(URL,wndWidth,wndHeight,callback){
-	callback = callback||function(){} ;
 	return $.open(URL, wndWidth ,wndHeight ,  callback ) ;
 	/*var wndLeft = (window.screen.width-wndWidth)/2;
 	var wndTop  = (window.screen.height-wndHeight)/2;
@@ -495,7 +494,8 @@ jQuery.request.addEvent = function( type , func ){
 }
  
 jQuery.request.defaultErrorHandler = function(xhr, textStatus, errorThrown,url){
-	 jQuery.open(Global.contextPath+"/common/error/report500.jsp",570,410,{errorThrown:errorThrown} ) ;
+	alert(errorThrown+"  "+textStatus) ;
+	// jQuery.open(Global.contextPath+"/common/error/report500.jsp",570,410,{errorThrown:errorThrown} ) ;
 }
 
 
@@ -521,7 +521,7 @@ jQuery.dataservice = function(commandName , params , callback , reqParams ){
 	reqParams.data 		= params ;
 	reqParams.type		= 'post' ;
 	reqParams.noblock 	= reqParams.noblock === false?false:true ;
-	reqParams.url 		= contextPath+"/form/dataService" ;
+	reqParams.url 		= Config.contextPath+"/index.php/form/dataService" ;
 	reqParams.dataType 	= commandName?'json':"text" ;
 	//alert(reqParams.url);
 	//process callback

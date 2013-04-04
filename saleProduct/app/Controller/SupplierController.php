@@ -16,6 +16,15 @@ class SupplierController extends AppController {
 	 	$this->set("suppliers",$suppliers) ;
 	 }
 	 
+	 public function listsSelectBySku($sku){
+	 	$this->set("sku",$sku) ;
+	 
+	 	//查询已经选择的供应商
+	 	$suppliers = $this->Supplier->getProductSuppliersBySku( $sku  ) ;
+	 
+	 	$this->set("suppliers",$suppliers) ;
+	 }
+	 
 	 public function add($id = null, $idValue = null ){
 	 	if( $id == 'asin' ){
 	 		$this->set("asin",$idValue) ;

@@ -12,9 +12,10 @@ class Sale extends AppModel {
 	}
 
 	function getPurchasePlanDetails($id){
-		$sql = "SELECT * from sc_purchase_plan_details  where plan_id = '$id'";
-		$array = $this->query($sql);
-		return $array ;
+		return $this->exeSql("sql_purchase_plan_details_listForSKU", array('planId'=>$id) ) ;
+		//$sql = "SELECT * from sc_purchase_plan_details  where plan_id = '$id'";
+		//$array = $this->query($sql);
+		//return $array ;
 	}
 	
 	public function saveSeller($data){
@@ -45,6 +46,24 @@ class Sale extends AppModel {
 		}
 	}
 	
+	/**
+	 * 保存选择的采购产品
+	 * @param unknown_type $params
+	 */
+	public function saveSelectedProduct($params){
+			$skus = $params['sku'] ;
+			$loginId = $params['loginId'] ;
+			$planId = $params['planId'] ;
+	
+			foreach( explode(",", $skus) as $sku ){
+				try{
+					if( empty($sku) ) continue ;
+						$query = array( 'sku'=>$sku , 'planId'=>$planId , 'loginId'=> $loginId ) ;
+						$this->exeSql("sql_insert_purchasePlanProducts", $query);
+				}catch(Exception $e){ }
+			};
+	}
+	
 	public function savePurchasePlanProducts($data,$user){
 		$planId = $data['planId'] ;
 		$asins  = $data['asins'] ;
@@ -66,6 +85,38 @@ class Sale extends AppModel {
 		
 		//删除计划
 		$this->exeSql( "sql_delete_sc_pp" , $params ) ;
+	}
+	
+	public function checkValidSkus( $params ){
+		$correct = array() ;
+		$incorrect = array() ;
+		$type = "" ;
+		if( isset( $params['asins'] ) ){
+			$array =  explode(",", $params['asins'] ) ;
+			foreach($array as $asin ){
+				$asin = trim($asin) ;
+				$product = $this->getObject("sql_checkPurchaseProductIsValid.byAsin", array('asin'=>$asin) ) ;
+				if(empty($product)){
+					$incorrect[] = $asin ;
+				}else{
+					$correct[] =$product ;
+				}
+			}
+		}else if(isset($params['skus'])){
+			$array =  explode(",", $params['skus'] ) ;
+			foreach($array as $sku ){
+				$sku = trim($sku) ;
+				$product = $this->getObject("sql_checkPurchaseProductIsValid.bySku", array('sku'=>$sku) ) ;
+				if(empty($product)){
+					$incorrect[] = $sku ;
+				}else{
+					$correct[] =$product ;
+				}
+			}
+		}
+		
+		return array('correct'=>$correct,'incorrect'=>$incorrect) ;
+		
 	}
 	
 	public function deletePurchasePlanProduct($data,$user){
@@ -155,11 +206,12 @@ class Sale extends AppModel {
 	
 	
 	public function getProductPlanProduct($id){
-		$sql = "select sc_purchase_plan_details.* ,sc_product.*  from sc_purchase_plan_details , sc_product where 
-		sc_purchase_plan_details.asin = sc_product.asin
-		and sc_purchase_plan_details.id = '$id'" ;
+		/*$sql = "select sc_purchase_plan_details.* ,sc_real_product.*  from sc_purchase_plan_details , sc_real_product where 
+		sc_purchase_plan_details.asin = sc_real_product.asin
+		and sc_purchase_plan_details.id = '$id'" ;*/
+		return $this->getObject("sql_purchase_plan_details_listForSKU", array('id'=>$id) ) ;
 		
-		return $this->query($sql) ;
+		//return $this->query($sql) ;
 	}
 	
 		

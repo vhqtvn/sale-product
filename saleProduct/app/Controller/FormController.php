@@ -18,17 +18,17 @@ class FormController extends AppController {
     }
     
     public function dataService(){
-    	
+    
     	$user =  $this->getCookUser() ;
     	$params = $this->request->data  ;
     	
     	$params['loginId'] = $user['LOGIN_ID'] ;
     	$command = $params['CommandName'] ;
     	
-		
+    	
     	if(strpos($command,'model:')===0){
     		$command = str_replace("model:","",$command) ;
-    		
+    	
     		$as = explode(".",$command) ;
 			$clsName = "" ;
 			$method  = "" ;
@@ -37,13 +37,16 @@ class FormController extends AppController {
 				$simpleClassName = $as[0] ;
 				$clsName = $as[0] ;
 				$method = $as[1] ;
+				
 			}else{
 				$clsName = $as[0]."/".$as[1] ;
 				$simpleClassName = $as[1] ;
 				$method = $as[2] ;
 			}
+			
 			try{
 				App::import("model",$clsName) ;
+				
 				$r = new ReflectionClass($simpleClassName);
 				
 				$instance = $r->newInstance(); 
@@ -52,7 +55,7 @@ class FormController extends AppController {
 				$result = $method->invoke($instance, $params); 
 				$result = json_encode($result) ;
 			}catch(Exception $e){
-				echo $e->getMessage();
+				$result = $e->getMessage();
 			}
 				
 		

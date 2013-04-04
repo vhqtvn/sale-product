@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<!-- 通过货品SKU获取到供应商 -->
+    <entry key="sql_getProductSuppliersBySku">
+    <![CDATA[
+    	SELECT distinct sp.* FROM 
+				sc_real_product srp,
+				sc_real_product_rel srpr,
+				sc_amazon_account_product saap,
+				sc_product_supplier sps,
+				sc_supplier sp
+				WHERE srp.id = srpr.REAL_ID
+				AND srpr.SKU = saap.SKU
+				AND sps.ASIN = saap.ASIN
+				and sp.id = sps.supplier_id
+				AND srp.REAL_SKU = '{@#realSku#}'
+    ]]>
+    </entry>
+   
+</properties>

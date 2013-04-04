@@ -9,6 +9,14 @@ class Supplier extends AppModel {
 		return $this->query($sql) ;
 	}
 	
+	/**
+	 *   根据货品SKU获取对应的信息
+	 *   @param unknown_type $sku
+	 */
+	public function getProductSuppliersBySku( $sku ){
+		return $this->exeSql("sql_getProductSuppliersBySku", array('realSku'=>$sku)) ;
+	}
+	
 	public function saveSupplier($data,$user,$asin=null){
 		$loginId = $user['LOGIN_ID'] ;
 		

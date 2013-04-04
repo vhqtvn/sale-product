@@ -7,19 +7,6 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   		/*
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		
-		echo $this->Html->css('style-all');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('../grid/query');
-		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-		*/
    include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
@@ -33,18 +20,19 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('validator/jquery.validation');
 		
-		$id = $product[0]['sc_purchase_plan_details']["ID"] ;
-		$asin = $product[0]['sc_purchase_plan_details']["ASIN"] ;
-		$title = $product[0]['sc_product']["TITLE"] ;
-		$planId = $product[0]['sc_purchase_plan_details']["PLAN_ID"] ;
+		$id = $product["ID"] ;
+		$asin = $product["ASIN"] ;
+		$sku = $product["SKU"] ;
+		$title = $product["TITLE"] ;
+		$planId = $product["PLAN_ID"] ;
 		
-		$cost = $product[0]['sc_purchase_plan_details']["COST"] ;
-		$plan_num = $product[0]['sc_purchase_plan_details']["PLAN_NUM"] ;
-		$quote_price = $product[0]['sc_purchase_plan_details']["QUOTE_PRICE"] ;
-		$providor = $product[0]['sc_purchase_plan_details']["PROVIDOR"] ;
-		$sample_code = $product[0]['sc_purchase_plan_details']["SAMPLE_CODE"] ;
-		$sample  = $product[0]['sc_purchase_plan_details']["SAMPLE"] ;
-		$area = $product[0]['sc_purchase_plan_details']["AREA"] ;
+		$cost = $product["COST"] ;
+		$plan_num = $product["PLAN_NUM"] ;
+		$quote_price = $product["QUOTE_PRICE"] ;
+		$providor = $product["PROVIDOR"] ;
+		$sample_code = $product["SAMPLE_CODE"] ;
+		$sample  = $product["SAMPLE"] ;
+		$area = $product["AREA"] ;
 		
 	?>
   
@@ -67,34 +55,12 @@
 			$("button").click(function(){
 				var json = $("#personForm").toJson() ;
 				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
-					//window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
 					window.close() ;
 				}) ;
-				/*$.ajax({
-					type:"post",
-					url:contextPath+"/sale/savePurchasePlanProduct",
-					data:{
-						id:$("#id").val(),
-						plan_num:$("#plan_num").val(),
-						quote_price:$("#quote_price").val(),
-						cost:'',
-						providor:$("#providor").val(),
-						sample:$("#sample").val(),
-						sample_code:$("#sample_code").val(),
-						area:$("#area").val(),
-						memo:$("#memo").val()
-					},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						//window.opener.$(".grid-content-details").llygrid("reload",{planId:'<?php echo $planId;?>'}) ;
-						window.close() ;
-					}
-				}); */
 			});
 			
 			$(".edit_supplier").click(function(){
-				openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $asin ;?>",800,600) ;
+				openCenterWindow(contextPath+"/supplier/listsSelectBySku/<?php echo $sku ;?>",800,600) ;
 				return false;
 			}) ;
 		})
@@ -122,7 +88,7 @@
 									<th>编号：</th><td><?php echo $id ;?></td>
 								</tr>
 								<tr>
-									<th>ASIN：</th><td><?php echo $asin ;?></td>
+									<th>SKU：</th><td><?php echo $sku ;?></td>
 								</tr>
 								<tr>
 									<th>标题：</th><td><?php echo $title ;?></td>
@@ -140,12 +106,15 @@
 									<select id="providor">
 										<option value="">--</option>
 									<?php
+										$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+										
 										foreach($supplier as $suppli){
+											$suppli = $SqlUtils->formatObject($suppli) ;
 											$temp = "" ;
-											if( $suppli['sc_supplier']['ID'] == $providor ){
+											if( $suppli['ID'] == $providor ){
 												$temp = "selected" ;
 											}
-											echo "<option $temp value='".$suppli['sc_supplier']['ID']."'>".$suppli['sc_supplier']['NAME']."</option>" ;
+											echo "<option $temp value='".$suppli['ID']."'>".$suppli['NAME']."</option>" ;
 										}
 									?>
 									</select>  
@@ -178,7 +147,7 @@
 								</tr>
 								<tr>
 									<th>采购原因：</th><td>
-									<textarea style="width:500px;height:80px;" id="memo"><?php echo $product[0]['sc_purchase_plan_details']['MEMO'] ;?></textarea>
+									<textarea style="width:500px;height:80px;" id="memo"><?php echo $product['MEMO'] ;?></textarea>
 									</td>
 								</tr>
 							</tbody>

@@ -17,6 +17,7 @@ class GridController extends AppController {
     public function query(){
     	$query = $this->request->query ;
     	$recordSql = $this->SqlUtils->getRecordSql( $query) ;
+    	
     	$countSql = $this->SqlUtils->getCountSql( $query) ;
     	$records = $this->Grid->query($recordSql) ;
     	$count = $this->Grid->query($countSql) ;

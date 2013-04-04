@@ -1,4 +1,4 @@
- var type = '4' ;//查询已经审批通过
+     var type = '4' ;//查询已经审批通过
 
 	 function formatMoney(val){
 	 	val = $.trim(val+"") ;
@@ -48,7 +48,7 @@
 		           	{align:"center",key:"STATUS5",label:img5,group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=5>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"EXECUTOR_NAME",label:"执行人",width:"4%"},
+		           	{align:"center",key:"EXECUTOR_NAME",label:"负责人",width:"4%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"4%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"},
 					{align:"center",key:"ID",label:"操作",width:"20%",format:function(val,record){
@@ -56,7 +56,6 @@
 						var html = [] ;
 						if( status == 1){
 							if($add_pp_product)html.push("<a href='#' class='add-outer-product' val='"+val+"'>添加产品</a>&nbsp;") ;
-							if($add_pp_audit_product)html.push("<a href='#' class='add-product' val='"+val+"'>添加审批产品</a>&nbsp;") ;
 						
 							if($export_pp)html.push("<a href='#' class='export-product' val='"+val+"'>导出</a>&nbsp;") ;
 							if($print_pp)html.push("<a href='#' class='print-product' val='"+val+"'>打印</a>&nbsp;") ;
@@ -119,19 +118,24 @@
 			
 			$(".add-outer-product").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/sale/addPurchasePlanOuterProduct/"+val,600,400) ;
+				//openCenterWindow(contextPath+"/sale/addPurchasePlanOuterProduct/"+val,600,400) ;
+				openCenterWindow(contextPath+"/page/forward/Sale.selectPurchaseProduct/"+val,900,600,function(){
+					$(".grid-content").llygrid("reload",{},true) ;
+				}) ;
 			});
 			
 			
 			$(".add-product").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/selectPurchaseProduct/"+val,1020,600) ;
+				openCenterWindow(contextPath+"/sale/selectPurchaseProduct/"+val,1020,600,function(){
+					$(".grid-content").llygrid("reload",{},true) ;
+				}) ;
 			}) ;
 			
 			
 			$(".edit_purchase_plan").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,400) ;
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,440) ;
 				return false;
 			}) ;
 			
@@ -204,31 +208,15 @@
 						
 						return html.join("") ;
 					}},
-		           	{align:"center",key:"ASIN",label:"ASIN", width:"8%",format:function(val,record){
-		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
-		           	}},
-		           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
-		           		
-		           		if(val){
-		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
-		           		}
-		           		return "" ;
-		           		
-		           	}},
-		           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
-		           	}},
-		           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"6%",format:function(val,record){
-		           		if(!val)return val ;
-		           		return Math.round(val) ;
-		           	}},
+		           	{align:"center",key:"SKU",label:"货品SKU", width:"8%"},
+		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
+		           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"6%"},
 		           	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"6%"},
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
 		           	
-		           	{align:"center",key:"FBM_COST",label:"其他成本",group:"FBM",width:"6%",format:function(val,record){
+		           /*	{align:"center",key:"FBM_COST",label:"其他成本",group:"FBM",width:"6%",format:function(val,record){
 		           		return "<a href='' class='cost' type='FBM' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
 		           	},permission:function(){ return $purchase_cost_view; } },
 		           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%",permission:function(){ return $purchase_cost_view; }},
@@ -338,7 +326,7 @@
 		           		}else{
 		           			return lyl+"%" ;
 		           		}
-		           	},permission:function(){ return $purchase_cost_view; }},
+		           	},permission:function(){ return $purchase_cost_view; }},*/
 		           	
 		           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"8%",format:function(val,record){
 		           		if(!val) return "";
@@ -360,7 +348,7 @@
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{planId:'-----',status:"",sqlId:"sql_purchase_plan_details_list"},
+				 querys:{planId:'-----',status:"",sqlId:"sql_purchase_plan_details_listForSKU"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){

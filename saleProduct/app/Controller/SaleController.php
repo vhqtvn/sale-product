@@ -206,9 +206,9 @@ class SaleController extends AppController {
 		
 		$product = $this->Sale->getProductPlanProduct($planProductId) ;
 		
-		$asin = $product[0]['sc_purchase_plan_details']["ASIN"]  ;
+		$sku = $product["SKU"]  ;
 		
-		$suppliers = $this->Supplier->getProductSuppliers( $asin  ) ;
+		$suppliers = $this->Supplier->getProductSuppliersBySku( $sku  ) ;
 		
 		$this->set('supplier', $suppliers );
 		$this->set('product', $product);
@@ -245,20 +245,22 @@ class SaleController extends AppController {
 	   
 	    $details = $this->Sale->getPurchasePlanDetails($planId) ;
 	    
-	    echo iconv('utf-8','gb2312','ASIN,采购数量,产品报价,产品成本,供应商,样品,样品编码')."\n" ;
+	    echo iconv('utf-8','gb2312','SKU,货品名称,采购数量,产品报价,产品成本,供应商,样品,样品编码')."\n" ;
 	    
 	    foreach($details as $detail){
-	    	$asin = $detail['sc_purchase_plan_details']['ASIN'] ;
-	    	$plan_num = $detail['sc_purchase_plan_details']['PLAN_NUM'] ;
-	    	$quote_price = $detail['sc_purchase_plan_details']['QUOTE_PRICE'] ;
-	    	$cost = $detail['sc_purchase_plan_details']['COST'] ;
-	    	$providor = $detail['sc_purchase_plan_details']['PROVIDOR'] ;
-	    	$sample = $detail['sc_purchase_plan_details']['SAMPLE'] ;
-	    	$sample_code = $detail['sc_purchase_plan_details']['SAMPLE_CODE'] ;
+	    	$detail  = $this->Sale->formatObject($detail) ;
+	    	$sku = $detail['SKU'] ;
+	    	$title = $detail['TITLE'] ;
+	    	$plan_num = $detail['PLAN_NUM'] ;
+	    	$quote_price = $detail['QUOTE_PRICE'] ;
+	    	$cost = $detail['COST'] ;
+	    	$providor = $detail['PROVIDOR_NAME'] ;
+	    	$sample = $detail['SAMPLE'] ;
+	    	$sample_code = $detail['SAMPLE_CODE'] ;
 	    	
-	    	if(empty($asin)) continue ;
+	    	if(empty($sku)) continue ;
 	    	
-	    	echo $asin.','.$plan_num.','.$quote_price.','.$cost.','.$providor.','.$sample.','.$sample_code."\n" ;
+	    	echo iconv('utf-8','gb2312', $sku.','.$title.','.$plan_num.','.$quote_price.','.$cost.','.$providor.','.$sample.','.$sample_code)."\n" ;
 	    }
 	    
 	}

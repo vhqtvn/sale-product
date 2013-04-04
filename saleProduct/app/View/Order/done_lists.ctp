@@ -11,7 +11,7 @@
      var status = "<?php echo $status;?>"
     </script>
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');

@@ -10,10 +10,14 @@
   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui-print');
-		echo $this->Html->css('../grid/grid-print');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		
+		echo $this->Html->css('default/style');
+
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
 		
 		$user = $this->Session->read("product.sale.user") ;
 		$groupCode = $user["GROUP_CODE"] ;
@@ -55,7 +59,7 @@
 					{align:"center",key:"ASIN",label:"序号", width:"40",format:function(){
 						return ++index ;
 					} },
-		           	{align:"center",key:"ASIN",label:"产品详细信息", width:"525",format:function(val,record){
+		           	{align:"center",key:"ASIN",label:"产品详细信息", width:"510",format:function(val,record){
 		           		var knowledge = record.KNOWLEDGE||"" ;
 		           		var knows = knowledge.split("<p") ;
 		           		var kHtml = [] ;
@@ -74,7 +78,7 @@
 		           		var html = '\
 		           		<div>\
 							<div class="product-image" style="width:152px;float:left;">'+localUrl+'</div>\
-							<div class="product-base" style="width:362px;float:left;">\
+							<div class="product-base" style="width:342px;float:left;">\
 								<div class="product-content product-asin">'+record.ASIN+'</div>\
 								<div class="product-content product-title">'+record.TITLE+'</div>\
 								<div class="product-content product-gg">'+kHtml.join("")+'</div>\
@@ -154,8 +158,9 @@
    		}
  
    		.product-image img{
-   			width:150px;
-   			height:150px;
+   			width:140px;
+   			height:140px;
+   			margin:5px;
    		}
    		
    		.product-asin , .product-title{
@@ -185,13 +190,45 @@
    		}
    		
    		input{
-   			border:none;
-   			border-bottom:1px solid #CCC;
+   			border:none!important;
+   			border-bottom:1px solid #CCC!important;;
+   			filter:none!important;
    			width:100px;
+   			-webkit-border-radius: 0px!important;;
+			-moz-border-radius: 0px!important;;
+			border-radius:0px!important;;
+   			background:none!important;;
+   			-webkit-box-shadow: none!important;;
+			-moz-box-shadow:none!important;;
+			box-shadow: none!important;;
+			-webkit-transition: none!important;;
+			-moz-transition: none!important;;
+			-ms-transition: none!important;;
+			-o-transition:none!important;;
+			transition:none!important;;
    		}
    		
    		div.lly-grid .product-gg span{
    			font-size:11px;
+   		}
+   		
+   		tr,td,th,.lly-grid-head{
+			background:none!important;
+   		}
+   		.lly-grid-pager{
+			display:none!important;
+   		}
+   		
+   		table,tr,td,th,div{
+			border-color: #000!important;
+   		}
+   		
+   		.lly-grid-2-body{
+			overflow:hidden!important;
+   		}
+   		
+   		.title-bar div{
+			font-weight:bold!important;	
    		}
    </style>
 
@@ -199,12 +236,24 @@
 <body>
 
 	<div style="padding:5px 10px;font-size:13px;font-weight:bold;">
-		采购计划名称：<?php echo $plan[0]['sc_purchase_plan']['NAME']?>&nbsp;&nbsp;&nbsp;
-		申请人：<?php echo $plan[0][0]['USERNAME']?>&nbsp;&nbsp;&nbsp;
+	   <div class="row-fluid title-bar">
+	   <div class="span6">
+		采购计划名称：<?php echo $plan[0]['sc_purchase_plan']['NAME']?>
+		</div>
+		<div class="span3">
+		申请人：<?php echo $plan[0][0]['USERNAME']?>
+		</div>
+		<div class="span3">
 		申请时间：<?php echo $plan[0]['sc_purchase_plan']['CREATE_TIME']?>
+		</div>
+		</div>
 	</div>
-	<div class="grid-content-details" style="margin-top:5px;">
+	<center>
+	<div style="width:98%;">
+	<div class="grid-content-details" style="margin-top:5px;overflow:hidden;">
 	</div>
+	</div>
+	</center>
 	<div style="padding:5px 10px;font-size:13px;font-weight:bold;">
 		<table style="width:100%;">
 			<tr>

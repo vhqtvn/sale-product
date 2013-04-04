@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>llygrid demo</title>
+    <title>编辑采购计划</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -90,7 +90,7 @@
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
-						<table class="form-table col2" >
+						<table class="form-table" >
 							<caption>基本信息</caption>
 								<tr>
 									<td>采购名称：</td><td><input type="text" data-validator="required" id="name"  
@@ -127,7 +127,7 @@
 						</div>
 <!-- panel脚部内容-->
                     <div class="panel-foot">
-						<div class="form-actions col2">
+						<div class="form-actions">
 							<button type="button" class="btn btn-primary">提&nbsp;交</button>
 						</div>
 					</div>

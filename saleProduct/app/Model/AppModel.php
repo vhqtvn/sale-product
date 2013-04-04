@@ -202,13 +202,13 @@ class AppModel extends Model {
 		public function exeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
 			$sql = $this->getSql($sql,$query) ;
-		
 			return $this->query($sql) ;
 		}
 		
 		public function getExeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
 			$sql = $this->getSql($sql,$query) ;
+			echo $sql ;
 			return $sql ;
 		}
 		

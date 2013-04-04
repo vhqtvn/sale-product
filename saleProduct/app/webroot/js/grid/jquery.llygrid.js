@@ -674,6 +674,25 @@
 					return eval(funcName)(val,record) ;
 				}
 			},
+			'img':{
+				body:function(val,record,col){
+					if(val){
+	           			val = val.replace(/%/g,'%25') ;
+	           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:25px;height:25px;'>" ;
+	           		}
+	           		return "" ;
+				}
+			},
+			'asin':{
+				body:function(val,record,col){
+					return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
+				}
+			},
+			'titleListing':{
+				body:function(val,record,col){
+					return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+				}
+			},
 			"editor":{
 				body:function(val,record ,col){
 					val = val || col.defaultValue||"";

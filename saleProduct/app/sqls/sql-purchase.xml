@@ -70,6 +70,19 @@
          order by create_time desc
    </entry>
    
+   <entry key="sql_purchase_plan_details_listForSKU">
+		SELECT DISTINCT  
+			sppd.* ,
+			srp.name as TITLE,
+			srp.IMAGE_URL,
+			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME
+		FROM sc_purchase_plan_details sppd , sc_real_product srp
+		WHERE 1=1 
+			AND sppd.SKU = srp.real_sku
+			{@AND sppd.plan_id = '#planId#'}
+			{@AND sppd.id = '#id#'}
+   </entry>
+   
    <entry key="sql_purchase_plan_details_list">
           SELECT distinct  sc_purchase_plan_details.* ,
 				 sc_product.TITLE , sc_product_flow_details.DAY_PAGEVIEWS ,

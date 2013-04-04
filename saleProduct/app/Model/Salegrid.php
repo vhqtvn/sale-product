@@ -111,7 +111,7 @@ class Salegrid extends AppModel {
 		return $array ;
 	}
 	
-	function getFilterTask4Records($query=null,$user){
+	/*function getFilterTask4Records($query=null,$user){
 		$limit =  $query["limit"] ;
 		$curPage =  $query["curPage"] ;
 		$start =  $query["start"] ;
@@ -152,7 +152,7 @@ class Salegrid extends AppModel {
           FROM sc_product_filter $where ) t";
 		$array = $this->query($sql);
 		return $array ;
-	}
+	}*/
 	
 	
 	function getPurchasePlanPrintsRecords($query=null,$user){
@@ -163,18 +163,26 @@ class Salegrid extends AppModel {
 		$loginId = $user["LOGIN_ID"] ;
 		$planId = $query["planId"] ;
 		
-		$where = " where 1 = 1 and sc_purchase_plan_details.status = '3' and  sc_purchase_plan_details.asin = sc_product.asin and sc_purchase_plan_details.plan_id = '$planId' " ;
-		//询价状态  最低价 FBM TARGET_PRICE ， FBA最低价
+		$where = " where 1 = 1 and sc_purchase_plan_details.status = '3' 
+			and  sc_purchase_plan_details.sku = sc_real_product.real_sku 
+		and sc_purchase_plan_details.plan_id = '$planId' " ;
+		//询价状态  最低价 FBM TARGET_PRICE ， FBA最低价   sc_product.KNOWLEDGE ,
 		$sql = "SELECT  sc_purchase_plan_details.* ,
-				 sc_product.TITLE ,
-				 sc_product.KNOWLEDGE ,
+				 sc_real_product.name as TITLE ,
+				
                 (select sc_supplier.name from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_NAME,
                 (select sc_supplier.contactor from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_CONTACTOR,
                 (select sc_supplier.phone from sc_supplier where sc_supplier.id = sc_purchase_plan_details.PROVIDOR ) as PROVIDOR_PHONE,
-                (select sps.is_used from sc_product_supplier sps where sps.asin = sc_product.asin
-                        and sps.supplier_id = sc_purchase_plan_details.PROVIDOR  ) as IS_USED,
-				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL
-               FROM sc_purchase_plan_details , sc_product
+                (select count(sps.is_used) from sc_product_supplier sps where  sps.supplier_id = sc_purchase_plan_details.PROVIDOR
+                        and sps.asin in (
+                               select sp.asin from sc_product sp , sc_amazon_account_product sa ,sc_real_product_rel srpr 
+                               where sp.asin = sa.asin
+                               and srpr.sku = sa.sku
+                               and srpr.real_sku = sc_real_product.real_sku
+                        ) ) as IS_USED,
+				sc_real_product.IMAGE_URL AS LOCAL_URL
+               FROM sc_purchase_plan_details , 
+               sc_real_product
 			$where
 			limit ".$start.",".$limit;
 		$array = $this->query($sql);
@@ -185,9 +193,11 @@ class Salegrid extends AppModel {
 		$loginId = $user["LOGIN_ID"] ;
 		$planId = $query["planId"] ;
 		
-		$where = " where 1 = 1 and sc_purchase_plan_details.status = '3'  and  sc_purchase_plan_details.asin = sc_product.asin and sc_purchase_plan_details.plan_id = '$planId' " ;
+		$where = " where 1 = 1 and sc_purchase_plan_details.status = '3' 
+		 and   sc_purchase_plan_details.sku = sc_real_product.real_sku 
+		 and sc_purchase_plan_details.plan_id = '$planId' " ;
 		
-		$sql = "SELECT count(*) FROM sc_purchase_plan_details , sc_product $where ";
+		$sql = "SELECT count(*) FROM sc_purchase_plan_details , sc_real_product $where ";
 		$array = $this->query($sql);
 		return $array ;
 	}
