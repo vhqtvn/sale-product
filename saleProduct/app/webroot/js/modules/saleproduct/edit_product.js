@@ -1,4 +1,10 @@
 $(function(){
+	var isView = window.parent.action == 'view' ;
+	
+	if( isView ){
+		$(":input").attr("disabled",true);
+		$("[type='button'],button,[type='file']").hide();
+	}
 
 	var categoryTreeSelect = {
 			title:'产品分类选择页面',

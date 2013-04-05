@@ -22,10 +22,13 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
+		
 	?>
    <script>
+   var action ='<?php echo $action;?>' ;
   	$(function(){
   		var realId ='<?php echo $id;?>' ;
+  		
   		var tab = $('#tabs-default').tabs( {//$this->layout="index";
 			tabs:[
 				{label:'基本信息',url:contextPath+"/saleProduct/forward/edit_product/"+realId,iframe:true},

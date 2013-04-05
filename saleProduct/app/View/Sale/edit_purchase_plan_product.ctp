@@ -105,7 +105,7 @@
 										<th>编号：</th><td><?php echo $id ;?></td>
 									</tr>
 									<tr>
-										<th>SKU：</th><td><?php echo $sku ;?></td>
+										<th>SKU：</th><td><a class="product-realsku"  sku="<?php echo $sku ;?>"  href="#"><?php echo $sku ;?></a></td>
 									</tr>
 									<tr>
 										<th>标题：</th><td><?php echo $title ;?></td>

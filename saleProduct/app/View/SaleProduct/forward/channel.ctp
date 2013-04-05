@@ -28,11 +28,17 @@
 	
     <script type="text/javascript">
 
+
 	var currentAccountId = '' ;
 	var currentCategoryId = "" ;
 	var currentCategoryText = "" ;
 	$(function(){
-	
+		var isView = window.parent.action == 'view' ;
+		
+		if( isView ){
+			$(":input").attr("disabled",true);
+			$("[type='button'],button,[type='file']").hide();
+		}
 	       var gridConfig = {
 					columns:[
 						/*{align:"center",key:"SKU",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){

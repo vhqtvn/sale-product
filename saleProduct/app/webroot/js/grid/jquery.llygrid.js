@@ -1130,7 +1130,7 @@ $(".product-detail").live("click",function(){
 
 $(".product-realsku").live("click",function(){
 	var sku = $(this).attr("sku") ;
-	openCenterWindow(contextPath+"/saleProduct/details/"+sku,950,650) ;
+	openCenterWindow(contextPath+"/saleProduct/details/"+sku+"/sku",950,650) ;
 	return false;
 }) ;
 

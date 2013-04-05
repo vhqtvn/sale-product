@@ -96,15 +96,20 @@ class SaleProductController extends AppController {
 		}
 	}
     
-    public function details($id){
+    public function details($id ,$type = null ){
+    	
     	
     	
     	$item = null ;
     	if(!empty($id)){
-    		$item =$this->SaleProduct->getSaleProductById($id) ;
-    		if( empty($item) ){
+    		
+    		if( $type == 'sku' ){
     			$item = $this->SaleProduct->getSaleProduct($id) ;
+    			$this->set('action','view');
+    		}else{
+    			$item =$this->SaleProduct->getSaleProductById($id) ;
     		}
+    		
     		$item = $item[0]['sc_real_product'] ;
     		
     		$this->set('id',$item['ID']);
