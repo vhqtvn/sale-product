@@ -4,6 +4,43 @@
     	UPDATE SC_PURCHASE_PLAN SET status = '2' where id = '{@#planId#}'
     </entry>
     
+    
+    <entry key="sql_purchase_plan_getAsinFromSku">
+    		select distinct sp.* ,
+    			s1.QUOTE_PRICE,
+    			s3.SKU,
+    			s3.QUANTITY,
+				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL,
+				( SELECT TOTAL_COST - PURCHASE_COST
+				FROM sc_product_cost 
+				WHERE sc_product_cost.asin = sp.asin AND
+					( sc_product_cost.type='FBM' OR sc_product_cost.type IS NULL )  ) AS FBM_COST,
+					
+				( SELECT MIN(sc_sale_competition_details.seller_price+sc_sale_competition_details.seller_ship_price) FROM sc_sale_competition_details
+						WHERE sc_sale_competition_details.asin = sp.asin
+						and ( type like 'F%' or type like 'N%' )
+						 ) AS FBM_PRICE,
+						
+				( SELECT MIN(sc_sale_fba_details.seller_price) FROM sc_sale_fba_details
+						WHERE sc_sale_fba_details.asin = sp.asin ) AS FBA_PRICE,
+				( SELECT TOTAL_COST - PURCHASE_COST
+				FROM sc_product_cost WHERE sc_product_cost.asin = sp.asin AND
+					( sc_product_cost.type='FBA' OR sc_product_cost.type IS NULL )  ) AS FBA_COST,
+				(SELECT COUNT(*) FROM sc_product_supplier WHERE sc_product_supplier.asin = sp.asin
+							AND sc_product_supplier.num1 IS NOT NULL AND  sc_product_supplier.offer1 IS NOT NULL  ) AS XJ
+    		from 
+    		   sc_purchase_plan_details s1,
+    		   sc_real_product_rel s2,
+    		   sc_amazon_account_product s3,
+    		   sc_product sp
+    		   LEFT JOIN sc_product_flow_details ON sc_product_flow_details.asin = sp.asin
+				LEFT JOIN sc_sale_competition_details  ON sc_sale_competition_details.asin = sp.asin
+    	 where s1.sku = s2.real_sku
+    	 and s2.sku = s3.sku
+    	 and s3.asin = sp.asin
+    	 and s1.id = '{@#id#}'
+    </entry>
+    
     <entry key="sql_purchasePlanProductsIsExists">
     	select * from sc_purchase_plan_details
     	where plan_id = '{@#planId#}' and  sku = '{@#sku#}'

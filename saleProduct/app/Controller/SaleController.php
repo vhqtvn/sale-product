@@ -207,12 +207,13 @@ class SaleController extends AppController {
 		$product = $this->Sale->getProductPlanProduct($planProductId) ;
 		
 		$sku = $product["SKU"]  ;
-		
+		$user =  $this->getCookUser() ;
 		$suppliers = $this->Supplier->getProductSuppliersBySku( $sku  ) ;
 		
 		$this->set('supplier', $suppliers );
 		$this->set('product', $product);
 		$this->set('planProductId', $planProductId);
+		$this->set('user', $user);
 	}
 	
 	function editPurchaseProductStatus($id , $status){

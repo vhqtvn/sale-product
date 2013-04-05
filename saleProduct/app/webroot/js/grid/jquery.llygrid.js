@@ -133,7 +133,7 @@
 				$("<th "+rowSpanHtml+" key='"+this.key+"' colIndex='"+index+"'  class='lly-grid-head-column' style='border-bottom:0px;'>" +
 						"<div class='"+sort+" cell-div'>"+headCellRender(col)+ 
 						"</div> </th>").appendTo( $("."+container+" table thead tr[idx='"+(options.headRowNum - rowspan  )+"']",target)) ;
-
+	
 				width += parseInt(this.width) ;
 			}) ;
 		}
@@ -154,7 +154,7 @@
 	function adjustWidth(target){
 	
 			forzenWidth = $(".lly-grid-1-head",target).outerWidth(true);
-			$(".lly-grid-content",target).width( $(".lly-grid",target).width() ) ;
+			$(".lly-grid-content",target).width( $(".lly-grid",target).parent().width() -2 ) ;
 
 			if( forzenWidth == $(".lly-grid-content",target).width()){
 				setTimeout(function(){ adjustWidth(target) },100) ;
@@ -688,6 +688,14 @@
 					return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
 				}
 			},
+			'realSku':{
+				body:function(val,record,col){
+					if( !val ){
+						return  ("<span><a href='#'  style='color:red' title='该ASIN未关联货品ＳＫＵ，请进行关联！' class='product-detail' asin='"+record.ASIN+"'>"+record.ASIN+"</a></span>") ;
+					}
+					return "<a href='#' class='product-realsku' sku='"+val+"'>"+val+"</a>" ;
+				}
+			},
 			'titleListing':{
 				body:function(val,record,col){
 					return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
@@ -1117,6 +1125,12 @@ function viewSupplier(id){
 $(".product-detail").live("click",function(){
 	var asin = $(this).attr("asin") ;
 	openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
+	return false;
+}) ;
+
+$(".product-realsku").live("click",function(){
+	var sku = $(this).attr("sku") ;
+	openCenterWindow(contextPath+"/saleProduct/details/"+sku,950,650) ;
 	return false;
 }) ;
 

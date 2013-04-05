@@ -210,9 +210,7 @@
 						
 						return html.join("") ;
 					}},
-		           	{align:"center",key:"SKU",label:"货品SKU", width:"8%",format:function(val,record){
-		           		return val || ("<span style='color:red' title='该ASIN未关联货品ＳＫＵ，请进行关联再操作！'>"+record.ASIN+"</span>") ;
-		           	}},
+		           	{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"6%"},
@@ -373,7 +371,7 @@
 			
 			$(".edit-action").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,750,580,function(){
+				openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,910,620,function(){
 					$(".grid-content-details").llygrid("reload",{},true) ;
 				}) ;
 			}) ;
@@ -409,7 +407,6 @@
 				return false ;
 			}) ;
 			
-
 			$(".del-action").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
 				var planId = $(this).attr("planId") ;
@@ -426,16 +423,9 @@
 						success:function(result,status,xhr){
 							$(".grid-content-details").llygrid("reload",{planId:planId}) ;
 						}
-					}); 
-					
+					});
 				}
 			}) ;
-			
-			
-			$(".product-detail").live("click",function(){
-				var asin = $(this).attr("asin") ;
-				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
-			})
 			
 			$(".process-action").live("click",function(){
 				var val = $(this).attr("val") ;
