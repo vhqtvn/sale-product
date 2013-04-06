@@ -180,16 +180,21 @@
 						return html.join("") ;	
 					}},
 					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
-		           	{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+					{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
+		           		var r = record.PLAN_START_TIME||"" ;
+		           		var r1 = record.PLAN_END_TIME||"" ;
+		           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
+		           	}},
+					{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
-		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"6%"},
-		           	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"6%"},
+		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"5%"},
+		           	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"5%"},
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
 		          
-		           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"15%",format:function(val,record){
+		           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"12%",format:function(val,record){
 		           		if(!val) return "";
 		           		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
 		           	}} ,

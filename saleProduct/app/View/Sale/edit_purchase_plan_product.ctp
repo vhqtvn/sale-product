@@ -59,6 +59,7 @@
 		$purchase_cost_view 	= $security->hasPermission($loginId , 'purchase_cost_view') ;
 		$confirm_purchase 	= $security->hasPermission($loginId , 'confirm_purchase') ;
 		
+		$hasViewRelListing = $security->hasPermission($loginId , 'view_rp_rel_listing') ;
 	?>
   
    <style>
@@ -328,9 +329,11 @@
 					</div>
 				</form>
 			</div>
+			<?php if( $hasViewRelListing ) { ?>
 			<div id="ref-asins" style="width:880px;padding:10px;">
 				<div class="grid-content-details" style="width:858px;"></div>
 			</div>
+			<?php } ?>
 			<div id="tracks" style="width:880px;padding:10px;">
 				<div class="grid-track" style="width:858px;"></div>
 			</div>

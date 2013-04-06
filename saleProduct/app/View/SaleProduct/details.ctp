@@ -22,7 +22,9 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
+		$security  = ClassRegistry::init("Security") ;
 		
+		$hasViewRelListing = $security->hasPermission($loginId , 'view_rp_rel_listing') ;
 		if(  !isset($action) ){
 			$action = "edit" ;
 		}
@@ -36,8 +38,10 @@
   		
   		var tab = $('#tabs-default').tabs( {//$this->layout="index";
 			tabs:[
-				{label:'基本信息',url:contextPath+"/saleProduct/forward/edit_product/"+realId,iframe:true},
-				{label:'渠道产品信息',url:contextPath+"/saleProduct/forward/channel/"+realId,iframe:true}
+				{label:'基本信息',url:contextPath+"/saleProduct/forward/edit_product/"+realId,iframe:true}
+				<?php if($hasViewRelListing){ ?>
+				,{label:'渠道产品信息',url:contextPath+"/saleProduct/forward/channel/"+realId,iframe:true}
+				<?php }?>
 				<?php if($item['TYPE'] == 'package'){?>
 					,{label:'打包货品信息',url:contextPath+"/saleProduct/forward/composition/"+realId,iframe:true}
 				<?php } ?>
