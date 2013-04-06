@@ -29,12 +29,14 @@
    </script>
 	<script>
 	$(function(){
+		var isSaved = false ;
 		$(".btn-save").click(function(){
 			if( !$.validation.validate('#personForm').errorInfo ) {
+				if( isSaved ) return ;
 				var json = $("#personForm").toJson() ;
+				isSaved = true ;
 				$.dataservice("model:Warehouse.In.doSaveBoxProduct",json,function(result){
-					window.opener.openCallback('boxProduct') ;
-						window.close();
+					window.close() ;
 				});
 
 			};

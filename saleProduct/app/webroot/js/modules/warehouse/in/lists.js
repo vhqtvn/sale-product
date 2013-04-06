@@ -37,7 +37,9 @@ $(function(){
 		}) ;
 		
 		$(".add-btn").click(function(){
-			openCenterWindow(contextPath+"/page/model/Warehouse.In.edit",990,640) ;
+			openCenterWindow(contextPath+"/page/model/Warehouse.In.edit",990,640,function(){
+				$(".grid-content").llygrid("reload") ;
+			}) ;
 		}) ;
 		
 		$(".action").live("click",function(){

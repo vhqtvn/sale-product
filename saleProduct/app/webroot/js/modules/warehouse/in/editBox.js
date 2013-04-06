@@ -68,24 +68,33 @@
 			}) ;
 			
 			$(".add-box").live("click",function(){
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId,550,420) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId,550,420,function(){
+					$(".grid-content").llygrid("reload",{});
+					$(".grid-content-details").llygrid("reload",{boxId:''});
+				}) ;
 			}) ;
 			
 			$(".edit-box").live("click",function(){
 				var boxId = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId+"/"+boxId,550,420) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId+"/"+boxId,550,420,function(){
+					$(".grid-content").llygrid("reload",{},true);
+				}) ;
 				return false ;
 			}) ;
 			
 			
 			
 			$(".add-box-product").live("click",function(){
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440,function(){
+					$(".grid-content-details").llygrid("reload",{},true);
+				}) ;
 			})
 			
 			$(".edit-box-product").live("click",function(){
 				var boxPId = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+boxPId,550,440) ;
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+boxPId,550,440,function(){
+					$(".grid-content-details").llygrid("reload",{},true);
+				}) ;
 			})
 			
    	 });

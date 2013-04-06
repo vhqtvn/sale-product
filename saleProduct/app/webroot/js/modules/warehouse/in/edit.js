@@ -1,6 +1,7 @@
 	$(function(){
-
+			var isSaved = false ;
 			$(".btn-save").click(function(){
+				if( isSaved ) return ;
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
 					json.status = '0' ;
@@ -8,13 +9,9 @@
 					//planArrivalDate
 					json.shipDate = json.shipDate||"0000-00-00 00:00:00" ;
 					json.planArrivalDate = json.planArrivalDate||"0000-00-00 00:00:00" ;
+					isSaved = true ;
 					$.dataservice("model:Warehouse.In.doSave",json,function(result){
-						window.top.opener.openCallback('edit') ;
-						if(window.parent == window){
-							window.close() ;
-						}else{
-							(window.parent||window).location.reload() ;
-						}
+						window.close() ;
 					});
 				};
 				return false ;
