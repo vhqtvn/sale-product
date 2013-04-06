@@ -1081,7 +1081,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
   		$amazonFeedProcess  = ClassRegistry::init("AmazonFeedProcess") ;
   
   		while(!feof($handle)){
-  			$row =  fgets($handle, 3072);
+  			$row =  fgets($handle);
   		//	debug($row) ;
   			if($HeadArray == null){
   				$HeadArray = split( "\t" ,$row  ) ;
@@ -1148,7 +1148,7 @@ class MarketplaceWebService_Client implements MarketplaceWebService_Interface
 	    $amazonFeedProcess  = ClassRegistry::init("AmazonFeedProcess") ;
 	  
 	    while(!feof($handle)){
-	        $row =  fgets($handle, 10240);
+	        $row =  fgets($handle);//, 10240
 	        
 	        if($HeadArray == null){
 	        	$HeadArray = split( "\t" ,$row  ) ;
