@@ -23,26 +23,12 @@ class Sale extends AppModel {
 		$this->query($sql) ;
 	}
 	
-	public function savePurchasePlan($data,$user){
-		$loginId = $user["LOGIN_ID"] ;
+	public function savePurchasePlan($data){
+		$loginId = $data["loginId"] ;
 		if( isset($data['id']) && !empty($data['id'])){
-			$sql = "
-				UPDATE sc_purchase_plan 
-					SET
-					NAME = '".$data["name"]."' , 
-					PLAN_TIME = '".$data["plan_time"]."' , 
-					MEMO = '".$data["memo"]."' , 
-					TYPE = '".$data["type"]."' , 
-					EXECUTOR = '".$data["executor_id"]."'
-					
-					WHERE
-					ID = '".$data["id"]."' 
-				" ;
-				$this->query($sql) ;
+			$this->exeSql("sql_purchase_plan_update", $data) ;
 		}else{
-			$sql = "insert into sc_purchase_plan(name,plan_time,creator,create_time,status,memo,type,executor)
-				values('".$data["name"]."','".$data["plan_time"]."','$loginId',NOW(),1,'".$data["memo"]."','".$data["type"]."','".$data["executor_id"]."')" ;
-			$this->query($sql) ;
+			$this->exeSql("sql_purchase_plan_insert", $data) ;
 		}
 	}
 	

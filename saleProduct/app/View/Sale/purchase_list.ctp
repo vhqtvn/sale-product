@@ -82,6 +82,11 @@
 		var img6 = '<?php echo $this->Html->image('cake.icon.png',array("title"=>"验收完成，结束采购")) ?>' ;
 	</script>
 
+	 <style type="text/css">
+		img{
+			cursor:pointer;
+		}
+	</style>
 
 </head>
 <body>

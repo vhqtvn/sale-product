@@ -11,12 +11,12 @@
 		  
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"",width:"7%",format:function(val,record){
+		           	{align:"center",key:"ID",label:"",width:"4%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						if( status == 1){
-							if( $delete_pp ) html.push("<a href='#' class='delete_purchase_plan' val='"+val+"'>删除</a>&nbsp;") ;
-							if( $create_pp ) html.push("<a href='#' class='edit_purchase_plan' val='"+val+"'>修改</a>&nbsp;") ;
+							if( $delete_pp ) html.push('<img title="删除" class="delete_purchase_plan" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/delete.gif"/>');//"<a href='#' class='delete_purchase_plan' val='"+val+"'>删除</a>&nbsp;") ;
+							if( $create_pp ) html.push('<img title="修改" class="edit_purchase_plan" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/edit.png"/>');//"<a href='#' class='edit_purchase_plan' val='"+val+"'>修改</a>&nbsp;") ;
 
 							return html.join("") ;
 						}
@@ -25,7 +25,11 @@
 						return $create_pp || $delete_pp ;
 					}},
 		           	{align:"center",key:"NAME",label:"采购计划名称",width:"15%",forzen:false,align:"left"},
-		           	{align:"center",key:"PLAN_TIME",label:"计划采购时间",width:"9%"},
+		           	{align:"left",key:"PLAN_TIME",label:"计划采购时间",width:"15%",format:function(val,record){
+		           		var r = record.PLAN_TIME||"" ;
+		           		var r1 = record.PLAN_END_TIME||"" ;
+		           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
+		           	}},
 		           	{align:"center",key:"TYPE",label:"采购用途",width:"7%",format:function(val,record){
 		           		if(val == 1){
 		           			return "产品试销" ;
@@ -136,7 +140,9 @@
 			
 			$(".edit_purchase_plan").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,440) ;
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,440,function(){
+					$(".grid-content").llygrid("reload",{},true) ;
+				}) ;
 				return false;
 			}) ;
 			
@@ -183,7 +189,7 @@
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
 		          
-		           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"8%",format:function(val,record){
+		           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"15%",format:function(val,record){
 		           		if(!val) return "";
 		           		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
 		           	}} ,

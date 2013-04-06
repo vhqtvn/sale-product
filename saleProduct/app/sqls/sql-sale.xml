@@ -4,6 +4,46 @@
     	UPDATE SC_PURCHASE_PLAN SET status = '2' where id = '{@#planId#}'
     </entry>
     
+    <entry key="sql_purchase_plan_insert"> 
+			insert into sc_purchase_plan 
+				(
+				NAME, 
+				PLAN_TIME, 
+				PLAN_END_TIME, 
+				CREATE_TIME, 
+				CREATOR, 
+				STATUS, 
+				MEMO, 
+				TYPE, 
+				EXECUTOR
+				)
+				values
+				(
+				'{@#name#}', 
+				'{@#planTime#}', 
+				'{@#planEndTime#}', 
+				NOW(), 
+				'{@#loginId#}', 
+				1, 
+				'{@#memo#}', 
+				'{@#type#}', 
+				'{@#executorId#}'
+				)
+    </entry>
+    
+    <entry key="sql_purchase_plan_update"> 
+			update  sc_purchase_plan 
+				set
+				NAME = '{@#name#}' , 
+				PLAN_TIME = '{@#planTime#}' , 
+				PLAN_END_TIME = '{@#planEndTime#}' , 
+				MEMO = '{@#memo#}' , 
+				TYPE = '{@#type#}' , 
+				EXECUTOR = '{@#executorId#}'
+				where
+				ID = '{@#id#}' 
+    </entry>
+    
     <entry key="sql_purchase_plan_product_updateStatus">
     	UPDATE sc_purchase_plan_details SET status = '{@#status#}' where id = '{@#id#}'
     </entry>
