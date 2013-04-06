@@ -58,7 +58,7 @@ $(function(){
 		
 		$(".assign").live("click",function(){
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow(contextPath+"/users/assignFunctions/"+record.CODE,400,400) ;
+			openCenterWindow(contextPath+"/users/assignFunctions/"+record.CODE,600,600) ;
 		}) ;
 		
 		$(".add-btn").click(function(){
