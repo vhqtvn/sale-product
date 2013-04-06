@@ -17,6 +17,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('calendar/WdatePicker');
 		
 		
 		$type = $plan[0]['sc_purchase_plan']['TYPE'] ;
@@ -44,8 +45,12 @@
 			$(".btn-primary").click(function(){
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
+
+					$.dataservice("model:Sale.savePurchasePlan",json,function(){
+						window.close();
+					}) ;
 				
-					$.ajax({
+					/*$.ajax({
 						type:"post",
 						url:contextPath+"/sale/savePurchasePlan",
 						data:json,
@@ -55,7 +60,7 @@
 							window.opener.location.reload() ;
 							window.close() ;
 						}
-					}); 
+					}); */
 				};
 				return false ;
 			}) ;
@@ -64,7 +69,7 @@
 				openCenterWindow(contextPath+"/users/selectUsers",600,400) ;
 			}) ;
 			
-			$( "#plan_time" ).datepicker({dateFormat:"yy-mm-dd"});
+			//$( "#plan_time" ).datepicker({dateFormat:"yy-mm-dd"});
 		}) ;
 		
 		function addUser(user){
@@ -93,20 +98,18 @@
 						<table class="form-table" >
 							<caption>基本信息</caption>
 								<tr>
-									<td>采购名称：</td><td><input type="text" data-validator="required" id="name"  
+									<th>采购名称：</th><td><input type="text" data-validator="required" id="name"  
 										value="<?php echo $plan[0]['sc_purchase_plan']['NAME']?>" style="width:300px;"/></td>
 								</tr>
+								
 								<tr>
-									<td>备注：</td><td><textarea id="memo" style="width:300px;height:100px;"
-										><?php echo $plan[0]['sc_purchase_plan']['MEMO']?></textarea></td>
-								</tr>
-								<tr>
-									<td>计划采购时间：</td>
-									<td><input id="plan_time" type="text" value="<?php echo $plan[0]['sc_purchase_plan']['PLAN_TIME']?>"/>
+									<th>计划采购时间：</th>
+									<td><input id="planTime" class="span2"  data-validator="required" data-widget="calendar" type="text" value="<?php echo $plan[0]['sc_purchase_plan']['PLAN_TIME']?>"/>到
+									<input id="planEndTime" class="span2"   data-validator="required" data-widget="calendar" type="text" value="<?php echo $plan[0]['sc_purchase_plan']['PLAN_END_TIME']?>"/>
 									</td>
 								</tr>
 								<tr>
-									<td>用途：</td>
+									<th>用途：</th>
 									<td>
 										<select id="type">
 											<option value="">-</option>
@@ -116,12 +119,16 @@
 									</td>
 								</tr>
 								<tr>
-									<td>执行人：</td>
+									<th>负责人：</th>
 									<td>
-										<input id="executor_id" type="hidden" value="<?php echo $plan[0]['sc_purchase_plan']['EXECUTOR']?>"/>
-										<input id="executor" type="text" value="<?php echo $plan[0][0]['EXECUTOR_NAME']?>"/> 
+										<input id="executorId" type="hidden" value="<?php echo $plan[0]['sc_purchase_plan']['EXECUTOR']?>"/>
+										<input id="executor" data-validator="required"  type="text" value="<?php echo $plan[0][0]['EXECUTOR_NAME']?>"/> 
 										<button class="btn add-on">选择用户</button>
 									</td>
+								</tr>
+								<tr>
+									<th>备注：</th><td><textarea id="memo" style="width:300px;height:100px;"
+										><?php echo $plan[0]['sc_purchase_plan']['MEMO']?></textarea></td>
 								</tr>
 							</table>
 						</div>
