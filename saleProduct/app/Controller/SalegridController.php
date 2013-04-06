@@ -37,17 +37,6 @@ class SalegridController extends AppController {
 		return $this->response ;
 	}
 	
-	
-	public function purchasePlanPrints(){
-		$user =  $this->getCookUser() ;
-		$records=  $this->Salegrid->getPurchasePlanPrintsRecords( $this->request->query ,$user ) ;
-		$count=  $this->Salegrid->getPurchasePlanPrintsCount( $this->request->query ,$user ) ;
-
-		$this->response->type("json") ;
-		$this->response->body( "{record:".json_encode( $records ) .",count:".json_encode($count)."}" )   ;
-		return $this->response ;
-	}
-	
 	//获取所有审批通过产品
 	public function filterApply($id = null){
 		$records=  $this->Salegrid->getFilterApplyRecords( $this->request->query , $id ) ;

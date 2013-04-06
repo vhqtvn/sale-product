@@ -92,21 +92,14 @@
 				$(".product-list li").each(function(){
 					suppliers.push( $(this).attr("supplier") ) ;
 				}) ;
-				
-				$.ajax({
-					type:"post",
-					url:contextPath+"/supplier/saveProductSupplier/"+asin,
-					data:{
-						asin:asin,
-						suppliers:suppliers.join(",")
-					},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						window.opener.location.reload() ;
-						window.close() ;
-					}
-				}); 
+
+				$.dataservice("model:Supplier.saveProductSupplierBySku",{
+					sku:sku,
+					suppliers:suppliers.join(",")
+				},function(){
+					window.opener.location.reload() ;
+					window.close() ;
+				}) ;
 			}) ;
    	 });
    </script>

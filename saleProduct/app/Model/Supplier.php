@@ -70,6 +70,42 @@ class Supplier extends AppModel {
 		$this->query($sql) ;
 	}
 	
+	public function saveProductSupplierBySku($data){
+		$sku = $data['sku'] ;
+		$suppliers = $data['suppliers'] ;
+	
+		$sql = "update sc_product_supplier set status = 'invalid' where sku = '$sku'" ;//update to invalid
+	
+		foreach( explode(',',$suppliers) as $supplier ){
+				$sql = "select * from sc_product_supplier where supplier_id = '$supplier' and sku = '$sku'" ;
+				$ps = $this->query($sql) ;
+				if( empty($ps[0]) ){
+					try{
+							$sql = "INSERT INTO  sc_product_supplier
+							(
+							SUPPLIER_ID,
+							SKU,STATUS
+							)
+							VALUES
+							(
+							'$supplier',
+							'$sku','valid'
+							)" ;
+							$this->query($sql) ;
+					}catch(Exception $e){
+								//	print_r( $e ) ;
+					}
+				}else{
+					try{
+						$sql = "update  sc_product_supplier
+							set status = 'valid' where  supplier_id = '$supplier' and sku = '$sku'" ;
+						$this->query($sql) ;
+					}catch(Exception $e){
+					}
+				}
+			}
+	}
+	
 	public function saveProductSupplier($data,$user){
 		$asin = $data['asin'] ;
 		$suppliers = $data['suppliers'] ;

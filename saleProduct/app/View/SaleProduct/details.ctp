@@ -23,8 +23,13 @@
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
 		
+		if(  !isset($action) ){
+			$action = "edit" ;
+		}
+		
 	?>
    <script>
+   
    var action ='<?php echo $action;?>' ;
   	$(function(){
   		var realId ='<?php echo $id;?>' ;

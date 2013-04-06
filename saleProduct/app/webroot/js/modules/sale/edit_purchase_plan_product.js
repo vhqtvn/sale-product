@@ -5,18 +5,48 @@ $(function(){
 		 	return $.trim(val) ;
 	 }
 
+	 //设置页面是否刻度
+	 if( currentStatus == 3 ){
+		 $("#personForm tr:not(.real-purchase-tr) :input").attr("disabled",'disabled') ;
+	 }else if( currentStatus == 5 ){
+		 $("#personForm  tr:not(.check-purchase-tr) :input").attr("disabled",'disabled') ;
+		 $("#personForm button").hide() ;
+	 }else if( currentStatus >=3  ){
+		 $("#personForm   :input").attr("disabled",'disabled') ;
+		 $("#personForm button").hide() ;
+	 }
 	
 	//widget init
 	var tab = $('#details_tab').tabs( {
 		tabs:[
 			{label:'基本信息',content:"base-info"},//9
-			{label:'关联ASIN',content:"ref-asins"}//,
-			//{label:'处理轨迹',content:"product-select-content"}
+			{label:'关联ASIN',content:"ref-asins"},
+			{label:'处理轨迹',content:"tracks"}
 		] ,
 		height:function(){
 			return $(window).height() - 135 ;
 		}
 	} ) ;
+	
+	$(".grid-track").llygrid({
+
+		columns:[
+		    {align:"center",key:"STATUS",label:"状态",width:"14%",forzen:false,align:"left",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
+           	{align:"left",key:"MESSAGE",label:"内容", width:"31%"},
+           	{align:"center",key:"CREATE_TIME",label:"操作时间",width:"24%" },
+            {align:"left",key:"CREATOR_NAME",label:"操作人",width:"10%" },
+         ],
+         ds:{type:"url",content:contextPath+"/grid/query"},
+		 limit:30,
+		 pageSizes:[10,20,30,40],
+		 height:function(){
+		 	return $(window).height() - 370 ;
+		 },
+		 title:"",
+		 indexColumn:false,
+		 querys:{pdId:id,sqlId:"sql_purchase_plan_product_listTracks"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 loadMsg:"数据加载中，请稍候......"
+	}) ;
 	
 	$(".grid-content-details").llygrid({
 		columns:[
@@ -171,8 +201,146 @@ $(function(){
 	});
 	
 	$(".edit_supplier").click(function(){
-		openCenterWindow(contextPath+"/supplier/listsSelectBySku/<?php echo $sku ;?>",800,600) ;
+		var sku = $(this).attr("sku");
+		openCenterWindow(contextPath+"/supplier/listsSelectBySku/"+sku,800,600) ;
 		return false;
 	}) ;
 	
-})
+}) ;
+
+$(function(){
+	var chargeGridSelect = {
+			title:'用户选择页面',
+			defaults:[],//默认值
+			key:{value:'ID',label:'NAME'},//对应value和label的key
+			multi:false,
+			grid:{
+				title:"用户选择",
+				params:{
+					sqlId:"sql_user_list_forwarehouse"
+				},
+				ds:{type:"url",content:contextPath+"/grid/query"},
+				pagesize:10,
+				columns:[//显示列
+					{align:"center",key:"ID",label:"编号",width:"100"},
+					{align:"center",key:"LOGIN_ID",label:"登录ID",sort:true,width:"100"},
+					{align:"center",key:"NAME",label:"用户姓名",sort:true,width:"100"}
+				]
+			}
+	   } ;
+	   
+	$(".btn-charger").listselectdialog( chargeGridSelect,function(){
+		var args = jQuery.dialogReturnValue() ;
+		var value = args.value ;
+		var label = args.label ;
+		$("#executor").val(value) ;
+		$("#executorName").val(label) ;
+		return false;
+	}) ;
+	
+	//初始化流程数据
+	var flow = new Flow() ;
+	flow.init(".flow-bar center",flowData) ;
+	flow.draw(currentStatus) ;
+}) ;
+
+function AuditAction(status , statusLabel){
+	if(window.confirm("确认【"+statusLabel+"】？")){
+		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
+		var json1 = {id:id,status:status,memo:memo} ;
+		
+		if( status == 5 || status == 6 || status == 1 || status == 2 ){ //确认采购
+			if( !$.validation.validate('#personForm').errorInfo ) {
+				var json = $("#personForm").toJson() ;
+				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
+					//执行状态更新
+					$.dataservice("model:Sale.doStatus",json1,function(result){
+						window.location.reload();
+					});
+				}) ;
+			}
+		}else{
+			$.dataservice("model:Sale.doStatus",json1,function(result){
+				window.location.reload();
+			});
+		}
+	}
+}
+
+
+
+var Flow = function(){
+	var _data = null ;
+	var _selector = null ;
+	var itemTemplate = '<td><div class="flow-node {statusClass}" status="{status}">{label}</div></td>' ;
+	
+	this.init = function(selector , d){
+		_data = d ;
+		_selector = selector ;
+		return this ;
+	}
+
+	this.draw = function(current){
+		//create container
+		var html = '<table class="flow-table">\
+						<tr>\
+						</tr>\
+					</table>\
+					<div class="flow-action">\
+						<div class="btn-container"></div>\
+						<a href="#" class="memo-control">附加备注</a>\
+					</div>\
+					<textarea class="memo" placeHolder="输入附加备注信息"></textarea>' ;
+		
+		$(_selector).empty().html(html) ;
+		
+		$(".memo-control").toggle(function(){
+			$(".memo").show() ;
+		},function(){
+			$(".memo").hide() ;
+		}) ;
+		
+		var flowContainer = $(_selector).find(".flow-table tr")
+		
+		var length = _data.length ;
+		var isContinue = true ;
+		$(_data).each(function(index,node){
+			if( node.format ) node.format(node) ;
+			if(!isContinue) return ;
+ 			var statusClass = node.statusClass||(current == this.status ?"active":(this.status < current?"passed":"disabled")) ;
+			var status = this.status ;
+			var isMemo = this.memo ;
+			var label = this.label ;
+			html =  itemTemplate.replace(/{statusClass}/g,statusClass)
+								.replace(/{status}/g,status)
+								.replace(/{label}/g,label) ;
+			$(html).appendTo(flowContainer) ;
+			
+			if(length != index+1){
+				flowContainer.append("<td class='flow-split'>-</td>") ;
+			}
+			
+			
+			if( current == this.status ){
+				var actions = this.actions ;
+				
+				if(this.memo && actions && actions.length >=1 ){
+					$(".memo-control").show();
+				}
+				
+				$(actions||[]).each(function(){
+					var me = this ;
+					$("<button class='btn btn-primary' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
+						.appendTo(".btn-container").click(function(){
+							me.action() ;
+						}) ;  ;
+				}) ;
+			}
+			if(node.isbreak){
+				isContinue = false ;
+				var tdlast = $(".flow-table td:last") ;
+				if(tdlast.hasClass("flow-split")) tdlast.remove() ;
+			}  ;
+		}) ;
+	}
+} ;

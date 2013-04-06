@@ -78,7 +78,8 @@
 		var img2 = '<?php echo $this->Html->image('apply.png',array("title"=>"申请采购")) ?>' ;
 		var img3 = '<?php echo $this->Html->image('success.gif',array("title"=>"审批通过")) ?>' ;
 		var img4 = '<?php echo $this->Html->image('error.gif',array("title"=>"审批未通过")) ?>' ;
-		var img5 = '<?php echo $this->Html->image('pkg.gif',array("title"=>"已采购")) ?>' ;
+		var img5 = '<?php echo $this->Html->image('pkg.gif',array("title"=>"已采购,等待验收")) ?>' ;
+		var img6 = '<?php echo $this->Html->image('cake.icon.png',array("title"=>"验收完成，结束采购")) ?>' ;
 	</script>
 
 

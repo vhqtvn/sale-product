@@ -36,10 +36,11 @@
 				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
 						and sc_purchase_plan_details.status = 4 ) as STATUS4,
 				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 5 ) as STATUS5
+						and sc_purchase_plan_details.status = 5 ) as STATUS5,
+				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+						and sc_purchase_plan_details.status = 6 ) as STATUS6
                FROM sc_purchase_plan 
                where 1=1
-        {@ #$VIEW_PP# }
 		{@ and  name = '#name#' }
 		{@ and  type = '#type#' }
 		and status = 1
@@ -60,10 +61,11 @@
 				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
 						and sc_purchase_plan_details.status = 4 ) as STATUS4,
 				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 5 ) as STATUS5
+						and sc_purchase_plan_details.status = 5 ) as STATUS5,
+				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
+						and sc_purchase_plan_details.status = 6 ) as STATUS6
                FROM sc_purchase_plan 
                where 1=1
-		{@ and executor = '#executor#' }
 		{@ and name = '#name#' }
 		{@ and type = '#type#' }
 		and status = 1
@@ -75,15 +77,41 @@
 			sppd.* ,
 			srp.name as TITLE,
 			srp.IMAGE_URL,
-			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME
+			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
+			(select name from sc_user where id = sppd.executor ) as EXECUTOR_NAME
 		FROM sc_purchase_plan_details sppd 
 		left join sc_real_product srp
 		on sppd.SKU = srp.real_sku
 		WHERE 1=1 
+		     {@ #$VIEW_PP# }
 			{@AND sppd.plan_id = '#planId#'}
 			{@AND sppd.id = '#id#'}
 		   {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
 			{@  and sppd.status = '#status#' }
+   </entry>
+   
+   <entry key="sql_purchase_plan_details_listForPrint">
+		SELECT DISTINCT  
+			sppd.* ,
+			srp.name as TITLE ,
+               (select sc_supplier.name from sc_supplier where sc_supplier.id = sppd.PROVIDOR ) as PROVIDOR_NAME,
+               (select sc_supplier.contactor from sc_supplier where sc_supplier.id = sppd.PROVIDOR ) as PROVIDOR_CONTACTOR,
+               (select sc_supplier.phone from sc_supplier where sc_supplier.id = sppd.PROVIDOR ) as PROVIDOR_PHONE,
+               (select count(sps.is_used) from sc_product_supplier sps where  sps.supplier_id = sppd.PROVIDOR
+                       and sps.asin in (
+                              select sp.asin from sc_product sp , sc_amazon_account_product sa ,sc_real_product_rel srpr 
+                              where sp.asin = sa.asin
+                              and srpr.sku = sa.sku
+                              and srpr.real_sku = srp.real_sku
+                       ) ) as IS_USED,
+			srp.IMAGE_URL AS LOCAL_URL
+		FROM sc_purchase_plan_details sppd 
+		left join sc_real_product srp
+		on sppd.SKU = srp.real_sku
+		WHERE 1=1 
+			 and sppd.status = '3' 
+		     {@ #$EXPORT_PP# }
+			{@AND sppd.plan_id = '#planId#'}
    </entry>
    
    <entry key="sql_purchase_plan_details_list">
@@ -126,7 +154,15 @@
 				sample = '{@#sample#}',
 				area = '{@#area#}',
 				sample_code = '{@#sample_code#}',
-				memo = '{@#memo#}'
+				memo = '{@#memo#}',
+				executor = '{@#executor#}'
+				{@ ,real_num = '#realNum#'}
+				{@ ,real_quote_price =  '#realQuotePrice#'}
+				{@ ,QUALIFIED_PRODUCTS_NUM = '#qualifiedProductsNum#'}
+				{@ ,check_Memo = '#checkMemo#'}
+				{@ ,real_purchase_date = '#realPurchaseDate#'}
+				{@ ,plan_start_time = '#planStartTime#'}
+				{@ ,plan_end_time = '#planEndTime#'}
 				where id = '{@#id#}'
    </entry>
    

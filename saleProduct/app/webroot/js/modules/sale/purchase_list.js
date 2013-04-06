@@ -48,10 +48,13 @@
 		           	{align:"center",key:"STATUS5",label:img5,group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=5>"+val+"</a>" ;
 		           	}},
+		           	{align:"center",key:"STATUS6",label:img6,group:"状态",width:"3%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=6>"+val+"</a>" ;
+		           	}},
 		           	{align:"center",key:"EXECUTOR_NAME",label:"负责人",width:"4%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"4%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"},
-					{align:"center",key:"ID",label:"操作",width:"20%",format:function(val,record){
+					{align:"center",key:"ID",label:"操作",width:"15%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						if( status == 1){
@@ -124,14 +127,12 @@
 				}) ;
 			});
 			
-			
 			$(".add-product").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
 				openCenterWindow(contextPath+"/sale/selectPurchaseProduct/"+val,1020,600,function(){
 					$(".grid-content").llygrid("reload",{},true) ;
 				}) ;
 			}) ;
-			
 			
 			$(".edit_purchase_plan").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
@@ -151,192 +152,40 @@
 			
 			
 			$(".create-plan").click(function(){
-				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,400) ;
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,430) ;
 			}) ;
 			
 			$(".grid-content-details").llygrid({
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
-					{align:"left",key:"ID",label:"操作",forzen:false,width:"9%",format:function(val,record){
+					{align:"left",key:"ID",label:"操作",forzen:false,width:"3%",format:function(val,record){
 						var isSku = record.SKU?true:false ;
 						
 						var status = record.STATUS ;
 						var html = [] ;
-						if( ($edit_pp_product && (!status ||status < 3))
-								||( $reedit_pp_product &&  status >=3 && status <5   )
-						){
-							isSku && html.push('<a href="#" title="编辑" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
+
+						if(status == 4 || status == 6){
+							isSku && html.push('<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pre_print.gif"/></a>&nbsp;') ;
+						}else{
+							isSku && html.push('<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
+							
 						}
 						
-						if($delete_pp_product && (!status ||status < 2))
-							html.push('<a href="#" title="删除" class="del-action" asin="'+record.ASIN+'" planId="'+record.PLAN_ID+'"  val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/delete.gif"/></a>&nbsp;') ;
-						
-						if( $apply_purchase && ( !status || status == 1||status == 4 ) ){
-							isSku && html.push('|<a href="#" title="申请采购" class="paction" planId="'+record.PLAN_ID+'" status="2" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/apply.png"/></a>&nbsp;') ;
-						}
-						
-						if( $audit_purchase && status == 2){
-							isSku && html.push('|<a href="#" title="审批通过" class="paction"  planId="'+record.PLAN_ID+'" status="3" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/success.gif"/></a>&nbsp;') ;
-							isSku && html.push('<a href="#" title="审批不通过" class="paction" planId="'+record.PLAN_ID+'" status="4" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/error.gif"/></a>&nbsp;') ;
-						}
-						
-						if($confirm_purchase && status == 3){
-							isSku && html.push('|<a href="#" title="已采购" class="paction" planId="'+record.PLAN_ID+'" status="5" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pkg.gif"/></a>&nbsp;') ;
-						}
-						return html.join("") ;
-						
+						return html.join("") ;	
 					}},
-					{align:"left",key:"ID",label:"状态",forzen:false,width:"7%",format:function(val,record){
-						var status = record.STATUS ;
-						var html = [] ;
-						if( !status || status == 1){
-							html.push('未处理') ;
-						}
-						
-						if(status == 2){
-							html.push('申请采购');
-						}
-						
-						if(status == 3){
-							html.push('审批通过') ;
-						}
-						
-						if(status == 4){
-							return "未通过审批" ;
-						}
-						if(status == 5){
-							return "已采购" ;
-						}
-						
-						return html.join("") ;
-					}},
+					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
 		           	{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
-		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
-		           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left"},
+		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
+		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
+		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"6%"},
 		           	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"6%"},
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
-		           	
-		           /*	{align:"center",key:"FBM_COST",label:"其他成本",group:"FBM",width:"6%",format:function(val,record){
-		           		return "<a href='' class='cost' type='FBM' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
-		           	},permission:function(){ return $purchase_cost_view; } },
-		           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%",permission:function(){ return $purchase_cost_view; }},
-		           	{align:"center",key:"FBM_PRICE",label:"利润额",group:"FBM",width:"6%",format:function(val,record){
-		           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
-		           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
-		           		
-		           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
-		           			return "-" ;
-		           		}
-		           		
-		           		if( !record.FBM_PRICE || record.FBM_PRICE == '0'){
-		           			return "-" ;
-		           		}
-		           		
-		           		if( !record.FBM_COST || record.FBM_COST == '0'){
-		           			return "-" ;
-		           		}
-		           		
-		           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
-		           			return "-" ;
-		           		}
-		           		lye = lye.toFixed(2) ;
-		           		if( lye < 0 ){
-		           			return "<font color='red'>"+lye+"</font>"
-		           		}else{
-		           			return lye ;
-		           		}
-		           	},permission:function(){ return $purchase_cost_view; }},
-		           	{align:"center",key:"FBM_PRICE",label:"利润率",group:"FBM",width:"6%",format:function(val,record){
-		           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
-		           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
-		           		
-		           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
-		           			return "-" ;
-		           		}
-		           		
-		           		if( !record.FBM_PRICE || record.FBM_PRICE == '0'){
-		           			return "-" ;
-		           		}
-		           		
-		           		
-		           		if( !record.FBM_COST || record.FBM_COST == '0'){
-		           			return "-" ;
-		           		}
-		           		
-		           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
-		           			return "-" ;
-		           		}
-		           		
-		           		var lyl = (lye / ( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) ))*100 ;
-		           		lyl = lyl.toFixed(2) ;
-		           		if( lyl < 0 ){
-		           			return "<font color='red'>"+lyl+"%</font>"
-		           		}else{
-		           			return lyl+"%" ;
-		           		}
-		           	},permission:function(){ return $purchase_cost_view; }},
-		           	{align:"center",key:"FBA_COST",label:"其他成本",group:"FBA",width:"6%",format:function(val,record){
-		           		return "<a href='' class='cost' type='FBA' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
-		           	},permission:function(){ return $purchase_cost_view; }},
-		           	{align:"center",key:"FBA_PRICE",label:"最低价",group:"FBA",width:"6%",permission:function(){ return $purchase_cost_view; }},
-		           	{align:"center",key:"FBA_PRICE",label:"利润额",group:"FBA",width:"6%",format:function(val,record){
-		           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
-		           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
-		           		
-		           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
-		           			return "-" ;
-		           		}
-		           		
-		           		if( !record.FBA_PRICE || record.FBA_PRICE == '0'){
-		           			return "-" ;
-		           		}
-		           		
-		           		
-		           		if( !record.FBA_COST || record.FBA_COST == '0'){
-		           			return "-" ;
-		           		}
-		           		
-		           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
-		           			return "-" ;
-		           		}
-		           		lye = lye.toFixed(2) ;
-		           		if( lye < 0 ){
-		           			return "<font color='red'>"+lye+"</font>"
-		           		}else{
-		           			return lye ;
-		           		}
-		           	},permission:function(){ return $purchase_cost_view; }},
-		           	{align:"center",key:"FBA_PRICE",label:"利润率",group:"FBA",width:"6%",format:function(val,record){
-		           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
-		           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
-		           		
-		           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){ return "-" ; } 
-		           		if( !record.FBA_PRICE || record.FBA_PRICE == '0'){ return "-" ; } 
-		           		if( !record.FBA_COST || record.FBA_COST == '0'){ return "-" ; }
-		           		
-		           		
-		           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
-		           			return "-" ;
-		           		}
-		           		
-		           		var lyl = (lye / ( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) ))*100 ;
-		           		lyl = lyl.toFixed(2) ;
-		           		if( lyl < 0 ){
-		           			return "<font color='red'>"+lyl+"%</font>"
-		           		}else{
-		           			return lyl+"%" ;
-		           		}
-		           	},permission:function(){ return $purchase_cost_view; }},*/
-		           	
+		          
 		           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"8%",format:function(val,record){
 		           		if(!val) return "";
 		           		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
-		           	}} ,
-		           	{align:"center",key:"XJ",label:"询价状态",width:"8%",format:function(val,record){
-		           		if(val >0 )return "Y" ;
-		           		return "N" ;
 		           	}} ,
 		           	{align:"center",key:"SAMPLE",label:"样品",format:{type:"json",content:{'0':'无','1':'准备中','2':'有'}},width:"6%"},
 		            {align:"center",key:"SAMPLE_CODE",label:"样品编码",width:"8%"}

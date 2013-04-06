@@ -232,6 +232,17 @@ class Sale extends AppModel {
 		}catch(Exception $e){}
 	}
 	
+	public function doStatus($data){
+		//设置产品状态为废弃
+		$id = $data["id"] ;
+		$memo =   $data["memo"] ;
+		$status = $data["status"] ;
+		//更新状态
+		$this->exeSql("sql_purchase_plan_product_updateStatus", $data) ;
+		//添加轨迹
+		$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
+	}
+	
 	public function updateProductFilterStatus($data){
 		//设置产品状态为废弃
 		$filterId = $data["filterId"] ;

@@ -105,6 +105,7 @@ class SupplierController extends AppController {
 
 		return $this->response ;
 	}
+
 	
 	public function saveProductSupplierXJ(){
 		$fileName = $_FILES['supplierProductImage']["name"] ;

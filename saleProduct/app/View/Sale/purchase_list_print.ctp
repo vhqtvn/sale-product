@@ -26,30 +26,6 @@
   
    <script type="text/javascript">
    	 var type = '4' ;//查询已经审批通过
-   
-     //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
 
 	$(function(){
 		
@@ -125,12 +101,12 @@
 		           		return "" ;
 		           	}}
 		         ],
-		         ds:{type:"url",content:contextPath+"/salegrid/purchasePlanPrints"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},///salegrid/purchasePlanPrints
 				 limit:1000,
 				 //height:300,
 				 title:"",
 				 // indexColumn:true,
-				 querys:{planId:'<?php echo $planId;?>'},
+				 querys:{planId:'<?php echo $planId;?>',sqlId:"sql_purchase_plan_details_listForPrint"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-toolbar-div table td:gt(1)").remove();

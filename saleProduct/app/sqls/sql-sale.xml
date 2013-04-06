@@ -4,6 +4,36 @@
     	UPDATE SC_PURCHASE_PLAN SET status = '2' where id = '{@#planId#}'
     </entry>
     
+    <entry key="sql_purchase_plan_product_updateStatus">
+    	UPDATE sc_purchase_plan_details SET status = '{@#status#}' where id = '{@#id#}'
+    </entry>
+    
+    <entry key="sql_purchase_plan_product_listTracks">
+    	select s.*,
+    	 (select name from sc_user where login_id = s.creator) as CREATOR_NAME
+    	 from sc_purchase_plan_details_track s
+    	where s.pd_id = '{@#pdId#}'
+    </entry>
+    
+    
+    
+    <entry key="sql_purchase_plan_product_insertTrack">
+    	INSERT INTO  sc_purchase_plan_details_track 
+			(
+			PD_ID, 
+			STATUS, 
+			MESSAGE, 
+			CREATOR, 
+			CREATE_TIME
+			)
+			VALUES
+			('{@#id#}', 
+			'{@#status#}', 
+			'{@#memo#}', 
+			'{@#loginId#}', 
+			NOW()
+			)
+    </entry>
     
     <entry key="sql_purchase_plan_getAsinFromSku">
     		select distinct sp.* ,
@@ -80,6 +110,7 @@
     </entry>
     
     <entry key="sql_getProductDevFilter">
+    <![CDATA[
     	select t1.* from (
            SELECT sc_product_filter.* ,
           (SELECT COUNT(*) FROM sc_product_filter_details scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
@@ -87,11 +118,16 @@
           FROM sc_product_filter
           where 1=1
           {@ and sc_product_filter.name like '%#filterName#%'}
+          and DATE_SUB( CURDATE(), INTERVAL 2 MONTH) <= create_time
           ) t1 where t1.STATUS57 > 0  order by t1.create_time desc
+      ]]>
     </entry>
     
     <entry key="sql_getProductDevFilter_Pass_Product">
-    	SELECT sp.*, 
+    <![CDATA[
+    	SELECT 
+    	  distinct
+    	   sp.*, 
     	    (SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
 			spfd.id as FILTER_ID, 
 			spfd.status as STATUS,
@@ -100,6 +136,7 @@
 			srp.REAL_SKU
 		 FROM 
 		 			sc_product_filter_details  spfd,
+		 			sc_product_filter spf,
 		 			sc_product sp 
 		 			left join sc_amazon_account_product saap
 		 			on saap.asin = sp.asin
@@ -108,9 +145,12 @@
 		 			left join sc_real_product srp
 		 			on srp.id = srpr.real_id
 			where sp.asin = spfd.asin
+			   and spf.id = spfd.task_id
 				and spfd.status in (5,7) 
+				and DATE_SUB( CURDATE(), INTERVAL 2 MONTH) <= spf.create_time
 				{@ and sp.title like '%#title#%'  }
 				{@ and sp.asin = '#asin#'  }
 				{@  and spfd.task_id = '#taskId#'  }
+	 ]]>
     </entry>
 </properties>
