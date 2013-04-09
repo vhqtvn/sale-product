@@ -313,9 +313,8 @@
 				ht.push("<div  id='", id, "_", nid, "_cb' class='bbit-tree-node-cb",disableClz," ",dfop.checkIcons[nd.checkstate],"'></div>");
               
               }
-            
             //a
-            ht.push("<a hideFocus class='bbit-tree-node-anchor' tabIndex=1 href='javascript:void(0);'>");
+            ht.push("<a hideFocus class='bbit-tree-node-anchor "+nd.type+"' tabIndex=1 href='javascript:void(0);'>");
             ht.push("<span unselectable='on'>", nd.text, "</span>");
             ht.push("</a>");
             ht.push("</div>");

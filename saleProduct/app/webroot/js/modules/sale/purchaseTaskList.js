@@ -1,0 +1,177 @@
+$(function(){
+	$(".create-task").click(function(){
+		openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/",600,350,function(){
+			$(".grid-task").llygrid("reload") ;
+		}) ;
+	}) ;
+	
+	$(".print-product").live("click",function(){
+		 var record = $(this).parents("tr:first").data("record");
+		if( (record.STATUS==1 && window.confirm("是否确认打印，如果点击确定，该任务单将不能更改！") ) || record.STATUS >1){
+			var val = $(this).attr("val") ;
+			openCenterWindow(contextPath+"/page/forward/Sale.purchaseTaskPrint/"+val,1000,700) ;
+		}
+	}) ;
+	
+	$(".grid-task").llygrid({
+		columns:[
+		    {align:"left",key:"TASK_CODE",label:"编号", width:"11%"},
+		    {align:"left",key:"MEMO",label:"备注", width:"31%"},
+		    {align:"left",key:"STATUS",label:"状态", width:"5%",format:{type:'json',content:{1:'编辑中',2:'采购中',3:'采购完成'}}},
+           	{align:"center",key:"LAST_UPDATED_TIME",label:"操作时间",width:"24%" },
+            {align:"left",key:"CREATED_BY",label:"操作用户",width:"10%" },
+            {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
+            	var html = [] ;
+            	record.STATUS==1 && html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
+            	html.push('<a href="#" class="print-product" val="'+val+'">打印</a>') ;
+            	return html.join("") ;
+            },permission:function(){
+            	return editPermission ;
+            }}
+         ],
+         ds:{type:"url",content:contextPath+"/grid/query"},
+		 limit:30,
+		 pageSizes:[10,20,30,40],
+		 height:function(){
+		 	return 150 ;
+		 },
+		 title:"",
+		 indexColumn:false,
+		 querys:{ sqlId:"sql_purchase_task_list" },
+		 loadMsg:"数据加载中，请稍候......",
+		 loadAfter:function(){
+			 $(".btn-select-product").click(function(){
+				 var record = $(this).parents("tr:first").data("record");
+				 var taskId = record.ID ;
+				 
+				 var productGridSelect = {
+							title:'货品选择页面',
+							defaults:[],//默认值
+							key:{value:'ID',label:'SKU'},//对应value和label的key
+							multi:true,
+							indexColumn:false,
+							grid:{
+								title:"货品选择",
+								params:{
+									sqlId:"sql_purchase_task_product_selectable",
+									taskId:taskId
+								},
+								ds:{type:"url",content:contextPath+"/grid/query"},
+								pagesize:10,
+								columns:[//显示列
+									{align:"center",key:"ID",label:"编号",width:"100"},
+									{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
+									{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
+						           		var r = record.PLAN_START_TIME||"" ;
+						           		var r1 = record.PLAN_END_TIME||"" ;
+						           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
+						           	}},
+									{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+						           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
+						           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
+						        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
+						           	{align:"center",key:"SUPPIERABLE_NUM",label:"可采购",width:"5%"},
+						        	{align:"center",key:"PLAN_NUM",label:"计划采购",width:"5%"},
+						        	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"已采购",width:"5%"},
+						           	{align:"center",key:"QUOTE_PRICE",label:"采购限价",width:"5%"},
+						           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
+						           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
+						          
+						           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"12%",format:function(val,record){
+						           		if(!val) return "";
+						           		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
+						           	}} ,
+						           	{align:"center",key:"SAMPLE",label:"样品",format:{type:"json",content:{'0':'无','1':'准备中','2':'有'}},width:"6%"},
+						            {align:"center",key:"SAMPLE_CODE",label:"样品编码",width:"8%"}
+								]
+							}
+					   } ;
+			
+				 $.listselectdialog( productGridSelect,function(  ){
+						var args = jQuery.dialogReturnValue() ;
+						var value = args.value ;
+						var label = args.label ;
+						//$("#executor").val(value) ;
+						
+						$.dataservice("model:Sale.savePurchaseTaskProducts",{taskId:record.ID,products:value.join(",")},function(){
+							$(".grid-task-product").llygrid("reload",{},true) ;
+						}) ;
+						
+						//$("#executorName").val(label) ;
+						return false;
+					}) ;
+			 }) ;
+
+		 },
+		 rowClick:function(rowIndex,rowData){
+			 $(".grid-task-product").llygrid("reload",{taskId:rowData.ID}) ;
+		 }
+	}) ;
+	
+	$(".grid-task-product").llygrid({
+		columns:[
+			//{align:"center",key:"ID",label:"编号",width:"4%"},
+			{align:"left",key:"ID",label:"操作",forzen:false,width:"3%",format:function(val,record){
+				var isSku = record.SKU?true:false ;
+				
+				var status = record.STATUS ;
+				var html = [] ;
+
+			//	if(status == 4 || status == 6){
+					isSku && html.push('<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pre_print.gif"/></a>&nbsp;') ;
+			
+				return html.join("") ;	
+			}},
+			{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
+			{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
+           		var r = record.PLAN_START_TIME||"" ;
+           		var r1 = record.PLAN_END_TIME||"" ;
+           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
+           	}},
+			{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
+           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
+        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
+        	{align:"center",key:"SUPPIERABLE_NUM",label:"可采购",group:'采购数量',width:"5%"},
+        	{align:"center",key:"PLAN_NUM",label:"计划采购",group:'采购数量',width:"5%"},
+        	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"已采购",group:'采购数量',width:"5%"},
+           	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"5%"},
+           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
+           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
+          
+           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"12%",format:function(val,record){
+           		if(!val) return "";
+           		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
+           	}} ,
+           	{align:"center",key:"SAMPLE",label:"样品",format:{type:"json",content:{'0':'无','1':'准备中','2':'有'}},width:"6%"},
+            {align:"center",key:"SAMPLE_CODE",label:"样品编码",width:"8%"}
+           	
+         ],
+         ds:{type:"url",content:contextPath+"/grid/query"},
+		 limit:30,
+		 pageSizes:[10,20,30,40],
+		 height:function(){
+		 	return $(window).height() - 370 ;
+		 },
+		 title:"",
+		 indexColumn:false,
+		 querys:{taskId:'--',sqlId:"sql_purchase_task_product_list"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 loadMsg:"数据加载中，请稍候......",
+		 loadAfter:function(){
+		 	$(".grid-checkbox").each(function(){
+				var val = $(this).attr("value") ;
+				if( $(".product-list ul li[asin='"+val+"']").length ){
+					$(this).attr("checked",true) ;
+				}
+			}) ;
+		 }
+	}) ;
+	
+	$(".edit-action").live("click",function(){
+		var val = $(this).attr("val") ;//采购计划ID
+		openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,910,620,function(){
+			$(".grid-content-details").llygrid("reload",{},true) ;
+		}) ;
+	}) ;
+	
+}) ;

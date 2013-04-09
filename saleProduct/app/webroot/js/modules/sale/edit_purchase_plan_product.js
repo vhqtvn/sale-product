@@ -6,15 +6,9 @@ $(function(){
 	 }
 
 	 //设置页面是否刻度
-	 if( currentStatus == 3 ){
-		 $("#personForm tr:not(.real-purchase-tr) :input").attr("disabled",'disabled') ;
-	 }else if( currentStatus == 5 ){
-		 $("#personForm  tr:not(.check-purchase-tr) :input").attr("disabled",'disabled') ;
-		 $("#personForm button").hide() ;
-	 }else if( currentStatus >=3  ){
-		 $("#personForm   :input").attr("disabled",'disabled') ;
-		 $("#personForm button").hide() ;
-	 }
+
+	 $("#personForm   :input").attr("disabled",'disabled') ;
+	 $("."+currentStatus+"-input").removeAttr("disabled") ;
 	
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
 	if( $("#ref-asins").length ){
@@ -32,8 +26,7 @@ $(function(){
 	$(".grid-track").llygrid({
 
 		columns:[
-		    {align:"center",key:"STATUS",label:"状态",width:"14%",forzen:false,align:"left",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
-           	{align:"left",key:"MESSAGE",label:"内容", width:"31%"},
+		    {align:"left",key:"MESSAGE",label:"内容", width:"31%"},
            	{align:"center",key:"CREATE_TIME",label:"操作时间",width:"24%" },
             {align:"left",key:"CREATOR_NAME",label:"操作人",width:"10%" },
          ],
@@ -215,7 +208,7 @@ $(function(){
 	var chargeGridSelect = {
 			title:'用户选择页面',
 			defaults:[],//默认值
-			key:{value:'ID',label:'NAME'},//对应value和label的key
+			key:{value:'LOGIN_ID',label:'NAME'},//对应value和label的key
 			multi:false,
 			grid:{
 				title:"用户选择",
@@ -252,7 +245,7 @@ function AuditAction(status , statusLabel){
 		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
 		var json1 = {id:id,status:status,memo:memo} ;
 		
-		if( status == 5 || status == 6 || status == 1 || status == 2 ){ //确认采购
+		//if( status == 10 || status == 20  ){ //确认采购
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
 				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
@@ -262,11 +255,11 @@ function AuditAction(status , statusLabel){
 					});
 				}) ;
 			}
-		}else{
-			$.dataservice("model:Sale.doStatus",json1,function(result){
-				window.location.reload();
-			});
-		}
+	//	}else{
+	//		$.dataservice("model:Sale.doStatus",json1,function(result){
+	//			window.location.reload();
+	//		});
+	//	}
 	}
 }
 

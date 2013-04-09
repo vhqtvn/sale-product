@@ -7,22 +7,24 @@
 	 }
 
 	$(function(){
-		   var sqlKey = flag == 1 ?'sql_purchase_plan_list':'sql_purchase_plan_list_executor' ;
-		  
+
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"",width:"4%",format:function(val,record){
+		           	{align:"center",key:"ID",label:"",width:"10%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						if( status == 1){
-							if( $delete_pp ) html.push('<img title="删除" class="delete_purchase_plan" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/delete.gif"/>');//"<a href='#' class='delete_purchase_plan' val='"+val+"'>删除</a>&nbsp;") ;
-							if( $create_pp ) html.push('<img title="修改" class="edit_purchase_plan" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/edit.png"/>');//"<a href='#' class='edit_purchase_plan' val='"+val+"'>修改</a>&nbsp;") ;
-
+							if( $pp_edit  ){
+								if( record.STATUS0 <= 0 ) html.push('<img title="删除" class="delete_purchase_plan" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/delete.gif"/>&nbsp;');
+								html.push('<img title="修改" class="edit_purchase_plan" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/edit.png"/>&nbsp;');
+							}
+							$ppp_add_product && html.push('<img title="添加货品" class="add-outer-product" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/add.png"/>&nbsp;');
+							$ppp_export && html.push('<img title="导出" class="export-product" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/excel.gif"/>');
 							return html.join("") ;
 						}
 						return "" ;
 					},permission:function(){
-						return $create_pp || $delete_pp ;
+						return $pp_edit || $ppp_add_product ||  $ppp_export;
 					}},
 		           	{align:"center",key:"NAME",label:"采购计划名称",width:"15%",forzen:false,align:"left"},
 		           	{align:"left",key:"PLAN_TIME",label:"计划采购时间",width:"15%",format:function(val,record){
@@ -36,40 +38,40 @@
 		           		}else{
 		           			return "正式采购" ;
 		           		}
+		           	}},	
+		           	{align:"center",key:"STATUS0",label:'全部',group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=''>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS1",label:img1,group:"状态",width:"4%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=1>"+val+"</a>" ;
+		           	{align:"center",key:"STATUS10",label:img1,group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=10>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS2",label:img2,group:"状态",width:"4%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=2>"+val+"</a>" ;
+		           	{align:"center",key:"STATUS20",label:img2,group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=20>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS3",label:img3,group:"状态",width:"4%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=3>"+val+"</a>" ;
+		           	{align:"center",key:"STATUS25",label:img25,group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=25>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS4",label:img4,group:"状态",width:"4%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=4>"+val+"</a>" ;
+		           	{align:"center",key:"STATUS30",label:img3,group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=30>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS5",label:img5,group:"状态",width:"3%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=5>"+val+"</a>" ;
+		           	{align:"center",key:"STATUS40",label:img4,group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=40>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS6",label:img6,group:"状态",width:"3%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=6>"+val+"</a>" ;
+		           	{align:"center",key:"STATUS50",label:img5,group:"状态",width:"3%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=50>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"STATUS60",label:img6,group:"状态",width:"3%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=60>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"STATUS70",label:img7,group:"状态",width:"3%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=70>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"STATUS80",label:img8,group:"状态",width:"3%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=80>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"EXECUTOR_NAME",label:"负责人",width:"4%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"4%"},
-		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"},
-					{align:"center",key:"ID",label:"操作",width:"15%",format:function(val,record){
-						var status = record.STATUS ;
-						var html = [] ;
-						if( status == 1){
-							if($add_pp_product)html.push("<a href='#' class='add-outer-product' val='"+val+"'>添加产品</a>&nbsp;") ;
-						
-							if($export_pp)html.push("<a href='#' class='export-product' val='"+val+"'>导出</a>&nbsp;") ;
-							if($print_pp)html.push("<a href='#' class='print-product' val='"+val+"'>打印</a>&nbsp;") ;
-							return html.join("") ;
-						}
-						return "" ;
-					}}
+		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query/<?php echo $flag;?>"},
 				 limit:5,
@@ -77,7 +79,7 @@
 				 height:130,
 				 title:"筛选列表",
 				 indexColumn:false,
-				 querys:{executor:loginId,sqlId:sqlKey},
+				 querys:{executor:loginId,sqlId:'sql_purchase_plan_list'},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(rowIndex , rowData){
 				 	if(isLinkClick){
@@ -110,12 +112,14 @@
 			$(".print-product").live("click",function(){
 				var val = $(this).attr("val") ;
 				openCenterWindow(contextPath+"/sale/purchaseListPrint/"+val,1000,700) ;
+				return false ;
 			}) ;
 			
 			
 			$(".export-product").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
 				$("#exportIframe").attr("src",contextPath+"/sale/exportForPurchasePlanDetails/"+val) ;
+				return false ;
 			}) ;
 			
 			
@@ -129,6 +133,7 @@
 				openCenterWindow(contextPath+"/page/forward/Sale.selectPurchaseProduct/"+val,900,600,function(){
 					$(".grid-content").llygrid("reload",{},true) ;
 				}) ;
+				return false ;
 			});
 			
 			$(".add-product").live("click",function(){
@@ -170,7 +175,7 @@
 						var status = record.STATUS ;
 						var html = [] ;
 
-						if(status == 4 || status == 6){
+						if(status == 80 || status==25 ){
 							isSku && html.push('<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pre_print.gif"/></a>&nbsp;') ;
 						}else{
 							isSku && html.push('<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;

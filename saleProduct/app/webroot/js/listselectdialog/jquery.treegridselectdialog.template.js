@@ -68,7 +68,7 @@
 		var queryColumns = [] ;
 		
 		//addCheckbox column
-		gridConfig.indexColumn = true ;
+		gridConfig.indexColumn = gridConfig.indexColumn;
 		
 		if(!gridConfig.isAddColumn){
 			var type = ismulti?"checkbox":"radio" ;
@@ -135,10 +135,10 @@
 			
 			$(".grid-container").width("100%");
 			gridConfig.height = $(".grid-layout").height() - $(".search-panel").outerHeight(true) - 55 ;
-
+			
 			$('.grid-container').llygrid(gridConfig) ;
 				
-		},100) ;
+		},200) ;
 	}
 	
 	function initTree(){
@@ -225,11 +225,13 @@
 			$(".grid-layout").attr("title",_title ) ;
 			$(".page-title h2").html(args.title||gridConfig.title) ;
 		}
+		 setTimeout(function(){
+			 var height =$(window).height() - ( $(".panel-foot").outerHeight(true)+$(".page-title").outerHeight(true) ) - 10;
+			 $(".panel-content:first").css({height:height+"px",'max-height':height+"px"}) ;
+       
+        	$(".ui-layout").layout();
+        },100) ;	
 		
-		var height =$(window).height() - ( $(".panel-foot").outerHeight(true)+$(".page-title").outerHeight(true) ) - 10;
-		$(".panel-content:first").css({height:height+"px",'max-height':height+"px"}) ;
-	
-		$(".ui-layout").layout();
 
 	}
 	

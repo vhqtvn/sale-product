@@ -56,7 +56,7 @@
 				width = width||800 ;
 				height = height||650 ;
 			}
-			templateName = "treegrid_template.html" ;
+			templateName = "treegrid_template.php" ;
 		}else{
 			width = width||600 ;
 			if( _p.queryFields ){
@@ -65,7 +65,7 @@
 				height = height||410 ;
 			}
 			
-			templateName = "select_template.html" ;
+			templateName = "select_template.php" ;
 		}
 		
 		
@@ -84,7 +84,10 @@
 	$.fn.listselectdialog = function( params , callback ){
 		$( this ).each(function(){
 			$(this).unbind("click.listselect").bind("click.listselect",function(){
-				$.listselectdialog( params , callback ) ;
+				var me = $(this) ;
+				$.listselectdialog( params , function(){
+					callback(me) ;
+				} ) ;
 				return false;
 			})
 		});
