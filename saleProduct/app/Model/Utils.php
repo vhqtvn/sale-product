@@ -14,7 +14,6 @@ class Utils extends AppModel {
 	 */
 	public function formatTree($sqlId , $params){
 		$records = $this->exeSql($sqlId,$params) ;
-		
 		$items = array() ;
 		$roots = array() ;
 		$keyMap = array() ;
@@ -67,7 +66,6 @@ class Utils extends AppModel {
 			}
 			//$results[] = $root ;
 		}
-		
 		return json_encode($results) ;
 	}
 	

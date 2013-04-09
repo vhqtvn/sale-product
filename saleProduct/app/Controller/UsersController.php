@@ -19,6 +19,8 @@ class UsersController extends AppController
         	//输入密码
         	$passwd = $this->data['password'] ;
             $md5passwd = md5($passwd) ;
+            
+            $userId = $this->data['username'] ;
         	
             //数据库查询对象 
             $someone = $this->User->queryUserByUserName($this->data['username']);
@@ -27,7 +29,10 @@ class UsersController extends AppController
             	$this->set('error', true); 
             	return ;
             }
-              
+            
+            //登陆成功
+            $this->User->query("insert into sc_login_log(login_id,login_time) values('$userId',NOW())") ; 
+            
             $dbpasswd = $someone[0]['sc_user']['PASSWORD'] ;
             
             if(!empty($dbpasswd) &&$dbpasswd == $md5passwd ){

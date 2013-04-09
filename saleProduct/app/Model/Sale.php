@@ -2,6 +2,20 @@
 class Sale extends AppModel {
 	var $useTable = "sc_seller" ;
 	
+	function savePurchaseTaskProducts($params){
+		$taskId = $params['taskId'] ;
+		$products = $params['products'] ;
+		
+		foreach ( explode(",", $products)  as $product ){
+			try{
+				$this->exeSql("sql_purchase_task_product_insert", array('taskId'=>$taskId,'productId'=>$product)) ;
+			}catch(Exception $e){
+				print_r($e) ;
+			}
+		}
+		
+	}
+	
 	function getPurchasePlan($id){
 		$sql = "SELECT sc_purchase_plan.* 
 			,( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME
@@ -21,6 +35,15 @@ class Sale extends AppModel {
 	public function saveSeller($data){
 		$sql = "insert into sc_seller(name,url) values('".$data['name']."','".$data['url']."')" ;
 		$this->query($sql) ;
+	}
+	
+	public function savePurchaseTask($data){
+		$loginId = $data["loginId"] ;
+		if( isset($data['id']) && !empty($data['id'])){
+			$this->exeSql("sql_purchase_task_update", $data) ;
+		}else{
+			$this->exeSql("sql_purchase_task_insert", $data) ;
+		}
 	}
 	
 	public function savePurchasePlan($data){

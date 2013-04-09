@@ -226,6 +226,9 @@ class AppModel extends Model {
 			
 			$domain =  $_SERVER['SERVER_NAME'] ;
 			$query['domain'] = $domain ;
+			//push evn to query
+			$query['Evn.loginId'] = $userId ;
+			$query['Evn.domain'] = $domain ;
 			
 			$index = 0 ;
 	    	$parseSql = "" ;
@@ -265,8 +268,8 @@ class AppModel extends Model {
 	    							//	echo $evnKey ;
 	    								//查询权限变量
 	    								$evnObj = $this->getObject("sql_security_find_dataSecurity",array('code'=>$evnKey , 'loginId'=>$userId)) ;
-	    							//	debug($evnObj) ;
-	    								if( isset($evnObj['URL'])  && !empty($evnObj['URL']) || !empty($defaultValue) || $defaultValue == '0' ){
+	    								
+	    								if( isset($evnObj['URL'])  && !empty($evnObj['URL'])  ){
 	    									
 	    									$evnValue = $evnObj['URL'] ;
 	    									$evnValue = str_replace('#loginId#',"'$userId'",$evnValue);
@@ -274,8 +277,13 @@ class AppModel extends Model {
 	    									$clause .=  $evnValue  ;
 	    									$isTrue = true ;
 	    								}else{
-		    								$isTrue = false ;
-		    								break ;
+	    									if( !empty($defaultValue) ){
+	    										$clause .=  $defaultValue  ;
+	    										$isTrue = true ;
+	    									}else{
+	    										$isTrue = false ;
+	    										break ;
+	    									}
 		    							}
 	    							}else  if( isset($query[$key]) &&( $query[$key]=='0' || !empty($query[$key]) 
 	    								|| !empty($defaultValue) || $defaultValue == '0' ) ){
@@ -313,7 +321,6 @@ class AppModel extends Model {
 	    		$index++ ;
 	    	} 
 	    //	echo $parseSql;
-	    	//echo $parseSql ;
 	    	return $parseSql ;
 		}
 		

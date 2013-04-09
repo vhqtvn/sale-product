@@ -181,6 +181,7 @@ class SaleController extends AppController {
 		$this->set('plan', $plans);
 	}
 	
+	
 	public function deletePurchaseList(){}
 	
 	public function createPurchasePlan($planId=null){
@@ -246,7 +247,7 @@ class SaleController extends AppController {
 	   
 	    $details = $this->Sale->getPurchasePlanDetails($planId) ;
 	    
-	    echo iconv('utf-8','gb2312','SKU,货品名称,采购数量,产品报价,产品成本,供应商,样品,样品编码')."\n" ;
+	    echo iconv('utf-8','gb2312','SKU,ASIN,货品名称,采购数量,产品报价,供应商,样品,样品编码')."\n" ;
 	    
 	    foreach($details as $detail){
 	    	$detail  = $this->Sale->formatObject($detail) ;
@@ -254,14 +255,12 @@ class SaleController extends AppController {
 	    	$title = $detail['TITLE'] ;
 	    	$plan_num = $detail['PLAN_NUM'] ;
 	    	$quote_price = $detail['QUOTE_PRICE'] ;
-	    	$cost = $detail['COST'] ;
 	    	$providor = $detail['PROVIDOR_NAME'] ;
 	    	$sample = $detail['SAMPLE'] ;
 	    	$sample_code = $detail['SAMPLE_CODE'] ;
+	    	$asin = isset($detail['ASIN'])?$detail['ASIN']:"" ;
 	    	
-	    	if(empty($sku)) continue ;
-	    	
-	    	echo iconv('utf-8','gb2312', $sku.','.$title.','.$plan_num.','.$quote_price.','.$cost.','.$providor.','.$sample.','.$sample_code)."\n" ;
+	    	echo iconv('utf-8','gb2312', $sku.','.$asin.','.$title.','.$plan_num.','.$quote_price.','.$providor.','.$sample.','.$sample_code)."\n" ;
 	    }
 	    
 	}
