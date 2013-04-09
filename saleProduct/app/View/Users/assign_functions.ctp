@@ -8,15 +8,18 @@
 
    <?php
    include_once ('config/config.php');
-   
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
 
-		echo $this->Html->script('../kissu/scripts/jquery');
-		echo $this->Html->script('../kissu/scripts/jquery.utils');
+		echo $this->Html->meta('icon');
+		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
+		echo $this->Html->css('../js/tab/jquery.ui.tabs');
+		echo $this->Html->css('../js/tree/jquery.tree');
+		
+		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		echo $this->Html->script('tree/jquery.tree');
 
 	?>	
 	
@@ -32,6 +35,11 @@
 
 		.item-label,.item-relation,.item-value,.item-value{
 			float:left;
+		}
+		
+		.DATA{
+			color:red!important;
+			font-weight:bold!important;
 		}
    </style>
 
@@ -50,7 +58,8 @@
 			$code = $sfs['CODE'] ;
 			$name = $sfs['NAME'] ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$code',text:'$name',pid:'$pid'} ;" ;
+			$type = $sfs['TYPE'] ;
+			echo " var item$index = {id:'$code',text:'$name',pid:'$pid',type:'$type'} ;" ;
 			
 			if( !empty($selected) ){
 				echo " item$index ['checkstate'] = 1 ;" ;
@@ -188,7 +197,10 @@
 		<h1></h1>
 	<div id="default-tree" class="tree" style="padding: 5px; "></div>
 	
-	<button>保存权限设置</button>
 </div>
-
+<div class="panel-foot" style="position:absolute;bottom:0px;right:0px;left:0px;">
+	<div class="form-actions">
+		<button type="button" class="btn btn-primary btn-save">保存权限设置</button>
+	</div>
+</div>
 </html>

@@ -25,11 +25,12 @@
 		//test tree
 		$Utils  = ClassRegistry::init("Utils") ;
 		$result = $Utils->formatTree("sql_security_listAllFUnctions",array()) ;
-		//debug($result) ;
+		
 	?>
   
    <script type="text/javascript">
-		var treeData = <?php echo $result;?> ;
+   		var treeData = {id:"root",text:"功能树",isExpand:true,childNodes:[]} ;
+   		treeData.childNodes = <?php echo $result;?> ;
    </script>
    
 </head>

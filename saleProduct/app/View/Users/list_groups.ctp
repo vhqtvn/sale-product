@@ -22,12 +22,6 @@
 		echo $this->Html->script('modules/users/list_groups');
 	?>
   
-   <script type="text/javascript">
-
-
-	
-   </script>
-   
    <style>
    		*{
    			font:12px "微软雅黑";

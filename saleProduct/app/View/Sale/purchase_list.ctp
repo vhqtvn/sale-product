@@ -38,20 +38,20 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
-		
-		$create_pp 				= $security->hasPermission($loginId , 'create_pp') ;
-		$delete_pp 				= $security->hasPermission($loginId , 'delete_pp') ;
-		$add_pp_product 		= $security->hasPermission($loginId , 'add_pp_product') ;
-		$add_pp_audit_product	= $security->hasPermission($loginId , 'add_pp_audit_product') ;
-		$export_pp 				= $security->hasPermission($loginId , 'export_pp') ;
-		$print_pp 				= $security->hasPermission($loginId , 'print_pp') ;
-		$edit_pp_product 		= $security->hasPermission($loginId , 'edit_pp_product') ;
-		$reedit_pp_product 		= $security->hasPermission($loginId , 'reedit_pp_product') ;
-		$delete_pp_product 		= $security->hasPermission($loginId , 'delete_pp_product') ;
-		$apply_purchase 		= $security->hasPermission($loginId , 'apply_purchase') ;
+
+		$pp_edit 				= $security->hasPermission($loginId , 'pp_edit') ;
+		$ppp_add_product				= $security->hasPermission($loginId , 'ppp_add_product') ;
+		$ppp_export		= $security->hasPermission($loginId , 'ppp_export') ;
+		$ppp_audit	= $security->hasPermission($loginId , 'ppp_audit') ;
+		$ppp_setlimitprice				= $security->hasPermission($loginId , 'ppp_setlimitprice') ;
+		$ppp_assign_executor				= $security->hasPermission($loginId , 'ppp_assign_executor') ;
+		$ppp_qc		= $security->hasPermission($loginId , 'ppp_qc') ;
+		$ppp_inwarehouse		= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
+		$ppp_confirm 		= $security->hasPermission($loginId , 'ppp_confirm') ;
+		/*$apply_purchase 		= $security->hasPermission($loginId , 'apply_purchase') ;
 		$audit_purchase 	= $security->hasPermission($loginId , 'audit_purchase') ;
 		$purchase_cost_view 	= $security->hasPermission($loginId , 'purchase_cost_view') ;
-		$confirm_purchase 	= $security->hasPermission($loginId , 'confirm_purchase') ;
+		$confirm_purchase 	= $security->hasPermission($loginId , 'confirm_purchase') ;*/
 		
 	?>
 	
@@ -60,26 +60,26 @@
 	    var flag = <?php echo $flag ; ?> ; 
 		var loginId = <?php echo $flag == 1?"''":"'$loginId'" ?> ;
 	
-		var $create_pp = <?php echo $create_pp?"true":"false" ;?> ;
-		var $delete_pp = <?php echo $delete_pp?"true":"false" ;?> ;
-		var $add_pp_product = <?php echo $add_pp_product?"true":"false" ;?> ;
-		var $add_pp_audit_product = <?php echo $add_pp_audit_product?"true":"false" ;?> ;
-		var $export_pp = <?php echo $export_pp?"true":"false" ;?> ;
-		var $print_pp = <?php echo $print_pp?"true":"false" ;?> ;
-		var $edit_pp_product = <?php echo $edit_pp_product?"true":"false" ;?> ;
-		var $reedit_pp_product = <?php echo $reedit_pp_product?"true":"false" ;?> ;
-		var $delete_pp_product = <?php echo $delete_pp_product?"true":"false" ;?> ;
-		var $apply_purchase = <?php echo $apply_purchase?"true":"false" ;?> ;
-		var $audit_purchase = <?php echo $audit_purchase?"true":"false" ;?> ;
-		var $purchase_cost_view = <?php echo $purchase_cost_view?"true":"false" ;?> ;
-		var $confirm_purchase = <?php echo $confirm_purchase?"true":"false" ;?> ;
-		
+		var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
+		var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;
+		var $ppp_export= <?php echo $ppp_export?"true":"false" ;?> ;
+		var $ppp_audit = <?php echo $ppp_audit?"true":"false" ;?> ;
+		var $ppp_setlimitprice = <?php echo $ppp_setlimitprice?"true":"false" ;?> ;
+		var $ppp_assign_executor = <?php echo $ppp_assign_executor?"true":"false" ;?> ;
+		var $ppp_qc = <?php echo $ppp_qc?"true":"false" ;?> ;
+		var $ppp_inwarehouse = <?php echo $ppp_inwarehouse?"true":"false" ;?> ;
+		var $ppp_confirm = <?php echo $ppp_confirm?"true":"false" ;?> ;
+
+		var img0 = '<?php echo $this->Html->image('example.gif',array("title"=>"所有")) ?>' ;
 		var img1 = '<?php echo $this->Html->image('example.gif',array("title"=>"未处理")) ?>' ;
 		var img2 = '<?php echo $this->Html->image('apply.png',array("title"=>"申请采购")) ?>' ;
-		var img3 = '<?php echo $this->Html->image('success.gif',array("title"=>"审批通过")) ?>' ;
-		var img4 = '<?php echo $this->Html->image('error.gif',array("title"=>"审批未通过")) ?>' ;
-		var img5 = '<?php echo $this->Html->image('pkg.gif',array("title"=>"已采购,等待验收")) ?>' ;
-		var img6 = '<?php echo $this->Html->image('cake.icon.png',array("title"=>"验收完成，结束采购")) ?>' ;
+		var img25 = '<?php echo $this->Html->image('error.gif',array("title"=>"审批不通过，终止采购")) ?>' ;
+		var img3 = '<?php echo $this->Html->image('success.gif',array("title"=>"审批通过，限价待确认")) ?>' ;
+		var img4 = '<?php echo $this->Html->image('forum.gif',array("title"=>"限价确认完成，待分配责任人")) ?>' ;
+		var img5 = '<?php echo $this->Html->image('pkg.gif',array("title"=>"待QC验货产品")) ?>' ;
+		var img6 = '<?php echo $this->Html->image('cake.icon.png',array("title"=>"货品待入库")) ?>' ;
+		var img7 = '<?php echo $this->Html->image('icon-grid.gif',array("title"=>"采购确认")) ?>' ;
+		var img8 = '<?php echo $this->Html->image('test-pass-icon.png',array("title"=>"结束采购")) ?>' ;
 	</script>
 
 	 <style type="text/css">
@@ -112,7 +112,7 @@
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary">查询</button>
-					<?php if( $create_pp  ){ ?>
+					<?php if( $pp_edit  ){ ?>
 					<button class="create-plan btn">创建采购/试销计划</button>
 					<?php } ?>
 				</td>
@@ -124,6 +124,9 @@
 	<div class="grid-content">
 	</div>
 	<div style="clear:both;height:1px;" ></div>
+	<div class="row-fluid">
+	
+	</div>
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 	<iframe src="" id="exportIframe" style="display:none"></iframe>

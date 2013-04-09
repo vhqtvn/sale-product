@@ -23,7 +23,8 @@
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
 		$security  = ClassRegistry::init("Security") ;
-		
+		$user = $this->Session->read("product.sale.user") ;
+		$loginId = $user["LOGIN_ID"] ;
 		$hasViewRelListing = $security->hasPermission($loginId , 'view_rp_rel_listing') ;
 		if(  !isset($action) ){
 			$action = "edit" ;

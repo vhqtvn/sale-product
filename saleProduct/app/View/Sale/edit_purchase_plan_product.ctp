@@ -45,19 +45,17 @@
 		$security  = ClassRegistry::init("Security") ;
 		
 		$loginId = $user['LOGIN_ID'] ;
-		$create_pp 				= $security->hasPermission($loginId , 'create_pp') ;
-		$delete_pp 				= $security->hasPermission($loginId , 'delete_pp') ;
-		$add_pp_product 		= $security->hasPermission($loginId , 'add_pp_product') ;
-		$add_pp_audit_product	= $security->hasPermission($loginId , 'add_pp_audit_product') ;
-		$export_pp 				= $security->hasPermission($loginId , 'export_pp') ;
-		$print_pp 				= $security->hasPermission($loginId , 'print_pp') ;
-		$edit_pp_product 		= $security->hasPermission($loginId , 'edit_pp_product') ;
-		$reedit_pp_product 		= $security->hasPermission($loginId , 'reedit_pp_product') ;
-		$delete_pp_product 		= $security->hasPermission($loginId , 'delete_pp_product') ;
-		$apply_purchase 		= $security->hasPermission($loginId , 'apply_purchase') ;
-		$audit_purchase 	= $security->hasPermission($loginId , 'audit_purchase') ;
-		$purchase_cost_view 	= $security->hasPermission($loginId , 'purchase_cost_view') ;
-		$confirm_purchase 	= $security->hasPermission($loginId , 'confirm_purchase') ;
+		$pp_edit 				= $security->hasPermission($loginId , 'pp_edit') ;
+		$ppp_add_product				= $security->hasPermission($loginId , 'ppp_add_product') ;
+		$ppp_export		= $security->hasPermission($loginId , 'ppp_export') ;
+		$ppp_audit	= $security->hasPermission($loginId , 'ppp_audit') ;
+		$ppp_setlimitprice				= $security->hasPermission($loginId , 'ppp_setlimitprice') ;
+		$ppp_assign_executor				= $security->hasPermission($loginId , 'ppp_assign_executor') ;
+		$ppp_qc		= $security->hasPermission($loginId , 'ppp_qc') ;
+		$ppp_inwarehouse		= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
+		$ppp_confirm 		= $security->hasPermission($loginId , 'ppp_confirm') ;
+		
+		$status = $product['STATUS']; ;
 		
 		$hasViewRelListing = $security->hasPermission($loginId , 'view_rp_rel_listing') ;
 	?>
@@ -139,57 +137,70 @@
 	</style>
 
    <script type="text/javascript">
-    var $create_pp = <?php echo $create_pp?"true":"false" ;?> ;
-	var $delete_pp = <?php echo $delete_pp?"true":"false" ;?> ;
-	var $add_pp_product = <?php echo $add_pp_product?"true":"false" ;?> ;
-	var $add_pp_audit_product = <?php echo $add_pp_audit_product?"true":"false" ;?> ;
-	var $export_pp = <?php echo $export_pp?"true":"false" ;?> ;
-	var $print_pp = <?php echo $print_pp?"true":"false" ;?> ;
-	var $edit_pp_product = <?php echo $edit_pp_product?"true":"false" ;?> ;
-	var $reedit_pp_product = <?php echo $reedit_pp_product?"true":"false" ;?> ;
-	var $delete_pp_product = <?php echo $delete_pp_product?"true":"false" ;?> ;
-	var $apply_purchase = <?php echo $apply_purchase?"true":"false" ;?> ;
-	var $audit_purchase = <?php echo $audit_purchase?"true":"false" ;?> ;
-	var $purchase_cost_view = <?php echo $purchase_cost_view?"true":"false" ;?> ;
-	var $confirm_purchase = <?php echo $confirm_purchase?"true":"false" ;?> ;
+   var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
+	var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;
+	var $ppp_export= <?php echo $ppp_export?"true":"false" ;?> ;
+	var $ppp_audit = <?php echo $ppp_audit?"true":"false" ;?> ;
+	var $ppp_setlimitprice = <?php echo $ppp_setlimitprice?"true":"false" ;?> ;
+	var $ppp_assign_executor = <?php echo $ppp_assign_executor?"true":"false" ;?> ;
+	var $ppp_qc = <?php echo $ppp_qc?"true":"false" ;?> ;
+	var $ppp_inwarehouse = <?php echo $ppp_inwarehouse?"true":"false" ;?> ;
+	var $ppp_confirm = <?php echo $ppp_confirm?"true":"false" ;?> ;
 
 	var id = '<?php echo $id ;?>' ;
 	var currentStatus = "<?php echo $product['STATUS'];?>" ;
 
 	 var flowData = [
-	        		{status:1,label:"编辑中",memo:true
-	        			<?php if( $security->hasPermission($loginId , 'add_pp_product') ) { ?>
+	        		{status:10,label:"编辑中",memo:true
+	        			<?php if( $pp_edit ) { ?>
 	        			,actions:[
-									{label:"保存暂不提交审批",action:function(){ AuditAction(1,"保存暂不提交审批") }},
-		      	        			{label:"保存提交审批",action:function(){ AuditAction(2,"保存并提交审批") }}
+									{label:"保存暂不提交审批",action:function(){ AuditAction(10,"保存暂不提交审批") }},
+		      	        			{label:"保存提交审批",action:function(){ AuditAction(20,"保存并提交审批") }}
 		      	        	]
 	        			<?php };?>
 	        		},
-	        		{status:2,label:"待审批",memo:true
-	        			<?php if( $security->hasPermission($loginId , 'add_pp_audit_product')) { ?>
-	        			,actions:[{label:"审批通过",action:function(){ AuditAction(3,"审批通过") } },
-	        				{label:"审批不通过，继续编辑",action:function(){ AuditAction(1,"审批不通过，继续编辑") } },
-	        				{label:"审批不通过，结束采购",action:function(){ AuditAction(4,"审批不通过，结束采购") } }
+	        		{status:20,label:"审批确认",memo:true,format:function(node){
+								if( currentStatus == 25 ){//审批不通过，中止采购
+									node.label = "审批不通过，结束采购" ;
+									node.statusClass = "termination" ;
+									node.isbreak = true ;
+							   }
+						}
+	        			<?php if( $ppp_audit ) { ?>
+	        			,actions:[{label:"审批通过",action:function(){ AuditAction(30,"审批通过") } },
+	        				{label:"审批不通过，继续编辑",action:function(){ AuditAction(10,"审批不通过，继续编辑") } },
+	        				{label:"审批不通过，结束采购",action:function(){ AuditAction(25,"审批不通过，结束采购") } }
         				]
 	        			<?php };?>
 	        		},
-	        		{status:3,label:"采购确认",memo:true
-	        			<?php if( $security->hasPermission($loginId , 'confirm_purchase')) { ?>
-	        			,actions:[{label:"确认采购",action:function(){ AuditAction(5,"采购确认") } }]
-	        			<?php };?>
-	        		,format:function(node){
-						if( currentStatus == 4 ){//审批不通过，中止采购
-								node.label = "审批不通过，中止采购" ;
-								node.statusClass = "termination" ;
-								node.isbreak = true ;
-						}
-		        	}},
-	        		{status:5,label:"验收货品",memo:true
-	        			<?php if( $security->hasPermission($loginId , 'purchase_qc_confirm')) { ?>
-	        			,actions:[{label:"验收货品",action:function(){ AuditAction(6,"确认验收货品") } }]
+	        		{status:30,label:"限价确认",memo:true
+	        			<?php if( $ppp_setlimitprice) { ?>
+	        			,actions:[{label:"确认限价",action:function(){ AuditAction(40,"确认限价") } }
+        				]
 	        			<?php };?>
 	        		},
-	        		{status:6,label:"结束"}
+	        		{status:40,label:"分配执行人",memo:true
+	        			<?php if( $ppp_assign_executor ) { ?>
+	        			,actions:[{label:"分配采购执行人",action:function(){ AuditAction(50,"分配采购执行人") } }
+        				]
+	        			<?php };?>
+	        		},{status:50,label:"QC验货",memo:true
+	        			<?php if( $ppp_qc) { ?>
+	        			,actions:[{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
+        				]
+	        			<?php };?>
+	        		},{status:60,label:"货品入库",memo:true
+	        			<?php if( $ppp_inwarehouse) { ?>
+	        			,actions:[{label:"审批通过",action:function(){ AuditAction(70,"入库确认") } }
+        				]
+	        			<?php };?>
+	        		},
+	        		{status:70,label:"采购确认",memo:true
+	        			<?php if( $ppp_confirm) { ?>
+	        			,actions:[{label:"确认采购",action:function(){ AuditAction(80,"采购确认") } }]
+	        			<?php };?>
+	        		},
+	        		{status:80,label:"结束"}
 	        	] ;
    </script>
 </head>
@@ -224,11 +235,12 @@
 									<tr>
 										<th>编号：</th><td><?php echo $id ;?></td>
 										<th>执行人：</th><td>
-											<input type="hidden" data-validator="required" id="executor" 
+											<input type="hidden"   id="executor"  class="40-input input"
 											value="<?php echo $product['EXECUTOR'];?>"/>
-											<input type="text" data-validator="required" id="executorName" class="span2" readonly
+											<input type="text"  class="40-input input span2"  id="executorName"  readonly
+													<?php echo $status>=40?"data-validator='required'":"" ?>
 													value="<?php echo $product['EXECUTOR_NAME'];?>"/>
-											<button class="btn btn-charger">选择</button>
+											<button class="40-input input btn btn-charger">选择</button>
 										</td>
 									</tr>
 									<tr>
@@ -236,27 +248,26 @@
 									</tr>
 									<tr>
 										<th>采购时限：</th>
-										<td colspan=3><input id="planStartTime"  data-validator="required"  type="text"  value="<?php echo $product['PLAN_START_TIME'];?>" data-widget="calendar"/>到
-										<input id="planEndTime"  data-validator="required"  type="text" value="<?php echo $product['PLAN_END_TIME'];?>" data-widget="calendar"/></td>
+										<td colspan=3>
+										<input id="planStartTime" class="10-input input"  data-validator="required"  type="text"  
+											value="<?php echo $product['PLAN_START_TIME'];?>" data-widget="calendar"/>到
+										<input id="planEndTime"  class="10-input input"   data-validator="required"  type="text" 
+											value="<?php echo $product['PLAN_END_TIME'];?>" data-widget="calendar"/></td>
 									</tr>
 									<tr>
 										<th>计划采购数量：</th>
-										<td><input id="plan_num"  data-validator="required"    type="text" value='<?php echo $plan_num ;?>' /></td>
-										<th>计划采购价：</th>
-										<td><input id="quote_price"    type="text" value='<?php echo $quote_price ;?>' /></td>
+										<td><input id="plan_num"   class="10-input input"  data-validator="required"    type="text" value='<?php echo $plan_num ;?>' /></td>
+										<th>采购限价：</th>
+										<td><input id="quote_price"   class="30-input input"   type="text" 
+													 <?php echo $status>=30?"data-validator='required'":"" ?>
+													 value='<?php echo $quote_price ;?>' /></td>
 									</tr>
-									<?php  if( $product['STATUS'] >= 3 ){ ?>
 									<tr class="real-purchase-tr">
-										<th>实际采购数量：</th>
-										<td><input id="realNum"  data-validator="required"  type="text" value='<?php echo $product['REAL_NUM'] ;?>' /></td>
-										<th>实际采购价：</th>
-										<td><input id="realQuotePrice" data-validator="required"  type="text" value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
-									</tr>
-									<?php } ?>
-									<tr class="real-purchase-tr">
-										<th>供应商：</th>
-										<td <?php echo $product['STATUS'] >= 3?"":"colspan=3" ?>   >
-										<select id="providor"  <?php echo $product['STATUS'] >= 3?"data-validator='required'":"" ?>>
+										<th>计划供应商：</th>
+										<td >
+										<select id="providor"   class="40-input   input" 
+											<?php echo $status>=40?"data-validator='required'":"" ?>
+										>
 											<option value="">--</option>
 										<?php
 											$SqlUtils  = ClassRegistry::init("SqlUtils") ;
@@ -271,24 +282,54 @@
 											}
 										?>
 										</select> 
-										<button sku="<?php echo $sku ;?>" class="btn edit_supplier">编辑</button>
+										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 40-input  input">编辑</button>
 										</td>
-										<?php  if( $product['STATUS'] >= 3 ){ ?>
-										<th>实际采购日期：</th>
-										<td><input id="realPurchaseDate"  data-widget="calendar" data-validator="required" type="text" value='<?php echo $product['REAL_PURCHASE_DATE'] ;?>' /></td>
-										<?php } ?>
+										<th>实际供应商：</th>
+										<td >
+										<select id="real_providor"   class=" 70-input  input" 
+											<?php echo $status>=70?"data-validator='required'":"" ?>
+										>
+											<option value="">--</option>
+										<?php
+											foreach($supplier as $suppli){
+												$suppli = $SqlUtils->formatObject($suppli) ;
+												$temp = "" ;
+												if( $suppli['ID'] == $product['REAL_PROVIDOR'] ){
+													$temp = "selected" ;
+												}
+												echo "<option $temp value='".$suppli['ID']."'>".$suppli['NAME']."</option>" ;
+											}
+										?>
+										</select> 
+										<button sku="<?php echo $sku ;?>" class="btn edit_supplier  70-input  input">编辑</button>
+										</td>
 									</tr>
-									<?php  if( $product['STATUS'] >= 5 ){ ?>
+									<tr class="check-purchase-tr">	
+										<th>实际采购时间：</th>
+										<td><input id="realPurchaseDate"  data-widget="calendar"  type="text"   class="50-input input" 
+											<?php echo $status>=70?"data-validator='required'":"" ?>
+											value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
+										<th>实际采购价：</th>
+										<td><input id="realQuotePrice"   type="text"   class="70-input input" 
+											<?php echo $status>=70?"data-validator='required'":"" ?>
+											value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
+									</tr>
 									<tr class="check-purchase-tr">
-										<th>合格货品数量：</th>
-										<td colspan=3><input id="qualifiedProductsNum"  data-validator="required"  type="text" value='<?php echo $product['QUALIFIED_PRODUCTS_NUM'] ;?>' /></td>
+										<th>合格数量：</th>
+										<td><input id="qualifiedProductsNum" class="50-input input"   type="text" 
+													<?php echo $status>=50?"data-validator='required'":"" ?>
+													value='<?php echo $product['QUALIFIED_PRODUCTS_NUM'] ;?>' /></td>
+										<th>不合格数量：</th>
+										<td><input id="qualifiedProductsNum" class="50-input input"  type="text"
+													<?php echo $status>=50?"data-validator='required'":"" ?>
+													value='<?php echo $product['QUALIFIED_PRODUCTS_NUM'] ;?>' /></td>
 									</tr>
 									<tr class="check-purchase-tr">
 										<th>验收说明：</th>
 										<td colspan=3>
-										<textarea style="width:500px;height:80px;" id="checkMemo"><?php echo $product['CHECK_MEMO'] ;?></textarea>
+										<textarea class="50-input input"  style="width:500px;height:80px;" id="checkMemo"><?php echo $product['CHECK_MEMO'] ;?></textarea>
+										</td>
 									</tr>
-									<?php } ?>
 									<tr>
 										<th>样品：</th><td>
 										<select id="sample">
