@@ -186,8 +186,7 @@
    </entry> 
    
    <entry key="sql_security_listAllFUnctions">
-   	
-   	SELECT s.* , concat(s.name,'[',s.id,']') AS TEXT FROM sc_security_function s  where s.parent_id is null or s.parent_id = ''
+   	SELECT s.* , concat(s.name,'[',s.id,']') AS TEXT FROM sc_security_function s  
    </entry>
    
    <entry key="sql_security_getFunctionRelGroupsFrontByGroupCode">

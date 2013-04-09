@@ -24,7 +24,7 @@
 				'{@#planEndTime#}', 
 				NOW(), 
 				'{@#loginId#}', 
-				1, 
+				10, 
 				'{@#memo#}', 
 				'{@#type#}', 
 				'{@#executorId#}'
