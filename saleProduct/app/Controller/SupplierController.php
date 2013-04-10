@@ -52,6 +52,14 @@ class SupplierController extends AppController {
 	 	
 	 }
 	 
+	 public function addBySku($sku){
+	 		$this->set("sku",$sku) ;
+
+	 		$categorys = $this->Product->getProductCategory();
+	 		$this->set("categorys",$categorys) ;
+	 	
+	 }
+	 
 	 
 	 public function del($id){
 	 	$this->Supplier->delSupplier( $id  ) ;
@@ -78,8 +86,6 @@ class SupplierController extends AppController {
  	
 		$this->Supplier->saveSupplier($this->request->data,$user,$asin) ;
 		
-	
-
 		$this->response->type("json") ;
 		$this->response->body( "success")   ;
 
@@ -130,13 +136,11 @@ class SupplierController extends AppController {
 		return $this->response;
 	}
 	
-	public function updateProductSupplierPage($asin,$supplierId){
-		$this->set("asin",$asin) ;
+	public function updateProductSupplierPage($supplierId,$planId,$sku){
+		$this->set("planId",$planId) ;
 		$this->set("supplierId",$supplierId) ;
-		
-		
-		
-		$this->set("productSupplier", $this->Product->getProductSupplierById($asin,$supplierId) ) ;
+		$this->set("sku",$sku) ;
+		//$this->set("productSupplier", $this->Product->getProductSupplierById($asin,$supplierId) ) ;
 	}
 	
 	public function creatdir($path)

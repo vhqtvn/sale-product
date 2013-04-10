@@ -15,6 +15,8 @@ $(function(){
 		tabs.push({label:'关联ASIN',content:"ref-asins"}) ;
 	}
 	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
+	if( currentStatus >=50 )tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
+	//
 	//widget init
 	var tab = $('#details_tab').tabs( {
 		tabs:tabs ,
@@ -41,6 +43,9 @@ $(function(){
 		 querys:{pdId:id,sqlId:"sql_purchase_plan_product_listTracks"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......"
 	}) ;
+	
+	$purchase_cost_view = true ;
+	
 	if( $("#ref-asins").length ){
 		$(".grid-content-details").llygrid({
 			columns:[
@@ -233,6 +238,34 @@ $(function(){
 		$("#executorName").val(label) ;
 		return false;
 	}) ;
+	
+	$(".supplier-select").click(function(){
+		openCenterWindow(contextPath+"/supplier/listsSelectBySku/"+sku,800,600,function(){
+			window.location.reload();
+		}) ;
+	}) ;
+
+	$(".supplier").click(function(){
+		openCenterWindow(contextPath+"/supplier/addBySku/"+sku,800,600,function(){
+			window.location.reload();
+		}) ;
+	}) ;
+	
+	$(".update-supplier").click(function(){
+		var supplierId = $(this).attr("supplierId") ;
+		openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/"+supplierId+"/"+planId+"/"+sku,650,600) ;
+		return false;
+	}) ;
+	
+	$(".used").click(function(){
+		var supplierId=$(this).attr("supplierId");
+		if(window.confirm("确认采用？")){
+			$.dataservice("model:Sale.setSupplierFlag",{supplierId:supplierId,sku:sku,planId:planId},function(result){
+					window.location.href = "#supplier-tab" ;
+					window.location.reload();
+			});
+		}
+	});
 	
 	//初始化流程数据
 	var flow = new Flow() ;

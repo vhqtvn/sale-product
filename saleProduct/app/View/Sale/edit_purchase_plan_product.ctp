@@ -43,6 +43,7 @@
 		$area = $product["AREA"] ;
 		
 		$security  = ClassRegistry::init("Security") ;
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		
 		$loginId = $user['LOGIN_ID'] ;
 		$pp_edit 				= $security->hasPermission($loginId , 'pp_edit') ;
@@ -55,9 +56,14 @@
 		$ppp_inwarehouse		= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
 		$ppp_confirm 		= $security->hasPermission($loginId , 'ppp_confirm') ;
 		
+		$hasSetSupplierPermission = $security->hasPermission($loginId, 'SET_PRODUCT_SUPPLIER_FLAG') ;
+		
 		$status = $product['STATUS']; ;
 		
 		$hasViewRelListing = $security->hasPermission($loginId , 'view_rp_rel_listing') ;
+		
+		//获取货品供应商询价
+		$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$planId,'sku'=>$sku)) ;
 	?>
   
    <style>
@@ -137,6 +143,9 @@
 	</style>
 
    <script type="text/javascript">
+    var sku = '<?php echo $sku;?>' ;
+    var planId =  '<?php echo $planId;?>' ;
+   
    var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
 	var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;
 	var $ppp_export= <?php echo $ppp_export?"true":"false" ;?> ;
@@ -270,8 +279,7 @@
 										>
 											<option value="">--</option>
 										<?php
-											$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-											
+										
 											foreach($supplier as $suppli){
 												$suppli = $SqlUtils->formatObject($suppli) ;
 												$temp = "" ;
@@ -307,7 +315,7 @@
 									<tr class="check-purchase-tr">	
 										<th>实际采购时间：</th>
 										<td><input id="realPurchaseDate"  data-widget="calendar"  type="text"   class="50-input input" 
-											<?php echo $status>=70?"data-validator='required'":"" ?>
+											<?php echo $status>=50?"data-validator='required'":"" ?>
 											value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
 										<th>实际采购价：</th>
 										<td><input id="realQuotePrice"   type="text"   class="70-input input" 
@@ -378,6 +386,78 @@
 			<div id="tracks" style="width:880px;padding:10px;">
 				<div class="grid-track" style="width:858px;"></div>
 			</div>
+			
+			<?php  if( $status>=50  ){ ?>
+			<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
+				<?php if( $status ==50  ){  ?>
+				<button class="supplier btn">添加产品供应商</button>
+				<button class="supplier-select btn">选择产品供应商</button>
+				<?php } ?>
+				<table class="table table-bordered">
+					<tr>
+						<th>操作</th>
+						<th>名称</th>
+						<th>产品重量</th>
+						<th>生产周期</th>
+						<th>包装方式</th>
+						<th>付款方式</th>
+						<th>产品尺寸</th>
+						<th>包装尺寸</th>
+						<th>报价1</th>
+						<th>报价2</th>
+						<th>报价3</th>
+						<th></th>
+					</tr>
+					<?php foreach($suppliers as $supplier){
+						$supplier = $SqlUtils->formatObject($supplier) ;
+						//debug($supplier) ;
+						$urls = "" ;
+						if( $supplier['URL'] != '' ){
+							if( $supplier['IMAGE'] != "" ){
+								$urls = "	<a href='".$supplier['URL']."' target='_blank'>
+									<img src='/".$fileContextPath."/".$supplier['IMAGE']."' style='width:80px;height:50px;'>
+								</a>" ;
+							}else{
+								$urls = "	<a href='".$supplier['URL']."' target='_blank'>产品网址</a>" ;
+							}
+						}else if($supplier['IMAGE'] != ""){
+							$urls = "<img src='/".$fileContextPath."/".$supplier['IMAGE']."' style='width:80px;height:50px;'>" ;
+						}
+						
+						$isUsed = "" ;
+						if( $hasSetSupplierPermission && !empty($supplier['ID']) ){
+							$isUsed = $supplier['IS_USED'] == 1?"(已采用)":"<button class='btn used' supplierId='".$supplier['SUP_ID']."'>采用</button>" ;
+						}
+						
+						$usedClz = $supplier['IS_USED'] == 1?"used-clz":"" ;
+						echo "<tr class='$usedClz'>
+							<td rowspan=2 ><a href='#' class='update-supplier' supplierId='".$supplier['SUP_ID']."' >修改询价</a></td>
+							<td>
+							<a href='#' supplier-id='".$supplier['SUP_ID']."'>".$supplier['NAME']."</a>
+							$isUsed
+							</td>
+							<td>".$supplier['WEIGHT']."</td>
+							<td>".$supplier['CYCLE']."</td>
+							<td>".$supplier['PACKAGE']."</td>
+							<td>".$supplier['PAYMENT']."</td>
+							<td>".$supplier['PRODUCT_SIZE']."</td>
+							<td>".$supplier['PACKAGE_SIZE']."</td>
+							<td>".$supplier['NUM1']."/".$supplier['OFFER1']."</td>
+							<td>".$supplier['NUM2']."/".$supplier['OFFER2']."</td>
+							<td>".$supplier['NUM3']."/".$supplier['OFFER3']."</td>
+							<td rowspan=2>
+							  $urls
+							</td>
+						</tr><tr class='$usedClz'>
+							<td colspan=10>".$supplier['MEMO']."
+							</td>
+							
+						</tr> " ;
+					}?>
+					
+				</table>
+			</div>
+			<?php } ?>
 		</div>
 	</div>
 </body>

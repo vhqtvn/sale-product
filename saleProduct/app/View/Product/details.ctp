@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>产品供应商</title>
+    <title>产品基本信息</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -156,13 +156,6 @@
 			}) ;
 			
 			
-			$(".supplier-select").click(function(){
-				openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $asin?>",800,600) ;
-			}) ;
-
-			$(".supplier").click(function(){
-				openCenterWindow(contextPath+"/supplier/add/asin/<?php echo $asin?>",800,600) ;
-			}) ;
 			
 			
 			$(".category").click(function(){
@@ -174,8 +167,6 @@
 				openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/<?php echo $asin?>/"+supplierId,650,600) ;
 				return false;
 			}) ;
-			
-			
 			
 			$("[testStatus]").click(function(){//下架
 				var _ = $.trim( $(this).text() )  ;
@@ -437,7 +428,7 @@
 				tabs:[
 					{label:'基本信息',content:"baseinfo-tab"},
 					{label:'竞争信息',content:"competetion-tab"},
-					{label:'供应商(询价)',content:"supplier-tab",iframe:true},
+					//{label:'供应商(询价)',content:"supplier-tab",iframe:true},
 					{label:'产品分类',url:contextPath+"/product/assignCategory/<?php echo $asin?>",iframe:true},
 					<?php  if( isset($sku) && !empty($sku) ){ ?>
 					{label:'营销产品分类',url:contextPath+"/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>/<?php echo $sku;?>",iframe:true},
@@ -608,6 +599,7 @@
 				</table>
 			</div>
 		</div>
+		<?php /*
 		<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
 			<button class="supplier btn">添加产品供应商</button>
 			<button class="supplier-select btn">选择产品供应商</button>
@@ -674,7 +666,7 @@
 				
 			</table>
 		</div>
-		
+		*/ ?>
 	</div>
 	
 </body>

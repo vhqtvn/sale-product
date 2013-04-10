@@ -27,56 +27,33 @@
       SELECT  sc_purchase_plan.* ,
 				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME,
 				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.executor ) as EXECUTOR_NAME,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id  ) as STATUS0,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and ( sc_purchase_plan_details.status = 10 or sc_purchase_plan_details.status is null ) ) as STATUS10,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and  sc_purchase_plan_details.status = 20  ) as STATUS20,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and  sc_purchase_plan_details.status = 25  ) as STATUS25,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 30 ) as STATUS30,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 40 ) as STATUS40,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 50 ) as STATUS50,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 60 ) as STATUS60,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 70 ) as STATUS70,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 80 ) as STATUS80
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# } ) as STATUS0,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and ( sppd.status = 10 or sppd.status is null ) ) as STATUS10,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and  sppd.status = 20  ) as STATUS20,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and  sppd.status = 25  ) as STATUS25,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and sppd.status = 30 ) as STATUS30,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and sppd.status = 40 ) as STATUS40,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and sppd.status = 50 ) as STATUS50,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and sppd.status = 60 ) as STATUS60,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id
+				 {@ #$VIEW_PP:and 1=0# }
+						and sppd.status = 70 ) as STATUS70,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id
+						 {@ #$VIEW_PP:and 1=0# }
+						and sppd.status = 80 ) as STATUS80
                FROM sc_purchase_plan 
                where 1=1
 		{@ and  name = '#name#' }
 		{@ and  type = '#type#' }
 		and status = 1
          order by sc_purchase_plan.create_time desc
-   </entry>
-   
-    <!-- 采购执行列表 -->
-      <entry key="sql_purchase_plan_list_executor">
-      SELECT  sc_purchase_plan.* ,
-				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME,
-				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.executor ) as EXECUTOR_NAME,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and ( sc_purchase_plan_details.status = 1 or sc_purchase_plan_details.status is null ) ) as STATUS1,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and  sc_purchase_plan_details.status = 2  ) as STATUS2,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 3 ) as STATUS3,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 4 ) as STATUS4,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 5 ) as STATUS5,
-				( select count(*) from sc_purchase_plan_details where sc_purchase_plan_details.plan_id = sc_purchase_plan.id
-						and sc_purchase_plan_details.status = 6 ) as STATUS6
-               FROM sc_purchase_plan 
-               where 1=1
-		{@ and name = '#name#' }
-		{@ and type = '#type#' }
-		and status = 1
-         order by create_time desc
    </entry>
    
    <entry key="sql_purchase_plan_details_listForSKU">
@@ -90,7 +67,7 @@
 		left join sc_real_product srp
 		on sppd.SKU = srp.real_sku
 		WHERE 1=1 
-		     {@ #$VIEW_PP# }
+		     {@ #$VIEW_PP:and 1=0# }
 			{@AND sppd.plan_id = '#planId#'}
 			{@AND sppd.id = '#id#'}
 		   {@  and ( sppd.status = '#status1#' or sppd.status is null ) }

@@ -2,6 +2,21 @@
 class Sale extends AppModel {
 	var $useTable = "sc_seller" ;
 	
+	/**
+	 * 供应商采用
+	 * @param unknown_type $params
+	 */
+	function setSupplierFlag($params){
+		$inquery = $this->getObject("sql_purchase_plan_product_inquiry", $params) ;
+		if( empty($inquery) ){
+			return "该供应商还未询价！" ;
+		}else{
+			$sql="sql_purchase_supplier_setUsedFlag";
+			$this->exeSql($sql, $params) ;
+			return "" ;
+		}
+	}
+	
 	function savePurchaseTaskProducts($params){
 		$taskId = $params['taskId'] ;
 		$products = $params['products'] ;

@@ -13,7 +13,7 @@
 				AND srpr.SKU = saap.SKU
 				AND sps.ASIN = saap.ASIN
 				and sp.id = sps.supplier_id
-				AND srp.REAL_SKU = '{@#realSku#}'
+				AND srp.REAL_SKU = '{@#{@#realSku#}'
 				union 
 				SELECT  sp.* 
 				FROM 
@@ -22,7 +22,85 @@
 				sc_supplier sp
 				where sps.sku = srp.real_sku
 				and sp.id = sps.supplier_id
-				AND srp.REAL_SKU = '{@#realSku#}'
+				AND srp.REAL_SKU = '{@#{@#realSku#}'
+    ]]>
+    </entry>
+    
+    <entry key="sql_realProduct_supplierInsert">
+    <![CDATA[
+    	INSERT INTO  sc_real_product_supplier 
+			(REAL_SKU, 
+			SUPPLIER_ID, 
+			CREATE_TIME, 
+			CREATOR
+			)
+			VALUES
+			('{@#sku#}', 
+			'{@#supplierId#}', 
+			NOW(), 
+			'{@#loginId#}'
+			)
+    ]]>
+    </entry>
+    
+    <entry key="sql_supplier_insert">
+    <![CDATA[
+    	INSERT INTO sc_supplier 
+			(ID, 
+			NAME, 
+			ADDRESS, 
+			CONTACTOR, 
+			PHONE, 
+			EMAIL, 
+			ZIP_CODE, 
+			CREATOR, 
+			CREATE_TIME, 
+			URL, 
+			QQ, 
+			MOBILE, 
+			FAX, 
+			MEMO, 
+			PRODUCTS
+			)
+			VALUES
+			('{@#id#}', 
+			'{@#name#}', 
+			'{@#address#}', 
+			'{@#contactor#}', 
+			'{@#phone#}', 
+			'{@#email#}', 
+			'{@#zip_code#}', 
+			'{@#loginId#}', 
+			NOW(), 
+			'{@#url#}', 
+			'{@#qq#}', 
+			'{@#mobile#}', 
+			'{@#fax#}', 
+			'{@#memo#}', 
+			'{@#products#}'
+			)
+    ]]>
+    </entry>
+    
+    <entry key="sql_supplier_update">
+    <![CDATA[
+    	UPDATE sale_product1.sc_supplier 
+			SET
+			name = '{@#name#}' , 
+			address = '{@#address#}' , 
+			contactor = '{@#contactor#}' , 
+			phone = '{@#phone#}' , 
+			email = '{@#email#}' , 
+			zip_code = '{@#zip_code#}' , 
+			url = '{@#url#}' , 
+			qq = '{@#qq#}' , 
+			mobile = '{@#mobile#}' , 
+			fax = '{@#fax#}' , 
+			memo = '{@#memo#}' , 
+			products = '{@#products#}'
+			
+			WHERE
+			ID = '{@#id#}'
     ]]>
     </entry>
    

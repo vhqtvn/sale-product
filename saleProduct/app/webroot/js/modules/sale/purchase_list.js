@@ -73,7 +73,7 @@
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"4%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"}
 		         ],
-		         ds:{type:"url",content:contextPath+"/grid/query/<?php echo $flag;?>"},
+		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:5,
 				 pageSizes:[5,10,20,30,40],
 				 height:130,

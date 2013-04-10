@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    
+    <entry key="sql_purchase_supplier_setUsedFlag">
+    		update sc_purchase_supplier_inquiry set IS_USED = '1'
+    		WHERE
+					SUPPLIER_ID = '{@#supplierId#}'  and
+					SKU = '{@#sku#}' and
+					plan_id = '{@#planId#}'
+    </entry>
+
+	<!-- 采购计划产品询价 -->
+    <entry key="sql_purchase_plan_product_inquiry">
+        SELECT 
+        			spsi.* , 
+        			ss.NAME,
+        ss.ID AS SUP_ID   FROM 
+		        sc_supplier ss,
+			sc_real_product_supplier srps 
+			LEFT JOIN  sc_purchase_supplier_inquiry spsi
+			ON srps.REAL_SKU = spsi.SKU
+			AND srps.SUPPLIER_ID = spsi.SUPPLIER_ID
+			AND spsi.PLAN_ID = '{@#{@#planId#}'
+		 WHERE srps.REAL_SKU = '{@#{@#sku#}'
+		 AND ss.ID = srps.SUPPLIER_ID
+		 {@ and srps.supplier_id = '{@##supplierId#'}
+    </entry>
+    
+    <entry key="sql_purchase_plan_product_inquiry_insert">
+	       INSERT INTO sc_purchase_supplier_inquiry 
+				(
+				SUPPLIER_ID, 
+				SKU, 
+				PLAN_ID, 
+				WEIGHT, 
+				CYCLE, 
+				PACKAGE, 
+				PAYMENT, 
+				NUMBER_OFFER, 
+				CREATOR, 
+				CREATE_TIME, 
+				NUM1, 
+				OFFER1, 
+				NUM2, 
+				OFFER2, 
+				NUM3, 
+				OFFER3, 
+				NUM4, 
+				OFFER4, 
+				NUM5, 
+				OFFER5, 
+				STATUS, 
+				MEMO, 
+				URL, 
+				IMAGE, 
+				PRODUCT_SIZE, 
+				PACKAGE_SIZE
+				)
+				VALUES
+				(
+				'{@#supplierId#}', 
+				'{@#sku#}', 
+				'{@#planId#}', 
+				'{@#weight#}', 
+				'{@#cycle#}', 
+				'{@#package#}', 
+				'{@#payment#}', 
+				'{@#numberOffer#}', 
+				'{@#loginId#}', 
+				NOW(), 
+				'{@#num1#}', 
+				'{@#offer1#}', 
+				'{@#num2#}', 
+				'{@#offer2#}', 
+				'{@#num3#}', 
+				'{@#offer3#}', 
+				'{@#num4#}', 
+				'{@#offer4#}', 
+				'{@#num5#}', 
+				'{@#offer5#}', 
+				'{@#status#}', 
+				'{@#memo#}', 
+				'{@#url#}', 
+				'{@#image#}', 
+				'{@#productSize#}', 
+				'{@#packageSize#}'
+				)
+    </entry>
+    
+    <entry key="sql_purchase_plan_product_inquiry_update">
+			UPDATE sc_purchase_supplier_inquiry 
+				SET
+				weight = '{@#weight#}' , 
+				cycle = '{@#cycle#}' , 
+				package = '{@#package#}' , 
+				payment = '{@#payment#}' , 
+				number_offer = '{@#numberOffer#}' , 
+				num1 = '{@#num1#}' , 
+				offer1 = '{@#offer1#}' , 
+				num2 = '{@#num2#}' , 
+				offer2 = '{@#offer2#}' , 
+				num3 = '{@#num3#}' , 
+				offer3 = '{@#offer3#}' , 
+				num4 = '{@#num4#}' , 
+				offer4 = '{@#offer4#}' , 
+				num5 = '{@#num5#}' , 
+				offer5 = '{@#offer5#}' , 
+				status = '{@#status#}' , 
+				memo = '{@#memo#}' , 
+				url = '{@#url#}' , 
+				{@image = '#image#' , }
+				product_size = '{@#productSize#}' , 
+				package_size = '{@#packageSize#}'
+				WHERE
+				ID = '{@#id#}'
+			    </entry>
+    
+</properties>

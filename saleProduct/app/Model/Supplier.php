@@ -2,6 +2,8 @@
 class Supplier extends AppModel {
 	var $useTable = "sc_supplier" ;
 	
+
+	
 	public function getProductSuppliers($asin){
 		$sql = "select sc_supplier.* from sc_supplier , sc_product_supplier
 					where sc_supplier.id = sc_product_supplier.supplier_id and sc_product_supplier.status <> 'invalid'
@@ -15,6 +17,33 @@ class Supplier extends AppModel {
 	 */
 	public function getProductSuppliersBySku( $sku ){
 		return $this->exeSql("sql_getProductSuppliersBySku", array('realSku'=>$sku)) ;
+	}
+	
+	/**
+	 * 保存
+	 * @param unknown_type $data
+	 */
+	public function saveSupplierBySku($data){
+		$time = explode ( " ", microtime () );
+		$time = $time [1] . ($time [0] * 1000);
+		$time2 = explode ( ".", $time );
+		$time = $time2 [0];
+		$id  = $time ;
+		
+		if( isset($data['id']) && !empty($data["id"]) ){
+			$id = $data['id'] ;
+			$this->exeSql("sql_supplier_update", $data) ;
+		}else{
+			$data['id'] = $id ;
+			$this->exeSql("sql_supplier_insert", $data) ;
+		}
+		
+		if(!empty($data['sku'])){//保存到产品
+			try{
+				$this->exeSql("sql_realProduct_supplierInsert", array('sku'=>$data['sku'],'supplierId'=>$id,'loginId'=>$data['loginId'])) ;
+			}catch(Exception $e){}
+			
+		}
 	}
 	
 	public function saveSupplier($data,$user,$asin=null){
@@ -74,6 +103,13 @@ class Supplier extends AppModel {
 		$sku = $data['sku'] ;
 		$suppliers = $data['suppliers'] ;
 	
+		foreach( explode(',',$suppliers) as $supplier ){
+			try{
+				$this->exeSql("sql_realProduct_supplierInsert", array('sku'=>$sku,'supplierId'=>$supplier,'loginId'=>$data['loginId'] )) ;
+			}catch(Exception $e){}
+		}
+		
+		 /*
 		$sql = "update sc_product_supplier set status = 'invalid' where sku = '$sku'" ;//update to invalid
 	
 		foreach( explode(',',$suppliers) as $supplier ){
@@ -103,7 +139,7 @@ class Supplier extends AppModel {
 					}catch(Exception $e){
 					}
 				}
-			}
+			}*/
 	}
 	
 	public function saveProductSupplier($data,$user){
@@ -144,31 +180,15 @@ class Supplier extends AppModel {
 	public function saveProductSupplierXJ($data,$user,$localUrl){
 		$image = "" ;
 		if(!empty($localUrl)){
-			$image = ",IMAGE = '$localUrl' " ;
+			$image =  $localUrl ;
 		}
+		$data['image'] = $image ;
 		
-		$sql = "
-			UPDATE sc_product_supplier 
-				SET
-				WEIGHT = '".$data['weight']."' , 
-				CYCLE = '".$data['cycle']."' , 
-				PACKAGE = '".$data['package']."' , 
-				PAYMENT = '".$data['payment']."' , 
-				NUM1 = '".$data['num1']."' , 
-				OFFER1 = '".$data['offer1']."' , 
-				NUM2 = '".$data['num2']."' , 
-				OFFER2 = '".$data['offer2']."' , 
-				NUM3 = '".$data['num3']."' , 
-				OFFER3 = '".$data['offer3']."' ,
-				URL = '".$data['url']."' ,
-				PACKAGE_SIZE = '".$data['packageSize']."' ,
-				PRODUCT_SIZE = '".$data['productSize']."' ,
-				MEMO = '".$data['memo']."' 
-				 $image
-				
-				WHERE
-				ID = '".$data['id']."' " ;
-		$this->query($sql) ; 
+		if( empty( $data['id'] ) ){
+			$this->exeSql("sql_purchase_plan_product_inquiry_insert", $data) ;
+		}else{
+			$this->exeSql("sql_purchase_plan_product_inquiry_update", $data) ;
+		}
 	}
 	
 	
