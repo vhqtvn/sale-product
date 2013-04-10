@@ -57,6 +57,9 @@
 		           	{align:"center",key:"STATUS40",label:img4,group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=40>"+val+"</a>" ;
 		           	}},
+		        	{align:"center",key:"STATUS45",label:img45,group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=45>"+val+"</a>" ;
+		           	}},
 		           	{align:"center",key:"STATUS50",label:img5,group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=50>"+val+"</a>" ;
 		           	}},

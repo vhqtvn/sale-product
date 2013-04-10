@@ -15,7 +15,7 @@ $(function(){
 		tabs.push({label:'关联ASIN',content:"ref-asins"}) ;
 	}
 	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
-	if( currentStatus >=50 )tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
+	if( currentStatus >=45 )tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
 	//
 	//widget init
 	var tab = $('#details_tab').tabs( {

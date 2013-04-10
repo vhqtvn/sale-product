@@ -39,6 +39,8 @@
 				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
 						and sppd.status = 40 ) as STATUS40,
 				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+						and sppd.status = 45 ) as STATUS45,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
 						and sppd.status = 50 ) as STATUS50,
 				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
 						and sppd.status = 60 ) as STATUS60,

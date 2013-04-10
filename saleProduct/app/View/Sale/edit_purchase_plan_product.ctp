@@ -190,7 +190,13 @@
 	        		},
 	        		{status:40,label:"分配执行人",memo:true
 	        			<?php if( $ppp_assign_executor ) { ?>
-	        			,actions:[{label:"分配采购执行人",action:function(){ AuditAction(50,"分配采购执行人") } }
+	        			,actions:[{label:"分配采购执行人",action:function(){ AuditAction(45,"分配采购执行人") } }
+        				]
+	        			<?php };?>
+	        		},
+	        		{status:45,label:"采购执行",memo:true
+	        			<?php if( $ppp_assign_executor ) { ?>
+	        			,actions:[{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
         				]
 	        			<?php };?>
 	        		},{status:50,label:"QC验货",memo:true
@@ -274,23 +280,23 @@
 									<tr class="real-purchase-tr">
 										<th>计划供应商：</th>
 										<td >
-										<select id="providor"   class="40-input   input" 
-											<?php echo $status>=40?"data-validator='required'":"" ?>
+										<select id="providor"   class="45-input   input" 
+											<?php echo $status>=45?"data-validator='required'":"" ?>
 										>
 											<option value="">--</option>
 										<?php
 										
-											foreach($supplier as $suppli){
+											foreach($suppliers as $suppli){
 												$suppli = $SqlUtils->formatObject($suppli) ;
 												$temp = "" ;
-												if( $suppli['ID'] == $providor ){
+												if( $suppli['SUP_ID'] == $providor ){
 													$temp = "selected" ;
 												}
-												echo "<option $temp value='".$suppli['ID']."'>".$suppli['NAME']."</option>" ;
+												echo "<option $temp value='".$suppli['SUP_ID']."'>".$suppli['NAME']."</option>" ;
 											}
 										?>
 										</select> 
-										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 40-input  input">编辑</button>
+										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 45-input  input">编辑</button>
 										</td>
 										<th>实际供应商：</th>
 										<td >
@@ -299,13 +305,13 @@
 										>
 											<option value="">--</option>
 										<?php
-											foreach($supplier as $suppli){
+											foreach($suppliers as $suppli){
 												$suppli = $SqlUtils->formatObject($suppli) ;
 												$temp = "" ;
-												if( $suppli['ID'] == $product['REAL_PROVIDOR'] ){
+												if( $suppli['SUP_ID'] == $product['REAL_PROVIDOR'] ){
 													$temp = "selected" ;
 												}
-												echo "<option $temp value='".$suppli['ID']."'>".$suppli['NAME']."</option>" ;
+												echo "<option $temp value='".$suppli['SUP_ID']."'>".$suppli['NAME']."</option>" ;
 											}
 										?>
 										</select> 
@@ -314,8 +320,8 @@
 									</tr>
 									<tr class="check-purchase-tr">	
 										<th>实际采购时间：</th>
-										<td><input id="realPurchaseDate"  data-widget="calendar"  type="text"   class="50-input input" 
-											<?php echo $status>=50?"data-validator='required'":"" ?>
+										<td><input id="realPurchaseDate"  data-widget="calendar"  type="text"   class="70-input input" 
+											<?php echo $status>=70?"data-validator='required'":"" ?>
 											value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
 										<th>实际采购价：</th>
 										<td><input id="realQuotePrice"   type="text"   class="70-input input" 
@@ -387,9 +393,9 @@
 				<div class="grid-track" style="width:858px;"></div>
 			</div>
 			
-			<?php  if( $status>=50  ){ ?>
+			<?php  if( $status>=45  ){ ?>
 			<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-				<?php if( $status ==50  ){  ?>
+				<?php if( $status ==45  ){  ?>
 				<button class="supplier btn">添加产品供应商</button>
 				<button class="supplier-select btn">选择产品供应商</button>
 				<?php } ?>
