@@ -202,13 +202,14 @@ class AppModel extends Model {
 		public function exeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
 			$sql = $this->getSql($sql,$query) ;
+		//	echo $sql ;
 			return $this->query($sql) ;
 		}
 		
 		public function getExeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
 			$sql = $this->getSql($sql,$query) ;
-			echo $sql ;
+			//echo $sql ;
 			return $sql ;
 		}
 		
@@ -325,13 +326,17 @@ class AppModel extends Model {
 		}
 		
 		public function getDbSql($key){
-	
-			$sql = "select * from sc_sql where id = '$key'" ;
-			$record = $this->query($sql) ;
-			if(empty($record) || count($record)<=0){
+			try{
+				$sql = "select * from sc_sql where id = '$key'" ;
+				$record = $this->query($sql) ;
+				if(empty($record) || count($record)<=0){
+					
+					return $key ;
+				}
+				return $record[0]['sc_sql']['TEXT'] ;
+			}catch(Exception $e){
 				return $key ;
 			}
-			return $record[0]['sc_sql']['TEXT'] ;
 		}
 		
 		function is_utf8($string) {  
