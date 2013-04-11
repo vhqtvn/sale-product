@@ -31,6 +31,14 @@ class Sale extends AppModel {
 		
 	}
 	
+	function deletePurchaseTask($params){
+		$taskId = $params['taskId'] ;
+		//删除任务关系
+		$this->exeSql("delete from sc_purchase_task_products where task_id = '{@#taskId#}'", $params ) ;
+		//删除任务
+		$this->exeSql("delete from sc_purchase_task where id = '{@#taskId#}'", $params ) ;
+	}
+	
 	function getPurchasePlan($id){
 		$sql = "SELECT sc_purchase_plan.* 
 			,( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME
@@ -147,11 +155,10 @@ class Sale extends AppModel {
 		
 	}
 	
-	public function deletePurchasePlanProduct($data,$user){
+	public function deletePurchasePlanProduct($data){
 		$id = $data["id"] ;
-		$loginId = $user["LOGIN_ID"] ;
 		
-		$sql = "SELECT * from sc_purchase_plan_details  where id = '$id'";
+		/*$sql = "SELECT * from sc_purchase_plan_details  where id = '$id'";
 		$details = $this->query($sql);
 		$detail = $details[0]['sc_purchase_plan_details'] ;
 		
@@ -186,12 +193,13 @@ class Sale extends AppModel {
 					'".$detail['PROVIDOR']."', 
 					'".$detail['SAMPLE']."', 
 					'".$detail['SAMPLE_CODE']."', 
-					'$loginId', 
+					'".$data['loginId']."', 
 					NOW()
 					)" ;
-	 	$this->query($sql)  ;
+	 	$this->query($sql)  ;*/
 		
-		
+		$sql = "delete from sc_purchase_plan_details_track where pd_id = '$id'" ;
+		$this->query($sql) ;
 		$sql = "delete from sc_purchase_plan_details where id = '$id'" ;
 		$this->query($sql) ;
 	}

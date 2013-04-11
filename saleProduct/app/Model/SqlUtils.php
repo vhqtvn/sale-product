@@ -4,7 +4,7 @@ class SqlUtils extends AppModel {
 	var $useTable = "sc_sql";
 	public $count = 0 ;
 	
-	public function getDbSql($key){
+	/*public function getDbSql($key){
 	
 		$sql = "select * from sc_sql where id = '$key'" ;
 		$record = $this->query($sql) ;
@@ -12,7 +12,7 @@ class SqlUtils extends AppModel {
 			return $key ;
 		}
 		return $record[0]['sc_sql']['TEXT'] ;
-	}
+	}*/
 	
 	public function loadSqls($flag = null){
 		$this->count++ ;

@@ -893,10 +893,14 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						if(typeof result == 'string'){
-							eval("result = " +result) ;
+						try{
+							if(typeof result == 'string'){
+								eval("result = " +result) ;
+							}
+						}catch(e){
+							alert(result);
 						}
-
+						
 						var formatDate = window.formatGridData||function(data){ return data } ;
 						result = formatDate(result) ;
 						callback(result.records , result.totalRecord ) ;

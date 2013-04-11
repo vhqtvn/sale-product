@@ -92,6 +92,11 @@ $.widget("ui.__tabs", {
 				this.element.children(":first").before(html.join('')) ;
 			}else
 				this.element.append(html.join('')) ;
+			
+			this.element.find("[tabId]").click(function(){
+				var href = $(this).attr("href");
+				window.location.href = href ;
+			}) ;
 
 			var me = this ;
 			$(this.options.tabs).each( function(){
@@ -742,6 +747,7 @@ $.widget("ui.__tabs", {
 	},
 	show: function(index){
 		index = this.getIndex(index);
+		
 		var self = this, o = this.options;
 		if (index != o.selected) { // cannot disable already selected tab
 			this.lis.eq(index).show();
@@ -774,6 +780,7 @@ $.widget("ui.__tabs", {
 	select: function(index) {
 		
 		index = this.getIndex(index);
+		
 		if (index == -1 && this.options.collapsible) {
 			index = this.options.selected;
 		}
@@ -782,7 +789,9 @@ $.widget("ui.__tabs", {
 		return this;
 	},
 	active: function(index){
+		
 		index = this.getIndex(index);
+		
 		this.select( index ) ;
 	},
 

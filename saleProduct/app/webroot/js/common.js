@@ -1006,6 +1006,10 @@ $(function(){
 	}) ;
 }) ;
 
+function getImage(iconName,title,clz){
+	return "<img src='/"+fileContextPath+"/app/webroot/img/"+iconName+"' title='"+(title||'')+"'  class='"+clz+"' >" ;
+}
+
 //common action 
 function viewSupplier(id){
 	openCenterWindow(contextPath+"/supplier/view/"+id,800,580) ;

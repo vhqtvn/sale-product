@@ -28,11 +28,14 @@
 		echo $this->Html->script('modules/sale/edit_purchase_plan_product');
 		echo $this->Html->script('calendar/WdatePicker');
 		
+		$loginId = $user['LOGIN_ID'] ;
+		
 		$id = $product["ID"] ;
 		$asin = $product["ASIN"] ;
 		$sku = $product["SKU"] ;
 		$title = $product["TITLE"] ;
 		$planId = $product["PLAN_ID"] ;
+		
 		
 		$cost = $product["COST"] ;
 		$plan_num = $product["PLAN_NUM"] ;
@@ -44,23 +47,27 @@
 		
 		$security  = ClassRegistry::init("Security") ;
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		//获取计划信息
+		$plan = $SqlUtils->getObject("select * from sc_purchase_plan where id = '{@#planId#}'",array("planId"=>$planId)) ;
+		//debug($plan) ; 
 		
-		$loginId = $user['LOGIN_ID'] ;
-		$pp_edit 				= $security->hasPermission($loginId , 'pp_edit') ;
+		$loginId 								= $user['LOGIN_ID'] ;
+		$pp_edit 								= $security->hasPermission($loginId , 'pp_edit') ;
 		$ppp_add_product				= $security->hasPermission($loginId , 'ppp_add_product') ;
-		$ppp_export		= $security->hasPermission($loginId , 'ppp_export') ;
-		$ppp_audit	= $security->hasPermission($loginId , 'ppp_audit') ;
+		$ppp_export							= $security->hasPermission($loginId , 'ppp_export') ;
+		$ppp_audit							= $security->hasPermission($loginId , 'ppp_audit') ;
 		$ppp_setlimitprice				= $security->hasPermission($loginId , 'ppp_setlimitprice') ;
-		$ppp_assign_executor				= $security->hasPermission($loginId , 'ppp_assign_executor') ;
-		$ppp_qc		= $security->hasPermission($loginId , 'ppp_qc') ;
-		$ppp_inwarehouse		= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
-		$ppp_confirm 		= $security->hasPermission($loginId , 'ppp_confirm') ;
+		//分配执行人，计划负责人等于当前用户
+		$ppp_assign_executor			= $loginId == $plan['EXECUTOR'] || $security->hasPermission($loginId , 'ppp_assign_executor') ;
+		$ppp_qc								= $security->hasPermission($loginId , 'ppp_qc') ;
+		$ppp_inwarehouse				= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
+		$ppp_confirm 						= $security->hasPermission($loginId , 'ppp_confirm') ;
 		
 		$hasSetSupplierPermission = $security->hasPermission($loginId, 'SET_PRODUCT_SUPPLIER_FLAG') ;
 		
 		$status = $product['STATUS']; ;
 		
-		$hasViewRelListing = $security->hasPermission($loginId , 'view_rp_rel_listing') ;
+		$hasViewRelListing =  $security->hasPermission($loginId , 'view_rp_rel_listing') ;
 		
 		//获取货品供应商询价
 		$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$planId,'sku'=>$sku)) ;
@@ -69,6 +76,15 @@
    <style>
    		*{
    			font:12px "微软雅黑";
+   		}
+   		
+   		#details_tab.ui-corner-all{
+			border:none;
+   		}
+   		
+   		.nav-tabs ul li span{
+			margin-top:5px!important;
+   			display:block;
    		}
    </style>
    
@@ -195,10 +211,8 @@
 	        			<?php };?>
 	        		},
 	        		{status:45,label:"采购执行",memo:true
-	        			<?php if( $ppp_assign_executor ) { ?>
 	        			,actions:[{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
         				]
-	        			<?php };?>
 	        		},{status:50,label:"QC验货",memo:true
 	        			<?php if( $ppp_qc) { ?>
 	        			,actions:[{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
@@ -277,6 +291,22 @@
 													 <?php echo $status>=30?"data-validator='required'":"" ?>
 													 value='<?php echo $quote_price ;?>' /></td>
 									</tr>
+									<tr class="check-purchase-tr">
+										<th>合格数量：</th>
+										<td><input id="qualifiedProductsNum" class="50-input input"   type="text" 
+													<?php echo $status>=50?"data-validator='required'":"" ?>
+													value='<?php echo $product['QUALIFIED_PRODUCTS_NUM'] ;?>' /></td>
+										<th>不合格数量：</th>
+										<td><input id="badProductsNum" class="50-input input"  type="text"
+													<?php echo $status>=50?"data-validator='required'":"" ?>
+													value='<?php echo $product['BAD_PRODUCTS_NUM'] ;?>' /></td>
+									</tr>
+									<tr class="check-purchase-tr">
+										<th>入库时间：</th>
+										<td colspan="3"><input id="warehouseTime" class="60-input input"   type="text"  data-widget="calendar"
+													<?php echo $status>=60?"data-validator='required'":"" ?>
+													value='<?php echo $product['WAREHOUSE_TIME'] ;?>' /></td>
+									</tr>
 									<tr class="real-purchase-tr">
 										<th>计划供应商：</th>
 										<td >
@@ -300,7 +330,7 @@
 										</td>
 										<th>实际供应商：</th>
 										<td >
-										<select id="real_providor"   class=" 70-input  input" 
+										<select id="realProvidor"   class=" 70-input  input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 										>
 											<option value="">--</option>
@@ -322,22 +352,13 @@
 										<th>实际采购时间：</th>
 										<td><input id="realPurchaseDate"  data-widget="calendar"  type="text"   class="70-input input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
-											value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
+											value='<?php echo $product['REAL_PURCHASE_DATE'] ;?>' /></td>
 										<th>实际采购价：</th>
 										<td><input id="realQuotePrice"   type="text"   class="70-input input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 											value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
 									</tr>
-									<tr class="check-purchase-tr">
-										<th>合格数量：</th>
-										<td><input id="qualifiedProductsNum" class="50-input input"   type="text" 
-													<?php echo $status>=50?"data-validator='required'":"" ?>
-													value='<?php echo $product['QUALIFIED_PRODUCTS_NUM'] ;?>' /></td>
-										<th>不合格数量：</th>
-										<td><input id="qualifiedProductsNum" class="50-input input"  type="text"
-													<?php echo $status>=50?"data-validator='required'":"" ?>
-													value='<?php echo $product['QUALIFIED_PRODUCTS_NUM'] ;?>' /></td>
-									</tr>
+									
 									<tr class="check-purchase-tr">
 										<th>验收说明：</th>
 										<td colspan=3>
@@ -394,7 +415,7 @@
 			</div>
 			
 			<?php  if( $status>=45  ){ ?>
-			<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
+			<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; margin:5px;">
 				<?php if( $status ==45  ){  ?>
 				<button class="supplier btn">添加产品供应商</button>
 				<button class="supplier-select btn">选择产品供应商</button>

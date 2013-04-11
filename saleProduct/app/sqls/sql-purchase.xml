@@ -144,11 +144,14 @@
 				executor = '{@#executor#}'
 				{@ ,real_num = '#realNum#'}
 				{@ ,real_quote_price =  '#realQuotePrice#'}
+				{@ ,REAL_PROVIDOR =  '#realProvidor#'}
 				{@ ,QUALIFIED_PRODUCTS_NUM = '#qualifiedProductsNum#'}
+				{@ ,bad_PRODUCTS_NUM = '#badProductsNum#'}
 				{@ ,check_Memo = '#checkMemo#'}
 				{@ ,real_purchase_date = '#realPurchaseDate#'}
 				{@ ,plan_start_time = '#planStartTime#'}
 				{@ ,plan_end_time = '#planEndTime#'}
+				{@ ,warehouse_time = '#warehouseTime#'}
 				where id = '{@#id#}'
    </entry>
    

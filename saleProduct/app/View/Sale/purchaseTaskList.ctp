@@ -47,7 +47,7 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		
-		$editPermission 				= $security->hasPermission($loginId , 'purchaseTask@edit') ;
+		$editPermission 	=  $security->hasPermission($loginId , 'purchaseTask_edit') ;
 		
 	?>
 	

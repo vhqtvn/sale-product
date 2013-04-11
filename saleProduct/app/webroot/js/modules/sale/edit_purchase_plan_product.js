@@ -54,10 +54,6 @@ $(function(){
 	           	{align:"center",key:"LOCAL_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 	            {align:"left",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:{type:'titleListing'}},
 	            {align:"center",key:"QUANTITY",label:"账号库存",width:"6%",forzen:false,align:"left"},
-	           	{align:"center",key:"XJ",label:"询价",width:"4%",format:function(val,record){
-	           		if(val >0 )return "Y" ;
-	           		return "N" ;
-	           	}} ,
 	           {align:"center",key:"FBM_COST",label:"其他成本",group:"FBM",width:"6%",format:function(val,record){
 	           		return "<a href='' class='cost' type='FBM' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
 	           	},permission:function(){ return $purchase_cost_view; } },
@@ -215,6 +211,8 @@ $(function(){
 			defaults:[],//默认值
 			key:{value:'LOGIN_ID',label:'NAME'},//对应value和label的key
 			multi:false,
+			width:600,
+			height:560,
 			grid:{
 				title:"用户选择",
 				params:{
@@ -223,9 +221,9 @@ $(function(){
 				ds:{type:"url",content:contextPath+"/grid/query"},
 				pagesize:10,
 				columns:[//显示列
-					{align:"center",key:"ID",label:"编号",width:"100"},
-					{align:"center",key:"LOGIN_ID",label:"登录ID",sort:true,width:"100"},
-					{align:"center",key:"NAME",label:"用户姓名",sort:true,width:"100"}
+					{align:"center",key:"ID",label:"编号",width:"20%"},
+					{align:"center",key:"LOGIN_ID",label:"登录ID",sort:true,width:"30%"},
+					{align:"center",key:"NAME",label:"用户姓名",sort:true,width:"36%"}
 				]
 			}
 	   } ;

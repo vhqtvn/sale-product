@@ -1,16 +1,8 @@
 $(function(){
 	$(".create-task").click(function(){
 		openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/",600,350,function(){
-			$(".grid-task").llygrid("reload") ;
+			$(".grid-task").llygrid("reload",{}) ;
 		}) ;
-	}) ;
-	
-	$(".print-product").live("click",function(){
-		 var record = $(this).parents("tr:first").data("record");
-		if( (record.STATUS==1 && window.confirm("是否确认打印，如果点击确定，该任务单将不能更改！") ) || record.STATUS >1){
-			var val = $(this).attr("val") ;
-			openCenterWindow(contextPath+"/page/forward/Sale.purchaseTaskPrint/"+val,1000,700) ;
-		}
 	}) ;
 	
 	$(".grid-task").llygrid({
@@ -22,8 +14,14 @@ $(function(){
             {align:"left",key:"CREATED_BY",label:"操作用户",width:"10%" },
             {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
             	var html = [] ;
-            	record.STATUS==1 && html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
-            	html.push('<a href="#" class="print-product" val="'+val+'">打印</a>') ;
+            	if( record.STATUS==1) {
+            		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;
+            		html.push( getImage("pkg.gif","选择货品","btn-select-product") ) ;
+            		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
+            		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
+            	}
+            	html.push( getImage("print.gif","打印","print-product") ) ;
+            	//html.push('<a href="#" class="print-product" val="'+val+'">打印</a>') ;
             	return html.join("") ;
             },permission:function(){
             	return editPermission ;
@@ -40,6 +38,27 @@ $(function(){
 		 querys:{ sqlId:"sql_purchase_task_list" },
 		 loadMsg:"数据加载中，请稍候......",
 		 loadAfter:function(){
+			 $(".btn-delete-plan").bind("click",function(event){
+				 event.stopPropagation() ;
+				 var record = $(this).parents("tr:first").data("record");
+				 if( (record.STATUS==1 && window.confirm("是否确认删除该任务？") )){
+					var val = record.ID ;
+					$.dataservice("model:Sale.deletePurchaseTask",{taskId:record.ID},function(){
+						$(".grid-task").llygrid("reload",{},true) ;
+						$(".grid-task-product").llygrid("reload",{taskId:'--'}) ;
+					}) ;
+				 }
+			}) ;
+			 
+			 $(".print-product").bind("click",function(event){
+				 event.stopPropagation() ;
+				 var record = $(this).parents("tr:first").data("record");
+				if( (record.STATUS==1 && window.confirm("是否确认打印，如果点击确定，该任务单将不能更改！") ) || record.STATUS >1){
+					var val = record.ID ;
+					openCenterWindow(contextPath+"/page/forward/Sale.purchaseTaskPrint/"+val,1000,700) ;
+				}
+			}) ;
+			 
 			 $(".btn-select-product").click(function(){
 				 var record = $(this).parents("tr:first").data("record");
 				 var taskId = record.ID ;

@@ -92,6 +92,45 @@
 				 	
 				 	var planId = rowData.ID  ;
 				 	$(".grid-content-details").llygrid("reload",{planId:planId,status:""}) ;
+				 },loadAfter:function(){
+					 $(".edit_purchase_plan").bind("click",function(event){
+						 	event.stopPropagation() ;
+							var val = $(this).attr("val") ;//采购计划ID
+							openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,440,function(){
+								$(".grid-content").llygrid("reload",{}) ;
+							}) ;
+							return false;
+						}) ;
+						
+						$(".delete_purchase_plan").bind("click",function(event){
+							event.stopPropagation() ;
+							var val = $(this).attr("val") ;//采购计划ID
+							if(window.confirm("确认删除该采购计划吗？")){
+								$.dataservice("model:Sale.deletePurchasePlan",{planId:val},function(){
+									$(".grid-content").llygrid("reload",{},true) ;
+									$(".grid-content-details").llygrid("reload",{planId:'---'}) ;
+								}) ;
+								
+							}
+						}) ;
+						
+						$(".add-outer-product").bind("click",function(event){
+							event.stopPropagation() ;
+							var val = $(this).attr("val") ;
+							//openCenterWindow(contextPath+"/sale/addPurchasePlanOuterProduct/"+val,600,400) ;
+							openCenterWindow(contextPath+"/page/forward/Sale.selectPurchaseProduct/"+val,900,600,function(){
+								$(".grid-content").llygrid("reload",{},true) ;
+							}) ;
+							return false ;
+						});
+						
+						$(".export-product").bind("click",function(event){
+							event.stopPropagation() ;
+							var val = $(this).attr("val") ;//采购计划ID
+							$("#exportIframe").attr("src",contextPath+"/sale/exportForPurchasePlanDetails/"+val) ;
+							return false ;
+						}) ;
+						
 				 }
 			}) ;
 			
@@ -111,72 +150,29 @@
 				$(".grid-content-details").llygrid("reload",params) ;
 				return false ;
 			} ;
-			
-			$(".print-product").live("click",function(){
-				var val = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/sale/purchaseListPrint/"+val,1000,700) ;
-				return false ;
-			}) ;
-			
-			
-			$(".export-product").live("click",function(){
-				var val = $(this).attr("val") ;//采购计划ID
-				$("#exportIframe").attr("src",contextPath+"/sale/exportForPurchasePlanDetails/"+val) ;
-				return false ;
-			}) ;
-			
-			
+
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",{name:$("#name").val(),type:$("#type").val()}) ;
 			}) ;
 			
-			$(".add-outer-product").live("click",function(){
-				var val = $(this).attr("val") ;
-				//openCenterWindow(contextPath+"/sale/addPurchasePlanOuterProduct/"+val,600,400) ;
-				openCenterWindow(contextPath+"/page/forward/Sale.selectPurchaseProduct/"+val,900,600,function(){
-					$(".grid-content").llygrid("reload",{},true) ;
-				}) ;
-				return false ;
-			});
-			
-			$(".add-product").live("click",function(){
-				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/selectPurchaseProduct/"+val,1020,600,function(){
-					$(".grid-content").llygrid("reload",{},true) ;
-				}) ;
-			}) ;
-			
-			$(".edit_purchase_plan").live("click",function(){
-				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,440,function(){
-					$(".grid-content").llygrid("reload",{},true) ;
-				}) ;
-				return false;
-			}) ;
-			
-			$(".delete_purchase_plan").live("click",function(){
-				var val = $(this).attr("val") ;//采购计划ID
-				if(window.confirm("确认删除该采购计划吗？")){
-					$.dataservice("model:Sale.deletePurchasePlan",{planId:val},function(){
-						window.location.reload() ;
-					}) ;
-					
-				}
-			}) ;
-			
-			
 			$(".create-plan").click(function(){
-				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,430) ;
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,430,function(){
+					$(".grid-content").llygrid("reload",{}) ;
+				}) ;
 			}) ;
 			
 			$(".grid-content-details").llygrid({
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
-					{align:"left",key:"ID",label:"操作",forzen:false,width:"3%",format:function(val,record){
+					{align:"left",key:"ID",label:"操作",forzen:false,width:"4%",format:function(val,record){
 						var isSku = record.SKU?true:false ;
 						
 						var status = record.STATUS ;
 						var html = [] ;
+						
+						if( status <=10 ){
+							html.push( getImage("delete.gif","删除","delete-action") ) ;
+						}
 
 						if(status == 80 || status==25 ){
 							isSku && html.push('<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pre_print.gif"/></a>&nbsp;') ;
@@ -184,7 +180,6 @@
 							isSku && html.push('<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
 							
 						}
-						
 						return html.join("") ;	
 					}},
 					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
@@ -221,6 +216,15 @@
 				 querys:{planId:'-----',status:"",sqlId:"sql_purchase_plan_details_listForSKU"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
+					 $(".delete-action").click(function(){
+						 var record = $(this).parents("tr:first").data("record");
+						 if(window.confirm("确认删除吗？")){
+							 $.dataservice("model:Sale.deletePurchasePlanProduct",{id:record.ID},function(){
+								 $(".grid-content-details").llygrid("reload",{},true) ;
+							 });
+						 }
+					 }) ;
+					 
 				 	$(".grid-checkbox").each(function(){
 						var val = $(this).attr("value") ;
 						if( $(".product-list ul li[asin='"+val+"']").length ){
@@ -243,58 +247,7 @@
 					$(".grid-content-details").llygrid("reload",{},true) ;
 				}) ;
 			}) ;
-			
-			$(".paction").live("click",function(){
-				
-				var val = $(this).attr("val") ;//采购计划ID
-				var status =  $(this).attr("status") ;
-				var planId =  $(this).attr("planId") ;
-				
-				var opName = status == '2'?"申请采购":(status=='3'?"审批通过":(status=="4"?"审批不通过":"确认采购"))
-				
-				if(window.confirm("确认执行该操作【"+opName+"】吗？")){
-					$.ajax({
-						type:"post",
-						url:contextPath+"/sale/updatePurchasePlanProductStatus",
-						data:{
-							id:val,
-							status:status
-						},
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							$(".grid-content-details").llygrid("reload",{},true) ;
-						}
-					}); 
-				}
-			}) ;
-			
-			$("[supplier-id]").live("click",function(){
-				var id = $(this).attr("supplier-id") ;
-				viewSupplier(id) ;
-				return false ;
-			}) ;
-			
-			$(".del-action").live("click",function(){
-				var val = $(this).attr("val") ;//采购计划ID
-				var planId = $(this).attr("planId") ;
-				var asin = $(this).attr("asin") ;
-				if(window.confirm("确认删除该采购产品["+asin+"]吗？")){
-					$.ajax({
-						type:"post",
-						url:contextPath+"/sale/deletePurchasePlanProduct",
-						data:{
-							id:val
-						},
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							$(".grid-content-details").llygrid("reload",{planId:planId}) ;
-						}
-					});
-				}
-			}) ;
-			
+
 			$(".process-action").live("click",function(){
 				var val = $(this).attr("val") ;
 				openCenterWindow(contextPath+"/sale/productFilter/"+val+"/"+type,900,600) ;
