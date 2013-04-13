@@ -68,13 +68,13 @@
 		<table>
 			<tr>
 				<th>
-					任务名称:
+					任务编号:
 				</th>
 				<td>
-					<input type="text" id="name"/>
+					<input type="text" id="taskCode"/>
 				</td>								
 				<td class="toolbar-btns">
-					<button class="query-btn btn btn-primary">查询</button>
+					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-task',qc:'.toolbar'}">查询</button>
 					<?php if( $editPermission ){ ?>
 					<button class="create-task btn">创建采购任务</button>
 					<?php } ?>

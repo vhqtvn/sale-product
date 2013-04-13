@@ -23,6 +23,18 @@
 		
 		
 		$type = $plan[0]['sc_purchase_plan']['TYPE'] ;
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$defaultCode = $plan[0]['sc_purchase_plan']['CODE'] ;
+		if( empty($plan[0]['sc_purchase_plan']['CODE']) ){
+			$index = $SqlUtils->getMaxValue("PP" , null , 1) ;
+			if( strlen($index) < 5 ){
+				$len = 5-strlen($index) ;
+				for($i=0 ;$i < $len ;$i++){
+					$index = '0'.$index ;
+				}
+			}
+			$defaultCode = "PP"."-".date("ymd").'-'.$index ;
+		}
 	?>
   
    <style>
@@ -53,24 +65,9 @@
 						window.close();
 					}) ;
 				
-					/*$.ajax({
-						type:"post",
-						url:contextPath+"/sale/savePurchasePlan",
-						data:json,
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							window.opener.location.reload() ;
-							window.close() ;
-						}
-					}); */
 				};
 				return false ;
 			}) ;
-			
-			//$(".add-on").click(function(){
-			//	openCenterWindow(contextPath+"/users/selectUsers",600,400) ;
-			//}) ;
 			
 				var chargeGridSelect = {
 						title:'用户选择页面',
@@ -132,6 +129,10 @@
 						<!-- 数据列表样式 -->
 						<table class="form-table" >
 							<caption>基本信息</caption>
+								<tr>
+									<th>采购编号：</th><td><input type="text"  disabled id="code"  
+										value="<?php echo $defaultCode?>" style="width:300px;"/></td>
+								</tr>
 								<tr>
 									<th>采购名称：</th><td><input type="text" data-validator="required" id="name"  
 										value="<?php echo $plan[0]['sc_purchase_plan']['NAME']?>" style="width:300px;"/></td>

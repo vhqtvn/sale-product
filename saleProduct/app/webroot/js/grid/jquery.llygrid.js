@@ -1143,3 +1143,37 @@ $("td[key='ORDER_ID']").live("click",function(){
 	var orderId = $.trim( $(this).text() ) ;
 	openCenterWindow(contextPath+"/page/forward/Norder.details/"+orderId,800,600) ;
 }) ;
+
+/////////////
+$.llygrid.format.purchaseProductStatus = {
+		body:function(val,record,col){
+			val = val ||'10' ;
+			var message = "" ;
+			switch(val){
+				case '10':  message = "编辑中";break;
+				case '20':  message = "等待审批";break;
+				case '20':  message = "审批不通过";break;
+				case '30':  message = "限价确认";break;
+				case '40':  message = "分配执行人";break;
+				case '45':  message = "采购执行";break;
+				case '50':  message = "QC验货";break;
+				case '60':  message = "入库";break;
+				case '70':  message = "采购确认";break;
+				case '80':  message = "结束";break;
+			}
+			return message||val ;
+		}
+} ;
+
+$.uiwidget.register("grid-query",function(selector){
+	selector.each(function(){
+		var options = $(this).attr( $.uiwidget.options )||"{}";
+		eval(" var jsonOptions = "+options) ;
+		$(this).click(function(){
+			var gc = jsonOptions.gc ;
+			var qc = jsonOptions.qc ;
+			var json = $(qc).toJson() ;
+			$(gc).llygrid("reload",json,true) ;
+		}) ;
+	});
+}) ;

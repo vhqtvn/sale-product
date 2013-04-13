@@ -10,7 +10,7 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"",width:"10%",format:function(val,record){
+		           	{align:"center",key:"ID",label:"",width:"8%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						if( status == 1){
@@ -26,13 +26,14 @@
 					},permission:function(){
 						return $pp_edit || $ppp_add_product ||  $ppp_export;
 					}},
-		           	{align:"center",key:"NAME",label:"采购计划名称",width:"15%",forzen:false,align:"left"},
+					{align:"center",key:"CODE",label:"采购计划编号",width:"11%",forzen:false,align:"left"},
+		           	{align:"center",key:"NAME",label:"采购计划名称",width:"14%",forzen:false,align:"left"},
 		           	{align:"left",key:"PLAN_TIME",label:"计划采购时间",width:"15%",format:function(val,record){
 		           		var r = record.PLAN_TIME||"" ;
 		           		var r1 = record.PLAN_END_TIME||"" ;
 		           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
 		           	}},
-		           	{align:"center",key:"TYPE",label:"采购用途",width:"7%",format:function(val,record){
+		           	{align:"center",key:"TYPE",label:"采购用途",width:"6%",format:function(val,record){
 		           		if(val == 1){
 		           			return "产品试销" ;
 		           		}else{
@@ -96,7 +97,7 @@
 					 $(".edit_purchase_plan").bind("click",function(event){
 						 	event.stopPropagation() ;
 							var val = $(this).attr("val") ;//采购计划ID
-							openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,440,function(){
+							openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,460,function(){
 								$(".grid-content").llygrid("reload",{}) ;
 							}) ;
 							return false;
@@ -156,7 +157,7 @@
 			}) ;
 			
 			$(".create-plan").click(function(){
-				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,430,function(){
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,460,function(){
 					$(".grid-content").llygrid("reload",{}) ;
 				}) ;
 			}) ;
@@ -182,7 +183,7 @@
 						}
 						return html.join("") ;	
 					}},
-					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
+					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
 					{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
 		           		var r = record.PLAN_START_TIME||"" ;
 		           		var r1 = record.PLAN_END_TIME||"" ;

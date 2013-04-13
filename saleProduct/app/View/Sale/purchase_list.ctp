@@ -102,15 +102,11 @@
 					<input type="text" id="name"/>
 				</td>
 				<th>
-					类型:
+					计划编号:
 				</th>
 				<td>
-					<select id="type">
-						<option value="">--</option>
-						<option value='1'>产品试销</option>
-						<option value='2'>产品采购</option>
-					</select>
-				</td>								
+					<input type="text" id="code"/>
+				</td>						
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary">查询</button>
 					<?php if( $pp_edit  ){ ?>

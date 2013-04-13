@@ -27,6 +27,14 @@
 		$groups = $SqlUtils->exeSql("sql_package_group_list",array() ) ;
 		
 	?>
+	
+	<style type="text/css">
+		ul li{
+			list-style: none;
+			float:left;
+			margin:2px 5px;
+		}
+	</style>
 
 </head>
 
@@ -49,32 +57,39 @@
 							<caption>基本属性</caption>
 							<tbody>
 								<tr>
-									<th>类型：</th>
-									<td colspan=3>
-										<input type="radio" <?php if($item['TYPE']=='base')echo 'checked';?> 
-												<?php if($item['TYPE'])echo 'disabled';?> 
-											data-validator="required" name="type" value="base" />基本货品
-										<input type="radio" <?php if($item['TYPE']=='package')echo 'checked';?>
-										<?php if($item['TYPE'])echo 'disabled';?>  
-											data-validator="required" name="type" value="package"/>打包货品
+									<td colspan="2"  rowspan="4">
+										<input type="file" name="imageUrl" class="span3"/>
+										<?php
+										if( $item['IMAGE_URL'] ){
+											echo "<img src='/".$fileContextPath."/".$item['IMAGE_URL']."' style='width:140px;height:140px;'>" ;
+										}?>
 									</td>
+										<th>类型：</th>
+										<td>
+											<input type="radio" <?php if($item['TYPE']=='base')echo 'checked';?> 
+													<?php if($item['TYPE'])echo 'disabled';?> 
+												data-validator="required" name="type" value="base" />基本货品
+											<input type="radio" <?php if($item['TYPE']=='package')echo 'checked';?>
+											<?php if($item['TYPE'])echo 'disabled';?>  
+												data-validator="required" name="type" value="package"/>打包货品
+										</td>
 								</tr>
 								<tr>
 									<th>选择产品分类：</th>
-									<td colspan=3>
+									<td>
 										<input type="hidden"  id="categoryId" name="categoryId" value="<?php echo $item['CATEGORY_ID']?>"/>
 										<input type="text" id="categoryName" name="categoryName" value="<?php echo $item['CATEGORY_NAME']?>"/>
 										<button class="btn select-category">选择</button>
 									</td>
 								</tr>
 								<tr>
-									<th>SKU：</th><td colspan=3><input type="text"
+									<th>SKU：</th><td ><input type="text"
 										 	data-validator="required" name="sku" 
 										 	value="<?php if(isset($item['REAL_SKU']))echo $item['REAL_SKU']; else echo $realSku;?>"/></td>
 								</tr>									   
 								<tr>
 									<th>名称：</th>
-									<td colspan=3><input type="text" data-validator="required" name="name" value="<?php echo $item['NAME']?>"/></td>
+									<td ><input type="text" data-validator="required" name="name" value="<?php echo $item['NAME']?>"/></td>
 								</tr>
 								<tr>
 									<th>预警库存：</th>
@@ -85,18 +100,18 @@
 										name="securityQuantity" value="<?php echo $item['SECURITY_QUANTITY']?>"/></td>
 								</tr>
 								<tr>
-									<th>产品图片：</th>
-									<td colspan=3><input type="file" name="imageUrl"/>
-									<?php
-									if( $item['IMAGE_URL'] ){
-										echo "<img src='/".$fileContextPath."/".$item['IMAGE_URL']."' style='width:50px;height:40px;'>" ;
-									}?>
+									<th>备注：</th>
+									<td colspan=3>
+										<textarea name="memo" style="width:98%;height:35px;"><?php echo $item['MEMO']?></textarea>
+										
 									</td>
 								</tr>
 								<tr>
-									<th>备注：</th>
+									<th><button class="btn addKey-btn no-disabled">添加</button>关键字：</th>
 									<td colspan=3>
-									<textarea name="memo" style="width:98%;height:50px;"><?php echo $item['MEMO']?></textarea>
+											<input type="hidden" name="keys" value="<?php echo $item['S_KEYS']?>"></input>
+											<ul class="keys-container">
+											</ul>
 									</td>
 								</tr>
 							</tbody>
@@ -154,7 +169,7 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
 						<div class="form-actions">
-							<button type="submit" class="btn btn-primary">提&nbsp;交</button>
+							<button type="submit" class="btn btn-primary btn-submit">提&nbsp;交</button>
 						</div>
 					</div>
 				</div>

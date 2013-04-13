@@ -72,7 +72,8 @@
 		STATUS,
 		CATEGORY_ID,
 		PACKAGE_GROUP_ID,
-		POSTAGE_SERVICE_ID
+		POSTAGE_SERVICE_ID,
+		S_KEYS
 		)
 		VALUES
 		('{@#sku#}', 
@@ -94,7 +95,8 @@
 		1,
 		'{@#categoryId#}',
 		'{@#packageGroupId#}',
-		'{@#postageServiceId#}'
+		'{@#postageServiceId#}',
+		'{@#keys#}'
 		)
    </entry>
    
@@ -122,7 +124,8 @@
 		REAL_SKU = '{@#sku#}',
 		CATEGORY_ID = '{@#categoryId#}',
 		PACKAGE_GROUP_ID = '{@#packageGroupId#}',
-		POSTAGE_SERVICE_ID = '{@#postageServiceId#}'
+		POSTAGE_SERVICE_ID = '{@#postageServiceId#}',
+		S_KEYS = '{@#keys#}'
 	WHERE
 	 	ID = '{@#id#}'
    </entry>

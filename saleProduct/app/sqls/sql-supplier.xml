@@ -13,16 +13,16 @@
 				AND srpr.SKU = saap.SKU
 				AND sps.ASIN = saap.ASIN
 				and sp.id = sps.supplier_id
-				AND srp.REAL_SKU = '{@#{@#realSku#}'
+				AND srp.REAL_SKU = '{@#realSku#}'
 				union 
 				SELECT  sp.* 
 				FROM 
 				sc_real_product srp,
-				sc_product_supplier sps,
+				sc_real_product_supplier sps,
 				sc_supplier sp
-				where sps.sku = srp.real_sku
+				where sps.real_sku = srp.real_sku
 				and sp.id = sps.supplier_id
-				AND srp.REAL_SKU = '{@#{@#realSku#}'
+				AND srp.REAL_SKU = '{@#realSku#}'
     ]]>
     </entry>
     

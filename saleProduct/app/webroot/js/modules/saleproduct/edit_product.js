@@ -64,6 +64,72 @@ $(function(){
 	   } ;
 	   
 	$(".select-postage").listselectdialog( postageTreeGridSelect) ;
+	
+	//init keys
+	var val = $("[name='keys']").val() ;
+	if( val ){
+		$(val.split("||")).each(function(){
+			var self = this ;
+			$("<li class='alert alert-success' style='position:relative;'>"+this+"</li>").appendTo(".keys-container").mouseenter(function(){
+				$("<a href='#' class='del-key' style='position:absolute;top:0px;right:0px;color:red;'>删除</a>").appendTo( $(this) ).click(function(){
+					if( $.trim($(this).parent().text() || $(this).parent().find("input").val()) ){
+						if(window.confirm("确认删除？")){
+							$(this).parent().remove();
+						}
+					}
+				}) ;
+			}).mouseleave(function(){
+				$(this).find(".del-key").remove();
+			}).dblclick(function(){
+				if( $(this).find("input").length <=0 ){
+					var val = self ;
+					$("<input class='key-input' type='text' placeHolder='输入关键字' value='"+val+"'/>").appendTo($(this).empty()).focus() ;
+				}
+			}) ;
+		}) ;
+	}
+	
+	$(".key-input").live("blur",function(){
+		if(!$(this).val()){
+			$(this).parent().remove() ;
+		}else
+		$(this).parent().html( $(this).val() ) ;
+	});
+
+	
+	$(".addKey-btn").click(function(event){
+		event.stopPropagation(); 
+		var _val = "" ;
+		$("<li class='alert alert-success key-li' style='position:relative;'><input class='key-input'  type='text' placeHolder='输入关键字'/></li>").appendTo(".keys-container").find("input").focus()
+		.parent().mouseenter(function(){
+			$("<a href='#' class='del-key' style='position:absolute;top:0px;right:0px;color:red;'>删除</a>").appendTo( $(this) ).click(function(){
+				if( $.trim($(this).parent().text() || $(this).parent().find("input").val()) ){
+					if(window.confirm("确认删除？")){
+						$(this).parent().remove();
+					}
+				}
+			}) ;
+		}).mouseleave(function(){
+			$(this).find(".del-key").remove();
+		}).dblclick(function(){
+			if( $(this).find("input").length <=0 ){
+				$(this).find(".del-key").remove();
+				var val = $.trim($(this).text()) ;
+				$("<input class='key-input' type='text' placeHolder='输入关键字' value='"+val+"'/>").appendTo($(this).empty()).focus() ;
+			}
+		}) ; ; ;
+		return false ;
+	}) ;
+	
+	$(".btn-submit").click(function(){
+		var keys = [] ;
+		$(".keys-container li").each( function(){
+			var _keys = $(this).find("input").length?$(this).find("input").val():$(this).text() ;
+			keys.push( $.trim(_keys) ) ;
+		}) ;
+		$("[name='keys']").val(keys.join("||")) ;
+	}) ;
+	
 });
 
 function uploadSuccess(){

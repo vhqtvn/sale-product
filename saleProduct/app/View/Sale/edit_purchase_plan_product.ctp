@@ -156,6 +156,13 @@
 		.memo-control{
 			display:none;
 		}
+		
+		.tag-container li{
+			float:left;
+			list-style: none;
+			margin:2px 5px;
+		 	padding:2px;
+		}
 	</style>
 
    <script type="text/javascript">
@@ -179,7 +186,7 @@
 	        		{status:10,label:"编辑中",memo:true
 	        			<?php if( $pp_edit ) { ?>
 	        			,actions:[
-									{label:"保存暂不提交审批",action:function(){ AuditAction(10,"保存暂不提交审批") }},
+									{label:"保存",action:function(){ AuditAction(10,"保存") }},
 		      	        			{label:"保存提交审批",action:function(){ AuditAction(20,"保存并提交审批") }}
 		      	        	]
 	        			<?php };?>
@@ -200,33 +207,45 @@
 	        		},
 	        		{status:30,label:"限价确认",memo:true
 	        			<?php if( $ppp_setlimitprice) { ?>
-	        			,actions:[{label:"确认限价",action:function(){ AuditAction(40,"确认限价") } }
+	        			,actions:[
+									{label:"保存",action:function(){ AuditAction(30,"保存") }},
+		      	        			{label:"确认限价",action:function(){ AuditAction(40,"确认限价") } }
         				]
 	        			<?php };?>
 	        		},
 	        		{status:40,label:"分配执行人",memo:true
 	        			<?php if( $ppp_assign_executor ) { ?>
-	        			,actions:[{label:"分配采购执行人",action:function(){ AuditAction(45,"分配采购执行人") } }
+	        			,actions:[
+									{label:"保存",action:function(){ AuditAction(40,"保存") }},
+		      	        			{label:"分配采购执行人",action:function(){ AuditAction(45,"分配采购执行人") } }
         				]
 	        			<?php };?>
 	        		},
 	        		{status:45,label:"采购执行",memo:true
-	        			,actions:[{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
+	        			,actions:[
+									{label:"保存",action:function(){ AuditAction(45,"保存") }},
+		      	        			{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
         				]
 	        		},{status:50,label:"QC验货",memo:true
 	        			<?php if( $ppp_qc) { ?>
-	        			,actions:[{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
+	        			,actions:[
+									{label:"保存",action:function(){ AuditAction(50,"保存") }},
+		      	        			{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
         				]
 	        			<?php };?>
 	        		},{status:60,label:"货品入库",memo:true
 	        			<?php if( $ppp_inwarehouse) { ?>
-	        			,actions:[{label:"审批通过",action:function(){ AuditAction(70,"入库确认") } }
+	        			,actions:[
+									{label:"保存",action:function(){ AuditAction(60,"保存") }},
+		      	        			{label:"入库确认",action:function(){ AuditAction(70,"入库确认") } }
         				]
 	        			<?php };?>
 	        		},
 	        		{status:70,label:"采购确认",memo:true
 	        			<?php if( $ppp_confirm) { ?>
-	        			,actions:[{label:"确认采购",action:function(){ AuditAction(80,"采购确认") } }]
+	        			,actions:[
+									{label:"保存",action:function(){ AuditAction(70,"保存") }},
+		      	        			{label:"确认采购",action:function(){ AuditAction(80,"采购确认") } }]
 	        			<?php };?>
 	        		},
 	        		{status:80,label:"结束"}
@@ -276,6 +295,14 @@
 										<th>货品：</th><td colspan=3><a class="product-realsku"  sku="<?php echo $sku ;?>"  href="#"><?php echo $sku ;?></a>（<?php echo $title ;?>）</td>
 									</tr>
 									<tr>
+										<th><button class="btn btn-tags 10-input  input no-disabled">添加</button>标签：</th>
+										<td colspan=3>
+											<input id="tags"   type="hidden"   value="<?php echo $product['TAGS'];?>"/>
+											<ul class="tag-container" style="list-style: none;">
+											</ul>
+										</td>
+									</tr>
+									<tr>
 										<th>采购时限：</th>
 										<td colspan=3>
 										<input id="planStartTime" class="10-input input"  data-validator="required"  type="text"  
@@ -301,12 +328,6 @@
 													<?php echo $status>=50?"data-validator='required'":"" ?>
 													value='<?php echo $product['BAD_PRODUCTS_NUM'] ;?>' /></td>
 									</tr>
-									<tr class="check-purchase-tr">
-										<th>入库时间：</th>
-										<td colspan="3"><input id="warehouseTime" class="60-input input"   type="text"  data-widget="calendar"
-													<?php echo $status>=60?"data-validator='required'":"" ?>
-													value='<?php echo $product['WAREHOUSE_TIME'] ;?>' /></td>
-									</tr>
 									<tr class="real-purchase-tr">
 										<th>计划供应商：</th>
 										<td >
@@ -328,8 +349,16 @@
 										</select> 
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 45-input  input">编辑</button>
 										</td>
-										<th>实际供应商：</th>
+										<th>支付方式：</th>
 										<td >
+											<input id="payType" class="45-input input"  type="text"
+													<?php echo $status>=45?"data-validator='required'":"" ?>
+													value='<?php echo $product['PAY_TYPE'] ;?>' />
+										</td>
+									</tr>
+									<tr>
+										<th>实际供应商：</th>
+										<td>
 										<select id="realProvidor"   class=" 70-input  input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 										>
@@ -347,6 +376,10 @@
 										</select> 
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier  70-input  input">编辑</button>
 										</td>
+										<th>入库时间：</th>
+										<td><input id="warehouseTime" class="60-input input"   type="text"  data-widget="calendar"
+													<?php echo $status>=60?"data-validator='required'":"" ?>
+													value='<?php echo $product['WAREHOUSE_TIME'] ;?>' /></td>
 									</tr>
 									<tr class="check-purchase-tr">	
 										<th>实际采购时间：</th>
@@ -358,7 +391,7 @@
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 											value='<?php echo $product['REAL_QUOTE_PRICE'] ;?>' /></td>
 									</tr>
-									
+									<!-- 
 									<tr class="check-purchase-tr">
 										<th>验收说明：</th>
 										<td colspan=3>
@@ -377,18 +410,20 @@
 										<input type="text" id="sample_code" value='<?php echo $sample_code ;?>' placeHolder="位置码+产品码组成，中间以下划线连接" />
 										</td>
 									</tr>
+									 -->
 									<tr>
 										<th>采购地区：</th><td colspan=3>
-										<select id="area">
+										<select id="area"  class="45-input input" >
 											<option value="china" <?php if($area == 'china' ) echo 'selected' ;?>>大陆</option>
 											<option value="taiwan" <?php if($area == 'taiwan' ) echo 'selected' ;?> >台湾</option>
 											<option value="american" <?php if($area == 'american' ) echo 'selected' ;?>>美国</option>
 										</select>
 										</td>
 									</tr>
+									
 									<tr>
 										<th>备注：</th><td colspan=3>
-										<textarea style="width:500px;height:80px;" id="memo"><?php echo $product['MEMO'] ;?></textarea>
+										<textarea class="10-input input" style="width:500px;height:80px;" id="memo"><?php echo $product['MEMO'] ;?></textarea>
 										</td>
 									</tr>
 								</tbody>

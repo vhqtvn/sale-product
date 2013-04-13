@@ -9,6 +9,7 @@ $(function(){
 
 	 $("#personForm   :input").attr("disabled",'disabled') ;
 	 $("."+currentStatus+"-input").removeAttr("disabled") ;
+	 $(".btn.input[disabled]").hide();
 	
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
 	if( $("#ref-asins").length ){
@@ -294,6 +295,9 @@ function AuditAction(status , statusLabel){
 	}
 }
 
+$(function(){
+	Tags.init( $(".btn-tags") , $(".tag-container") ,$("#tags")) ;
+}) ;
 
 
 var Flow = function(){

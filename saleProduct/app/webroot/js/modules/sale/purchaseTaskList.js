@@ -79,7 +79,7 @@ $(function(){
 								pagesize:10,
 								columns:[//显示列
 									{align:"center",key:"ID",label:"编号",width:"100"},
-									{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
+									{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
 									{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
 						           		var r = record.PLAN_START_TIME||"" ;
 						           		var r1 = record.PLAN_END_TIME||"" ;
@@ -137,11 +137,11 @@ $(function(){
 				var html = [] ;
 
 			//	if(status == 4 || status == 6){
-					isSku && html.push('<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pre_print.gif"/></a>&nbsp;') ;
+				isSku && html.push('<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pre_print.gif"/></a>&nbsp;') ;
 			
 				return html.join("") ;	
 			}},
-			{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'json',content:{1:'编辑中',2:'待审批',3:'审批通过',4:'审批不通过，结束采购',5:'已采购',6:'已验收（QC）'}}},
+			{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
 			{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
            		var r = record.PLAN_START_TIME||"" ;
            		var r1 = record.PLAN_END_TIME||"" ;

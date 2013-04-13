@@ -42,6 +42,7 @@
 							return "<a href='#' class='edit-box-product' val='"+val+"'>编辑</a>&nbsp;&nbsp;" ;
 					}},
 				    {align:"center",key:"BOX_NUMBER",label:"包装箱",width:"5%"},
+					{align:"center",key:"IMAGE_URL",label:"",width:"2%",format:{type:'img'}},
 		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
 	           		{align:"center",key:"SKU",label:"SKU",width:"5%"},
 	           		{align:"center",key:"INVENTORY_TYPE",label:"库存类型",width:"5%",format:{type:'json',content:{1:'普通库存',2:'FBA库存'}}}, 

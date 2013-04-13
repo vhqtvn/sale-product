@@ -142,14 +142,14 @@
 				<?php 
 					foreach( $items as $item ){
 						$item = $SqlUtils->formatObject($item) ;
-						//debug($item) ;
 				  ?>
 				  	<tr>
 				  		<td style="width:100%;">
 				  			<div class="alert alert-success" style="margin:2px;font-weight:bold;"><?php  echo $item['Title'] ;?>
 				  					<?php 
+				  					
 				  						if( !empty($item['NAME']) ){
-				  							echo "（".$item['NAME']."）" ;
+				  							echo "[ ".$item['REAL_SKU']." ]（".$item['NAME']."）" ;
 				  						}
 				  					?>
 				  				</div>

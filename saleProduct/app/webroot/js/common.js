@@ -992,7 +992,7 @@ function buildUrl(url, paramObject) {
 }
 
 $(function(){
-	$(".btn:not([type='submit'])").live("click",function(){
+	$(".btn:not([type='submit']):not(.no-disabled):not(.query-btn)").live("click",function(){
 		var me = $(this)
 		$(this).attr("disabled","disabled");
 		setTimeout(function(){
@@ -1013,4 +1013,71 @@ function getImage(iconName,title,clz){
 //common action 
 function viewSupplier(id){
 	openCenterWindow(contextPath+"/supplier/view/"+id,800,580) ;
+}
+
+
+var Tags = {
+		init : function(btn , container,fieldEl){
+			container.css("margin","2px") ;
+			//初始化
+			var val = fieldEl.val() ;
+			if( val ){
+				$(val.split("||")).each(function(){
+					var self = this ;
+					$("<li class='alert alert-success key-li' style='position:relative;'>"+this+"</li>").appendTo(container).mouseenter(function(){
+						if( !btn.attr('disabled'))$("<a href='#' class='del-key' style='position:absolute;top:0px;right:0px;color:red;'>删除</a>").appendTo( $(this) );
+					}).mouseleave(function(){
+						$(this).find(".del-key").remove();
+					}) ;
+				}) ;
+			}
+			
+			if( !btn.attr('disabled')){
+				btn.click(function(){
+					var li = $("<li class='alert alert-success key-li' style='position:relative;'><input class='key-input'  type='text' value=''/></li>").appendTo( container ).find("input")
+					.focus().parent().mouseenter(function(){
+						$("<a href='#' class='del-key' style='position:absolute;top:0px;right:0px;color:red;'>删除</a>").appendTo( $(this) );
+					}).mouseleave(function(){
+						$(this).find(".del-key").remove();
+					}) ;
+					return false ;
+				}) ;
+				
+				$(".key-li").live("dblclick",function(){
+					if( $(this).find("input").length <=0 ){
+						$(this).find(".del-key").remove();
+						var val = $.trim($(this).text()) ;
+						$("<input class='key-input' type='text' placeHolder='输入关键字' value='"+val+"'/>").appendTo($(this).empty()).focus() ;
+					}
+				}) ;
+				
+				$(".del-key").live("click",function(){
+					if( $.trim($(this).parent().text() || $(this).parent().find("input").val()) ){
+						if(window.confirm("确认删除？")){
+							$(this).parent().remove();
+							Tags.formatFieldVal(container, fieldEl) ;
+						}
+					}
+				}) ;
+				
+				$(".key-input").live("blur",function(){
+					if(!$(this).val()){
+						$(this).parent().remove() ;
+					}else{
+						$(this).parent().html( $(this).val() ) ;
+					}
+					
+					Tags.formatFieldVal(container, fieldEl) ;
+				});
+			}
+		},
+		formatFieldVal:function(container,fieldEl){
+			//format value
+			var keys = [] ;
+			container.find("li").each( function(){
+				var _keys = $(this).find("input").length?$(this).find("input").val():$(this).text() ;
+				keys.push( $.trim(_keys) ) ;
+			}) ;
+			fieldEl.val(keys.join("||")) ;
+		}
 }

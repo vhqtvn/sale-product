@@ -5,6 +5,7 @@
            (select name from sc_user where login_id = spt.created_by) as EXECUTOR_NAME
          from sc_purchase_task spt 
          where 1=1
+          {@ and spt.task_code = '#taskCode#'}
          {@ #$purchaseTask_view: and 1=0# }
          order by spt.id desc
     </entry>
@@ -70,6 +71,7 @@
 
     </entry>
     
+    <!-- and sppd.executor = '{@#Evn.loginId#}' -->
     <entry key="sql_purchase_task_product_list">
 		SELECT DISTINCT  
 			sppd.* ,
@@ -86,7 +88,6 @@
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'
-			and sppd.executor = '{@#Evn.loginId#}'
     </entry>
     
     <entry key="sql_purchase_task_product_selectable">

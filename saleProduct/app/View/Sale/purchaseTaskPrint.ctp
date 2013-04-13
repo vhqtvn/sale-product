@@ -42,7 +42,7 @@
 					{align:"center",key:"ASIN",label:"序号", width:"40",format:function(){
 						return ++index ;
 					} },
-		           	{align:"center",key:"ASIN",label:"产品详细信息", width:"510",format:function(val,record){
+		           	{align:"center",key:"ASIN",label:"产品详细信息", width:"410",format:function(val,record){
 		           		var knowledge = record.KNOWLEDGE||"" ;
 		           		var knows = knowledge.split("<p") ;
 		           		var kHtml = [] ;
@@ -51,7 +51,7 @@
 		           			kHtml.push("<p"+know.split("</p>")[0]+"</p>") ;
 		           		}) ;
 		           		
-		           		var localUrl = (record.LOCAL_URL+"").replace(/\%/g,"%25") ;
+		           		var localUrl = (record.IMAGE_URL+"").replace(/\%/g,"%25") ;
 		           		
 		           		if(localUrl && localUrl != 'null')
 		           			localUrl = '<img src="/'+fileContextPath+'/'+localUrl+'"/>' ;
@@ -61,8 +61,8 @@
 		           		var html = '\
 		           		<div>\
 							<div class="product-image" style="width:152px;float:left;">'+localUrl+'</div>\
-							<div class="product-base" style="width:342px;float:left;">\
-								<div class="product-content product-asin">'+record.ASIN+'</div>\
+							<div class="product-base" style="width:242px;float:left;">\
+								<div class="product-content product-asin">SKU: '+record.SKU+'</div>\
 								<div class="product-content product-title">'+record.TITLE+'</div>\
 								<div class="product-content product-gg">'+kHtml.join("")+'</div>\
 							</div>\
@@ -70,7 +70,7 @@
 		           		' ;
 		           		return html ;
 		           	} },
-		           	{align:"center",key:"ASIN",label:"供应商信息", width:"150",format:function(val,record){
+		           	{align:"center",key:"ASIN",label:"供应商", width:"150",format:function(val,record){
 			           	var isUsed = record.IS_USED?'（采用）':"" ;
 		           		var html = '\
 		           		<div>\
@@ -86,7 +86,7 @@
 		           		' ;
 		           		return html ;
 		           	} },
-		           	{align:"center",key:"ASIN",label:"采购信息", width:"70",format:function(val,record){
+		           	{align:"center",key:"ASIN",label:"采购信息", width:"100",format:function(val,record){
 		           		var totalPrice = record.QUOTE_PRICE * record.SUPPIERABLE_NUM ;
 		           		if(totalPrice) totalPrice = totalPrice.toFixed(2) ;
 		           		
@@ -104,7 +104,10 @@
 		           		' ;
 		           		return html ;
 		           	} },
-		           	{align:"center",key:"QUOTE_PRICE",label:"备注(手工输入)",width:"180",format:function(){
+		           	{align:"center",key:"QUOTE_PRICE",label:"承诺交期",width:"100",format:function(){
+		           		return '<input type="text" style="width:50px!important;"/>年<input type="text"  style="width:50px!important;"/>月<input type="text" style="width:50px!important;" />日' ;
+		           	}},
+		           	{align:"center",key:"QUOTE_PRICE",label:"备注(手工输入)",width:"150",format:function(){
 		           		return "" ;
 		           	}}
 		         ],
@@ -218,14 +221,15 @@
 </head>
 <body>
 	<center>
-		<h1>采购任务单</h1>
+		<h1>采购确认单</h1>
 		<hr style="margin:2px;margin-bottom:5px;"/>
 	</center>
 	<div style="padding:5px 10px;font-size:13px;font-weight:bold;">
 	   <div class="row-fluid title-bar">
-	   <div class="span6">
-		采购任务编码：<?php echo $task['TASK_CODE']?>
+	   <div class="span3">
+		采购编号：<?php echo $task['TASK_CODE']?>
 		</div>
+		<div class="span3">采购单位：深圳双橙科技有限公司</div>
 		<div class="span3">
 		申请人：<?php echo $task['EXECUTOR_NAME']?>
 		</div>
@@ -249,6 +253,21 @@
 				<td style="font-weight:bold;">总监：<input type="text" /></td>
 			</tr>
 		</table>
+		<hr/>
+		<table style="width:100%;">
+		
+		<tr>
+				<td style="font-weight:bold;width:50%;">供应商负责人签字：<input type="text" /></td>
+				<td style="font-weight:bold;text-align:left;width:30%;">盖章</td>
+				<td style="font-weight:bold;">日期：<input type="text" /></td>
+			</tr>
+			<tr>
+			<td colspan="3" style="text-align:right;font-size:10px;padding-top:3px;">请供应商收到后签字盖章并传真发回我司确认</td>
+		</tr>
+		</table>
+		
+		
 	</div>
+	
 </body>
 </html>

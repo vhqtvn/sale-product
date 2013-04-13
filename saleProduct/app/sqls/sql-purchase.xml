@@ -53,6 +53,7 @@
                FROM sc_purchase_plan 
                where 1=1
 		{@ and  name = '#name#' }
+		{@ and  code = '#code#' }
 		{@ and  type = '#type#' }
 		and status = 1
          order by sc_purchase_plan.create_time desc
@@ -141,7 +142,9 @@
 				area = '{@#area#}',
 				sample_code = '{@#sample_code#}',
 				memo = '{@#memo#}',
-				executor = '{@#executor#}'
+				executor = '{@#executor#}',
+				tags  = '{@#tags#}'
+				{@ ,pay_Type = '#payType#'}
 				{@ ,real_num = '#realNum#'}
 				{@ ,real_quote_price =  '#realQuotePrice#'}
 				{@ ,REAL_PROVIDOR =  '#realProvidor#'}

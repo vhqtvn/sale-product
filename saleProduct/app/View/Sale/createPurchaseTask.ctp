@@ -18,7 +18,18 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('calendar/WdatePicker');
-		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$defaultCode = null ;
+		//if( empty($result['IN_NUMBER']) ){
+			$index = $SqlUtils->getMaxValue("PT" , null , 1) ;
+			if( strlen($index) < 5 ){
+				$len = 5-strlen($index) ;
+				for($i=0 ;$i < $len ;$i++){
+					$index = '0'.$index ;
+				}
+			}
+			$defaultCode = "PT-".strtoupper($user['LOGIN_ID']) ."-".date("ymd").'-'.$index ;
+		//}
 	?>
   
    <style>
@@ -75,8 +86,8 @@
 						<table class="form-table" >
 							<caption>基本信息</caption>
 								<tr>
-									<th>任务编码：</th><td><input type="text" data-validator="required" id="taskCode"  
-										value="" style="width:300px;"/></td>
+									<th>任务编码：</th><td><input type="text"  disabled id="taskCode"  
+										 style="width:300px;" value="<?php echo $defaultCode;?>"/></td>
 								</tr>
 								<tr>
 									<th>备注：</th><td><textarea id="memo" style="width:300px;height:100px;"

@@ -8,6 +8,7 @@
 			insert into sc_purchase_plan 
 				(
 				NAME, 
+				CODE,
 				PLAN_TIME, 
 				PLAN_END_TIME, 
 				CREATE_TIME, 
@@ -20,6 +21,7 @@
 				values
 				(
 				'{@#name#}', 
+				'{@#code#}', 
 				'{@#planTime#}', 
 				'{@#planEndTime#}', 
 				NOW(), 
@@ -35,6 +37,7 @@
 			update  sc_purchase_plan 
 				set
 				NAME = '{@#name#}' , 
+				CODE = '{@#code#}' , 
 				PLAN_TIME = '{@#planTime#}' , 
 				PLAN_END_TIME = '{@#planEndTime#}' , 
 				MEMO = '{@#memo#}' , 
