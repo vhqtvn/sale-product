@@ -1,7 +1,10 @@
 	$(function(){
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
-				if( $(this).hasClass("update") ){
+				var record = $(this).parents("tr:first").data("record") ;
+				if( $(this).hasClass("view") ){
+					openCenterWindow(contextPath+"/saleProduct/details/"+record.REAL_SKU+"/sku",900,650) ;
+				}else if( $(this).hasClass("update") ){
 					openCenterWindow(contextPath+"/saleProduct/details/"+id,900,650) ;
 				}else if( $(this).hasClass("giveup") ){
 					var type = $(this).attr("type");
@@ -36,19 +39,24 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"操作", width:"25%",format:function(val,record){
+					{align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
 						var html = [] ;
+						html.push(  getImage('icon-grid.gif','查看','action view ') +"&nbsp;") ;
 						if(tabIndex < 2){
 							if( $product_edit ){
-								html.push("<a href='#' class='action update btn' val='"+val+"'>编辑</a>&nbsp;") ;
+								html.push(  getImage('edit.png','编辑','action update ') +"&nbsp;") ;
 							}
 						}
 						if( $product_stock_quanity_assign  ){
-							html.push("<a href='#' class='action inout btn' val='"+val+"'>出入库</a>&nbsp;") ;
-							html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
+							html.push(  getImage('retry.png','出入库','action inout ') +"&nbsp;") ;
+							html.push(  getImage('pkg.gif','库存分配','action assign ') +"&nbsp;") ;
+							
+							//html.push("<a href='#' class='action inout btn' val='"+val+"'>出入库</a>&nbsp;") ;
+							//html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
 						}
 						return html.join("") ;
 					},permission:function(){ return $product_edit||$product_stock_quanity_assign ; }},
+				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
 		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
@@ -75,13 +83,7 @@
 		           	}},
 		           	
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
-		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:function(val,record){
-		           		if(val){
-		           			val = val.replace(/%/g,'%25') ;
-		           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:30px;height:30px;'>" ;
-		           		}
-		           		return "" ;
-		           	}},
+		          
 		           	{align:"center",key:"MEMO",label:"备注",width:"25%"},
 		           	{align:"center",key:"ID",label:"操作", width:"6%",format:function(val,record){
 						if(tabIndex < 2){

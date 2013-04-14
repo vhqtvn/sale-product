@@ -4,18 +4,9 @@ class Product extends AppModel {
 	
 	function getProductCategory($asin = null ){
 		if( !empty($asin) ){
-			$sql = "select sc_product_category.* ,
-			(select count(*) from sc_product_category_rel where sc_product_category_rel.category_id = sc_product_category.id and 
-			sc_product_category_rel.asin = '$asin' ) as selected
-			 from sc_product_category " ;
-			
-			return $this->query($sql) ;
+			return	$this->exeSql("sql_getProductCategoryByAsin", array('asin'=>$asin)) ;
 		}else{
-			$sql = "select sc_product_category.*,
-              (select count(*) from sc_product_category_rel where sc_product_category_rel.category_id = sc_product_category.id ) as TOTAL
-              from sc_product_category " ;
-			
-			return $this->query($sql) ;
+			return	$this->exeSql("sql_getProductCategoryByDefault", array()) ;
 		}
 		
 	}
@@ -36,23 +27,26 @@ class Product extends AppModel {
 		}
 	}
 	
-	function saveCategory($category,$user){
+	function saveCategory($category){
 		$memo = $category['memo'] ;
 		$name = $category['name'] ;
 		
 		if( isset( $category['id'] )  ){//update
-			$sql = "
+			$this->exeSql("sql_product_category_update", $category) ;
+			/*$sql = "
 				UPDATE  sc_product_category 
 					SET
 					NAME = '$name' , 
-					MEMO = '$memo'
+					MEMO = '$memo',
+					PURCHASE_CHARGER='".$category."'
 					
 					WHERE
 					ID = '".$category['id']."'" ;
 					
-					$this->query($sql) ;
+					$this->query($sql) ;*/
 		}else{//insert
-			$sql = "
+			$this->exeSql("sql_product_category_insert", $category) ;
+			/*$sql = "
 				INSERT INTO sc_product_category 
 					( NAME, 
 					PARENT_ID, 
@@ -61,10 +55,10 @@ class Product extends AppModel {
 					VALUES
 					( '$name', 
 					'".$category['parentId']."', 
-					'$memo','".$user['LOGIN_ID']."',NOW()
+					'$memo','".$category['loginId']."',NOW()
 					)" ;
 					
-					$this->query($sql) ;
+					$this->query($sql) ;*/
 		}
 	}
 

@@ -42,7 +42,7 @@
 					{align:"center",key:"ASIN",label:"序号", width:"40",format:function(){
 						return ++index ;
 					} },
-		           	{align:"center",key:"ASIN",label:"产品详细信息", width:"410",format:function(val,record){
+		           	{align:"center",key:"ASIN",label:"产品详细信息", width:"390",format:function(val,record){
 		           		var knowledge = record.KNOWLEDGE||"" ;
 		           		var knows = knowledge.split("<p") ;
 		           		var kHtml = [] ;
@@ -57,14 +57,20 @@
 		           			localUrl = '<img src="/'+fileContextPath+'/'+localUrl+'"/>' ;
 		           		else
 		           			localUrl = '' ;
+
+	           			//采购标签
+	           			var  tags = record.TAGS||"" ;
+	           			//tags = tags.split("||") ;
+	           			tags = tags.replace(/\|\|/g,"&nbsp;,&nbsp;") ;
 		           		
 		           		var html = '\
 		           		<div>\
-							<div class="product-image" style="width:152px;float:left;">'+localUrl+'</div>\
-							<div class="product-base" style="width:242px;float:left;">\
+							<div class="product-image" style="width:152px;height:152px;float:left;">'+localUrl+'</div>\
+							<div class="product-base" style="width:222px;float:left;">\
 								<div class="product-content product-asin">SKU: '+record.SKU+'</div>\
 								<div class="product-content product-title">'+record.TITLE+'</div>\
 								<div class="product-content product-gg">'+kHtml.join("")+'</div>\
+								<hr style="margin:2px;"/><div class="product-content product-gg">标签：'+tags+'</div>\
 							</div>\
 						</div>\
 		           		' ;
@@ -86,26 +92,34 @@
 		           		' ;
 		           		return html ;
 		           	} },
-		           	{align:"center",key:"ASIN",label:"采购信息", width:"100",format:function(val,record){
+		           	{align:"center",key:"ASIN",label:"采购信息", width:"120",format:function(val,record){
 		           		var totalPrice = record.QUOTE_PRICE * record.SUPPIERABLE_NUM ;
 		           		if(totalPrice) totalPrice = totalPrice.toFixed(2) ;
-		           		
+
 		           		var html = '\
 		           		<div>\
 								<div class="product-purchase">\
-									<label>单价：</label>\
-									<div class="label-content">'+record.QUOTE_PRICE+'</div>\
-									<label>采购数量：</label>\
-									<div class="label-content">'+record.SUPPIERABLE_NUM+'</div>\
-									<label>总价：</label>\
-									<div class="label-content">'+(totalPrice||"-")+'</div>\
+									<div class="row-fluid">\
+										<div class="span4">单价：</div>\
+										<div class="label-content span8">'+record.QUOTE_PRICE+'</div>\
+									</div>\
+									<div class="row-fluid">\
+										<div class="span4">数量：</div>\
+										<div class="label-content span8">'+record.SUPPIERABLE_NUM+'</div>\
+									</div>\
+									<div class="row-fluid">\
+										<div class="span4">总价：</div>\
+										<div class="label-content span8">'+(totalPrice||"-")+'</div>\
+									</div><hr style="margin:2px;"/>\
+									<div style="text-align:left;">支付方式:</div>\
+									<div class="label-content">'+(record.PAY_TYPE)+'</div>\
 								</div>\
 						</div>\
 		           		' ;
 		           		return html ;
 		           	} },
 		           	{align:"center",key:"QUOTE_PRICE",label:"承诺交期",width:"100",format:function(){
-		           		return '<input type="text" style="width:50px!important;"/>年<input type="text"  style="width:50px!important;"/>月<input type="text" style="width:50px!important;" />日' ;
+		           		return '' ;
 		           	}},
 		           	{align:"center",key:"QUOTE_PRICE",label:"备注(手工输入)",width:"150",format:function(){
 		           		return "" ;
@@ -262,7 +276,7 @@
 				<td style="font-weight:bold;">日期：<input type="text" /></td>
 			</tr>
 			<tr>
-			<td colspan="3" style="text-align:right;font-size:10px;padding-top:3px;">请供应商收到后签字盖章并传真发回我司确认</td>
+			<td colspan="3" style="text-align:right;font-size:10px;padding-top:10px;padding-right:30px;"><h4>请供应商收到后签字盖章并传真发回我司确认</h4></td>
 		</tr>
 		</table>
 		

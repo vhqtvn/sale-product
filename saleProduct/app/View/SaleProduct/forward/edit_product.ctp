@@ -22,9 +22,12 @@
 		echo $this->Html->script('modules/saleproduct/edit_product');
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$Config  = ClassRegistry::init("Config") ;
 		$security  = ClassRegistry::init("Security") ;
 		
 		$groups = $SqlUtils->exeSql("sql_package_group_list",array() ) ;
+		
+		$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;
 		
 	?>
 	
@@ -33,6 +36,22 @@
 			list-style: none;
 			float:left;
 			margin:2px 5px;
+		}
+		
+		input[disabled],textarea[disabled],select[disabled]{
+			background:none!important;
+			border:none!important;
+			-webkit-border-radius: 0px!important;
+			-moz-border-radius: 0px!important;
+			border-radius: 0px!important;
+			-webkit-box-shadow: none;;
+			-moz-box-shadow: none;
+			box-shadow: none;
+			-webkit-transition: none;
+			-moz-transition:none;
+			-ms-transition: none;
+			-o-transition: none;
+			transition: none;
 		}
 	</style>
 
@@ -110,8 +129,19 @@
 									<th><button class="btn addKey-btn no-disabled">添加</button>关键字：</th>
 									<td colspan=3>
 											<input type="hidden" name="keys" value="<?php echo $item['S_KEYS']?>"></input>
-											<ul class="keys-container">
+											<ul class="keys-container" style="margin:2px;">
 											</ul>
+											<hr style="margin:0px;clear:both;padding-top:3px;"/>
+											<?php 
+												echo '<b>相关网址：</b>' ;
+												foreach ( explode(",", $websites) as $website ){
+													$website = explode("||", $website) ;
+													$name = $website[0] ;
+													$url = $website[1] ;
+													
+													echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
+												}
+											?>
 									</td>
 								</tr>
 							</tbody>

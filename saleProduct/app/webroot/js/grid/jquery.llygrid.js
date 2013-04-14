@@ -33,7 +33,7 @@
 			//1 head start
 			html.push('<div class="lly-grid-head lly-grid-1-head ui-state-default">');
 			html.push("<div>")
-			html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed"><thead></thead></table>');
+			html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed grid-table"><thead></thead></table>');
 			html.push("</div>");
 			html.push("</div>");
 			//1head end
@@ -41,7 +41,7 @@
 			//1body start
 			html.push('<div class="lly-grid-body lly-grid-1-body"   style="height:'+height+'px">');
 			html.push("<div class='lly-grid-scroll-y' >")
-			html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed"><tbody></tbody></table>');
+			html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed grid-table"><tbody></tbody></table>');
 			html.push("</div>");
 			html.push("</div>");
 			//1body end
@@ -53,14 +53,14 @@
 		//2head start
 		html.push('<div class="lly-grid-head lly-grid-2-head  ui-state-default ui-widget-content">');
 		html.push("<div  class='lly-grid-scroll-x'>")
-		html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed"><thead></thead></table>');
+		html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed grid-table"><thead></thead></table>');
 		html.push("</div>")
 		html.push("</div>") ;
 		//2head end
 		
 		//2body start
 		html.push('<div class="lly-grid-body lly-grid-2-body"  style="height:'+height+'px">');
-		html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed"><tbody></tbody></table>');
+		html.push('<table cellspacing=0 cellpadding=0 class="table table-bordered  table-striped table-condensed grid-table"><tbody></tbody></table>');
 		html.push("</div>");
 		//2body end
 		
@@ -79,27 +79,27 @@
 		if(options.forzenColumn.length>0){
 			createHeadRow("lly-grid-1-head") ;
 			createHeadCell(options.forzenColumn,"lly-grid-1-head") ;
-			$(".lly-grid-1-head table",target).width( width  );
-			$(".lly-grid-1-head",target).width( $(".lly-grid-1-head table",target).outerWidth(true)  );
-			$(".lly-grid-1-body",target).width( $(".lly-grid-1-head table",target).outerWidth(true)  );
-			$(".lly-grid-1-body > table",target).width( width ) ;
+			$(".lly-grid-1-head table.grid-table",target).width( width  );
+			$(".lly-grid-1-head",target).width( $(".lly-grid-1-head table.grid-table",target).outerWidth(true)  );
+			$(".lly-grid-1-body",target).width( $(".lly-grid-1-head table.grid-table",target).outerWidth(true)  );
+			$(".lly-grid-1-body > table.grid-table",target).width( width ) ;
 		}
 
 		createHeadRow("lly-grid-2-head") ;
 		createHeadCell(options.bodyColumn,"lly-grid-2-head") ;
 		
 		width = width + (options.bodyColumn.length)  ;
-		$(".lly-grid-2-head table",target).width( width  );
-		$(".lly-grid-2-body > table",target).width( width ) ;
+		$(".lly-grid-2-head table.grid-table",target).width( width  );
+		$(".lly-grid-2-body > table.grid-table",target).width( width ) ;
 		
 		setTimeout(function(){
 			adjustWidth(target) ;
 		},0) ;
 		
 		function createHeadRow(container){
-			$("<tr idx='_colwidth_' class='ui-widget-content' style='height:0px;'></tr>").appendTo( $("."+container+" table thead",target) ) ;
+			$("<tr idx='_colwidth_' class='ui-widget-content' style='height:0px;'></tr>").appendTo( $("."+container+" table.grid-table thead",target) ) ;
 			for(var i =0 ;i<options.headRowNum ;i++){
-				$("<tr idx='"+i+"' class='ui-widget-content'></tr>").appendTo( $("."+container+" table thead",target) ) ;
+				$("<tr idx='"+i+"' class='ui-widget-content'></tr>").appendTo( $("."+container+" table.grid-table thead",target) ) ;
 			}
 		}
 		
@@ -112,7 +112,7 @@
 				var styles = ['width:'+this.width+'px'] ;
 				
 				$("<th class='lly-grid-head-column' _width='"+this.width+"' style='"+styles.join("")+";height:0px;border-bottom:none;border-top:none;'></th>")
-								.appendTo( $("."+container+" table thead tr[idx='_colwidth_']",target)) ;
+								.appendTo( $("."+container+" table.grid-table thead tr[idx='_colwidth_']",target)) ;
 				
 				if( this.group ){
 					var gs = this.group.split("|");
@@ -121,9 +121,9 @@
 						var g = gs[i-1] ;
 						
 						var colspan = groupCols[g].length ;
-						if( !$(".lly-grid-2-head table thead th[group='"+g+"']",target)[0]  ){
+						if( !$(".lly-grid-2-head table.grid-table thead th[group='"+g+"']",target)[0]  ){
 							$("<th class='lly-grid-head-column' colSpan='"+colspan+"' group='"+g+"'>"+g+"</th>")
-								.appendTo( $("."+container+" table thead tr[idx='"+(gs.length-i)+"']",target)) ;
+								.appendTo( $("."+container+" table.grid-table thead tr[idx='"+(gs.length-i)+"']",target)) ;
 						}
 					}
 				}
@@ -132,7 +132,7 @@
 				var rowSpanHtml = rowspan>1?"rowspan='"+rowspan+"'":"" ;
 				$("<th "+rowSpanHtml+" key='"+this.key+"' colIndex='"+index+"'  class='lly-grid-head-column' style='border-bottom:0px;'>" +
 						"<div class='"+sort+" cell-div'>"+headCellRender(col)+ 
-						"</div> </th>").appendTo( $("."+container+" table thead tr[idx='"+(options.headRowNum - rowspan  )+"']",target)) ;
+						"</div> </th>").appendTo( $("."+container+" table.grid-table thead tr[idx='"+(options.headRowNum - rowspan  )+"']",target)) ;
 	
 				width += parseInt(this.width) ;
 			}) ;
@@ -163,11 +163,11 @@
 			}
 			
 			//height
-			$(".lly-grid-2-body table tr",target).each(function(index){
+			$(".lly-grid-2-body table.grid-table tr",target).each(function(index){
 				var h2 = $(this).outerHeight() ;
-				var h1 = $(".lly-grid-1-body table tr:eq("+index+")",target).outerHeight() ;
+				var h1 = $(".lly-grid-1-body table.grid-table tr:eq("+index+")",target).outerHeight() ;
 				if(h2 > h1){
-					$(".lly-grid-1-body table tr:eq("+index+")",target).height(h2) ;
+					$(".lly-grid-1-body table.grid-table tr:eq("+index+")",target).height(h2) ;
 				}else{
 					$(this).height(h1) ;
 				}
@@ -185,7 +185,7 @@
 			$(".lly-grid-1-head tr:first th",target).each(function(index){
 				var width = $.browser.msie? $(this).width():$(this).outerWidth() ;
 				var width =  $(this).attr("_width")   ;
-				$(".lly-grid-1-body table tr td:eq("+index+")",target).width( width ) ;
+				$(".lly-grid-1-body table.grid-table tr td:eq("+index+")",target).width( width ) ;
 			}) ;
 			
 			$(".lly-grid-2-head tr:first th",target).each(function(index){
@@ -194,7 +194,7 @@
 				//alert(width+"  "+width1+"  "+$(this).width())
 				//alert(width);
 				//alert
-				$(".lly-grid-2-body table tr td:eq("+index+")",target).width( width ) ;
+				$(".lly-grid-2-body table.grid-table tr td:eq("+index+")",target).width( width ) ;
 			}) ;
 	}
 	
@@ -203,7 +203,7 @@
 		var columns = options.columns ;
 		
 		if(options.forzenColumn.length>0){
-			$(".lly-grid-1-body table tbody",target).empty() ;
+			$(".lly-grid-1-body table.grid-table tbody",target).empty() ;
 			$(records).each(function(index,record){
 				var html = [] ;
 				html.push("<tr class='ui-widget-content'>");
@@ -217,7 +217,7 @@
 					html.push("<td key='"+col.key+"' style='"+styles.join(";")+"' class='"+clz+" lly-grid-body-column '><div class='cell-div'>"+cellRender(val,record,col)+"</div></td>") ;	
 				});
 				html.push("</tr>");
-				var row = $(html.join("")).appendTo($(".lly-grid-1-body table tbody",target)).data("record",record) ;
+				var row = $(html.join("")).appendTo($(".lly-grid-1-body table.grid-table tbody",target)).data("record",record) ;
 				if(options.rowClick){
 					row.bind("click",function(){
 						var _record = $(this).data("record") ;
@@ -235,20 +235,20 @@
 			
 		}
 		
-		$(".lly-grid-2-body table tbody",target).empty();
+		$(".lly-grid-2-body table.grid-table tbody",target).empty();
 		$(records).each(function(index,record){
 			html = [] ;
 			var record = this ;
 			html.push("<tr class='ui-widget-content'>");
 			$(options.bodyColumn).each(function(index,col){
-				var width = (".lly-grid-2-head table thead th:first:eq("+index+")",target).attr("_width")||col.width ;
+				var width = (".lly-grid-2-head table.grid-table thead th:first:eq("+index+")",target).attr("_width")||col.width ;
 			
 				var styles = ['width:'+width+'px'] ;
 				colPropRender(col,styles) ;
 				html.push("<td key='"+col.key+"'  style='"+styles.join(";")+"' class='lly-grid-body-column'><div class='cell-div'>"+cellRender(record[col.key],record,col)+"</div></td>") ;
 			});
 			html.push("</tr>");
-			var row = $(html.join("")).appendTo($(".lly-grid-2-body table tbody",target)).data("record",record) ;
+			var row = $(html.join("")).appendTo($(".lly-grid-2-body table.grid-table tbody",target)).data("record",record) ;
 			if(options.rowClick){
 				row.bind("click",function(){
 					var _record = $(this).data("record") ;
@@ -264,10 +264,10 @@
 		}) ;
 		//$(".lly-grid-2-body table tbody",target).html(html.join("")) ;
 		
-		$(".lly-grid-1-body table tr:even,.lly-grid-2-body table tr:even",target).addClass("lly-grid-row lly-grid-even") ;
-		$(".lly-grid-1-body table tr:odd,.lly-grid-2-body table tr:odd",target).addClass("lly-grid-row lly-grid-odd") ;
+		$(".lly-grid-1-body table.grid-table tr:even,.lly-grid-2-body table.grid-table tr:even",target).addClass("lly-grid-row lly-grid-even") ;
+		$(".lly-grid-1-body table.grid-table tr:odd,.lly-grid-2-body table.grid-table tr:odd",target).addClass("lly-grid-row lly-grid-odd") ;
 		
-		$(".lly-grid-body table tr",target).hover(function(){
+		$(".lly-grid-body table.grid-table tr",target).hover(function(){
 			getRow(target,this).find("td").addClass("ui-state-hover") ;
 		},function(){
 			getRow(target,this).find("td").removeClass("ui-state-hover") ;
@@ -371,7 +371,7 @@
 	
 	function getRow(target,el){
 		var index = el.rowIndex ;
-		return $(".lly-grid-1-body table tr:eq("+index+"),.lly-grid-2-body table tr:eq("+index+")",target) ;
+		return $(".lly-grid-1-body table.grid-table tr:eq("+index+"),.lly-grid-2-body table.grid-table tr:eq("+index+")",target) ;
 	}
 	
 	function setResize(target){
@@ -445,17 +445,17 @@
              var pos = currTh.offset();
 
              //同步宽度
-             var tWidth = currTh.parents("table").width() -currTh.width()  ;
+             var tWidth = currTh.parents("table:first").width() -currTh.width()  ;
              var ctWidth = event.clientX - pos.left ;
              
              var colIndex = currTh.attr("colIndex");
-             var resizeTh = currTh.parents("table").find("tr:first th:eq("+colIndex+")") ;
+             var resizeTh = currTh.parents("table:first").find("tr:first th:eq("+colIndex+")") ;
              resizeTh.width(ctWidth) ;
              resizeTh.attr("_width",ctWidth) ;
              
-             currTh.parents("table").width( tWidth + ctWidth ) ;
+             currTh.parents("table:first").width( tWidth + ctWidth ) ;
              
-             var bodytable = currTh.parents("table").parent().parent().next().find("table") ;
+             var bodytable = currTh.parents("table:first").parent().parent().next().find("table.grid-table") ;
              bodytable.width( tWidth + ctWidth ) ;
              $("tr",bodytable).find("td:eq("+colIndex+")").width(ctWidth) ;
              
@@ -570,7 +570,7 @@
 		}) ;
 		
 		
-		$(".lly-grid-body table tr",target).live('click', function(){
+		$(".lly-grid-body table.grid-table tr",target).live('click', function(){
 			$("div.lly-grid-content .ui-state-highlight",target).removeClass("ui-state-highlight") ;
 			getRow(target,this).find("td").addClass("ui-state-highlight") ;
 		} ) ;

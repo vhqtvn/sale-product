@@ -71,6 +71,13 @@
 		
 		//获取货品供应商询价
 		$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$planId,'sku'=>$sku)) ;
+		
+		$executor = $product['EXECUTOR'] ;
+		$executorName = $product['EXECUTOR_NAME'] ;
+		if( empty($executor) ){
+			$executor = $product['PURCHASE_CHARGER'] ;
+			$executorName = $product['PURCHASE_CHARGER_NAME'] ;
+		}
 	?>
   
    <style>
@@ -284,10 +291,10 @@
 										<th>编号：</th><td><?php echo $id ;?></td>
 										<th>执行人：</th><td>
 											<input type="hidden"   id="executor"  class="40-input input"
-											value="<?php echo $product['EXECUTOR'];?>"/>
+											value="<?php echo $executor;?>"/>
 											<input type="text"  class="40-input input span2"  id="executorName"  readonly
 													<?php echo $status>=40?"data-validator='required'":"" ?>
-													value="<?php echo $product['EXECUTOR_NAME'];?>"/>
+													value="<?php echo $executorName;?>"/>
 											<button class="40-input input btn btn-charger">选择</button>
 										</td>
 									</tr>
@@ -314,9 +321,9 @@
 										<th>计划采购数量：</th>
 										<td><input id="plan_num"   class="10-input input"  data-validator="required"    type="text" value='<?php echo $plan_num ;?>' /></td>
 										<th>采购限价：</th>
-										<td><input id="quote_price"   class="30-input input"   type="text" 
+										<td><input id="limit_price"   class="30-input input"   type="text" 
 													 <?php echo $status>=30?"data-validator='required'":"" ?>
-													 value='<?php echo $quote_price ;?>' /></td>
+													 value='<?php echo $product['LIMIT_PRICE'];?>' /></td>
 									</tr>
 									<tr class="check-purchase-tr">
 										<th>合格数量：</th>
@@ -349,12 +356,18 @@
 										</select> 
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 45-input  input">编辑</button>
 										</td>
+										<th>供应商报价：</th>
+										<td><input id="quote_price"   class="45-input input"   type="text" 
+													 <?php echo $status>=45?"data-validator='required'":"" ?>
+													 value='<?php echo $quote_price ;?>' /></td>
+										</td>
+									</tr>
+									<tr>
 										<th>支付方式：</th>
-										<td >
+										<td colspan="3" >
 											<input id="payType" class="45-input input"  type="text"
 													<?php echo $status>=45?"data-validator='required'":"" ?>
 													value='<?php echo $product['PAY_TYPE'] ;?>' />
-										</td>
 									</tr>
 									<tr>
 										<th>实际供应商：</th>

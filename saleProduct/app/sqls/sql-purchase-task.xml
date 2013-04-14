@@ -103,7 +103,7 @@
 		left join sc_real_product srp
 		on sppd.SKU = srp.real_sku
 		WHERE 1=1 
-			and sppd.status >=50
+			and sppd.status >=45
 			and sppd.executor = '{@#Evn.loginId#}'
 			and sppd.id not in (
 				select product_id from sc_purchase_task_products where task_id = '{@#taskId#}'

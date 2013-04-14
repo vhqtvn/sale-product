@@ -1,19 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <entry key="profile_getValidParams">
-        SELECT SP.GLOBAL,
-		       SPP.NAME,
-		       SPP.VALUE
-		FROM   SYS_PROFILE           SP,
-		       SYS_PROFILE_PARAMETER SPP
-		WHERE  SP.ID = SPP.PROFILE_ID
-		AND    ((SP.GLOBAL = 0 AND SP.ACTIVATE = 1) OR
-		      (SP.GLOBAL = 1 AND SP.ACTIVATE = 1))
-		ORDER  BY SP.GLOBAL DESC
+	<entry key="sql_getProductCategoryByAsin">
+	select sc_product_category.* ,
+			(select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME,
+			(select count(*) from sc_product_category_rel where sc_product_category_rel.category_id = sc_product_category.id and 
+			sc_product_category_rel.asin = '{@#asin#}' ) as selected
+			 from sc_product_category 
+	</entry>
+	
+	<entry key="sql_getProductCategoryByDefault">
+	select sc_product_category.*,
+			 (select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME,
+              (select count(*) from sc_product_category_rel where sc_product_category_rel.category_id = sc_product_category.id ) as TOTAL
+              from sc_product_category
+	</entry>
+
+	<entry key="sql_product_category_insert">
+			INSERT INTO sc_product_category 
+				( 
+				NAME, 
+				PARENT_ID, 
+				MEMO, 
+				CREATOR, 
+				CREATE_TIME, 
+				PURCHASE_CHARGER
+				)
+				VALUES
+				( 
+				'{@#name#}', 
+				'{@#parentId#}', 
+				'{@#memo#}', 
+				'{@#loginId#}', 
+				NOW(), 
+				'{@#purchaseCharger#}'
+				)
     </entry>
     
+    <entry key="sql_product_category_update">
+			UPDATE sc_product_category 
+				SET
+				name = '{@#name#}' , 
+				parent_id = '{@#parentId#}' , 
+				memo = '{@#memo#}' , 
+				purchase_charger = '{@#purchaseCharger#}'
+				where
+				id = '{@#id#}'
+    </entry>
 
-    
      <entry key="sql_seller">
        		SELECT sc_seller.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_seller.id ) as TOTAL
 		,( select sc_user.name from sc_user where sc_user.login_id = sc_seller.creator ) as USERNAME

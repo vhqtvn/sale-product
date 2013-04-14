@@ -62,13 +62,18 @@
    <entry key="sql_purchase_plan_details_listForSKU">
 		SELECT DISTINCT  
 			sppd.* ,
-			srp.name as TITLE,
+			srp.name AS TITLE,
 			srp.IMAGE_URL,
-			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
-			(select name from sc_user where login_id = sppd.executor ) as EXECUTOR_NAME
+			srp.CATEGORY_ID,
+			spc.PURCHASE_CHARGER,
+			(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
+			(SELECT NAME FROM sc_supplier WHERE id = sppd.PROVIDOR ) AS PROVIDOR_NAME,
+			(SELECT NAME FROM sc_user WHERE login_id = sppd.executor ) AS EXECUTOR_NAME
 		FROM sc_purchase_plan_details sppd 
-		left join sc_real_product srp
-		on sppd.SKU = srp.real_sku
+		LEFT JOIN sc_real_product srp
+		ON sppd.SKU = srp.real_sku
+		LEFT JOIN sc_product_category spc
+		ON srp.CATEGORY_ID = spc.ID
 		WHERE 1=1 
 		     {@ #$VIEW_PP:and 1=0# }
 			{@AND sppd.plan_id = '#planId#'}
@@ -137,6 +142,7 @@
         update sc_purchase_plan_details 
         	set plan_num = '{@#plan_num#}',
 				quote_price = '{@#quote_price#}',
+				limit_price  = '{@#limit_price#}',
 				providor = '{@#providor#}',
 				sample = '{@#sample#}',
 				area = '{@#area#}',

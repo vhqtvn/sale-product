@@ -70,7 +70,7 @@ $(function(){
 	if( val ){
 		$(val.split("||")).each(function(){
 			var self = this ;
-			$("<li class='alert alert-success' style='position:relative;'>"+this+"</li>").appendTo(".keys-container").mouseenter(function(){
+			$("<li class='alert alert-success key-li' style='position:relative;padding:2px;margin:2px;'>"+this+"</li>").appendTo(".keys-container").mouseenter(function(){
 				$("<a href='#' class='del-key' style='position:absolute;top:0px;right:0px;color:red;'>删除</a>").appendTo( $(this) ).click(function(){
 					if( $.trim($(this).parent().text() || $(this).parent().find("input").val()) ){
 						if(window.confirm("确认删除？")){
@@ -100,7 +100,7 @@ $(function(){
 	$(".addKey-btn").click(function(event){
 		event.stopPropagation(); 
 		var _val = "" ;
-		$("<li class='alert alert-success key-li' style='position:relative;'><input class='key-input'  type='text' placeHolder='输入关键字'/></li>").appendTo(".keys-container").find("input").focus()
+		$("<li class='alert alert-success key-li' style='position:relative;padding:2px;margin:2px;'><input class='key-input'  type='text' placeHolder='输入关键字'/></li>").appendTo(".keys-container").find("input").focus()
 		.parent().mouseenter(function(){
 			$("<a href='#' class='del-key' style='position:absolute;top:0px;right:0px;color:red;'>删除</a>").appendTo( $(this) ).click(function(){
 				if( $.trim($(this).parent().text() || $(this).parent().find("input").val()) ){

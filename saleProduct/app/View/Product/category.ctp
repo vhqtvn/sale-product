@@ -2,21 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>llygrid demo</title>
+    <title>货品分类</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
-   
+   		include_once ('config/config.php');
+
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/tree/jquery.tree');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
+		
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tree/jquery.tree');
+		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('calendar/WdatePicker');
+		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 
 	?>	
 	
@@ -38,16 +43,23 @@
    <script>
     var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
     var treeMap  = {} ;
-
+    
     <?php
+    	$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+    
     	$index = 0 ;
 		foreach( $categorys as $Record ){
-			$sfs = $Record['sc_product_category']  ;
+			$sfs = $SqlUtils->formatObject($Record) ;
+			//debug($sfs) ;
+			
+			//$sfs = $Record['sc_product_category']  ;
 			
 			$id   = $sfs['ID'] ;
 			$name = $sfs['NAME'] ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
+			$charger = $sfs['PURCHASE_CHARGER'] ;
+			$chargerName = $sfs['PURCHASE_CHARGER_NAME'] ;
+			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true,purchaseCharger:'$charger',purchaseChargerName:'$chargerName'} ;" ;
 			
 			
 			echo " treeMap['id_$id'] = item$index  ;" ;
@@ -77,6 +89,8 @@
 					$("#up-category .id").val(id) ;
 					$("#up-category .name").val(text) ;
 					$("#up-category .memo").val(record.memo) ;
+					$("#up-category .purchaseChargerName").val(record.purchaseChargerName) ;
+					$("#up-category .purchaseCharger").val(record.purchaseCharger) ;
 				}
            }) ;
            
@@ -87,17 +101,11 @@
         		alert("分类名称不能为空");
         		return ;
         	}
-        	
-        	$.ajax({
-				type:"post",
-				url:contextPath+"/product/saveCategory/",
-				data:ids,
-				cache:false,
-				dataType:"text",
-				success:function(result,status,xhr){
-					window.location.reload() ;
-				}
-			}); 
+
+        	$.dataservice("model:Product.saveCategory",ids,function(){
+				window.location.reload() ;
+            }) ;
+
         }) ;
         
         $(".update-category").click(function(){
@@ -107,18 +115,51 @@
         		alert("分类名称不能为空");
         		return ;
         	}
-        	
-        	$.ajax({
-				type:"post",
-				url:contextPath+"/product/saveCategory/",
-				data:ids,
-				cache:false,
-				dataType:"text",
-				success:function(result,status,xhr){
-					window.location.reload() ;
-				}
-			}); 
+
+        	$.dataservice("model:Product.saveCategory",ids,function(){
+				window.location.reload() ;
+            }) ;
         }) ;
+
+        var chargeGridSelect = {
+				title:'用户选择页面',
+				defaults:[],//默认值
+				key:{value:'LOGIN_ID',label:'NAME'},//对应value和label的key
+				multi:false,
+				width:600,
+				height:560,
+				grid:{
+					title:"用户选择",
+					params:{
+						sqlId:"sql_user_list_forwarehouse"
+					},
+					ds:{type:"url",content:contextPath+"/grid/query"},
+					pagesize:10,
+					columns:[//显示列
+						{align:"center",key:"ID",label:"编号",width:"20%"},
+						{align:"center",key:"LOGIN_ID",label:"登录ID",sort:true,width:"30%"},
+						{align:"center",key:"NAME",label:"用户姓名",sort:true,width:"36%"}
+					]
+				}
+		   } ;
+		   
+		$(".add-on1").listselectdialog( chargeGridSelect,function(){
+			var args = jQuery.dialogReturnValue() ;
+			var value = args.value ;
+			var label = args.label ;
+			$("#xj-category .purchaseCharger").val(value) ;
+			$("#xj-category .purchaseChargerName").val(label) ;
+			return false;
+		}) ;
+
+		$(".add-on2").listselectdialog( chargeGridSelect,function(){
+			var args = jQuery.dialogReturnValue() ;
+			var value = args.value ;
+			var label = args.label ;
+			$("#up-category .purchaseCharger").val(value) ;
+			$("#up-category .purchaseChargerName").val(label) ;
+			return false;
+		}) ;
 		
 	})
    </script>
@@ -133,11 +174,16 @@
 				<legend>添加下级分类</legend>
 				
 				<label>上级分类:</label>
-				<input type="text" readonly class="parentName" id="parentName"/>
+				<input type="text" readOnly class="parentName" id="parentName"/>
 				<input type="hidden" class="parentId" id="parentId"/>
 			
 				<label>分类名称:</label>
 				<input type="text" class="name" id="name" class="span4"/>
+				
+				<label>采购负责人:</label>
+				<input type="hidden" class="purchaseCharger" id="purchaseCharger" class="span4"/>
+				<input type="text" class="purchaseChargerName" id="purchaseChargerName" class="span4"/>
+				<button class="btn add-on add-on1">选择用户</button>
 				
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>
@@ -156,6 +202,11 @@
 				<label>分类名称:</label>
 				<input type="text" class="name" id="name" class="span4"/>
 				
+				<label>采购负责人:</label>
+				<input type="hidden" class="purchaseCharger" id="purchaseCharger" class="span4"/>
+				<input type="text" class="purchaseChargerName" id="purchaseChargerName" class="span4"/>
+				<button class="btn add-on add-on2">选择用户</button>
+				
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>
 				<br/><br/>
@@ -166,5 +217,5 @@
 	</div>
 	
 </div>
-
+</body>
 </html>

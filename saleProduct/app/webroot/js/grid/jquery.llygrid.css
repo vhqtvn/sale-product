@@ -34,7 +34,7 @@ div.lly-grid .table{
 	*width:auto;
 }
 
-div.lly-grid-content table{
+div.lly-grid-content table.grid-table{
 	table-layout:fixed;
 }
 
@@ -46,12 +46,12 @@ div.lly-grid .lly-grid-caption{
 	border-width:0px;
 }
 
-.lly-grid-1 table{
+.lly-grid-1 table.grid-table{
 	/*width:100%;*/
 	overflow:hidden;
 }
 
-.lly-grid table td{
+.lly-grid table.grid-table td{
 	text-align: center;
 }
 
@@ -336,7 +336,7 @@ div.grid-toolbar-div input{
 	height:19px;
 }
 
-.lly-grid .ui-state-default,
+.lly-grid  .ui-state-default,
 .lly-grid  .ui-widget-content .ui-state-default,
 .lly-grid  .ui-widget-header .ui-state-default{
 	background-image:none;

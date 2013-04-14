@@ -98,8 +98,6 @@ class SaleProductController extends AppController {
     
     public function details($id ,$type = null ){
     	
-    	
-    	
     	$item = null ;
     	if(!empty($id)){
     		
