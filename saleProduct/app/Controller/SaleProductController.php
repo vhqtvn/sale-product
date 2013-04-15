@@ -77,7 +77,7 @@ class SaleProductController extends AppController {
     	$this->SaleProduct->saveProduct($params , $user) ;
 
 		$this->response->type("html");
-		$this->response->body("");
+		$this->response->body("<script>window.top.window.close();</script>");
 		return $this->response;
     }
     

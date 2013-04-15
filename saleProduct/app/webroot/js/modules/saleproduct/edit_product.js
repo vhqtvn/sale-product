@@ -10,7 +10,7 @@ $(function(){
 			title:'产品分类选择页面',
 			valueField:"#categoryId",
 			labelField:"#categoryName",
-			key:{value:'id',label:'text'},//对应value和label的key
+			key:{value:'ID',label:'NAME'},//对应value和label的key
 			multi:false ,
 			tree:{
 				title:"产品分类选择页面",
@@ -133,6 +133,7 @@ $(function(){
 });
 
 function uploadSuccess(){
+	alert(234234);
 	if(window.opener){
 		window.opener.location.reload() ;
 		window.close() ;

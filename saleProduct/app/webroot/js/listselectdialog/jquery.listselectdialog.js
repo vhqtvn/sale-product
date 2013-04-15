@@ -13,6 +13,7 @@
 		
 		callback = callback||function(){
 			var args = jQuery.dialogReturnValue() ;
+			//alert( $.json.encode(args) );
 			if(args){
 				var value = args.value ;
 				var label = args.label ;
@@ -68,7 +69,6 @@
 			templateName = "select_template.php" ;
 		}
 		
-		
 		$.open(
 			(Config.serverPath||Config.contextPath)+"/app/webroot/js/listselectdialog/"+templateName+"?random="+random , 
 			width , 
@@ -85,9 +85,10 @@
 		$( this ).each(function(){
 			$(this).unbind("click.listselect").bind("click.listselect",function(){
 				var me = $(this) ;
-				$.listselectdialog( params , function(){
+				var _callback = callback? function(){
 					callback(me) ;
-				} ) ;
+				} :window.undefined;
+				$.listselectdialog( params , _callback ) ;
 				return false;
 			})
 		});

@@ -10,14 +10,23 @@ $(function(){
 	 $("#personForm   :input").attr("disabled",'disabled') ;
 	 $("."+currentStatus+"-input").removeAttr("disabled") ;
 	 $(".btn.input[disabled]").hide();
-	
+
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
 	if( $("#ref-asins").length ){
 		tabs.push({label:'关联ASIN',content:"ref-asins"}) ;
 	}
 	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
 	if( currentStatus >=45 )tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
-	//
+
+	var status = [10,20,25,30,40,45,50,60,70] ;
+	if( $reedit_pp_product ){//再编辑
+		$(status).each(function(){
+			if( this <= currentStatus ){
+				$("."+this+"-input").removeAttr("disabled") ;
+			}
+		}) ;
+	}
+	
 	//widget init
 	var tab = $('#details_tab').tabs( {
 		tabs:tabs ,
@@ -270,6 +279,12 @@ $(function(){
 	var flow = new Flow() ;
 	flow.init(".flow-bar center",flowData) ;
 	flow.draw(currentStatus) ;
+	
+	 
+	 if( $(".btn-flow").length <=0 ){
+		 $("#personForm   :input").attr("disabled",'disabled') ;
+	 }
+	
 }) ;
 
 function AuditAction(status , statusLabel){
@@ -359,9 +374,17 @@ var Flow = function(){
 					$(".memo-control").show();
 				}
 				
+				if( $reedit_pp_product ){
+					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>再编辑</button>&nbsp;&nbsp;")
+					.appendTo(".btn-container").click(function(){
+						//me.action() ;
+						AuditAction(currentStatus,"再编辑") 
+					}) ; 
+				}
+				
 				$(actions||[]).each(function(){
 					var me = this ;
-					$("<button class='btn btn-primary' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
+					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
 						.appendTo(".btn-container").click(function(){
 							me.action() ;
 						}) ;  ;

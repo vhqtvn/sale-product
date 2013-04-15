@@ -62,6 +62,8 @@
 		$ppp_qc								= $security->hasPermission($loginId , 'ppp_qc') ;
 		$ppp_inwarehouse				= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
 		$ppp_confirm 						= $security->hasPermission($loginId , 'ppp_confirm') ;
+		//在编辑功能
+		$reedit_pp_product				= $security->hasPermission($loginId , 'reedit_pp_product') ;
 		
 		$hasSetSupplierPermission = $security->hasPermission($loginId, 'SET_PRODUCT_SUPPLIER_FLAG') ;
 		
@@ -185,6 +187,7 @@
 	var $ppp_qc = <?php echo $ppp_qc?"true":"false" ;?> ;
 	var $ppp_inwarehouse = <?php echo $ppp_inwarehouse?"true":"false" ;?> ;
 	var $ppp_confirm = <?php echo $ppp_confirm?"true":"false" ;?> ;
+	var $reedit_pp_product = <?php echo $reedit_pp_product?"true":"false" ;?> ;
 
 	var id = '<?php echo $id ;?>' ;
 	var currentStatus = "<?php echo $product['STATUS'];?>" ;
@@ -229,10 +232,12 @@
 	        			<?php };?>
 	        		},
 	        		{status:45,label:"采购执行",memo:true
+	        			<?php if( $loginId == $product['EXECUTOR'] ) { ?>
 	        			,actions:[
 									{label:"保存",action:function(){ AuditAction(45,"保存") }},
 		      	        			{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
         				]
+	        			<?php };?>
 	        		},{status:50,label:"QC验货",memo:true
 	        			<?php if( $ppp_qc) { ?>
 	        			,actions:[

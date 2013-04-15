@@ -1,11 +1,13 @@
 	$(function(){
 			$(".action").live("click",function(){
-				var id = $(this).attr("val") ;
-				var record = $(this).parents("tr:first").data("record") ;
+				var record = $(this).parents("tr:first").data("record")||{} ;
+				var id = record.ID;
 				if( $(this).hasClass("view") ){
 					openCenterWindow(contextPath+"/saleProduct/details/"+record.REAL_SKU+"/sku",900,650) ;
 				}else if( $(this).hasClass("update") ){
-					openCenterWindow(contextPath+"/saleProduct/details/"+id,900,650) ;
+					openCenterWindow(contextPath+"/saleProduct/details/"+id,900,650,function(){
+						$(".grid-content").llygrid("reload",{},true) ;
+					}) ;
 				}else if( $(this).hasClass("giveup") ){
 					var type = $(this).attr("type");
 					var message = type == 1?"确认将该货品作废吗":"确认恢复该货品吗？"
@@ -23,7 +25,9 @@
 						}); 
 					}
 				}else if( $(this).hasClass("add") ){
-					openCenterWindow(contextPath+"/saleProduct/forward/edit_product/",800,620) ;
+					openCenterWindow(contextPath+"/saleProduct/forward/edit_product/",900,620,function(){
+						$(".grid-content").llygrid("reload",{},true) ;
+					}) ;
 				}else if( $(this).hasClass("inout") ){//货品出入库明细
 					openCenterWindow(contextPath+"/page/forward/Warehouse.In.storageDetails/"+id,850,600) ;
 				}else if( $(this).hasClass("assign") ){//货品出入库明细
