@@ -48,6 +48,8 @@
  			{@ and status='#status#'}
  			{@ and name like '%#name#%'}
  			{@ and real_sku='#sku#'}
+ 			{@ and name like '%#NAME#%'}
+ 			{@ and real_sku='#REAL_SKU#'}
  			{@ and category_id='#categoryId#'}
    </entry>
    
