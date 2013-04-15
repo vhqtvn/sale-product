@@ -48,8 +48,8 @@
 				defaults:[],//默认值
 				key:{value:'ID',label:'REAL_SKU'},//对应value和label的key
 				multi:false ,
-				width:600,
-				height:500,
+				width:700,
+				height:600,
 				grid:{
 					title:"用户选择",
 					params:{
@@ -58,8 +58,8 @@
 					ds:{type:"url",content:contextPath+"/grid/query"},
 					pagesize:10,
 					columns:[//显示列
-						{align:"center",key:"REAL_SKU",label:"SKU",sort:true,width:"30%"},
-						{align:"center",key:"NAME",label:"NAME",sort:true,width:"30%"},
+						{align:"center",key:"REAL_SKU",label:"SKU",sort:true,width:"30%",query:true},
+						{align:"center",key:"NAME",label:"NAME",sort:true,width:"30%",query:true},
 						{align:"center",key:"IMAGE_URL",label:"",sort:true,width:"10%",format:{type:'img'}}
 					]
 				}
