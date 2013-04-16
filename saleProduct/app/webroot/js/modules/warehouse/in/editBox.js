@@ -8,7 +8,11 @@
 		           	{align:"center",key:"ID",label:"编辑",width:"5%",permission:function(){
 		           		return !$isRead ;
 		           	},format:function(val,record){
-							return "<a href='#' class='edit-box' val='"+val+"'>编辑</a>&nbsp;&nbsp;" ;
+		           		var html = [] ;
+		           		html.push(  getImage('edit.png','编辑','edit-box') +"&nbsp;") ;
+		           		html.push( getImage("delete.gif","删除","delete-box") ) ;
+						return html.join("") ;
+						//	return "<a href='#' class='edit-box' val='"+val+"'>编辑</a>&nbsp;&nbsp;" ;
 					}},
 		           	{align:"center",key:"BOX_NUMBER",label:"包装箱编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"SHIP_FEE",label:"运输费用",width:"13%"},
@@ -30,23 +34,52 @@
 				 	currentId = id ;
 				 	$(".grid-content-details").llygrid("reload",{boxId:currentId}) ;
 				 	$(".add-box-product").removeAttr("disabled");
+				 },loadAfter:function(){
+					 $(".edit-box").bind("click",function(event){
+						 	event.stopPropagation() ;
+							var boxId = $(this).parents("tr").data("record")['ID'] ;
+							openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId+"/"+boxId,550,420,function(){
+								$(".grid-content").llygrid("reload",{},true);
+							}) ;
+							return false ;
+						}) ;
+						
+						$(".delete-box").bind("click",function(event){
+							event.stopPropagation() ;
+							if(window.confirm("确认删除？")){
+								var boxId = $(this).parents("tr").data("record")['ID'] ;
+								$.dataservice("model:Warehouse.In.deleteBox",{boxId:boxId},function(result){
+									if(result){
+										alert(result) ;
+									}else{
+										$(".grid-content").llygrid("reload",{},true);
+										$(".grid-content-details").llygrid("reload",{boxId:'-'}) ;
+									}
+								});
+							}
+							
+							return false ;
+						}) ;
 				 }
 				 
 			}) ;
-
+			
 			$(".grid-content-details").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"编辑",width:"5%",permission:function(){
+					{align:"center",key:"ID",label:"操作",width:"3%",permission:function(){
 		           		return !$isRead ;
 		           	},format:function(val,record){
-							return "<a href='#' class='edit-box-product' val='"+val+"'>编辑</a>&nbsp;&nbsp;" ;
+		           		var html = [] ;
+		           		html.push(  getImage('edit.png','编辑','edit-box-product ') +"&nbsp;") ;
+		           		html.push( getImage("delete.gif","删除","delete-box-product") ) ;
+						return html.join("") ;
 					}},
 				    {align:"center",key:"BOX_NUMBER",label:"包装箱",width:"5%"},
 					{align:"center",key:"IMAGE_URL",label:"",width:"2%",format:{type:'img'}},
 		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
 	           		{align:"center",key:"SKU",label:"SKU",width:"5%"},
 	           		{align:"center",key:"INVENTORY_TYPE",label:"库存类型",width:"5%",format:{type:'json',content:{1:'普通库存',2:'FBA库存'}}}, 
-	           		{align:"center",key:"QUANTITY",label:"数量",width:"6%"},
+	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%"},
 	           		{align:"center",key:"DELIVERY_TIME",label:"供货时间",width:"6%"},
 	           		{align:"center",key:"PRODUCT_TRACKCODE",label:"产品跟踪码",width:"6%"},
 	           		{align:"center",key:"MEMO",label:"备注",width:"6%"}
@@ -58,7 +91,24 @@
 				 title:"货品列表",
 				 autoWidth:true,
 				 querys:{sqlId:"sql_warehouse_box_products",boxId:''},
-				 loadMsg:"数据加载中，请稍候......"
+				 loadMsg:"数据加载中，请稍候......",
+				 loadAfter:function(){
+					 $(".delete-box-product").bind("click",function(event){
+							event.stopPropagation() ;
+							if(window.confirm("确认删除？")){
+								var bpId = $(this).parents("tr").data("record")['ID'] ;
+								$.dataservice("model:Warehouse.In.deleteBoxProduct",{bpId:bpId},function(result){
+									if(result){
+										alert(result) ;
+									}else{
+										$(".grid-content-details").llygrid("reload",{},true) ;
+									}
+								});
+							}
+							
+							return false ;
+						}) ;
+				 }
 			}) ;
 			
 			$(".process-action").live("click",function(){
@@ -74,16 +124,6 @@
 					$(".grid-content-details").llygrid("reload",{boxId:''});
 				}) ;
 			}) ;
-			
-			$(".edit-box").live("click",function(){
-				var boxId = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId+"/"+boxId,550,420,function(){
-					$(".grid-content").llygrid("reload",{},true);
-				}) ;
-				return false ;
-			}) ;
-			
-			
 			
 			$(".add-box-product").live("click",function(){
 				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440,function(){

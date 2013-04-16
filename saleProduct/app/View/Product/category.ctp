@@ -43,9 +43,50 @@
    <script>
     var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
     var treeMap  = {} ;
+
+    <?php
+    	    $SqlUtils  = ClassRegistry::init("SqlUtils") ;
+    
+        	$index = 0 ;
+    		foreach( $categorys as $Record ){
+    			$sfs = $SqlUtils->formatObject($Record) ;
+    			//debug($sfs) ;
+    			
+    			//$sfs = $Record['sc_product_category']  ;
+    			
+    			$id   = $sfs['ID'] ;
+    			$name = $sfs['NAME'] ;
+    			$pid  = $sfs['PARENT_ID'] ;
+    			$charger = $sfs['PURCHASE_CHARGER'] ;
+    			$chargerName = $sfs['PURCHASE_CHARGER_NAME'] ;
+    			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true,purchaseCharger:'$charger',purchaseChargerName:'$chargerName'} ;" ;
+    			
+    			echo " treeMap['id_$id'] = item$index  ;" ;
+    			$index++ ;
+    		} ;
+    		
+    		$index = 0 ;
+    		foreach( $categorys as $Record ){
+    			$sfs = $SqlUtils->formatObject($Record) ;
+    			$id   = $sfs['ID'] ;
+    			$name = $sfs['NAME'] ;
+    			$pid  = $sfs['PARENT_ID'] ;
+    			
+    			if(empty($pid)){
+    				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+    				echo "treeData.childNodes.push( item$index ) ;" ;
+    			}else{
+    				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+    				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
+    				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
+    			}
+    			$index++ ;
+    		} ;
+    		
+    	?>
     
     <?php
-    	$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+    	/*$SqlUtils  = ClassRegistry::init("SqlUtils") ;
     
     	$index = 0 ;
 		foreach( $categorys as $Record ){
@@ -70,7 +111,7 @@
 				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
 			}
 			$index++ ;
-		} ;
+		} ;*/
 	?>
    
 	$(function(){
@@ -79,6 +120,8 @@
 				source:'array',
 				data:treeData ,
 				onNodeClick:function(id, text, record,node){
+					console.log(node);
+					console.log(record) ;
 					if(id == 'root'){
 						$(".parentName").val("") ;
 						$(".parentId").val("") ;
@@ -86,7 +129,14 @@
 						$(".parentName").val(text) ;
 						$(".parentId").val(id) ;
 					}
+
+					var pid = (record.parent||{}).id ;
+					var ptext =  (record.parent||{}).text ;
+					pid = pid == 'root'?"":pid ;
+					
 					$("#up-category .id").val(id) ;
+					$("#up-category .parentId").val( pid ) ;
+					$("#up-category .parentName").val( ptext ) ;
 					$("#up-category .name").val(text) ;
 					$("#up-category .memo").val(record.memo) ;
 					$("#up-category .purchaseChargerName").val(record.purchaseChargerName) ;
@@ -160,6 +210,29 @@
 			$("#up-category .purchaseChargerName").val(label) ;
 			return false;
 		}) ;
+
+		var categoryTreeSelect = {
+				title:'产品分类选择页面',
+				valueField:"#up-category .parentId",
+				labelField:"#up-category .parentName",
+				key:{value:'ID',label:'NAME'},//对应value和label的key
+				width:500,
+				height:500,
+				multi:false ,
+				tree:{
+					title:"产品分类选择页面",
+					method : 'post',
+					asyn : true, //异步
+					rootId  : 'root',
+					rootText : '根节点',
+					CommandName : 'sqlId:sql_saleproduct_categorytree',
+					recordFormat:true,
+					params : {
+					}
+				}
+		   } ;
+		   
+		$(".add-on-category").listselectdialog( categoryTreeSelect) ;
 		
 	})
    </script>
@@ -201,6 +274,11 @@
 			
 				<label>分类名称:</label>
 				<input type="text" class="name" id="name" class="span4"/>
+				
+				<label>上级分类:</label>
+				<input type="text" readOnly class="parentName" id="parentName"/>
+				<input type="hidden" class="parentId" id="parentId"/>
+				<button class="btn add-on add-on-category">选择上级分类</button>
 				
 				<label>采购负责人:</label>
 				<input type="hidden" class="purchaseCharger" id="purchaseCharger" class="span4"/>

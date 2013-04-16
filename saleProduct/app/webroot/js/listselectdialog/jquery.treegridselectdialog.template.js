@@ -196,8 +196,9 @@
 				return data ;
 			} ;
 		}
-		
-		$('.tree-container').tree(treeConfig) ;
+		setTimeout(function(){
+			$('.tree-container').tree(treeConfig) ;
+		},200) ;
 	}
 	
 	function initLayout(){
@@ -228,7 +229,7 @@
 		 setTimeout(function(){
 			 var height =$(window).height() - ( $(".panel-foot").outerHeight(true)+$(".page-title").outerHeight(true) ) - 10;
 			 $(".panel-content:first").css({height:height+"px",'max-height':height+"px"}) ;
-       
+			 //alert(height);
         	$(".ui-layout").layout();
         },100) ;	
 		

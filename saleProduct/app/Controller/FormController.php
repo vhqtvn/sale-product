@@ -53,7 +53,7 @@ class FormController extends AppController {
 				$method = $r->getMethod($method) ;
 				
 				$result = $method->invoke($instance, $params); 
-				$result = json_encode($result) ;
+				$result =empty($result)?"": json_encode($result) ;
 			}catch(Exception $e){
 				$result = $e->getMessage();
 			}

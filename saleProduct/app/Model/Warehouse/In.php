@@ -2,6 +2,24 @@
 class In extends AppModel {
 	var $useTable = "sc_warehouse_in" ;
 	
+	public function deleteBox($params){
+		$boxId = $params['boxId'] ;
+		
+		$boxProduct = $this->getObject("sql_warehouse_box_product_getByBoxId",array('boxId'=>$boxId)) ;
+		if( !empty( $boxProduct ) ){
+			throw new Exception("存在包装箱产品，请将包装箱产品清空再删除包装箱！") ;
+		}else{
+			$this->exeSql("sql_warehouse_box_deleteById",array('boxId'=>$boxId)) ;
+		}
+	}
+	
+	public function deleteBoxProduct($params){
+		$bpId = $params['bpId'] ;
+	
+		$this->exeSql("sql_warehouse_box_product_deleteById",array('bpId'=>$bpId)) ;
+		return "" ;
+	}
+	
 	public function edit($params,$user){
 		$inId = $params['arg1'] ;
 		$result = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;

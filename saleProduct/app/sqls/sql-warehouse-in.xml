@@ -132,8 +132,22 @@
 			)
    </entry>
    
+   <entry key="sql_warehouse_box_deleteById">
+  		delete from sc_warehouse_box where id = '{@#boxId#}'
+   </entry>
+   
    <entry key="sql_warehouse_box_getById">
   		select * from sc_warehouse_box where id = '{@#boxId#}'
+   </entry>
+   
+   <entry key="sql_warehouse_box_product_deleteById">
+  		delete   from sc_warehouse_box_product  where id = '{@#bpId#}'
+   </entry>
+   
+   
+    <entry key="sql_warehouse_box_product_getByBoxId">
+  		select swbp.*
+  		 from sc_warehouse_box_product swbp where swbp.box_id = '{@#boxId#}'
    </entry>
    
    <entry key="sql_warehouse_box_product_getById">
