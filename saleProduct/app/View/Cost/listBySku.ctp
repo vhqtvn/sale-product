@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>llygrid demo</title>
+    <title></title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -19,14 +19,13 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		
 		$loginId = $user["GROUP_CODE"] ;//transfer_specialist cashier purchasing_officer general_manager product_specialist
+		$sku = $params['arg1'] ;
 	?>
   
    <script type="text/javascript">
    
    var taskId = '' ;
   
-	var currentAsin = "<?php echo $asin;?>" ;
-
 	$(function(){
 			
 			$(".grid-content-details").llygrid({
@@ -35,7 +34,6 @@
 						var status = record.STATUS ;
 						var html = [] ;
 						html.push("<a href='#' class='edit-action' val='"+val+"'>编辑</a>&nbsp;") ;
-						//html.push("<a href='#' class='del-action' asin='"+record.ASIN+"' planId='"+record.PLAN_ID+"' val='"+val+"'>删除</a>&nbsp;") ;
 						return html.join("") ;
 					}},
 					
@@ -85,10 +83,12 @@
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
-				 height:100,
+				 height:function(){
+					return $(window).height() - 100 ;
+				 },
 				 title:"",
 				 indexColumn:true,
-				 querys:{asin:'<?php echo $asin;?>',sqlId:"sql_cost_product_details_list"},
+				 querys:{realSku:'<?php echo $sku;?>',sqlId:"sql_cost_product_details_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){
@@ -103,12 +103,12 @@
 			
 			$(".edit-action").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/cost/add/"+currentAsin+"/"+id,680,650) ;
+				openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/"+id,680,650) ;
 			})
 			
 			
 			$(".add-cost").click(function(){
-				 	openCenterWindow(contextPath+"/cost/add/<?php echo $asin;?>",680,650) ;
+				 	openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/",680,650) ;
 			}) ;
    	 });
    </script>
@@ -122,9 +122,9 @@
 </head>
 <body>
 	<div class="query-bar">
-		<button class="add-cost">添加成本</button>
+		<button class="add-cost btn btn-primary">添加成本</button>
 	</div>
-	<div class="grid-content-details" style="margin-top:5px;width:900px;">
+	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 </body>
 </html>

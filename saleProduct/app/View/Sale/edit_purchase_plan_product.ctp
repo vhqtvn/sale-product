@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title></title>
+    <title>采购计划产品</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -35,7 +35,6 @@
 		$sku = $product["SKU"] ;
 		$title = $product["TITLE"] ;
 		$planId = $product["PLAN_ID"] ;
-		
 		
 		$cost = $product["COST"] ;
 		$plan_num = $product["PLAN_NUM"] ;

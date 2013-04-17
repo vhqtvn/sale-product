@@ -431,9 +431,8 @@
 					//{label:'供应商(询价)',content:"supplier-tab",iframe:true},
 					{label:'产品分类',url:contextPath+"/product/assignCategory/<?php echo $asin?>",iframe:true},
 					<?php  if( isset($sku) && !empty($sku) ){ ?>
-					{label:'营销产品分类',url:contextPath+"/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>/<?php echo $sku;?>",iframe:true},
+					{label:'营销产品分类',url:contextPath+"/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>/<?php echo $sku;?>",iframe:true}
 					<?php } ?>
-					{label:'产品成本',url:contextPath+"/cost/listAsin/<?php echo $asin?>",iframe:true}
 				] ,
 				height:'500px'
 			} ) ;

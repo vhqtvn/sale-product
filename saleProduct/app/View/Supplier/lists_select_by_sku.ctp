@@ -80,11 +80,11 @@
 			}) ;
 			
 			$(".select-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/add/asin/"+asin , 800,600) ;
+				openCenterWindow(contextPath+"/supplier/addBySku/"+sku , 800,600) ;
 			}) ;
 
 			$(".add-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/add/asin/"+asin , 800,600) ;
+				openCenterWindow(contextPath+"/supplier/addBySku/"+sku , 800,600) ;
 			}) ;
 			
 			$(".save-product-supplier").click(function(){

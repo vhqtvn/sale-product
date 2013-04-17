@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <entry key="sql_">
+    <entry key="sql_list_supplierInquiryHistory">
+    	select s.* ,
+    	ss.NAME
+    	from sc_purchase_supplier_inquiry s ,
+    	sc_supplier ss
+    	where s.sku = '{@#realSku#}'
+    	and s.supplier_id = ss.id
+    	order by s.create_time desc
     </entry>
-
+    
 	<!--入库sql-->
 	<entry key="sql_saleproduct_quantity_in">
  			update sc_real_product set quantity = {@#genQuantity#} 

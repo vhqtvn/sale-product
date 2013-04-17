@@ -9,7 +9,7 @@
 		var deleteHtml = "" ;
 	</script>
    <?php
-   include_once ('config/config.php');
+  		 include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -66,6 +66,42 @@
 	    var treeMap  = {} ;
 	
 	    <?php
+	    $SqlUtils  = ClassRegistry::init("SqlUtils") ;
+	    
+	    $index = 0 ;
+	    foreach( $categorys as $Record ){
+	    	$sfs = $SqlUtils->formatObject($Record) ;
+	    	//debug($sfs) ;
+	    
+	    	//$sfs = $Record['sc_product_category']  ;
+	    
+	    	$id   = $sfs['ID'] ;
+	    	$name = $sfs['NAME']."(".$sfs['TOTAL'].")" ;
+	    	$pid  = $sfs['PARENT_ID'] ;
+	    	echo " var item$index = {id:'$id',text:'$name',isExpand:true} ;" ;
+	    
+	    	echo " treeMap['id_$id'] = item$index  ;" ;
+	    	$index++ ;
+	    } ;
+	    
+	    $index = 0 ;
+	    foreach( $categorys as $Record ){
+	    $sfs = $SqlUtils->formatObject($Record) ;
+	    $id   = $sfs['ID'] ;
+	    $name = $sfs['NAME'] ;
+	    $pid  = $sfs['PARENT_ID'] ;
+	    
+	    if(empty($pid)){
+	    echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+	    echo "treeData.childNodes.push( item$index ) ;" ;
+	    }else{
+	    echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+	    echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
+	    echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
+	    }
+	    $index++ ;
+	    } ;
+	    /*
 	    	$index = 0 ;
 			foreach( $categorys as $Record ){
 				$sfs = $Record['sc_product_category']  ;
@@ -82,7 +118,7 @@
 					echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
 				}
 				$index++ ;
-			} ;
+			} ;*/
 		?>
 		
 		$(function(){

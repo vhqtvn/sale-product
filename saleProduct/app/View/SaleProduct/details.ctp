@@ -46,6 +46,9 @@
 				<?php if($item['TYPE'] == 'package'){?>
 					,{label:'打包货品信息',url:contextPath+"/saleProduct/forward/composition/"+realId,iframe:true}
 				<?php } ?>
+				,{label:'供应商信息',url:contextPath+"/page/forward/Supplier.listsBySku/<?php echo $item['REAL_SKU'];?>",iframe:true}
+				,{label:'产品成本',url:contextPath+"/page/forward/Cost.listBySku/<?php echo $item['REAL_SKU'];?>",iframe:true}
+				,{label:'历史询价',url:contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/<?php echo $item['REAL_SKU'];?>",iframe:true}
 			] ,
 			height:'588x'
 		} ) ;

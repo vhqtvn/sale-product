@@ -414,9 +414,7 @@
 				tabs:[
 					{label:'基本信息',content:"baseinfo-tab"},
 					{label:'竞争信息',content:"competetion-tab"},
-					{label:'供应商(询价)',content:"supplier-tab",iframe:true},
-					{label:'产品分类',url:contextPath+"/product/assignCategory/<?php echo $asin?>",iframe:true},
-					{label:'产品成本',url:contextPath+"/cost/listAsin/<?php echo $asin?>",iframe:true}
+					{label:'产品分类',url:contextPath+"/product/assignCategory/<?php echo $asin?>",iframe:true}
 				] ,
 				height:'500px'
 			} ) ;
@@ -569,61 +567,7 @@
 				</table>
 			</div>
 		</div>
-		<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<button class="supplier btn">添加产品供应商</button>
-			<table class="table table-bordered">
-				<tr>
-					<th>操作</th>
-					<th>名称</th>
-					<th>产品重量</th>
-					<th>生产周期</th>
-					<th>包装方式</th>
-					<th>付款方式</th>
-					<th>产品尺寸</th>
-					<th>包装尺寸</th>
-					<th>报价1</th>
-					<th>报价2</th>
-					<th>报价3</th>
-					<th></th>
-				</tr>
-				<?php foreach($suppliers as $supplier){
-					$urls = "" ;
-					if( $supplier['sc_product_supplier']['URL'] != '' ){
-						if( $supplier['sc_product_supplier']['IMAGE'] != "" ){
-							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>
-								<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>
-							</a>" ;
-						}else{
-							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>产品网址</a>" ;
-						}
-					}else if($supplier['sc_product_supplier']['IMAGE'] != ""){
-						$urls = "<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>" ;
-					}
-					
-					echo "<tr>
-						<td rowspan=2><a href='#' class='update-supplier' supplierId='".$supplier['sc_supplier']['ID']."' >修改询价</a></td>
-						<td><a href='#' supplier-id='".$supplier['sc_supplier']['ID']."'>".$supplier['sc_supplier']['NAME']."</a></td>
-						<td>".$supplier['sc_product_supplier']['WEIGHT']."</td>
-						<td>".$supplier['sc_product_supplier']['CYCLE']."</td>
-						<td>".$supplier['sc_product_supplier']['PACKAGE']."</td>
-						<td>".$supplier['sc_product_supplier']['PAYMENT']."</td>
-						<td>".$supplier['sc_product_supplier']['PRODUCT_SIZE']."</td>
-						<td>".$supplier['sc_product_supplier']['PACKAGE_SIZE']."</td>
-						<td>".$supplier['sc_product_supplier']['NUM1']."/".$supplier['sc_product_supplier']['OFFER1']."</td>
-						<td>".$supplier['sc_product_supplier']['NUM2']."/".$supplier['sc_product_supplier']['OFFER2']."</td>
-						<td>".$supplier['sc_product_supplier']['NUM3']."/".$supplier['sc_product_supplier']['OFFER3']."</td>
-						<td rowspan=2>
-						  $urls
-						</td>
-					</tr><tr>
-						<td colspan=10>".$supplier['sc_product_supplier']['MEMO']."
-						</td>
-						
-					</tr> " ;
-				}?>
-				
-			</table>
-		</div>
+		
 	</div>
 	
 </body>

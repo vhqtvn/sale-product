@@ -26,6 +26,18 @@ class CostController extends AppController {
 	 	$this->set("user",$user) ;
 	 }
 	 
+	 public function addBySku( $sku , $id = null ){
+	 	$this->set("id",$id) ;
+	 	$this->set("sku",$sku) ;
+	 	$Supplier = null ;
+	 	if( !empty($id) ){
+	 		$Supplier =  $this->Cost->getProductCost( $id  ) ;
+	 	}
+	 	$this->set("productCost",$Supplier) ;
+	 	$user =  $this->getCookUser() ;
+	 	$this->set("user",$user) ;
+	 }
+	 
 	 public function view( $asin , $type ){
 	 	$this->set("id",$type) ;
 	 	$this->set("asin",$asin) ;

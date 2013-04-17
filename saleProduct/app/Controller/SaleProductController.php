@@ -100,7 +100,6 @@ class SaleProductController extends AppController {
     	
     	$item = null ;
     	if(!empty($id)){
-    		
     		if( $type == 'sku' ){
     			$item = $this->SaleProduct->getSaleProduct($id) ;
     			$this->set('action','view');
