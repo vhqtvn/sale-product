@@ -80,31 +80,48 @@
 	  
 	    <?php
 	    	$ss = explode(",",$products) ;
-	    
+	    	
+	    	$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+	    	
 	    	$index = 0 ;
-			foreach( $categorys as $Record ){
-				$sfs = $Record['sc_product_category']  ;
-				$id1   = $sfs['ID'] ;
-				$name1 = $sfs['NAME'] ;
-				$pid  = $sfs['PARENT_ID'] ;
-				echo " var item$index = {id:'$id1',text:'$name1',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
-				
-				foreach($ss as $s){
-					if( $s  == $id1 ){
-						echo " item$index ['checkstate'] = 1 ;" ;
-					}
-				}
-				
-			
-				echo " treeMap['id_$id1'] = item$index  ;" ;
-				if(empty($pid)){
-					echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-					echo "treeData.childNodes.push( item$index ) ;" ;
-				}else{
-					echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-				}
-				$index++ ;
-			} ;
+	    	foreach( $categorys as $Record ){
+	    		$sfs = $SqlUtils->formatObject($Record) ;
+	    		//debug($sfs) ;
+	    	
+	    		//$sfs = $Record['sc_product_category']  ;
+	    	
+	    		$id   = $sfs['ID'] ;
+	    		$name = $sfs['NAME'] ;
+	    		echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
+	    	
+	    		foreach($ss as $s){
+	    			if( $s  == $id ){
+	    				echo " item$index ['checkstate'] = 1 ;" ;
+	    		}
+	    		}
+	    		
+	    		echo " treeMap['id_$id'] = item$index  ;" ;
+	    		$index++ ;
+	    	} ;
+	    	
+	    	$index = 0 ;
+	    	foreach( $categorys as $Record ){
+	    	$sfs = $SqlUtils->formatObject($Record) ;
+	    	$id   = $sfs['ID'] ;
+	    	$name = $sfs['NAME'] ;
+	    	$pid  = $sfs['PARENT_ID'] ;
+	    	
+	    	if(empty($pid)){
+	    	echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+	    	echo "treeData.childNodes.push( item$index ) ;" ;
+	    	}else{
+	    	echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
+	    	echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
+	    	echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
+	    	}
+	    	$index++ ;
+	    	} ;
+	    
 		?>
    
    
