@@ -115,7 +115,7 @@ $(function(){
 		}) ;
 		
 		
-		
+		/*
 		$("[name='isReceive']").click(function(){
 			
 			var val = $(this).val() ;
@@ -134,7 +134,7 @@ $(function(){
 					$(".ram-in").addClass("disabled").addClass("disabled") ;
 				}
 			}
-		}) ;
+		}) ;*/
 		
 		$("[name='refundStatus']").click(function(){
 			var val = $(this).val() ;
@@ -156,6 +156,39 @@ $(function(){
 		}) ;
 		
 		$(".btn-finish").click(function(){
+			//检查该RMA是否处理完成
+			var refundStatus = $("[name='refundStatus']") ; //退款
+			var isReceive = $("[name='isReceive']") ; //退货
+			var inStatus = $("#_inStatus") ; //RMA入库状态
+			var reSend  = $("#_reSend") ; //重发货状态
+			if( isReceive.length  ){
+				if( $("[name='isReceive']:checked").val() !=1){
+					alert("退货未完成！") ;
+					return ;
+				}
+			}
+			
+			if( refundStatus.length  ){
+				if( $("[name='refundStatus']:checked").val() !=1){
+					alert("退款未完成！") ;
+					return ;
+				}
+			}
+			
+			if( inStatus.length  ){
+				if( inStatus.val() !=1){
+					alert("退货未入库！") ;
+					return ;
+				}
+				alert(  $("#_inStatus").val() ) ;
+			}
+			if( reSend.length  ){
+				if( reSend.val() !=1){
+					alert("重发货未设置！") ;
+					return ;
+				}
+			}
+
 			var json = $("#personForm").toJson() ;
 			if(window.confirm("确认该RMA事件已经处理完成?")){
 				$.dataservice("model:Warehouse.Ram.doFinish",json,function(result){
@@ -171,18 +204,6 @@ $(function(){
 		}
 		
 		$(".ram-in").click(function(){
-			var isComplete = $(this).hasClass("complete") ;
-			if(isComplete){
-				if(window.confirm("确认已经完成入库？")){
-					var json = $("#personForm").toJson() ;
-					$.dataservice("model:Warehouse.Ram.doCompleteRecevie",json,function(result){
-						//	window.location.reload();
-					});
-				}
-				
-				return false;
-			}
-			
 			var json = $("#personForm").toJson() ;
 			var orderId = json.orderId ;
 			var ramId = json.id ;

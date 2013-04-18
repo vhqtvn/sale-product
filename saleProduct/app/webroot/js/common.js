@@ -1068,13 +1068,6 @@ var Flow = function(){
 					$(".memo-control").show();
 				}
 				
-				if( $reedit_pp_product ){
-					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>再编辑</button>&nbsp;&nbsp;")
-					.appendTo(".btn-container").click(function(){
-						//me.action() ;
-						AuditAction(currentStatus,"再编辑") 
-					}) ; 
-				}
 				
 				$(actions||[]).each(function(){
 					var me = this ;

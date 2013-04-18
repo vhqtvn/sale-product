@@ -1,6 +1,6 @@
 $(function(){
 	
-	var tab = $('#tabs-default').tabs( {//$this->layout="index";
+	/*var tab = $('#tabs-default').tabs( {//$this->layout="index";
 		tabs:[
 			{label:'编辑中',content:"tab-container",custom:'0'},
 			{label:'待审批',content:"tab-container",custom:'1'},
@@ -19,47 +19,47 @@ $(function(){
 				$(".grid-content").llygrid("reload",{status:3}) ;
 			}
 		}
-	} ) ;
+	} ) ;*/
 	
 	function loadCount(){
 		$.dataservice("model:Warehouse.Ram.loadStatusCount",{},function(result){
-		
+			var map = {} ;
 			$(result).each(function(){
-				var item = {} ;
-				for(var o in this){
-					var _ = this[o] ;
-					for(var o in _){
-						item[o] = _[o] ;
-					}
-				}
-				var el = $("[custom='"+item['STATUS']+"']") ;
-				if(el.length){
-					var cl = el.attr("customLabel");
-					var content = cl+"("+item['C']+")" ;
-					el.find("span").html(content) ;
-				}
+				map[this['STATUS']] = this['C'] ;
 			}) ;
 			
+			$(".flow-node").each(function(){
+				var status = $(this).attr("status") ;
+				var count = map[status]||'0' ;
+				if( $(this).find(".count").length){
+					$(this).find(".count").html("("+count+")") ;
+				}else{
+					$("<span class='count'>("+count+")</span>").appendTo(this) ;
+				}
+			}) ;
+
 			setTimeout(function(){
 				loadCount() ;
-			},60000) ;
+			},10000) ;
 		});
 	}
 	loadCount() ;
+	
+	$(".flow-node").click(function(){
+		$(".flow-node").addClass("disabled").removeClass("actived");
+		$(this).removeClass("disabled").addClass("actived");
+		$(".grid-content").llygrid("reload",{status: $(this).attr("status") },true) ;
+	}) ;
 	
 	$(".grid-content").llygrid({
 		columns:[
 			{key:"CODE",label:"编辑",width:"5%",format:function(val,record){
 				var status = record.STATUS ;
 				
-				if( status == 0 ){
-					return "<a href='#' class='edit btn' val='"+val+"'>修改</a>&nbsp;&nbsp;" ;
-				}else if(status == 1){
-					return "<a href='#' class='edit btn' val='"+val+"'>审批</a>&nbsp;&nbsp;"
-				}else if(status == 2){
-					return "<a href='#' class='edit btn' val='"+val+"'>处理</a>&nbsp;&nbsp;"
-				}else if(status == 3){
-					return "<a href='#' class='edit btn' val='"+val+"'>查看</a>&nbsp;&nbsp;"
+				if( status == 80 ){
+					return  getImage('icon-grid.gif','查看','edit  ')   ;
+				}else{
+					return getImage('pkg.gif','处理','edit  ')  ;
 				}
 				
 			}},
@@ -88,7 +88,7 @@ $(function(){
 		 },
 		 title:"RAM事件列表",
 		 indexColumn:false,
-		 querys:{sqlId:"sql_ram_events_list",status:0},
+		 querys:{sqlId:"sql_ram_events_list",status:''},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowClick:function(row,record){
 		 	//$(".grid-content-active").llygrid("reload",{planId:record.ID});

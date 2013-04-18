@@ -56,6 +56,10 @@
   		select * from sc_ram_event where id = '{@#id#}'
    </entry>
    
+   <entry key="sql_ram_event_getByCode">
+  		select * from sc_ram_event where code = '{@#code#}'
+   </entry>
+   
    <entry key="sql_ram_event_getByOrderId">
   		SELECT t.* FROM (
 		SELECT s1.* FROM sc_ram_event s1
@@ -150,6 +154,12 @@
 			CAUSE_CODE = '{@#causeCode#}' , 
 			POLICY_CODE = '{@#policyCode#}' ,
 			MEMO = '{@#memo#}' , 
+			{@ status = '#status#',}
+			{@ is_receive = '#isReceive#',}
+			{@ in_status = '#inStatus#',}
+			{@ refund_Status = '#refundStatus#',}
+			{@ resend_status = '#resendStatus#',}
+			{@ refund_value = '#refundValue#',}
 			CHARGER = '{@#charger#}'
 			WHERE
 			ID = '{@#id#}'

@@ -59,7 +59,7 @@
 							//html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
 						}
 						return html.join("") ;
-					},permission:function(){ return $product_edit||$product_stock_quanity_assign ; }},
+					}},
 				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},

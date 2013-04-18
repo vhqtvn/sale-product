@@ -6,6 +6,20 @@ class Ram extends AppModel {
 		$this->exeSql("sql_order_ram_status",$params ) ;
 	}
 	
+	public function doFlow( $params ){
+		$code = $params['code'] ;
+		if( empty( $params['id'] ) ){
+			$this->exeSql("sql_ram_event_insert",$params) ;
+		}else{
+			$this->exeSql("sql_ram_event_update",$params) ;
+		}
+		
+		$event = $this->getObject("sql_ram_event_getByCode", array('code'=>$code)) ;
+		$params['id'] = $event['ID'] ;
+		//保存轨迹
+		$this->exeSql("sql_ram_track_insert",$params) ;
+	}
+	
 	public function doSaveOption($params){
 		$option = $this->getObject("sql_ram_options_getByCode",$params) ;
 		
@@ -17,7 +31,13 @@ class Ram extends AppModel {
 	}
 	
 	function loadStatusCount(){
-		return $this->exeSql("sql_warehouse_rma_loadStatusCount",array());
+		$result = $this->exeSql("sql_warehouse_rma_loadStatusCount",array());
+		$return = array() ;
+		foreach($result as $item){
+			$i = $this->formatObject($item) ;
+			$return[] = $i ;
+		}
+		return $return ;
 	}
 	
 	public function doSaveEvent($params){

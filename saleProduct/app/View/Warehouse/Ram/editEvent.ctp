@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -33,8 +33,19 @@
 		$security  = ClassRegistry::init("Security") ;
 		
 		$loginId   = $user['LOGIN_ID'] ;
-		
 		$orderId =$params['arg1'] ;
+		
+		$rmaEdit 	= $security->hasPermission($loginId , 'RMA_EDIT') ;
+		$rmaAudit 	= $security->hasPermission($loginId , 'RMA_AUDIT') ;
+		$rmaTagConfirm 	= $security->hasPermission($loginId , 'RMA_TAG_CONFIRM') ;
+		$rmaBackConfirm 	= $security->hasPermission($loginId , 'RMA_BACK_CONFIRM') ;
+		$rmaWhIn	= $security->hasPermission($loginId , 'RMA_WH_IN') ;
+		$rmaRefund 	= $security->hasPermission($loginId , 'RMA_REFUND') ;
+		$rmaResendConfig 	= $security->hasPermission($loginId , 'RMA_RESEND_CONFIG') ;
+		$rmaResendConfirm 	= $security->hasPermission($loginId , 'RMA_RESEND_CONFIRM') ;
+		$rmaRiskCustomer	= $security->hasPermission($loginId , 'RMA_RISK_CUSTOMER') ;
+		
+		
 		$result  = null ;
 		
 		
@@ -83,11 +94,173 @@
 			$orderItems = $SqlUtils->exeSql("sql_sc_order_item_list",array('orderId'=>$orderId) ) ;
 		}
 		
+		//决策原因
+		$policys = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'policy')) ;
+		$selectedPolicy = null ;
+		foreach( $policys as $cause ){
+			$cause = $SqlUtils->formatObject($cause) ;
+			if( $cause['CODE'] == $policyCode ){
+				$selectedPolicy = $cause ;
+			}
+		}
+		//'IS_RESEND' => '1',  重发
+		//'IS_REFUND' => '1',  退款
+		//'IS_BACK' => '1'  退货
 		
 	?>
+	
+	<script type="text/javascript">
+		var currentStatus = '<?php echo $status;?>';
+		var AuditAction = function(status ,statusLabel,fixParams){
+			if( !$.validation.validate('#personForm').errorInfo ) {
+				if(window.confirm("确认【"+statusLabel+"】吗？")){
+					var json = $("#personForm").toJson() ;
+					json = $.extend({},json,fixParams) ;
+					var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
+					json.trackMemo = memo ;
+					json.status =status ;
+					//return ;
+					//保存基本信息
+					$.dataservice("model:Warehouse.Ram.doFlow",json,function(result){
+						<?php if( !empty($result['ID']) ){ ?>
+							window.location.reload();
+						<?php }else{
+							echo 'window.close();' ;
+						}?>
+					});
+				}
+			}
+		}
+
+		function ResendConfig(status ,statusLabel,fixParams){
+			if(window.confirm("确认【"+statusLabel+"】吗？")){
+				//保存重发货设置
+				var result = [] ;
+				$("[name='rmaReship']").each(function(){
+					var me = $(this) ;
+					var rmaReship = $(this).val() ;
+					var orderId   = $(this).attr("orderId") ;
+					var orderItemId = $(this).attr("orderItemId") ;
+					var params = {rmaReship:rmaReship,orderId:orderId,orderItemId:orderItemId} ;
+					result.push(params) ;
+				}) ;
+				$.dataservice("model:Warehouse.Ram.saveReship",{
+					result:$.json.encode(result),
+					resendStatus:1,
+					id:$("#id").val(),
+					orderId:$("#orderId").val()
+					},function(result){
+						var json = $("#personForm").toJson() ;
+						json = $.extend({},json,fixParams) ;
+						var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
+						json.trackMemo = memo ;
+						json.status =status ;
+						//return ;
+						//保存基本信息
+						$.dataservice("model:Warehouse.Ram.doFlow",json,function(result){
+								window.location.reload();
+						});
+				});	
+			}
+		}
+<?php if( !empty($result['ID']) ){ ?>
+		var flowData = [] ;
+		flowData.push( {status:10,label:"编辑中",memo:true ,actions:[ 
+		<?php if( $rmaEdit ){ ?>
+		        {label:"保存",action:function(){ AuditAction(10,"保存") } },
+		        {label:"提交审批",action:function(){ AuditAction(20,"提交审批") } } 
+		<?php }?>
+		]} ) ;
+
+		<?php 
+			$nextStatus = $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:80 ) ; 
+			if( $selectedPolicy['IS_BACK'] == 1   ){
+				$nextStatus = 30 ;
+			}
+		?>
+		
+		flowData.push( {status:20,label:"审批确认",memo:true ,actions:[ 
+		<?php if( $rmaAudit ){ ?>
+		          {label:"审批确认",action:function(){ AuditAction('<?php echo $nextStatus;?>',"审批确认") } },
+		          {label:"审批不通过，继续编辑",action:function(){ AuditAction(10,"审批不通过，继续编辑") } }
+		 <?php }?>
+		]} ) ;
+		
+		<?php if( $selectedPolicy['IS_BACK'] == 1 ){//退货 ?>
+			flowData.push( {status:30,label:"退货标签确认",memo:true ,actions:[ 
+			<?php if( $rmaTagConfirm ){ ?>
+                       {label:"确认退货标签发送",action:function(){ AuditAction(40,"确认退货标签发送，等待收到退货") } } 
+		 <?php }?>
+              ]} ) ;
+			flowData.push( {status:40,label:"退货确认",memo:true,actions:[ 
+			<?php if( $rmaBackConfirm ){ ?>
+					{label:"确认收退货",action:function(){ AuditAction(50,"确认收到退货，等待入库",{isReceive:1}) } }
+		 <?php }?>
+			] } ) ;
+
+			//下一步状态
+			var nextStatus1 = <?php echo $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:80 ) ; ?> ;
+			var nextStatusText1 = "<?php echo $selectedPolicy['IS_REFUND'] == 1?'入库完成，等待退款！':($selectedPolicy['IS_RESEND'] == 1?'入库完成，等待重发！':'入库完成，结束！' ) ; ?>";
+			
+			flowData.push( {status:50,label:"退货入库",memo:true,actions:[
+			<?php if( $rmaWhIn ){ ?>
+				    {label:"确认入库完成",action:function(){ AuditAction( nextStatus1,nextStatusText1,{inStatus:1}) } }
+		 <?php }?>
+			] } ) ;
+		<?php }; ?>
+	
+		<?php if( $selectedPolicy['IS_REFUND'] == 1 ){//退款 ?>
+			var nextStatus = <?php echo  $selectedPolicy['IS_RESEND'] == 1?70:80   ; ?> ;
+			var nextStatusText = "<?php echo  $selectedPolicy['IS_RESEND'] == 1?'退款完成，等待重发！':'退款完成，结束！'   ; ?>";
+			
+			flowData.push( {status:60 ,label:"退款",memo:true,actions:[
+			<?php if( $rmaRefund ){ ?>
+			            {label:"确认退款完成",action:function(){ AuditAction( nextStatus,nextStatusText,{refundStatus:1}) } }
+		 <?php }?>
+			]  } ) ;
+		<?php }; ?>
+	
+		<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//重发 ?>
+			flowData.push( {status:70,label:"重发配置",memo:true,actions:[
+			<?php if( $rmaResendConfig ){ ?>
+				      {label:"确认重发配置完成",action:function(){ ResendConfig(75 ,"重发配置完成",{resendStatus:1}) } }
+		 <?php }?>
+			]  } ) ;
+			flowData.push( {status:75,label:"确认重发",memo:true,actions:[
+			<?php if( $rmaResendConfirm ){ ?>
+			         {label:"确认重发完成",action:function(){ AuditAction(80 ,"确认重发完成，结束！") } }
+		 <?php }?>
+			]  } ) ;
+		<?php }; ?>
+	
+		flowData.push({status:80,label:'结束'}) ;
+	
+		$(function(){
+			var flow = new Flow() ;
+			flow.init(".flow-bar center",flowData) ;
+			flow.draw('<?php echo $status;?>') ;
+		}) ;
+<?php }?>			
+	</script>
 </head>
 
+
+
 <body class="container-popup">
+	<div  class="flow-bar">
+		<center>
+			<table class="flow-table">
+			</table>
+			<div class="flow-action">
+			</div>
+		</center>
+	</div>
+	<?php if( empty($result['ID']) ){ ?>
+	<center>
+		<button class="btn btn-primary" onclick='AuditAction(10,"保存") '>保存</button>
+		<button class="btn btn-primary" onclick='AuditAction(20,"保存并提交审批") '>保存并提交审批</button>
+	</center>
+	<?php } ?>
 	<!-- apply 主场景 -->
 	<div class="apply-page">
 		<div class="container-fluid">
@@ -104,32 +277,6 @@
 						<table class="form-table " >
 							<caption>
 							RMA事件编辑
-							<div style="text-align:right;float:right;margin-top:1px;">
-							<?php
-								if( $isInit ){
-									if(!empty($result['CODE'])){
-								?>
-								<button type="button" class="btn btn-primary btn-delete">删&nbsp;除</button>
-								<?php } ?>
-								<button type="button" class="btn btn-primary btn-save">保&nbsp;存</button>
-								<button type="button" class="btn btn-primary btn-save-audit">保存并提交审批</button>
-								<?php
-								}else if($isAudit){//审批
-								?>
-								<button type="button" class="btn btn-primary btn-delete">删&nbsp;除</button>
-								<button type="button" class="btn btn-primary btn-aduitPass">审批通过</button>
-								<button type="button" class="btn btn-primary btn-aduitNotPass">审批不通过</button>
-								<?php
-								}else if($isAuditPass){//审批
-								?>
-								<button type="button" class="btn btn-primary btn-save-track">保存轨迹</button>
-								<button type="button" class="btn btn-primary btn-finish">完成处理</button>
-								<?php
-								}else if($isComplete){//审批
-								}
-							?>
-							</div>
-							
 							</caption>
 							<tbody>	
 								<tr>
@@ -187,9 +334,8 @@
 											<option value="">请选择</option>
 										<?php
 											
-											$causes = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'policy')) ;
 											$selectedPolicy = null ;
-											foreach( $causes as $cause ){
+											foreach( $policys as $cause ){
 												$cause = $SqlUtils->formatObject($cause) ;
 												$selected = $cause['CODE'] == $policyCode?"selected":"" ;
 												
@@ -203,7 +349,22 @@
 										</select>
 									</td>
 								</tr>
-								
+								<?php if( !empty($result['ID']) ){ ?>
+								<tr>
+											<?php 
+												$email =  $order['BUYER_EMAIL'] ;
+												$Customer = $SqlUtils->getObject("sql_saleuser_findByEmail",array("email"=>$email)) ;
+												$clz = $Customer['STATUS'] == 'danger'?"alert-danger":"" ;
+											?>
+												<th>客户：</th>
+												<td colspan="3" >
+													<?php echo $email;?>
+											<?php if($Customer['STATUS'] != 'danger'  && $rmaRiskCustomer ){?>
+													<button email="<?php echo $order['BUYER_EMAIL']?>" class="btn btn-danger btn-dangerUser">加入风险客户</button>
+											<?php }?>
+												</td>
+								</tr>
+								<?php }?>
 								<tr>
 									<th>备注：</th><td  colspan=3>
 										<textarea name="memo"  
@@ -211,106 +372,75 @@
 										style="width:90%;height:40px;"><?php echo $result['MEMO'];?></textarea>
 									</td>
 								</tr>
-								<?php if($isAudit){?>
-								<tr>
-									<th>审批意见：</th><td  colspan=3>
-										<textarea name="trackMemo" 
-										style="width:90%;height:40px;"></textarea>
-									</td>
-								</tr>
-								<?php }?>
-								<?php if($isAuditPass){?>
+							</table>
+							<?php if( $selectedPolicy['IS_BACK'] == 1 && $status >=30  ){?>
+								<table class="form-table " >	
+									<caption>退货信息</caption>
 									<tr>
-										<th>跟踪意见：</th><td  colspan=3>
-											<textarea name="trackMemo" 
-											style="width:90%;height:40px;"></textarea>
+										<th>是否收到退货：</th><td  colspan=3>
+											<?php  if( $result['IS_RECEIVE'] == 1 ){ ?>
+												<?php if($result['IN_STATUS'] != 1 ){?>
+													<button class="btn  ram-in">RMA入库</button>
+												<?php }else {
+													echo "<span class='alert alert-success' style='padding:5px 10px;'>入库完成</span>" ;
+												}?>
+											<?php  }else{
+												echo "<span class='alert alert-danger' style='padding:5px 10px;'>未收到退货</span>" ;
+											}?>
 										</td>
 									</tr>
-									<?php if( $selectedPolicy['IS_REFUND'] == 1 ){?>
+								</table>
+							<?php }?>
+							
+							<?php if( $selectedPolicy['IS_REFUND'] == 1  && $status >=60 ){?>
+							 <table class="form-table " >
+								<caption>退款信息</caption>
 									<tr>
 										<th>是否已经退款：</th><td  colspan=3>
+											<?php if( $result['REFUND_STATUS'] != 1 ){ ?>
 											是<input type="radio" name="refundStatus"
+											<?php if(!$rmaRefund) echo 'disabled';?>
 											<?php  echo $result['REFUND_STATUS'] == 1?'checked':"" ?>
 											<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
 											 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
 											否<input type="radio" name="refundStatus"
+												<?php if(!$rmaRefund) echo 'disabled';?>
 												<?php  echo $result['REFUND_STATUS'] == 0?'checked':"" ?>
 												<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
 											 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
-											 
-											 <?php  echo $result['REFUND_STATUS'] == 1?'<span class="alert alert-info">退款金额:'.$result['REFUND_VALUE'].'</span>' :"" ?>
-											 
 											 <span class="refund-action" style="display:none;">
-											 <input type="text" name="refundValue" placeHolder="请输入退款金额"/>
-											 <button class="btn btn-danger refundConfirm">确认</button>
+											 <input type="text" name="refundValue" <?php if(!$rmaRefund) echo 'disabled';?> placeHolder="请输入退款金额"/>
 											 </span>
+											 
+											<?php }?> 
+											 <?php  echo $result['REFUND_STATUS'] == 1?'<span class="alert alert-info"  style="padding:5px 10px;">退款金额:'.$result['REFUND_VALUE'].'</span>' :"" ?>
 										</td>
 									</tr>
-									<?php }?>
-									
-									<?php if( $selectedPolicy['IS_BACK'] == 1 ){?>
-									<tr>
-										<th>是否收到退货：</th><td  colspan=3>
-											是<input type="radio" name="isReceive"
-											<?php  echo $result['IS_RECEIVE'] == 1?'checked':"" ?>
-											<?php  echo $result['IS_RECEIVE'] == 1?' disabled':"" ?>
-											 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
-											否<input type="radio" name="isReceive"
-												<?php  echo $result['IS_RECEIVE'] == 0?'checked':"" ?>
-												<?php  echo $result['IS_RECEIVE'] == 1?' disabled':"" ?>
-											 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
-											<?php if($result['IN_STATUS'] != 1 ){?>
-											<button class="btn disabled ram-in" disabled>RMA入库</button>
-											<button class="btn btn-success disabled ram-in complete" disabled>RMA完成入库</button>
-											<?php }else{
-												echo "<span class='alert alert-success'>入库完成</span>" ;
-	 										}?>
-										</td>
-									</tr>
-									<?php }?>
-								<?php }?>
-								<?php if( !empty($orderItems) ){?>
+								</table>
+							<?php }?>
+								
+							<?php if( !empty($orderItems) ){?>
+							<table class="form-table " >
+							<?php if( $selectedPolicy['IS_RESEND'] == 1  && $status >=70 ){?>
+								<caption>重发货配置 
+									<?php if( $result['RESEND_STATUS'] < 1 ){ ?><button class="btn save-reship">保存重发货设置</button><?php }?>
+								</caption>
+							<?php }?>	
 								<tr>
 								<td colspan=4 style="text-align:left;">
 									<div class="row-fluid">
-										<div class="span5">
-											<table style="width:100%;">
-											<tr style="padding:0px;margin:0px;">
-												<?php 
-												
-												$email =  $order['BUYER_EMAIL'] ;
-												$Customer = $SqlUtils->getObject("sql_saleuser_findByEmail",array("email"=>$email)) ;
-												$clz = $Customer['STATUS'] == 'danger'?"alert-danger":"" ;
-											?>
-												<th style="padding:0px;text-align:center;">
-														<div class="<?php echo $clz;?>" style="height:100%;font-weight:bold;">客户:
-														<?php echo $email;?>
-														</div>
-												</th>
-											</tr>
-											<?php if($Customer['STATUS'] != 'danger'){?>
-											<tr style="padding:0px;margin:0px;">
-												<td style="padding-top:0px;padding-bottom:0px;">
-													<button email="<?php echo $order['BUYER_EMAIL']?>" class="btn btn-danger btn-dangerUser">加入风险客户</button>
-												</td>
-											</tr>
-											<?php }?>
-											</table>
-										</div>
-										<div class="span7">
-											<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1 && $result['RESEND_STATUS'] != 1 ){?>
-												<div style="padding:0px 5px 5px 5px;">
-												<button class="btn save-reship">保存重发货设置</button>
-												<button class="btn btn-danger save-reship-finish">重发货配置完成</button>
-												</div>
-											<?php }?>
+										<div class="span12">
+											<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//需要重发货
+												echo '<input type="hidden"  id="_reSend" value="'.$result['RESEND_STATUS'].'"/>' ;
+											}?>
+
 											<table style="width:100%;">
 												<tr style="padding:0px;margin:0px;">
 													<th style="padding:0px;text-align:center;">货品SKU</th>
 													<th style="padding:0px;text-align:center;">货品名称</th>
 													<th style="padding:0px;text-align:center;">货品图片</th>
 													<th style="padding:0px;text-align:center;">购买数量</th>
-													<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1 ){?>
+													<?php if(  $selectedPolicy['IS_RESEND'] == 1 && $status >=70 ){?>
 													<th style="padding:0px;text-align:center;width:100px;">重发货数量</th>
 													<?php }?>
 												</tr>
@@ -325,9 +455,10 @@
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['NAME']?></td>
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo "<img style='width:25px;height:25px;' src='/".$fileContextPath."/".$imageUrl."'>"?></td>
 															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['Quantity_Ordered']?></td>
-															<?php if($isAuditPass && $selectedPolicy['IS_RESEND'] == 1   ){?>
+															<?php if( $selectedPolicy['IS_RESEND'] == 1  && $status >=70 ){?>
 															<td style="padding-top:0px;padding-bottom:0px;">
 																<input type="text" class="alert alert-danger" style="width:85px;" 
+																	<?php if( !$rmaResendConfig ) echo 'disabled';?>
 																	<?php echo $result['RESEND_STATUS'] == 1?"disabled":"";?>
 																	orderId="<?php echo $order['Order_ID']?>"
 																	orderItemId="<?php echo $order['Order_Item_Id']?>"
