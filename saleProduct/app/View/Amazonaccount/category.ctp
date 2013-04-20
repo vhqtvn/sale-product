@@ -41,36 +41,15 @@
 	var accountId = '<?php echo $accountId;?>' ;
 
     <?php
-    	$index = 0 ;
-		foreach( $categorys as $Record ){
-			$sfs = $Record['sc_amazon_product_category']  ;
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME'] ;
-			$pid  = $sfs['PARENT_ID'] ;
-			$isVip = $sfs['PRICE_STRATERY'] ;
-			echo " var item$index = {id:'$id',priceStratery:'$isVip',pid:'$pid',text:'$name',memo:'".$sfs['MEMO']."',gatherLevel:'".$sfs['GATHER_LEVEL']."',isExpand:true} ;" ;
-			echo " treeMap['id_$id'] = item$index  ;" ;
-			$index++ ;
-		} ;
-		
-		$index = 0 ;
-		foreach( $categorys as $Record ){
-			$sfs = $Record['sc_amazon_product_category']  ;
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME'] ;
-			$pid  = $sfs['PARENT_ID'] ;
-			
-			if(empty($pid)){
-				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-				echo "treeData.childNodes.push( item$index ) ;" ;
-			}else{
-				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-			}
-			$index++ ;
-		} ;
-		
+		    $Utils  = ClassRegistry::init("Utils") ;
+		    
+		    $Utils->echoTreeScript( $categorys ,null, function( $sfs, $index ,$ss ){
+		    	$id   = $sfs['ID'] ;
+				$name = $sfs['NAME'] ;
+				$pid  = $sfs['PARENT_ID'] ;
+				$isVip = $sfs['PRICE_STRATERY'] ;
+				echo " var item$index = {id:'$id',priceStratery:'$isVip',pid:'$pid',text:'$name',memo:'".$sfs['MEMO']."',gatherLevel:'".$sfs['GATHER_LEVEL']."',isExpand:true} ;" ;
+		    } ) ;
 	?>
    
 	$(function(){

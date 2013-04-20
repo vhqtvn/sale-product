@@ -89,6 +89,7 @@
 		  {@ and s1.status = '#status#'}
 		  {@ and s1.order_id like '%#orderId#%'}
 		  {@ and s1.code like '%#rmaId#%'}
+		  order by CREATE_TIME desc
    </entry>
    
    <entry key="sql_ram_events_list_rel">

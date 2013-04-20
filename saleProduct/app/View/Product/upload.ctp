@@ -37,23 +37,15 @@
     var treeMap  = {} ;
 
     <?php
-    	$index = 0 ;
-		foreach( $uploadGroup as $Record ){
-			$sfs = $Record['sc_upload_group']  ;
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
+    $Utils  = ClassRegistry::init("Utils") ;
+    
+    $Utils->echoTreeScript( $uploadGroup ,null, function( $sfs, $index ,$ss ){
+    	$id   = $sfs['ID'] ;
+			$name = $sfs['NAME']."(".$sfs['TOTAL'].")" ;
 			$pid  = $sfs['PARENT_ID'] ;
 			echo " var item$index = {id:'$id',text:'$name',name:'".$sfs['NAME']."',isExpand:true} ;" ;
-			
-			echo " treeMap['id_$id'] = item$index  ;" ;
-			if(empty($pid)){
-				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-				echo "treeData.childNodes.push( item$index ) ;" ;
-			}else{
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-			}
-			$index++ ;
-		} ;
+    } ) ;
+    
 	?>
 	
 	var currentGroup = "" ;
@@ -156,29 +148,6 @@
 		}); 
    	 }
    	 
-
- function formatGridData(data){
-	var records = data.record ;
-	var count   = data.count ;
-	
-	count = count[0][0]["count(*)"] ;
-	
-	var array = [] ;
-	$(records).each(function(){
-		var row = {} ;
-		for(var o in this){
-			var _ = this[o] ;
-			for(var o1 in _){
-				row[o1] = _[o1] ;
-			}
-		}
-		array.push(row) ;
-	}) ;
-
-	var ret = {records: array,totalRecord:count } ;
-		
-	return ret ;
-   }  
    </script>
    
    <style>

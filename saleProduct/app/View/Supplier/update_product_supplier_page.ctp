@@ -24,7 +24,7 @@
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$productSupplier = $SqlUtils->getObject("sql_purchase_plan_product_inquiry",array('sku'=>$sku,'planId'=>$planId,'supplierId'=>$supplierId)) ;
-		//debug($productSupplier);
+		
 	?>
   
    <style>

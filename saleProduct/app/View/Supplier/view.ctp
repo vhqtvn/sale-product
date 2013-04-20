@@ -74,31 +74,20 @@
 	
 	    <?php
 	    	$ss = explode(",",$products) ;
-	    
-	    	$index = 0 ;
-			foreach( $categorys as $Record ){
-				$sfs = $Record['sc_product_category']  ;
-				$id1   = $sfs['ID'] ;
-				$name1 = $sfs['NAME'] ;
-				$pid  = $sfs['PARENT_ID'] ;
-				echo " var item$index = {id:'$id1',text:'$name1',memo:'".$sfs['MEMO']."',isExpand:true,disabled:1} ;" ;
-				
-				foreach($ss as $s){
-					if( $s  == $id1 ){
-						echo " item$index ['checkstate'] = 1 ;" ;
-					}
-				}
-				
-			
-				echo " treeMap['id_$id1'] = item$index  ;" ;
-				if(empty($pid)){
-					echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-					echo "treeData.childNodes.push( item$index ) ;" ;
-				}else{
-					echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-				}
-				$index++ ;
-			} ;
+	    	
+	    	$Utils  = ClassRegistry::init("Utils") ;
+	    	
+	    	$Utils->echoTreeScript( $categorys ,$ss, function( $item, $index ,$ss ){
+	    		$id__ = $item ['ID'];
+	    		$name__ = $item ['NAME'];
+	    		echo " var item$index = {id:'$id__',text:'$name__',memo:'" . $item ['MEMO'] . "',isExpand:true,disabled:1} ;";
+	    	
+	    		foreach ( $ss as $s ) {
+	    			if ($s == $id__) {
+	    			echo " item$index ['checkstate'] = 1 ;";
+	    		}
+	    	}
+	    	} ) ;
 		?>
    
    

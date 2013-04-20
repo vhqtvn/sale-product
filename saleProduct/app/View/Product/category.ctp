@@ -45,74 +45,19 @@
     var treeMap  = {} ;
 
     <?php
-    	    $SqlUtils  = ClassRegistry::init("SqlUtils") ;
+    $Utils  = ClassRegistry::init("Utils") ;
     
-        	$index = 0 ;
-    		foreach( $categorys as $Record ){
-    			$sfs = $SqlUtils->formatObject($Record) ;
-    			//debug($sfs) ;
-    			
-    			//$sfs = $Record['sc_product_category']  ;
-    			
-    			$id   = $sfs['ID'] ;
+    $Utils->echoTreeScript( $categorys ,null, function( $sfs, $index ,$ss ){
+    	$id   = $sfs['ID'] ;
     			$name = $sfs['NAME'] ;
     			$pid  = $sfs['PARENT_ID'] ;
     			$charger = $sfs['PURCHASE_CHARGER'] ;
     			$chargerName = $sfs['PURCHASE_CHARGER_NAME'] ;
     			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true,purchaseCharger:'$charger',purchaseChargerName:'$chargerName'} ;" ;
     			
-    			echo " treeMap['id_$id'] = item$index  ;" ;
-    			$index++ ;
-    		} ;
-    		
-    		$index = 0 ;
-    		foreach( $categorys as $Record ){
-    			$sfs = $SqlUtils->formatObject($Record) ;
-    			$id   = $sfs['ID'] ;
-    			$name = $sfs['NAME'] ;
-    			$pid  = $sfs['PARENT_ID'] ;
-    			
-    			if(empty($pid)){
-    				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-    				echo "treeData.childNodes.push( item$index ) ;" ;
-    			}else{
-    				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-    				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
-    				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-    			}
-    			$index++ ;
-    		} ;
-    		
+    } ) ;
+    
     	?>
-    
-    <?php
-    	/*$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-    
-    	$index = 0 ;
-		foreach( $categorys as $Record ){
-			$sfs = $SqlUtils->formatObject($Record) ;
-			//debug($sfs) ;
-			
-			//$sfs = $Record['sc_product_category']  ;
-			
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME'] ;
-			$pid  = $sfs['PARENT_ID'] ;
-			$charger = $sfs['PURCHASE_CHARGER'] ;
-			$chargerName = $sfs['PURCHASE_CHARGER_NAME'] ;
-			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true,purchaseCharger:'$charger',purchaseChargerName:'$chargerName'} ;" ;
-			
-			
-			echo " treeMap['id_$id'] = item$index  ;" ;
-			if(empty($pid)){
-				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-				echo "treeData.childNodes.push( item$index ) ;" ;
-			}else{
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-			}
-			$index++ ;
-		} ;*/
-	?>
    
 	$(function(){
 

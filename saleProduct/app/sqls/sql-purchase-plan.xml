@@ -20,10 +20,10 @@
 			LEFT JOIN  sc_purchase_supplier_inquiry spsi
 			ON srps.REAL_SKU = spsi.SKU
 			AND srps.SUPPLIER_ID = spsi.SUPPLIER_ID
-			AND spsi.PLAN_ID = '{@#{@#planId#}'
-		 WHERE srps.REAL_SKU = '{@#{@#sku#}'
+			AND spsi.PLAN_ID = '{@#planId#}'
+		 WHERE srps.REAL_SKU = '{@#sku#}'
 		 AND ss.ID = srps.SUPPLIER_ID
-		 {@ and srps.supplier_id = '{@##supplierId#'}
+		 {@ and srps.supplier_id = '#supplierId#'}
     </entry>
     
     <entry key="sql_purchase_plan_product_inquiry_insert">

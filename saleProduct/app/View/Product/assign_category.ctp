@@ -42,15 +42,10 @@
     var asin = '<?php echo $asin;?>' ;
 
     <?php
-    $SqlUtils  = ClassRegistry::init("SqlUtils") ;
+    $Utils  = ClassRegistry::init("Utils") ;
     
-    $index = 0 ;
-    foreach( $categorys as $Record ){
-    	$sfs = $SqlUtils->formatObject($Record) ;
-    	//debug($sfs) ;
-    
-    	//$sfs = $Record['sc_product_category']  ;
-    
+    $Utils->echoTreeScript( $categorys ,null, function( $sfs, $index ,$ss ){
+    	$selected = $sfs['selected'] ;
     	$id   = $sfs['ID'] ;
     	$name = $sfs['NAME'] ;
     	$pid  = $sfs['PARENT_ID'] ;
@@ -60,29 +55,8 @@
 		if( !empty($selected) ){
 				echo " item$index ['checkstate'] = 1 ;" ;
 		}
+    } ) ;
     
-    	echo " treeMap['id_$id'] = item$index  ;" ;
-    	$index++ ;
-    } ;
-    
-    $index = 0 ;
-    foreach( $categorys as $Record ){
-    $sfs = $SqlUtils->formatObject($Record) ;
-    $id   = $sfs['ID'] ;
-    $name = $sfs['NAME'] ;
-    $pid  = $sfs['PARENT_ID'] ;
-    
-    if(empty($pid)){
-    echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-    echo "treeData.childNodes.push( item$index ) ;" ;
-    }else{
-    echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-    echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
-    echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-    }
-    $index++ ;
-    } ;
-   
 	?>
    
 	$(function(){

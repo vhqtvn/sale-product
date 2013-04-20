@@ -39,23 +39,16 @@
     var treeMap  = {} ;
 
     <?php
-    	$index = 0 ;
-		foreach( $uploadGroup as $Record ){
-			$sfs = $Record['sc_upload_group']  ;
-			$id   = $sfs['ID'] ;
+    $Utils  = ClassRegistry::init("Utils") ;
+    
+    $Utils->echoTreeScript( $uploadGroup ,null, function( $sfs, $index ,$ss ){
+    		$id   = $sfs['ID'] ;
 			$name = $sfs['NAME']  ;
 			$pid  = $sfs['PARENT_ID'] ;
 			echo " var item$index = {id:'$id',text:'$name',isExpand:true} ;" ;
-			
-			echo " treeMap['id_$id'] = item$index  ;" ;
-			if(empty($pid)){
-				echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-				echo "treeData.childNodes.push( item$index ) ;" ;
-			}else{
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-			}
-			$index++ ;
-		} ;
+    
+    } ) ;
+   
 	?>
    
 	$(function(){

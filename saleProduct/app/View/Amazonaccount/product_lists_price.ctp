@@ -32,38 +32,18 @@
     var treeMap  = {} ;
 
     <?php
-    	$index = 0 ;
-		foreach( $categorys as $Record ){
-			$sfs = $Record['sc_amazon_product_category']  ;
-			
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
+    $Utils  = ClassRegistry::init("Utils") ;
+    
+    $Utils->echoTreeScript( $categorys ,null, function( $sfs, $index ,$ss ){
+    	$id   = $sfs['ID'] ;
+			$name = $sfs['NAME']."(".$sfs['TOTAL'].")" ;
 			$pid  = $sfs['PARENT_ID'] ;
-			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;" ;
-			
-			
-			echo " treeMap['id_$id'] = item$index  ;" ;
-			$index++ ;
-		} ;
-		$index = 0 ;
-		foreach( $categorys as $Record ){
-			$sfs = $Record['sc_amazon_product_category']  ;
-			$id   = $sfs['ID'] ;
-			$name = $sfs['NAME']."(".$Record[0]['TOTAL'].")" ;
-			$pid  = $sfs['PARENT_ID'] ;
-			echo " item$index ['childNodes'] = item$index ['childNodes']||[] ;" ;
-			if(empty($pid)){
-				echo "treeData.childNodes.push( item$index ) ;" ;
-			}else{
-				echo " treeMap['id_$pid'].childNodes = treeMap['id_$pid'].childNodes||[] ;" ;
-				echo " treeMap['id_$pid'].childNodes.push( item$index ) ;" ;
-			}
-			$index++ ;
-		} ;
-		
-		
-		echo " treeMap['id_uncategory'] = {id:'uncategory',text:'未分类产品',memo:'',isExpand:true} ;\n" ;
-		echo " treeData.childNodes.push( treeMap['id_uncategory']  ) ;\n" ;
+    	echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;\n" ;
+    } ) ;
+    
+    echo " treeMap['id_uncategory'] = {id:'uncategory',text:'未分类产品',memo:'',isExpand:true} ;\n" ;
+    echo " treeData.childNodes.push( treeMap['id_uncategory']  ) ;\n" ;
+    
 	?>
    
    var accountId = '<?php echo $accountId ;?>' ;
