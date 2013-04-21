@@ -68,7 +68,7 @@
 		{status:20,label:"待发货",memo:true
 			<?php if( $security->hasPermission($loginId , 'IN_STATUS20')) { ?>
 			,actions:[
-				{label:"打印发票",action:function(){ printInvoice();} },
+				{label:"导出发票",action:function(){ printInvoice();} },
 				{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }
 			]
 			<?php };?>
@@ -76,7 +76,7 @@
 		{status:30,label:"已发货",memo:true
 			<?php if( $security->hasPermission($loginId , 'IN_STATUS30')) { ?>
 			,actions:[
-						{label:"打印发票",action:function(){ printInvoice();} },
+						{label:"导出发票",action:function(){ printInvoice();} },
 						{label:"到达海关",action:function(){ AuditAction(40,"到达海关") } }
 			]
 			<?php };?>
@@ -100,7 +100,7 @@
 		},
 		{status:70,label:"入库完成"
 			,actions:[
-{label:"打印发票",action:function(){ printInvoice();} },
+{label:"导出发票",action:function(){ printInvoice();} },
 						{label:"查看入库货品",action:function(){ productInWarehouse();} } 
 			]
 		}

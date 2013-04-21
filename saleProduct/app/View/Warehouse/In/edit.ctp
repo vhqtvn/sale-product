@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -165,18 +165,19 @@
 									<th>公司名称：</th><td><input type="text" id="sendCompany"
 										<?php echo $isRead?"readonly":"" ;?> 
 										value="<?php echo $result['SEND_COMPANY'];?>"/></td>
-									<th>公司地址：</th><td><input type="text" id="sendCompanyAddress"
+								<th>Email：</th><td colspan=3><input type="text" id="sendCompanyEmail"
 										<?php echo $isRead?"readonly":"" ;?>
-										value="<?php echo $result['SEND_COMPANY_ADDRESS'];?>"/></td>
+										value="<?php echo $result['SEND_COMPANY_EMAIL'];?>"/></td>
 								</tr>
 								<tr>
-									<th>邮编：</th><td><input type="text" id="sendCompanyPost"
+									<th>邮编：</th><td colspan="3"><input type="text" id="sendCompanyPost"
 										<?php echo $isRead?"readonly":"" ;?>
 										value="<?php echo $result['SEND_COMPANY_POST'];?>"/></td>
-			
+									<!-- 
 									<th>国家：</th><td><input type="text" id="sendCompanyCountry"
 										<?php echo $isRead?"readonly":"" ;?>
 										value="<?php echo $result['SEND_COMPANY_COUNTRY'];?>"/></td>
+									 -->
 								</tr><tr>
 									<th>联系人：</th><td><input type="text" id="sendCompanyContactor" 
 										<?php echo $isRead?"readonly":"" ;?>
@@ -186,9 +187,11 @@
 										value="<?php echo $result['SEND_COMPANY_PHONE'];?>"/></td>
 								</tr>
 								<tr>
-									<th>Email：</th><td colspan=3><input type="text" id="sendCompanyEmail"
+										<th>公司地址：</th><td colspan=3>
+										<textarea style="width:90%;height:50px;" id="sendCompanyAddress"
 										<?php echo $isRead?"readonly":"" ;?>
-										value="<?php echo $result['SEND_COMPANY_EMAIL'];?>"/></td>
+										><?php echo $result['SEND_COMPANY_ADDRESS'];?></textarea>
+										</td>
 								</tr>
 							</tbody>
 						</table>
@@ -200,18 +203,19 @@
 									<th>公司名称：</th><td><input type="text" id="receiveCompany"
 										<?php echo $isRead?"readonly":"" ;?> 
 										value="<?php echo $result['RECEIVE_COMPANY'];?>"/></td>
-									<th>公司地址：</th><td><input type="text" id="receiveCompanyAddress"
+										<th>Email：</th><td><input type="text" id="receiveCompanyEmail"
 										<?php echo $isRead?"readonly":"" ;?>
-										value="<?php echo $result['RECEIVE_COMPANY_ADDRESS'];?>"/></td>
+										value="<?php echo $result['RECEIVE_COMPANY_EMAIL'];?>"/></td>
 								</tr>
 								<tr>
-									<th>邮编：</th><td><input type="text" id="receiveCompanyPost"
+									<th>邮编：</th><td colspan="3"><input type="text" id="receiveCompanyPost"
 										<?php echo $isRead?"readonly":"" ;?>
 										value="<?php echo $result['RECEIVE_COMPANY_POST'];?>"/></td>
-			
+									<!-- 
 									<th>国家：</th><td><input type="text" id="receiveCompanyCountry"
 										<?php echo $isRead?"readonly":"" ;?>
 										value="<?php echo $result['RECEIVE_COMPANY_COUNTRY'];?>"/></td>
+								 -->
 								</tr><tr>
 									<th>联系人：</th><td><input type="text" id="receiveCompanyContactor" 
 										<?php echo $isRead?"readonly":"" ;?>
@@ -221,9 +225,11 @@
 										value="<?php echo $result['RECEIVE_COMPANY_PHONE'];?>"/></td>
 								</tr>
 								<tr>
-									<th>Email：</th><td colspan=3><input type="text" id="receiveCompanyEmail"
+									<th>公司地址：</th><td colspan=3>
+										<textarea style="width:90%;height:50px;" id="receiveCompanyAddress"
 										<?php echo $isRead?"readonly":"" ;?>
-										value="<?php echo $result['RECEIVE_COMPANY_EMAIL'];?>"/></td>
+										><?php echo $result['RECEIVE_COMPANY_ADDRESS'];?></textarea>
+										</td>
 								</tr>
 							</tbody>
 						</table>
