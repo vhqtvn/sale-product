@@ -39,18 +39,13 @@ class ExcelController extends AppController {
 		
 		//处理运单基本信息
 		$objPHPExcel->getActiveSheet()->setCellValue('B5' , $in['SHIP_NO'] );
-		$objPHPExcel->getActiveSheet()->setCellValue('A9' ,$indate);
-		$objPHPExcel->getActiveSheet()->setCellValue('F5' ,'寄件公司名/地址:'.$in['SEND_COMPANY']."\n".$in['SEND_COMPANY_ADDRESS'] );
-		$objPHPExcel->getActiveSheet()->setCellValue('F13' ,$in['RECEIVE_COMPANY_CONTACTOR'] );//收件姓名
-		$objPHPExcel->getActiveSheet()->setCellValue('F14' , $in['RECEIVE_COMPANY_ADDRESS'].'   '.$in['RECEIVE_COMPANY_COUNTRY'].'   '.$in['RECEIVE_COMPANY_POST'] );//收件人姓名 地址 国家  邮编
-		$objPHPExcel->getActiveSheet()->setCellValue('F15' ,$in['RECEIVE_COMPANY_PHONE']);//收件人姓名 地址 国家  邮编
+		$objPHPExcel->getActiveSheet()->setCellValue('A8' ,$indate);
+		$objPHPExcel->getActiveSheet()->setCellValue('F6' ,$in['SEND_COMPANY']."\n".$in['SEND_COMPANY_ADDRESS'] );
+		$objPHPExcel->getActiveSheet()->setCellValue('F12' ,$in['RECEIVE_COMPANY_CONTACTOR']."\n".$in['RECEIVE_COMPANY_ADDRESS'].' '.$in['RECEIVE_COMPANY_POST']."\n".$in['RECEIVE_COMPANY_PHONE']);//收件人 地址 国家  邮编
 		
 		$total = 0 ;
-		$startRow = 20 ;
-		
-		//获取格式
-		$objPHPExcel->getActiveSheet()->getConditionalStyles("A20") ;
-		
+		$startRow = 19 ;
+
 		//$style = $objPHPExcel->getActiveSheet()->duplicateStyle(null , "A20:K20") ;
 		//处理
 		foreach( $inProducts as $p ){
@@ -60,6 +55,9 @@ class ExcelController extends AppController {
 			$price = $p['DECLARATION_PRICE'] ;
 			$total = $total +$price * $quantity ;
 			
+			if( $startRow > 19  ){
+				$objPHPExcel->getActiveSheet()->insertNewRowBefore($startRow,1) ;
+			}
 			
 			$objPHPExcel->getActiveSheet()->mergeCells("A$startRow:B$startRow") ;
 			$objPHPExcel->getActiveSheet()->mergeCells("C$startRow:F$startRow") ;
@@ -82,7 +80,7 @@ class ExcelController extends AppController {
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5'); //$objPHPExcel是上文中读的资源
 		
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="形式发票('.$shipNo.').xls"');
+		header('Content-Disposition: attachment;filename="commerical-invoice-'.$in['IN_NUMBER'].'.xls"');
 		header('Cache-Control: max-age=0');
 		
 		$filename = microtime() ;
