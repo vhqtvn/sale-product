@@ -182,6 +182,7 @@
 			     	{label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 		<?php }?>                                    
 		<?php if( $rmaAudit ){ ?>
+		 		  {label:"保存轨迹",action:function(){ AuditAction(20,"保存轨迹") } },
 		          {label:"审批确认",action:function(){ AuditAction('<?php echo $nextStatus;?>',"审批确认") } },
 		          {label:"审批不通过，继续编辑",action:function(){ AuditAction(10,"审批不通过，继续编辑") } }
 		 <?php }?>
@@ -193,6 +194,7 @@
 				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 			<?php }?>   
 			<?php if( $rmaTagConfirm ){ ?>
+					   {label:"保存轨迹",action:function(){ AuditAction(30,"保存轨迹") } },
                        {label:"确认退货标签发送",action:function(){ AuditAction(40,"确认退货标签发送，等待收到退货") } } 
 		 <?php }?>
               ]} ) ;
@@ -201,6 +203,7 @@
 				                                              				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 				                                              			<?php }?> 
 			<?php if( $rmaBackConfirm ){ ?>
+			   {label:"保存轨迹",action:function(){ AuditAction(40,"保存轨迹") } },
 					{label:"确认收退货",action:function(){ AuditAction(50,"确认收到退货，等待入库",{isReceive:1}) } }
 		 <?php }?>
 			] } ) ;
@@ -214,6 +217,7 @@
 					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 					                                       			<?php }?>
 			<?php if( $rmaWhIn ){ ?>
+			   {label:"保存轨迹",action:function(){ AuditAction(50,"保存轨迹") } },
 				    {label:"确认入库完成",action:function(){ AuditAction( nextStatus1,nextStatusText1,{inStatus:1}) } }
 		 <?php }?>
 			] } ) ;
@@ -228,6 +232,7 @@
 					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 					                                       			<?php }?>
 			<?php if( $rmaRefund ){ ?>
+			   {label:"保存轨迹",action:function(){ AuditAction(60,"保存轨迹") } },
 			            {label:"确认退款完成",action:function(){ AuditAction( nextStatus,nextStatusText,{refundStatus:1}) } }
 		 <?php }?>
 			]  } ) ;
@@ -239,6 +244,7 @@
 					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 					                                       			<?php }?>
 			<?php if( $rmaResendConfig ){ ?>
+			   {label:"保存轨迹",action:function(){ AuditAction(70,"保存轨迹") } },
 				      {label:"确认重发配置完成",action:function(){ ResendConfig(75 ,"重发配置完成",{resendStatus:1}) } }
 		 <?php }?>
 			]  } ) ;
@@ -247,6 +253,7 @@
 					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 					                                       			<?php }?>
 			<?php if( $rmaResendConfirm ){ ?>
+			   {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } },
 			         {label:"确认重发完成",action:function(){ AuditAction(80 ,"确认重发完成，结束！") } }
 		 <?php }?>
 			]  } ) ;
