@@ -133,7 +133,6 @@ $(function(){
 });
 
 function uploadSuccess(){
-	alert(234234);
 	if(window.opener){
 		window.opener.location.reload() ;
 		window.close() ;
