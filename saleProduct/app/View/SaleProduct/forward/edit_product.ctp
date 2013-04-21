@@ -167,13 +167,11 @@
 								</tr>
 								<tr>
 									<th>默认物流服务：</th>
-									<td colspan=3>
+									<td>
 										<input type="hidden"  id="postageServiceId" name="postageServiceId" value="<?php echo $item['POSTAGE_SERVICE_ID']?>"/>
 										<input type="text" id="postageServiceName" name="postageServiceName" value="<?php echo $item['POSTAGE_SERVICE_NAME']?>"/>
 										<button class="btn select-postage">选择</button>
 									</td>
-								</tr>
-								<tr>
 									<th>包装类型：</th>
 									<td colspan=3>
 										<select id="packageGroupId" name="packageGroupId">
@@ -190,6 +188,18 @@
 												}
 											?>
 										</select>
+									</td>
+								</tr>
+								<tr>
+									<th>报关名称：</th>
+									<td>
+											<input type="text" 
+													name="declarationName" value="<?php echo $item['DECLARATION_NAME']?>"/>
+									</td>
+									<th>报关价格：</th>
+									<td>
+											<input type="text" 
+													name="declarationPrice" value="<?php echo $item['DECLARATION_PRICE']?>"/>
 									</td>
 								</tr>
 							</tbody>

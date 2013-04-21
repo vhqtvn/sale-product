@@ -47,6 +47,11 @@
 	function productInWarehouse(){
 		openCenterWindow(contextPath+"/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
 	}
+
+	function printInvoice(){
+		window.location.href = contextPath+"/excel/read/"+inId ;
+		//openCenterWindow(contextPath+"/excel/read/"+inId,860,630) ;
+	}
      
      var flowData = [
 		{status:0,label:"编辑中",memo:true
@@ -62,12 +67,18 @@
 		},
 		{status:20,label:"待发货",memo:true
 			<?php if( $security->hasPermission($loginId , 'IN_STATUS20')) { ?>
-			,actions:[{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }]
+			,actions:[
+				{label:"打印发票",action:function(){ printInvoice();} },
+				{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }
+			]
 			<?php };?>
 		},
 		{status:30,label:"已发货",memo:true
 			<?php if( $security->hasPermission($loginId , 'IN_STATUS30')) { ?>
-			,actions:[{label:"到达海关",action:function(){ AuditAction(40,"到达海关") } }]
+			,actions:[
+						{label:"打印发票",action:function(){ printInvoice();} },
+						{label:"到达海关",action:function(){ AuditAction(40,"到达海关") } }
+			]
 			<?php };?>
 		},
 		{status:40,label:"到达海关",memo:true
@@ -88,7 +99,10 @@
 			<?php };?>
 		},
 		{status:70,label:"入库完成"
-			,actions:[{label:"查看入库货品",action:function(){ productInWarehouse();} } ]
+			,actions:[
+{label:"打印发票",action:function(){ printInvoice();} },
+						{label:"查看入库货品",action:function(){ productInWarehouse();} } 
+			]
 		}
 	] ;
     </script>

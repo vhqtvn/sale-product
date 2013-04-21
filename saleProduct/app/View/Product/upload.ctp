@@ -38,14 +38,13 @@
 
     <?php
     $Utils  = ClassRegistry::init("Utils") ;
-    
+
     $Utils->echoTreeScript( $uploadGroup ,null, function( $sfs, $index ,$ss ){
     	$id   = $sfs['ID'] ;
 			$name = $sfs['NAME']."(".$sfs['TOTAL'].")" ;
 			$pid  = $sfs['PARENT_ID'] ;
 			echo " var item$index = {id:'$id',text:'$name',name:'".$sfs['NAME']."',isExpand:true} ;" ;
     } ) ;
-    
 	?>
 	
 	var currentGroup = "" ;
