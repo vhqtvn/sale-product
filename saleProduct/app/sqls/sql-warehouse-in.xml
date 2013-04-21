@@ -196,7 +196,7 @@
    
    <entry key="sql_warehouse_in_products">
 		SELECT s1.* , s2.NAME , s2.REAL_SKU as SKU , s2.IMAGE_URL
-			,s2.MEMO as P_MEMO
+			,s2.MEMO as P_MEMO ,s2.DECLARATION_NAME , s2.DECLARATION_PRICE  
 		   		FROM (
 					SELECT 
 					       s1.REAL_PRODUCT_ID  ,

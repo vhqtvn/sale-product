@@ -30,7 +30,6 @@ class SaleProduct extends AppModel {
 	}
 	
 	function saveProduct($data , $user){
-		debug($data) ;
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
