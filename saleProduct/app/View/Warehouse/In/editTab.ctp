@@ -146,7 +146,7 @@
 		.flow-action{
 			position:absolute;;
 			right:10px;
-			top:3px;
+			top:48px;
 		}
 		
 		.flow-split{
@@ -155,7 +155,7 @@
 		
 		.memo{
 			position:absolute;
-			top:40px;
+			top:80px;
 			z-index:1;
 			right:10px;
 			width:300px;

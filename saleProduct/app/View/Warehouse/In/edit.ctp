@@ -37,6 +37,8 @@
 		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
 		$isRead = $hasEditPermission?($status >= 10 ?true:false):true ;
 		
+		$hasReEditPermission = $security->hasPermission($loginId , 'IN_PLAN_REEDIT') ;
+		
 		$sendPermission = 
 			$security->hasPermission($loginId , 'IN_STATUS20')||$security->hasPermission($loginId , 'IN_STATUS30') ;
 		$isSended = $sendPermission?($status >30?true:false):true ; 
@@ -53,10 +55,16 @@
 			$defaultCode = "IN-".date("ymd").'-'.$index ;
 		}
 	?>
-	
+	<?php if($hasReEditPermission){?>
 	<script>
-	
+			$(function(){
+				$(".reedit").css("cursor","pointer").click(function(){
+						$(this).parents("table:first").find(":input").removeAttr("disabled").removeAttr("readOnly") ;
+						$(".panel-foot").show();
+					}) ;
+			}) ;
    </script>
+   <?php }?>
 </head>
 
 <body class="container-popup">
@@ -74,7 +82,7 @@
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
 						<table class="form-table " >
-							<caption>基本信息</caption>
+							<caption>基本信息 </caption>
 							<tbody>										   
 								<tr>
 									<th>入库号：</th><td><input type="text" 
@@ -103,7 +111,7 @@
 							</tbody>
 						</table>
 						<table class="form-table " >
-							<caption>物流信息</caption>
+							<caption>物流信息<?php if($hasReEditPermission){?><img class="reedit"  title="在编辑" src="/<?php echo $fileContextPath?>/app/webroot/img/edit.png"/><?php }?></caption>
 							<tbody>	
 								<tr>
 									<th>目标仓库：</th>
@@ -159,7 +167,7 @@
 						</table>
 						
 						<table class="form-table " >
-							<caption>发货人信息</caption>
+							<caption>发货人信息<?php if($hasReEditPermission){?><img class="reedit"  title="在编辑" src="/<?php echo $fileContextPath?>/app/webroot/img/edit.png"/><?php }?></caption>
 							<tbody>	
 								<tr>
 									<th>公司名称：</th><td><input type="text" id="sendCompany"
@@ -197,7 +205,7 @@
 						</table>
 						
 						<table class="form-table " >
-							<caption>收货人信息</caption>
+							<caption>收货人信息<?php if($hasReEditPermission){?><img class="reedit"  title="在编辑" src="/<?php echo $fileContextPath?>/app/webroot/img/edit.png"/><?php }?></caption>
 							<tbody>
 								<tr>
 									<th>公司名称：</th><td><input type="text" id="receiveCompany"
@@ -238,13 +246,12 @@
 					<div style="height:40px;">&nbsp;</div>
 					
 					<!-- panel脚部内容-->
-					<?php if( !$isSended || !$isRead ){?>
-                    <div class="panel-foot" style="position:fixed;bottom:0px;right:0px;left:0px;z-index:1;background-color:#FFF;">
+					
+                    <div class="panel-foot" style="<?php echo ( !$isSended || !$isRead ) ?'display:block;':"display:none;" ?>position:fixed;bottom:0px;right:0px;left:0px;z-index:1;background-color:#FFF;">
 						<div class="form-actions  ">
 							<button type="button" class="btn btn-primary btn-save">提&nbsp;交</button>
 						</div>
 					</div>
-					<?php }?>
 				</div>
 			</form>
 		</div>
