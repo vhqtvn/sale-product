@@ -183,7 +183,8 @@ class Supplier extends AppModel {
 			$image =  $localUrl ;
 		}
 		$data['image'] = $image ;
-		
+		$data['loginId'] = $user['LOGIN_ID'] ;
+
 		if( empty( $data['id'] ) ){
 			$this->exeSql("sql_purchase_plan_product_inquiry_insert", $data) ;
 		}else{

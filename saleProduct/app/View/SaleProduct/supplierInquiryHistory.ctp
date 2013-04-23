@@ -65,6 +65,8 @@
 				columns:[
 							//名称	产品重量	生产周期	包装方式	付款方式	产品尺寸	包装尺寸	报价1	报价2	报价3
 							{align:"center",key:"CREATE_TIME",label:"询价时间",width:"15%",forzen:false,align:"left"},
+							{align:"center",key:"USERNAME",label:"提交人",width:"6%",forzen:false,align:"left"},
+							{align:"center",key:"IMAGE",label:"图片",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 					     	{align:"center",key:"NAME",label:"供应商名称",width:"15%",forzen:false,align:"left"},
 				           	{align:"center",key:"WEIGHT",label:"产品重量",width:"6%",forzen:false,align:"left"},
 				           	{align:"center",key:"CYCLE",label:"生产周期",width:"6%"},
@@ -86,7 +88,7 @@
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					return $(window).height() - 100 ;
+					return $(window).height() - 130 ;
 				 },
 				 title:"",
 				 indexColumn:true,
@@ -102,6 +104,12 @@
 					}) ;
 				 }
 			}) ;
+
+			$(".supplier-select").click(function(){
+				openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/<?php echo $sku;?>",800,600,function(){
+					$(".grid-content-details").llygrid("reload",{},true);
+					}) ;
+			}) ;
    	 });
    </script>
    
@@ -113,6 +121,16 @@
 
 </head>
 <body>
+	<div class="toolbar toolbar-auto">
+				<table style="width:100%;" class="query-table">	
+					<tr>
+						<td>
+							<button class="supplier-select btn">添加询价</button>
+						</td>
+					</tr>						
+				</table>	
+	 </div>
+	
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 </body>

@@ -63,7 +63,7 @@ $(function(){
 				}
 				
 			}},
-			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"center",format:{type:"json",content:{'10':"编辑中",20:"待审批",30:"退货标签确认",40:"退货确认",50:"退货入库",60:"退款",70:"重发配置",75:"重发确认",80:"结束"}}},
+			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"center",format:{type:"json",content:{'10':"编辑中",20:"待审批",30:"退货标签确认",40:"退货确认",50:"退货入库",60:"退款",70:"重发配置",75:"重发确认",78:"重发收货确认",80:"结束"}}},
 			{key:"CODE",label:"编号",width:"14%",forzen:false,align:"center"},
 			{key:"ORDER_ID",label:"订单ID",width:"14%",forzen:false,align:"center"},
 			{key:"ORDER_NO",label:"内部订单号",width:"8%",forzen:false,align:"center"},
@@ -78,7 +78,10 @@ $(function(){
 	      	}},
            	{key:"CAUSE_NAME",label:"原因",width:"13%",align:"left"},
            	{key:"POLICY_NAME",label:"决策",width:"10%",align:"left"},
-           	{key:"CREATE_TIME",label:"创建时间",width:"10%",align:"left"},
+           	{key:"PROPOSED_TIME",label:"提出时间",width:"10%",align:"left"},
+           	{key:"END_TIME",label:"结束时间",width:"10%",align:"left",format:function(val,record){
+           		return record.STATUS != 80 ?"":val;
+           	}},
            	{key:"MEMO",label:"备注",width:"17%",align:"left"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},

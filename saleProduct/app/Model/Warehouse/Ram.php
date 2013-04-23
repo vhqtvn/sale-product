@@ -6,6 +6,12 @@ class Ram extends AppModel {
 		$this->exeSql("sql_order_ram_status",$params ) ;
 	}
 	
+	public function doSaveScore($params){
+		$this->exeSql("sql_ram_event_update_score",$params) ;
+		$params['trackMemo'] = "保存评分" ;
+		$this->exeSql("sql_ram_track_insert",$params) ;
+	}
+	
 	public function doFlow( $params ){
 		$code = $params['code'] ;
 		if( empty( $params['id'] ) ){

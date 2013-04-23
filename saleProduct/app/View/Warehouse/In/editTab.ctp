@@ -48,6 +48,10 @@
 		openCenterWindow(contextPath+"/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
 	}
 
+	function printBox(){
+		window.location.href = contextPath+"/excel/box/"+inId ;
+	}
+
 	function printInvoice(){
 		window.location.href = contextPath+"/excel/read/"+inId ;
 		//openCenterWindow(contextPath+"/excel/read/"+inId,860,630) ;
@@ -68,6 +72,7 @@
 		{status:20,label:"待发货",memo:true
 			<?php if( $security->hasPermission($loginId , 'IN_STATUS20')) { ?>
 			,actions:[
+{label:"导出装箱单",action:function(){ printBox();} },
 				{label:"导出发票",action:function(){ printInvoice();} },
 				{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }
 			]
@@ -76,6 +81,7 @@
 		{status:30,label:"已发货",memo:true
 			<?php if( $security->hasPermission($loginId , 'IN_STATUS30')) { ?>
 			,actions:[
+{label:"导出装箱单",action:function(){ printBox();} },
 						{label:"导出发票",action:function(){ printInvoice();} },
 						{label:"到达海关",action:function(){ AuditAction(40,"到达海关") } }
 			]
@@ -100,6 +106,7 @@
 		},
 		{status:70,label:"入库完成"
 			,actions:[
+{label:"导出装箱单",action:function(){ printBox();} },
 {label:"导出发票",action:function(){ printInvoice();} },
 						{label:"查看入库货品",action:function(){ productInWarehouse();} } 
 			]

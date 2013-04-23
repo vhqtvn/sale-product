@@ -129,7 +129,8 @@
 		CREATE_TIME, 
 		STATUS, 
 		MEMO, 
-		CHARGER
+		CHARGER,
+		PROPOSED_TIME
 		)
 		VALUES
 		( 
@@ -142,8 +143,20 @@
 		NOW(), 
 		'{@#status#}', 
 		'{@#memo#}', 
+		'{@#proposedTime#}', 
 		''
 		)
+   </entry>
+   
+    <entry key="sql_ram_event_update_score">
+		UPDATE sc_ram_event 
+			SET
+			SCORE = '{@#score#}',
+			SCORE_MEMO = '{@#scoreMemo#}',
+			SCORE_TIME = NOW(),
+			score_commitor='{@#loginId#}'
+			WHERE
+			ID = '{@#id#}'
    </entry>
    
    <entry key="sql_ram_event_update">
@@ -161,6 +174,8 @@
 			{@ refund_Status = '#refundStatus#',}
 			{@ resend_status = '#resendStatus#',}
 			{@ refund_value = '#refundValue#',}
+			{@ PROPOSED_TIME = '#proposedTime#',}
+			END_TIME = now(),
 			CHARGER = '{@#charger#}'
 			WHERE
 			ID = '{@#id#}'
@@ -210,8 +225,6 @@
    </entry>
    
    
-   
-   
    <entry key="sql_ram_track_insert">
 	INSERT INTO sc_ram_track 
 		(
@@ -235,6 +248,7 @@
    	select s1.* ,
    		(select name from sc_user su where su.login_id = s1.creator ) as CREATOR_NAME
    	from sc_ram_track s1 where ram_id = '{@#id#}'
+   	order by s1.create_time desc
    </entry>
    
    <entry key="sql_warehouse_rma_lists">

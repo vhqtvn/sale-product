@@ -132,11 +132,11 @@ class SupplierController extends AppController {
 		$this->Supplier->saveProductSupplierXJ($this->request->data,$user,$localUrl) ;
 		
 		$this->response->type("html");
-		$this->response->body("<script type='text/javascript'>window.opener.location.reload();window.close();</script>");
+		$this->response->body("<script type='text/javascript'>window.close();</script>");
 		return $this->response;
 	}
 	
-	public function updateProductSupplierPage($supplierId,$planId,$sku){
+	public function updateProductSupplierPage($sku,$supplierId=null,$planId=null){
 		$this->set("planId",$planId) ;
 		$this->set("supplierId",$supplierId) ;
 		$this->set("sku",$sku) ;

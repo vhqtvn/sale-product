@@ -261,7 +261,7 @@ $(function(){
 	
 	$(".update-supplier").click(function(){
 		var supplierId = $(this).attr("supplierId") ;
-		openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/"+supplierId+"/"+planId+"/"+sku,650,600) ;
+		openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/"+sku+"/"+supplierId+"/"+planId,650,600) ;
 		return false;
 	}) ;
 	

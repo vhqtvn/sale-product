@@ -45,6 +45,7 @@
 		$rmaResendConfirm 	= $security->hasPermission($loginId , 'RMA_RESEND_CONFIRM') ;
 		$rmaRiskCustomer	= $security->hasPermission($loginId , 'RMA_RISK_CUSTOMER') ;
 		$rmaForceFinish =  $security->hasPermission($loginId , 'RMA_FORCE_FINISH') ;
+		$rmaCommitScore = $security->hasPermission($loginId , 'RMA_COMMIT_SCORE') ;
 		
 		$result  = null ;
 		
@@ -55,7 +56,6 @@
 			}else{
 				$orderId = $result['ORDER_ID'] ;
 			}
-				
 		}
 		
 		//1、提交审批 2、审批通过  3、重新编辑 
@@ -101,10 +101,18 @@
 		//'IS_RESEND' => '1',  重发
 		//'IS_REFUND' => '1',  退款
 		//'IS_BACK' => '1'  退货
-		
+		//获取最近的轨迹
+		$tracks = $SqlUtils->exeSql("sql_ram_track_list",array('id'=>$result['ID'])) ;
+		$lastTrack = '' ;
+		if( !empty($tracks) ){
+			$track = $tracks[0] ;
+			$track = $SqlUtils->formatObject($track) ;
+			$lastTrack = $track['MEMO'] ;
+		}
 	?>
 	
 	<script type="text/javascript">
+		var lastTrack = '<?php echo $lastTrack; ?>' ;
 		var currentStatus = '<?php echo $status;?>';
 		var AuditAction = function(status ,statusLabel,fixParams){
 			if( !$.validation.validate('#personForm').errorInfo ) {
@@ -249,14 +257,26 @@
 		 <?php }?>
 			]  } ) ;
 			flowData.push( {status:75,label:"确认重发",memo:true,actions:[ 
-				                                              			<?php if( $rmaForceFinish ){ ?>
-					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
-					                                       			<?php }?>
+			<?php if( $rmaForceFinish ){ ?>
+				     {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+			<?php }?>
 			<?php if( $rmaResendConfirm ){ ?>
-			   {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } },
-			         {label:"确认重发完成",action:function(){ AuditAction(80 ,"确认重发完成，结束！") } }
+			   		 {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } },
+			         {label:"确认重发完成",action:function(){ AuditAction(78 ,"确认重发完成！") }
+			    }
 		 <?php }?>
 			]  } ) ;
+
+			flowData.push( {status:78,label:"确认客户收货",memo:true,actions:[ 
+                                              			<?php if( $rmaForceFinish ){ ?>
+                                              				     {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+                                              			<?php }?>
+                                              			<?php if( $rmaResendConfirm ){ ?>
+                                              			   		 {label:"保存轨迹",action:function(){ AuditAction(78,"保存轨迹") } },
+                                              			         {label:"确认客户收货",action:function(){ AuditAction(80 ,"确认客户收货，结束！") }
+                                              			    }
+                                              		 <?php }?>
+                                              			]  } ) ;
 		<?php }; ?>
 	
 		flowData.push({status:80,label:'结束'}) ;
@@ -265,6 +285,13 @@
 			var flow = new Flow() ;
 			flow.init(".flow-bar center",flowData) ;
 			flow.draw('<?php echo $status;?>') ;
+
+			var ts = (lastTrack+"").split(")") ;
+			var t = "" ;
+			if(ts.length >=2){
+				t = ts[1] ;
+			}
+			document.title = ( $(".flow-node.active").text()+(t?"|":"")+t );
 		}) ;
 <?php }?>			
 	</script>
@@ -300,11 +327,10 @@
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
-						<table class="form-table " >
+						<table class="form-table "  style="margin-top:10px;">
 							<caption>
-							RMA事件编辑
+								RMA事件编辑
 							</caption>
-							<tbody>	
 								<tr>
 									<th>RMA编码：</th><td  colspan=3><input data-validator="required"
 										<?php echo !$isInit?"readOnly":"" ;?>
@@ -313,6 +339,21 @@
 										if(empty($result['CODE'])){
 											echo $defaultCode ;
 										}else echo $result['CODE'];?>"/></td>
+									 
+								</tr>
+								<tr>
+								<th>提出时间：</th>
+									 <td colspan="<?php echo $status == 80?"1":"3" ;?>">
+									 	<input data-validator="required" data-widget="calendar"
+										<?php echo !$isInit?"readOnly":"" ;?>
+										 type="text" id="proposedTime"
+										value="<?php echo   $result['PROPOSED_TIME'];?>"/>
+									 </td>
+									 <?php  if( $status == 80 ){ ?>
+									 		<th>结束时间：</th>
+											 <td colspan="3"><?php echo   $result['END_TIME'];?>
+											 </td>
+									<?php 	}  ?>
 								</tr>
 								<tr>
 									<th>订单ID：</th><td><input data-validator="required" 
@@ -399,6 +440,32 @@
 									</td>
 								</tr>
 							</table>
+							
+							<?php
+							$isScored = empty($result['SCORE'])?false:true ;
+							if( $status==80  ){?>
+								<table class="form-table " >	
+									<caption>客服评分 <?php  if( !$isScored && $rmaCommitScore ){ ?><button class="btn btn-primary save-score">保存评分</button><?php } ?></caption>
+									<tr>
+										<th>评分：</th><td  colspan=3><input type="text" data-validator="required"  id="score"
+											<?php  echo  !$isScored &&$rmaCommitScore?'':"disabled" ;?>
+											 value="<?php echo $result['SCORE']?>"/></td>
+									</tr>
+									<tr>
+										<th>评分备注：</th><td  colspan=3>
+											<textarea id="scoreMemo" data-validator="required"  
+											<?php  echo  !$isScored &&$rmaCommitScore?'':"disabled" ;?>
+											style="width:90%;height:40px;"><?php echo $result['SCORE_MEMO']?></textarea>
+										</td>
+									</tr>
+									<?php if(  $isScored ){ ?>
+									<tr>
+										<th>评分时间：</th><td  colspan=3><?php echo $result['SCORE_TIME'];?></td>
+									</tr>
+									<?php } ?>
+								</table>
+							<?php }?>
+							
 							<?php if( $selectedPolicy['IS_BACK'] == 1 && $status >=30  ){?>
 								<table class="form-table " >	
 									<caption>退货信息</caption>

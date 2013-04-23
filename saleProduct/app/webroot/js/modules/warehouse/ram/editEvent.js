@@ -1,6 +1,18 @@
 $(function(){
 		var isAdd = false ;
-
+		
+		$(".save-score").click(function(){
+			if( !$.validation.validate('#personForm').errorInfo ) {
+				if(window.confirm("确认保存评分吗，保存后将不能修改？")){
+					var json = $("#personForm").toJson() ;
+					//保存基本信息
+					$.dataservice("model:Warehouse.Ram.doSaveScore",json,function(result){
+							window.location.reload();
+					});
+				}
+			}
+		}) ;
+		
 		$(".btn-save").click(function(){
 			if(isAdd)return ;
 			if( !$.validation.validate('#personForm').errorInfo ) {
@@ -295,6 +307,8 @@ $(function(){
 				 querys:{sqlId:"sql_ram_track_list",id:$("#id").val()},
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
+				 },loadAfter:function(){
+					 
 				 }
 			}) ;
 			
