@@ -103,12 +103,16 @@
 			
 			$(".edit-action").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/"+id,680,650) ;
+				openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/"+id,680,650,function(){
+					$(".grid-content-details").llygrid("reload",{},true) ;
+				}) ;
 			})
 			
 			
 			$(".add-cost").click(function(){
-				 	openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/",680,650) ;
+				 	openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/",680,650,function(){
+				 		$(".grid-content-details").llygrid("reload",{},true) ;
+					 }) ;
 			}) ;
    	 });
    </script>
