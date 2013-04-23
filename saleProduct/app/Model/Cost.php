@@ -2,8 +2,8 @@
 class Cost extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
-	public function saveCost($data,$user){
-		$loginId = $user['LOGIN_ID'] ;
+	public function saveCost($data){
+		$loginId = $data['loginId'] ;
 		
 		if( isset($data['ID']) && !empty($data["ID"]) ){
 			$this->exeSql("sql_cost_product_update",$data) ;
