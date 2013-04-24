@@ -82,8 +82,16 @@ class Tasking extends AppModel {
 	 * 停止执行任务
 	 */
 	public function stop($type , $asin , $accountId){
-		$sql = "insert into sc_tasked select sc_tasking.* , NOW() as end_time from sc_tasking
-					where task_type ='$type' and asin='$asin' and account_id = '$accountId'" ;
+		$sql = "insert into sc_tasked(ID, 
+						TASK_TYPE, 
+						ASIN, 
+						ACCOUNT_ID, 
+						MESSAGE, 
+						FORCE_STOP, 
+						START_TIME, 
+						EXECUTOR, 
+						END_TIME) select sc_tasking.* , NOW() as end_time from sc_tasking
+										where task_type ='$type' and asin='$asin' and account_id = '$accountId'" ;
 	 	$this->query($sql) ;
 		
 		$sql = "delete from sc_tasking
