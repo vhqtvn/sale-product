@@ -79,7 +79,7 @@
 						grid:{
 							title:"用户选择",
 							params:{
-								sqlId:"sql_user_list_forwarehouse"
+								sqlId:"sql_saleproduct_list"
 							},
 							ds:{type:"url",content:contextPath+"/grid/query"},
 							pagesize:10,

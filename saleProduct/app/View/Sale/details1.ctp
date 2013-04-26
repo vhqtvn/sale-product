@@ -2,22 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>llygrid demo</title>
+    <title>产品开发</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+  		 include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
+		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('modules/sale/details_dev');
+		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
+		echo $this->Html->script('grid/jquery.llygrid');
 		
 		//$this->set('details', $details);
 		//$this->set('images', $images);
@@ -26,8 +33,7 @@
 		
 		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
-	?>
-	<?php
+
 		$product = $details[0]['sc_product'] ;
 		$competition = $details[0]['sc_sale_competition'] ;
 		$potential = $details[0]['sc_sale_potential'] ;
@@ -62,80 +68,40 @@
 		} ;
 		
 		$username = $user["NAME"] ;
+		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$security  = ClassRegistry::init("Security") ;
+		
+		$productDev = $SqlUtils->getObject("sql_pdev_findByAsin",array('ASIN'=>$asin)) ;
+		
+		$pdStatus = 10 ;
+		$devStatus = 0 ;
+		if(!empty( $productDev  )){
+			$pdStatus = $productDev['FLOW_STATUS'] ;
+			$devStatus = $productDev['DEV_STATUS'] ;
+		}
+		
+		$loginId = $user['LOGIN_ID'] ;
+		$PD_FLAG 					= $security->hasPermission($loginId , 'PD_FLAG') ;
+		$PD_ANAYS 				= $security->hasPermission($loginId , 'PD_ANAYS') ;
+		$PD_CPJLSP 				= $security->hasPermission($loginId , 'PD_CPJLSP') ;
+		$PD_ZJSP						= $security->hasPermission($loginId , 'PD_ZJSP') ;
+		$PD_HPLR					= $security->hasPermission($loginId , 'PD_HPLR') ;
+		$PD_MADE_LISTING 	= $security->hasPermission($loginId , 'PD_MADE_LISTING') ;
+		$PD_LISTING_SP 			= $security->hasPermission($loginId , 'PD_LISTING_SP') ;
+		$PD_REEDIT_GM 			= $security->hasPermission($loginId , 'PD_REEDIT_GM') ;
+		$PD_REEDIT_ZY 			= $security->hasPermission($loginId , 'PD_REEDIT_ZY') ;
+		$PD_REEDIT_YX			= $security->hasPermission($loginId , 'PD_REEDIT_YX') ;
+		$PD_REEDIT_BASE 		= $security->hasPermission($loginId , 'PD_REEDIT_BASE') ;
+		
+		$Config  = ClassRegistry::init("Config") ;
+		$websites = $Config->getAmazonConfig("PRODUCT_DEV_WEBSITE") ;
 	?>
   
    <style>
    		*{
    			font:12px "微软雅黑";
    		}
-
-		.rule-content-item{
-			clear:both;
-		}
-
-		.item-label,.item-relation,.item-value,.item-value{
-			float:left;
-		}
- 	.p-base{
- 		border:1px solid #CCC;
- 		padding:3px;
- 		margin:3px;
- 	}
- 	
- 	b,table th{
- 		font-weight:bold;
- 	}
-
- 	.toolbar{
- 		background-color:#EEE;
- 		width:98%;
- 		padding:3px;
- 		
- 		border:1px solid #CCC;
- 		margin-bottom:3px;
- 	}
- 	
- 	.alert{
- 		margin-left:-18px;
- 		margin-top:20px;
- 		margin-bottom:3px;
- 		font-weight:bold;
- 		text-align:center;
- 		padding:3px;
- 		color:#000;
- 	}
- 	
- 	.alert .btn{
- 		padding-left:5px;
- 		padding-right:5px;
- 		margin-top:3px;
- 	}
- 	
- 	div.alert-focus{
- 		margin-top:2px;
- 	}
- 	
- 	.alert-success{
- 		font-size:15px;
- 		color:blue;
- 	}
- 	
- 	p{
- 		text-indent:1em;
- 		font-weight:bold;
- 	}
- 	
- 	.description-container{
- 		max-height:200px;
- 		min-height:50px;
- 		overflow:auto;
- 	}
- 	
- 		
- 	.p-label{
- 		margin:0px 10px;
- 		font-weight:bold;
- 	}
  </style>
  
  <script>
@@ -143,291 +109,360 @@
  	var asin = '<?php echo $asin;?>' ;
  	var type = '<?php echo $type;?>' ;
  	var status =  '<?php echo $status;?>' ;
- 
- 	$(function(){
- 		createActionbar();
- 		
- 		$(".action").click(function(){
- 			var status = $(this).attr("status") ;
- 			
- 			var _ = $.trim( $(this).text() ) ;
- 			var val = getDescription(_) ;
- 			
- 			var strategy = $("#strategy").val() ;
- 			
- 			if(status == 3 && !(val && $.trim(val)) ){
- 				alert("必须填写废弃理由！") ;
- 				return false ;
- 			}
- 			
-			if( window.confirm("确认执行该操作吗？") ){
-				$.ajax({
-					type:"post",
-					url:contextPath+"/sale/productFlowProcess" ,
-					data:{description:val,filterId:filterId,asin:asin,status:status,strategy:strategy},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						//window.opener.$(".grid-content-details").llygrid("reload") ;
-						window.location.reload() ;
-					}
-				}); 
+ 	var username = '<?php echo $username;?>' ;
+ 	var pdStatus = '<?php echo $pdStatus;?>' ;
+
+ 	function AuditAction(status , statusLabel,fixParams){
+ 		if( !$.validation.validate('#personForm').errorInfo ) {
+			if(window.confirm("确认【"+statusLabel+"】吗？")){
+				var json = $("#personForm").toJson() ;
+				json = $.extend({},json,fixParams) ;
+				json.ASIN = asin ;
+				json.FLOW_STATUS = status;
+
+				var memo = "("+statusLabel+")"+ ($(".memo").val()||"") ;
+				json.trackMemo = memo ;
+				
+				$.dataservice("model:ProductDev.doFlow",json,function(result){
+					window.location.reload() ;
+				});
 			}
-			
- 			return false ;
- 		}) ;
- 		
- 	}) ;
- 	
- 	function createActionbar(){
- 		var html = [] ;
- 		var _status = '' ;
- 		if(type == 1){
- 			html.push('<button class="remove action btn" status="3">废弃</button>&nbsp;') ;
- 			html.push('<button class="apply action btn btn-primary" status="4">提交产品经理审批</button>&nbsp;') ;
- 			html.push('<button class="noapply action btn btn-primary" status="2">添加备注暂不提交审批</button>&nbsp;') ;
- 			_status = 2 ;
- 		}else if(type == 2){
- 			html.push('<button class="remove action btn" status="3">废弃</button>&nbsp;') ;
- 			html.push('<button class="apply action btn btn-primary" status="6">提交总经理审批</button>&nbsp;') ;
- 			html.push('<button class="apply action btn btn-primary" status="5">审批通过</button>&nbsp;') ;
- 			html.push('<button class="noapply action btn btn-primary" status="4">添加备注暂不提交审批</button>&nbsp;') ;
- 			_status = 4 ;
- 		}else if(type == 3){
- 			html.push('<button class="remove action btn" status="3">废弃</button>&nbsp;') ;
- 			html.push('<button class="apply action btn btn-primary" status="7">审批通过</button>&nbsp;') ;
- 			html.push('<button class="noapply action btn btn-primary" status="6">添加备注暂不审批</button>&nbsp;') ;
- 			_status = 6 ;
- 		}
- 		
- 		if( status == '3' ){
- 			 html = [] ;
- 			 html.push('<button class="enable action btn" status="'+_status+'">启用</button>&nbsp;') ;
- 		}
- 		
- 		$(".toobar-btns").html(html.join("")) ;
- 	}
- 	
- 	$(function(){
-			$(".base-gather").click(function(){
-				$.ajax({
-					type:"post",
-					url:contextPath+"/gatherProduct/execute/<?php echo $product["ASIN"]?>",
-					data:{},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						alert("采集完成");
-						window.location.reload() ;
-					}
-				}); 
-			}) ;
-			
-			$(".supplier").click(function(){
-				openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $product["ASIN"]?>",800,600) ;
-			}) ;
-			
-			
-			$(".category").click(function(){
-				openCenterWindow(contextPath+"/product/assignCategory/<?php echo $product["ASIN"]?>",400,500) ;
-			}) ;
-			
-			$(".update-supplier").click(function(){
-				var supplierId = $(this).attr("supplierId") ;
-				openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/<?php echo $product["ASIN"]?>/"+supplierId,650,600) ;
-				return false;
-			}) ;
-			
-			$("[testStatus]").click(function(){//下架
-				
-				var testStatus = $(this).attr("testStatus") ;
-				
-				var _ = $.trim( $(this).text() )  ;
-				
-				var val = getDescription(_) ;
-	 			
-				if( window.confirm("确认执行该操作吗？") ){
-					$.ajax({
-						type:"post",
-						url:contextPath+"/sale/productTestStatus" ,
-						data:{description:val,asin:asin,testStatus:testStatus},
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							window.location.reload() ;
-						}
-					}); 
-				}
-				
-	 			return false ;
-			}) ;
-			
-			$("[supplier-id]").click(function(){
-				var id = $(this).attr("supplier-id") ;
-				viewSupplier(id) ;
-				return false ;
-			}) ;
-			
-		});
-		
-		function getDescription(action){
-			//return "" ;
-			var beforeDes = $("#description_hidden").val();
-			var now       = $("#description").val()||"未填写备注信息" ;
-			var username = '<?php echo $username;?>' ;
-			return beforeDes+"<span>【"+username+"】"+new Date().format("yyyy-MM-dd hh:mm:ss") +"("+action+")</span><p><span>"+now+"</span></p>" ;
 		}
-		
-		Date.prototype.format = function(format){ 
-			var o = { 
-				"M+" : this.getMonth()+1, //month 
-				"d+" : this.getDate(), //day 
-				"h+" : this.getHours(), //hour 
-				"m+" : this.getMinutes(), //minute 
-				"s+" : this.getSeconds(), //second 
-				"q+" : Math.floor((this.getMonth()+3)/3), //quarter 
-				"S" : this.getMilliseconds() //millisecond 
-			} 
-			
-			if(/(y+)/.test(format)) { 
-				format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
-			} 
-			
-			for(var k in o) { 
-				if(new RegExp("("+ k +")").test(format)) { 
-					format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length)); 
-				} 
-			} 
-			return format; 
-		} 
+ 	 }
+
+ 	var flowData = [] ;
+ 	flowData.push( {status:10,label:"标识状态",memo:true ,
+		actions:[ 
+			 		<?php if( $PD_FLAG ){ ?>
+				 {label:"保存",action:function(){ AuditAction('10',"保存") } },
+		         {label:"自有",action:function(){ AuditAction('20',"设置自有状态",{'DEV_STATUS':1}) } },
+		         {label:"跟卖",action:function(){ AuditAction('20',"设置跟买状态",{'DEV_STATUS':2}) } },
+		         {label:"废弃",action:function(){ AuditAction('15',"废弃结束",{'DEV_STATUS':3}) } }
+		         <?php }?>
+	     ]}
+     ) ;
+	flowData.push( {status:20,label:"产品分析",memo:true ,
+		actions:[ 
+				<?php if( $PD_ANAYS ){ ?>
+				{label:"保存",action:function(){ AuditAction('20',"保存") } },
+				{label:"结束分析，提交审批",action:function(){ AuditAction('30',"结束分析，提交审批") } }
+				 <?php }?>
+	     ]}
+     ) ;
+	flowData.push( {status:30,label:"产品经理审批",memo:true ,
+		actions:[ 
+				<?php if( $PD_CPJLSP ){ ?>
+	          {label:"保存",action:function(){ AuditAction('30',"保存") } },
+			  {label:"审批不通过，撤回分析",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
+			  {label:"审批通过",action:function(){ AuditAction('40',"审批通过，提交总监审批") } }
+			  <?php }?>
+	     ]}
+     ) ;
+	flowData.push( {status:40,label:"总监审批",memo:true ,
+		actions:[ 
+				<?php if( $PD_ZJSP ){ ?>
+		         {label:"保存",action:function(){ AuditAction('40',"保存") } },
+				 {label:"审批不通过，撤回分析",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
+				 {label:"审批通过",action:function(){ AuditAction('50',"审批通过，准备录入货品") } }
+				 <?php }?>
+	     ]}
+     ) ;
+	flowData.push( {status:50,label:"录入货品",memo:true ,
+		actions:[ 
+					<?php if( $PD_HPLR ){ ?>
+		         {label:"保存",action:function(){ AuditAction('50',"保存") } },
+		         {label:"确认货品录入",action:function(){ AuditAction('60',"确认货品录入完成") } ,validate:function(){
+		        	 var val = $("#REAL_PRODUCT_ID").val() ;
+		        	 if(!val){
+							alert("必须关联货品！") ;
+							return false ;
+			        	} 
+			        	return true ;
+			      }}
+		         <?php }?>
+	     ]}
+     ) ;
+	flowData.push( {status:60,label:"制作Listing",memo:true ,
+		actions:[ 
+					<?php if( $PD_MADE_LISTING ){ ?>
+	          {label:"保存",action:function(){ AuditAction('60',"保存") } },
+		      {label:"确认Listing制作完成",action:function(){ AuditAction('70',"确认Listing制作完成") },validate:function(){
+		    	  var val = $("#LISTING_SKU").val() ;
+		        	 if(!val){
+							alert("必须关联Listing SKU！") ;
+							return false ;
+			        	} 
+			        	return true ;
+			      }}
+	          <?php }?>
+	     ]}
+     ) ;
+	flowData.push( {status:70,label:"Listing审批",memo:true ,
+		actions:[ 
+					<?php if( $PD_LISTING_SP ){ ?>
+	           {label:"保存",action:function(){ AuditAction('70',"保存") } },
+		      {label:"审批通过",action:function(){ AuditAction('80',"审批通过，结束") } }
+	           <?php }?>
+	     ]}
+     ) ;
+	flowData.push( {status:80,label:"结束"}) ;
+
+	$(function(){
+		var flow = new Flow() ;
+		flow.init(".flow-bar center",flowData) ;
+		flow.draw(<?php echo $pdStatus;?>) ;
+	}) ;
  </script>
 
 </head>
 <body style="overflow-y:auto;padding:2px;">
-	<div class="row-fluid">
-		<div class="span11">
-			<div class="toolbar">
-				<div class="row-fluid" style="margin:5px;">
-					<div class="span2">
-						<button class="base-gather btn">信息采集</button>
-					</div>
-					<div class="span7 toobar-btns">
-					</div>
-				</div>
-				<div>
-					<select id="strategy" class="span6">
-						<option value="">--选择策略--</option>
-						<?php
-							foreach($strategys as $strategy){
-								$temp = "" ;
-								if( $product["STRATEGY"] == $strategy['sc_config']['KEY']){
-									$temp = " selected " ;
-								} ;
-								echo "<option $temp value='".$strategy['sc_config']['KEY']."'>".$strategy['sc_config']['LABEL']."</option>" ;
-							} ;
-						?>
-					</select>
-				</div>	
-				<div>
-					<textarea id="description" style="width:98%;height:40px;"></textarea>
-					<div class="description-container"><pre><?php echo $product["COMMENT"]?></pre></div>
-					<textarea id="description_hidden" style="display:none;"><?php echo $product["COMMENT"]?></textarea>
-				</div>
-			</div>
-		</div>
-		<div class="span1">
-		<?php  
-			$testStatus = $product['TEST_STATUS'] ;
-			$userStatus = $product['USER_STATUS'] ;
-			
-			if( $group == 'manage' || $group== 'general_manager' || $group == 'sale_specialist' ){
-				if( $testStatus == 'testing' ){
-					echo "<div class='alert alert-info'>
-							试销中(PV:$flow)
-							<button class='btn normal-sell' testStatus='formal'>正式销售</button><div style='height:5px;'></div>
-							<button class='btn uninstall-product' testStatus='uninstall'>下架</button>
-					</div>" ;
-				}else if( $testStatus == 'formal' ){
-					echo "<div class='alert alert-warning'>
-						正式销售(PV:$flow)
-						<button class='btn testing-sell'  testStatus='testing'>试销</button><div style='height:5px;'></div>
-						<button class='btn uninstall-product' testStatus='uninstall'>下架</button>
-				</div>" ;
-				}else if( $testStatus == 'uninstall' ){
-					echo "<div class='alert alert-warning'>
-						已下架
-				</div>" ;
-				}else{
-					echo "<div class='alert alert-warning'>
-						待开发
-				</div>" ;
-				}
+	<div  class="flow-bar">
+		<center>
+			<table class="flow-table"></table>
+			<div class="flow-action"></div>
+		</center>
+	</div>
+
+	<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息采集</button>
+	
+	<div id="details_tab" style="border:0px;">
+	</div>	
+	
+	<div class="hide"  id="track-tab">
+		<div class="grid-track" style="width:920px;"></div>
+	</div>
+	
+	<div class="hide"  id="dev-tab">
+		<form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		<div style="padding:4px 10px;margin-top:5px;margin-bottom:5px;" class="alert">
+		<?php 
+			echo '<b>相关网址：</b>' ;
+			foreach ( explode(",", $websites) as $website ){
+				$website = explode("||", $website) ;
+				$name = $website[0] ;
+				$url = $website[1] ;
 				
-				if($userStatus == "focus"){
-					echo "<div class='alert alert-success alert-focus'>
-						异常关注
-						<button class='btn btn-small strong-focus' testStatus='unfocus'>取消关注</button>
-				</div>" ;
-				}else{
-					echo "<div class='alert alert-info alert-focus'>
-						<button class='btn btn-primary strong-focus' testStatus='focus'>添加关注</button>
-				</div>" ;
-				}
-			}else{
-				if( $testStatus == 'testing' ){
-					if( empty($flow) ){
-						echo "<div class='alert alert-info'>
-								试销中(流量测试中)
-						</div>" ;
-					}else{
-						echo "<div class='alert alert-info'>
-								试销中(PV:$flow)
-						</div>" ;
-					}
-				}else if( $testStatus == 'formal' ){
-					echo "<div class='alert alert-warning'>
-						正式销售(PV:$flow)
-				</div>" ;
-				}else if( $testStatus == 'uninstall' ){
-					echo "<div class='alert alert-warning'>
-						已下架
-				</div>" ;
-				}else{
-					echo "<div class='alert alert-warning'>
-						待开发
-				</div>" ;
-				}
-				
-				if($userStatus == "focus"){
-					echo "<div class='alert alert-success alert-focus'>
-						异常关注
-				</div>" ;
-				}
+				echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
 			}
 		?>
 		</div>
+		<hr style="margin:0px;clear:both;padding-top:3px;"/>
+		<table class="form-table " >
+				<caption>
+				基本信息
+				<?php if( $PD_REEDIT_BASE){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?>
+				</caption>
+				<tbody>	
+					<tr>
+						<th style="width:20%;">ASIN排名</th>
+						<th style="width:20%;">估计流量</th>
+						<th style="width:20%;">成本估算</th>
+						<th style="width:20%;">利润估算</th>
+						<th style="width:20%;">热销时段</th>
+					</tr>
+					<tr>
+						<td style="width:20%;"><textarea  id="RANK"  class="input 10-input"  style="width:90%;height:60px;"><?php echo $productDev['RANK'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="ESTIMATE_TRAFFIC"  class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_TRAFFIC'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="ESTIMATE_COST"   class="input 10-input"   style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_COST'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="ESTIMATE_PROFIT"  class="input 10-input"    style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_PROFIT'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="HOT_SELL_PERIOD" class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['HOT_SELL_PERIOD'];?></textarea></td>
+					</tr>
+					<?php  if( $pdStatus >=50 ){  ?>
+					<tr>
+						<th style="width:20%;">
+							<?php  if( $pdStatus ==50 ){  ?>
+							<button class="btn btn-primary select-real-product">选择货品</button>
+							<?php 	} ?>
+							<input type="hidden" id="REAL_PRODUCT_ID" value="<?php echo $productDev['REAL_PRODUCT_ID'];?>"/>
+							关联货品
+						</th>
+						<td colspan="4">
+							<?php 
+							if( !empty($productDev['REAL_PRODUCT_ID']) ){
+								$sp = $SqlUtils->getObject("sql_saleproduct_getById",array("realProductId"=>$productDev['REAL_PRODUCT_ID'])) ;
+								echo $sp['NAME'] ;
+								echo "(".$sp['REAL_SKU'].")" ;
+								echo "<img style='width:30px;height:30px;' src='/$fileContextPath".$sp['IMAGE_URL']."'>" ;
+							}	
+							?>
+						</td>
+					</tr>		
+					<?php 	} ?>
+					<?php  if( $pdStatus >=60 ){  ?>
+					<tr>
+						<th style="width:20%;">
+							关联Listing SKU（逗号分隔）
+						</th>
+						<td colspan="4">
+							<input type="text"  id="LISTING_SKU" 
+								 class="input 60-input" 
+								style="width:80%;" placeHolder="输入关联ListingSKU" value="<?php echo $productDev['LISTING_SKU']?>" />
+						</td>
+					</tr>		
+					<?php 	} ?>
+				</tbody>
+			</table>
+			
+			<?php  if( $devStatus == 1 ){ //自有产品 ?>
+			<table class="form-table " >
+				<caption>
+					自有产品分析
+					<?php if( $PD_REEDIT_ZY){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?>
+				</caption>
+				<tbody>	
+					<tr>
+						<th style="width:120px;"></th>
+						<th>关键字</th>
+						<th style="width:15%;">渠道有效竞争数</th>
+						<th style="width:15%;">搜索量VOLUMN</th>
+						<th style="width:15%;">竞争COM</th>
+						<th style="width:15%;">竞价CPC</th>
+					</tr>
+					<tr>
+						<th>核心关键字：</th>
+						<td><input type="text" id="CORE_KEY"  data-validator="required"  class="input 20-input"   style="width:80%;" value="<?php echo $productDev['CORE_KEY']?>"/></td>
+						<td>	<input type="text" id="CK_VALID_COMP"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_VALID_COMP']?>"/></td>
+						<td>	<input type="text" id="CK_SR_SEARCH"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_SEARCH']?>" /></td>
+						<td>	<input type="text" id="CK_SR_COM"    data-validator="required"   class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_COM']?>"/></td>
+						<td>	<input type="text" id="CK_SR_CPC"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_CPC']?>"/></td>
+					</tr>
+					<tr>
+						<th>Amazon关键字1：</th>
+						<td><input type="text" id="OP_KEY1"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY1']?>"/></td>
+						<td>	<input type="text" id="OK_VALID_COMP1"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP1']?>"/></td>
+						<td>	<input type="text" id="OK_SR_SEARCH1"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH1']?>"/></td>
+						<td>	<input type="text" id="OK_SR_COM1"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM1']?>"/></td>
+						<td>	<input type="text" id="OK_SR_CPC1"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC1']?>"/></td>
+					</tr>
+					<tr>
+						<th>Amazon关键字2：</th>
+						<td><input type="text" id="OP_KEY2"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY2']?>"/></td>
+						<td>	<input type="text" id="OK_VALID_COMP2"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP2']?>"/></td>
+						<td>	<input type="text" id="OK_SR_SEARCH2"  data-validator="required"    class="input 20-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_SEARCH2']?>" /></td>
+						<td>	<input type="text" id="OK_SR_COM2"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM2']?>"/></td>
+						<td>	<input type="text" id="OK_SR_CPC2"  data-validator="required"     class="input 20-input"  style="width:80%;" value="<?php echo $productDev['OK_SR_CPC2']?>" /></td>
+					</tr>
+					<tr>
+						<th>Amazon关键字3：</th>
+						<td><input type="text" id="OP_KEY3"   data-validator="required"    class="input 20-input"  style="width:80%;" value="<?php echo $productDev['OP_KEY3']?>" /></td>
+						<td>	<input type="text" id="OK_VALID_COMP3"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP3']?>"/></td>
+						<td>	<input type="text" id="OK_SR_SEARCH3"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH3']?>"/></td>
+						<td>	<input type="text" id="OK_SR_COM3"  data-validator="required"    class="input 20-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_COM3']?>" /></td>
+						<td>	<input type="text" id="OK_SR_CPC3" data-validator="required"     class="input 20-input"   style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC3']?>"/></td>
+					</tr>
+					<tr>
+						<th>Amazon关键字4：</th>
+						<td><input type="text" id="OP_KEY4"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY4']?>"/></td>
+						<td>	<input type="text" id="OK_VALID_COMP4"  data-validator="required"     class="input 20-input"  style="width:80%;" value="<?php echo $productDev['OK_VALID_COMP4']?>" /></td>
+						<td>	<input type="text" id="OK_SR_SEARCH4"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH4']?>"/></td>
+						<td>	<input type="text" id="OK_SR_COM4"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM4']?>"/></td>
+						<td>	<input type="text" id="OK_SR_CPC4" data-validator="required"     class="input 20-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_CPC4']?>" /></td>
+					</tr>
+					<tr>
+						<th>eBay关键字：</th><td colspan=5>
+							<input  type="text" id="EBAY_KEY"  class="input 20-input"   style="width:90%;"  data-validator="required" 
+							value="<?php echo $productDev['EBAY_KEY'];?>"/></td>
+					</tr>
+					<tr>
+						<th>eBay销售数量：</th>
+						<td  colspan=5><textarea id="EBAY_SALE_MEMO"   class="input 20-input"    data-validator="required" 
+							style="width:90%;height:50px;"><?php echo $productDev['EBAY_SALE_MEMO'];?></textarea></td>
+					</tr>
+				</tbody>
+			</table>
+			<?php  }?>
+			
+			<?php  if( $devStatus == 2 ){ //跟卖产品 ?>
+			<table class="form-table " >
+				<caption>
+				跟卖产品分析
+				<?php if( $PD_REEDIT_GM){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?>
+				</caption>
+				<tbody>
+					<tr>
+						<th>跟卖产品风险：</th>
+						<td><textarea id="FOLLOW_RISK_PRODUCT"  data-validator="required"   class="input 20-input"  
+							style="width:90%;height:40px;"><?php echo $productDev['FOLLOW_RISK_PRODUCT']?></textarea></td>
+					</tr>
+					<tr>
+						<th>跟卖品牌风险：</th>
+						<td><textarea id="FOLLOW_RISK_BRAND"   data-validator="required"    class="input 20-input"  
+							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_BRAND']?></textarea></td>
+					</tr>
+					<tr>
+						<th>跟卖供应商风险：</th>
+						<td><textarea id="FOLLOW_RISK_SUPPLIER"  data-validator="required"     class="input 20-input"  
+							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_SUPPLIER']?></textarea></td>
+					</tr>
+				</tbody>
+			</table>
+			<?php  }?>
+			
+			<?php  if( $devStatus == 1 || $devStatus == 2 ){ //跟卖产品 ?>
+			<table class="form-table " >
+				<caption>
+				营销计划与策略
+				<?php if( $PD_REEDIT_YX){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?>
+				</caption>
+				<tbody>
+					<tr>
+						<th style="width:33%;">竞价排名策略</th>
+						<th style="width:33%;">物流策略</th>
+						<th style="width:34%;">推广策略</th>
+					</tr>
+					<tr>
+						<td>
+							<select id="PPC_STRATEGY"  data-validator="required"   style="width:97%;" class="input 20-input" >
+								<option value="">--选择策略--</option>
+							<?php 
+								$strategys = $SqlUtils->exeSql("sql_rule_item_config",array('type'=>'devStrategy')) ;
+								foreach( $strategys as $s){
+									$s = $SqlUtils->formatObject($s) ;
+									$selected = '' ;
+									if( $s['ID'] == $productDev['PPC_STRATEGY'] ){
+										$selected = "selected" ;
+									}
+									echo "<option $selected value='".$s['ID']."'>".$s['LABEL']."</option>" ;
+								}
+							?>
+							</select>
+							<textarea id="PPC_STRATEGY_MEMO" class="input 20-input"  style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['PPC_STRATEGY_MEMO']?></textarea>
+						</td>
+						<td>
+							<select id="LOGI_STRATEGY" style="width:97%;" data-validator="required"    class="input 20-input" >
+								<option value="">--选择--</option>
+								<option value="FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBM'?"selected":"" ?>>FBM</option>
+								<option value="FBA"  <?php echo $productDev['LOGI_STRATEGY']=='FBA'?"selected":"" ?>>FBA</option>
+								<option value="FBA_FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBA_FBM'?"selected":"" ?>>FBM和FMA</option>
+							</select>
+							<textarea id="LOGI_STRATEGY_MEMO"  class="input 20-input" 
+								style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['LOGI_STRATEGY_MEMO']?></textarea>
+						</td>
+						<td>
+							<textarea id="SPREAD_STRATEGY"   class="input 20-input" 
+								style="width:95%;height:77px;"><?php echo  $productDev['SPREAD_STRATEGY']?></textarea>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<?php  }?>
+			</form>
 	</div>
-	
-	<script type="text/javascript">
-		$(function(){
-			var tab = $('#details_tab').tabs( {
-				tabs:[
-					{label:'基本信息',content:"baseinfo-tab"},
-					{label:'竞争信息',content:"competetion-tab"},
-					{label:'产品分类',url:contextPath+"/product/assignCategory/<?php echo $asin?>",iframe:true}
-				] ,
-				height:'500px'
-			} ) ;
-		}) ;
-	</script>
-	<div id="details_tab">
-	</div>	
 	
 	<div>
 		<div id="baseinfo-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
 			<table class="table table-bordered">
 				<tr>
-					<th>标题：</th>
+					<th style="width:100px;">标题：</th>
 					<td><?php echo $product["TITLE"]?>(<?php echo $product["ASIN"]?>) </td>
 					<td rowspan="8">
 						<?php
@@ -484,10 +519,7 @@
 						</tr>
 						<?php
 							foreach( $ranks as $rank ){
-								echo "<tr>
-							<td>".$rank['RANKING']."</td>
-							<td>".$rank['TYPE']."</td>
-								</tr>" ;
+								echo "<tr><td>".$rank['RANKING']."</td><td>".$rank['TYPE']."</td></tr>" ;
 							} ;
 						?>
 						</table>
@@ -501,12 +533,6 @@
 					<th>PRODUCT Description：</th>
 					<td colspan="2"><?php echo $product["DESCRIPTION"]?> </td>
 				</tr>
-				<!--
-				<tr>
-					<th>PRODUCT Details：</th>
-					<td colspan="2"><?php echo $product["PRODUCTDETAILS"]?></td>
-				</tr>
-				-->
 			</table>
 		</div>
 		<div id="competetion-tab" class="ui-tabs-panel  ui-tabs-hide" style="height: 100px; display: none; ">

@@ -784,6 +784,28 @@ jQuery(function(){
 	})
 })(jQuery)
 
+jQuery.uiwidget.register("formSave",function(selector){
+	selector.live("click",function(){
+		var options = jQuery(this).attr( jQuery.uiwidget.options )||"{}";
+		eval(" var jsonOptions = "+options) ;
+		var form 		= jsonOptions.form ;
+		var service	= jsonOptions.service ;
+		var callback = jsonOptions.callback||function(){
+			window.close() ;
+		}
+
+		if( !$.validation.validate(form).errorInfo ) {
+			if(window.confirm("确认保存吗？")){
+				var json = $(form).toJson() ;
+				//保存基本信息
+				$.dataservice("model:"+service , json,function(result){
+					callback(result) ;
+				});
+			}
+		};
+	}) ;
+}) ;
+
 //register dialog
 jQuery.uiwidget.register("dialog",function(selector){
 	selector.live("click",function(){
@@ -1073,7 +1095,10 @@ var Flow = function(){
 					var me = this ;
 					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
 						.appendTo(".btn-container").click(function(){
-							me.action() ;
+							me.validate = me.validate||function(){return true ;} ;
+							if( me.validate() ){
+								me.action() ;
+							}
 						}) ;  ;
 				}) ;
 			}

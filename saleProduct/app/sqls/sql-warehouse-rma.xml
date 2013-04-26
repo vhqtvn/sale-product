@@ -80,8 +80,10 @@
 				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
 				WHERE sao.order_id = soi.order_id GROUP BY soi.order_id	 
 			 ) AS ORDER_PRODUCTS ,
+		  (SELECT s2.name FROM sc_user s2 WHERE s2.login_id = s1.creator ) AS USER_NAME,
 		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.cause_code ) AS CAUSE_NAME,
-		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.policy_code ) AS POLICY_NAME
+		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.policy_code ) AS POLICY_NAME,
+		  ( SELECT srt.memo FROM sc_ram_track srt WHERE srt.ram_id = s1.ID ORDER BY id DESC LIMIT 0,1 )  AS TRACK_MEMO
 		  FROM sc_ram_event s1
 		  LEFT JOIN sc_order sao
 		  ON s1.order_id = sao.order_id

@@ -17,7 +17,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/sale/filter');
+		echo $this->Html->script('modules/product/developer/plans');
 		$security  = ClassRegistry::init("Security") ;
 		
 		$user = $this->Session->read("product.sale.user") ;
@@ -32,11 +32,33 @@
     var $ProductSpecialistProcess = <?php echo $ProductSpecialistProcess?'true':'false' ;?> ;
 	var $ProductManagerProcess = <?php echo $ProductManagerProcess?'true':'false' ;?> ;
 	var $GeneralManagerProcess  = <?php echo $GeneralManagerProcess?'true':'false' ;?> ;
+
+	function createAfter(result){
+		$(".grid-content").llygrid("reload",{}) ;
+	}
    </script>
 
 
 </head>
 <body>
+	<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<th>
+					计划名称:
+				</th>
+				<td>
+					<input type="text" id="taskCode"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar'}">查询</button>
+					<button class="create-plan btn"  data-widget="dialog" 
+					data-options="{url:'<?php echo $contextPath?>/page/forward/Product.developer.createPlan',width:650,height:500,callback:createAfter}">创建开发计划</button>
+				</td>
+			</tr>						
+		</table>					
+
+	</div>	
 
 	<div class="grid-content" style="width:99.5%">
 	</div>

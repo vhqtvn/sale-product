@@ -38,7 +38,21 @@
 		}) ;
 		
 		$(".grid-query-button .save-result").click(function(){
-			var val = window.prompt("请输入筛选名称（最好有意义名字）");
+				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask",600,300,function(result){
+					var params = $.dialogReturnValue() ||{} ;
+					var querys  = query.fetch() ; 
+					params.querys = querys ;
+					params.scope = $(".select-scope-input").val() ;
+					params.accounts = getAccounts() ;
+
+					$.dataservice("model:ProductDev.saveTaskResult",params,function(){
+						alert( "筛选结果保存成功！" ) ;
+					}) ;
+					
+					//alert( $.json.encode( $.dialogReturnValue() ) );
+				}) ;
+			
+			/*var val = window.prompt("请输入产品开发任务名称（最好有意义名字）");
 			if(val && $.trim(val)){
 				querys = query.fetch() ;
 				//querys.filterName = val ;
@@ -58,7 +72,7 @@
 				
 			}else{
 				//alert("名称不能为空！");
-			}
+			}*/
 			return false ;
 		}) ;
 		
@@ -67,14 +81,7 @@
 	           	{align:"center",key:"ASIN",label:"ASIN", width:"10%",format:function(val,record){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
 		           	}},
-		        {align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
-		           		if(val){
-		           			val = val.replace(/%/g,'%25') ;
-		           		}else{
-		           			return "" ;
-		           		}
-		           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
-		           	}},
+		        {align:"center",key:"LOCAL_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
 		           		return "<a target='_blank' href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"'>"+val+"</a>" ;
 		           	}},
@@ -114,33 +121,6 @@
 				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			})
 
-	 //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
-	$(function(){
-			
-   	 });
    </script>
    
    <style>
@@ -173,26 +153,35 @@
 
 </head>
 <body>
-	<div class="grid-query">
-	</div>
 	
-	<div class="grid-query-button" style="clear:both;">
-		<button class="query-action btn">查询</button>
-		<button class="save-result btn">保存筛选结果</button>
-		<br/>
-		<button class="select-scope btn">选择筛选范围</button>
-		<input type="text" class="select-scope-input" />
-		&nbsp;在账户产品中筛选:
-		<?php
-			$index = 0 ;
-			foreach($accounts as $account){
-				$account = $account['sc_amazon_account'] ;
-				echo "<input type='checkbox' id='accountId_$index' name='accountId' value='".$account['ID']."' /> <label for='accountId_$index' style='display:inline;'>".$account['NAME']."</label>" ;
-				$index++ ;
-			} ;
-		?>
-		
-	</div>
+	
+	<div class="toolbar toolbar-auto">
+		<table>
+			<tr>
+				<td>
+				<div class="grid-query"></div>
+				</td>
+			</tr>
+			<tr class="grid-query-button ">							
+				<td class="toolbar-btns">
+					<button class="query-action btn">查询</button>
+					<button class="select-scope btn">选择筛选范围</button>
+					<input type="text" class="select-scope-input" />
+					&nbsp;在账户产品中筛选:
+					<?php
+						$index = 0 ;
+						foreach($accounts as $account){
+							$account = $account['sc_amazon_account'] ;
+							echo "<input type='checkbox' id='accountId_$index' name='accountId' value='".$account['ID']."' /> <label for='accountId_$index' style='display:inline;'>".$account['NAME']."</label>" ;
+							$index++ ;
+						} ;
+					?>
+					<button class="save-result btn btn-primary">保存筛选结果</button>
+				</td>
+			</tr>						
+		</table>					
+
+	</div>	
 	
 	<div class="grid-content">
 	</div>

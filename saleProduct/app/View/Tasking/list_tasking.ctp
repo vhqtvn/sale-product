@@ -119,7 +119,7 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						window.location.reload() ;
+						$(".grid-content").llygrid("reload",{},true) 
 					}
 				}); 
 	 		}) ;	

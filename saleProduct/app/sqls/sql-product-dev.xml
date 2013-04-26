@@ -1,5 +1,196 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+		<entry key="sql_pdev_findByAsin">
+				select * from sc_product_dev where asin = '{@#ASIN#}'
+		</entry>
+		
+		<entry key="sql_pdev_listTracks">
+				select s.*,
+				(select name from sc_user where login_id = s.creator ) as USERNAME
+				 from sc_product_dev_track s		
+				 where asin = '{@#asin#}'
+				 order by create_time desc
+		</entry>
+		
+		
+	
+		<entry key="sql_pdev_track_insert">
+			INSERT INTO  sc_product_dev_track 
+					(  
+					ASIN, 
+					MEMO, 
+					CREATOR, 
+					CREATE_TIME
+					)
+					VALUES
+					( 
+					'{@#ASIN#}', 
+					'{@#trackMemo#}', 
+					'{@#loginId#}', 
+					NOW()
+					)
+     </entry>
+
+	   <entry key="sql_pdev_insert">
+				INSERT INTO sc_product_dev 
+					(ASIN, 
+					CREATOR, 
+					CREATE_TIME, 
+					RANK, 
+					ESTIMATE_TRAFFIC, 
+					ESTIMATE_COST, 
+					ESTIMATE_PROFIT, 
+					HOT_SELL_PERIOD, 
+					DEV_STATUS,
+					FLOW_STATUS
+					)
+					VALUES
+					('{@#ASIN#}', 
+					'{@#loginId#}', 
+					NOW(), 
+					'{@#RANK#}', 
+					'{@#ESTIMATE_TRAFFIC#}', 
+					'{@#ESTIMATE_COST#}', 
+					'{@#ESTIMATE_PROFIT#}', 
+					'{@#HOT_SELL_PERIOD#}', 
+					'{@#DEV_STATUS#}',
+					'{@#FLOW_STATUS#}'
+					)
+     </entry>
+     
+      <entry key="sql_pdev_update">
+UPDATE sc_product_dev 
+	SET
+			ASIN = '{@#ASIN#}' , 
+			{@ REAL_PRODUCT_ID = '#REAL_PRODUCT_ID#',}
+			{@ LISTING_SKU = '#LISTING_SKU#',}
+			END_TIME = NOW() , 
+			RANK = '{@#RANK#}' , 
+			{@FLOW_STATUS = '#FLOW_STATUS#',}
+			ESTIMATE_TRAFFIC = '{@#ESTIMATE_TRAFFIC#}' , 
+			ESTIMATE_COST = '{@#ESTIMATE_COST#}' , 
+			ESTIMATE_PROFIT = '{@#ESTIMATE_PROFIT#}' , 
+			HOT_SELL_PERIOD = '{@#HOT_SELL_PERIOD#}' , 
+			{@ DEV_STATUS = '#DEV_STATUS#' , }
+			FOLLOW_RISK_PRODUCT = '{@#FOLLOW_RISK_PRODUCT#}' , 
+			FOLLOW_RISK_BRAND = '{@#FOLLOW_RISK_BRAND#}' , 
+			FOLLOW_RISK_SUPPLIER = '{@#FOLLOW_RISK_SUPPLIER#}' , 
+			PPC_STRATEGY = '{@#PPC_STRATEGY#}' , 
+			LOGI_STRATEGY = '{@#LOGI_STRATEGY#}' , 
+			PPC_STRATEGY_MEMO = '{@#PPC_STRATEGY_MEMO#}' , 
+			LOGI_STRATEGY_MEMO = '{@#LOGI_STRATEGY_MEMO#}' , 
+			SPREAD_STRATEGY = '{@#SPREAD_STRATEGY#}' , 
+			EBAY_KEY = '{@#EBAY_KEY#}' , 
+			EBAY_SALE_MEMO = '{@#EBAY_SALE_MEMO#}' , 
+			CORE_KEY = '{@#CORE_KEY#}' , 
+			CK_VALID_COMP = '{@#CK_VALID_COMP#}' , 
+			CK_SR_SEARCH = '{@#CK_SR_SEARCH#}' , 
+			CK_SR_COM = '{@#CK_SR_COM#}' , 
+			CK_SR_CPC = '{@#CK_SR_CPC#}' , 
+			OP_KEY1 = '{@#OP_KEY1#}' , 
+			OK_VALID_COMP1 = '{@#OK_VALID_COMP1#}' , 
+			OK_SR_SEARCH1 = '{@#OK_SR_SEARCH1#}' , 
+			OK_SR_COM1 = '{@#OK_SR_COM1#}' , 
+			OK_SR_CPC1 = '{@#OK_SR_CPC1#}' , 
+			OP_KEY2 = '{@#OP_KEY2#}' , 
+			OK_VALID_COMP2 = '{@#OK_VALID_COMP2#}' , 
+			OK_SR_SEARCH2 = '{@#OK_SR_SEARCH2#}' , 
+			OK_SR_COM2 = '{@#OK_SR_COM2#}' , 
+			OK_SR_CPC2 = '{@#OK_SR_CPC2#}' , 
+			OP_KEY3 = '{@#OP_KEY3#}' , 
+			OK_VALID_COMP3 = '{@#OK_VALID_COMP3#}' , 
+			OK_SR_SEARCH3 = '{@#OK_SR_SEARCH3#}' , 
+			OK_SR_COM3 = '{@#OK_SR_COM3#}' , 
+			OK_SR_CPC3 = '{@#OK_SR_CPC3#}' , 
+			OP_KEY4 = '{@#OP_KEY4#}' , 
+			OK_VALID_COMP4 = '{@#OK_VALID_COMP4#}' , 
+			OK_SR_SEARCH4 = '{@#OK_SR_SEARCH4#}' , 
+			OK_SR_COM4 = '{@#OK_SR_COM4#}' , 
+			OK_SR_CPC4 = '{@#OK_SR_CPC4#}'
+			WHERE
+			ASIN = '{@#ASIN#}'
+     </entry>
+
+	<entry key="sql_pdev_task_insert">
+			INSERT INTO sc_product_filter 
+				(ID, 
+				NAME, 
+				CREATE_TIME, 
+				CREATOR, 
+				MEMO, 
+				PLAN_ID
+				)
+				VALUES
+				('{@#id#}', 
+				'{@#name#}', 
+				NOW(), 
+				'{@#loginId#}', 
+				'{@#memo#}', 
+				'{@#planId#}'
+				)
+     </entry>
+	
+		
+	 <entry key="sql_pdev_plan_list">
+			SELECT spdp.* ,
+					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spdp.creator ) AS USERNAME 
+			  FROM sc_product_dev_plan spdp
+			  where 1=1
+			  ORDER BY spdp.create_time desc
+     </entry>
+     
+     <entry key="sql_pdev_plan_listForLast10">
+			SELECT spdp.* ,
+					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spdp.creator ) AS USERNAME 
+			  FROM sc_product_dev_plan spdp
+			  where 1=1
+			  ORDER BY spdp.create_time desc
+			  limit 0,10
+     </entry>
+     
+     <entry key="sql_pdev_plan_insert">
+			INSERT INTO sc_product_dev_plan 
+				(
+				NAME, 
+				FOLLOW_TOTAL_NUM, 
+				FOLLOW_PER_NUM, 
+				FOLLOW_SALE_NUM, 
+				SELF_TOTAL_NUM, 
+				SELF_PER_NUM, 
+				SELF_SALE_NUM, 
+				MEMO, 
+				CREATOR, 
+				CREATE_TIME
+				)
+				VALUES
+				(
+				'{@#name#}', 
+				'{@#followTotalNum#}', 
+				'{@#followPerNum#}', 
+				'{@#followSaleNum#}', 
+				'{@#selfTotalNum#}', 
+				'{@#selfPerNum#}', 
+				'{@#selfSaleNum#}', 
+				'{@#memo#}', 
+				'{@#loginId#}', 
+				NOW()
+				)
+     </entry>
+     
+      <entry key="sql_pdev_plan_update">
+	     UPDATE sc_product_dev_plan 
+				SET
+				NAME = '{@#name#}' , 
+				FOLLOW_TOTAL_NUM = '{@#followTotalNum#}' , 
+				FOLLOW_PER_NUM = '{@#followPerNum#}' , 
+				FOLLOW_SALE_NUM = '{@#followSaleNum#}' , 
+				SELF_TOTAL_NUM = '{@#selfTotalNum#}' , 
+				SELF_PER_NUM = '{@#selfPerNum#}' , 
+				SELF_SALE_NUM = '{@#selfSaleNum#}' , 
+				MEMO = '{@#memo#}' 
+				WHERE
+				ID = '{@#id#}'
+     </entry>
    
    
       <entry key="sql_pdev_filter">
@@ -31,16 +222,18 @@ SELECT sp.*,
 	ssp.REVIEWS_NUM,
 	ssp.QUALITY_POINTS,
 	ssc.TARGET_PRICE
-FROM  sc_product_filter_details spfd,sc_product sp 
+FROM  sc_product_filter_details spfd,sc_product_filter spf,sc_product sp 
 	LEFT JOIN sc_sale_competition ssc  ON ssc.asin = sp.asin
 	LEFT JOIN sc_sale_fba  ssf ON ssf.asin = sp.asin
 	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
         LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
 WHERE sp.asin = spfd.asin
+    and spfd.task_id = spf.id
     {@  and sp.title like '%#title#%'}
     {@  and sp.asin = '#asin#'}
     {@  and spfd.status in ( #status#) }
     {@  and spfd.task_id = '#taskId#' }
+    {@  and spf.plan_id = '#planId#'}
    </entry>
    
    
