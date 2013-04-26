@@ -67,7 +67,7 @@ class SaleController extends AppController {
 		$this->set('type', $type );
 	}
 	
-	public function details1($filterId,$asin,$type,$status){
+	public function details1($taskId,$asin,$type=null,$status=null){
 		$details = $this->Product->getProductDetails($asin) ;
 		$images   = $this->Product->getProductImages($asin) ;
 		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
@@ -86,7 +86,7 @@ class SaleController extends AppController {
 		$this->set('strategys', $strategys);
 		$this->set('suppliers', $suppliers);
 		
-		$this->set('filterId', $filterId );
+		$this->set('taskId', $taskId );
 		$this->set('asin', $asin );
 		$this->set('type', $type );
 		$this->set('status', $status );

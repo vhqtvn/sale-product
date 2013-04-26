@@ -11,7 +11,7 @@ class ProductDev extends AppModel {
 	}
 	
 	function doFlow( $params ){
-		$pd = $this->getObject("sql_pdev_findByAsin", $params) ;
+		$pd = $this->getObject("sql_pdev_findByAsinAndTaskId", $params) ;
 		if( empty($pd) ){
 			$this->exeSql("sql_pdev_insert", $params) ;
 		}else{
@@ -41,7 +41,6 @@ class ProductDev extends AppModel {
 			$accountWhere = " and sc_product.asin in ( select asin from sc_amazon_account_product where account_id in ($accounts) and status = 'Y' ) " ;
 		}
 	
-	
 		$sql = '' ;
 		if( trim($scope)== ""){
 			$sql = 'SELECT DISTINCT sc_product.asin FROM sc_product
@@ -51,6 +50,7 @@ class ProductDev extends AppModel {
 			LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
 			LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 			WHERE 1 = 1  and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
+			and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd )
 			and sc_product.asin not in (select sc_product_black.asin from sc_product_black) '.$accountWhere ;
 	
 			$_querys = json_decode( $query["querys"]  ) ;
@@ -84,7 +84,8 @@ class ProductDev extends AppModel {
 			LEFT JOIN sc_sale_potential  ON sc_sale_potential.asin = sc_product.asin
 			LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 			WHERE sc_product.asin = sc_gather_asin.asin and sc_gather_asin.task_id in  ( $scopes )
-			and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd ) $accountWhere" ;
+			and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
+			and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd ) $accountWhere" ;
 	
 			$_querys = json_decode( $query["querys"]  ) ;
 	
@@ -109,7 +110,7 @@ class ProductDev extends AppModel {
 		}
 	
 		//避免重复，不能插入重复的
-		$sql = "insert into sc_product_filter_details(asin,task_id) select t.asin , '".$id."' as task_id from ( ".$sql." ) t" ;
+		$sql = "insert into sc_product_dev(asin,task_id,create_time,creator) select t.asin , '$id', now(),'$loginId' as task_id from ( ".$sql." ) t" ;
 
 		$this->query($sql);
 	}

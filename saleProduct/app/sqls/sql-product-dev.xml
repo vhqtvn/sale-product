@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-		<entry key="sql_pdev_findByAsin">
-				select * from sc_product_dev where asin = '{@#ASIN#}'
+		<entry key="sql_pdev_findByAsinAndTaskId">
+				select * from sc_product_dev where asin = '{@#ASIN#}' and task_id = '{@#TASK_ID#}'
 		</entry>
 		
 		<entry key="sql_pdev_listTracks">
@@ -9,15 +9,15 @@
 				(select name from sc_user where login_id = s.creator ) as USERNAME
 				 from sc_product_dev_track s		
 				 where asin = '{@#asin#}'
+				 and task_id = '{@#taskId#}'
 				 order by create_time desc
 		</entry>
 		
-		
-	
 		<entry key="sql_pdev_track_insert">
 			INSERT INTO  sc_product_dev_track 
 					(  
 					ASIN, 
+					TASK_ID,
 					MEMO, 
 					CREATOR, 
 					CREATE_TIME
@@ -25,6 +25,7 @@
 					VALUES
 					( 
 					'{@#ASIN#}', 
+					'{@#TASK_ID#}', 
 					'{@#trackMemo#}', 
 					'{@#loginId#}', 
 					NOW()
@@ -108,7 +109,8 @@ UPDATE sc_product_dev
 			OK_SR_COM4 = '{@#OK_SR_COM4#}' , 
 			OK_SR_CPC4 = '{@#OK_SR_CPC4#}'
 			WHERE
-			ASIN = '{@#ASIN#}'
+			ASIN = '{@#ASIN#}' AND
+			TASK_ID = '{@#TASK_ID#}'
      </entry>
 
 	<entry key="sql_pdev_task_insert">
@@ -133,7 +135,19 @@ UPDATE sc_product_dev
 		
 	 <entry key="sql_pdev_plan_list">
 			SELECT spdp.* ,
-					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spdp.creator ) AS USERNAME 
+					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spdp.creator ) AS USERNAME ,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id ) AS TOTAL,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.dev_status = 1 ) AS  STATUS1,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.dev_status = 2 ) AS  STATUS2,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status =10 ) AS STATUS10,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 15 ) AS  STATUS15,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 20) AS  STATUS20,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 30 ) AS  STATUS30,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 40 ) AS  STATUS40,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 50 ) AS  STATUS50,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 60 ) AS  STATUS60,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 70 ) AS  STATUS70,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 80 ) AS  STATUS80
 			  FROM sc_product_dev_plan spdp
 			  where 1=1
 			  ORDER BY spdp.create_time desc
@@ -195,34 +209,33 @@ UPDATE sc_product_dev
    
       <entry key="sql_pdev_filter">
 	SELECT sc_product_filter.* ,
-			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
-			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status IN (1,2)) AS STATUS12,
-			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 3 ) AS  STATUS3,
-			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 4) AS  STATUS4,
-			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 5 ) AS  STATUS5,
-			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 6 ) AS  STATUS6,
-			(SELECT COUNT(*) FROM sc_product_filter_details	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.status = 7 ) AS  STATUS7,
-			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME 
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status =10 ) AS STATUS10,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 15 ) AS  STATUS15,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 20) AS  STATUS20,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 30 ) AS  STATUS30,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 40 ) AS  STATUS40,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 50 ) AS  STATUS50,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 60 ) AS  STATUS60,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 70 ) AS  STATUS70,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 80 ) AS  STATUS80,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME
 	  FROM sc_product_filter
 	  where 1=1
+	  	and plan_id is not null
 	  	 {@ #$VIEW_PRODUCT_FILTER# }
 	  ORDER BY sc_product_filter.create_time desc
    </entry>
 
    <entry key="sql_pdev_filter_details">
-SELECT sp.*, 
+SELECT sp.TITLE, 
 	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
-	spfd.id AS FILTER_ID, 
-	spfd.status AS STATUS,
-	spfd1.DAY_PAGEVIEWS,
-	ssc.FM_NUM,
-	ssc.NM_NUM,
-	ssc.UM_NUM,
-	ssf.FBA_NUM,
-	ssp.REVIEWS_NUM,
-	ssp.QUALITY_POINTS,
-	ssc.TARGET_PRICE
-FROM  sc_product_filter_details spfd,sc_product_filter spf,sc_product sp 
+	spfd.*,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
+	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
+FROM  sc_product_dev spfd,sc_product_filter spf,sc_product sp 
 	LEFT JOIN sc_sale_competition ssc  ON ssc.asin = sp.asin
 	LEFT JOIN sc_sale_fba  ssf ON ssf.asin = sp.asin
 	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
@@ -231,7 +244,8 @@ WHERE sp.asin = spfd.asin
     and spfd.task_id = spf.id
     {@  and sp.title like '%#title#%'}
     {@  and sp.asin = '#asin#'}
-    {@  and spfd.status in ( #status#) }
+    {@  and spfd.flow_status in ( #status#) }
+     {@  and spfd.dev_status in ( #devStatus#) }
     {@  and spfd.task_id = '#taskId#' }
     {@  and spf.plan_id = '#planId#'}
    </entry>

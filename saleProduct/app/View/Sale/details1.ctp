@@ -105,10 +105,8 @@
  </style>
  
  <script>
- 	var filterId = '<?php echo $filterId;?>' ;
+ 	var taskId = '<?php echo $taskId;?>' ;
  	var asin = '<?php echo $asin;?>' ;
- 	var type = '<?php echo $type;?>' ;
- 	var status =  '<?php echo $status;?>' ;
  	var username = '<?php echo $username;?>' ;
  	var pdStatus = '<?php echo $pdStatus;?>' ;
 
@@ -119,7 +117,8 @@
 				json = $.extend({},json,fixParams) ;
 				json.ASIN = asin ;
 				json.FLOW_STATUS = status;
-
+				json.TASK_ID = taskId ;
+				
 				var memo = "("+statusLabel+")"+ ($(".memo").val()||"") ;
 				json.trackMemo = memo ;
 				

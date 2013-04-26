@@ -55,15 +55,15 @@
 										value="<?php echo $result['NAME'];?>"/></td>
 								</tr>
 								<tr>
-									<th>跟买产品总数量：</th><td  colspan=3><input  type="text" id="followTotalNum"
+									<th>跟卖产品总数量：</th><td  colspan=3><input  type="text" id="followTotalNum"
 										value="<?php echo $result['FOLLOW_TOTAL_NUM'];?>"/></td>
 								</tr>
 								<tr>
-									<th>跟买产品人均数量：</th><td  colspan=3><input type="text" id="followPerNum"
+									<th>跟卖产品人均数量：</th><td  colspan=3><input type="text" id="followPerNum"
 										value="<?php echo $result['FOLLOW_PER_NUM'];?>"/></td>
 								</tr>
 								<tr>
-									<th>跟买产品销量：</th><td  colspan=3><input  type="text" id="followSaleNum"
+									<th>跟卖产品销量：</th><td  colspan=3><input  type="text" id="followSaleNum"
 										value="<?php echo $result['FOLLOW_SALE_NUM'];?>"/></td>
 								</tr>
 								<tr>

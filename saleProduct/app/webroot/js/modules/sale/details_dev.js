@@ -49,39 +49,7 @@
 			
 			return false;
 		}) ;
- 		
- 		//createActionbar();
- 		
- 		$(".action").click(function(){
- 			var status = $(this).attr("status") ;
- 			
- 			var _ = $.trim( $(this).text() ) ;
- 			var val = getDescription(_) ;
- 			
- 			var strategy = $("#strategy").val() ;
- 			
- 			if(status == 3 && !(val && $.trim(val)) ){
- 				alert("必须填写废弃理由！") ;
- 				return false ;
- 			}
- 			
-			if( window.confirm("确认执行该操作吗？") ){
-				$.ajax({
-					type:"post",
-					url:contextPath+"/sale/productFlowProcess" ,
-					data:{description:val,filterId:filterId,asin:asin,status:status,strategy:strategy},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						//window.opener.$(".grid-content-details").llygrid("reload") ;
-						window.location.reload() ;
-					}
-				}); 
-			}
-			
- 			return false ;
- 		}) ;
- 		
+ 	
  	}) ;
  	
  	
@@ -181,7 +149,7 @@
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{asin:asin,sqlId:"sql_pdev_listTracks"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+				 querys:{asin:asin,taskId:taskId,sqlId:"sql_pdev_listTracks"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 		}) ;
