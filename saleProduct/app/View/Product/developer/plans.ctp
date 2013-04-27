@@ -53,7 +53,7 @@
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar'}">查询</button>
 					<button class="create-plan btn"  data-widget="dialog" 
-					data-options="{url:'<?php echo $contextPath?>/page/forward/Product.developer.createPlan',width:650,height:500,callback:createAfter}">创建开发计划</button>
+					data-options="{url:'<?php echo $contextPath?>/page/forward/Product.developer.createPlan',width:800,height:550,callback:createAfter}">创建开发计划</button>
 				</td>
 			</tr>						
 		</table>					

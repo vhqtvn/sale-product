@@ -28,12 +28,17 @@
 		$task = $SqlUtils->getObject("sql_purchase_task_getById",array('taskId'=>$taskId)) ;
 		
 		$SqlUtils->exeSql("sql_purchase_task_updateStatus",array( 'taskId'=>$taskId,'status'=>'2')) ;
-
+		
+		
+		$Grid  = ClassRegistry::init("Grid") ;
+		$recordSql = $SqlUtils->getRecordSql( array('taskId'=>$taskId,'sqlId'=>'sql_purchase_task_productsForPrint','start'=>0,'limit'=>1000)) ; 
+    	$products = $Grid->query( $recordSql ) ;
+		
 	?>
 
    <script type="text/javascript">
    	 var type = '4' ;//查询已经审批通过
-
+/*
 	$(function(){
 		
 			var index = 0 ;
@@ -140,7 +145,7 @@
 				 }
 			}) ;
    	 });
-   	 
+   	 */
    </script>
  	<style>
    		*{
@@ -255,6 +260,133 @@
 	<center>
 	<div style="width:98%;">
 	<div class="grid-content-details" style="margin-top:5px;overflow:hidden;">
+	<table class="table table-bordered">
+		<tr>
+			<th style="text-align:center;width:20px;"></th>
+			<th style="text-align:center;">产品详细信息</th>
+			<th style="text-align:center;width:150px;">供应商</th>
+			<th style="text-align:center;width:120px;">采购信息</th>
+			<th style="text-align:center;width:100px;">承诺交期</th>
+			<th style="text-align:center;width:100px;">备注</th>
+		</tr>
+	
+	<?php 
+	/*var knowledge = record.KNOWLEDGE||"" ;
+		           		var knows = knowledge.split("<p") ;
+		           		var kHtml = [] ;
+		           		$(knows).each(function(index , know){
+		           			if(index == 0) return ;
+		           			kHtml.push("<p"+know.split("</p>")[0]+"</p>") ;
+		           		}) ;
+		           		
+		           		var localUrl = (record.IMAGE_URL+"").replace(/\%/g,"%25") ;
+		           		
+		           		if(localUrl && localUrl != 'null')
+		           			localUrl = '<img src="/'+fileContextPath+'/'+localUrl+'"/>' ;
+		           		else
+		           			localUrl = '' ;
+
+	           			//采购标签
+	           			var  tags = record.TAGS||"" ;
+	           			//tags = tags.split("||") ;
+	           			tags = tags.replace(/\|\|/g,"&nbsp;,&nbsp;") ;
+		           		
+		           		var html = '\
+		           		<div>\
+							<div class="product-image" style="width:152px;height:152px;float:left;">'+localUrl+'</div>\
+							<div class="product-base" style="width:222px;float:left;">\
+								<div class="product-content product-asin">SKU: '+record.SKU+'</div>\
+								<div class="product-content product-title">'+record.TITLE+'</div>\
+								<div class="product-content product-gg">'+kHtml.join("")+'</div>\
+								<hr style="margin:2px;"/><div class="product-content product-gg">标签：'+tags+'</div>\
+							</div>\
+						</div>\
+		           		' ;
+		           		return html ;*/
+	$index = 0 ;
+	foreach( $products as $pd ){
+		$index += 1 ;
+		$pd = $SqlUtils->formatObject($pd) ; ?>
+		<tr>
+			<!-- 序号 -->
+			<th style="text-algin:center;"><?php echo $index ;?></th>
+			<!-- 产品基本信息 -->
+			<td style="text-algin:center;">
+				<?php
+				$localUrl = $pd['IMAGE_URL'] ;
+				$sku	=	$pd['SKU'] ;
+				$title	=	$pd['TITLE'] ;
+				$tags = $pd['TAGS'] ;
+				
+				if( !empty($localUrl) ){
+					$localUrl = str_replace("%" , "%25",$localUrl) ;
+					$localUrl = "<img src='/".$fileContextPath."/".$localUrl."' style='height:112px;'>" ;
+				}
+				
+				$html = '
+				<div>
+				<div class="product-image" style="width:152px;height:122px;float:left;">'.$localUrl.'</div>
+				<div class="product-base" style="width:202px;float:left;">
+				<div class="product-content product-asin">SKU: '.$sku.'</div>
+				<div class="product-content product-title">'.$title.'</div>
+				<div class="product-content product-gg"></div>
+				<hr style="margin:2px;"/><div class="product-content product-gg">标签：'.$tags.'</div>
+				</div>
+				</div>
+				' ;
+				
+				echo $html ;
+				?>
+			</td>
+			<!-- 供应商信息 -->
+			<td style="text-algin:center;">
+			<?php 
+			echo "<div>" ;
+			echo "<div class='product-provider'>" ;
+			echo "<label>供应商名称：</label>" ;
+			echo "<div class='label-content'>".$pd['PROVIDOR_NAME']."</div>" ;
+			echo "<label>联系人：</label>" ;
+			echo "<div class='label-content'>".$pd['PROVIDOR_CONTACTOR']."</div>" ;
+			echo "<label>联系电话：</label>" ;
+			echo "<div class='label-content'>".$pd['PROVIDOR_PHONE']."</div>" ;
+			echo "</div>" ;
+			echo "</div>" ;
+			?>
+			</td>
+			<!-- 采购信息 -->
+			<td style="text-algin:center;">
+			<?php 
+					$totalPrice = $pd['QUOTE_PRICE'] * $pd['SUPPIERABLE_NUM'] ;
+		           	if($totalPrice) $totalPrice = $totalPrice ;// .toFixed(2) ;
+
+		           	$html = '
+		           		<div>
+								<div class="product-purchase">
+									<div class="row-fluid">
+										<div class="span4">单价：</div>
+										<div class="label-content span8">'.$pd['QUOTE_PRICE'].'</div>
+									</div>
+									<div class="row-fluid">
+										<div class="span4">数量：</div>
+										<div class="label-content span8">'.$pd['SUPPIERABLE_NUM'].'</div>
+									</div>
+									<div class="row-fluid">
+										<div class="span4">总价：</div>
+										<div class="label-content span8">'.$totalPrice.'</div>
+									</div><hr style="margin:2px;"/>
+									<div style="text-align:left;">支付方式:</div>
+									<div class="label-content">'.$pd['PAY_TYPE'].'</div>
+								</div>
+						</div>
+		           		' ;
+		           	echo $html ;
+			?>
+			</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	<?php } ;?>
+	</table>
 	</div>
 	</div>
 	</center>
@@ -267,12 +399,12 @@
 				<td style="font-weight:bold;">总监：<input type="text" /></td>
 			</tr>
 		</table>
-		<hr/>
+		<hr style="margin:3px;"/>
 		<table style="width:100%;">
 		
 		<tr>
 				<td style="font-weight:bold;width:50%;">供应商负责人签字：<input type="text" /></td>
-				<td style="font-weight:bold;text-align:left;width:30%;">盖章</td>
+				<td style="font-weight:bold;text-align:left;width:25%;">盖章</td>
 				<td style="font-weight:bold;">日期：<input type="text" /></td>
 			</tr>
 			<tr>

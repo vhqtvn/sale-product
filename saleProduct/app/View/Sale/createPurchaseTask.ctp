@@ -19,16 +19,16 @@
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('calendar/WdatePicker');
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-		$defaultCode = null ;
+		$defaultCode = $SqlUtils->getUserDefaultCode("PT")  ;
 		//if( empty($result['IN_NUMBER']) ){
-			$index = $SqlUtils->getMaxValue("PT" , null , 1) ;
+		/*	$index = $SqlUtils->getMaxValue("PT" , null , 1) ;
 			if( strlen($index) < 5 ){
 				$len = 5-strlen($index) ;
 				for($i=0 ;$i < $len ;$i++){
 					$index = '0'.$index ;
 				}
 			}
-			$defaultCode = "PT-".strtoupper($user['LOGIN_ID']) ."-".date("ymd").'-'.$index ;
+			$defaultCode = "PT-".strtoupper($user['LOGIN_ID']) ."-".date("ymd").'-'.$index ;*/
 		//}
 	?>
   

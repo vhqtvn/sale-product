@@ -166,6 +166,9 @@ UPDATE sc_product_dev
 			INSERT INTO sc_product_dev_plan 
 				(
 				NAME, 
+				CODE,
+				START_TIME,
+				END_TIME,
 				FOLLOW_TOTAL_NUM, 
 				FOLLOW_PER_NUM, 
 				FOLLOW_SALE_NUM, 
@@ -179,6 +182,9 @@ UPDATE sc_product_dev
 				VALUES
 				(
 				'{@#name#}', 
+				'{@#code#}', 
+				'{@#startTime#}', 
+				'{@#endTime#}', 
 				'{@#followTotalNum#}', 
 				'{@#followPerNum#}', 
 				'{@#followSaleNum#}', 
@@ -195,6 +201,9 @@ UPDATE sc_product_dev
 	     UPDATE sc_product_dev_plan 
 				SET
 				NAME = '{@#name#}' , 
+				CODE = '{@#code#}',
+				START_TIME = '{@#startTime#}' , 
+				END_TIME = '{@#endTime#}' , 
 				FOLLOW_TOTAL_NUM = '{@#followTotalNum#}' , 
 				FOLLOW_PER_NUM = '{@#followPerNum#}' , 
 				FOLLOW_SALE_NUM = '{@#followSaleNum#}' , 
@@ -202,6 +211,12 @@ UPDATE sc_product_dev
 				SELF_PER_NUM = '{@#selfPerNum#}' , 
 				SELF_SALE_NUM = '{@#selfSaleNum#}' , 
 				MEMO = '{@#memo#}' 
+				WHERE
+				ID = '{@#id#}'
+     </entry>
+     
+     <entry key="sql_pdev_plan_getById">
+	     select * from sc_product_dev_plan 
 				WHERE
 				ID = '{@#id#}'
      </entry>

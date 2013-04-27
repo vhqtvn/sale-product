@@ -2,25 +2,31 @@ var currentId="" ;
 $(function(){
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"NAME",label:"计划名称",width:"20%",forzen:false,align:"left"},
+				    {align:"center",key:"ID",label:"操作",width:"3%",format:function(val,record){
+				    	return   getImage('edit.png','编辑','edit-plan ');
+				    }},
+		           	{align:"center",key:"NAME",label:"计划名称",width:"15%",forzen:false,align:"left"},
+		        	{align:"center",key:"CODE",label:"计划编码",width:"12%",forzen:false,align:"left"},
+		        	{align:"center",key:"START_TIME",label:"开始时间",width:"8%",format:{type:'calendar'}},
+		        	{align:"center",key:"END_TIME",label:"结束时间",width:"8%",format:{type:'calendar'}},
 		           	{align:"center",key:"FOLLOW_TOTAL_NUM",label:"总数量",group:"跟卖产品",width:"5%"},
 		           	{align:"center",key:"FOLLOW_PER_NUM",label:"人均数量",group:"跟卖产品",width:"5%"},
 		           	{align:"center",key:"FOLLOW_SALE_NUM",label:"销量",group:"跟卖产品",width:"5%"},
-		        	{align:"center",key:"SELF_TOTAL_NUM",label:"总数量",group:"只有产品",width:"5%"},
-		           	{align:"center",key:"SELF_PER_NUM",label:"人均数量",group:"只有产品",width:"5%"},
-		           	{align:"center",key:"SELF_SALE_NUM",label:"销量",group:"只有产品",width:"5%"},
+		        	{align:"center",key:"SELF_TOTAL_NUM",label:"总数量",group:"自有产品",width:"5%"},
+		           	{align:"center",key:"SELF_PER_NUM",label:"人均数量",group:"自有产品",width:"5%"},
+		           	{align:"center",key:"SELF_SALE_NUM",label:"销量",group:"自有产品",width:"5%"},
 		           	{align:"center",key:"TOTAL",label:"总产品",width:"5%"},
-		           	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"6%",format:function(val,record){
+		           	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"5%",format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='1'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS2",label:"跟卖",group:'开发状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS2",label:"跟卖",group:'开发状态',width:"5%",format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='2'>"+(val||'0')+"</a>"
+			        }},
+			        {align:"center",key:"STATUS15",label:"废弃",group:'开发状态',width:"5%",format:function(val,record){
+						return "<a href='#' class='fs-action' status='15'>"+(val||'0')+"</a>"
 			        }},
 		           	{align:"center",key:"STATUS10",label:"标识产品",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='10'>"+(val||'0')+"</a>"
-			        }},
-			        {align:"center",key:"STATUS15",label:"废弃",group:'流程状态',width:"6%",format:function(val,record){
-						return "<a href='#' class='fs-action' status='15'>"+(val||'0')+"</a>"
 			        }},
 			        {align:"center",key:"STATUS20",label:"产品分析",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='20'>"+(val||'0')+"</a>"
@@ -60,6 +66,15 @@ $(function(){
 				 	currentId = id ;
 				 	$(".grid-content-details").llygrid("reload",{planId:currentId}) ;
 				 },loadAfter : function(){
+					 $(".edit-plan").bind("click",function(event){
+						 	event.stopPropagation() ;
+						 	var row =  $(this).parents("tr:first").data("record") ;
+							openCenterWindow(contextPath+"/page/forward/Product.developer.createPlan/"+row.ID,800,550,function(){
+								$(".grid-content").llygrid("reload",{},true);
+							}) ;
+							return false ;
+						}) ;
+					 
 					 $(".fs-action").bind("click",function(event){
 						 	var row =  $(this).parents("tr:first").data("record") ;
 						    event.preventDefault() ;

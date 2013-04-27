@@ -26,7 +26,7 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$defaultCode = $plan[0]['sc_purchase_plan']['CODE'] ;
 		if( empty($plan[0]['sc_purchase_plan']['CODE']) ){
-			$index = $SqlUtils->getMaxValue("PP" , null , 1) ;
+			/*$index = $SqlUtils->getMaxValue("PP" , null , 1) ;
 			if( strlen($index) < 5 ){
 				$len = 5-strlen($index) ;
 				for($i=0 ;$i < $len ;$i++){
@@ -34,6 +34,8 @@
 				}
 			}
 			$defaultCode = "PP"."-".date("ymd").'-'.$index ;
+			*/
+			$defaultCode = $SqlUtils->getDefaultCode("PP") ;
 		}
 	?>
   

@@ -668,6 +668,12 @@
 					return col.format.content[val]||val  ;
 				}
 			},
+			'calendar':{
+				body:function(val,record,col){
+					if(!val) return "" ;
+					return val.replace("00:00:00","") ;
+				}
+			},
 			'func':{
 				body:function(val,record,col){
 					var funcName = col.format.funcName ;

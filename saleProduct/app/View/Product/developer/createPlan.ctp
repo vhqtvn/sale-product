@@ -27,9 +27,16 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		
+		$planId = $params['arg1'] ;
+		$result = $SqlUtils->getObject("sql_pdev_plan_getById",array('id'=>$planId)) ;
+		
 		
 		$loginId   = $user['LOGIN_ID'] ;
-		$result = null ;
+		//$result = null ;
+		$defaultCode = $result['CODE'] ;
+		if(empty($defaultCode)){
+			$defaultCode = $SqlUtils->getDefaultCode("PDP") ;
+		}
 	?>
 	
 </head>
@@ -53,6 +60,18 @@
 								<tr>
 									<th>计划名称：</th><td colspan=3><input data-validator="required" type="text" id="name"
 										value="<?php echo $result['NAME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>计划编码：</th><td colspan=3><input data-validator="required" type="text" id="code" disabled
+										value="<?php echo $defaultCode;?>"/></td>
+								</tr>
+								<tr>
+									<th>开始时间：</th>
+									<td><input data-validator="required" type="text" id="startTime" data-widget="calendar"
+										value="<?php echo $result['START_TIME'];?>"/></td>
+									<th>结束时间：</th>
+									<td><input data-validator="required" type="text" id="endTime" data-widget="calendar"
+										value="<?php echo $result['END_TIME'];?>"/></td>
 								</tr>
 								<tr>
 									<th>跟卖产品总数量：</th><td  colspan=3><input  type="text" id="followTotalNum"

@@ -37,6 +37,35 @@ class AppModel extends Model {
 		  	
 		}
 		
+		/**
+		 * code
+		 * @param unknown_type $code
+		 */
+		public function getDefaultCode($code){
+			$index = $this->getMaxValue($code , null , 1) ;
+			if( strlen($index) < 5 ){
+				$len = 5-strlen($index) ;
+				for($i=0 ;$i < $len ;$i++){
+					$index = '0'.$index ;
+				}
+			}
+			$defaultCode = "$code-".date("ymd").'-'.$index ;
+			return $defaultCode ;
+		}
+		
+		public function getUserDefaultCode($code){
+			$index = $this->getMaxValue($code , null , 1) ;
+			if( strlen($index) < 5 ){
+				$len = 5-strlen($index) ;
+				for($i=0 ;$i < $len ;$i++){
+					$index = '0'.$index ;
+				}
+			}
+			$user = $this->getUser() ;
+			$defaultCode = "$code-".strtoupper($user['LOGIN_ID']) ."-".date("ymd").'-'.$index ;
+			return $defaultCode ;
+		}
+		
 		function getValue($params , $key){
 			if( isset($params[$key]) )
 				return $params[$key] ;

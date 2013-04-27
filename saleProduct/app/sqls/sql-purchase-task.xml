@@ -118,6 +118,8 @@
 			srp.name as TITLE,
 			srp.IMAGE_URL,
 			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
+			(select CONTACTOR from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_CONTACTOR,
+			(select MOBILE from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_PHONE,
 			(select name from sc_user where login_id = sppd.executor ) as EXECUTOR_NAME,
 			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
 		FROM 
