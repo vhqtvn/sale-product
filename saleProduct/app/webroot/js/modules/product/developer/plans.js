@@ -4,6 +4,8 @@ $(function(){
 				columns:[
 				    {align:"center",key:"ID",label:"操作",width:"3%",format:function(val,record){
 				    	return   getImage('edit.png','编辑','edit-plan ');
+				    },permission:function(){
+				    	return $PDEV_EDIT ;
 				    }},
 		           	{align:"center",key:"NAME",label:"计划名称",width:"15%",forzen:false,align:"left"},
 		        	{align:"center",key:"CODE",label:"计划编码",width:"12%",forzen:false,align:"left"},

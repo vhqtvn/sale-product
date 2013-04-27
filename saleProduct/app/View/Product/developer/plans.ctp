@@ -23,19 +23,12 @@
 		$user = $this->Session->read("product.sale.user") ;
 		$loginId = $user["LOGIN_ID"] ;
 		
-		$ProductSpecialistProcess = $security->hasPermission($loginId , 'ProductSpecialistProcess') ;
-		$ProductManagerProcess = $security->hasPermission($loginId , 'ProductManagerProcess') ;
-		$GeneralManagerProcess = $security->hasPermission($loginId , 'GeneralManagerProcess') ;
+		$PDEV_EDIT = $security->hasPermission($loginId , 'PDEV_EDIT') ;
 	?>
   
    <script type="text/javascript">
-    var $ProductSpecialistProcess = <?php echo $ProductSpecialistProcess?'true':'false' ;?> ;
-	var $ProductManagerProcess = <?php echo $ProductManagerProcess?'true':'false' ;?> ;
-	var $GeneralManagerProcess  = <?php echo $GeneralManagerProcess?'true':'false' ;?> ;
+    var $PDEV_EDIT = <?php echo $PDEV_EDIT?'true':'false' ;?> ;
 
-	function createAfter(result){
-		$(".grid-content").llygrid("reload",{}) ;
-	}
    </script>
 
 
@@ -52,8 +45,10 @@
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar'}">查询</button>
+					<?php if( $PDEV_EDIT) {?>
 					<button class="create-plan btn"  data-widget="dialog" 
 					data-options="{url:'<?php echo $contextPath?>/page/forward/Product.developer.createPlan',width:800,height:550,callback:createAfter}">创建开发计划</button>
+					<?php }?>
 				</td>
 			</tr>						
 		</table>					
