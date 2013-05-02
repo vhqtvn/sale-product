@@ -64,7 +64,7 @@ $(function(){
 				}
 				
 			}},
-			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"left",format:{type:"json",content:{'10':"编辑中",20:"待审批",30:"退货标签确认",40:"退货确认",50:"退货入库",60:"退款",70:"重发配置",75:"重发确认",78:"重发收货确认",80:"结束"}}},
+			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"left",format:{type:"json",content:{'10':"编辑中",20:"待审批",30:"退货标签确认",40:"退货确认",50:"退货入库",60:"退款",70:"重发配置",75:"重发确认",78:"重发收货确认",79:"Feedback",80:"结束"}}},
 			{key:"TRACK_MEMO",label:"最新轨迹",width:"10%",forzen:false,align:"left",format:function(val,record){
 				if(!val) return "" ;
 				if( val.indexOf(")") >0 ) return val.split(")")[1] ;
