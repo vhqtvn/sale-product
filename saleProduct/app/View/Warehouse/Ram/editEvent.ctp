@@ -112,7 +112,7 @@
 	?>
 	
 	<script type="text/javascript">
-		var lastTrack = '<?php echo $lastTrack; ?>' ;
+		var lastTrack = '' ;
 		var currentStatus = '<?php echo $status;?>';
 		var AuditAction = function(status ,statusLabel,fixParams){
 			if( !$.validation.validate('#personForm').errorInfo ) {
@@ -187,7 +187,7 @@
 		
 		flowData.push( {status:20,label:"审批确认",memo:true ,actions:[ 
 		<?php if( $rmaForceFinish ){ ?>
-			     	{label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+			     	{label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 		<?php }?>                                    
 		<?php if( $rmaAudit ){ ?>
 		 		  {label:"保存轨迹",action:function(){ AuditAction(20,"保存轨迹") } },
@@ -199,7 +199,7 @@
 		<?php if( $selectedPolicy['IS_BACK'] == 1 ){//退货 ?>
 			flowData.push( {status:30,label:"退货标签确认",memo:true ,actions:[ 
 			<?php if( $rmaForceFinish ){ ?>
-				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 			<?php }?>   
 			<?php if( $rmaTagConfirm ){ ?>
 					   {label:"保存轨迹",action:function(){ AuditAction(30,"保存轨迹") } },
@@ -208,7 +208,7 @@
               ]} ) ;
 			flowData.push( {status:40,label:"退货确认",memo:true,actions:[
 				                                              			<?php if( $rmaForceFinish ){ ?>
-				                                              				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+				                                              				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 				                                              			<?php }?> 
 			<?php if( $rmaBackConfirm ){ ?>
 			   {label:"保存轨迹",action:function(){ AuditAction(40,"保存轨迹") } },
@@ -217,12 +217,12 @@
 			] } ) ;
 
 			//下一步状态
-			var nextStatus1 = <?php echo $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:80 ) ; ?> ;
-			var nextStatusText1 = "<?php echo $selectedPolicy['IS_REFUND'] == 1?'入库完成，等待退款！':($selectedPolicy['IS_RESEND'] == 1?'入库完成，等待重发！':'入库完成，结束！' ) ; ?>";
+			var nextStatus1 = <?php echo $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:79 ) ; ?> ;
+			var nextStatusText1 = "<?php echo $selectedPolicy['IS_REFUND'] == 1?'入库完成，等待退款！':($selectedPolicy['IS_RESEND'] == 1?'入库完成，等待重发！':'入库完成，填写Feedback！' ) ; ?>";
 			
 			flowData.push( {status:50,label:"退货入库",memo:true,actions:[ 
 				                                              			<?php if( $rmaForceFinish ){ ?>
-					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+					                                       				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 					                                       			<?php }?>
 			<?php if( $rmaWhIn ){ ?>
 			   {label:"保存轨迹",action:function(){ AuditAction(50,"保存轨迹") } },
@@ -232,12 +232,12 @@
 		<?php }; ?>
 	
 		<?php if( $selectedPolicy['IS_REFUND'] == 1 ){//退款 ?>
-			var nextStatus = <?php echo  $selectedPolicy['IS_RESEND'] == 1?70:80   ; ?> ;
-			var nextStatusText = "<?php echo  $selectedPolicy['IS_RESEND'] == 1?'退款完成，等待重发！':'退款完成，结束！'   ; ?>";
+			var nextStatus = <?php echo  $selectedPolicy['IS_RESEND'] == 1?70:79   ; ?> ;
+			var nextStatusText = "<?php echo  $selectedPolicy['IS_RESEND'] == 1?'退款完成，等待重发！':'确认退款完成，填写Feedback！'   ; ?>";
 			
 			flowData.push( {status:60 ,label:"退款",memo:true,actions:[ 
 				                                             			<?php if( $rmaForceFinish ){ ?>
-					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+					                                       				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 					                                       			<?php }?>
 			<?php if( $rmaRefund ){ ?>
 			   {label:"保存轨迹",action:function(){ AuditAction(60,"保存轨迹") } },
@@ -249,7 +249,7 @@
 		<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//重发 ?>
 			flowData.push( {status:70,label:"重发配置",memo:true,actions:[ 
 				                                              			<?php if( $rmaForceFinish ){ ?>
-					                                       				 {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+					                                       				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 					                                       			<?php }?>
 			<?php if( $rmaResendConfig ){ ?>
 			   {label:"保存轨迹",action:function(){ AuditAction(70,"保存轨迹") } },
@@ -258,7 +258,7 @@
 			]  } ) ;
 			flowData.push( {status:75,label:"确认重发",memo:true,actions:[ 
 			<?php if( $rmaForceFinish ){ ?>
-				     {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+				     {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 			<?php }?>
 			<?php if( $rmaResendConfirm ){ ?>
 			   		 {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } },
@@ -269,15 +269,19 @@
 
 			flowData.push( {status:78,label:"确认客户收货",memo:true,actions:[ 
                                               			<?php if( $rmaForceFinish ){ ?>
-                                              				     {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+                                              				     {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
                                               			<?php }?>
                                               			<?php if( $rmaResendConfirm ){ ?>
                                               			   		 {label:"保存轨迹",action:function(){ AuditAction(78,"保存轨迹") } },
-                                              			         {label:"确认客户收货",action:function(){ AuditAction(80 ,"确认客户收货，结束！") }
+                                              			         {label:"确认客户收货",action:function(){ AuditAction(79 ,"确认客户收货，填写Feedback！") }
                                               			    }
                                               		 <?php }?>
                                               			]  } ) ;
 		<?php }; ?>
+
+		flowData.push( {status:79,label:"Feedback",memo:true,actions:[ 
+		           {label:"保存Feedback",action:function(){ AuditAction('80',"保存Feedback,结束！") } }
+		 ]  } ) ;
 	
 		flowData.push({status:80,label:'结束'}) ;
 	
@@ -440,6 +444,24 @@
 									</td>
 								</tr>
 							</table>
+							
+							<?php if(  $status >=79  ){?>
+								<table class="form-table" >
+									<tr>
+										<th>Feedback：</th>
+										<td  colspan=3>
+											<select id="feedBack" <?php  echo  $status==79?'data-validator="required"':"disabled" ;?>>
+												<option value="">请选择</option>
+												<option value="1"  <?php echo $result['FEED_BACK']==1?"selected":"";?>>失败</option>
+												<option value="2" <?php echo $result['FEED_BACK']==2?"selected":"";?>>好评</option>
+												<option value="3" <?php echo $result['FEED_BACK']==3?"selected":"";?>>中评</option>
+												<option value="4" <?php echo $result['FEED_BACK']==4?"selected":"";?>>差评</option>
+												<option value="5" <?php echo $result['FEED_BACK']==5?"selected":"";?>>不适合邀请</option>
+											</select>
+										</td>
+									</tr>
+								</table>
+							<?php }?>
 							
 							<?php
 							$isScored = empty($result['SCORE'])?false:true ;

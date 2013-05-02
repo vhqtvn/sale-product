@@ -73,6 +73,7 @@
 		  srp.REAL_SKU,
 	 -->
    <entry key="sql_ram_events_list">
+    select * from (
   		SELECT s1.* ,
 		  (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
 	                    	FROM sc_order_item soi
@@ -83,7 +84,8 @@
 		  (SELECT s2.name FROM sc_user s2 WHERE s2.login_id = s1.creator ) AS USER_NAME,
 		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.cause_code ) AS CAUSE_NAME,
 		  (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = s1.policy_code ) AS POLICY_NAME,
-		  ( SELECT srt.memo FROM sc_ram_track srt WHERE srt.ram_id = s1.ID ORDER BY id DESC LIMIT 0,1 )  AS TRACK_MEMO
+		  ( SELECT srt.memo FROM sc_ram_track srt WHERE srt.ram_id = s1.ID ORDER BY id DESC LIMIT 0,1 )  AS TRACK_MEMO,
+		  ( SELECT srt.create_time FROM sc_ram_track srt WHERE srt.ram_id = s1.ID ORDER BY id DESC LIMIT 0,1 )  AS TRACK_TIME
 		  FROM sc_ram_event s1
 		  LEFT JOIN sc_order sao
 		  ON s1.order_id = sao.order_id
@@ -91,7 +93,8 @@
 		  {@ and s1.status = '#status#'}
 		  {@ and s1.order_id like '%#orderId#%'}
 		  {@ and s1.code like '%#rmaId#%'}
-		  order by CREATE_TIME desc
+		  {@ and status != 80 and '#status1#' =  '#status1#'}
+	) t order by  TRACK_TIME 
    </entry>
    
    <entry key="sql_ram_events_list_rel">
@@ -109,7 +112,7 @@
 		  WHERE s1.order_id = sao.order_id
 		  {@ and s1.order_id = '#orderId#'}
 		  {@ and s1.id != '#id#'}
-		  
+		  order by s1.status
    </entry>
    
    
@@ -170,6 +173,7 @@
 			CAUSE_CODE = '{@#causeCode#}' , 
 			POLICY_CODE = '{@#policyCode#}' ,
 			MEMO = '{@#memo#}' , 
+			{@ feed_back = '#feedBack#',}
 			{@ status = '#status#',}
 			{@ is_receive = '#isReceive#',}
 			{@ in_status = '#inStatus#',}

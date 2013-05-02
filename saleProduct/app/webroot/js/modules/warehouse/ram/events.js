@@ -48,7 +48,8 @@ $(function(){
 	$(".flow-node").click(function(){
 		$(".flow-node").addClass("disabled").removeClass("actived");
 		$(this).removeClass("disabled").addClass("actived");
-		$(".grid-content").llygrid("reload",{status: $(this).attr("status") },true) ;
+		var status1 = $(this).attr("status")==80?"":"1" ;
+		$(".grid-content").llygrid("reload",{status: $(this).attr("status"),status1:status1 },true) ;
 	}) ;
 	
 	$(".grid-content").llygrid({
@@ -69,6 +70,7 @@ $(function(){
 				if( val.indexOf(")") >0 ) return val.split(")")[1] ;
 				return val ;
 			}},
+			{key:"TRACK_TIME",label:"更新时间",width:"10%",forzen:false,align:"left"},
 			{key:"CODE",label:"编号",width:"14%",forzen:false,align:"center"},
 			{key:"ORDER_ID",label:"订单ID",width:"14%",forzen:false,align:"center"},
 			{key:"ORDER_NO",label:"内部订单号",width:"8%",forzen:false,align:"center"},
@@ -87,8 +89,7 @@ $(function(){
            	{key:"PROPOSED_TIME",label:"提出时间",width:"10%",align:"left"},
            	{key:"END_TIME",label:"结束时间",width:"10%",align:"left",format:function(val,record){
            		return record.STATUS != 80 ?"":val;
-           	}},
-           	{key:"MEMO",label:"备注",width:"17%",align:"left"}
+           	}}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
@@ -98,7 +99,7 @@ $(function(){
 		 },
 		 title:"RAM事件列表",
 		 indexColumn:false,
-		 querys:{sqlId:"sql_ram_events_list",status:''},
+		 querys:{sqlId:"sql_ram_events_list",status:'',status1:"1"},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowClick:function(row,record){
 		 	//$(".grid-content-active").llygrid("reload",{planId:record.ID});
@@ -112,12 +113,12 @@ $(function(){
 
 	//添加选项
 	$(".add-btn").click(function(){
-		openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent",880,330) ;
+		openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent",900,330) ;
 	}) ;
 	
 	$(".edit").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
-		openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent/"+record.ID,880,650) ;
+		openCenterWindow(contextPath+"/page/forward/Warehouse.Ram.editEvent/"+record.ID,950,650) ;
 		return false;
 	}) ;
 		

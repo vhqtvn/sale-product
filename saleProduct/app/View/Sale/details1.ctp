@@ -140,6 +140,12 @@
 		         <?php }?>
 	     ]}
      ) ;
+
+ 	flowData.push( {status:15,label:"废弃",memo:true ,
+		actions:[ 
+	     ]}
+     ) ;
+    <?php if( $pdStatus !=15 ){ ?>
 	flowData.push( {status:20,label:"产品分析",memo:true ,
 		actions:[ 
 				<?php if( $PD_ANAYS ){ ?>
@@ -205,7 +211,7 @@
 	     ]}
      ) ;
 	flowData.push( {status:80,label:"结束"}) ;
-
+	<?php } ?>
 	$(function(){
 		var flow = new Flow() ;
 		flow.init(".flow-bar center",flowData) ;

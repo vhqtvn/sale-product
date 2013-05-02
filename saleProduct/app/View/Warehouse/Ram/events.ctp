@@ -106,9 +106,11 @@
 					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="75">确认重发</div></td>
 					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="78">确认重发收货</div></td>
+					<td><div class="flow-node disabled" status="78">重发收货</div></td>
 					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="80">处理结束</div></td>
+					<td><div class="flow-node disabled" status="79">Feedback</div></td>
+					<td class="flow-split">-</td>
+					<td><div class="flow-node disabled" status="80">结束</div></td>
 				</tr>					
 			</tbody>
 		</table>
