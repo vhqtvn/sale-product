@@ -75,6 +75,7 @@ class SaleController extends AppController {
 		$rankings  = $this->Product->getProductRankingDetails($asin) ;
 		$flows  = $this->Product->getProductFlowDetails($asin) ;
 		$strategys  = $this->Product->getProductStrategy() ;
+		//获取询价历史
 		$suppliers  = $this->Product->getProductSupplier($asin) ;
 		
 		$this->set('details', $details);

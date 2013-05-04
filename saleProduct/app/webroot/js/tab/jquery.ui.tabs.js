@@ -96,6 +96,7 @@ $.widget("ui.__tabs", {
 			this.element.find("[tabId]").click(function(){
 				var href = $(this).attr("href");
 				window.location.href = href ;
+				return false ;
 			}) ;
 
 			var me = this ;

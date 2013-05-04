@@ -31,6 +31,7 @@
 				(
 				SUPPLIER_ID, 
 				SKU, 
+				ASIN,
 				PLAN_ID, 
 				WEIGHT, 
 				CYCLE, 
@@ -60,6 +61,7 @@
 				(
 				'{@#supplierId#}', 
 				'{@#sku#}', 
+				'{@#asin#}', 
 				'{@#planId#}', 
 				'{@#weight#}', 
 				'{@#cycle#}', 

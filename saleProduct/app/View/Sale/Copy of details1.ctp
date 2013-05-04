@@ -93,7 +93,6 @@
 		$PD_REEDIT_ZY 			= $security->hasPermission($loginId , 'PD_REEDIT_ZY') ;
 		$PD_REEDIT_YX			= $security->hasPermission($loginId , 'PD_REEDIT_YX') ;
 		$PD_REEDIT_BASE 		= $security->hasPermission($loginId , 'PD_REEDIT_BASE') ;
-		$PD_INQUIRY				=  $security->hasPermission($loginId , 'PD_INQUIRY') ;//询价权限
 		
 		$Config  = ClassRegistry::init("Config") ;
 		$websites = $Config->getAmazonConfig("PRODUCT_DEV_WEBSITE") ;
@@ -102,21 +101,6 @@
    <style>
    		*{
    			font:12px "微软雅黑";
-   		}
-   		
-   		.flow-bar{
-			position:fixed;
-   			top:0px;
-   			left:0px;
-   			right:0px;
-   			height:50px;
-   			z-index:1000;
-   			background:#EEE;
-   			margin:0px;
-   		}
-   		
-   		body{
-			padding-top:55px!important;
    		}
  </style>
  
@@ -146,13 +130,12 @@
  	 }
 
  	var flowData = [] ;
- 	flowData.push( {status:10,label:"产品分析",memo:true ,
+ 	flowData.push( {status:10,label:"标识状态",memo:true ,
 		actions:[ 
 			 		<?php if( $PD_FLAG ){ ?>
 				 {label:"保存",action:function(){ AuditAction('10',"保存") } },
-				 {label:"下一步",action:function(){ AuditAction('20',"保存并进入下一步",{'DEV_STATUS':1}) } },
-		         //{label:"自有",action:function(){ AuditAction('20',"设置自有状态",{'DEV_STATUS':1}) } },
-		         //{label:"跟卖",action:function(){ AuditAction('20',"设置跟买状态",{'DEV_STATUS':2}) } },
+		         {label:"自有",action:function(){ AuditAction('20',"设置自有状态",{'DEV_STATUS':1}) } },
+		         {label:"跟卖",action:function(){ AuditAction('20',"设置跟买状态",{'DEV_STATUS':2}) } },
 		         {label:"废弃",action:function(){ AuditAction('15',"废弃结束",{'DEV_STATUS':3}) } }
 		         <?php }?>
 	     ]}
@@ -164,11 +147,11 @@
      ) ;
  	<?php }?>
     <?php if( $pdStatus !=15 ){ ?>
-	flowData.push( {status:20,label:"产品询价",memo:true ,
+	flowData.push( {status:20,label:"产品分析",memo:true ,
 		actions:[ 
 				<?php if( $PD_ANAYS ){ ?>
 				{label:"保存",action:function(){ AuditAction('20',"保存") } },
-				{label:"结束询价，提交审批",action:function(){ AuditAction('30',"结束询价，提交审批") } }
+				{label:"结束分析，提交审批",action:function(){ AuditAction('30',"结束分析，提交审批") } }
 				 <?php }?>
 	     ]}
      ) ;
@@ -176,11 +159,8 @@
 		actions:[ 
 				<?php if( $PD_CPJLSP ){ ?>
 	          {label:"保存",action:function(){ AuditAction('30',"保存") } },
-			  {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
-			  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
-			  {label:"通过，标识自有",action:function(){ AuditAction('40',"审批通过，设置自有状态",{'DEV_STATUS':1}) } },
-		      {label:"通过，标识跟卖",action:function(){ AuditAction('40',"审批通过，设置跟买状态",{'DEV_STATUS':2}) } }//,
-			  //{label:"审批通过",action:function(){ AuditAction('40',"审批通过，提交总监审批") } }
+			  {label:"审批不通过，撤回分析",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
+			  {label:"审批通过",action:function(){ AuditAction('40',"审批通过，提交总监审批") } }
 			  <?php }?>
 	     ]}
      ) ;
@@ -188,8 +168,7 @@
 		actions:[ 
 				<?php if( $PD_ZJSP ){ ?>
 		         {label:"保存",action:function(){ AuditAction('40',"保存") } },
-		         {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
-				 {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
+				 {label:"审批不通过，撤回分析",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
 				 {label:"审批通过",action:function(){ AuditAction('50',"审批通过，准备录入货品") } }
 				 <?php }?>
 	     ]}
@@ -244,14 +223,13 @@
 </head>
 <body style="overflow-y:auto;padding:2px;">
 	<div  class="flow-bar">
-		<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息采集</button>
 		<center>
 			<table class="flow-table"></table>
 			<div class="flow-action"></div>
 		</center>
 	</div>
 
-	
+	<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息采集</button>
 	
 	<div id="details_tab" style="border:0px;">
 	</div>	
@@ -333,36 +311,10 @@
 				</tbody>
 			</table>
 			
+			<?php  if( $devStatus == 1 ){ //自有产品 ?>
 			<table class="form-table " >
 				<caption>
-				产品风险分析
-				<?php if( $PD_REEDIT_GM){ 
-					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-				}?>
-				</caption>
-				<tbody>
-					<tr>
-						<th>产品风险：</th>
-						<td><textarea id="FOLLOW_RISK_PRODUCT"    class="input 10-input"  
-							style="width:90%;height:40px;"><?php echo $productDev['FOLLOW_RISK_PRODUCT']?></textarea></td>
-					</tr>
-					<tr>
-						<th>品牌风险：</th>
-						<td><textarea id="FOLLOW_RISK_BRAND"      class="input 10-input"  
-							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_BRAND']?></textarea></td>
-					</tr>
-					<tr>
-						<th>供应商风险：</th>
-						<td><textarea id="FOLLOW_RISK_SUPPLIER"      class="input 10-input"  
-							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_SUPPLIER']?></textarea></td>
-					</tr>
-				</tbody>
-			</table>
-			
-			
-			<table class="form-table " >
-				<caption>
-					产品关键字分析
+					自有产品分析
 					<?php if( $PD_REEDIT_ZY){ 
 					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 				}?>
@@ -378,58 +330,87 @@
 					</tr>
 					<tr>
 						<th>核心关键字：</th>
-						<td><input type="text" id="CORE_KEY"   class="input 10-input"   style="width:80%;" value="<?php echo $productDev['CORE_KEY']?>"/></td>
-						<td>	<input type="text" id="CK_VALID_COMP"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_VALID_COMP']?>"/></td>
-						<td>	<input type="text" id="CK_SR_SEARCH"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_SEARCH']?>" /></td>
-						<td>	<input type="text" id="CK_SR_COM"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_COM']?>"/></td>
-						<td>	<input type="text" id="CK_SR_CPC"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_CPC']?>"/></td>
+						<td><input type="text" id="CORE_KEY"  data-validator="required"  class="input 20-input"   style="width:80%;" value="<?php echo $productDev['CORE_KEY']?>"/></td>
+						<td>	<input type="text" id="CK_VALID_COMP"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_VALID_COMP']?>"/></td>
+						<td>	<input type="text" id="CK_SR_SEARCH"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_SEARCH']?>" /></td>
+						<td>	<input type="text" id="CK_SR_COM"    data-validator="required"   class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_COM']?>"/></td>
+						<td>	<input type="text" id="CK_SR_CPC"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_CPC']?>"/></td>
 					</tr>
 					<tr>
 						<th>Amazon关键字1：</th>
-						<td><input type="text" id="OP_KEY1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY1']?>"/></td>
-						<td>	<input type="text" id="OK_VALID_COMP1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP1']?>"/></td>
-						<td>	<input type="text" id="OK_SR_SEARCH1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH1']?>"/></td>
-						<td>	<input type="text" id="OK_SR_COM1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM1']?>"/></td>
-						<td>	<input type="text" id="OK_SR_CPC1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC1']?>"/></td>
+						<td><input type="text" id="OP_KEY1"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY1']?>"/></td>
+						<td>	<input type="text" id="OK_VALID_COMP1"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP1']?>"/></td>
+						<td>	<input type="text" id="OK_SR_SEARCH1"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH1']?>"/></td>
+						<td>	<input type="text" id="OK_SR_COM1"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM1']?>"/></td>
+						<td>	<input type="text" id="OK_SR_CPC1"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC1']?>"/></td>
 					</tr>
 					<tr>
 						<th>Amazon关键字2：</th>
-						<td><input type="text" id="OP_KEY2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY2']?>"/></td>
-						<td>	<input type="text" id="OK_VALID_COMP2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP2']?>"/></td>
-						<td>	<input type="text" id="OK_SR_SEARCH2"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_SEARCH2']?>" /></td>
-						<td>	<input type="text" id="OK_SR_COM2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM2']?>"/></td>
-						<td>	<input type="text" id="OK_SR_CPC2"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OK_SR_CPC2']?>" /></td>
+						<td><input type="text" id="OP_KEY2"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY2']?>"/></td>
+						<td>	<input type="text" id="OK_VALID_COMP2"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP2']?>"/></td>
+						<td>	<input type="text" id="OK_SR_SEARCH2"  data-validator="required"    class="input 20-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_SEARCH2']?>" /></td>
+						<td>	<input type="text" id="OK_SR_COM2"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM2']?>"/></td>
+						<td>	<input type="text" id="OK_SR_CPC2"  data-validator="required"     class="input 20-input"  style="width:80%;" value="<?php echo $productDev['OK_SR_CPC2']?>" /></td>
 					</tr>
 					<tr>
 						<th>Amazon关键字3：</th>
-						<td><input type="text" id="OP_KEY3"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OP_KEY3']?>" /></td>
-						<td>	<input type="text" id="OK_VALID_COMP3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP3']?>"/></td>
-						<td>	<input type="text" id="OK_SR_SEARCH3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH3']?>"/></td>
-						<td>	<input type="text" id="OK_SR_COM3"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_COM3']?>" /></td>
-						<td>	<input type="text" id="OK_SR_CPC3"     class="input 10-input"   style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC3']?>"/></td>
+						<td><input type="text" id="OP_KEY3"   data-validator="required"    class="input 20-input"  style="width:80%;" value="<?php echo $productDev['OP_KEY3']?>" /></td>
+						<td>	<input type="text" id="OK_VALID_COMP3"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP3']?>"/></td>
+						<td>	<input type="text" id="OK_SR_SEARCH3"   data-validator="required"    class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH3']?>"/></td>
+						<td>	<input type="text" id="OK_SR_COM3"  data-validator="required"    class="input 20-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_COM3']?>" /></td>
+						<td>	<input type="text" id="OK_SR_CPC3" data-validator="required"     class="input 20-input"   style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC3']?>"/></td>
 					</tr>
 					<tr>
 						<th>Amazon关键字4：</th>
-						<td><input type="text" id="OP_KEY4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY4']?>"/></td>
-						<td>	<input type="text" id="OK_VALID_COMP4"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OK_VALID_COMP4']?>" /></td>
-						<td>	<input type="text" id="OK_SR_SEARCH4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH4']?>"/></td>
-						<td>	<input type="text" id="OK_SR_COM4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM4']?>"/></td>
-						<td>	<input type="text" id="OK_SR_CPC4"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_CPC4']?>" /></td>
+						<td><input type="text" id="OP_KEY4"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY4']?>"/></td>
+						<td>	<input type="text" id="OK_VALID_COMP4"  data-validator="required"     class="input 20-input"  style="width:80%;" value="<?php echo $productDev['OK_VALID_COMP4']?>" /></td>
+						<td>	<input type="text" id="OK_SR_SEARCH4"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH4']?>"/></td>
+						<td>	<input type="text" id="OK_SR_COM4"  data-validator="required"     class="input 20-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM4']?>"/></td>
+						<td>	<input type="text" id="OK_SR_CPC4" data-validator="required"     class="input 20-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_CPC4']?>" /></td>
 					</tr>
 					<tr>
 						<th>eBay关键字：</th><td colspan=5>
-							<input  type="text" id="EBAY_KEY"  class="input 10-input"   style="width:90%;"  
+							<input  type="text" id="EBAY_KEY"  class="input 20-input"   style="width:90%;"  data-validator="required" 
 							value="<?php echo $productDev['EBAY_KEY'];?>"/></td>
 					</tr>
 					<tr>
 						<th>eBay销售数量：</th>
-						<td  colspan=5><textarea id="EBAY_SALE_MEMO"   class="input 10-input"    
+						<td  colspan=5><textarea id="EBAY_SALE_MEMO"   class="input 20-input"    data-validator="required" 
 							style="width:90%;height:50px;"><?php echo $productDev['EBAY_SALE_MEMO'];?></textarea></td>
 					</tr>
 				</tbody>
 			</table>
-	
+			<?php  }?>
 			
+			<?php  if( $devStatus == 2 ){ //跟卖产品 ?>
+			<table class="form-table " >
+				<caption>
+				跟卖产品分析
+				<?php if( $PD_REEDIT_GM){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?>
+				</caption>
+				<tbody>
+					<tr>
+						<th>跟卖产品风险：</th>
+						<td><textarea id="FOLLOW_RISK_PRODUCT"  data-validator="required"   class="input 20-input"  
+							style="width:90%;height:40px;"><?php echo $productDev['FOLLOW_RISK_PRODUCT']?></textarea></td>
+					</tr>
+					<tr>
+						<th>跟卖品牌风险：</th>
+						<td><textarea id="FOLLOW_RISK_BRAND"   data-validator="required"    class="input 20-input"  
+							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_BRAND']?></textarea></td>
+					</tr>
+					<tr>
+						<th>跟卖供应商风险：</th>
+						<td><textarea id="FOLLOW_RISK_SUPPLIER"  data-validator="required"     class="input 20-input"  
+							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_SUPPLIER']?></textarea></td>
+					</tr>
+				</tbody>
+			</table>
+			<?php  }?>
+			
+			<?php  if( $devStatus == 1 || $devStatus == 2 ){ //跟卖产品 ?>
 			<table class="form-table " >
 				<caption>
 				营销计划与策略
@@ -445,7 +426,7 @@
 					</tr>
 					<tr>
 						<td>
-							<select id="PPC_STRATEGY"    style="width:97%;" class="input 10-input" >
+							<select id="PPC_STRATEGY"  data-validator="required"   style="width:97%;" class="input 20-input" >
 								<option value="">--选择策略--</option>
 							<?php 
 								$strategys = $SqlUtils->exeSql("sql_rule_item_config",array('type'=>'devStrategy')) ;
@@ -459,26 +440,27 @@
 								}
 							?>
 							</select>
-							<textarea id="PPC_STRATEGY_MEMO" class="input 10-input"  style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['PPC_STRATEGY_MEMO']?></textarea>
+							<textarea id="PPC_STRATEGY_MEMO" class="input 20-input"  style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['PPC_STRATEGY_MEMO']?></textarea>
 						</td>
 						<td>
-							<select id="LOGI_STRATEGY" style="width:97%;"    class="input 10-input" >
+							<select id="LOGI_STRATEGY" style="width:97%;" data-validator="required"    class="input 20-input" >
 								<option value="">--选择--</option>
 								<option value="FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBM'?"selected":"" ?>>FBM</option>
 								<option value="FBA"  <?php echo $productDev['LOGI_STRATEGY']=='FBA'?"selected":"" ?>>FBA</option>
 								<option value="FBA_FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBA_FBM'?"selected":"" ?>>FBM和FMA</option>
 							</select>
-							<textarea id="LOGI_STRATEGY_MEMO"  class="input 10-input" 
+							<textarea id="LOGI_STRATEGY_MEMO"  class="input 20-input" 
 								style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['LOGI_STRATEGY_MEMO']?></textarea>
 						</td>
 						<td>
-							<textarea id="SPREAD_STRATEGY"   class="input 10-input" 
+							<textarea id="SPREAD_STRATEGY"   class="input 20-input" 
 								style="width:95%;height:77px;"><?php echo  $productDev['SPREAD_STRATEGY']?></textarea>
 						</td>
 					</tr>
 				</tbody>
 			</table>
 			
+			<?php  }?>
 			</form>
 	</div>
 	
@@ -616,60 +598,6 @@
 				?>
 				</table>
 			</div>
-		</div>
-		<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<?php  if( $pdStatus ==20 && $PD_INQUIRY ){  ?>
-			<button class="supplier-select btn">添加询价</button>
-			<?php 	}?>
-			<table class="table table-bordered">
-				<tr>
-					<th></th>
-					<th>产品重量</th>
-					<th>生产周期</th>
-					<th>包装方式</th>
-					<th>付款方式</th>
-					<th>产品尺寸</th>
-					<th>包装尺寸</th>
-					<th>报价1</th>
-					<th>报价2</th>
-					<th>报价3</th>
-					<th></th>
-				</tr>
-				<?php
-				$suppliers = $SqlUtils->exeSql("sql_list_supplierInquiryByAsin",array('asin'=>$asin)) ;
-				//$suppliers  = $this->Product->getProductSupplier($asin) ;
-				 foreach($suppliers as $supplier){
-				 	$supplier = $SqlUtils->formatObject( $supplier ) ;
-				 	$urls = "" ;
-				 	if( !empty($supplier['IMAGE']) ){
-				 		$urls = "<img src='/".$fileContextPath."/".$supplier['IMAGE']."' style='width:80px;height:50px;'>" ;
-				 	}
-					
-					$usedClz = "" ;
-					echo "<tr class='$usedClz'>
-						<td rowspan=2 > " ;
-						 if( $pdStatus ==20 && $PD_INQUIRY ){ echo  "<a href='#' class='update-supplier' inquiryId='".$supplier['ID']."' >修改询价</a>"; }
-						 echo "</td>
-						<td>".$supplier['WEIGHT']."</td>
-						<td>".$supplier['CYCLE']."</td>
-						<td>".$supplier['PACKAGE']."</td>
-						<td>".$supplier['PAYMENT']."</td>
-						<td>".$supplier['PRODUCT_SIZE']."</td>
-						<td>".$supplier['PACKAGE_SIZE']."</td>
-						<td>".$supplier['NUM1']."/".$supplier['OFFER1']."</td>
-						<td>".$supplier['NUM2']."/".$supplier['OFFER2']."</td>
-						<td>".$supplier['NUM3']."/".$supplier['OFFER3']."</td>
-						<td rowspan=2>
-						  $urls
-						</td>
-					</tr><tr class='$usedClz'>
-						<td colspan=9>".$supplier['MEMO']."
-						</td>
-						
-					</tr> " ;
-				}?>
-				
-			</table>
 		</div>
 		
 	</div>

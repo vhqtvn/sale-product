@@ -59,7 +59,6 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							window.opener.$(".grid-content").llygrid("reload") ;
 							window.close() ;
 						},error:function(){
 							alert("操作出现异常！") ;
@@ -96,12 +95,13 @@
 
 <fieldset>
 	<legend>配置项</legend>
-	<table>
+	<table class="form-table">
 		<tr>
 			<td>类型：</td><td>
 				<select id="type" data-validator='required'>
 					<option value=""></option>
 					<option value="strategy" selected>策略</option>
+					<option value="devStrategy" >开发策略</option>
 					<?php
 					if(  $loginId == 'manage'){//总经理
 					echo '

@@ -143,6 +143,13 @@ class SupplierController extends AppController {
 		//$this->set("productSupplier", $this->Product->getProductSupplierById($asin,$supplierId) ) ;
 	}
 	
+	public function updateProductSupplierByAsin($asin,$supplierId=null,$planId=null){
+		//$this->set("planId",$planId) ;
+		//$this->set("supplierId",$supplierId) ;
+		//$this->set("sku",$asin) ;
+		//$this->set("productSupplier", $this->Product->getProductSupplierById($asin,$supplierId) ) ;
+	}
+	
 	public function creatdir($path)
 	{
 		if(!is_dir($path))

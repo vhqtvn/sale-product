@@ -21,37 +21,14 @@
 	?>
   
    <script type="text/javascript">
-   //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
+  
 	$(function(){
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"操作",width:"10%",format:function(val,record){
 						var key = record.TYPE ;
 						
-						if( key == 'strategy' ){
+						if( key == 'strategy' || key=="devStrategy"){
 							var html = [] ;
 							html.push("<a href='#' class='edit-config' val='"+val+"'>修改</a>&nbsp;") ;
 							html.push("<a href='#' class='delete-config' val='"+val+"'>删除</a>") ;
@@ -59,17 +36,19 @@
 						}
 						return "";
 					}},
-		           	{align:"center",key:"ID",label:"编号", width:"5%"},
+		          // 	{align:"center",key:"ID",label:"编号", width:"5%"},
 		           	{align:"center",key:"LABEL",label:"名称",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"KEY",label:"值",width:"25%"},
 		           	{align:"center",key:"MEMO",label:"备注",width:"30%"},
-		           	{align:"center",key:"TYPE",label:"类型",width:"10%"}
+		           	{align:"center",key:"TYPE",label:"类型",width:"10%",format:{type:'json',content:{'strategy':'策略','devStrategy':'产品开发策略','field':'字段','relation':'关系'}}}
 					
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:400,
+				 height:function(){
+						return $(window).height() - 150 ;
+					 },
 				 title:"上传列表",
 				 indexColumn:true,
 				 querys:{sqlId:"sql_rule_item_config"},
@@ -77,12 +56,16 @@
 			}) ;
 
 			$(".add-config").click(function(){
-				openCenterWindow(contextPath+"/config/add/" ,450,350) ;
+				openCenterWindow(contextPath+"/config/add/" ,450,350,function(){
+					$(".grid-content").llygrid("reload",{},true);
+					}) ;
 			}) ;
 			
 			$(".edit-config").live('click',function(){
 				var id = $(this).attr("val");
-				openCenterWindow(contextPath+"/config/add/"+id ,450,350) ;
+				openCenterWindow(contextPath+"/config/add/"+id ,450,350,function(){
+					$(".grid-content").llygrid("reload",{},true);
+				}) ;
 				return false;
 			}) ;
 			
@@ -96,7 +79,7 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							$(".grid-content").llygrid("reload") ;	
+							$(".grid-content").llygrid("reload",{},true) ;	
 						}
 					}); 
 				}
@@ -140,6 +123,7 @@
 						<option value="strategy">策略</option>
 						<option value="relation">关系</option>
 						<option value="field" >字段</option>
+						<option value="devStrategy" >开发策略</option>
 					</select>
 				</td>								
 				<td class="toolbar-btns">

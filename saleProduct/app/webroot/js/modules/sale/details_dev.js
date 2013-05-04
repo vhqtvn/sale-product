@@ -77,12 +77,7 @@
 				openCenterWindow(contextPath+"/product/assignCategory/"+asin,400,500) ;
 			}) ;
 			
-			$(".update-supplier").click(function(){
-				var supplierId = $(this).attr("supplierId") ;
-				openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/"+asin+"/"+supplierId,650,600) ;
-				return false;
-			}) ;
-			
+
 			$("[testStatus]").click(function(){//下架
 				
 				var testStatus = $(this).attr("testStatus") ;
@@ -129,10 +124,25 @@
 					{label:'竞争信息',content:"competetion-tab"},
 					{label:'产品分类',url:contextPath+"/product/assignCategory/"+asin,iframe:true},
 					{label:'产品开发',content:"dev-tab"},
+					{label:'询价',content:"supplier-tab",iframe:true},
 					{label:'开发轨迹',content:"track-tab"}
 				] ,
 				height:'500px'
 			} ) ;
+			
+			$(".supplier-select").click(function(){
+				openCenterWindow(contextPath+"/page/forward/Supplier.updateProductSupplierByAsin/"+asin,800,600,function(){
+					window.location.reload();
+					}) ;
+			}) ;
+			
+			$(".update-supplier").click(function(){
+				var inquiryId = $(this).attr("inquiryId") ;
+				openCenterWindow(contextPath+"/page/forward/Supplier.updateProductSupplierByAsin/"+asin+"/"+inquiryId,800,600,function(){
+					window.location.reload();
+				}) ;
+				return false;
+			}) ;
 			
 			$(".grid-track").llygrid({
 

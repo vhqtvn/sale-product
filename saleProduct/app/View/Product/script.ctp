@@ -22,32 +22,6 @@
   
    <script type="text/javascript">
 
-	 //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
-
-
 	$(function(){
 			$(".action").live("click",function(){
 				var id = $(this).attr("val") ;
@@ -88,8 +62,10 @@
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:200,
-				 title:"测试列表Demo",
+				 height:function(){
+					return $(window).height() - 130 ;
+				},
+				 title:"筛选规则列表",
 				 indexColumn:false,
 				 querys:{sqlId:"sql_rule_script"},
 				 loadMsg:"数据加载中，请稍候......"

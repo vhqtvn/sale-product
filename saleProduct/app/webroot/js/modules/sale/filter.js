@@ -5,19 +5,19 @@ var currentId = '' ;
 				columns:[
 		           	{align:"center",key:"NAME",label:"任务名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"TOTAL",label:"总产品",width:"5%"},
-		        	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"6%",format:function(val,record){
+		        	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"4%",format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='1'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS2",label:"跟卖",group:'开发状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS2",label:"跟卖",group:'开发状态',width:"4%",format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='2'>"+(val||'0')+"</a>"
 			        }},
-		           	{align:"center",key:"STATUS10",label:"标识产品",group:'流程状态',width:"6%",format:function(val,record){
-						return "<a href='#' class='fs-action' status='10'>"+(val||'0')+"</a>"
-			        }},
-			        {align:"center",key:"STATUS15",label:"废弃",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS15",label:"废弃",group:'开发状态',width:"4%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='15'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS20",label:"产品分析",group:'流程状态',width:"6%",format:function(val,record){
+		           	{align:"center",key:"STATUS10",label:"产品分析",group:'流程状态',width:"6%",format:function(val,record){
+						return "<a href='#' class='fs-action' status='10'>"+(val||'0')+"</a>"
+			        }},
+			        {align:"center",key:"STATUS20",label:"询价",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='20'>"+(val||'0')+"</a>"
 			        }},
 			        {align:"center",key:"STATUS30",label:"产品经理审批",group:'流程状态',width:"6%",format:function(val,record){
@@ -76,7 +76,7 @@ var currentId = '' ;
 						var status = record.STATUS ;
 						return "<a href='#' class='process-action' status='"+status+"' val='"+val+"' asin='"+record.ASIN+"'>处理</a>&nbsp;" ;
 					}},
-					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",format:{type:'json',content:{10:'标识状态',15:'废弃',20:'开发分析',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
+					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
 					{align:"center",key:"DEV_STATUS",label:"开发状态",width:"5%",format:{type:'json',content:{1:'自有',2:'跟卖',3:'废弃'}}},
 		           	{align:"center",key:"ASIN",label:"ASIN", width:"8%",format:function(val,record){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;

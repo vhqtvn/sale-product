@@ -179,7 +179,7 @@
 		]} ) ;
 
 		<?php 
-			$nextStatus = $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:80 ) ; 
+			$nextStatus = $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:79 ) ; 
 			if( $selectedPolicy['IS_BACK'] == 1   ){
 				$nextStatus = 30 ;
 			}
