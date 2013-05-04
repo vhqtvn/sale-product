@@ -3,6 +3,12 @@ var currentId = '' ;
 		$(".message,.loading").hide() ;
 			$(".grid-content").llygrid({
 				columns:[
+					{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
+						if( record.TOTAL <=0 ){
+							return "<a href='#' class='delete-action'  val='"+val+"'>删除</a>&nbsp;" ;
+						}
+						return "" ;
+					}},
 		           	{align:"center",key:"NAME",label:"任务名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"TOTAL",label:"总产品",width:"5%"},
 		        	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"4%",format:function(val,record){
@@ -67,6 +73,17 @@ var currentId = '' ;
 							}
 							return false ;
 					}) ;
+					 $(".delete-action").bind("click",function(event){
+						 	var row =  $(this).parents("tr:first").data("record") ;
+						    event.preventDefault() ;
+						    event.stopPropagation()  ;
+							var taskId = $(this).attr("val") ;
+							$.dataservice("model:ProductDev.deleteTask",{taskId:taskId},function(result){
+								$(".grid-content").llygrid("reload",{},true) ;
+							});
+							return false ;
+					}) ;
+					 
 				}
 			}) ;
 
