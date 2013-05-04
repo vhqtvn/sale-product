@@ -28,11 +28,18 @@
 		
 	?>
 	<?php
-		$product = $details[0]['sc_product'] ;
-		$competition = $details[0]['sc_sale_competition'] ;
-		$potential = $details[0]['sc_sale_potential'] ;
-		$fba       = $details[0]['sc_sale_fba'] ;
+		$product = null ;
+		$competition = null;
+		$potential =null;
+		$fba       =null;
 		$flow = "" ;
+		
+		if( !empty($details) ){
+			$product = $details[0]['sc_product'] ;
+			$competition = $details[0]['sc_sale_competition'] ;
+			$potential = $details[0]['sc_sale_potential'] ;
+			$fba       = $details[0]['sc_sale_fba'] ;
+		}
 		
 		if( isset($flows) ){
 			if( !empty($flows) )

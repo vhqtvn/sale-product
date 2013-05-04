@@ -4,10 +4,14 @@ var currentId = '' ;
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
+						var html = [] ;
 						if( record.TOTAL <=0 ){
-							return "<a href='#' class='delete-action'  val='"+val+"'>删除</a>&nbsp;" ;
+							html.push( getImage("delete.gif","删除","delete-action") ) ;
+							//html.push( "<a href='#' class='delete-action'  val='"+val+"'>删除</a>&nbsp;" );
 						}
-						return "" ;
+						html.push( getImage("pkg.gif","添加ASIN","add-asin") ) ;
+						
+						return html.join("") ;
 					}},
 		           	{align:"center",key:"NAME",label:"任务名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"TOTAL",label:"总产品",width:"5%"},
@@ -77,13 +81,20 @@ var currentId = '' ;
 						 	var row =  $(this).parents("tr:first").data("record") ;
 						    event.preventDefault() ;
 						    event.stopPropagation()  ;
-							var taskId = $(this).attr("val") ;
+							var taskId = row.ID;
 							$.dataservice("model:ProductDev.deleteTask",{taskId:taskId},function(result){
 								$(".grid-content").llygrid("reload",{},true) ;
 							});
 							return false ;
 					}) ;
-					 
+					 $(".add-asin").bind("click",function(event){
+						 var row =  $(this).parents("tr:first").data("record") ;
+						    event.preventDefault() ;
+						    event.stopPropagation()  ;
+							var taskId = row.ID;
+						 openCenterWindow(contextPath+"/page/forward/ProductDev.addAsinToTask/"+taskId,550,350) ;
+							return false ;
+					}) ;
 				}
 			}) ;
 
@@ -100,7 +111,7 @@ var currentId = '' ;
 		           	}},
 		           	{align:"center",key:"LOCAL_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||"")+"</a>" ;
 		           	}},
 		           	{align:"center",key:"PPC_STRATEGY_NAME",label:"竞价排名策略",width:"15%"},
 	           		{align:"center",key:"LOGI_STRATEGY",label:"物流策略",width:"10%"},

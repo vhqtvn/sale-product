@@ -2,6 +2,18 @@
 class ProductDev extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
+	function addAsinToTask($params){
+		$params['FLOW_STATUS'] = 10 ;//默认状态
+		$asins = $params['asins'] ;
+		foreach ( explode(",", $asins) as $asin ){
+			if( !empty( $asin ) ){
+				$params['ASIN'] = trim($asin);
+				$this->exeSql("sql_pdev_insert", $params) ;
+			}
+			
+		}
+	}
+	
 	function deleteTask($params){
 		$taskId = $params['taskId'] ;
 		$this->exeSql("delete from sc_product_filter where id = '{@#taskId#}'", $params) ;
@@ -115,7 +127,7 @@ class ProductDev extends AppModel {
 		}
 	
 		//避免重复，不能插入重复的
-		$sql = "insert into sc_product_dev(asin,task_id,create_time,creator) select t.asin , '$id', now(),'$loginId' as task_id from ( ".$sql." ) t" ;
+		$sql = "insert into sc_product_dev(asin,task_id,flow_status,create_time,creator) select t.asin , '$id',10, now(),'$loginId' as task_id from ( ".$sql." ) t" ;
 
 		$this->query($sql);
 	}

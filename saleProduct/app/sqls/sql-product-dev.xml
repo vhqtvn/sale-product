@@ -35,6 +35,7 @@
 	   <entry key="sql_pdev_insert">
 				INSERT INTO sc_product_dev 
 					(ASIN, 
+					TASK_ID,
 					CREATOR, 
 					CREATE_TIME, 
 					RANK, 
@@ -47,6 +48,7 @@
 					)
 					VALUES
 					('{@#ASIN#}', 
+					'{@#taskId#}', 
 					'{@#loginId#}', 
 					NOW(), 
 					'{@#RANK#}', 
@@ -250,13 +252,14 @@ SELECT sp.TITLE,
 	spfd.*,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
 	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
-FROM  sc_product_dev spfd,sc_product_filter spf,sc_product sp 
+FROM  sc_product_filter spf, sc_product_dev spfd
+	LEFT JOIN sc_product sp 
+	on sp.asin = spfd.asin
 	LEFT JOIN sc_sale_competition ssc  ON ssc.asin = sp.asin
 	LEFT JOIN sc_sale_fba  ssf ON ssf.asin = sp.asin
 	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
         LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
-WHERE sp.asin = spfd.asin
-    and spfd.task_id = spf.id
+WHERE  spfd.task_id = spf.id
     {@  and sp.title like '%#title#%'}
     {@  and sp.asin = '#asin#'}
     {@  and spfd.flow_status in ( #status#) }
