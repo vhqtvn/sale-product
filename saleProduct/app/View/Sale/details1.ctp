@@ -141,6 +141,10 @@
 				json.ASIN = asin ;
 				json.FLOW_STATUS = status;
 				json.TASK_ID = taskId ;
+
+				if( json.DEV_STATUS == 3 ){
+					json.FLOW_STATUS = 15 ;
+				}
 				
 				var memo = "("+statusLabel+")"+ ($(".memo").val()||"") ;
 				json.trackMemo = memo ;
@@ -157,10 +161,7 @@
 		actions:[ 
 			 		<?php if( $PD_ANAYS ){ ?>
 				 {label:"保存",action:function(){ AuditAction('10',"保存") } },
-				 {label:"下一步",action:function(){ AuditAction('20',"保存并进入下一步",{'DEV_STATUS':1}) } },
-		         //{label:"自有",action:function(){ AuditAction('20',"设置自有状态",{'DEV_STATUS':1}) } },
-		         //{label:"跟卖",action:function(){ AuditAction('20',"设置跟买状态",{'DEV_STATUS':2}) } },
-		         {label:"废弃",action:function(){ AuditAction('15',"废弃结束",{'DEV_STATUS':3}) } }
+				 {label:"下一步",action:function(){ AuditAction('20',"保存并进入下一步") } }
 		         <?php }?>
 	     ]}
      ) ;
@@ -185,9 +186,7 @@
 	          {label:"保存",action:function(){ AuditAction('30',"保存") } },
 			  {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
 			  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
-			  {label:"通过，标识自有",action:function(){ AuditAction('40',"审批通过，设置自有状态",{'DEV_STATUS':1}) } },
-		      {label:"通过，标识跟卖",action:function(){ AuditAction('40',"审批通过，设置跟买状态",{'DEV_STATUS':2}) } }//,
-			  //{label:"审批通过",action:function(){ AuditAction('40',"审批通过，提交总监审批") } }
+			  {label:"通过审批",action:function(){ AuditAction('40',"审批通过 " ) } }
 			  <?php }?>
 	     ]}
      ) ;
@@ -258,8 +257,6 @@
 		</center>
 	</div>
 
-	
-	
 	<div id="details_tab" style="border:0px;">
 	</div>	
 	
@@ -282,6 +279,20 @@
 		?>
 		</div>
 		<hr style="margin:0px;clear:both;padding-top:3px;"/>
+		
+		<table class="form-table "  style="margin:5px 2px;">
+				<tbody>
+					<tr>
+						<th>开发标识：</th>
+						<td>
+							自有 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==1?"checked":"";?>  value="1"/>&nbsp;&nbsp;&nbsp;
+							跟卖 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==2?"checked":"";?>   value="2"/>&nbsp;&nbsp;&nbsp;
+							废弃 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==3?"checked":"";?>  value="3"/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		
 		<table class="form-table " >
 				<caption>
 				基本信息
