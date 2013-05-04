@@ -2,6 +2,11 @@
 class ProductDev extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
+	function deleteTask($params){
+		$taskId = $params['taskId'] ;
+		$this->exeSql("delete from sc_product_filter where id = '{@#taskId#}'", $params) ;
+	}
+	
 	function savePlan($params ){
 		if( empty($params['id']) ){
 			$this->exeSql("sql_pdev_plan_insert", $params) ;
