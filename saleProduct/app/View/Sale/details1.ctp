@@ -148,7 +148,7 @@
  	var flowData = [] ;
  	flowData.push( {status:10,label:"产品分析",memo:true ,
 		actions:[ 
-			 		<?php if( $PD_FLAG ){ ?>
+			 		<?php if( $PD_ANAYS ){ ?>
 				 {label:"保存",action:function(){ AuditAction('10',"保存") } },
 				 {label:"下一步",action:function(){ AuditAction('20',"保存并进入下一步",{'DEV_STATUS':1}) } },
 		         //{label:"自有",action:function(){ AuditAction('20',"设置自有状态",{'DEV_STATUS':1}) } },
@@ -166,7 +166,7 @@
     <?php if( $pdStatus !=15 ){ ?>
 	flowData.push( {status:20,label:"产品询价",memo:true ,
 		actions:[ 
-				<?php if( $PD_ANAYS ){ ?>
+				<?php if( $PD_INQUIRY ){ ?>
 				{label:"保存",action:function(){ AuditAction('20',"保存") } },
 				{label:"结束询价，提交审批",action:function(){ AuditAction('30',"结束询价，提交审批") } }
 				 <?php }?>
