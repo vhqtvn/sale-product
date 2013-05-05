@@ -2,6 +2,15 @@
 class Sale extends AppModel {
 	var $useTable = "sc_seller" ;
 	
+	function savePrintTime($params){
+		$printTime = $params['printTime'] ;
+    	$products = $this->exeSqlWithFormat("sql_purchase_task_productInedForPrint", $params) ;
+    	foreach( $products as $product ){
+    		$id = $product['ID'] ;
+    		$this->exeSql("update sc_purchase_plan_details set print_time = '{@#printTime#}' where id = '{@#id#}' and print_time is null", array('id'=>$id,'printTime'=>$printTime)) ;
+    	}
+	}
+	
 	/**
 	 * 供应商采用
 	 * @param unknown_type $params

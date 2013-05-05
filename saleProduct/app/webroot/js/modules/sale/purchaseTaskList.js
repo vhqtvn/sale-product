@@ -20,7 +20,8 @@ $(function(){
             		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
             		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
             	}
-            	html.push( getImage("print.gif","打印","print-product") ) ;
+            	html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;&nbsp;&nbsp;") ;
+            	html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
             	//html.push('<a href="#" class="print-product" val="'+val+'">打印</a>') ;
             	return html.join("") ;
             },permission:function(){
@@ -57,6 +58,13 @@ $(function(){
 					var val = record.ID ;
 					openCenterWindow(contextPath+"/page/forward/Sale.purchaseTaskPrint/"+val,1000,700) ;
 				}
+			}) ;
+			 
+			 $(".print-inproduct").bind("click",function(event){
+				 event.stopPropagation() ;
+				 var record = $(this).parents("tr:first").data("record");
+					var val = record.ID ;
+					openCenterWindow(contextPath+"/page/forward/Sale.purchaseInPrint/"+val,1000,700) ;
 			}) ;
 			 
 			 $(".btn-select-product").click(function(){

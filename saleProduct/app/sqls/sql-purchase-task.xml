@@ -112,6 +112,36 @@
 	]]>
     </entry>
     
+    <!-- 获取入库完成的 -->
+    <entry key="sql_purchase_task_productInedForPrint">
+		SELECT DISTINCT  
+			sppd.* ,
+			srp.name as TITLE,
+			srp.IMAGE_URL,
+			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
+			(select CONTACTOR from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_CONTACTOR,
+			(select MOBILE from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_PHONE,
+			(select name from sc_user where login_id = sppd.executor ) as EXECUTOR_NAME,
+			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM,
+			(select su.name from sc_purchase_plan_details_track sppdt , sc_user su
+				 where sppdt.PD_ID =sppd.ID and sppdt.STATUS = 60
+				 and sppdt.creator = su.login_id
+				  limit 0,1  ) as WARHOUSE_USERNAME
+		FROM 
+		sc_purchase_task_products sptp,
+		sc_purchase_plan_details sppd
+		left join sc_real_product srp
+		on sppd.SKU = srp.real_sku
+		WHERE 1=1 
+		    and sptp.product_id = sppd.id
+		    and sptp.task_id = '{@#taskId#}'
+			and sppd.executor = '{@#Evn.loginId#}'
+			and sppd.warehouse_time is not null
+			and sppd.status > 60
+			and sppd.print_time is null
+			and ( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) > 0
+   </entry>
+    
     <entry key="sql_purchase_task_productsForPrint">
 		SELECT DISTINCT  
 			sppd.* ,

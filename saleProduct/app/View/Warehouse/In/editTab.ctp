@@ -48,6 +48,11 @@
 		openCenterWindow(contextPath+"/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
 	}
 
+
+	function printWarehouseIn(){
+		openCenterWindow(contextPath+"/page/forward/Warehouse.In.processForPrint/"+inId,860,630) ;
+	}
+	
 	function printBox(){
 		window.location.href = contextPath+"/excel/box/"+inId ;
 	}
@@ -106,8 +111,9 @@
 		},
 		{status:70,label:"入库完成"
 			,actions:[
-{label:"导出装箱单",action:function(){ printBox();} },
-{label:"导出发票",action:function(){ printInvoice();} },
+						{label:"导出装箱单",action:function(){ printBox();} },
+						{label:"导出发票",action:function(){ printInvoice();} },
+						//{label:"打印入库单",action:function(){ printWarehouseIn();} },
 						{label:"查看入库货品",action:function(){ productInWarehouse();} } 
 			]
 		}
