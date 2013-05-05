@@ -93,6 +93,12 @@
 	       }) ;
 		});
    </script>
+   
+   <style>
+   	.span1_5{
+		width:100px;
+   	}
+   </style>
 
 </head>
 <body>
@@ -103,15 +109,19 @@
 					<tr>
 						<th>名称：</th>
 						<td>
-							<input type="text" id="name" class="span2"/>
+							<input type="text" id="name" class="span1_5"/>
 						</td>
 						<th>SKU：</th>
 						<td>
-							<input type="text" id="sku" class="span2"/>
+							<input type="text" id="sku" class="span1_5"/>
+						</td>
+						<th>ASIN：</th>
+						<td>
+							<input type="text" id="asin" class="span1_5"/>
 						</td>
 						<th>仓库：</th>
 						<td>
-						    <select class="span2"  id="warehouseId">
+						    <select class="span1_5"  id="warehouseId">
 						    	<option value="">全部</option>
 						   <?php 
 						     // sql_warehouse_lists

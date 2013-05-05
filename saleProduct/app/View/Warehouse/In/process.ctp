@@ -178,8 +178,11 @@
 			<?php
 				$boxId = $box['ID'] ;
 				$boxProducts = $SqlUtils->exeSql("sql_warehouse_box_products",array('boxId'=>$boxId )) ;
+
 				foreach($boxProducts as $product){
 					$product = $SqlUtils->formatObject($product) ;
+					
+					//debug(  $product) ;
 					$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
 				?>
 					<tr>
@@ -192,7 +195,11 @@
 								<div class="pd"><div class='pd-label'>跟踪码：</div><div class='pd-value'><?php echo $product['PRODUCT_TRACKCODE'] ?></div></div>
 								<div class="pd"><div class='pd-label'>供货时间：</div><div class='pd-value'><?php echo $product['DELIVERY_TIME'] ?></div></div>
 						</td>
-						<td style="width:25%;"><?php echo $product['P_MEMO'] ?></td>
+						<td style="width:25%;">
+						<?php echo $product['P_MEMO'] ?>
+						<hr style="margin:2px;"/>
+						<?php echo $product['MEMO'] ?>
+						</td>
 						<td style="width:20%;">
 							<div class="qt">
 								<div class='qt-label'>数量：</div>

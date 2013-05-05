@@ -62,7 +62,7 @@
 					}},
 				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
+		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true},
 		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
 		           		if( record.LAST_ASSIGN_TIME &&( val >= record.LAST_ASSIGN_TIME ) ){
 							return '<img title="已经分配" src="/'+fileContextPath+'/app/webroot/img/success.gif">';
@@ -70,12 +70,12 @@
 		           		}
 		           		return "<img title='未分配' src='/"+fileContextPath+"/app/webroot/img/error.gif'>"  ;
 		           	}},
-		           	{align:"center",key:"QUANTITY",label:"总",group:"库存",width:"5%" },
-		        	{align:"center",key:"COMMON_QUANTITY",label:"普通",group:"库存",width:"5%" },
-		        	{align:"center",key:"FBA_QUANTITY",label:"FBA",group:"库存",width:"5%" },
-		           	{align:"center",key:"SECURITY_QUANTITY",label:"安全",group:"库存",width:"5%" },
-		           	{align:"center",key:"LOCK_QUANTITY",label:"锁定",group:"库存",width:"5%" },
-		           	{align:"center",key:"ASSIGN_QUANTITY",label:"可分配",group:"库存",width:"5%",format:function(val, record){
+		           	{align:"center",key:"QUANTITY",label:"总",group:"库存",width:"5%",sort:true },
+		        	{align:"center",key:"COMMON_QUANTITY",label:"普通",group:"库存",width:"5%" ,sort:true},
+		        	{align:"center",key:"FBA_QUANTITY",label:"FBA",group:"库存",width:"5%" ,sort:true},
+		           	{align:"center",key:"SECURITY_QUANTITY",label:"安全",group:"库存",width:"5%",sort:true },
+		           	{align:"center",key:"LOCK_QUANTITY",label:"锁定",group:"库存",width:"5%",sort:true },
+		           	{align:"center",key:"ASSIGN_QUANTITY",sort:true,label:"可分配",group:"库存",width:"5%",format:function(val, record){
 		           		var quantity = record.QUANTITY - record.SECURITY_QUANTITY - record.LOCK_QUANTITY ;
 		           		return quantity ;
 		           	},render:function(record){

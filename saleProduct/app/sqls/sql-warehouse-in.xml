@@ -202,6 +202,7 @@
 					SELECT 
 					       s1.REAL_PRODUCT_ID  ,
 					       s1.INVENTORY_TYPE,
+					       s1.MEMO,
 					       SUM(s1.quantity) AS QUANTITY,
 					       SUM(s1.gen_quantity) AS GEN_QUANTITY,
 					       SUM(s1.waste_quantity) AS WASTE_QUANTITY,
