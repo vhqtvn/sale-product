@@ -2,6 +2,13 @@
 class SaleProduct extends AppModel {
 	var $useTable = "sc_product_flow" ;
 	
+	function getChartForSku($params){
+		$sku = $params['sku'] ;
+		$records = $this->exeSqlWithFormat("sql_chart_realSku_quantity", array('sku'=>$sku)) ;
+		
+		return $records ;
+	}
+	
 	function giveup($id,$type){
 		if( $type == 1 ){//作废
 			$sql = "update sc_real_product set status='0' where id = '$id'" ;

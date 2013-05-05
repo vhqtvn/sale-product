@@ -228,6 +228,21 @@ class AppModel extends Model {
 			return $return ;
 		}
 		
+		public function exeSqlWithFormat($sql , $query){
+			$sql = $this->getDbSql($sql) ;
+			$sql = $this->getSql($sql,$query) ;
+			//	echo $sql ;
+			$records = $this->query($sql) ;
+			$items = array() ;
+			if(!empty($records)){
+				foreach( $records as  $re){
+					$re = $this->formatObject($re) ;
+					$items[] = $re ;
+				}
+			}
+			return $items ;
+		}
+		
 		public function exeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
 			$sql = $this->getSql($sql,$query) ;

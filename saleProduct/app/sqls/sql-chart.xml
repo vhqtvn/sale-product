@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+
+   
+    <entry key="sql_chart_realSku_quantity">
+ 			SELECT DATE_FORMAT( so.purchase_date, "%Y-%m" ) AS P_DATE, srpr.REAL_SKU , SUM(soi.Quantity_Ordered)  AS QUANTITY, 'TOTAL' as TYPE
+				FROM sc_order_item soi , sc_order so ,sc_real_product_rel srpr
+				WHERE soi.Order_ID = so.ORDER_ID
+				AND srpr.SKU = soi.Seller_SKU
+				AND srpr.REAL_SKU = '{@#sku#}'
+				and so.purchase_date  BETWEEN DATE_SUB( DATE_FORMAT( DATE_FORMAT(NOW(),"%Y-%m-01"),"%Y-%m-01 00:00:00"),INTERVAL 12 MONTH) AND NOW()
+				GROUP BY DATE_FORMAT( so.purchase_date, "%Y-%m" ) , srpr.REAL_SKU
+				UNION ALL				
+				SELECT DATE_FORMAT( so.purchase_date, "%Y-%m" ) AS P_DATE, srpr.SKU AS REAL_SKU , SUM(soi.Quantity_Ordered)  AS QUANTITY , 'ITEM' as TYPE
+				FROM sc_order_item soi , sc_order so ,sc_real_product_rel srpr
+				WHERE soi.Order_ID = so.ORDER_ID
+				AND srpr.SKU = soi.Seller_SKU
+				AND srpr.REAL_SKU = '{@#sku#}'
+				AND so.purchase_date  BETWEEN DATE_SUB( DATE_FORMAT( DATE_FORMAT(NOW(),"%Y-%m-01"),"%Y-%m-01 00:00:00"),INTERVAL 12 MONTH) AND NOW()
+				GROUP BY DATE_FORMAT( so.purchase_date, "%Y-%m" ) , srpr.SKU
+   </entry>
+   
+   
+</properties>

@@ -300,7 +300,11 @@
 								<div class="product-title"><?php echo $product['NAME'] ?></div>
 								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><?php echo $product['SKU'] ?></div></div>
 						</td>
-						<td style="width:25%;"><?php echo $product['P_MEMO'] ?></td>
+						<td style="width:25%;">
+						<?php echo $product['P_MEMO'] ?><br/>
+						<hr style="margin:2px;"/>
+						<?php echo $product['MEMO'] ?>
+						</td>
 						<td style="width:20%;">
 							<div class="qt">
 								<div class='qt-label'>合格数量：</div>
