@@ -2,6 +2,22 @@
 class ProductDev extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
+	//迁移
+	function taskProductTransfer($params){
+		//get source task
+		$sourceTask = $this->getObject("select * from sc_product_filter where id = '{@#taskId#}'", $params) ;
+		$targetTask = $this->getObject("select * from sc_product_filter where id = '{@#toTaskId#}'", $params) ;
+		
+		$this->exeSql("update sc_product_dev set task_id = '{@#toTaskId#}' where task_id = '{@#taskId#}' and asin = '{@#asin#}'", $params) ;
+		//处理轨迹迁移
+		$this->exeSql("update sc_product_dev_track set task_id = '{@#toTaskId#}' where task_id = '{@#taskId#}' and asin = '{@#asin#}'", $params) ;
+		
+		$params['TASK_ID'] = $params['toTaskId'] ;
+		$params['ASIN'] = $params['asin'] ;
+		$params['trackMemo'] = "从任务【".$sourceTask['CODE']."】迁移到任务【".$targetTask['CODE']."】" ;
+		$this->exeSql("sql_pdev_track_insert", $params) ;
+	}
+	
 	function addAsinToTask($params){
 		$params['FLOW_STATUS'] = 10 ;//默认状态
 		$asins = $params['asins'] ;

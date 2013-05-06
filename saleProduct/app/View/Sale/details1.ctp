@@ -79,7 +79,7 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		
-		$productDev = $SqlUtils->getObject("sql_pdev_findByAsin",array('ASIN'=>$asin)) ;
+		$productDev = $SqlUtils->getObject("sql_pdev_findByAsinAndTaskId",array('ASIN'=>$asin,'TASK_ID'=>$taskId)) ;
 		
 		$pdStatus = 10 ;
 		$devStatus = 0 ;
@@ -88,7 +88,7 @@
 			$devStatus = $productDev['DEV_STATUS'] ;
 		}
 		
-		$loginId = $user['LOGIN_ID'] ;
+		$loginId 						= $user['LOGIN_ID'] ;
 		$PD_FLAG 					= $security->hasPermission($loginId , 'PD_FLAG') ;
 		$PD_ANAYS 				= $security->hasPermission($loginId , 'PD_ANAYS') ;
 		$PD_CPJLSP 				= $security->hasPermission($loginId , 'PD_CPJLSP') ;
@@ -101,6 +101,8 @@
 		$PD_REEDIT_YX			= $security->hasPermission($loginId , 'PD_REEDIT_YX') ;
 		$PD_REEDIT_BASE 		= $security->hasPermission($loginId , 'PD_REEDIT_BASE') ;
 		$PD_INQUIRY				=  $security->hasPermission($loginId , 'PD_INQUIRY') ;//询价权限
+		
+		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
 		
 		$Config  = ClassRegistry::init("Config") ;
 		$websites = $Config->getAmazonConfig("PRODUCT_DEV_WEBSITE") ;
@@ -250,7 +252,10 @@
 </head>
 <body style="overflow-y:auto;padding:2px;">
 	<div  class="flow-bar">
-		<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息获取</button>
+		<button class="base-gather btn"  style="position:absolute;left:2px;top:15px;">信息获取</button>
+		<?php if($PD_TRANSFER){?>
+		<button class="transfer-action btn"  style="position:absolute;left:80px;top:15px;">转交</button>
+		<?php }?>
 		<center>
 			<table class="flow-table"></table>
 			<div class="flow-action"></div>

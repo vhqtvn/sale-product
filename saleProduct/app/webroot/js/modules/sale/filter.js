@@ -5,11 +5,14 @@ var currentId = '' ;
 					{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
 						var html = [] ;
 						if( record.TOTAL <=0 ){
-							if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-action") ) ;
-							html.push( getImage("edit.png","修改","edit-action") ) ;
-							//html.push( "<a href='#' class='delete-action'  val='"+val+"'>删除</a>&nbsp;" );
+							if( $loginId == record.CREATOR || $PDT_UPDATE ) html.push( getImage("delete.gif","删除","delete-action") ) ;
 						}
-						html.push( getImage("pkg.gif","添加ASIN","add-asin") ) ;
+						if( $loginId == record.CREATOR || $PDT_UPDATE ){
+							html.push( getImage("edit.png","修改","edit-action") ) ;
+						}
+						
+						if( $loginId == record.CREATOR || $PDT_UPDATE )
+							html.push( getImage("pkg.gif","添加ASIN","add-asin") ) ;
 						
 						return html.join("") ;
 					}},
@@ -66,7 +69,7 @@ var currentId = '' ;
 				 rowClick:function(rowIndex , rowData){
 				 	var id = rowData.ID  ;
 				 	currentId = id ;
-				 	$(".grid-content-details").llygrid("reload",{taskId:currentId}) ;
+				 	$(".grid-content-details").llygrid("reload",{taskId:currentId,devStatus:'1,2'}) ;
 				 },loadAfter : function(){
 					 $(".fs-action").bind("click",function(event){
 						 	var row =  $(this).parents("tr:first").data("record") ;
@@ -127,10 +130,11 @@ var currentId = '' ;
 					{align:"center",key:"TASK_ID",label:"操作",width:"5%",format:function(val,record){
 							var html = [] ;
 							if(record.FLOW_STATUS <= 10){
-								if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-tp-action") ) ;
+								//if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-tp-action") ) ;
 							}
 							
 							html.push( getImage("edit.png","处理","process-action") ) ;
+							//html.push( getImage("forum.gif","转交","transfer-action") ) ;
 							
 							return html.join("") ;
 						//var status = record.STATUS ;
@@ -170,6 +174,8 @@ var currentId = '' ;
 								$(".grid-content-details").llygrid("reload",{},true) ;
 							}) ;
 						}) ;
+					 	
+					 	
 					 	
 					 	$(".delete-tp-action").click(function(){
 					 		var row =  $(this).parents("tr:first").data("record") ;

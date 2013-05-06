@@ -170,6 +170,7 @@ UPDATE sc_product_dev
      
      <entry key="sql_pdev_plan_listForLast10">
 			SELECT spdp.* ,
+					spdp.name as TEXT,
 					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spdp.creator ) AS USERNAME 
 			  FROM sc_product_dev_plan spdp
 			  where 1=1
@@ -242,7 +243,36 @@ UPDATE sc_product_dev
 				ID = '{@#id#}'
      </entry>
    
-   
+   <entry key="sql_pdev_filter_forTransfer">
+	SELECT sc_product_filter.* ,
+			spdp.CODE as PLAN_CODE,
+			spdp.NAME as PLAN_NAME,
+			spdp.START_TIME,
+			spdp.END_TIME,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status =10 ) AS STATUS10,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 15 ) AS  STATUS15,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 20) AS  STATUS20,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 30 ) AS  STATUS30,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 40 ) AS  STATUS40,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 50 ) AS  STATUS50,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 60 ) AS  STATUS60,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 70 ) AS  STATUS70,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 80 ) AS  STATUS80,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME
+	  FROM sc_product_filter  , sc_product_dev_plan spdp
+	  where 1=1
+	    and plan_id = spdp.id
+	  	and plan_id is not null
+	  	{@ and sc_product_filter.name = '#NAME#'}
+	  	{@ and sc_product_filter.CODE = '#CODE#'}
+	  	{@ and spdp.CODE = '#PLAN_CODE#'}
+	  	{@ and spdp.NAME = '#PLAN_NAME#'}
+	  	{@ and spdp.id = '#planId#'}
+	  ORDER BY sc_product_filter.create_time desc
+   </entry>
    
       <entry key="sql_pdev_filter">
 	SELECT sc_product_filter.* ,

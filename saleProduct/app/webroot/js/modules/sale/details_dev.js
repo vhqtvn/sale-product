@@ -8,6 +8,61 @@
  			$(this).parents("table:first").find(".input").removeAttr("disabled") ;
  		}) ;
  		
+ 		
+ 		var taskSelect = {
+				title:'开发任务选择界面',
+				defaults:[],//默认值
+				key:{value:'ID',label:'NAME'},//对应value和label的key
+				multi:false ,
+				width:800,
+				height:600,
+				grid:{
+					title:"开发任务",
+					params:{
+						sqlId:"sql_pdev_filter_forTransfer"
+					},
+					ds:{type:"url",content:contextPath+"/grid/query"},
+					pagesize:10,
+					columns:[//显示列
+						{align:"center",key:"CODE",label:"任务编码",sort:true,width:"30%",query:true},
+						{align:"center",key:"NAME",label:"任务名称",sort:true,width:"40%",query:true}
+					]
+				},
+				tree:{
+					title:"开发计划",
+					method : 'post',
+					asyn : true, //异步
+					gridKey:"planId",
+					rootId  : 'root',
+					rootText : '开发计划',
+					CommandName : 'sqlId:sql_pdev_plan_listForLast10',
+					recordFormat:true,
+					params : {
+					}
+				}
+		   } ;
+		   
+		$(".transfer-action").listselectdialog( taskSelect,function(){
+			//taskId asin
+			var args = jQuery.dialogReturnValue() ;
+			var _taskId = args.value ;//
+			var label = args.label ;
+			
+			if( _taskId && _taskId.length > 0 ){
+				if(window.confirm("确认迁移?")){
+					$.dataservice("model:ProductDev.taskProductTransfer",{taskId:taskId,asin:asin,toTaskId:_taskId[0]},function(result){
+						window.close() ;
+					});
+				}
+			}
+			//var selectReocrds = args.selectReocrds ;
+			
+			
+			
+			return false;
+		}) ;
+
+ 		
  		var productGridSelect = {
 				title:'货品选择界面',
 				defaults:[],//默认值

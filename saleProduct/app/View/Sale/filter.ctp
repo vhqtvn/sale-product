@@ -23,15 +23,13 @@
 		$user = $this->Session->read("product.sale.user") ;
 		$loginId = $user["LOGIN_ID"] ;
 		
-		$ProductSpecialistProcess = $security->hasPermission($loginId , 'ProductSpecialistProcess') ;
-		$ProductManagerProcess = $security->hasPermission($loginId , 'ProductManagerProcess') ;
-		$GeneralManagerProcess = $security->hasPermission($loginId , 'GeneralManagerProcess') ;
+		$PDT_CREATE = $security->hasPermission($loginId , 'PDT_CREATE') ;
+		$PDT_UPDATE = $security->hasPermission($loginId , 'PDT_UPDATE') ;
 	?>
   
    <script type="text/javascript">
-    var $ProductSpecialistProcess = <?php echo $ProductSpecialistProcess?'true':'false' ;?> ;
-	var $ProductManagerProcess = <?php echo $ProductManagerProcess?'true':'false' ;?> ;
-	var $GeneralManagerProcess  = <?php echo $GeneralManagerProcess?'true':'false' ;?> ;
+    var $PDT_CREATE = <?php echo $PDT_CREATE?'true':'false' ;?> ;
+	var $PDT_UPDATE = <?php echo $PDT_UPDATE?'true':'false' ;?> ;
 	var $loginId = '<?php echo $loginId;?>' ;
    </script>
 
@@ -49,7 +47,9 @@
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-task',qc:'.toolbar'}">查询</button>
+					<?php if( $PDT_CREATE ){ ?>
 					<button class="create-task btn">创建开发任务</button>
+					<?php }?>
 				</td>
 			</tr>						
 		</table>					
