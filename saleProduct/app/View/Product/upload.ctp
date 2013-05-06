@@ -85,9 +85,9 @@
 		           	{align:"center",key:"UPLOAD_TIME",label:"上传时间",width:"20%"},
 		           	{align:"center",key:"USERNAME",label:"上传者",width:"10%"},
 		           		{align:"center",key:"TOTAL",label:"产品总数",width:"10%"},
-					{align:"center",key:"ID",label:"采集操作",width:"25%",format:function(val,record){
+					{align:"center",key:"ID",label:"获取操作",width:"25%",format:function(val,record){
 						var html = [] ;
-					html.push("<a href='#' class='gather-action' val='"+val+"'>信息采集</a>&nbsp;&nbsp;") ;
+					html.push("<a href='#' class='gather-action' val='"+val+"'>信息获取</a>&nbsp;&nbsp;") ;
 					return html.join("") ;
 					}}
 		         ],

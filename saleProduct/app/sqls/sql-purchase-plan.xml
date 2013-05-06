@@ -93,6 +93,7 @@
 			UPDATE sc_purchase_supplier_inquiry 
 				SET
 				weight = '{@#weight#}' , 
+				{@ SUPPLIER_ID = '#supplierId#',}
 				cycle = '{@#cycle#}' , 
 				package = '{@#package#}' , 
 				payment = '{@#payment#}' , 

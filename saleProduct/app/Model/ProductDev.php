@@ -14,6 +14,11 @@ class ProductDev extends AppModel {
 		}
 	}
 	
+	function deleteTaskProduct($params){
+		$id = $params['id'] ;
+		$this->exeSql("delete from sc_product_dev where task_id = '{@#taskId#}' and asin = '{@#asin#}'", $params) ;
+	}
+	
 	function deleteTask($params){
 		$taskId = $params['taskId'] ;
 		$this->exeSql("delete from sc_product_filter where id = '{@#taskId#}'", $params) ;
@@ -36,6 +41,16 @@ class ProductDev extends AppModel {
 		}
 		//保存轨迹
 		$this->exeSql("sql_pdev_track_insert", $params) ;
+	}
+	
+	function saveTask($query){
+		if(empty($query['id'])){
+			$id = "F_".date('U') ;
+			$query['id'] = $id ;
+			$this->exeSql("sql_pdev_task_insert", $query) ;
+		}else{
+			$this->exeSql("sql_pdev_task_update", $query) ;
+		}
 	}
 	
 	function saveTaskResult($query=null) {

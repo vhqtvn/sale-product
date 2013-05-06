@@ -15,7 +15,7 @@ class GatherUploadController extends AppController {
 	public $taskId = null ;
 	
 	/**
-	 * 通过商家ID采集商品
+	 * 通过商家ID获取商品
 	 */
     public function sellerAsins($id){
     	$status = $this->Tasking->status("gather_seller",$id,"") ;
@@ -117,7 +117,7 @@ class GatherUploadController extends AppController {
 	}
 		  
    /**
-    * 采集基本信息
+    * 获取基本信息
     */ 
     public function taskBaseInfo($id=null) {
 		$array = $this->GatherService->listTaskAsins( $id ) ;
@@ -133,7 +133,7 @@ class GatherUploadController extends AppController {
 	} 
 	
    /**
-    * 采集竞争信息
+    * 获取竞争信息
     */
     public function taskCompetition($id){
     	//获取商家产品asin
@@ -150,7 +150,7 @@ class GatherUploadController extends AppController {
     }
     
     /**
-     * 采集FBA竞争信息
+     * 获取FBA竞争信息
      */
     public function taskFba($id){
     	$array = $this->GatherService->listTaskAsins( $id ) ;

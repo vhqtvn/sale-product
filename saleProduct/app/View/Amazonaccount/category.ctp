@@ -189,8 +189,8 @@
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>
 				
-				<label>采集类别</label>
-				<input type="radio" name="gatherLevel" value="" />不采集
+				<label>获取类别</label>
+				<input type="radio" name="gatherLevel" value="" />不获取
 				<input type="radio" name="gatherLevel" value="A" />A
 				<input type="radio" name="gatherLevel" value="B" />B
 				<input type="radio" name="gatherLevel" value="C" />C
@@ -234,8 +234,8 @@
 				
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>
-				<label>采集类别</label>
-				<input type="radio" name="gatherLevel" value="" />不采集
+				<label>获取类别</label>
+				<input type="radio" name="gatherLevel" value="" />不获取
 				<input type="radio" name="gatherLevel" value="A" />A
 				<input type="radio" name="gatherLevel" value="B" />B
 				<input type="radio" name="gatherLevel" value="C" />C

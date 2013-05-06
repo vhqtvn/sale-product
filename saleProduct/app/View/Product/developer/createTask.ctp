@@ -27,9 +27,17 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		
-		
 		$loginId   = $user['LOGIN_ID'] ;
-		$result = null ;
+		
+		$taskId = $params['arg1'] ;
+		$result = $SqlUtils->getObject("sql_pdev_task_getById",array('id'=>$taskId)) ;
+		
+		if( empty($result['CODE']) ){
+			$defaultCode = $SqlUtils->getUserDefaultCode("PDT")  ;
+		}else{
+			$defaultCode = $result['CODE'] ;
+		}
+		
 	?>
 	
 	<script>
@@ -66,19 +74,28 @@
 							<caption>产品开发任务</caption>
 							<tbody>	
 								<tr>
+									<th>任务编码：</th><td colspan=3><input data-validator="required" type="text" id="code" readonly
+										value="<?php echo $defaultCode;?>"/></td>
+								</tr>
+								<tr>
 									<th>任务名称：</th><td colspan=3><input data-validator="required" type="text" id="name"
 										value="<?php echo $result['NAME'];?>"/></td>
 								</tr>
 								<tr>
 									<th>开发计划：</th>
 									<td  colspan=3>
-										<select id="planId" data-validator="required">
+										<select id="planId" data-validator="required"  <?php if(!empty($result['PLAN_ID'] )){ echo "disabled" ; } ?>>
 											<option value=''>选择开发计划</option>
 										<?php 
 											$plans = $SqlUtils->exeSql("sql_pdev_plan_listForLast10",array()) ;//最近10个采购计划
 											foreach($plans as $plan){
 												$plan = $SqlUtils->formatObject($plan) ;
-												echo "<option value='".$plan['ID']."'>".$plan['NAME']."</option>" ;
+												
+												$s = "" ;
+												if( $plan['ID'] == $result['PLAN_ID'] ){
+													$s = "selected" ;
+												}
+												echo "<option value='".$plan['ID']."' $s>".$plan['NAME']."</option>" ;
 											}
 										?>
 										</select>

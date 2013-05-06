@@ -62,7 +62,7 @@
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"8%"},
 				    {align:"center",key:"ID",label:"操作",width:"20%",format:function(val,record){
 						var html = [] ;
-						html.push("<a href='#' class='gather-action btn' val='"+val+"'>产品采集</a>&nbsp;") ;
+						html.push("<a href='#' class='gather-action btn' val='"+val+"'>产品获取</a>&nbsp;") ;
 						if(record.TOTAL <= 0){
 							html.push("<a href='#' class='delete-action btn' val='"+val+"'>删除</a>") ;
 						}
@@ -155,8 +155,8 @@
 </head>
 <body>
 	<div class="alert alert-info">
-		从商家采集：
-		第一步，注册商家（地址格式如：http://www.amazon.com/s/?me=A1L3WBCG312F8S）；第二步，采集
+		从商家获取：
+		第一步，注册商家（地址格式如：http://www.amazon.com/s/?me=A1L3WBCG312F8S）；第二步，获取
 	</div>
 
 	<button class="register btn btn-primary">注册商家</button>

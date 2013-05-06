@@ -7,7 +7,7 @@ App :: import('Vendor', 'Amazon');
 
 
 /**
- * 单个产品采集
+ * 单个产品获取
  */
 class GatherProductController extends AppController {
     public $helpers = array (

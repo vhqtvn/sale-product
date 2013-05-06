@@ -9,7 +9,7 @@ App :: import('Vendor', 'Amazon');
 
 
 /**
- * 按照采集类别进行采集
+ * 按照获取类别进行获取
  */
 class GatherLevelController extends AppController {
     public $helpers = array (
@@ -21,7 +21,7 @@ class GatherLevelController extends AppController {
 	public $taskId = null ;
 	
 	/**
-	 * 执行采集分类采集
+	 * 执行获取分类获取
 	 */
 	public function execute( $accountId , $level ){
 		$status = $this->Tasking->status("gather_level",$level,$accountId) ;
@@ -33,13 +33,13 @@ class GatherLevelController extends AppController {
 		}
 		
 		try{
-			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集基本信息..") ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始获取基本信息..") ;
 			$this->baseInfo( $accountId , $level ) ;
-			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集竞争信息..") ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始获取竞争信息..") ;
 			$this->competition( $accountId , $level  ) ;
-			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集FBA信息..") ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始获取FBA信息..") ;
 			$this->fba( $accountId , $level ) ;
-			$this->Tasking->setStep("gather_level",$level,$accountId,"开始采集价格信息..") ;
+			$this->Tasking->setStep("gather_level",$level,$accountId,"开始获取价格信息..") ;
 			$this->price( $accountId , $level  ) ;
 			$this->Tasking->setStep("gather_level",$level,$accountId,"开始执行竞价营销..") ;
 			$this->marketing($accountId , $level ) ;
@@ -59,7 +59,7 @@ class GatherLevelController extends AppController {
 		
 			$asinArray =  $this->Amazonaccount->getAccountProductsForLevel($accountId,$level) ;
 			
-			//开始采集产品信息
+			//开始获取产品信息
 			$index = 0 ;
 			foreach($asinArray as $_asin){
 				
@@ -74,7 +74,7 @@ class GatherLevelController extends AppController {
 				//echo $asin.'<br>' ;
 				$this->GatherData->asinInfo($asin,$accountId,$index,$this->taskId) ;
 			} 
-			//采集产品信息结束
+			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
 			try{
@@ -115,7 +115,7 @@ class GatherLevelController extends AppController {
 	 * fba竞争信息
 	 */
 	public function fba($accountId , $level ){
-		//更新采集状态
+		//更新获取状态
 		try{
 			$array =  $this->Amazonaccount->getAccountProductsForLevel($accountId,$level) ;
 			$index = 0 ;
@@ -147,7 +147,7 @@ class GatherLevelController extends AppController {
 		try{
 			$asinArray =  $this->Amazonaccount->getAccountProductsForLevel($accountId,$level) ;
 			
-			//开始采集产品信息
+			//开始获取产品信息
 			$index = 0 ;
 			foreach($asinArray as $_asin){
 				
@@ -166,7 +166,7 @@ class GatherLevelController extends AppController {
 				$this->GatherData->asinPrice($asin,$account['CODE'],$condition,$accountId ,$index,$this->taskId) ;
 				
 			} 
-			//采集产品信息结束
+			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
 			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );

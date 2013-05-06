@@ -15,12 +15,12 @@ App :: import('Vendor', 'simple_html_dom');
 App :: import('Vendor', 'Amazon');
 
 /**
- * 数据采集执行PHP
+ * 数据获取执行PHP
  */
 class GatherData extends AppModel {
 	var $useTable = "sc_product_flow" ;
 	/**
-	 * 采集ASIN基本信息
+	 * 获取ASIN基本信息
 	 */
 	public function asinInfo($asin,$id=null,$index = null,$logId=null){
 		$utils = new Utils() ;
@@ -170,7 +170,7 @@ class GatherData extends AppModel {
 	}
 	
 	/**
-	 * 采集ASIN竞争信息
+	 * 获取ASIN竞争信息
 	 */
 	public function asinCompetition($asin ,$id = null,$index=null,$logId = null ){
 		$utils = new Utils() ;
@@ -227,7 +227,7 @@ class GatherData extends AppModel {
 	}
 	
 	/**
-	 * 采集ASIN FBA竞争信息
+	 * 获取ASIN FBA竞争信息
 	 */
 	public function asinFbas($asin ,$id = null ,$index=null,$logId = null){
 		$utils = new Utils() ;
@@ -276,7 +276,7 @@ class GatherData extends AppModel {
 	}	
 	
 	/**
-	 * 采集ASIN价格信息
+	 * 获取ASIN价格信息
 	 */
 	public function asinPrice($asin,$code,$condition,$id=null,$index = null,$logId=null) {
 		$utils = new Utils() ;
@@ -334,10 +334,10 @@ class GatherData extends AppModel {
 	}
 
 	/////////////////////////////////////////////////////
-	///////////////////////采集产品///////////////////////
+	///////////////////////获取产品///////////////////////
 	/////////////////////////////////////////////////////
 	/**
-	 * 通过URL采集产品
+	 * 通过URL获取产品
 	 */
 	public function sellerAsins($id,$logId=null){
 		$utils = new Utils() ;

@@ -27,7 +27,7 @@
 			tabs:[
 				{label:'产品基本信息同步（从账户同步）',url:contextPath+'/amazonaccount/asynPage/common/<?php echo $accountId?>',iframe:true},
 				{label:'产品数据同步（从账户同步）',url:contextPath+'/amazonaccount/asynPage/active/<?php echo $accountId?>',iframe:true,id:"testId"},
-				{label:'产品数据采集',url:contextPath+'/amazonaccount/gatherPage/<?php echo $accountId?>',iframe:true,id:"testId"}
+				{label:'产品数据获取',url:contextPath+'/amazonaccount/gatherPage/<?php echo $accountId?>',iframe:true,id:"testId"}
 			] ,
 			height:'500px'
 		} ) ;

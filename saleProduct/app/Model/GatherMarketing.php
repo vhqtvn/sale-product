@@ -5,7 +5,7 @@ App::import('Model', 'Product') ;
 App::import('Model', 'Config') ;
 
 /**
- * 采集营销
+ * 获取营销
  */
 class GatherMarketing extends AppModel {
 	var $useTable = "sc_product_cost" ;

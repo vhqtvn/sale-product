@@ -265,7 +265,7 @@ class GatherService extends AppModel {
 	 }
 
 	 /**
-	  * 更新采集到的价格
+	  * 更新获取到的价格
 	  */
 	 function updateAmazonProductShipping($asin,$id,$records){
 		$renderType = "" ;
@@ -334,7 +334,7 @@ class GatherService extends AppModel {
 	}
 	
 	/**
-	 * 保存上传或通过URL采集的产品
+	 * 保存上传或通过URL获取的产品
 	 */
 	function saveGatherAsin($id ,$asin){
 		$sql = "insert into sc_gather_asin(task_id,asin) values('".$id."','".$asin."' )" ;

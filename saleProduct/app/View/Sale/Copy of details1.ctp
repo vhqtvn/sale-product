@@ -229,7 +229,7 @@
 		</center>
 	</div>
 
-	<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息采集</button>
+	<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息获取</button>
 	
 	<div id="details_tab" style="border:0px;">
 	</div>	

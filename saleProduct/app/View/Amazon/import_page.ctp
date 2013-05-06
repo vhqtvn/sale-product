@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>产品采集操作</title>
+    <title>产品获取操作</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 

@@ -1,19 +1,23 @@
 var currentId = '' ;
 	$(function(){
-		$(".message,.loading").hide() ;
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
 						var html = [] ;
 						if( record.TOTAL <=0 ){
-							html.push( getImage("delete.gif","删除","delete-action") ) ;
+							if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-action") ) ;
+							html.push( getImage("edit.png","修改","edit-action") ) ;
 							//html.push( "<a href='#' class='delete-action'  val='"+val+"'>删除</a>&nbsp;" );
 						}
 						html.push( getImage("pkg.gif","添加ASIN","add-asin") ) ;
 						
 						return html.join("") ;
 					}},
-		           	{align:"center",key:"NAME",label:"任务名称",width:"20%",forzen:false,align:"left"},
+					{align:"center",key:"CODE",label:"任务编码",width:"15%",forzen:false,align:"left"},
+		           	{align:"center",key:"NAME",label:"任务名称",width:"15%",forzen:false,align:"left"},
+		           	{align:"center",key:"PLAN_NAME",label:"所属计划",width:"15%",forzen:false,align:"left"},
+		           	{align:"center",key:"START_TIME",label:"开始时间",width:"15%",forzen:false,align:"left"},
+		           	{align:"center",key:"END_TIME",label:"结束时间",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"TOTAL",label:"总产品",width:"5%"},
 		        	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"4%",format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='1'>"+(val||'0')+"</a>"
@@ -81,12 +85,32 @@ var currentId = '' ;
 						 	var row =  $(this).parents("tr:first").data("record") ;
 						    event.preventDefault() ;
 						    event.stopPropagation()  ;
-							var taskId = row.ID;
-							$.dataservice("model:ProductDev.deleteTask",{taskId:taskId},function(result){
-								$(".grid-content").llygrid("reload",{},true) ;
-							});
+						    if(window.confirm("确认删除该任务？")){
+								 var taskId = row.ID;
+									$.dataservice("model:ProductDev.deleteTask",{taskId:taskId},function(result){
+										$(".grid-content").llygrid("reload",{},true) ;
+									});
+							 }
 							return false ;
 					}) ;
+					 
+					 $(".edit-action").bind("click",function(event){
+						 	var row =  $(this).parents("tr:first").data("record") ;
+						    event.preventDefault() ;
+						    event.stopPropagation()  ;
+							var taskId = row.ID;
+							openCenterWindow(contextPath+"/page/forward/Product.developer.createTask/"+taskId,600,350,function(){
+								var params = $.dialogReturnValue()  ;
+								if(!params ) return ;
+								if(!params.code) return ;
+
+								$.dataservice("model:ProductDev.saveTask",params,function(){
+									$(".grid-content").llygrid("reload",{}) ;
+								}) ;
+							}) ;
+							return false ;
+					}) ;
+					 
 					 $(".add-asin").bind("click",function(event){
 						 var row =  $(this).parents("tr:first").data("record") ;
 						    event.preventDefault() ;
@@ -101,8 +125,16 @@ var currentId = '' ;
 			$(".grid-content-details").llygrid({
 				columns:[
 					{align:"center",key:"TASK_ID",label:"操作",width:"5%",format:function(val,record){
-						var status = record.STATUS ;
-						return "<a href='#' class='process-action' status='"+status+"' val='"+val+"' asin='"+record.ASIN+"'>处理</a>&nbsp;" ;
+							var html = [] ;
+							if(record.FLOW_STATUS <= 10){
+								if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-tp-action") ) ;
+							}
+							
+							html.push( getImage("edit.png","处理","process-action") ) ;
+							
+							return html.join("") ;
+						//var status = record.STATUS ;
+						//return "<a href='#' class='process-action' status='"+status+"' val='"+val+"' asin='"+record.ASIN+"'>处理</a>&nbsp;" ;
 					}},
 					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
 					{align:"center",key:"DEV_STATUS",label:"开发状态",width:"5%",format:{type:'json',content:{1:'自有',2:'跟卖',3:'废弃'}}},
@@ -128,17 +160,29 @@ var currentId = '' ;
 				 title:"产品列表",
 				 indexColumn: false,
 				 querys:{taskId:'----',sqlId:'sql_pdev_filter_details'},//status:$("[name='status']").val(),type:type,
-				 loadMsg:"数据加载中，请稍候......"
-			}) ;
-			
-			$(".process-action").live("click",function(){
-				var row =  $(this).parents("tr:first").data("record") ;
-				var taskId = $(this).attr("val") ;
-				var asin = $(this).attr("asin") ;
-		
-				openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin,950,650,function(){
-					$(".grid-content-details").llygrid("reload",{},true) ;
-				}) ;
+				 loadMsg:"数据加载中，请稍候......",
+				 loadAfter:function(){
+					 	$(".process-action").bind("click",function(){
+							var row =  $(this).parents("tr:first").data("record") ;
+							var taskId = row.TASK_ID ;
+							var asin = row.ASIN ;
+							openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin,950,650,function(){
+								$(".grid-content-details").llygrid("reload",{},true) ;
+							}) ;
+						}) ;
+					 	
+					 	$(".delete-tp-action").click(function(){
+					 		var row =  $(this).parents("tr:first").data("record") ;
+					 		if(window.confirm("确认删除吗？")){
+					 			var taskId = row.TASK_ID ;
+								var asin = row.ASIN ;
+					 			$.dataservice("model:ProductDev.deleteTaskProduct",{taskId:taskId,asin:asin},function(){
+						 			$(".grid-content-details").llygrid("reload",{},true) ;
+								}) ;
+					 		}
+					 		
+					 	}) ;
+				 }
 			}) ;
 			
 			$(".product-detail").live("click",function(){
@@ -165,6 +209,18 @@ var currentId = '' ;
 				$(".grid-content-details").llygrid("reload",querys) ;	
 			}) ;
 			
+			
+			$(".create-task").click(function(){
+				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask/",600,350,function(){
+					var params = $.dialogReturnValue()  ;
+					if(!params ) return ;
+					if(!params.code) return ;
+
+					$.dataservice("model:ProductDev.saveTask",params,function(){
+						$(".grid-content").llygrid("reload",{}) ;
+					}) ;
+				}) ;
+			}) ;
    	 });
    	 
    	 

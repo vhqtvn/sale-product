@@ -39,7 +39,8 @@
 		
 		$(".grid-query-button .save-result").click(function(){
 				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask",600,300,function(result){
-					var params = $.dialogReturnValue() ||{} ;
+					var params = $.dialogReturnValue()  ;
+					if(!params) return ;
 					var querys  = query.fetch() ; 
 					params.querys = querys ;
 					params.scope = $(".select-scope-input").val() ;

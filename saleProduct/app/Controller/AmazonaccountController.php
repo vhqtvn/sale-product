@@ -8,7 +8,7 @@ class AmazonaccountController extends AppController {
     var $uses = array('Amazonaccount', 'Config','Tasking','Warning','Utils');
    
     /**
-     * 数据采集管理
+     * 数据获取管理
      */
     public function gather($accountId){
     	$this->set("accountId",$accountId) ;
@@ -229,7 +229,7 @@ class AmazonaccountController extends AppController {
 	 }
 	 
 	 /**
-	  * 采集操作
+	  * 获取操作
 	  */
 	 public function gatherPage($id=null , $code = null){
 	 	$this->set('accountId', $id);
@@ -242,7 +242,7 @@ class AmazonaccountController extends AppController {
 	 }
 	 
 	 public function gatherDoPage($accountId , $categoryId = null ){
-	 	//最近的采集任务
+	 	//最近的获取任务
 	 	$lastGatherTask = $this->Tasking->getLastGatherTask("gather_category",$categoryId ,$accountId) ;
 	 	$tasking = $this->Tasking->getTasking("gather_category",$categoryId ,$accountId) ;
 	 	$this->set("tasking",$tasking) ;

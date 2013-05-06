@@ -180,7 +180,7 @@ class TaskAsynAmazonController extends AppController {
 				$account['MARKETPLACE_ID'] ,
 				$account['MERCHANT_IDENTIFIER']
 		) ;
-		if( empty($accountAsyn) ){//未开始采集
+		if( empty($accountAsyn) ){//未开始获取
 			$request = $amazon->getFBAInventory1($accountId) ;
 			if( !empty($request) ){
 				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
@@ -219,7 +219,7 @@ class TaskAsynAmazonController extends AppController {
 				$account['MERCHANT_IDENTIFIER']
 		) ;
 	
-		if( empty($accountAsyn) ){//未开始采集
+		if( empty($accountAsyn) ){//未开始获取
 		}else{
 			$requestReportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_REQUEST_ID"] ;
 			$reportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_ID"] ;
@@ -267,7 +267,7 @@ class TaskAsynAmazonController extends AppController {
 			 	$account['MARKETPLACE_ID'] ,
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
-		if( empty($accountAsyn) ){//未开始采集
+		if( empty($accountAsyn) ){//未开始获取
 			$request = $amazon->getProductReport1($accountId) ;
 			if( !empty($request) ){
 				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
@@ -309,7 +309,7 @@ class TaskAsynAmazonController extends AppController {
 			 	$account['MARKETPLACE_ID'] ,
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
-		//if( empty($accountAsyn) ){//未开始采集
+		//if( empty($accountAsyn) ){//未开始获取
 			$request = $amazon->getProductActiveReport1($accountId) ;
 			if( !empty($request) ){
 				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
@@ -349,7 +349,7 @@ class TaskAsynAmazonController extends AppController {
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
 		
-		if( empty($accountAsyn) ){//未开始采集
+		if( empty($accountAsyn) ){//未开始获取
 		}else{
 			$requestReportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_REQUEST_ID"] ;
 			$reportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_ID"] ;
@@ -381,7 +381,7 @@ class TaskAsynAmazonController extends AppController {
 	
 	public function asynAmazonActiveProducts($accountId){//同步激活的产品信息
 		$accountAsyn = $this->Amazonaccount->getAccountAsyn($accountId,"_GET_MERCHANT_LISTINGS_DATA_") ;
-		if( empty($accountAsyn) ){//未开始采集
+		if( empty($accountAsyn) ){//未开始获取
 			//do nothing
 		}else{
 			$requestReportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_REQUEST_ID"] ;
@@ -440,7 +440,7 @@ class TaskAsynAmazonController extends AppController {
 				$account['MARKETPLACE_ID'] ,
 				$account['MERCHANT_IDENTIFIER']
 		) ;
-		if( empty($accountAsyn) ){//未开始采集
+		if( empty($accountAsyn) ){//未开始获取
 			$request = $amazon->getFeedReport1($accountId, "_GET_FLAT_FILE_ORDERS_DATA_")  ;
 			if( !empty($request) ){
 				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
@@ -478,7 +478,7 @@ class TaskAsynAmazonController extends AppController {
 				$account['MERCHANT_IDENTIFIER']
 		) ;
 	
-		if( empty($accountAsyn) ){//未开始采集
+		if( empty($accountAsyn) ){//未开始获取
 		}else{
 			$requestReportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_REQUEST_ID"] ;
 			$reportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_ID"] ;

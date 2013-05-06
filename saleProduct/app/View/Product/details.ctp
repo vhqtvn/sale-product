@@ -156,7 +156,7 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						alert("采集完成");
+						alert("获取完成");
 						window.location.reload() ;
 					}
 				}); 
@@ -329,7 +329,7 @@
 			<div class="toolbar">
 				<div class="row-fluid" style="margin:5px;">
 					<div class="span2">
-						<button class="base-gather btn">信息采集</button>
+						<button class="base-gather btn">信息获取</button>
 					</div>
 					<div class="span7 toobar-btns">
 						 <button class="apply add-product-knowlege btn btn-primary">添加产品知识</button>

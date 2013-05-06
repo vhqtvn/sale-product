@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+   
+    <entry key="sql_supplier_list">
+ 			SELECT sc_supplier.* ,
+			( select sc_user.name from sc_user where sc_user.login_id = sc_supplier.creator ) as USERNAME
+			FROM sc_supplier
+			 where 1=1
+                {@  and name like '%#name#%'}
+                 {@  and name like '%#NAME#%'}
+                {@  and sc_supplier.id in (
+                   select sps.supplier_id  from sc_real_product_supplier sps where sps.real_sku = '#realSku#'
+                )}
+   </entry>
+   
 	<!-- 通过货品SKU获取到供应商 -->
     <entry key="sql_getProductSuppliersBySku">
     <![CDATA[

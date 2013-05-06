@@ -8,7 +8,7 @@ ini_set("post_max_size", "24M");
 App :: import('Vendor', 'Amazon');
 
 /**
- * 按照采集类别进行采集
+ * 按照获取类别进行获取
  */
 class GatherCategoryController extends AppController {
     public $helpers = array (
@@ -32,7 +32,7 @@ class GatherCategoryController extends AppController {
 	}
 	
 	/**
-	 * 执营销集分类采集
+	 * 执营销集分类获取
 	 */
 	public function execute( $accountId , $categoryId ){
 		
@@ -44,13 +44,13 @@ class GatherCategoryController extends AppController {
 			$this->taskId = $_id ;
 		}
 		try{
-			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集基本信息..") ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始获取基本信息..") ;
 			$this->baseInfo( $accountId , $categoryId ) ;
-			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集竞争信息..") ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始获取竞争信息..") ;
 			$this->competition( $accountId , $categoryId  ) ;
-			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集FBA信息..") ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始获取FBA信息..") ;
 			$this->fba( $accountId , $categoryId ) ;
-			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始采集价格信息..") ;
+			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始获取价格信息..") ;
 			$this->price( $accountId , $categoryId  ) ;
 			$this->Tasking->setStep("gather_category",$categoryId,$accountId,"开始执行竞价营销..") ;
 			$this->marketing($accountId , $categoryId ) ;
@@ -70,7 +70,7 @@ class GatherCategoryController extends AppController {
 		
 			$asinArray =  $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 			
-			//开始采集产品信息
+			//开始获取产品信息
 			$index = 0 ;
 			foreach($asinArray as $_asin){
 				$asin = $_asin['sc_amazon_account_product']['ASIN'] ;
@@ -84,7 +84,7 @@ class GatherCategoryController extends AppController {
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] details  " );
 				$this->GatherData->asinInfo($asin,$accountId,$index,$this->taskId) ;
 			} 
-			//采集产品信息结束
+			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
 			try{
@@ -125,7 +125,7 @@ class GatherCategoryController extends AppController {
 	 * fba竞争信息
 	 */
 	public function fba($accountId , $categoryId ){
-		//更新采集状态
+		//更新获取状态
 		try{
 			$array =  $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 			$index = 0 ;
@@ -158,7 +158,7 @@ class GatherCategoryController extends AppController {
 		try{
 			$asinArray =  $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 			
-			//开始采集产品信息
+			//开始获取产品信息
 			$index = 0 ;
 			foreach($asinArray as $_asin){
 				
@@ -177,7 +177,7 @@ class GatherCategoryController extends AppController {
 				$this->GatherData->asinPrice($asin,$account['CODE'],$condition,$accountId ,$index,$this->taskId) ;
 				
 			} 
-			//采集产品信息结束
+			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
 			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );

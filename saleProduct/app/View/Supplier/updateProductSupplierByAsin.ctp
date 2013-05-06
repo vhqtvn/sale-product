@@ -12,6 +12,7 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../grid/grid');
 		echo $this->Html->css('../js/validator/jquery.validation');
+		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
@@ -19,6 +20,7 @@
 		echo $this->Html->script('../grid/query');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('../grid/grid');
+		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('validator/jquery.validation');
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
@@ -33,9 +35,36 @@
   
    <script>
 		$(function(){
-			if( $("#login_id").val()  ){
-				$("#login_id").attr("disabled",true) ;
-			}
+				 var chargeGridSelect = {
+							title:'用户供应商',
+							defaults:[],//默认值
+							key:{value:'ID',label:'NAME'},//对应value和label的key
+							multi:false,
+							width:600,
+							height:560,
+							grid:{
+								title:"供应商选择",
+								params:{
+									sqlId:"sql_supplier_list"
+								},
+								ds:{type:"url",content:contextPath+"/grid/query"},
+								pagesize:10,
+								columns:[//显示列
+									{align:"center",key:"ID",label:"编号",width:"20%"},
+									{align:"center",key:"NAME",label:"名称",sort:true,width:"30%",query:true},
+									{align:"center",key:"ADDRESS",label:"地址",sort:true,width:"46%"}
+								]
+							}
+					   } ;
+					   
+					$(".select-supplier").listselectdialog( chargeGridSelect,function(){
+						var args = jQuery.dialogReturnValue() ;
+						var value = args.value ;
+						var label = args.label ;
+						$("#supplierId").val(value) ;
+						$("#supplierName").val(label) ;
+						return false;
+					}) ;
 		})
 		function validateForm(){
 			if( !$.validation.validate('#personForm').errorInfo ) {
@@ -63,6 +92,13 @@
 					<div class="panel-content">
 					
 				<table class="form-table">
+					<tr>
+						<th>供应商名称：</th><td>
+							<input id="supplierId" name="supplierId"  type="hidden" value="<?php echo $productSupplier['SUPPLIER_ID']; ?>"/>
+							<input id="supplierName" name="supplierName"  type="text" readonly value="<?php echo $productSupplier['SUPPLIER_NAME']; ?>"/>
+							<button class="btn select-supplier">选择供应商</button>
+						</td>
+					</tr>
 					<tr>
 						<th>产品重量：</th><td><input type="text" id="weight"  name="weight" 
 							value="<?php echo $productSupplier['WEIGHT'];?>"/></td>

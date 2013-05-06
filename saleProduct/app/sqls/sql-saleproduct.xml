@@ -13,14 +13,16 @@
     
     <entry key="sql_getSupplierInquiryByInquiryId">
     	select s.* ,
-    	(select name from sc_user where login_id = s.creator) as USERNAME
+    	(select name from sc_user where login_id = s.creator) as USERNAME,
+    	(select name from sc_supplier where id = s.supplier_id) as SUPPLIER_NAME
     	from sc_purchase_supplier_inquiry s
     	where s.id = '{@#id#}'
     </entry>
     
     <entry key="sql_list_supplierInquiryByAsin">
     	select s.* ,
-    	(select name from sc_user where login_id = s.creator) as USERNAME
+    	(select name from sc_user where login_id = s.creator) as USERNAME,
+    	(select name from sc_supplier where id = s.supplier_id) as SUPPLIER_NAME
     	from sc_purchase_supplier_inquiry s
     	where s.asin = '{@#asin#}'
     	order by s.create_time desc

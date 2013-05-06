@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>产品采集操作</title>
+    <title>产品获取操作</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -107,9 +107,9 @@
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
 						if(isRunning){
-							$(".gather-btn").attr("disabled","disabled").addClass("disabled").html("采集进行中") ;
+							$(".gather-btn").attr("disabled","disabled").addClass("disabled").html("获取进行中") ;
 						}else{
-							$(".gather-btn").removeAttr("disabled").removeClass("disabled").html("采集&营销策略执行") ;
+							$(".gather-btn").removeAttr("disabled").removeClass("disabled").html("获取&营销策略执行") ;
 						}
 					 }
 				} ;
@@ -154,17 +154,17 @@
 <body>
 <form id="personForm" action="#" data-widget="validator,ajaxform">
 	<div style="margin:5px 3px;padding:10px;" class="alert alert-info">
-		当前采集分类为：<span class="current-cateogry"></span>
+		当前获取分类为：<span class="current-cateogry"></span>
 		
 		&nbsp;&nbsp;&nbsp;&nbsp;  当前时间：<?php echo  date("Y-m-d H:i:s");?>
 	</div>
 	<table class="table table-bordered">
-		<caption>采集&营销策略执行（集中操作）</caption>
+		<caption>获取&营销策略执行（集中操作）</caption>
 		<tr>
-			<td style="width:150px;">采集&营销策略执行</td>
+			<td style="width:150px;">获取&营销策略执行</td>
 			<td style="height:auto;">
 			<div>
-				<button disabled class="stepall btn btn-primary gather-btn">采集进行中</button> 
+				<button disabled class="stepall btn btn-primary gather-btn">获取进行中</button> 
 			</div>
 			</td>
 		</tr>

@@ -136,7 +136,7 @@
 					$(".step1,.step2,.step3").attr("disabled",true).hide() ;
 					
 					eval("var result = "+result) ;
-					if( result.length <= 0 ){//未开始采集
+					if( result.length <= 0 ){//未开始获取
 						$(".step1").removeAttr("disabled").show() ;
 					}else{
 						var record = result[0]['sc_amazon_account_asyn'] ;

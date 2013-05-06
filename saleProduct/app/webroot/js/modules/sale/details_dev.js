@@ -62,7 +62,7 @@
 					cache:false,
 					dataType:"text",
 					success:function(result,status,xhr){
-						alert("采集完成");
+						alert("获取完成");
 						window.location.reload() ;
 					}
 				}); 

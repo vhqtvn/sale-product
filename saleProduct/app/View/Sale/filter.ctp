@@ -32,39 +32,33 @@
     var $ProductSpecialistProcess = <?php echo $ProductSpecialistProcess?'true':'false' ;?> ;
 	var $ProductManagerProcess = <?php echo $ProductManagerProcess?'true':'false' ;?> ;
 	var $GeneralManagerProcess  = <?php echo $GeneralManagerProcess?'true':'false' ;?> ;
+	var $loginId = '<?php echo $loginId;?>' ;
    </script>
 
 
 </head>
 <body>
-
-	<div class="grid-content" style="width:99.5%">
-	</div>
-	<br/>
-	<!--  
 	<div class="toolbar toolbar-auto">
 		<table>
 			<tr>
-				<th>ASIN：
-				</th>
-				<td>
-					<input type="text" name="asin" class="input-medium"/>
-				</td>
 				<th>
-					名称:
+					任务编号:
 				</th>
 				<td>
-					<input type="text" name="title" class="input-medium"/>
-				</td>							
+					<input type="text" id="taskCode"/>
+				</td>								
 				<td class="toolbar-btns">
-					<button class="query-btn btn btn-primary">查询</button>
+					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-task',qc:'.toolbar'}">查询</button>
+					<button class="create-task btn">创建开发任务</button>
 				</td>
 			</tr>						
 		</table>					
 
 	</div>	
-	-->
-	<div class="grid-content-details" style="width:99.5%">
+	<div class="grid-content" style="width:99.5%">
+	</div>
+	
+	<div class="grid-content-details" style="width:99.5%;margin-top:5px;">
 	</div>
 </body>
 </html>

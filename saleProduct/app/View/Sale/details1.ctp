@@ -250,7 +250,7 @@
 </head>
 <body style="overflow-y:auto;padding:2px;">
 	<div  class="flow-bar">
-		<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息采集</button>
+		<button class="base-gather btn" style="position:absolute;left:2px;top:15px;">信息获取</button>
 		<center>
 			<table class="flow-table"></table>
 			<div class="flow-action"></div>
@@ -642,6 +642,7 @@
 			<table class="table table-bordered">
 				<tr>
 					<th></th>
+					<th>供应商</th>
 					<th>产品重量</th>
 					<th>生产周期</th>
 					<th>包装方式</th>
@@ -668,6 +669,7 @@
 						<td rowspan=2 > " ;
 						 if( $pdStatus ==20 && $PD_INQUIRY ){ echo  "<a href='#' class='update-supplier' inquiryId='".$supplier['ID']."' >修改询价</a>"; }
 						 echo "</td>
+						 <td>".$supplier['SUPPLIER_NAME']."</td>
 						<td>".$supplier['WEIGHT']."</td>
 						<td>".$supplier['CYCLE']."</td>
 						<td>".$supplier['PACKAGE']."</td>
@@ -681,7 +683,7 @@
 						  $urls
 						</td>
 					</tr><tr class='$usedClz'>
-						<td colspan=9>".$supplier['MEMO']."
+						<td colspan=10>".$supplier['MEMO']."
 						</td>
 						
 					</tr> " ;

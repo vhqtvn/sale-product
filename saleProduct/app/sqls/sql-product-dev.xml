@@ -119,6 +119,7 @@ UPDATE sc_product_dev
 			INSERT INTO sc_product_filter 
 				(ID, 
 				NAME, 
+				CODE,
 				CREATE_TIME, 
 				CREATOR, 
 				MEMO, 
@@ -127,11 +128,23 @@ UPDATE sc_product_dev
 				VALUES
 				('{@#id#}', 
 				'{@#name#}', 
+				'{@#code#}', 
 				NOW(), 
 				'{@#loginId#}', 
 				'{@#memo#}', 
 				'{@#planId#}'
 				)
+     </entry>
+     
+     <entry key="sql_pdev_task_update">
+		UPDATE sc_product_filter 
+			SET
+			NAME = '{@#name#}' , 
+			MEMO = '{@#memo#}' , 
+			CODE = '{@#code#}'
+			
+			WHERE
+			ID = '{@#id#}'
      </entry>
 	
 		
@@ -222,10 +235,21 @@ UPDATE sc_product_dev
 				WHERE
 				ID = '{@#id#}'
      </entry>
+     
+     <entry key="sql_pdev_task_getById">
+	     select * from sc_product_filter
+				WHERE
+				ID = '{@#id#}'
+     </entry>
+   
    
    
       <entry key="sql_pdev_filter">
 	SELECT sc_product_filter.* ,
+			spdp.CODE as PLAN_CODE,
+			spdp.NAME as PLAN_NAME,
+			spdp.START_TIME,
+			spdp.END_TIME,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
@@ -239,8 +263,9 @@ UPDATE sc_product_dev
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 70 ) AS  STATUS70,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 80 ) AS  STATUS80,
 			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME
-	  FROM sc_product_filter
+	  FROM sc_product_filter  , sc_product_dev_plan spdp
 	  where 1=1
+	    and plan_id = spdp.id
 	  	and plan_id is not null
 	  	 {@ #$VIEW_PRODUCT_FILTER# }
 	  ORDER BY sc_product_filter.create_time desc
