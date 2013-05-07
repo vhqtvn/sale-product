@@ -101,6 +101,7 @@
 		$PD_REEDIT_YX			= $security->hasPermission($loginId , 'PD_REEDIT_YX') ;
 		$PD_REEDIT_BASE 		= $security->hasPermission($loginId , 'PD_REEDIT_BASE') ;
 		$PD_INQUIRY				=  $security->hasPermission($loginId , 'PD_INQUIRY') ;//询价权限
+		$PD_COST				=  $security->hasPermission($loginId , 'PD_COST') ;//询价权限
 		
 		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
 		
@@ -178,10 +179,19 @@
 		actions:[ 
 				<?php if( $PD_INQUIRY ){ ?>
 				{label:"保存",action:function(){ AuditAction('20',"保存") } },
-				{label:"结束询价，提交审批",action:function(){ AuditAction('30',"结束询价，提交审批") } }
+				{label:"下一步",action:function(){ AuditAction('25',"结束询价，成本利润分析") } }
 				 <?php }?>
 	     ]}
      ) ;
+	flowData.push( {status:25,label:"成本利润",memo:true ,
+		actions:[ 
+				<?php if( $PD_COST ){ ?>
+				{label:"保存",action:function(){ AuditAction('20',"保存") } },
+				{label:"下一步",action:function(){ AuditAction('30',"结束成本利润分析，提交审批") } }
+				 <?php }?>
+	     ]}
+     ) ;
+    
 	flowData.push( {status:30,label:"产品经理审批",memo:true ,
 		actions:[ 
 				<?php if( $PD_CPJLSP ){ ?>
@@ -252,9 +262,9 @@
 </head>
 <body style="overflow-y:auto;padding:2px;">
 	<div  class="flow-bar">
-		<button class="base-gather btn"  style="position:absolute;left:2px;top:15px;">信息获取</button>
+		<button class="base-gather btn"  style="position:absolute;left:2px;top:2px;">信息获取</button>
 		<?php if($PD_TRANSFER){?>
-		<button class="transfer-action btn"  style="position:absolute;left:80px;top:15px;">转交</button>
+		<button class="transfer-action btn"  style="position:absolute;left:2px;top:27px;">转交</button>
 		<?php }?>
 		<center>
 			<table class="flow-table"></table>
@@ -316,8 +326,8 @@
 					<tr>
 						<td style="width:20%;"><textarea  id="RANK"  class="input 10-input"  style="width:90%;height:60px;"><?php echo $productDev['RANK'];?></textarea></td>
 						<td style="width:20%;"><textarea  id="ESTIMATE_TRAFFIC"  class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_TRAFFIC'];?></textarea></td>
-						<td style="width:20%;"><textarea  id="ESTIMATE_COST"   class="input 10-input"   style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_COST'];?></textarea></td>
-						<td style="width:20%;"><textarea  id="ESTIMATE_PROFIT"  class="input 10-input"    style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_PROFIT'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="ESTIMATE_COST"   class="input 25-input"   style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_COST'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="ESTIMATE_PROFIT"  class="input 25-input"    style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_PROFIT'];?></textarea></td>
 						<td style="width:20%;"><textarea  id="HOT_SELL_PERIOD" class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['HOT_SELL_PERIOD'];?></textarea></td>
 					</tr>
 					<?php  if( $pdStatus >=50 ){  ?>

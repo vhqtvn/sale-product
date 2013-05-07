@@ -37,6 +37,9 @@ var currentId = '' ;
 			        {align:"center",key:"STATUS20",label:"询价",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='20'>"+(val||'0')+"</a>"
 			        }},
+			        {align:"center",key:"STATUS25",label:"成本利润",group:'流程状态',width:"6%",format:function(val,record){
+						return "<a href='#' class='fs-action' status='25'>"+(val||'0')+"</a>"
+			        }},
 			        {align:"center",key:"STATUS30",label:"产品经理审批",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='30'>"+(val||'0')+"</a>"
 			        }},
@@ -140,7 +143,7 @@ var currentId = '' ;
 						//var status = record.STATUS ;
 						//return "<a href='#' class='process-action' status='"+status+"' val='"+val+"' asin='"+record.ASIN+"'>处理</a>&nbsp;" ;
 					}},
-					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
+					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',25:'成本利润分析',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
 					{align:"center",key:"DEV_STATUS",label:"开发状态",width:"5%",format:{type:'json',content:{1:'自有',2:'跟卖',3:'废弃'}}},
 		           	{align:"center",key:"ASIN",label:"ASIN", width:"8%",format:function(val,record){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
@@ -170,7 +173,7 @@ var currentId = '' ;
 							var row =  $(this).parents("tr:first").data("record") ;
 							var taskId = row.TASK_ID ;
 							var asin = row.ASIN ;
-							openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin,950,650,function(){
+							openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin,1000,650,function(){
 								$(".grid-content-details").llygrid("reload",{},true) ;
 							}) ;
 						}) ;

@@ -14,18 +14,20 @@ $(function(){
             {align:"left",key:"CREATED_BY",label:"操作用户",width:"10%" },
             {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
             	var html = [] ;
-            	if( record.STATUS==1) {
+            	if( record.STATUS==1 && editPermission) {
             		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;
             		html.push( getImage("pkg.gif","选择货品","btn-select-product") ) ;
+            		
+            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;&nbsp;&nbsp;") ;
             		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
             		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
             	}
-            	html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;&nbsp;&nbsp;") ;
+            	
             	html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
             	//html.push('<a href="#" class="print-product" val="'+val+'">打印</a>') ;
             	return html.join("") ;
             },permission:function(){
-            	return editPermission ;
+            	return true;
             }}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
