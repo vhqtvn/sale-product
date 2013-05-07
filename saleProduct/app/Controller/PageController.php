@@ -31,10 +31,9 @@ App::uses('AppController', 'Controller');
  */
 class PageController extends AppController {
 	public function forward($routes,$arg1 = null ,$arg2 = null , $arg3 = null , $arg4 = null){
-		
 		$rs = str_replace(".","/",$routes) ;
 		
-		$params = $this->request->data ;
+		$params = $this->requestMap() ;
 		
 		$params['arg1'] = $arg1 ;
 		$params['arg2'] = $arg2 ;

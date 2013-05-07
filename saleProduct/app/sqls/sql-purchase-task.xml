@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_purchase_task_groupByPrintTime">
+				SELECT sppd.PRINT_TIME,COUNT(sppd.PRINT_TIME) AS TOTAL FROM 
+			sc_purchase_plan_details sppd,
+			sc_purchase_task_products sptp 
+			WHERE sppd.id = sptp.PRODUCT_ID
+			AND sptp.TASK_ID = '{@#taskId#}'
+			AND sppd.PRINT_TIME IS NOT NULL
+			GROUP BY sppd.PRINT_TIME
+		</entry>
+
     <entry key="sql_purchase_task_list">
         select spt.* ,
            (select name from sc_user where login_id = spt.created_by) as EXECUTOR_NAME
@@ -136,9 +146,11 @@
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'
 			and sppd.executor = '{@#Evn.loginId#}'
+			{@ and sppd.print_time = '#printTime#'}
+			{@ and sppd.print_time is null and '#printTimeNull#' = '#printTimeNull#'}
 			and sppd.warehouse_time is not null
 			and sppd.status > 60
-			and sppd.print_time is null
+			
 			and ( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) > 0
    </entry>
     

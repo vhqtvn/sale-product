@@ -22,6 +22,10 @@
 		//$user = $this->Session->read("product.sale.user") ;
 		$groupCode = $user["GROUP_CODE"] ;
 		$taskId = $params['arg1'] ;
+		$wpt= "" ;
+		if( isset( $params['printTime']) ){
+			$wpt = $params['printTime'] ;
+		}
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -31,9 +35,22 @@
 		
 		
 		$Grid  = ClassRegistry::init("Grid") ;
-		$recordSql = $SqlUtils->getRecordSql( array('taskId'=>$taskId,'sqlId'=>'sql_purchase_task_productInedForPrint','start'=>0,'limit'=>1000)) ; 
-    	$products = $Grid->query( $recordSql ) ;
 		
+		$params1 = array('taskId'=>$taskId,'sqlId'=>'sql_purchase_task_productInedForPrint','start'=>0,'limit'=>1000) ;
+		if( empty($wpt) ){
+			$params1['printTimeNull'] = 1 ;
+		}else{
+			$params1['printTime'] =$wpt ;
+		}
+		
+		$recordSql = $SqlUtils->getRecordSql($params1) ; 
+    	$products = $Grid->query( $recordSql ) ;
+    	
+    	//获取打印批次
+    	$batchs = $SqlUtils->exeSqlWithFormat("sql_purchase_task_groupByPrintTime",array( 'taskId'=>$taskId)) ;
+	
+    	$currentTime =  date("Y-m-d H:i:s") ;
+    	$printTime = empty($wpt)? $currentTime:"$wpt" ;
 	?>
 
    <script type="text/javascript">
@@ -131,14 +148,19 @@
    
    <script>
 	$( function(){
-			$(".print").click(function(){
+			$(".print-btn").click(function(){
 					if( window.confirm("确认打印采购入库单？") ){
-						$.dataservice("model:Sale.savePrintTime",{'printTime':'<?php echo date("Y-m-d")?>',taskId:'<?php echo $taskId;?>'}, function(){
+						$.dataservice("model:Sale.savePrintTime",{'printTime':'<?php echo $printTime;?>',taskId:'<?php echo $taskId;?>'}, function(){
 							$(".print").hide() ;
 							window.print() ;
 							});
 					}
 				}) ;
+
+			$(".print-batch").click(function(){
+				var wpt = $(this).val() ;
+				window.location.href = contextPath+"/page/forward/Sale.purchaseInPrint/<?php echo $taskId;?>?printTime="+wpt ;
+			}) ;
 		})
    </script>
 
@@ -147,7 +169,22 @@
 	<center>
 		<h1>采购入库单</h1>
 		<hr style="margin:2px;margin-bottom:5px;"/>
-		<a  class="print btn btn-primary" style="position:absolute;right:5px;top:5px;" target="_self">打印</a>
+		<div class="print"  style="position:absolute;right:5px;top:5px;" >
+			<select class="span3 print-batch">
+				<option value="">未打印采购入库产品</option>
+				<?php if(!empty($batchs)){
+					foreach($batchs as $btach){
+						$text = $btach['PRINT_TIME'] ;
+						$total = $btach['TOTAL'] ;
+						echo $text.'  ---    '.$wpt ;
+						$s = $text == $wpt ?"selected":"" ;
+						echo "<option $s value='$text'>$text($total)</option>" ;
+					}
+				}?>
+			</select>
+			<a  class=" print-btn btn btn-primary" target="_self">打印</a>
+		</div>
+		
 	</center>
 	<div style="padding:5px 10px;font-size:13px;font-weight:bold;">
 	   <div class="row-fluid title-bar">
@@ -158,7 +195,10 @@
 			采购负责人：<?php echo $task['EXECUTOR_NAME']?>
 		</div>
 		<div class="span4">
-			打印时间：<?php echo date("Y-m-d")?>
+			打印时间：<?php echo $printTime;?>
+			<?php if( !empty($wpt) ){//非第一次打印
+				echo "($currentTime)" ;
+			}?>
 		</div>
 		</div>
 	</div>
@@ -168,7 +208,7 @@
 	<table class="table table-bordered">
 		<tr>
 			<th style="text-align:center;width:20px;"></th>
-			<th style="text-align:center;">SKU</th>
+			<th style="text-align:center;">图片</th>
 			<th style="text-align:center;">SKU</th>
 			<th style="text-align:center;">名称</th>
 			<th style="text-align:center;">合格产品数量</th>
@@ -211,6 +251,13 @@
 	</div>
 	</div>
 	</center>
-	
+	<div style="padding:5px 10px;font-size:13px;font-weight:bold;">
+		<table style="width:100%;">
+			<tr>
+				<td style="font-weight:bold;">采购负责人：<input type="text" /></td>
+				<td style="font-weight:bold;">入库操作人：<input type="text" /></td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
