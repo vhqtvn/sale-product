@@ -49,23 +49,9 @@
 					var json = $("#personForm").toJson() ;
 					
 					$.dataservice("model:Cost.saveCost" , json , function(){
-						window.opener.$(".grid-content-details").llygrid("reload",{asin:asin}) ;
 						window.close() ;
 					})
-				
-					/*$.ajax({
-						type:"post",
-						url:contextPath+"/cost/saveCost",
-						data:json,
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							window.opener.$(".grid-content-details").llygrid("reload",{asin:"<?php echo $asin;?>"}) ;
-							window.close() ;
-						},error:function(){
-							alert("操作出现异常，请检查输入是否正确或者该类型成本是否已经存在！") ;
-						}
-					}); */
+
 				};
 				return false ;
 			}) ;

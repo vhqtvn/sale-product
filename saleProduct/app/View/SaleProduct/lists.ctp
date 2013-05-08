@@ -107,17 +107,9 @@
 			<div class="toolbar toolbar-auto">
 				<table style="width:100%;" class="query-table">	
 					<tr>
-						<th>名称：</th>
+						<th>关键字：</th>
 						<td>
-							<input type="text" id="name" class="span1_5"/>
-						</td>
-						<th>SKU：</th>
-						<td>
-							<input type="text" id="sku" class="span1_5"/>
-						</td>
-						<th>ASIN：</th>
-						<td>
-							<input type="text" id="asin" class="span1_5"/>
+							<input type="text" id="searchKey" class="span4" placeHolder="输入名称、SKU、ASIN、备注进行查询"/>
 						</td>
 						<th>仓库：</th>
 						<td>
@@ -145,7 +137,7 @@
 						</td>
 						<th></th>
 						<td>
-							<button class="btn btn-primary query" >查询</button>
+							<button class="btn btn-primary query query-btn" >查询</button>
 							<?php if( $product_add ){ ?>
 							<button class="action add btn btn-primary">添加货品</button>
 							<?php  } ?>

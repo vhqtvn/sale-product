@@ -305,11 +305,14 @@ UPDATE sc_product_dev
 
    <entry key="sql_pdev_filter_details">
 SELECT sp.TITLE, 
+    spf.NAME  as FILTER_NAME,
+    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin and spd1. ) as ASIN_COUNT,
 	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
 	spfd.*,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
 	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
-FROM  sc_product_filter spf, sc_product_dev spfd
+FROM  sc_product_filter spf, 
+			sc_product_dev spfd
 	LEFT JOIN sc_product sp 
 	on sp.asin = spfd.asin
 	LEFT JOIN sc_sale_competition ssc  ON ssc.asin = sp.asin
@@ -321,8 +324,10 @@ WHERE  spfd.task_id = spf.id
     {@  and sp.asin = '#asin#'}
     {@  and spfd.flow_status in ( #status#) }
      {@  and spfd.dev_status in ( #devStatus#) }
-    {@  and spfd.task_id = '#taskId#' }
-    {@  and spf.plan_id = '#planId#'}
+     {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
+     {@  and spfd.task_id = '#taskId#' }
+     {@  and spf.plan_id = '#planId#'}
+     {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%')}
    </entry>
    
    

@@ -72,6 +72,12 @@
  			{@ and type='#type#'}
  			{@ and status='#status#'}
  			{@ and name like '%#name#%'}
+ 			{@ and ( name like '%#searchKey#%' or real_sku like '%#searchKey#%'  or memo like '%#searchKey#%' 
+ 			  or real_sku in (
+ 			    select sr.real_sku from sc_real_product_rel sr ,sc_amazon_account_product sp where sr.sku = sp.sku
+ 			    and sp.asin like '%#searchKey#%'
+ 			)
+ 			)}
  			{@ and real_sku='#sku#'}
  			{@ and name like '%#NAME#%'}
  			{@ and real_sku in (

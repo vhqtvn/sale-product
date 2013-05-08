@@ -102,6 +102,7 @@
 		$PD_REEDIT_BASE 		= $security->hasPermission($loginId , 'PD_REEDIT_BASE') ;
 		$PD_INQUIRY				=  $security->hasPermission($loginId , 'PD_INQUIRY') ;//询价权限
 		$PD_COST				=  $security->hasPermission($loginId , 'PD_COST') ;//询价权限
+		$PD_FORCE				=  $security->hasPermission($loginId , 'PD_FORCE') ;//询价权限
 		
 		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
 		
@@ -179,6 +180,7 @@
 		actions:[ 
 				<?php if( $PD_INQUIRY ){ ?>
 				{label:"保存",action:function(){ AuditAction('20',"保存") } },
+				{label:"继续开发",action:function(){ AuditAction('10',"继续产品开发分析") } },
 				{label:"下一步",action:function(){ AuditAction('25',"结束询价，成本利润分析") } }
 				 <?php }?>
 	     ]}
@@ -263,7 +265,7 @@
 <body style="overflow-y:auto;padding:2px;">
 	<div  class="flow-bar">
 		<button class="base-gather btn"  style="position:absolute;left:2px;top:2px;">信息获取</button>
-		<?php if($PD_TRANSFER){?>
+		<?php if($PD_TRANSFER && $pdStatus !=80 && $pdStatus!=15  ){?>
 		<button class="transfer-action btn"  style="position:absolute;left:2px;top:27px;">转交</button>
 		<?php }?>
 		<center>
@@ -281,6 +283,7 @@
 	
 	<div class="hide"  id="dev-tab">
 		<form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		<input type="hidden"  id="TASK_ID" value="<?php echo $taskId;?>"/>
 		<div style="padding:4px 10px;margin-top:5px;margin-bottom:5px;" class="alert">
 		<?php 
 			echo '<b>相关网址：</b>' ;
@@ -303,6 +306,12 @@
 							自有 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==1?"checked":"";?>  value="1"/>&nbsp;&nbsp;&nbsp;
 							跟卖 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==2?"checked":"";?>   value="2"/>&nbsp;&nbsp;&nbsp;
 							废弃 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==3?"checked":"";?>  value="3"/>
+						</td>
+						<td>
+						<?php  if( $pdStatus >=50 && $pdStatus!=80 &&$PD_FORCE ){  ?>
+							<button class="btn btn-danger btn-force-15" onclick="AuditAction(15,'强制废弃')">强制废弃</button>
+							<button class="btn btn-danger btn-force-10" onclick="AuditAction(10,'重新开发分析')">重新开发</button>
+						<?php } ?>
 						</td>
 					</tr>
 				</tbody>
@@ -651,60 +660,76 @@
 			</div>
 		</div>
 		<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<?php  if( $pdStatus ==20 && $PD_INQUIRY ){  ?>
-			<button class="supplier-select btn">添加询价</button>
-			<?php 	}?>
-			<table class="table table-bordered">
-				<tr>
-					<th></th>
-					<th>供应商</th>
-					<th>产品重量</th>
-					<th>生产周期</th>
-					<th>包装方式</th>
-					<th>付款方式</th>
-					<th>产品尺寸</th>
-					<th>包装尺寸</th>
-					<th>报价1</th>
-					<th>报价2</th>
-					<th>报价3</th>
-					<th></th>
-				</tr>
-				<?php
-				$suppliers = $SqlUtils->exeSql("sql_list_supplierInquiryByAsin",array('asin'=>$asin)) ;
-				//$suppliers  = $this->Product->getProductSupplier($asin) ;
-				 foreach($suppliers as $supplier){
-				 	$supplier = $SqlUtils->formatObject( $supplier ) ;
-				 	$urls = "" ;
-				 	if( !empty($supplier['IMAGE']) ){
-				 		$urls = "<img src='/".$fileContextPath."/".$supplier['IMAGE']."' style='width:80px;height:50px;'>" ;
-				 	}
-					
-					$usedClz = "" ;
-					echo "<tr class='$usedClz'>
-						<td rowspan=2 > " ;
-						 if( $pdStatus ==20 && $PD_INQUIRY ){ echo  "<a href='#' class='update-supplier' inquiryId='".$supplier['ID']."' >修改询价</a>"; }
-						 echo "</td>
-						 <td>".$supplier['SUPPLIER_NAME']."</td>
-						<td>".$supplier['WEIGHT']."</td>
-						<td>".$supplier['CYCLE']."</td>
-						<td>".$supplier['PACKAGE']."</td>
-						<td>".$supplier['PAYMENT']."</td>
-						<td>".$supplier['PRODUCT_SIZE']."</td>
-						<td>".$supplier['PACKAGE_SIZE']."</td>
-						<td>".$supplier['NUM1']."/".$supplier['OFFER1']."</td>
-						<td>".$supplier['NUM2']."/".$supplier['OFFER2']."</td>
-						<td>".$supplier['NUM3']."/".$supplier['OFFER3']."</td>
-						<td rowspan=2>
-						  $urls
-						</td>
-					</tr><tr class='$usedClz'>
-						<td colspan=10>".$supplier['MEMO']."
-						</td>
-						
-					</tr> " ;
-				}?>
+			<fieldset>
+				<legend>
+				产品询价
+				<?php  if( $pdStatus ==20 && $PD_INQUIRY ){  ?>
+				<button class="supplier-select btn">添加询价</button>
+				<?php 	}?>
+				</legend>
 				
-			</table>
+				<table class="table table-bordered">
+					<tr>
+						<th></th>
+						<th>供应商</th>
+						<th>产品重量</th>
+						<th>生产周期</th>
+						<th>包装方式</th>
+						<th>付款方式</th>
+						<th>产品尺寸</th>
+						<th>包装尺寸</th>
+						<th>报价1</th>
+						<th>报价2</th>
+						<th>报价3</th>
+						<th></th>
+					</tr>
+					<?php
+					$suppliers = $SqlUtils->exeSql("sql_list_supplierInquiryByAsin",array('asin'=>$asin)) ;
+					//$suppliers  = $this->Product->getProductSupplier($asin) ;
+					 foreach($suppliers as $supplier){
+					 	$supplier = $SqlUtils->formatObject( $supplier ) ;
+					 	$urls = "" ;
+					 	if( !empty($supplier['IMAGE']) ){
+					 		$urls = "<img src='/".$fileContextPath."/".$supplier['IMAGE']."' style='width:80px;height:50px;'>" ;
+					 	}
+						
+						$usedClz = "" ;
+						echo "<tr class='$usedClz'>
+							<td rowspan=2 > " ;
+							 if( $pdStatus ==20 && $PD_INQUIRY ){ echo  "<a href='#' class='update-supplier' inquiryId='".$supplier['ID']."' >修改询价</a>"; }
+							 echo "</td>
+							 <td>".$supplier['SUPPLIER_NAME']."</td>
+							<td>".$supplier['WEIGHT']."</td>
+							<td>".$supplier['CYCLE']."</td>
+							<td>".$supplier['PACKAGE']."</td>
+							<td>".$supplier['PAYMENT']."</td>
+							<td>".$supplier['PRODUCT_SIZE']."</td>
+							<td>".$supplier['PACKAGE_SIZE']."</td>
+							<td>".$supplier['NUM1']."/".$supplier['OFFER1']."</td>
+							<td>".$supplier['NUM2']."/".$supplier['OFFER2']."</td>
+							<td>".$supplier['NUM3']."/".$supplier['OFFER3']."</td>
+							<td rowspan=2>
+							  $urls
+							</td>
+						</tr><tr class='$usedClz'>
+							<td colspan=10>".$supplier['MEMO']."
+							</td>
+							
+						</tr> " ;
+					}?>
+				</table>
+			</fieldset>
+			<fieldset>
+				<legend>成本利润
+				<?php  if( $pdStatus ==25 && $PD_INQUIRY ){  ?>
+				<button class="add-cost btn">添加成本</button>
+				<?php 	}?>
+				</legend>
+				<br/><br/><br/>
+				<div  style="width:990px;position:relative;" >
+				<div class="grid-cost" style="width:990px;"></div>
+				</div>
+			</fieldset>
 		</div>
 		
 	</div>

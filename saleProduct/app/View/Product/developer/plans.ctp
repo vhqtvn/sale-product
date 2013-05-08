@@ -34,7 +34,7 @@
 
 </head>
 <body>
-	<div class="toolbar toolbar-auto">
+	<div class="toolbar toolbar-auto toolbar2">
 		<table>
 			<tr>
 				<th>
@@ -44,20 +44,34 @@
 					<input type="text" id="taskCode"/>
 				</td>								
 				<td class="toolbar-btns">
-					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar'}">查询</button>
+					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar2'}">查询</button>
 					<?php if( $PDEV_EDIT) {?>
 					<button class="create-plan btn"  data-widget="dialog" 
 					data-options="{url:'<?php echo $contextPath?>/page/forward/Product.developer.createPlan',width:800,height:550,callback:createAfter}">创建开发计划</button>
 					<?php }?>
 				</td>
 			</tr>						
-		</table>					
-
+		</table>
 	</div>	
 
 	<div class="grid-content" style="width:99.5%">
 	</div>
 	<br/>
+	<div class="toolbar toolbar-auto toolbar1">
+		<table>
+			<tr>
+				<th>
+					关键字:
+				</th>
+				<td>
+					<input type="text" id="searchKey" placeHolder="输入ASIN或名称查询产品"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
+				</td>
+			</tr>						
+		</table>
+	</div>	
 	<div class="grid-content-details" style="width:99.5%">
 	</div>
 </body>

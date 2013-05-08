@@ -72,7 +72,7 @@ var currentId = '' ;
 				 rowClick:function(rowIndex , rowData){
 				 	var id = rowData.ID  ;
 				 	currentId = id ;
-				 	$(".grid-content-details").llygrid("reload",{taskId:currentId,devStatus:'1,2'}) ;
+				 	$(".grid-content-details").llygrid("reload",{taskId:currentId,devStatus1:"1"}) ;
 				 },loadAfter : function(){
 					 $(".fs-action").bind("click",function(event){
 						 	var row =  $(this).parents("tr:first").data("record") ;
@@ -177,8 +177,6 @@ var currentId = '' ;
 								$(".grid-content-details").llygrid("reload",{},true) ;
 							}) ;
 						}) ;
-					 	
-					 	
 					 	
 					 	$(".delete-tp-action").click(function(){
 					 		var row =  $(this).parents("tr:first").data("record") ;

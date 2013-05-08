@@ -62,7 +62,7 @@ $(function(){
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:130,
-				 title:"开发计划列表",
+				 title:"",
 				 indexColumn:false,
 				 querys:{sqlId:'sql_pdev_plan_list'},
 				 loadMsg:"数据加载中，请稍候......",
@@ -118,9 +118,14 @@ $(function(){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"LOCAL_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
-		           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
+		           	{align:"center",key:"TITLE",label:"标题",width:"20%",forzen:false,align:"left",format:function(val,record){
 		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+		           	},render:function(record){
+		           		if(record.ASIN_COUNT >1 ){
+		           			$(this).find("td").css("background","pink") ;
+		           		}
 		           	}},
+		        	{align:"center",key:"FILTER_NAME",label:"任务名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"PPC_STRATEGY_NAME",label:"竞价排名策略",width:"15%"},
 	           		{align:"center",key:"LOGI_STRATEGY",label:"物流策略",width:"10%"},
 	           		{align:"center",key:"SPREAD_STRATEGY",label:"推广策略",width:"15%"},
@@ -133,7 +138,7 @@ $(function(){
 				 height:function(){
 					 return $(window).height() - 360 ;
 				 },
-				 title:"产品列表",
+				 title:"",
 				 indexColumn: false,
 				 querys:{planId:'----',sqlId:'sql_pdev_filter_details'},//status:$("[name='status']").val(),type:type,
 				 loadMsg:"数据加载中，请稍候......"

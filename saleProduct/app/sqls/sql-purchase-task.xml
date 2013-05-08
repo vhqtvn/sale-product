@@ -145,13 +145,10 @@
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'
-			and sppd.executor = '{@#Evn.loginId#}'
 			{@ and sppd.print_time = '#printTime#'}
 			{@ and sppd.print_time is null and '#printTimeNull#' = '#printTimeNull#'}
 			and sppd.warehouse_time is not null
 			and sppd.status > 60
-			
-			and ( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) > 0
    </entry>
     
     <entry key="sql_purchase_task_productsForPrint">

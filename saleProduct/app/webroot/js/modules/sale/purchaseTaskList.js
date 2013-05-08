@@ -17,10 +17,10 @@ $(function(){
             	if( record.STATUS==1 && editPermission) {
             		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;
             		html.push( getImage("pkg.gif","选择货品","btn-select-product") ) ;
-            		
+            	}
+            	
+            	if( editPermission  ){
             		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;&nbsp;&nbsp;") ;
-            		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
-            		//html.push('<a href="#" class="btn-select-product">选择货品</a>&nbsp;&nbsp;') ;
             	}
             	
             	html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
