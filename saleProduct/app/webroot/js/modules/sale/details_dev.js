@@ -4,6 +4,10 @@
  		$(".input").attr("disabled","disabled");
  		$("."+pdStatus+"-input").removeAttr("disabled") ;
  		
+ 		if( !$("#TITLE").val() ){
+ 			$("#TITLE").removeAttr("disabled") ;
+ 		}
+ 		
  		$(".reedit").click(function(){
  			$(this).parents("table:first").find(".input").removeAttr("disabled") ;
  		}) ;
@@ -227,11 +231,11 @@
 		$(function(){
 			var tab = $('#details_tab').tabs( {
 				tabs:[
+				     {label:'产品开发',content:"dev-tab"},
+				     {label:'询价与成本利润',content:"supplier-tab",iframe:true},
 					{label:'基本信息',content:"baseinfo-tab"},
 					{label:'竞争信息',content:"competetion-tab"},
 					{label:'产品分类',url:contextPath+"/product/assignCategory/"+asin,iframe:true},
-					{label:'产品开发',content:"dev-tab"},
-					{label:'询价与成本利润',content:"supplier-tab",iframe:true},
 					{label:'开发轨迹',content:"track-tab"}
 				] ,
 				height:'500px'

@@ -36,6 +36,7 @@
 				INSERT INTO sc_product_dev 
 					(ASIN, 
 					TASK_ID,
+					TITLE,
 					CREATOR, 
 					CREATE_TIME, 
 					RANK, 
@@ -44,11 +45,13 @@
 					ESTIMATE_PROFIT, 
 					HOT_SELL_PERIOD, 
 					DEV_STATUS,
-					FLOW_STATUS
+					FLOW_STATUS,
+					PRODUCTS_SOLUTIONS
 					)
 					VALUES
 					('{@#ASIN#}', 
 					'{@#taskId#}', 
+					'{@#TITLE#}', 
 					'{@#loginId#}', 
 					NOW(), 
 					'{@#RANK#}', 
@@ -57,7 +60,8 @@
 					'{@#ESTIMATE_PROFIT#}', 
 					'{@#HOT_SELL_PERIOD#}', 
 					'{@#DEV_STATUS#}',
-					'{@#FLOW_STATUS#}'
+					'{@#FLOW_STATUS#}',
+					'{@#PRODUCTS_SOLUTIONS#}'
 					)
      </entry>
      
@@ -67,6 +71,8 @@ UPDATE sc_product_dev
 			ASIN = '{@#ASIN#}' , 
 			{@ REAL_PRODUCT_ID = '#REAL_PRODUCT_ID#',}
 			{@ LISTING_SKU = '#LISTING_SKU#',}
+			{@ PRODUCTS_SOLUTIONS = '#PRODUCTS_SOLUTIONS#',}
+			{@ TITLE = '#TITLE#',}
 			END_TIME = NOW() , 
 			RANK = '{@#RANK#}' , 
 			{@FLOW_STATUS = '#FLOW_STATUS#',}
@@ -304,9 +310,9 @@ UPDATE sc_product_dev
    </entry>
 
    <entry key="sql_pdev_filter_details">
-SELECT sp.TITLE, 
+SELECT sp.TITLE as P_TITLE, 
     spf.NAME  as FILTER_NAME,
-    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin and spd1. ) as ASIN_COUNT,
+    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin  ) as ASIN_COUNT,
 	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
 	spfd.*,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
@@ -327,7 +333,7 @@ WHERE  spfd.task_id = spf.id
      {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
      {@  and spfd.task_id = '#taskId#' }
      {@  and spf.plan_id = '#planId#'}
-     {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%')}
+     {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%' or or spfd.title like '%#searchKey#%')}
    </entry>
    
    

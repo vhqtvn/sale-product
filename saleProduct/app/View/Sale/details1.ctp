@@ -103,9 +103,10 @@
 		$PD_INQUIRY				=  $security->hasPermission($loginId , 'PD_INQUIRY') ;//询价权限
 		$PD_COST				=  $security->hasPermission($loginId , 'PD_COST') ;//询价权限
 		$PD_FORCE				=  $security->hasPermission($loginId , 'PD_FORCE') ;//询价权限
+		$PD_START_FQ=  $security->hasPermission($loginId , 'PD_START_FQ') ;//启用废弃产品
 		
 		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
-		
+	
 		$Config  = ClassRegistry::init("Config") ;
 		$websites = $Config->getAmazonConfig("PRODUCT_DEV_WEBSITE") ;
 	?>
@@ -172,6 +173,9 @@
  	<?php if( $pdStatus ==15 ){ ?>
  	flowData.push( {status:15,label:"废弃",memo:true ,
 		actions:[ 
+<?php if( $PD_START_FQ ){ ?>
+				{label:"启用",action:function(){ AuditAction('10',"启用废弃产品",{DEV_STATUS:'0'}) } }
+				 <?php }?>
 	     ]}
      ) ;
  	<?php }?>
@@ -298,6 +302,19 @@
 		</div>
 		<hr style="margin:0px;clear:both;padding-top:3px;"/>
 		
+		<table class="form-table"  style="margin:5px 2px;">
+				<tbody>
+					<tr>
+						<th>开发标题：</th>
+						<td>
+							<input type="text"  id="TITLE" class="input 10-input 30-input 40-input"
+								 value="<?php echo $productDev['TITLE'];?>"
+								 data-validator="required" style="width:90%;" placeHolder="输入开发标题"/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		
 		<table class="form-table "  style="margin:5px 2px;">
 				<tbody>
 					<tr>
@@ -308,9 +325,9 @@
 							废弃 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==3?"checked":"";?>  value="3"/>
 						</td>
 						<td>
-						<?php  if( $pdStatus >=50 && $pdStatus!=80 &&$PD_FORCE ){  ?>
-							<button class="btn btn-danger btn-force-15" onclick="AuditAction(15,'强制废弃')">强制废弃</button>
-							<button class="btn btn-danger btn-force-10" onclick="AuditAction(10,'重新开发分析')">重新开发</button>
+						<?php  if( $pdStatus >=10 && $pdStatus!=15  && $pdStatus!=80 &&$PD_FORCE ){  ?>
+							<button class="btn btn-danger btn-force-15" onclick="AuditAction(15,'强制废弃',{DEV_STATUS:3})">强制废弃</button>
+							<button class="btn btn-danger btn-force-10" onclick="AuditAction(10,'重新开发分析',{DEV_STATUS:'0'})">重新开发</button>
 						<?php } ?>
 						</td>
 					</tr>
@@ -471,6 +488,19 @@
 				</tbody>
 			</table>
 	
+			<table class="form-table"  style="margin:5px 2px;">
+				<caption>产品方案<?php if( $PD_REEDIT_YX){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?></caption>
+				<tbody>
+					<tr>
+						<td>
+							<textarea id="PRODUCTS_SOLUTIONS"  class="input 10-input 30-input 40-input" 
+								style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['PRODUCTS_SOLUTIONS']?></textarea>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 			
 			<table class="form-table " >
 				<caption>

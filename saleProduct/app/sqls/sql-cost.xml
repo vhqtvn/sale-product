@@ -120,7 +120,8 @@
                 where 1=1
                 {@ and sc_product_cost.asin = '#asin#'}
                 {@ 
-                	and( sc_product_cost.sku = '#realSku#'
+                	and( 
+                	sc_product_cost.sku = '#realSku#'
                 	or
                 	sc_product_cost.asin in (
                 		select sp.asin from sc_real_product_rel sr,
@@ -129,6 +130,14 @@
                 		   sr.sku = sp.sku and
                 		  sr.real_sku = '#realSku#'
                 	)
+                	 or sc_product_cost.asin in (
+		    	 		select spd.asin 
+		    	 		from sc_real_product srp,
+		    	 		sc_product_dev spd
+		    	 		 where 
+		    	 		 srp.id = spd.real_product_id
+		    	 		 and srp.real_sku = '{@#realSku#}'
+		    	 )
                 	)
                 }
    </entry>

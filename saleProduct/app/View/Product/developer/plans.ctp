@@ -29,6 +29,9 @@
    <script type="text/javascript">
     var $PDEV_EDIT = <?php echo $PDEV_EDIT?'true':'false' ;?> ;
 
+    function createAfter(){
+			$(".grid-content").llygrid("reload") ;
+      }
    </script>
 
 
@@ -64,7 +67,7 @@
 					关键字:
 				</th>
 				<td>
-					<input type="text" id="searchKey" placeHolder="输入ASIN或名称查询产品"/>
+					<input type="text" id="searchKey" placeHolder="输入ASIN、产品名称、开发标题" style="width:400px;"/>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>

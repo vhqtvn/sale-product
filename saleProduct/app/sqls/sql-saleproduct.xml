@@ -6,7 +6,17 @@
     	(select name from sc_user where login_id = s.creator) as USERNAME
     	from sc_purchase_supplier_inquiry s ,
     	sc_supplier ss
-    	where s.sku = '{@#realSku#}'
+    	where
+    	( s.sku = '{@#realSku#}'
+    	 or s.asin in (
+    	 		select spd.asin 
+    	 		from sc_real_product srp,
+    	 		sc_product_dev spd
+    	 		 where 
+    	 		 srp.id = spd.real_product_id
+    	 		 and srp.real_sku = '{@#realSku#}'
+    	 )
+    	)
     	and s.supplier_id = ss.id
     	order by s.create_time desc
     </entry>
