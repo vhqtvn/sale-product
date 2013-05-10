@@ -148,10 +148,11 @@
 	<div class="grid-content">
 	</div>
 	<div class="query-bar">
+	<!-- 
 		<?php if( $COST_EDIT ){
 			echo '<button class="add-cost btn btn-primary">添加成本</button>' ;
 		} ?>
-		
+	 -->	
 	</div>
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>

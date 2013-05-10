@@ -159,29 +159,29 @@
 						<table  class="form-table" style="<?php echo $COST_VIEW_PRODUCT_CHANNEL?'':'display:none;'?>">
 							<caption>产品成本</caption>
 							<tr>
-								<th>amazon佣金：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled;'?>  data-validator="double"  type="text" id="AMAZON_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["AMAZON_FEE"];?>"/></td>
-								<th>可变关闭费用：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled;'?>  data-validator="double"   type="text" id="VARIABLE_CLOSURE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["VARIABLE_CLOSURE_COST"];?>"/></td>
-								<th>标签费用 ：</th><td><input class="cost span2"   <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled;'?>  data-validator="double"  type="text" id="TAG_COST" value="<?php echo $productCost[0]["sc_product_cost"]["TAG_COST"];?>"/></td>
+								<th>amazon佣金：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"  type="text" id="AMAZON_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["AMAZON_FEE"];?>"/></td>
+								<th>可变关闭费用：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"   type="text" id="VARIABLE_CLOSURE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["VARIABLE_CLOSURE_COST"];?>"/></td>
+								<th>标签费用 ：</th><td><input class="cost span2"   <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"  type="text" id="TAG_COST" value="<?php echo $productCost[0]["sc_product_cost"]["TAG_COST"];?>"/></td>
 							</tr>
 							<tr>
-								<th>打包费：</th><td><input class="cost span2"   <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled;'?>  data-validator="double"  type="text" id="PACKAGE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["PACKAGE_COST"];?>"/></td>
-								<th>订单处理费：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled;'?>  data-validator="double"   type="text" id="OORDER_PROCESSING_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["OORDER_PROCESSING_FEE"];?>"/></td>
-								<th>称重费 ：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled;'?>   data-validator="double"  type="text" id="STABLE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["STABLE_COST"];?>"/></td>
+								<th>打包费：</th><td><input class="cost span2"   <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"  type="text" id="PACKAGE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["PACKAGE_COST"];?>"/></td>
+								<th>订单处理费：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"   type="text" id="OORDER_PROCESSING_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["OORDER_PROCESSING_FEE"];?>"/></td>
+								<th>称重费 ：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>   data-validator="double"  type="text" id="STABLE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["STABLE_COST"];?>"/></td>
 							</tr>
 						</table>
 						
 						<table  class="form-table" style="<?php echo $COST_VIEW_FEE?'':'display:none;'?>">
 							<caption>会计</caption>
 							<tr>
-								<th>当地税费  ：</th><td><input class="cost span2"  <?php echo $COST_EDIT_FEE?'':'disabled;'?>  data-validator="double"  type="text" id="LOST_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["LOST_FEE"];?>"/></td>
-								<th>人工成本：</th><td><input  class="cost span2"   <?php echo $COST_EDIT_FEE?'':'disabled;'?>  data-validator="double"  type="text" id="LABOR_COST" value="<?php echo $productCost[0]["sc_product_cost"]["LABOR_COST"];?>"/></td>
-								<th> 服务成本  ：</th><td colspan="3"><input class="cost span2"   <?php echo $COST_EDIT_FEE?'':'disabled;'?>   data-validator="double"  type="text" id="SERVICE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["SERVICE_COST"];?>"/></td>
+								<th>当地税费  ：</th><td><input class="cost span2"  <?php echo $COST_EDIT_FEE?'':'disabled'?>  data-validator="double"  type="text" id="LOST_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["LOST_FEE"];?>"/></td>
+								<th>人工成本：</th><td><input  class="cost span2"   <?php echo $COST_EDIT_FEE?'':'disabled'?>  data-validator="double"  type="text" id="LABOR_COST" value="<?php echo $productCost[0]["sc_product_cost"]["LABOR_COST"];?>"/></td>
+								<th> 服务成本  ：</th><td colspan="3"><input class="cost span2"   <?php echo $COST_EDIT_FEE?'':'disabled'?>   data-validator="double"  type="text" id="SERVICE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["SERVICE_COST"];?>"/></td>
 							</tr>
 						</table>
 						
 						<table  class="form-table" style="<?php echo $COST_VIEW_OTHER?'':'display:none;'?>">
 							<tr>
-								<th>其他成本 ：</th><td><input <?php echo $COST_EDIT_OTHER?'':'disabled;'?> class="cost span2"  data-validator="double"  type="text" id="OTHER_COST" value="<?php echo $productCost[0]["sc_product_cost"]["OTHER_COST"];?>"/></td>
+								<th>其他成本 ：</th><td><input <?php echo $COST_EDIT_OTHER?'':'disabled'?> class="cost span2"  data-validator="double"  type="text" id="OTHER_COST" value="<?php echo $productCost[0]["sc_product_cost"]["OTHER_COST"];?>"/></td>
 							</tr>
 						</table>
 						
@@ -191,7 +191,7 @@
 						
 						<table  class="form-table" style="<?php echo $COST_VIEW_SALEPRICE?'':'display:none;'?>">
 							<tr>
-								<th>销售价格  ：</th><td colspan="3"  ><input  <?php echo $COST_EDIT_SALEPRICE?'':'disabled;'?> class="sale-price span2"  data-validator="double"  type="text" id="SALE_PRICE" value="<?php echo $productCost[0]["sc_product_cost"]["SALE_PRICE"];?>"/></td>
+								<th>销售价格  ：</th><td colspan="3"  ><input  <?php echo $COST_EDIT_SALEPRICE?'':'disabled'?> class="sale-price span2"  data-validator="double"  type="text" id="SALE_PRICE" value="<?php echo $productCost[0]["sc_product_cost"]["SALE_PRICE"];?>"/></td>
 							</tr>
 							<tr  style="<?php echo $COST_VIEW_PROFIT?'':'display:none;'?>">
 								<th>利润  ：</th><td><input class=" span2  profit-num"   disabled  type="text"  id="PROFIT_NUM"  value=""/></td>

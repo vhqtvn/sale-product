@@ -31,13 +31,13 @@
 			 querys:{asin:asin,sqlId:"sql_cost_product_details_list"},
 			 loadMsg:"数据加载中，请稍候......",
 			 loadAfter:function(){
-			 	$(".grid-checkbox").each(function(){
-			 		
-					var val = $(this).attr("value") ;
-					if( $(".product-list ul li[asin='"+val+"']").length ){
-						$(this).attr("checked",true) ;
-					}
-				}) ;
+				 $(".edit-action").bind("click",function(){
+					 	var row = $(this).parents("tr:first").data("record");
+						var id = $(this).attr("val") ;
+						openCenterWindow(contextPath+"/cost/add/"+row.ASIN+"/"+id,880,650,function(){
+							$(".grid-cost").llygrid("reload",{},true) ;
+						}) ;
+					})
 			 }
 		}) ;
  		

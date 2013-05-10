@@ -28,7 +28,7 @@
 			
 			$(".edit-action").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/cost/add/"+currentAsin+"/"+id,680,650) ;
+				openCenterWindow(contextPath+"/cost/add/"+currentAsin+"/"+id,830,680) ;
 			})
 			
 			$(".product-detail").live("click",function(){
