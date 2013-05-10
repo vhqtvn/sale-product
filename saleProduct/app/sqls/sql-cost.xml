@@ -42,7 +42,12 @@
 			LABOR_COST, 
 			SERVICE_COST, 
 			OTHER_COST,
-			TOTAL_COST
+			TOTAL_COST,
+			SALE_PRICE,
+			PROFIT_NUM,
+			PROFIT_MARGINS,
+			CREATOR,
+			CREATE_TIME
 			)
 			VALUES
 			(
@@ -64,7 +69,12 @@
 			'{@#LABOR_COST#}', 
 			'{@#SERVICE_COST#}', 
 			'{@#OTHER_COST#}',
-			'{@#TOTAL_COST#}'
+			'{@#TOTAL_COST#}',
+			'{@#SALE_PRICE#}',
+			'{@#PROFIT_NUM#}',
+			'{@#PROFIT_MARGINS#}',
+			'{@#loginId#}',
+			NOW()
 			) 
    </entry>
    
@@ -90,6 +100,12 @@
 		{@ SERVICE_COST = '#SERVICE_COST#' , }
 		{@ OTHER_COST = '#OTHER_COST#' ,}
 		{@ TOTAL_COST = '#TOTAL_COST#' ,}
+		{@ SALE_PRICE = '#SALE_PRICE#' , }
+		{@ PROFIT_NUM = '#PROFIT_NUM#' ,}
+		{@ PROFIT_MARGINS = '#PROFIT_MARGINS#' ,}
+		{@ PROFIT_NUM = '#PROFIT_NUM#' ,}
+		{@ LAST_UPDATOR = '#loginId#' ,}
+		LAST_UPDATE_TIME = now(),
 		ID = '{@#ID#}'
 		WHERE
 		ID = '{@#ID#}'
@@ -116,11 +132,25 @@
    </entry>
    
     <entry key="sql_cost_product_details_list">
- 				 SELECT * from sc_product_cost
+ 				 SELECT sc_product_cost.* ,
+ 					 ( select sp.TITLE from sc_product sp where  sc_product_cost.asin = sp.asin limit 0,1) as PRODUCT_TITLE,
+ 					 ( select sp.NAME from sc_real_product sp where  sc_product_cost.sku = sp.real_sku limit 0,1) as REAL_PRODUCT_TITLE
+ 				 from sc_product_cost
                 where 1=1
+                {@ and (
+                	 sc_product_cost.asin in (
+                		select sp.ASIN from sc_product sp where  sc_product_cost.TITLE = '#title#'
+                	)
+                	or 
+                	 sc_product_cost.sku in (
+                		select sp.real_sku from sc_real_product sp where 
+                			 sc_product_cost.name = '#title#'
+                	)
+                ) 
+                }
                 {@ and sc_product_cost.asin = '#asin#'}
                 {@ 
-                	and( 
+                	and ( 
                 	sc_product_cost.sku = '#realSku#'
                 	or
                 	sc_product_cost.asin in (
@@ -136,7 +166,7 @@
 		    	 		sc_product_dev spd
 		    	 		 where 
 		    	 		 srp.id = spd.real_product_id
-		    	 		 and srp.real_sku = '{@#realSku#}'
+		    	 		 and srp.real_sku = '#realSku#'
 		    	 )
                 	)
                 }

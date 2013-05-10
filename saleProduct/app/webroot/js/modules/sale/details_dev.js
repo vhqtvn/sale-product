@@ -19,33 +19,7 @@
 	   }) ;
  		
  		$(".grid-cost").llygrid({
-			columns:[
-				{align:"center",key:"ID",label:"操作",width:"6%",forzen:false,format:function(val,record){
-					var status = record.STATUS ;
-					var html = [] ;
-					html.push("<a href='#' class='edit-action' val='"+val+"'>编辑</a>&nbsp;") ;
-					return html.join("") ;
-				}},
-				
-						{align:"center",key:"TOTAL_COST",label:"总成本",forzen:false,width:"6%"} ,
-						{align:"center",key:"PURCHASE_COST",label:"采购成本",width:"8%"} ,
-						{align:"center",key:"TYPE",label:"成本类型",forzen:false, width:"6%" },
-			           	{align:"center",key:"BEFORE_LOGISTICS_COST",label:"入库前物流费用",width:"8%",forzen:false,align:"left"},
-			           	{align:"center",key:"TARIFF",label:"关税",width:"6%",forzen:false,align:"left"},
-			           	{align:"center",key:"WAREHOURSE_COST",label:"仓储费用",width:"6%"},
-			           	{align:"center",key:"USPS_COST",label:"USPS邮费",width:"6%"},
-			           	{align:"center",key:"AMAZON_FEE",label:"amazon佣金",width:"8%"},
-			           	{align:"center",key:"VARIABLE_CLOSURE_COST",label:"可变关闭费用",width:"8%"},
-			           	{align:"center",key:"OORDER_PROCESSING_FEE",label:"订单处理费",width:"6%"},
-			           	{align:"center",key:"TAG_COST",label:"标签费用",width:"8%"} ,
-			           	{align:"center",key:"PACKAGE_COST",label:"打包费",width:"6%"},
-			            {align:"center",key:"STABLE_COST",label:"稳重费",width:"8%"},
-		            	{align:"center",key:"LOST_FEE",label:"当地税费",width:"6%"},
-			           	{align:"center",key:"LABOR_COST",label:"人工成本",width:"6%"},
-			           	{align:"center",key:"SERVICE_COST",label:"服务成本",width:"6%"},
-			           	{align:"center",key:"OTHER_COST",label:"其他成本",width:"8%"} 
-	            		           	
-	         ],
+			columns: costColumns,
 	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:30,
 			 pageSizes:[10,20,30,40],
