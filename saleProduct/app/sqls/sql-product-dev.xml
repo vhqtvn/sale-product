@@ -316,7 +316,19 @@ SELECT sp.TITLE as P_TITLE,
 	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
 	spfd.*,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
-	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
+	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME,
+	( SELECT count(1) FROM sc_purchase_supplier_inquiry spsi 
+			WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) 
+			and spsi.asin = spfd.asin
+			) as INQUIRY_COUNT,
+	( SELECT COUNT(1) FROM sc_product_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_COUNT,
+	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',spc.PROFIT_MARGINS) ) FROM sc_product_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_GROUP
 FROM  sc_product_filter spf, 
 			sc_product_dev spfd
 	LEFT JOIN sc_product sp 
@@ -334,6 +346,16 @@ WHERE  spfd.task_id = spf.id
      {@  and spfd.task_id = '#taskId#' }
      {@  and spf.plan_id = '#planId#'}
      {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%'  or spfd.title like '%#searchKey#%')}
+     {@  and spfd.task_id in (
+     			SELECT sc_product_filter.id
+			  FROM sc_product_filter  , sc_product_dev_plan spdp
+			  where 1=1
+			    and plan_id = spdp.id
+			  	and plan_id is not null
+			  	 #$VIEW_PRODUCT_FILTER#
+			  	and '#taskView#' = '#taskView#'
+     	)
+     }
    </entry>
    
    

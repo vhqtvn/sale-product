@@ -21,25 +21,35 @@ class GatherProductController extends AppController {
 	public function execute($asin , $accountId = null , $productId = null ){
 		$status = $this->Tasking->status("gather_product",$asin,$accountId) ;
 		if( $status ){//执行中
-			return ;
+			$this->response->type("json");
+			$this->response->body("");
+			return $this->response;
 		}else{
 			$this->taskId = $this->Tasking->start("gather_product",$asin,$accountId) ;
 		}
-		
 		try{
-			$this->baseInfo( $asin ,$accountId  ) ;
-			$this->competition( $asin ,$accountId  ) ;
-			$this->fba( $asin ,$accountId  ) ;
+			try{
+				$this->baseInfo( $asin ,$accountId  ) ;
+				$this->competition( $asin ,$accountId  ) ;
+				$this->fba( $asin ,$accountId  ) ;
 			
-			if(!empty($productId)){
-				$this->price( $productId ,$accountId  ) ;
-				$this->marketing($productId , $accountId ) ;
+				if(!empty($productId)){
+					$this->price( $productId ,$accountId  ) ;
+					$this->marketing($productId , $accountId ) ;
+				}
+				$this->Tasking->stop("gather_product",$asin,$accountId) ;
+			}catch(Exception $e){
+				$this->Log->saveLog($this->taskId,"error::::::".$e->getMessage()) ;
+				$this->Tasking->stop("gather_product",$asin,$accountId) ;
 			}
-			$this->Tasking->stop("gather_product",$asin,$accountId) ;
 		}catch(Exception $e){
-			$this->Log->saveLog($this->taskId,"error::::::".$e->getMessage()) ;
-			$this->Tasking->stop("gather_product",$asin,$accountId) ;
+			$this->response->type("json");
+			$this->response->body("result->".$e->getMessage());
+			return $this->response;
 		}
+		$this->response->type("json");
+		$this->response->body("");
+		return $this->response;
 	}
 	
 	/**

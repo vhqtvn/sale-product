@@ -41,6 +41,7 @@ class GatherData extends AppModel {
 			
 			if( $snoopy->fetch($url) ){
 				$Result = $snoopy->results ;
+				//debug($Result) ;
 				$html = new simple_html_dom();
 				$html->load( $Result  ,true ,false );
 				
@@ -100,14 +101,19 @@ class GatherData extends AppModel {
 					//DIMENSIONS
 					//WEIGHT
 					
+					//debug( $array ) ;
 					//更新产品基本信息
 					$service->updateProduct($array);
-					
+					//echo "start get Image...." ;
 					///保存图片
 					$images = $html->find("#prodImageCell img",0) ;
+					if( $images == null ){
+						$images = $html->find("#main-image",0) ;
+					}
 					if( $images!=null ){
 						$src = $images->src ;
 						$title = $images->alt ;
+						
 						try{
 							$localUrl = "images/amazon/".$asin."/".basename($src) ;
 							$utils->downloads($src,$asin) ;
@@ -116,6 +122,7 @@ class GatherData extends AppModel {
 							//print_r($e) ;
 						}
 					}
+					//return ;
 					//保存竞争信息-----------------------------------------------------
 					if( $html != null ){
 						//get point

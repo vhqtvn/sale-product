@@ -117,9 +117,10 @@
 		$COST_EDIT_FEE    							= $security->hasPermission($loginId , 'COST_EDIT_FEE') ;
 		$COST_EDIT_OTHER   						= $security->hasPermission($loginId , 'COST_EDIT_OTHER') ;
 		$COST_EDIT_SALEPRICE   				= $security->hasPermission($loginId , 'COST_EDIT_SALEPRICE') ;
+		$COST_EDIT_PROFIT   						= $security->hasPermission($loginId , 'COST_EDIT_PROFIT') ;
 		
 		$COST_VIEW_TOTAL  						= $security->hasPermission($loginId , 'COST_VIEW_TOTAL') ;
-		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT')   ;
+		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
 		$COST_VIEW_PURCHASE  				= ( $security->hasPermission($loginId , 'COST_VIEW_PURCHASE') )||$COST_EDIT_PURCHASE ;
 		$COST_VIEW_LOGISTIC  					= ( $security->hasPermission($loginId , 'COST_VIEW_LOGISTIC') )|| $COST_EDIT_LOGISTIC ;
 		$COST_VIEW_PRODUCT_CHANNEL =(  $security->hasPermission($loginId , 'COST_VIEW_PRODUCT_CHANNEL')  )|| $COST_EDIT_PRODUCT_CHANNEL ;
@@ -127,7 +128,7 @@
 		$COST_VIEW_OTHER  						=(  $security->hasPermission($loginId , 'COST_VIEW_OTHER')  )|| $COST_EDIT_OTHER ;
 		$COST_VIEW_SALEPRICE					= ( $security->hasPermission($loginId , 'COST_VIEW_SALEPRICE') )|| $COST_EDIT_SALEPRICE ;
 		
-		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE ;
+		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE||$COST_EDIT_PROFIT ;
 	?>
   
    <style>
@@ -166,8 +167,10 @@
 
 	<?php  if($COST_VIEW_PROFIT){ ?>
 	//利润率
-	costColumns.push({align:"center",key:"PROFIT_NUM",label:"产品利润",forzen:true,width:"7%",format:function(val ,record){
+	costColumns.push({align:"center",key:"PROFIT_MARGINS",label:"产品利润",sort:true,forzen:true,width:"7%",format:function(val ,record){
 		var pn = record.PROFIT_NUM ;
+		if(!pn) return "未算利润" ;
+
 		var totalCost = record.TOTAL_COST ;
 		var pl = pn/totalCost ;
 		if(pl<=0){
@@ -248,7 +251,9 @@
 		actions:[ 
 			 		<?php if( $PD_ANAYS ){ ?>
 				 {label:"保存",action:function(){ AuditAction('10',"保存") } },
-				 {label:"下一步",action:function(){ AuditAction('20',"保存并进入下一步") } }
+				 {label:"询价",action:function(){ AuditAction('20',"询价") } },
+				 {label:"成本利润",action:function(){ AuditAction('25',"成本利润分析") } },
+				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
 		         <?php }?>
 	     ]}
      ) ;
@@ -266,16 +271,19 @@
 		actions:[ 
 				<?php if( $PD_INQUIRY ){ ?>
 				{label:"保存",action:function(){ AuditAction('20',"保存") } },
-				{label:"继续开发",action:function(){ AuditAction('10',"继续产品开发分析") } },
-				{label:"下一步",action:function(){ AuditAction('25',"结束询价，成本利润分析") } }
+				 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
+				 {label:"成本利润",action:function(){ AuditAction('25',"成本利润分析") } },
+				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
 				 <?php }?>
 	     ]}
      ) ;
 	flowData.push( {status:25,label:"成本利润",memo:true ,
 		actions:[ 
 				<?php if( $PD_COST ){ ?>
-				{label:"保存",action:function(){ AuditAction('20',"保存") } },
-				{label:"下一步",action:function(){ AuditAction('30',"结束成本利润分析，提交审批") } }
+				{label:"保存",action:function(){ AuditAction('25',"保存") } },
+				 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
+				 {label:"询价",action:function(){ AuditAction('20',"询价") } },
+				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
 				 <?php }?>
 	     ]}
      ) ;
@@ -285,7 +293,7 @@
 				<?php if( $PD_CPJLSP ){ ?>
 	          {label:"保存",action:function(){ AuditAction('30',"保存") } },
 			  {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
-			  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
+			  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
 			  {label:"通过审批",action:function(){ AuditAction('40',"审批通过 " ) } }
 			  <?php }?>
 	     ]}
@@ -295,7 +303,7 @@
 				<?php if( $PD_ZJSP ){ ?>
 		         {label:"保存",action:function(){ AuditAction('40',"保存") } },
 		         {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
-				 {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回分析") } },
+				 {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
 				 {label:"审批通过",action:function(){ AuditAction('50',"审批通过，准备录入货品") } }
 				 <?php }?>
 	     ]}

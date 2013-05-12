@@ -27,9 +27,10 @@
 		$COST_EDIT_FEE    							= $security->hasPermission($loginId , 'COST_EDIT_FEE') ;
 		$COST_EDIT_OTHER   						= $security->hasPermission($loginId , 'COST_EDIT_OTHER') ;
 		$COST_EDIT_SALEPRICE   				= $security->hasPermission($loginId , 'COST_EDIT_SALEPRICE') ;
+		$COST_EDIT_PROFIT   						= $security->hasPermission($loginId , 'COST_EDIT_PROFIT') ;
 		
 		$COST_VIEW_TOTAL  						= $security->hasPermission($loginId , 'COST_VIEW_TOTAL') ;
-		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT')   ;
+		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
 		$COST_VIEW_PURCHASE  				= ( $security->hasPermission($loginId , 'COST_VIEW_PURCHASE') )||$COST_EDIT_PURCHASE ;
 		$COST_VIEW_LOGISTIC  					= ( $security->hasPermission($loginId , 'COST_VIEW_LOGISTIC') )|| $COST_EDIT_LOGISTIC ;
 		$COST_VIEW_PRODUCT_CHANNEL =(  $security->hasPermission($loginId , 'COST_VIEW_PRODUCT_CHANNEL')  )|| $COST_EDIT_PRODUCT_CHANNEL ;
@@ -37,8 +38,7 @@
 		$COST_VIEW_OTHER  						=(  $security->hasPermission($loginId , 'COST_VIEW_OTHER')  )|| $COST_EDIT_OTHER ;
 		$COST_VIEW_SALEPRICE					= ( $security->hasPermission($loginId , 'COST_VIEW_SALEPRICE') )|| $COST_EDIT_SALEPRICE ;
 		
-		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE ;
-	
+		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE||$COST_EDIT_PROFIT ;
 	?>
    <style>
 
@@ -60,47 +60,59 @@
    		var groupCode = '<?php echo $loginId;?>' ;
    		var sku = '<?php echo $sku;?>' ;
    
-		$(function(){
-			
-			$("button").click(function(){
-				if( !$.validation.validate('#personForm').errorInfo ) {
-					var json = $("#personForm").toJson() ;
-					
-					$.dataservice("model:Cost.saveCost" , json , function(){
-						window.close() ;
-					})
 
-				};
-				return false ;
-			}) ;
-			
-			$(".cost,.sale-price").keyup(function(){
-				calcTotalCost() ;
-			}) ;
-			$(".cost,.sale-price").blur(function(){
-				calcTotalCost() ;
-			}) ;
-			
-			calcTotalCost() ;
-			
-		})
-		
-		function calcTotalCost(){
-				var totalCost = 0 ;
-				$(".cost").each(function(){
-					totalCost = totalCost + parseFloat($(this).val()||0) ;
-				}) ;
-				$("#TOTAL_COST").val(totalCost.toFixed(2)) ;//成本
+   		$(function(){
+   					
+   					$(".save-btn").click(function(){
+   						if( !$.validation.validate('#personForm').errorInfo ) {
+   							var json = $("#personForm").toJson() ;
+   							
+   							$.dataservice("model:Cost.saveCost" , json , function(){
+   								window.close() ;
+   							})
 
-				//销售价格
-				var salePrice = $(".sale-price").val() ;
-				//计算利润 profit-num  profit-margins
-				var profitNum =  (salePrice - totalCost.toFixed(2)).toFixed(2)  ;
-				var profitMargin = ((profitNum/totalCost.toFixed(2)).toFixed(4)*100).toFixed(2)+"%" ;
-				$(".profit-num").val( salePrice - totalCost.toFixed(2) ) ;
-				$(".profit-margins").val( profitMargin ) ;
-				
-		}
+   						};
+   						return false ;
+   					}) ;
+   					
+   					$(".cost,.sale-price").keyup(function(){
+   						calcTotalCost() ;
+   					}) ;
+   					$(".cost,.sale-price").blur(function(){
+   						calcTotalCost() ;
+   					}) ;
+   					
+   					calcTotalCost() ;
+
+   					//////////////////////
+   					$(".profit-confirm").click(function(){
+   						calcProfit() ;
+   						return false ;
+   					}) ;	
+   		}) ;
+   				
+   				function calcTotalCost(){
+   						var totalCost = 0 ;
+   						$(".cost").each(function(){
+   							totalCost = totalCost + parseFloat($(this).val()||0) ;
+   						}) ;
+   						$("#TOTAL_COST").val(totalCost.toFixed(2)) ;//成本
+   						
+   				}
+
+   		function calcProfit(){
+   			var totalCost = 0 ;
+   			$(".cost").each(function(){
+   				totalCost = totalCost + parseFloat($(this).val()||0) ;
+   			}) ;
+   			//销售价格
+   			var salePrice = $(".sale-price").val() ;
+   			//计算利润 profit-num  profit-margins
+   			var profitNum =  (salePrice - totalCost.toFixed(2)).toFixed(2)  ;
+   			var profitMargin = ((profitNum/totalCost.toFixed(2)).toFixed(4)*100).toFixed(2)+"%" ;
+   			$(".profit-num").val( salePrice - totalCost.toFixed(2) ) ;
+   			$(".profit-margins").val( profitMargin ) ;
+   		}
    </script>
 </head>
 
@@ -149,7 +161,7 @@
 							<caption>物流成本</caption>
 							<tr>
 								<th>入库前物流费用：</th><td><input class="cost span1"  <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?>  data-validator="double" type="text" id="BEFORE_LOGISTICS_COST" value="<?php echo $productCost[0]["sc_product_cost"]["BEFORE_LOGISTICS_COST"];?>"/></td>
-								<th>关税：</th><td><input class="cost span1" <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?>data-validator="double"   type="text" id="TARIFF" value="<?php echo $productCost[0]["sc_product_cost"]["TARIFF"];?>"/></td>
+								<th>关税：</th><td><input class="cost span1" <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?> data-validator="double"   type="text" id="TARIFF" value="<?php echo $productCost[0]["sc_product_cost"]["TARIFF"];?>"/></td>
 								<th>仓储费用 ：</th><td><input class="cost span1" <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?> data-validator="double"   type="text" id="WAREHOURSE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["WAREHOURSE_COST"];?>"/></td>
 								<th>USPS邮费 ：</th><td><input  class="cost span1"  <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?> data-validator="double"   type="text" id="USPS_COST" value="<?php echo $productCost[0]["sc_product_cost"]["USPS_COST"];?>"/></td>
 							</tr>
@@ -189,13 +201,14 @@
 						总成本:&nbsp;<input type="text" id="TOTAL_COST"  data-validator="double"  readonly="readonly"  value="<?php echo $productCost[0]["sc_product_cost"]["TOTAL_COST"];?>"/>
 						</div>
 						
-						<table  class="form-table" style="<?php echo $COST_VIEW_SALEPRICE?'':'display:none;'?>">
-							<tr>
-								<th>销售价格  ：</th><td colspan="3"  ><input  <?php echo $COST_EDIT_SALEPRICE?'':'disabled'?> class="sale-price span2"  data-validator="double"  type="text" id="SALE_PRICE" value="<?php echo $productCost[0]["sc_product_cost"]["SALE_PRICE"];?>"/></td>
+						<table  class="form-table">
+							<tr style="<?php echo $COST_VIEW_SALEPRICE?'':'display:none;'?>">
+								<th>销售价格  ：</th><td colspan="4"  ><input  <?php echo $COST_EDIT_SALEPRICE?'':'disabled'?> class="sale-price span2"  data-validator="double"  type="text" id="SALE_PRICE" value="<?php echo $productCost[0]["sc_product_cost"]["SALE_PRICE"];?>"/></td>
 							</tr>
 							<tr  style="<?php echo $COST_VIEW_PROFIT?'':'display:none;'?>">
-								<th>利润  ：</th><td><input class=" span2  profit-num"   disabled  type="text"  id="PROFIT_NUM"  value=""/></td>
-								<th>利润率：</th><td><input  class=" span2 profit-margins"  disabled type="text"    id="PROFIT_MARGINS"   value=""/></td>
+								<th>利润  ：</th><td><input class=" span2  profit-num"   disabled  type="text"  id="PROFIT_NUM"  value="<?php echo $productCost[0]["sc_product_cost"]["PROFIT_NUM"];?>"/></td>
+								<th>利润率：</th><td><input  class=" span2 profit-margins"  disabled type="text"    id="PROFIT_MARGINS"   value="<?php echo $productCost[0]["sc_product_cost"]["PROFIT_MARGINS"];?>"/></td>
+								<td><style="<?php echo $COST_EDIT_PROFIT?'':'display:none;'?>"  button class="btn btn-primary profit-confirm">利润确认</button></td>
 							</tr>
 						</table>
 					</div>

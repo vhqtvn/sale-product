@@ -65,7 +65,7 @@ var currentId = '' ;
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:130,
-				 title:"产品开发任务列表",
+				 //title:"产品开发任务列表",
 				 indexColumn:true,
 				 querys:{sqlId:'sql_pdev_filter'},
 				 loadMsg:"数据加载中，请稍候......",
@@ -143,11 +143,33 @@ var currentId = '' ;
 						//var status = record.STATUS ;
 						//return "<a href='#' class='process-action' status='"+status+"' val='"+val+"' asin='"+record.ASIN+"'>处理</a>&nbsp;" ;
 					}},
-					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',25:'成本利润分析',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
-					{align:"center",key:"DEV_STATUS",label:"开发状态",width:"5%",format:function(val){
+					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",sort:true,
+							format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',25:'成本利润分析',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
+					{align:"center",key:"DEV_STATUS",label:"开发状态",sort:true,width:"5%",format:function(val){
 						val = val||"" ;
 						var map = {1:'自有',2:'跟卖',3:'废弃'} ;
 						return map[val] ;
+					}},
+					{align:"center",key:"COST_GROUP",label:"利润",width:"8%",sort:true,format:function(val,record){
+						var INQUIRY_COUNT = record.INQUIRY_COUNT ;
+						var COST_COUNT = record.COST_COUNT ;
+						if( INQUIRY_COUNT<=0 ) return "待询价" ;
+						if( COST_COUNT<=0 ) return "待成本核算" ;
+						if( !val ) return "未算利润" ;
+						
+						var s = val.split(",") ;
+						var maxProfit = 0 ;
+						var maxType ;
+						$(s).each(function(){
+							var ss = this.split("|") ;
+							var type = ss[0] ;
+							var profit = parseFloat(ss[1]||0)/100 ;
+							maxProfit = Math.max(maxProfit,profit) ;
+						}) ;
+						if(maxProfit <=0 ) return "亏本" ;
+						if(maxProfit <0.15 ) return "低利润" ;
+						return "利润达标" ;
+						
 					}},
 		           	{align:"center",key:"ASIN",label:"ASIN", width:"8%",format:function(val,record){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
@@ -167,11 +189,11 @@ var currentId = '' ;
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					 return $(window).height() - 350 ;
+					 return $(window).height() - 360 ;
 				 },
-				 title:"产品列表",
+				 //title:"产品列表",
 				 indexColumn: false,
-				 querys:{taskId:'----',sqlId:'sql_pdev_filter_details'},//status:$("[name='status']").val(),type:type,
+				 querys:{taskView:'1',sqlId:'sql_pdev_filter_details'},//status:$("[name='status']").val(),type:type,
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 					 	$(".process-action").bind("click",function(){
@@ -201,25 +223,6 @@ var currentId = '' ;
 				var asin = $(this).attr("asin") ;
 				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			})
-			
-			$(".query-btn").click(function(){
-				var asin = $("[name='asin']").val() ;
-				var title = $("[name='title']").val() ;
-				var status = $("[name='status']").val() ;
-				var querys = {} ;
-				if(asin){
-					querys.asin = asin ;
-				}
-				if(title){
-					querys.title = title ;
-				}
-				
-				if(status){
-					querys.status = status ;
-				}
-				
-				$(".grid-content-details").llygrid("reload",querys) ;	
-			}) ;
 			
 			
 			$(".create-task").click(function(){
