@@ -30,8 +30,14 @@ $(function(){
 		           	{align:"center",key:"STATUS10",label:"产品分析",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='10'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS20",label:"询价",group:'流程状态',width:"6%",format:function(val,record){
-						return "<a href='#' class='fs-action' status='20'>"+(val||'0')+"</a>"
+			        {align:"center",key:"STATUS20",label:"询价",group:'询价|流程状态',width:"6%",format:function(val,record){
+						return  "<a href='#' class='fs-action' status='20'>"+(val||'0')+"</a>" ;
+			        }},
+			        {align:"center",key:"STATUS20_UNASIGN",label:"未分配",group:'询价|流程状态',width:"6%",format:function(val,record){
+						return  "<a href='#' class='fs-action' unasignstatus='20'>"+(val||'0')+"</a>" ;
+			        }},
+			        {align:"center",key:"STATUS20_MY",label:"我的询价",group:'询价|流程状态',width:"6%",format:function(val,record){
+						return  "<a href='#' class='fs-action' mystatus='20'>"+(val||'0')+"</a>" ;
 			        }},
 			        {align:"center",key:"STATUS25",label:"成本利润",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='25'>"+(val||'0')+"</a>"
@@ -86,10 +92,23 @@ $(function(){
 						    event.stopPropagation()  ;
 							var val = $(this).attr("status") ;
 							var devStatus = $(this).attr("devstatus") ;
+							var mystatus = $(this).attr("mystatus") ;
+							var unasignstatus = $(this).attr("unasignstatus") ;
+							
+							if( unasignstatus ) {
+								$(".grid-content-details").llygrid("reload",{devStatus:'',status:'',devStatus1:'',mystatus:'',unasignstatus:unasignstatus,planId:row.ID},true) ;
+								return false ;
+							}
+							
+							if( mystatus ) {
+								$(".grid-content-details").llygrid("reload",{devStatus:'',status:'',devStatus1:'',mystatus:mystatus,unasignstatus:'',planId:row.ID},true) ;
+								return false ;
+							}
+							
 							if(devStatus){
-								$(".grid-content-details").llygrid("reload",{devStatus:devStatus,devStatus1:'',status:'',taskId:row.ID},true) ;
+								$(".grid-content-details").llygrid("reload",{devStatus:devStatus,devStatus1:'',status:'',mystatus:'',unasignstatus:'',planId:row.ID},true) ;
 							}else{
-								$(".grid-content-details").llygrid("reload",{devStatus:'',status:val,devStatus1:'',taskId:row.ID},true) ;
+								$(".grid-content-details").llygrid("reload",{devStatus:'',status:val,devStatus1:'',mystatus:'',unasignstatus:'',planId:row.ID},true) ;
 							}
 							return false ;
 					}) ;
@@ -163,7 +182,7 @@ $(function(){
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					 return $(window).height() - 360 ;
+					 return $(window).height() - 390 ;
 				 },
 				 title:"",
 				 indexColumn: false,
