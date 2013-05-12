@@ -88,6 +88,15 @@
 			$devStatus = $productDev['DEV_STATUS'] ;
 		}
 		
+		//询价负责人
+		$category = $SqlUtils->getObject("sql_getSingleProductCategoryByAsin" , array("asin"=>$asin)) ;
+		$charger = $productDev['INQUIRY_CHARGER'] ;
+		$chargerName = $productDev['INQUIRY_CHARGER_NAME'] ;
+		if(  !empty($category) ){
+			$charger = $category['PURCHASE_CHARGER'] ;
+			$chargerName= $category['PURCHASE_CHARGER_NAME'] ;
+		}
+		
 		$loginId 						= $user['LOGIN_ID'] ;
 		$PD_FLAG 					= $security->hasPermission($loginId , 'PD_FLAG') ;
 		$PD_ANAYS 				= $security->hasPermission($loginId , 'PD_ANAYS') ;
@@ -100,10 +109,12 @@
 		$PD_REEDIT_ZY 			= $security->hasPermission($loginId , 'PD_REEDIT_ZY') ;
 		$PD_REEDIT_YX			= $security->hasPermission($loginId , 'PD_REEDIT_YX') ;
 		$PD_REEDIT_BASE 		= $security->hasPermission($loginId , 'PD_REEDIT_BASE') ;
-		$PD_INQUIRY				=  $security->hasPermission($loginId , 'PD_INQUIRY') ;//询价权限
-		$PD_COST				=  $security->hasPermission($loginId , 'PD_COST') ;//询价权限
+		$PD_INQUIRY				= $security->hasPermission($loginId , 'PD_INQUIRY') && (  $charger == $loginId ) ;//询价权限
+		$PD_COST				=  $security->hasPermission($loginId , 'PD_COST') ;//成本权限
 		$PD_FORCE				=  $security->hasPermission($loginId , 'PD_FORCE') ;//询价权限
-		$PD_START_FQ=  $security->hasPermission($loginId , 'PD_START_FQ') ;//启用废弃产品
+		$PD_START_FQ			=  $security->hasPermission($loginId , 'PD_START_FQ') ;//启用废弃产品
+		$PD_SALE_RPICE			=  $security->hasPermission($loginId , 'PD_SALE_RPICE') ;//销售限价
+		$PD_SUPPLIER_MAX_PRICE	=  $security->hasPermission($loginId , 'PD_SUPPLIER_MAX_PRICE') ;//供应限价
 		
 		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
 	
@@ -375,7 +386,7 @@
 		<div class="grid-track" style="width:920px;"></div>
 	</div>
 	
-	<div class="hide"  id="dev-tab">
+	<div class="hide "  id="dev-tab">
 		<form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
 		<input type="hidden"  id="TASK_ID" value="<?php echo $taskId;?>"/>
 		<div style="padding:4px 10px;margin-top:5px;margin-bottom:5px;" class="alert">
@@ -433,17 +444,13 @@
 				</caption>
 				<tbody>	
 					<tr>
-						<th style="width:20%;">ASIN排名</th>
-						<th style="width:20%;">估计流量</th>
-						<th style="width:20%;">成本估算</th>
-						<th style="width:20%;">利润估算</th>
-						<th style="width:20%;">热销时段</th>
+						<th style="width:33%;">ASIN排名</th>
+						<th style="width:33%;">估计流量</th>
+						<th style="width:34%;">热销时段</th>
 					</tr>
 					<tr>
 						<td style="width:20%;"><textarea  id="RANK"  class="input 10-input"  style="width:90%;height:60px;"><?php echo $productDev['RANK'];?></textarea></td>
 						<td style="width:20%;"><textarea  id="ESTIMATE_TRAFFIC"  class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_TRAFFIC'];?></textarea></td>
-						<td style="width:20%;"><textarea  id="ESTIMATE_COST"   class="input 25-input"   style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_COST'];?></textarea></td>
-						<td style="width:20%;"><textarea  id="ESTIMATE_PROFIT"  class="input 25-input"    style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_PROFIT'];?></textarea></td>
 						<td style="width:20%;"><textarea  id="HOT_SELL_PERIOD" class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['HOT_SELL_PERIOD'];?></textarea></td>
 					</tr>
 					<?php  if( $pdStatus >=50 ){  ?>
@@ -493,21 +500,20 @@
 					<tr>
 						<th>产品风险：</th>
 						<td><textarea id="FOLLOW_RISK_PRODUCT"    class="input 10-input"  
-							style="width:90%;height:40px;"><?php echo $productDev['FOLLOW_RISK_PRODUCT']?></textarea></td>
+							style="width:90%;height:60px;"><?php echo $productDev['FOLLOW_RISK_PRODUCT']?></textarea></td>
 					</tr>
 					<tr>
 						<th>品牌风险：</th>
 						<td><textarea id="FOLLOW_RISK_BRAND"      class="input 10-input"  
-							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_BRAND']?></textarea></td>
+							style="width:90%;height:60px;"><?php echo  $productDev['FOLLOW_RISK_BRAND']?></textarea></td>
 					</tr>
 					<tr>
 						<th>供应商风险：</th>
 						<td><textarea id="FOLLOW_RISK_SUPPLIER"      class="input 10-input"  
-							style="width:90%;height:40px;"><?php echo  $productDev['FOLLOW_RISK_SUPPLIER']?></textarea></td>
+							style="width:90%;height:60px;"><?php echo  $productDev['FOLLOW_RISK_SUPPLIER']?></textarea></td>
 					</tr>
 				</tbody>
 			</table>
-			
 			
 			<table class="form-table " >
 				<caption>
@@ -586,7 +592,7 @@
 					<tr>
 						<td>
 							<textarea id="PRODUCTS_SOLUTIONS"  class="input 10-input 30-input 40-input" 
-								style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['PRODUCTS_SOLUTIONS']?></textarea>
+								style="margin-top:2px;width:95%;height:100px;"><?php echo  $productDev['PRODUCTS_SOLUTIONS']?></textarea>
 						</td>
 					</tr>
 				</tbody>
@@ -779,16 +785,45 @@
 				</table>
 			</div>
 		</div>
-		<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
+		<div id="supplier-tab" class="ui-tabs-panel apply-panel" style="height: 100px; display: block; ">
 			<fieldset>
 				<legend>
 				产品询价
-				<?php  if( $pdStatus ==20 && $PD_INQUIRY ){  ?>
-				<button class="supplier-select btn">添加询价</button>
+				<?php  if( $pdStatus ==20 && $PD_INQUIRY  ){  ?>
+					<button class="supplier-select btn">添加询价</button>
 				<?php 	}?>
 				</legend>
 				
-				<table class="table table-bordered">
+				<div class="row-fluid">
+					<div class="span6">
+						<table  class="form-table">
+							<tr>
+								<th>供应限价:</th>
+								<td>
+										<input type="text" class="input 25-input"  id="SUPPLIER_MAX_PRICE"  value="<?php echo $productDev['SUPPLIER_MAX_PRICE']?>" />
+										<?php if( $PD_SUPPLIER_MAX_PRICE ){ 
+											echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+										}?>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="span6">
+						<table  class="form-table">
+							<tr>
+								<th>询价负责人:</th>
+								<td>
+										
+										<input type="hidden"  id="INQUIRY_CHARGER"  value="<?php echo $charger;?>" />
+										<input type="text"  disabled  id="INQUIRY_CHARGER_NAME"  value="<?php echo $chargerName;?>" />
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+						
+				<table class="form-table">
+					<thead>
 					<tr>
 						<th></th>
 						<th>供应商</th>
@@ -803,6 +838,8 @@
 						<th>报价3</th>
 						<th></th>
 					</tr>
+					</thead>
+					<tbody>
 					<?php
 					$suppliers = $SqlUtils->exeSql("sql_list_supplierInquiryByAsin",array('asin'=>$asin)) ;
 					//$suppliers  = $this->Product->getProductSupplier($asin) ;
@@ -837,6 +874,7 @@
 							
 						</tr> " ;
 					}?>
+					</tbody>
 				</table>
 			</fieldset>
 			<fieldset>
@@ -846,6 +884,21 @@
 				<?php 	}?>
 				</legend>
 				<br/><br/><br/>
+				<table  class="form-table">
+					<tr>
+						<th>销售最低限价:</th>
+						<td>
+								<input type="text"  class="input 10-input"  id="SALE_LOWEST_PRICE"  value="<?php echo $productDev['SALE_LOWEST_PRICE']?>" />
+						</td>
+						<th>销售建议价:</th>
+						<td>
+								<input type="text"  class="input 10-input"   id="SALE_SUGGEST_PRICE"  value="<?php echo $productDev['SALE_SUGGEST_PRICE']?>" />
+								<?php if( $PD_SALE_RPICE ){ 
+									echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+								}?>
+						</td>
+					</tr>
+				</table>
 				<div  style="width:990px;position:relative;" >
 				<div class="grid-cost" style="width:990px;"></div>
 				</div>
