@@ -377,7 +377,7 @@ SELECT sp.TITLE as P_TITLE,
 			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
 			AND spc.asin = spfd.asin
 			) AS COST_COUNT,
-	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',spc.PROFIT_MARGINS) ) FROM sc_product_cost spc 
+	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',spc.PROFIT_MARGINS,'|',spc.PROFIT_NUM ) ) FROM sc_product_cost spc 
 			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
 			AND spc.asin = spfd.asin
 			) AS COST_GROUP

@@ -243,10 +243,21 @@
 		           	echo $html ;
 			?>
 			</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td style="text-align:center;vertical-align: middle;font-weight:bold;"><?php 
+				$data =  $pd['PROMISE_DELIVERY_DATE']  ;
+				echo str_replace( "00:00:00", "",$data) ;
+			?></td>
+			<td>
+				<?php 
+					echo $pd['MEMO'] ;
+				?>
+			</td>
 		</tr>
 	<?php } ;?>
+		<tr>
+			<th>备注</th>
+			<td colspan="5" style="height:80px;"></td>
+		</tr>
 	</table>
 	</div>
 	</div>

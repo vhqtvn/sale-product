@@ -171,7 +171,7 @@ var currentId = '' ;
 						var map = {1:'自有',2:'跟卖',3:'废弃'} ;
 						return map[val] ;
 					}},
-					{align:"center",key:"COST_GROUP",label:"利润",width:"8%",sort:true,format:function(val,record){
+					{align:"center",key:"COST_GROUP",label:"利润分类",width:"8%",sort:true,format:function(val,record){
 						var INQUIRY_COUNT = record.INQUIRY_COUNT ;
 						var COST_COUNT = record.COST_COUNT ;
 						if( INQUIRY_COUNT<=0 ) return "待询价" ;
@@ -191,7 +191,18 @@ var currentId = '' ;
 						if(maxProfit <0.15 ) return "低利润" ;
 						return "利润达标" ;
 						
-					}},
+					   }},
+					   {align:"center",key:"COST_GROUP",label:"利润值",width:"8%",sort:true,format:function(val,record){
+							var INQUIRY_COUNT = record.INQUIRY_COUNT ;
+							var COST_COUNT = record.COST_COUNT ;
+							if( INQUIRY_COUNT<=0 ) return "" ;
+							if( COST_COUNT<=0 ) return "" ;
+							if( !val ) return "" ;
+							
+							return val ||"";
+						   },permission:function(){
+							   return $COST_VIEW_PROFIT ;
+						   }},
 		           	{align:"center",key:"ASIN",label:"ASIN", width:"8%",format:function(val,record){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
 		           	}},

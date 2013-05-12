@@ -109,10 +109,10 @@
 		$PD_REEDIT_ZY 			= $security->hasPermission($loginId , 'PD_REEDIT_ZY') ;
 		$PD_REEDIT_YX			= $security->hasPermission($loginId , 'PD_REEDIT_YX') ;
 		$PD_REEDIT_BASE 		= $security->hasPermission($loginId , 'PD_REEDIT_BASE') ;
-		$PD_INQUIRY				= $security->hasPermission($loginId , 'PD_INQUIRY') && (  $charger == $loginId ) ;//询价权限
-		$PD_COST				=  $security->hasPermission($loginId , 'PD_COST') ;//成本权限
-		$PD_FORCE				=  $security->hasPermission($loginId , 'PD_FORCE') ;//询价权限
-		$PD_START_FQ			=  $security->hasPermission($loginId , 'PD_START_FQ') ;//启用废弃产品
+		$PD_INQUIRY				= $security->hasPermission($loginId , 'PD_INQUIRY') || (  $charger == $loginId ) ;//询价权限
+		$PD_COST					=  $security->hasPermission($loginId , 'PD_COST') ;//成本权限
+		$PD_FORCE					=  $security->hasPermission($loginId , 'PD_FORCE') ;//询价权限
+		$PD_START_FQ				=  $security->hasPermission($loginId , 'PD_START_FQ') ;//启用废弃产品
 		$PD_SALE_RPICE			=  $security->hasPermission($loginId , 'PD_SALE_RPICE') ;//销售限价
 		$PD_SUPPLIER_MAX_PRICE	=  $security->hasPermission($loginId , 'PD_SUPPLIER_MAX_PRICE') ;//供应限价
 		

@@ -25,11 +25,15 @@
 		
 		$PDT_CREATE = $security->hasPermission($loginId , 'PDT_CREATE') ;
 		$PDT_UPDATE = $security->hasPermission($loginId , 'PDT_UPDATE') ;
+		
+		$COST_EDIT_PROFIT   						= $security->hasPermission($loginId , 'COST_EDIT_PROFIT') ;
+		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
 	?>
   
    <script type="text/javascript">
     var $PDT_CREATE = <?php echo $PDT_CREATE?'true':'false' ;?> ;
 	var $PDT_UPDATE = <?php echo $PDT_UPDATE?'true':'false' ;?> ;
+	var $COST_VIEW_PROFIT  = <?php echo $COST_VIEW_PROFIT?'true':'false' ;?> ;
 	var $loginId = '<?php echo $loginId;?>' ;
    </script>
 

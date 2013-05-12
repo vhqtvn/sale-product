@@ -19,7 +19,20 @@
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('calendar/WdatePicker');
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-		$defaultCode = $SqlUtils->getUserDefaultCode("PT")  ;
+		
+		
+		$taskId = $params['arg1'] ;
+		$defaultCode = null ;
+		$task = null ;
+		if(!empty($taskId)){
+			$task = $SqlUtils->getObject("sql_purchase_task_getById",array('taskId'=>$taskId)) ;
+			$defaultCode = $task['TASK_CODE'] ;
+		}else{
+			$defaultCode = $SqlUtils->getUserDefaultCode("PT")  ;
+		}
+		
+		//sql_purchase_task_getById
+		
 		//if( empty($result['IN_NUMBER']) ){
 		/*	$index = $SqlUtils->getMaxValue("PT" , null , 1) ;
 			if( strlen($index) < 5 ){
@@ -77,7 +90,7 @@
 		<div class="container-fluid">
 
 	        <form id="personForm" action="#" data-widget="validator,ajaxform" class="form-horizontal" >
-			<input id="id" type="hidden" value=""/>
+			<input id="id" type="hidden" value="<?php echo $task['ID']?>"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
@@ -90,8 +103,8 @@
 										 style="width:300px;" value="<?php echo $defaultCode;?>"/></td>
 								</tr>
 								<tr>
-									<th>备注：</th><td><textarea id="memo" style="width:300px;height:100px;"
-										></textarea></td>
+									<th>备注：</th><td><textarea id="memo" style="width:300px;height:100px;" data-validator="required"
+										><?php echo $task['MEMO']?></textarea></td>
 								</tr>
 							</table>
 						</div>

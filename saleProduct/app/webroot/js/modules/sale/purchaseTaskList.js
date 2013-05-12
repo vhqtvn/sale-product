@@ -20,7 +20,8 @@ $(function(){
             	}
             	
             	if( editPermission  ){
-            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;&nbsp;&nbsp;") ;
+            		html.push( getImage("edit.png","编辑任务","btn-edit-plan")+"&nbsp;" ) ;
+            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
             	}
             	
             	html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
@@ -52,6 +53,15 @@ $(function(){
 					}) ;
 				 }
 			}) ;
+			 
+			 $(".btn-edit-plan").bind("click",function(){
+				 event.stopPropagation() ;
+				 var record = $(this).parents("tr:first").data("record");
+				 openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/"+record.ID,600,350,function(){
+						$(".grid-task").llygrid("reload",{},true) ;
+					}) ;
+				 return false ;
+			 }) ;
 			 
 			 $(".print-product").bind("click",function(event){
 				 event.stopPropagation() ;

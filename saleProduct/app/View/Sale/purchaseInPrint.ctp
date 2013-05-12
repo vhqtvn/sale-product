@@ -256,6 +256,7 @@
 			<tr>
 				<td style="font-weight:bold;">采购负责人：<input type="text" /></td>
 				<td style="font-weight:bold;">入库操作人：<input type="text" /></td>
+				<td style="font-weight:bold;">总监：<input type="text" /></td>
 			</tr>
 		</table>
 	</div>

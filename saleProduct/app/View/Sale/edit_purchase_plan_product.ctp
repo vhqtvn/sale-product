@@ -136,7 +136,16 @@
 		
 		.flow-bar{
 			width:100%;margin:3px auto;text-align:center;
-			position:relative;
+			position:fixed;
+			left:0px;
+			right:0px;
+			top:0px;
+			height:80px;
+			z-index:1000;
+		}
+		
+		body{
+			padding-top:80px;
 		}
 		
 		.flow-action{
@@ -368,10 +377,17 @@
 									</tr>
 									<tr>
 										<th>支付方式：</th>
-										<td colspan="3" >
+										<td>
 											<input id="payType" class="45-input input"  type="text"
 													<?php echo $status>=45?"data-validator='required'":"" ?>
 													value='<?php echo $product['PAY_TYPE'] ;?>' />
+										</td>
+										<th>承诺交期：</th>
+										<td>
+											<input id="promiseDeliveryDate" class="45-input input"  type="text" data-widget="calendar"
+													<?php echo $status>=45?"data-validator='required'":"" ?>
+													value='<?php echo $product['PROMISE_DELIVERY_DATE'] ;?>' />
+										</td>
 									</tr>
 									<tr>
 										<th>实际供应商：</th>

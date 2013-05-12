@@ -24,10 +24,14 @@
 		$loginId = $user["LOGIN_ID"] ;
 		
 		$PDEV_EDIT = $security->hasPermission($loginId , 'PDEV_EDIT') ;
+		
+		$COST_EDIT_PROFIT   						= $security->hasPermission($loginId , 'COST_EDIT_PROFIT') ;
+		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
 	?>
   
    <script type="text/javascript">
     var $PDEV_EDIT = <?php echo $PDEV_EDIT?'true':'false' ;?> ;
+    var $COST_VIEW_PROFIT  = <?php echo $COST_VIEW_PROFIT?'true':'false' ;?> ;
 
     function createAfter(){
 			$(".grid-content").llygrid("reload") ;

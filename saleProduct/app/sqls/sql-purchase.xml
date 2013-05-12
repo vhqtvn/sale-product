@@ -161,6 +161,7 @@
 				{@ ,plan_start_time = '#planStartTime#'}
 				{@ ,plan_end_time = '#planEndTime#'}
 				{@ ,warehouse_time = '#warehouseTime#'}
+				{@ ,PROMISE_DELIVERY_DATE = '#promiseDeliveryDate#'}
 				where id = '{@#id#}'
    </entry>
    
