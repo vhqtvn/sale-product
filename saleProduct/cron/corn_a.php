@@ -1,5 +1,15 @@
 <?php
 include_once ('corn_config.php');
 
-$random = date("U") ;
-file_get_contents("http://".domain."/".context."/index.php/gatherLevel/execute/".accountId."/A?".$random);
+foreach( $accounts as $ac ) {
+	$accountId 	= $ac['accountId'] ;
+	$domain 		= $ac['domain'] ;
+	$context 		= $ac['context'] ;
+	
+	$random = date("U") ;
+	$url = "http://".$domain."/".$context."/index.php/gatherLevel/execute/".$accountId."/A?".$random ;
+	
+	triggerRequest($url) ;
+}
+//$random = date("U") ;
+//file_get_contents("http://".domain."/".context."/index.php/gatherLevel/execute/".accountId."/A?".$random);
