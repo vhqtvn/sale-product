@@ -8,6 +8,15 @@
 			 from sc_product_category 
 	</entry>
 	
+	<entry key="sql_getSingleProductCategoryByAsin">
+			select sc_product_category.* ,
+					(select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME
+					 from sc_product_category ,sc_product_category_rel
+					 where 
+					 	sc_product_category.id = sc_product_category_rel.category_id
+					 	and sc_product_category_rel.asin = '{@#asin#}' 
+	</entry>
+	
 	<entry key="sql_getProductCategoryByDefault">
 	select sc_product_category.*,
 			 (select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME,

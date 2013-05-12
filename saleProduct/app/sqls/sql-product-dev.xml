@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 		<entry key="sql_pdev_findByAsinAndTaskId">
-				select * from sc_product_dev where asin = '{@#ASIN#}' and task_id = '{@#TASK_ID#}'
+				select 
+					sc_product_dev.* ,
+					(select name from sc_user where login_id =sc_product_dev.INQUIRY_CHARGER ) as INQUIRY_CHARGER_NAME
+				
+				from sc_product_dev where asin = '{@#ASIN#}' and task_id = '{@#TASK_ID#}'
 		</entry>
 		
 		<entry key="sql_pdev_listTracks">
@@ -46,7 +50,11 @@
 					HOT_SELL_PERIOD, 
 					DEV_STATUS,
 					FLOW_STATUS,
-					PRODUCTS_SOLUTIONS
+					PRODUCTS_SOLUTIONS,
+					SUPPLIER_MAX_PRICE,
+					SALE_LOWEST_PRICE,
+					SALE_SUGGEST_PRICE,
+					INQUIRY_CHARGER
 					)
 					VALUES
 					('{@#ASIN#}', 
@@ -61,7 +69,11 @@
 					'{@#HOT_SELL_PERIOD#}', 
 					'{@#DEV_STATUS#}',
 					'{@#FLOW_STATUS#}',
-					'{@#PRODUCTS_SOLUTIONS#}'
+					'{@#PRODUCTS_SOLUTIONS#}',
+					'{@#SUPPLIER_MAX_PRICE#}', 
+					'{@#SALE_LOWEST_PRICE#}',
+					'{@#SALE_SUGGEST_PRICE#}',
+					'{@#INQUIRY_CHARGER#}'
 					)
      </entry>
      
@@ -73,6 +85,10 @@ UPDATE sc_product_dev
 			{@ LISTING_SKU = '#LISTING_SKU#',}
 			{@ PRODUCTS_SOLUTIONS = '#PRODUCTS_SOLUTIONS#',}
 			{@ TITLE = '#TITLE#',}
+			{@ SUPPLIER_MAX_PRICE = '#SUPPLIER_MAX_PRICE#',}
+			{@ SALE_LOWEST_PRICE = '#SALE_LOWEST_PRICE#',}
+			{@ SALE_SUGGEST_PRICE = '#SALE_SUGGEST_PRICE#',}
+			{@ INQUIRY_CHARGER = '#INQUIRY_CHARGER#',}
 			END_TIME = NOW() , 
 			RANK = '{@#RANK#}' , 
 			{@FLOW_STATUS = '#FLOW_STATUS#',}
@@ -163,6 +179,25 @@ UPDATE sc_product_dev
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status =10 ) AS STATUS10,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 15 ) AS  STATUS15,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 20) AS  STATUS20,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf
+						WHERE scfd.task_id = spf.id 
+						     AND spf.plan_id = spdp.id  
+						     AND scfd.flow_status = 20
+						     AND scfd.asin not in (
+						     	select asin from sc_product_category_rel spcr ,sc_product_category spc
+						     	where spcr.category_id = spc.id
+						     	and ( spc.purchase_charger is null or spc.purchase_charger = '' )
+						     )
+					) AS  STATUS20_UNASIGN,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf
+							,sc_product_category_rel spcr ,sc_product_category spc
+						WHERE scfd.task_id = spf.id 
+						     AND spf.plan_id = spdp.id  
+						     AND scfd.flow_status = 20
+						     AND spcr.asin = scfd.asin
+						     AND spcr.category_id = spc.id
+                             AND spc.purchase_charger = '{@#Evn.loginId#}'
+					) AS  STATUS20_MY,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 30 ) AS  STATUS30,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 40 ) AS  STATUS40,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 50 ) AS  STATUS50,
@@ -293,6 +328,23 @@ UPDATE sc_product_dev
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status =10 ) AS STATUS10,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 15 ) AS  STATUS15,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 20) AS  STATUS20,
+			(SELECT COUNT(*) FROM sc_product_dev scfd
+							,sc_product_category_rel spcr ,sc_product_category spc
+						WHERE scfd.task_id = sc_product_filter.id 
+						     AND scfd.flow_status = 20
+						     AND spcr.asin = scfd.asin
+						     AND spcr.category_id = spc.id
+                             AND spc.purchase_charger = '{@#Evn.loginId#}'
+					) AS  STATUS20_MY,
+			(SELECT COUNT(*) FROM sc_product_dev scfd
+						WHERE scfd.task_id = sc_product_filter.id 
+						     AND scfd.flow_status = 20
+						     AND scfd.asin not in (
+						     	select asin from sc_product_category_rel spcr ,sc_product_category spc
+						     	where spcr.category_id = spc.id
+						     	and ( spc.purchase_charger is null or spc.purchase_charger = '' )
+						     )
+					) AS  STATUS20_UNASIGN,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 25) AS  STATUS25,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 30 ) AS  STATUS30,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 40 ) AS  STATUS40,
@@ -338,9 +390,9 @@ FROM  sc_product_filter spf,
 	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
         LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
 WHERE  spfd.task_id = spf.id
-    {@  and sp.title like '%#title#%'}
-    {@  and sp.asin = '#asin#'}
-    {@  and spfd.flow_status in ( #status#) }
+     {@  and sp.title like '%#title#%'}
+     {@  and sp.asin = '#asin#'}
+     {@  and spfd.flow_status in ( #status#) }
      {@  and spfd.dev_status in ( #devStatus#) }
      {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
      {@  and spfd.task_id = '#taskId#' }
@@ -354,6 +406,24 @@ WHERE  spfd.task_id = spf.id
 			  	and plan_id is not null
 			  	 #$VIEW_PRODUCT_FILTER#
 			  	and '#taskView#' = '#taskView#'
+     	)
+     }
+      {@  and 	spfd.flow_status = '#mystatus#'
+      	 	and  spfd.asin in (
+      				select spcr.asin
+      				from sc_product_category_rel spcr ,sc_product_category spc
+						WHERE 
+						     spcr.category_id = spc.id
+                             AND spc.purchase_charger = '#Evn.loginId#'
+     	)
+     }
+     {@  and 	spfd.flow_status = '#unasignstatus#'
+      	 	and  spfd.asin not in (
+      				select spcr.asin
+      				from sc_product_category_rel spcr ,sc_product_category spc
+						WHERE 
+						     spcr.category_id = spc.id
+                            and ( spc.purchase_charger is null or spc.purchase_charger = '' )
      	)
      }
    </entry>
