@@ -726,7 +726,115 @@ class Amazonaccount extends AppModel {
 	}
 	
 	////////////////////////////////////////////////
+	function getProductFeed($MerchantIdentifier,$products){
+$Feed = <<<EOD
+<?xml version="1.0" encoding="UTF-8 "?>
+<AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="amzn-envelope.xsd">
+  <Header>
+    <DocumentVersion>1.01</DocumentVersion>
+    <MerchantIdentifier>$MerchantIdentifier</MerchantIdentifier>
+  </Header>
+  <MessageType>Product</MessageType>
+  <PurgeAndReplace>true</PurgeAndReplace>
+EOD;
+/////////////////////////////////////////////////////
+		$index = 0 ;
 		
+		for( $i = 0 ;$i < count($products) ;$i++  ){
+			$index++ ;
+			$product = $products[$i] ;
+			$sku = $product['SKU'] ;
+			$asin =  $product['ASIN'] ;
+			$productTaxCode = $product['ProductTaxCode'] ;//A_GEN_NOTAX
+			$title = $product['Title'] ;
+			$Brand = $product['Brand'] ;
+			$Description = $product['Description'] ;
+			$BulletPoint1 = $product['BulletPoint1'] ;
+			$BulletPoint2 = $product['BulletPoint2'] ;
+			$MSRP = $product['MSRP'] ;
+			$Manufacturer = $product['Manufacturer'] ;
+			$ItemType = $product['ItemType'] ;
+			
+$Feed .= <<<EOD
+  <Message>
+    <MessageID>$index</MessageID>
+    <OperationType>Insert</OperationType>
+    <Product>
+      <SKU>$sku</SKU>
+      <StandardProductID>
+        <Type>ASIN</Type>
+        <Value>$asin</Value>
+      </StandardProductID>
+      <ProductTaxCode>$productTaxCode</ProductTaxCode>
+      <DescriptionData>
+        <Title>$title</Title>
+        <Brand>$Brand</Brand>
+        <Description>$Description</Description>
+        <BulletPoint>$BulletPoint1</BulletPoint>
+        <BulletPoint>$BulletPoint2</BulletPoint>
+        <MSRP currency="USD">$MSRP</MSRP>
+        <Manufacturer>$Manufacturer</Manufacturer>
+        <ItemType>$ItemType</ItemType>
+      </DescriptionData>
+      <ProductData>
+        <Health>
+          <ProductType>
+            <HealthMisc>
+              <Ingredients>Example Ingredients</Ingredients>
+              <Directions>Example Directions</Directions>
+            </HealthMisc>
+          </ProductType>
+        </Health>
+      </ProductData>
+    </Product>
+  </Message>
+EOD;
+		}
+////////////////////////////////////////////////////
+
+$Feed .= <<<EOD
+  <Message>
+    <MessageID>1</MessageID>
+    <OperationType>Insert</OperationType>
+    <Product>
+      <SKU>56789</SKU>
+      <StandardProductID>
+        <Type>ASIN</Type>
+        <Value>B0EXAMPLEG</Value>
+      </StandardProductID>
+      <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
+      <DescriptionData>
+        <Title>Example Product Title</Title>
+        <Brand>Example Product Brand</Brand>
+        <Description>This is an example product description.</Description>
+        <BulletPoint>Example Bullet Point 1</BulletPoint>
+        <BulletPoint>Example Bullet Point 2</BulletPoint>
+        <MSRP currency="USD">99.99</MSRP>
+        <Manufacturer>Example Product Manufacturer</Manufacturer>
+        <ItemType>example-item-type</ItemType>
+      </DescriptionData>
+      <ProductData>
+        <Health>
+          <ProductType>
+            <HealthMisc>
+              <Ingredients>Example Ingredients</Ingredients>
+              <Directions>Example Directions</Directions>
+            </HealthMisc>
+          </ProductType>
+        </Health>
+      </ProductData>
+    </Product>
+  </Message>
+</AmazonEnvelope>
+EOD;
+	}
+	
+	/**
+	 * 获取库存更新Feed
+	 * @param unknown_type $MerchantIdentifier
+	 * @param unknown_type $products
+	 */
 	function getQuantityFeed($MerchantIdentifier , $products){
 		////////////////////////////////////////////////////////////////////////////		
 $Feed = <<<EOD
@@ -785,6 +893,11 @@ EOD;
 	</Message>
 </AmazonEnvelope>
 EOD;
+	 */
+	/**
+	 * 获取价格更新Feed
+	 * @param unknown_type $MerchantIdentifier
+	 * @param unknown_type $products
 	 */
 	function getPriceFeed($MerchantIdentifier , $products){
 ////////////////////////////////////////////////////////////////////////////		

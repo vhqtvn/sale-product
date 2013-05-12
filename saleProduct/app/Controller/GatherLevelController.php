@@ -46,7 +46,7 @@ class GatherLevelController extends AppController {
 			$this->Tasking->setStep("gather_level",$level,$accountId,"执行竞价营销结束") ;
 			$this->Tasking->stop("gather_level",$level,$accountId) ;
 		}catch(Exception $e){
-			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
+			$this->Log->saveException($this->taskId, $e );
 			$this->Tasking->stop("gather_level",$level,$accountId) ;
 		}
 	}
@@ -78,7 +78,7 @@ class GatherLevelController extends AppController {
 			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
 			try{
-				$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
+				$this->Log->saveException($this->taskId, $e );
 			}catch(Exception $e){}
 		}
 	}
@@ -107,7 +107,7 @@ class GatherLevelController extends AppController {
 			$this->Log->savelog($this->taskId, "end!" );
 		
 		}catch(Exception $e){
-			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
+			$this->Log->saveException($this->taskId, $e );
 		}
 	}
 	
@@ -133,7 +133,7 @@ class GatherLevelController extends AppController {
 			}
 			$this->Log->savelog($this->taskId, "end!" );
 		}catch(Exception $e){
-			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
+			$this->Log->saveException($this->taskId, $e );
 		}
 	}
 	
@@ -169,7 +169,7 @@ class GatherLevelController extends AppController {
 			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );
 		}catch(Exception $e){
-			$this->Log->savelog($this->taskId, "error::::".$e->getMessage() );
+			$this->Log->saveException($this->taskId, $e );
 		}
 	}
 	

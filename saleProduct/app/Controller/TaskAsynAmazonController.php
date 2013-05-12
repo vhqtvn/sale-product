@@ -268,7 +268,7 @@ class TaskAsynAmazonController extends AppController {
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
 		if( empty($accountAsyn) ){//未开始获取
-			$request = $amazon->getProductReport1($accountId) ;
+			$request = $amazon->getProductReport1($accountId ,$this->Log ) ;
 			if( !empty($request) ){
 				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
 			}
@@ -277,7 +277,7 @@ class TaskAsynAmazonController extends AppController {
 			$reportId = $accountAsyn[0]["sc_amazon_account_asyn"]["REPORT_ID"] ;
 			$status = $accountAsyn[0]["sc_amazon_account_asyn"]["STATUS"] ;
 			if(empty($requestReportId)){
-				$request = $amazon->getProductReport1($accountId) ;
+				$request = $amazon->getProductReport1($accountId ,$this->Log) ;
 				if( !empty($request) ){
 					$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
 				}
@@ -310,7 +310,7 @@ class TaskAsynAmazonController extends AppController {
 			 	$account['MERCHANT_IDENTIFIER'] 
 		) ;
 		//if( empty($accountAsyn) ){//未开始获取
-			$request = $amazon->getProductActiveReport1($accountId) ;
+			$request = $amazon->getProductActiveReport1($accountId ,$this->Log) ;
 			if( !empty($request) ){
 				$this->Amazonaccount->saveAccountAsyn($accountId ,$request , $user) ;
 			}
@@ -358,14 +358,14 @@ class TaskAsynAmazonController extends AppController {
 				//do nothing
 			}else{
 				if( empty($reportId) ){//获取reportId
-					$request = $amazon->getProductReport2($accountId,$requestReportId) ;
+					$request = $amazon->getProductReport2($accountId,$requestReportId ,$this->Log) ;
 					print_r($request) ;
 					if( !empty($request) ){
 						$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
 					}
 				}else if(empty($status)){//获取产品数据
 					$this->Amazonaccount->asynProductStatusStart($accountId , "_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
-					$request = $amazon->getProductReport3($accountId , $reportId ) ;
+					$request = $amazon->getProductReport3($accountId , $reportId  ,$this->Log) ;
 					$this->Amazonaccount->asynProductStatusEnd($accountId  , "_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") ;
 					
 					$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_") , $user) ;
@@ -404,12 +404,12 @@ class TaskAsynAmazonController extends AppController {
 				) ;
 				
 				if( empty($reportId) ){//获取reportId
-					$request = $amazon->getProductActiveReport2($accountId,$requestReportId) ;
+					$request = $amazon->getProductActiveReport2($accountId,$requestReportId ,$this->Log) ;
 					if( !empty($request) ){
 						$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
 					}
 				}else if(empty($status)){//获取产品数据
-					$request = $amazon->getProductActiveReport3($accountId , $reportId ) ;
+					$request = $amazon->getProductActiveReport3($accountId , $reportId ,$this->Log) ;
 					$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_MERCHANT_LISTINGS_DATA_")) ;
 				}
 			}

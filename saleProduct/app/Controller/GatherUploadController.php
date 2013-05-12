@@ -32,7 +32,7 @@ class GatherUploadController extends AppController {
 			$this->Tasking->stop("gather_seller",$id,"") ;
 		}catch(Exception $e){
 		
-			$this->Log->saveLog($this->taskId,"error::::::::".$e->getMessage()) ;
+			$this->Log->saveException($this->taskId, $e );
 			$this->Tasking->stop("gather_seller",$id,"") ;
 		}	
     }
@@ -111,7 +111,7 @@ class GatherUploadController extends AppController {
 			
 			$this->Tasking->stop("gather_seller_all",$id,"") ;
 		}catch(Exception $e){
-			$this->Log->saveLog($this->taskId,"error::::::::".$e->getMessage()) ;
+			$this->Log->saveException($this->taskId, $e );
 			$this->Tasking->stop("gather_seller_all",$id,"") ;
 		}
 	}

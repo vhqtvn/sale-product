@@ -225,7 +225,7 @@ class GatherData extends AppModel {
 				//print_r($details) ;
 		        $service->saveCompetions($asin , $base , $details) ;
 			}catch(Exception $e){
-				$log->savelog($logId ,"error::::". $e->getMessage()) ;
+				$log->saveException($logId, $e );
 			}
 			$html->clear() ;
 			unset($html) ;
@@ -274,7 +274,7 @@ class GatherData extends AppModel {
 		        }
 			        			
 			}catch(Exception $e){
-				$log->savelog($logId ,"error::::". $e->getMessage()) ;
+				$log->saveException($logId, $e );
 			}
 			$html->clear() ;
 			unset($html) ;
@@ -394,7 +394,7 @@ class GatherData extends AppModel {
 						}
 					}
 				}catch(Exception $e){
-					$log->savelog($logId,"error::::::".$e->getMessage()) ;
+					$log->saveException($logId, $e );
 				}
 				$html->clear() ;
 				unset($html) ;

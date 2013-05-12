@@ -190,7 +190,7 @@ class Amazon {
 	 * step1
 	 * 发送report请求,获取产品信息
 	 */
-	public function getProductReport1( $accountId ){
+	public function getProductReport1( $accountId,$log = null ){
 		 $config = array (
 			  'ServiceURL' =>  "https://mws.amazonservices.com",
 			  'ProxyHost' => null,
@@ -241,12 +241,13 @@ class Amazon {
 	                  }
 	            } 
 	     } catch (MarketplaceWebService_Exception $ex) {
+	     	$log->saveException("getProductReport1__$accountId",$ex) ;
 	     }
 	     
 	     return $return ;
 	}
 	
-	public function getProductReport2( $accountId , $reportRequestId ){
+	public function getProductReport2( $accountId , $reportRequestId,$log = null ){
 		 $config = array (
 			  'ServiceURL' =>  "https://mws.amazonservices.com",
 			  'ProxyHost' => null,
@@ -287,12 +288,13 @@ class Amazon {
                     }
                 } 
 	     } catch (MarketplaceWebService_Exception $ex) {
+	     	$log->saveException("getProductReport2__$accountId",$ex) ;
 	     }
 	     
 	     return $return ;
 	}
 	
-	public function getProductReport3( $accountId ,$reportId){
+	public function getProductReport3( $accountId ,$reportId,$log=null){
 		 $config = array (
 		  'ServiceURL' => "https://mws.amazonservices.com",
 		  'ProxyHost' => null,
@@ -317,10 +319,11 @@ class Amazon {
 		 try {
 	           $response = $service->getProductReport($request,$accountId,"_GET_FLAT_FILE_OPEN_LISTINGS_DATA_");
 	     } catch (MarketplaceWebService_Exception $ex) {
+	     	$log->saveException("getProductReport3__$accountId",$ex) ;
 	     }
 	}
 	
-	public function getProductActiveReport1( $accountId ){
+	public function getProductActiveReport1( $accountId,$log = null  ){
 
 		 $config = array (
 			  'ServiceURL' =>  "https://mws.amazonservices.com",
@@ -372,12 +375,13 @@ class Amazon {
 	                  }
 	            } 
 	     } catch (MarketplaceWebService_Exception $ex) {
+	     	$log->saveException("getProductActiveReport1__$accountId",$ex) ;
 	     }
 	     
 	     return $return ;
 	}
 	
-	public function getProductActiveReport2( $accountId , $reportRequestId ){
+	public function getProductActiveReport2( $accountId , $reportRequestId,$log = null ){
 		 $config = array (
 			  'ServiceURL' =>  "https://mws.amazonservices.com",
 			  'ProxyHost' => null,
@@ -418,12 +422,13 @@ class Amazon {
                     }
                 } 
 	     } catch (MarketplaceWebService_Exception $ex) {
+	     	$log->saveException("getProductActiveReport2__$accountId",$ex) ;
 	     }
 	     
 	     return $return ;
 	}
 	
-	public function getProductActiveReport3( $accountId ,$reportId){
+	public function getProductActiveReport3( $accountId ,$reportId,$log=null){
 		 $config = array (
 		  'ServiceURL' => "https://mws.amazonservices.com",
 		  'ProxyHost' => null,
@@ -448,6 +453,7 @@ class Amazon {
 		 try {
 	           $response = $service->getProductReport($request,$accountId,"_GET_MERCHANT_LISTINGS_DATA_");
 	     } catch (MarketplaceWebService_Exception $ex) {
+	     	$log->saveException("getProductActiveReport3__$accountId",$ex) ;
 	     }
 	}
 	

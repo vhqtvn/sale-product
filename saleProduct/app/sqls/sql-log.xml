@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_listExeLog">
+    	select * from sc_exe_log sel
+    	where 1=1
+    	{@ and sel.message like '%#searchKey#%' }
+    	order by sel.log_time desc
+    </entry>
+    
+</properties>

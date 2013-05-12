@@ -39,7 +39,7 @@ class GatherProductController extends AppController {
 				}
 				$this->Tasking->stop("gather_product",$asin,$accountId) ;
 			}catch(Exception $e){
-				$this->Log->saveLog($this->taskId,"error::::::".$e->getMessage()) ;
+				$this->Log->saveException($this->taskId, $e );
 				$this->Tasking->stop("gather_product",$asin,$accountId) ;
 			}
 		}catch(Exception $e){

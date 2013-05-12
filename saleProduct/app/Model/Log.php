@@ -2,7 +2,27 @@
 class Log extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	public function formatException( $e ){
+		$line = $e->getLine() ;
+		$file = $e->getFile() ;
+		$message = $e->getMessage() ;
 		
+		return "[FIEL:$file][LINE:$line]$message" ;
+	}
+
+	/**
+	 * 日志操作
+	 */
+	public function saveException($taskId, $e){
+		$message = $this->formatException($e) ;
+		if(empty($taskId)){
+			$taskId = "anomys" ;
+		}
+		$message = $this->formatSqlParams("error:::::".$message) ;
+		$sql = "insert into sc_exe_log(task_id,message,log_time) values('".$taskId."','".$message."',NOW())" ;
+		$this->query($sql) ;
+	}
+	
 	/**
 	 * 日志操作
 	 */

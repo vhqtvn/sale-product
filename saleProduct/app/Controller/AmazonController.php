@@ -240,7 +240,7 @@ class AmazonController extends AppController {
     	
     	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/startAsynAmazonActiveProducts") ;
     	$random = date("U") ;
-    	echo $url ;
+    	
     	file_get_contents($url."?".$random);
     	
     	$this->response->type("json") ;
