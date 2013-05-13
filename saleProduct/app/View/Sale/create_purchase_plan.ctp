@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -26,7 +26,9 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$defaultCode = $plan[0]['sc_purchase_plan']['CODE'] ;
 		if( empty($plan[0]['sc_purchase_plan']['CODE']) ){
-			/*$index = $SqlUtils->getMaxValue("PP" , null , 1) ;
+			/*
+			 * 
+			$index = $SqlUtils->getMaxValue("PP" , null , 1) ;
 			if( strlen($index) < 5 ){
 				$len = 5-strlen($index) ;
 				for($i=0 ;$i < $len ;$i++){
@@ -66,7 +68,6 @@
 					$.dataservice("model:Sale.savePurchasePlan",json,function(){
 						window.close();
 					}) ;
-				
 				};
 				return false ;
 			}) ;
@@ -81,7 +82,7 @@
 						grid:{
 							title:"用户选择",
 							params:{
-								sqlId:"sql_saleproduct_list"
+								sqlId:"sql_user_list"
 							},
 							ds:{type:"url",content:contextPath+"/grid/query"},
 							pagesize:10,

@@ -67,7 +67,12 @@
 							{align:"center",key:"CREATE_TIME",label:"询价时间",width:"15%",forzen:false,align:"left"},
 							{align:"center",key:"USERNAME",label:"提交人",width:"6%",forzen:false,align:"left"},
 							{align:"center",key:"IMAGE",label:"图片",width:"4%",forzen:false,align:"left",format:{type:'img'}},
-					     	{align:"center",key:"NAME",label:"供应商名称",width:"15%",forzen:false,align:"left"},
+					     	{align:"center",key:"NAME",label:"供应商名称",width:"15%",forzen:false,align:"left",format:function(val,record){
+									return "<a href='#' supplier-id='"+record.SUPPLIER_ID+"'>"+val+"<a>" ;
+						     }},
+						     {align:"center",key:"URL",label:"产品网址",width:"10%",forzen:false,align:"left",format:function(val,record){
+									return "<a href='"+val+"' target='_blank'>"+val+"<a>" ;
+						     }},
 				           	{align:"center",key:"WEIGHT",label:"产品重量",width:"6%",forzen:false,align:"left"},
 				           	{align:"center",key:"CYCLE",label:"生产周期",width:"6%"},
 				           	{align:"center",key:"PACKAGE",label:"包装方式",width:"6%"},

@@ -1110,3 +1110,48 @@ var Flow = function(){
 		}) ;
 	}
 } ;
+
+$(".product-detail").live("click",function(){
+	var asin = $(this).attr("asin") ;
+	openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
+	return false;
+}) ;
+
+$("[product-detail]").live("click",function(){
+	var asin = $(this).attr("product-detail") ;
+	openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
+	return false;
+}) ;
+
+
+$("[supplier-id]").live("click",function(){
+	var supplierId = $(this).attr("supplier-id") ;
+	openCenterWindow(contextPath+"/supplier/view/"+supplierId,800,580) ;
+	return false ;
+})
+
+$("[offer-listing]").live("click",function(){
+	var sku = $(this).attr("offer-listing") ;
+	openCenterWindow("http://www.amazon.com/gp/offer-listing/"+sku) ;
+	return false ;
+})
+
+
+
+$("[product-realsku]").live("click",function(){
+	var sku = $(this).attr("product-realsku") ;
+	openCenterWindow(contextPath+"/saleProduct/details/"+sku+"/sku",950,650) ;
+	return false;
+}) ;
+
+$(".product-realsku").live("click",function(){
+	var sku = $(this).attr("sku") ;
+	openCenterWindow(contextPath+"/saleProduct/details/"+sku+"/sku",950,650) ;
+	return false;
+}) ;
+
+$("td[key='ORDER_ID']").live("click",function(){
+	if( $(this).find(":input").length ) return ;
+	var orderId = $.trim( $(this).text() ) ;
+	openCenterWindow(contextPath+"/page/forward/Norder.details/"+orderId,800,600) ;
+}) ;

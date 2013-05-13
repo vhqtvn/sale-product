@@ -794,38 +794,6 @@ EOD;
 ////////////////////////////////////////////////////
 
 $Feed .= <<<EOD
-  <Message>
-    <MessageID>1</MessageID>
-    <OperationType>Insert</OperationType>
-    <Product>
-      <SKU>56789</SKU>
-      <StandardProductID>
-        <Type>ASIN</Type>
-        <Value>B0EXAMPLEG</Value>
-      </StandardProductID>
-      <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
-      <DescriptionData>
-        <Title>Example Product Title</Title>
-        <Brand>Example Product Brand</Brand>
-        <Description>This is an example product description.</Description>
-        <BulletPoint>Example Bullet Point 1</BulletPoint>
-        <BulletPoint>Example Bullet Point 2</BulletPoint>
-        <MSRP currency="USD">99.99</MSRP>
-        <Manufacturer>Example Product Manufacturer</Manufacturer>
-        <ItemType>example-item-type</ItemType>
-      </DescriptionData>
-      <ProductData>
-        <Health>
-          <ProductType>
-            <HealthMisc>
-              <Ingredients>Example Ingredients</Ingredients>
-              <Directions>Example Directions</Directions>
-            </HealthMisc>
-          </ProductType>
-        </Health>
-      </ProductData>
-    </Product>
-  </Message>
 </AmazonEnvelope>
 EOD;
 	}

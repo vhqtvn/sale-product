@@ -1121,34 +1121,10 @@ var renderGridImg = function(val,record){
 	return "" ;
 }
 
-$("[supplier-id]").live("click",function(){
-	var supplierId = $(this).attr("supplier-id") ;
-	openCenterWindow(contextPath+"/supplier/view/"+supplierId,800,580) ;
-	return false ;
-})
-	
 //common action 
 function viewSupplier(id){
 	openCenterWindow(contextPath+"/supplier/view/"+id,800,580) ;
 }
-
-$(".product-detail").live("click",function(){
-	var asin = $(this).attr("asin") ;
-	openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
-	return false;
-}) ;
-
-$(".product-realsku").live("click",function(){
-	var sku = $(this).attr("sku") ;
-	openCenterWindow(contextPath+"/saleProduct/details/"+sku+"/sku",950,650) ;
-	return false;
-}) ;
-
-$("td[key='ORDER_ID']").live("click",function(){
-	if( $(this).find(":input").length ) return ;
-	var orderId = $.trim( $(this).text() ) ;
-	openCenterWindow(contextPath+"/page/forward/Norder.details/"+orderId,800,600) ;
-}) ;
 
 /////////////
 $.llygrid.format.purchaseProductStatus = {

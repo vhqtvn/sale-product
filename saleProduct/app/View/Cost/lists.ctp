@@ -57,10 +57,13 @@
 	columns.push( {align:"center",key:"TYPE",label:"成本类型", width:"6%" }) ;
 	columns.push( {align:"left",key:"ASIN",label:"SKU/ASIN", width:"15%" ,format:function(val,record){
 		if(record.SKU) return "(SKU)"+record.SKU ;
-		return "(ASIN)"+record.ASIN ;
+		return "<a href='' product-detail='"+val+"'>(ASIN)"+record.ASIN+"</a>" ;
 	}}) ;
 	columns.push( {align:"left",key:"TITLE",label:"名称", width:"20%" ,format:function(val,record){
-		return record.REAL_PRODUCT_TITLE||record.PRODUCT_TITLE||"" ;
+		if( record.SKU ){
+			return record.REAL_PRODUCT_TITLE||record.PRODUCT_TITLE||"" ;
+		}
+		return "<a href='#' offer-listing='"+record.ASIN+"'>"+(record.REAL_PRODUCT_TITLE||record.PRODUCT_TITLE||"")+"</a>" ;
 	}}) ;
 
 	<?php  if($COST_VIEW_PROFIT){ ?>

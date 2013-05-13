@@ -118,6 +118,7 @@
 			and sppd.id not in (
 				select product_id from sc_purchase_task_products where task_id = '{@#taskId#}'
 			)
+			{@ and ( srp.real_sku = '#searchKey#'  or srp.name like '%#searchKey#%'  or srp.memo  like '%#searchKey#%')}
 			and ( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) > 0
 	]]>
     </entry>

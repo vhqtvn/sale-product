@@ -172,7 +172,7 @@ class GatherData extends AppModel {
 			
 			unset($snoopy) ;
 		}catch(Exception $e){
-			$log->savelog($logId,"get product[".$asin."] error:::".$e->getMessage()) ;	
+			$log->saveException($logId,saveException) ;	
 		}
 	}
 	
@@ -336,7 +336,7 @@ class GatherData extends AppModel {
 			}
 			unset($snoopy) ;
 		}catch( Exception $e){
-			$log->savelog($logId,"get product[".$asin."] price error:::".$e->getMessage()) ;	
+			$log->saveException($logId,saveException) ;
 		}
 	}
 

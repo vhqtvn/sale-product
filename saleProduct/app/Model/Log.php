@@ -7,7 +7,7 @@ class Log extends AppModel {
 		$file = $e->getFile() ;
 		$message = $e->getMessage() ;
 		
-		return "[FIEL:$file][LINE:$line]$message" ;
+		return "[ERROR][FIEL:$file][LINE:$line]$message" ;
 	}
 
 	/**
@@ -18,7 +18,7 @@ class Log extends AppModel {
 		if(empty($taskId)){
 			$taskId = "anomys" ;
 		}
-		$message = $this->formatSqlParams("error:::::".$message) ;
+		$message = $this->formatSqlParams($message) ;
 		$sql = "insert into sc_exe_log(task_id,message,log_time) values('".$taskId."','".$message."',NOW())" ;
 		$this->query($sql) ;
 	}

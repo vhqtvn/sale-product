@@ -23,7 +23,7 @@ class AmazonFeedProcess extends AppModel {
 	 */
 	function _process_GET_FLAT_FILE_ORDERS_DATA_( $reportType,$productItem ,$HeadArray,$accountId ){
 		
-		debug( $productItem ) ;
+		//debug( $productItem ) ;
 		
 		$NOrderService = ClassRegistry::init("NOrderService") ;
 		$log  = ClassRegistry::init("Log") ;
@@ -50,8 +50,10 @@ class AmazonFeedProcess extends AppModel {
 		$quantity  	= $productItem['quantity'] ;
 		$price  	= $productItem['price'] ;
 		
-		if(empty($asin)){
+		if(!empty($asin)){
 			$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+		}else{
+			return ;
 		}
 		
 		$amazonAccount->saveAccountProductByAsyn(array(
@@ -79,8 +81,10 @@ class AmazonFeedProcess extends AppModel {
 		if( trim($fulfillment) == 'DEFAULT' )
 			$fulfillment = "Merchant" ;
 		
-		if(empty($asin)){
+		if(!empty($asin)){
 			$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+		}else{
+			return ;
 		}
 		
 		$amazonAccount->saveAccountProductByAsyn(array(

@@ -108,6 +108,7 @@ $(function(){
 									{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 						           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 						           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
+						        	{align:"center",key:"searchKey",label:"关键字",hidden:true,query:true,align:"left"},
 						        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 						           	{align:"center",key:"SUPPIERABLE_NUM",label:"可采购",width:"5%"},
 						        	{align:"center",key:"PLAN_NUM",label:"计划采购",width:"5%"},

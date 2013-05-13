@@ -462,16 +462,16 @@
 							<input type="hidden" id="REAL_PRODUCT_ID" value="<?php echo $productDev['REAL_PRODUCT_ID'];?>"/>
 							关联货品
 						</th>
-						<td colspan="4">
 							<?php 
 							if( !empty($productDev['REAL_PRODUCT_ID']) ){
 								$sp = $SqlUtils->getObject("sql_saleproduct_getById",array("realProductId"=>$productDev['REAL_PRODUCT_ID'])) ;
+								echo "<td colspan='4'  product-realsku='".$sp['REAL_SKU']."'>" ;
 								echo $sp['NAME'] ;
-								echo "(".$sp['REAL_SKU'].")" ;
-								echo "<img style='width:30px;height:30px;' src='/$fileContextPath".$sp['IMAGE_URL']."'>" ;
+								echo "<span>(".$sp['REAL_SKU'].")" ;
+								echo "<img style='width:30px;height:30px;' src='/$fileContextPath".$sp['IMAGE_URL']."'></span>" ;
+								echo "</td>" ;
 							}	
 							?>
-						</td>
 					</tr>		
 					<?php 	} ?>
 					<?php  if( $pdStatus >=60 ){  ?>
@@ -655,7 +655,7 @@
 			<table class="table table-bordered">
 				<tr>
 					<th style="width:100px;">标题：</th>
-					<td><?php echo $product["TITLE"]?>(<?php echo $product["ASIN"]?>) </td>
+					<td><a href="#"  offer-listing="<?php echo $product["ASIN"]?>"><?php echo $product["TITLE"]?>(<?php echo $product["ASIN"]?>) </a></td>
 					<td rowspan="8">
 						<?php
 							foreach( $imgs as $img ){
@@ -836,7 +836,7 @@
 						<th>报价1</th>
 						<th>报价2</th>
 						<th>报价3</th>
-						<th></th>
+						<th>产品网址</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -849,13 +849,15 @@
 					 	if( !empty($supplier['IMAGE']) ){
 					 		$urls = "<img src='/".$fileContextPath."/".$supplier['IMAGE']."' style='width:80px;height:50px;'>" ;
 					 	}
+					 	
+					 	$url = "<a href='".$supplier['URL']."' target='_blank'>".$supplier['URL']."</a>" ;
 						
 						$usedClz = "" ;
 						echo "<tr class='$usedClz'>
 							<td rowspan=2 > " ;
 							 if( $pdStatus ==20 && $PD_INQUIRY ){ echo  "<a href='#' class='update-supplier' inquiryId='".$supplier['ID']."' >修改询价</a>"; }
 							 echo "</td>
-							 <td>".$supplier['SUPPLIER_NAME']."</td>
+							 <td supplier-id='".$supplier['SUPPLIER_ID']."'>".$supplier['SUPPLIER_NAME']."</td>
 							<td>".$supplier['WEIGHT']."</td>
 							<td>".$supplier['CYCLE']."</td>
 							<td>".$supplier['PACKAGE']."</td>
@@ -866,11 +868,10 @@
 							<td>".$supplier['NUM2']."/".$supplier['OFFER2']."</td>
 							<td>".$supplier['NUM3']."/".$supplier['OFFER3']."</td>
 							<td rowspan=2>
-							  $urls
+							 $url
 							</td>
 						</tr><tr class='$usedClz'>
-							<td colspan=10>".$supplier['MEMO']."
-							</td>
+							<td colspan=10>".$supplier['MEMO']."</td>
 							
 						</tr> " ;
 					}?>
