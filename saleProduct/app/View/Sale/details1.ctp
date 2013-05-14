@@ -117,6 +117,11 @@
 		$PD_SUPPLIER_MAX_PRICE	=  $security->hasPermission($loginId , 'PD_SUPPLIER_MAX_PRICE') ;//供应限价
 		
 		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
+		
+		$PD_SXCG			=  $security->hasPermission($loginId , 'PD_SXCG') ;//试销采购
+		$PD_KCDW			=  $security->hasPermission($loginId , 'PD_KCDW') ;//库存到位
+		$PD_YXZK			=  $security->hasPermission($loginId , 'PD_YXZK') ;//营销展开
+		$PD_KFZJ				=  $security->hasPermission($loginId , 'PD_KFZJ') ;//开发总结
 	
 		$Config  = ClassRegistry::init("Config") ;
 		$websites = $Config->getAmazonConfig("PRODUCT_DEV_WEBSITE") ;
@@ -143,13 +148,23 @@
 	?>
   
    <style>
+html{-webkit-text-size-adjust: none;}
    		*{
    			font:12px "微软雅黑";
+   		}
+   		
+   		.flow-node{
+			font-size:11px;
+   		}
+   		
+   		.flow-split{
+			display:none;
    		}
    		
    		.flow-bar{
 			position:fixed;
    			top:0px;
+   			padding-top:10px;
    			left:0px;
    			right:0px;
    			height:50px;
@@ -353,10 +368,47 @@
 		actions:[ 
 					<?php if( $PD_LISTING_SP ){ ?>
 	           {label:"保存",action:function(){ AuditAction('70',"保存") } },
-		      {label:"审批通过",action:function(){ AuditAction('80',"审批通过，结束") } }
+		       {label:"审批通过",action:function(){ AuditAction('72',"审批通过，进入下一步试销采购") } }
 	           <?php }?>
 	     ]}
      ) ;
+
+	flowData.push( {status:72,label:"试销采购",memo:true ,
+		actions:[ 
+<?php if( $PD_SXCG ){ ?>
+		         {label:"保存",action:function(){ AuditAction('72',"保存") } },
+			     {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
+		         <?php }?>
+	     ]}
+     ) ;
+
+	flowData.push( {status:74,label:"库存到达",memo:true ,
+		actions:[ 
+<?php if( $PD_KCDW ){ ?>
+				{label:"保存",action:function(){ AuditAction('74',"保存") } },
+				{label:"下一步",action:function(){ AuditAction('76',"库存到达，进入下一步") } }
+				<?php }?>
+	     ]}
+     ) ;
+
+	flowData.push( {status:76,label:"营销展开",memo:true ,
+		actions:[ 
+<?php if( $PD_YXZK ){ ?>
+			{label:"保存",action:function(){ AuditAction('76',"保存") } },
+			{label:"下一步",action:function(){ AuditAction('78',"营销展开，进入下一步") } }
+			<?php }?>
+	     ]}
+     ) ;
+
+	flowData.push( {status:78,label:"开发总结",memo:true ,
+		actions:[ 
+<?php if( $PD_KFZJ ){ ?>
+				{label:"保存",action:function(){ AuditAction('78',"保存") } },
+				{label:"结束",action:function(){ AuditAction('80',"开发总结填写完成，结束开发流程") } }
+				<?php }?>
+	     ]}
+     ) ;
+    
 	flowData.push( {status:80,label:"结束"}) ;
 	<?php } ?>
 	$(function(){
@@ -407,17 +459,12 @@
 				<tbody>
 					<tr>
 						<th>开发标题：</th>
-						<td>
+						<td colspan="3">
 							<input type="text"  id="TITLE" class="input 10-input 30-input 40-input"
 								 value="<?php echo $productDev['TITLE'];?>"
 								 data-validator="required" style="width:90%;" placeHolder="输入开发标题"/>
 						</td>
 					</tr>
-				</tbody>
-			</table>
-		
-		<table class="form-table "  style="margin:5px 2px;">
-				<tbody>
 					<tr>
 						<th>开发标识：</th>
 						<td>
@@ -432,26 +479,15 @@
 						<?php } ?>
 						</td>
 					</tr>
-				</tbody>
-			</table>
-		
-		<table class="form-table " >
-				<caption>
-				基本信息
-				<?php if( $PD_REEDIT_BASE){ 
-					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-				}?>
-				</caption>
-				<tbody>	
 					<tr>
-						<th style="width:33%;">ASIN排名</th>
-						<th style="width:33%;">估计流量</th>
-						<th style="width:34%;">热销时段</th>
-					</tr>
-					<tr>
-						<td style="width:20%;"><textarea  id="RANK"  class="input 10-input"  style="width:90%;height:60px;"><?php echo $productDev['RANK'];?></textarea></td>
-						<td style="width:20%;"><textarea  id="ESTIMATE_TRAFFIC"  class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_TRAFFIC'];?></textarea></td>
-						<td style="width:20%;"><textarea  id="HOT_SELL_PERIOD" class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['HOT_SELL_PERIOD'];?></textarea></td>
+						<th style="width:20%;">
+							试销采购量
+						</th>
+						<td colspan="3">
+							<input type="text"  id="TRY_PURCHASE_NUM" 
+								 class="input 10-input 30-input 40-input" 
+								style="width:80%;" placeHolder="试销采购量" value="<?php echo $productDev['TRY_PURCHASE_NUM']?>" />
+						</td>
 					</tr>
 					<?php  if( $pdStatus >=50 ){  ?>
 					<tr>
@@ -479,13 +515,36 @@
 						<th style="width:20%;">
 							关联Listing SKU（逗号分隔）
 						</th>
-						<td colspan="4">
+						<td colspan="3">
 							<input type="text"  id="LISTING_SKU" 
 								 class="input 60-input" 
 								style="width:80%;" placeHolder="输入关联ListingSKU" value="<?php echo $productDev['LISTING_SKU']?>" />
 						</td>
 					</tr>		
 					<?php 	} ?>
+				</tbody>
+			</table>
+		
+		<table class="form-table " >
+				<caption>
+				基本信息
+				<?php if( $PD_REEDIT_BASE){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?>
+				</caption>
+				<tbody>	
+					<tr>
+						<th style="width:33%;">ASIN排名</th>
+						<th style="width:33%;">估计流量</th>
+						<th style="width:34%;">热销时段</th>
+					</tr>
+					<tr>
+						<td style="width:20%;"><textarea  id="RANK"  class="input 10-input"  style="width:90%;height:60px;"><?php echo $productDev['RANK'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="ESTIMATE_TRAFFIC"  class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['ESTIMATE_TRAFFIC'];?></textarea></td>
+						<td style="width:20%;"><textarea  id="HOT_SELL_PERIOD" class="input 10-input"     style="width:90%;height:60px;"><?php echo $productDev['HOT_SELL_PERIOD'];?></textarea></td>
+					</tr>
+					
+					
 				</tbody>
 			</table>
 			

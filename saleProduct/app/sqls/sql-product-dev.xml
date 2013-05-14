@@ -54,7 +54,8 @@
 					SUPPLIER_MAX_PRICE,
 					SALE_LOWEST_PRICE,
 					SALE_SUGGEST_PRICE,
-					INQUIRY_CHARGER
+					INQUIRY_CHARGER,
+					TRY_PURCHASE_NUM
 					)
 					VALUES
 					('{@#ASIN#}', 
@@ -73,7 +74,8 @@
 					'{@#SUPPLIER_MAX_PRICE#}', 
 					'{@#SALE_LOWEST_PRICE#}',
 					'{@#SALE_SUGGEST_PRICE#}',
-					'{@#INQUIRY_CHARGER#}'
+					'{@#INQUIRY_CHARGER#}',
+					'{@#TRY_PURCHASE_NUM#}'
 					)
      </entry>
      
@@ -89,6 +91,7 @@ UPDATE sc_product_dev
 			{@ SALE_LOWEST_PRICE = '#SALE_LOWEST_PRICE#',}
 			{@ SALE_SUGGEST_PRICE = '#SALE_SUGGEST_PRICE#',}
 			{@ INQUIRY_CHARGER = '#INQUIRY_CHARGER#',}
+			{@ TRY_PURCHASE_NUM = '#TRY_PURCHASE_NUM#',}
 			END_TIME = NOW() , 
 			RANK = '{@#RANK#}' , 
 			{@FLOW_STATUS = '#FLOW_STATUS#',}
@@ -208,6 +211,10 @@ UPDATE sc_product_dev
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 50 ) AS  STATUS50,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 60 ) AS  STATUS60,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 70 ) AS  STATUS70,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 72 ) AS  STATUS72,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 74 ) AS  STATUS74,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 76 ) AS  STATUS76,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 78 ) AS  STATUS78,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 80 ) AS  STATUS80
 			  FROM sc_product_dev_plan spdp
 			  where 1=1
@@ -352,6 +359,10 @@ UPDATE sc_product_dev
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 50 ) AS  STATUS50,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 60 ) AS  STATUS60,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 70 ) AS  STATUS70,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 72 ) AS  STATUS72,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 74 ) AS  STATUS74,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 76 ) AS  STATUS76,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 78 ) AS  STATUS78,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 80 ) AS  STATUS80,
 			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sc_product_filter.creator ) AS USERNAME
 	  FROM sc_product_filter  , sc_product_dev_plan spdp

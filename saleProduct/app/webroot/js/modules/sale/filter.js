@@ -61,6 +61,18 @@ var currentId = '' ;
 			        {align:"center",key:"STATUS70",label:"Listing审批",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='70'>"+(val||'0')+"</a>"
 			        }},
+			        {align:"center",key:"STATUS72",label:"试销采购",group:'流程状态',width:"6%",format:function(val,record){
+						return "<a href='#' class='fs-action' status='72'>"+(val||'0')+"</a>"
+			        }},
+			        {align:"center",key:"STATUS74",label:"库存到达",group:'流程状态',width:"6%",format:function(val,record){
+						return "<a href='#' class='fs-action' status='74'>"+(val||'0')+"</a>"
+			        }},
+			        {align:"center",key:"STATUS76",label:"营销展开",group:'流程状态',width:"6%",format:function(val,record){
+						return "<a href='#' class='fs-action' status='76'>"+(val||'0')+"</a>"
+			        }},
+			        {align:"center",key:"STATUS78",label:"开发总结",group:'流程状态',width:"6%",format:function(val,record){
+						return "<a href='#' class='fs-action' status='78'>"+(val||'0')+"</a>"
+			        }},
 			        {align:"center",key:"STATUS80",label:"结束",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='80'>"+(val||'0')+"</a>"
 			        }},
@@ -165,7 +177,8 @@ var currentId = '' ;
 						//return "<a href='#' class='process-action' status='"+status+"' val='"+val+"' asin='"+record.ASIN+"'>处理</a>&nbsp;" ;
 					}},
 					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",sort:true,
-							format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',25:'成本利润分析',30:'产品经理审批',40:'总监审批',50:'录入货品',60:'制作Listing',70:'Listing审批',80:'处理完成'}}},
+							format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',25:'成本利润分析',30:'产品经理审批',40:'总监审批',50:'录入货品',
+								60:'制作Listing',70:'Listing审批',72:'采购试销',74:'库存到达',76:'营销展开',78:'开发总结',80:'处理完成'}}},
 					{align:"center",key:"DEV_STATUS",label:"开发状态",sort:true,width:"5%",format:function(val){
 						val = val||"" ;
 						var map = {1:'自有',2:'跟卖',3:'废弃'} ;
