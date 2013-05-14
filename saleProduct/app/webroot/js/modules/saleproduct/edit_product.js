@@ -71,6 +71,7 @@ $(function(){
 		$(val.split("||")).each(function(){
 			var self = this ;
 			$("<li class='alert alert-success key-li' style='position:relative;padding:2px;margin:2px;'>"+this+"</li>").appendTo(".keys-container").mouseenter(function(){
+				if(isView) return ;
 				$("<a href='#' class='del-key' style='position:absolute;top:0px;right:0px;color:red;'>删除</a>").appendTo( $(this) ).click(function(){
 					if( $.trim($(this).parent().text() || $(this).parent().find("input").val()) ){
 						if(window.confirm("确认删除？")){
@@ -81,6 +82,7 @@ $(function(){
 			}).mouseleave(function(){
 				$(this).find(".del-key").remove();
 			}).dblclick(function(){
+				if(isView) return ;
 				if( $(this).find("input").length <=0 ){
 					var val = self ;
 					$("<input class='key-input' type='text' placeHolder='输入关键字' value='"+val+"'/>").appendTo($(this).empty()).focus() ;

@@ -32,12 +32,12 @@
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:50,
-				 pageSizes:[15,20,30,40],
+				 pageSizes:[15,20,30,50],
 				 height:function(){
 					return $(window).height() - 140 ;
 				},
 				 title:"用户列表",
-				 indexColumn:false,
+				 indexColumn:true,
 				 querys:{sqlId:"sql_listExeLog"},
 				 // querys:{name:"hello",name2:"world"},
 				 loadMsg:"数据加载中，请稍候......"

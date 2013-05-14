@@ -102,6 +102,14 @@
 									</td>
 								</tr>
 								<tr>
+									<th>开始时间：</th>
+									<td><input data-validator="required" type="text" id="startTime" data-widget="calendar"
+										value="<?php echo $result['START_TIME'];?>"/></td>
+									<th>结束时间：</th>
+									<td><input data-validator="required" type="text" id="endTime" data-widget="calendar"
+										value="<?php echo $result['END_TIME'];?>"/></td>
+								</tr>
+								<tr>
 									<th>备注：</th><td  colspan=3>
 										<textarea name="memo"  style="width:90%;height:80px;"><?php echo $result['MEMO'];?></textarea>
 									</td>

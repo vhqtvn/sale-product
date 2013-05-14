@@ -126,7 +126,7 @@ var currentId = '' ;
 						    event.preventDefault() ;
 						    event.stopPropagation()  ;
 							var taskId = row.ID;
-							openCenterWindow(contextPath+"/page/forward/Product.developer.createTask/"+taskId,600,350,function(){
+							openCenterWindow(contextPath+"/page/forward/Product.developer.createTask/"+taskId,700,400,function(){
 								var params = $.dialogReturnValue()  ;
 								if(!params ) return ;
 								if(!params.code) return ;
@@ -258,7 +258,7 @@ var currentId = '' ;
 			
 			
 			$(".create-task").click(function(){
-				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask/",600,350,function(){
+				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask/",700,400,function(){
 					var params = $.dialogReturnValue()  ;
 					if(!params ) return ;
 					if(!params.code) return ;

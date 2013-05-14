@@ -119,6 +119,13 @@
 										name="securityQuantity" value="<?php echo $item['SECURITY_QUANTITY']?>"/></td>
 								</tr>
 								<tr>
+									<th>产品属性：</th>
+									<td colspan=3>
+										<textarea name="properties" style="width:98%;height:50px;"><?php echo $item['PROPERTIES']?></textarea>
+										
+									</td>
+								</tr>
+								<tr>
 									<th>备注：</th>
 									<td colspan=3>
 										<textarea name="memo" style="width:98%;height:35px;"><?php echo $item['MEMO']?></textarea>
