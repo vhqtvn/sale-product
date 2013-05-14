@@ -3,7 +3,7 @@
     <entry key="sql_listExeLog">
     	select * from sc_exe_log sel
     	where 1=1
-    	{@ and sel.message like '%#searchKey#%' }
+    	{@ and ( sel.message like '%#searchKey#%' or sel.log_time = '#searchKey#') }
     	order by sel.log_time desc
     </entry>
     

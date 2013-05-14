@@ -162,6 +162,7 @@
 	SET 
 		{@ IMAGE_URL = '#imageUrl#',}
 		NAME = '{@#name#}' , 
+		PROPERTIES = '{@#properties#}',
 		MEMO = '{@#memo#}' , 
 		URL = '{@#url#}',
 		PACKAGE_TYPE = '{@#packageType#}',

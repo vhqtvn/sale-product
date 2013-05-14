@@ -233,10 +233,10 @@ class TaskAsynAmazonController extends AppController {
 						$this->Amazonaccount->updateAccountAsyn2($accountId ,$request , $user) ;
 					}
 				}else if(empty($status)){//获取产品数据
-					$this->Amazonaccount->asynProductStatusStart($accountId , "_GET_AFN_INVENTORY_DATA_") ;
+					//$this->Amazonaccount->asynProductStatusStart($accountId , "_GET_AFN_INVENTORY_DATA_") ;
 					$request = $amazon->getFBAInventory3($accountId , $reportId ) ;
-					$this->Amazonaccount->asynProductStatusEnd($accountId  , "_GET_AFN_INVENTORY_DATA_") ;
-	
+					//$this->Amazonaccount->asynProductStatusEnd($accountId  , "_GET_AFN_INVENTORY_DATA_") ;
+
 					$this->Amazonaccount->updateAccountAsyn3($accountId ,array("reportId"=>$reportId,"reportType"=>"_GET_AFN_INVENTORY_DATA_") , $user) ;
 				}
 			}

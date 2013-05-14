@@ -51,7 +51,7 @@ class AmazonFeedProcess extends AppModel {
 		$price  	= $productItem['price'] ;
 		
 		if(!empty($asin)){
-			$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+			$log->savelog("account_asyn__process_GET_FLAT_FILE_OPEN_LISTINGS_DATA_$accountId" ,json_encode($productItem) ) ;
 		}else{
 			return ;
 		}
@@ -82,7 +82,7 @@ class AmazonFeedProcess extends AppModel {
 			$fulfillment = "Merchant" ;
 		
 		if(!empty($asin)){
-			$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+			$log->savelog("account_asyn__process_GET_MERCHANT_LISTINGS_DATA_$accountId" ,json_encode($productItem) ) ;
 		}else{
 			return ;
 		}
@@ -112,8 +112,8 @@ class AmazonFeedProcess extends AppModel {
 		$fulfillment = "AMAZON_NA" ;
 		
 		if( 'SELLABLE' == $sellable ){
-			if(empty($asin)){
-				$log->savelog("account_asyn_$accountId" ,json_encode($productItem) ) ;
+			if(!empty($asin)){
+				$log->savelog("account_asyn__process_GET_AFN_INVENTORY_DATA_$accountId" ,json_encode($productItem) ) ;
 			}
 		
 			$amazonAccount->saveAccountProductByAsyn(array(

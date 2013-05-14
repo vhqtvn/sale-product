@@ -145,7 +145,9 @@ UPDATE sc_product_dev
 				CREATE_TIME, 
 				CREATOR, 
 				MEMO, 
-				PLAN_ID
+				PLAN_ID,
+				START_TIME,
+				END_TIME
 				)
 				VALUES
 				('{@#id#}', 
@@ -154,7 +156,9 @@ UPDATE sc_product_dev
 				NOW(), 
 				'{@#loginId#}', 
 				'{@#memo#}', 
-				'{@#planId#}'
+				'{@#planId#}',
+				'{@#startTime#}', 
+				'{@#endTime#}'
 				)
      </entry>
      
@@ -163,8 +167,9 @@ UPDATE sc_product_dev
 			SET
 			NAME = '{@#name#}' , 
 			MEMO = '{@#memo#}' , 
-			CODE = '{@#code#}'
-			
+			CODE = '{@#code#}',
+			START_TIME = '{@#startTime#}' , 
+			END_TIME = '{@#endTime#}'
 			WHERE
 			ID = '{@#id#}'
      </entry>
@@ -288,8 +293,6 @@ UPDATE sc_product_dev
 	SELECT sc_product_filter.* ,
 			spdp.CODE as PLAN_CODE,
 			spdp.NAME as PLAN_NAME,
-			spdp.START_TIME,
-			spdp.END_TIME,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
@@ -320,8 +323,6 @@ UPDATE sc_product_dev
 	SELECT sc_product_filter.* ,
 			spdp.CODE as PLAN_CODE,
 			spdp.NAME as PLAN_NAME,
-			spdp.START_TIME,
-			spdp.END_TIME,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
