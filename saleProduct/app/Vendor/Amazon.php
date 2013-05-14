@@ -453,6 +453,7 @@ class Amazon {
 		 try {
 	           $response = $service->getProductReport($request,$accountId,"_GET_MERCHANT_LISTINGS_DATA_");
 	     } catch (MarketplaceWebService_Exception $ex) {
+	     	$log  = ClassRegistry::init("Log") ;
 	     	$log->saveException("getProductActiveReport3__$accountId",$ex) ;
 	     }
 	}
