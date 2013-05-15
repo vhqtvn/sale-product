@@ -23,7 +23,10 @@
 	?>
 		<script type="text/javascript">
 $(function () {
+	var asins = {} ;
+	
 	$.dataservice("model:Chart.RealSkuChart.load",{sku:'<?php echo $sku;?>'},function(result){
+		asins= {} ;
 		//alert(11111111111);
 		//console.log( result ) ;
 		result = result.records ;
@@ -39,23 +42,28 @@ $(function () {
 		//init series type
 		var seriresName = {} ;
 		$(result).each(function(){
-			seriresName[this.REAL_SKU] = [] ;
+			if(this.ASIN){
+				asins[this.ASIN] = this.REAL_SKU ;
+			}
+			var rs =  this.REAL_SKU  ;
+			seriresName[rs] = [] ;
 		}) ;
 
 		//init series
 		var seriesData = {} ;
 		for(var realSku in seriresName){
+			var rs =  realSku  ;
 				$(categories).each(function(index , pDate){
 						var hasData = false ;
 						$(result).each(function(){
 							if( this.REAL_SKU == realSku && this.P_DATE == pDate ){
 								hasData = true ;
-								seriresName[realSku].push( parseInt(this.QUANTITY) ) ;
+								seriresName[rs].push( parseInt(this.QUANTITY) ) ;
 								}
 						}) ;
 						if(!hasData){
-							seriresName[realSku].push( 0) ;
-							}
+							seriresName[rs].push( 0) ;
+					   }
 						
 					}) ;
 		}
@@ -106,6 +114,12 @@ $(function () {
             },
             series:series
         });
+
+        //渲染竞争信息链接
+		//[offer-listing]
+		for(var asin in asins){
+			$(".offer-container").append("<li style='float:left;margin:2px 5px;' class='alert alert-info'><a offer-listing='"+asin+"'>"+asins[asin]+"("+asin+")"+"</a></li>") ;
+		}
 	}) ;
     });
     
@@ -115,7 +129,9 @@ $(function () {
 	<body>
 
 
-<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
-
+			<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+			<ul class="offer-container" style="list-style: none;text-align:right;">
+			
+			</ul>
 	</body>
 </html>

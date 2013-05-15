@@ -1,17 +1,19 @@
 $(function(){
 	$(".create-task").click(function(){
-		openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/",600,350,function(){
+		openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/",730,380,function(){
 			$(".grid-task").llygrid("reload",{}) ;
 		}) ;
 	}) ;
 	
 	$(".grid-task").llygrid({
 		columns:[
-		    {align:"left",key:"TASK_CODE",label:"编号", width:"11%"},
-		    {align:"left",key:"MEMO",label:"备注", width:"31%"},
+		    {align:"left",key:"TASK_CODE",label:"编号", width:"15%"},
+		    {align:"center",key:"START_TIME",label:"开始时间",width:"10%" },
+		    {align:"center",key:"END_TIME",label:"结束时间",width:"10%" },
 		    {align:"left",key:"STATUS",label:"状态", width:"5%",format:{type:'json',content:{1:'编辑中',2:'采购中',3:'采购完成'}}},
-           	{align:"center",key:"LAST_UPDATED_TIME",label:"操作时间",width:"24%" },
-            {align:"left",key:"CREATED_BY",label:"操作用户",width:"10%" },
+		    {align:"left",key:"MEMO",label:"备注", width:"25%"},
+           	{align:"center",key:"LAST_UPDATED_TIME",label:"操作时间",width:"15%" },
+            {align:"left",key:"EXECUTOR_NAME",label:"操作用户",width:"5%" },
             {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
             	var html = [] ;
             	if( record.STATUS==1 && editPermission) {
@@ -57,7 +59,7 @@ $(function(){
 			 $(".btn-edit-plan").bind("click",function(){
 				 event.stopPropagation() ;
 				 var record = $(this).parents("tr:first").data("record");
-				 openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/"+record.ID,600,350,function(){
+				 openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/"+record.ID,730,380,function(){
 						$(".grid-task").llygrid("reload",{},true) ;
 					}) ;
 				 return false ;

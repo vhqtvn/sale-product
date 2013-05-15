@@ -184,6 +184,7 @@ UPDATE sc_product_dev
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id ) AS TOTAL,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.dev_status = 1 ) AS  STATUS1,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.dev_status = 2 ) AS  STATUS2,
+					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.dev_status = 4 ) AS  STATUS4,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status =10 ) AS STATUS10,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 15 ) AS  STATUS15,
 					(SELECT COUNT(*) FROM sc_product_dev scfd ,sc_product_filter spf WHERE scfd.task_id = spf.id and spf.plan_id = spdp.id  AND scfd.flow_status = 20) AS  STATUS20,
@@ -303,6 +304,7 @@ UPDATE sc_product_dev
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 4 ) AS  STATUS4,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status =10 ) AS STATUS10,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 15 ) AS  STATUS15,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 20) AS  STATUS20,
@@ -333,6 +335,7 @@ UPDATE sc_product_dev
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
+			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 4 ) AS  STATUS4,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status =10 ) AS STATUS10,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 15 ) AS  STATUS15,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 20) AS  STATUS20,
@@ -402,6 +405,7 @@ FROM  sc_product_filter spf,
 	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
         LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
 WHERE  spfd.task_id = spf.id
+	 and spfd.dev_status !='3'
      {@  and sp.title like '%#title#%'}
      {@  and sp.asin = '#asin#'}
      {@  and spfd.flow_status in ( #status#) }
@@ -438,6 +442,40 @@ WHERE  spfd.task_id = spf.id
                             and ( spc.purchase_charger is null or spc.purchase_charger = '' )
      	)
      }
+   </entry>
+   
+   <entry key="sql_pdev_discard_list">
+SELECT sp.TITLE as P_TITLE, 
+    spf.NAME  as FILTER_NAME,
+    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin  ) as ASIN_COUNT,
+	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
+	spfd.*,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
+	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME,
+	( SELECT count(1) FROM sc_purchase_supplier_inquiry spsi 
+			WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) 
+			and spsi.asin = spfd.asin
+			) as INQUIRY_COUNT,
+	( SELECT COUNT(1) FROM sc_product_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_COUNT,
+	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',spc.PROFIT_MARGINS,'|',spc.PROFIT_NUM ) ) FROM sc_product_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_GROUP
+FROM  sc_product_filter spf, 
+			sc_product_dev spfd
+	LEFT JOIN sc_product sp 
+	on sp.asin = spfd.asin
+	LEFT JOIN sc_sale_competition ssc  ON ssc.asin = sp.asin
+	LEFT JOIN sc_sale_fba  ssf ON ssf.asin = sp.asin
+	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
+        LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
+WHERE  spfd.task_id = spf.id
+     and spfd.dev_status ='3'
+     {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%'  or spfd.title like '%#searchKey#%')}
+     order by end_time desc
    </entry>
    
    

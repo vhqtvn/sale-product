@@ -249,8 +249,7 @@ html{-webkit-text-size-adjust: none;}
  	var username = '<?php echo $username;?>' ;
  	var pdStatus = '<?php echo $pdStatus;?>' ;
 
- 	function AuditAction(status , statusLabel,fixParams){
- 		if( !$.validation.validate('#personForm').errorInfo ) {
+ 	function  ForceAuditAction(status , statusLabel,fixParams){
 			if(window.confirm("确认【"+statusLabel+"】吗？")){
 				var json = $("#personForm").toJson() ;
 				json = $.extend({},json,fixParams) ;
@@ -269,6 +268,11 @@ html{-webkit-text-size-adjust: none;}
 					window.location.reload() ;
 				});
 			}
+ 	 }
+
+ 	function AuditAction(status , statusLabel,fixParams){
+ 		if( !$.validation.validate('#personForm').errorInfo ) {
+ 			ForceAuditAction(status , statusLabel,fixParams) ;
 		}
  	 }
 
@@ -276,7 +280,7 @@ html{-webkit-text-size-adjust: none;}
  	flowData.push( {status:10,label:"产品分析",memo:true ,
 		actions:[ 
 			 		<?php if( $PD_ANAYS ){ ?>
-				 {label:"保存",action:function(){ AuditAction('10',"保存") } },
+				 {label:"保存",action:function(){ ForceAuditAction('10',"保存") } },
 				 {label:"询价",action:function(){ AuditAction('20',"询价") } },
 				 {label:"成本利润",action:function(){ AuditAction('25',"成本利润分析") } },
 				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
@@ -296,7 +300,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:20,label:"产品询价",memo:true ,
 		actions:[ 
 				<?php if( $PD_INQUIRY ){ ?>
-				{label:"保存",action:function(){ AuditAction('20',"保存") } },
+				{label:"保存",action:function(){ ForceAuditAction('20',"保存") } },
 				 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
 				 {label:"成本利润",action:function(){ AuditAction('25',"成本利润分析") } },
 				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
@@ -306,7 +310,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:25,label:"成本利润",memo:true ,
 		actions:[ 
 				<?php if( $PD_COST ){ ?>
-				{label:"保存",action:function(){ AuditAction('25',"保存") } },
+				{label:"保存",action:function(){ ForceAuditAction('25',"保存") } },
 				 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
 				 {label:"询价",action:function(){ AuditAction('20',"询价") } },
 				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
@@ -317,7 +321,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:30,label:"产品经理审批",memo:true ,
 		actions:[ 
 				<?php if( $PD_CPJLSP ){ ?>
-	          {label:"保存",action:function(){ AuditAction('30',"保存") } },
+	          {label:"保存",action:function(){ ForceAuditAction('30',"保存") } },
 			  {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
 			  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
 			  {label:"通过审批",action:function(){ AuditAction('40',"审批通过 " ) } }
@@ -327,7 +331,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:40,label:"总监审批",memo:true ,
 		actions:[ 
 				<?php if( $PD_ZJSP ){ ?>
-		         {label:"保存",action:function(){ AuditAction('40',"保存") } },
+		         {label:"保存",action:function(){ ForceAuditAction('40',"保存") } },
 		         {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
 				 {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
 				 {label:"审批通过",action:function(){ AuditAction('50',"审批通过，准备录入货品") } }
@@ -337,7 +341,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:50,label:"录入货品",memo:true ,
 		actions:[ 
 					<?php if( $PD_HPLR ){ ?>
-		         {label:"保存",action:function(){ AuditAction('50',"保存") } },
+		         {label:"保存",action:function(){ ForceAuditAction('50',"保存") } },
 		         {label:"确认货品录入",action:function(){ AuditAction('60',"确认货品录入完成") } ,validate:function(){
 		        	 var val = $("#REAL_PRODUCT_ID").val() ;
 		        	 if(!val){
@@ -352,7 +356,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:60,label:"制作Listing",memo:true ,
 		actions:[ 
 					<?php if( $PD_MADE_LISTING ){ ?>
-	          {label:"保存",action:function(){ AuditAction('60',"保存") } },
+	          {label:"保存",action:function(){ ForceAuditAction('60',"保存") } },
 		      {label:"确认Listing制作完成",action:function(){ AuditAction('70',"确认Listing制作完成") },validate:function(){
 		    	  var val = $("#LISTING_SKU").val() ;
 		        	 if(!val){
@@ -367,7 +371,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:70,label:"Listing审批",memo:true ,
 		actions:[ 
 					<?php if( $PD_LISTING_SP ){ ?>
-	           {label:"保存",action:function(){ AuditAction('70',"保存") } },
+	           {label:"保存",action:function(){ ForceAuditAction('70',"保存") } },
 		       {label:"审批通过",action:function(){ AuditAction('72',"审批通过，进入下一步试销采购") } }
 	           <?php }?>
 	     ]}
@@ -376,7 +380,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:72,label:"试销采购",memo:true ,
 		actions:[ 
 <?php if( $PD_SXCG ){ ?>
-		         {label:"保存",action:function(){ AuditAction('72',"保存") } },
+		         {label:"保存",action:function(){ ForceAuditAction('72',"保存") } },
 			     {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
 		         <?php }?>
 	     ]}
@@ -385,7 +389,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:74,label:"库存到达",memo:true ,
 		actions:[ 
 <?php if( $PD_KCDW ){ ?>
-				{label:"保存",action:function(){ AuditAction('74',"保存") } },
+				{label:"保存",action:function(){ ForceAuditAction('74',"保存") } },
 				{label:"下一步",action:function(){ AuditAction('76',"库存到达，进入下一步") } }
 				<?php }?>
 	     ]}
@@ -394,7 +398,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:76,label:"营销展开",memo:true ,
 		actions:[ 
 <?php if( $PD_YXZK ){ ?>
-			{label:"保存",action:function(){ AuditAction('76',"保存") } },
+			{label:"保存",action:function(){ ForceAuditAction('76',"保存") } },
 			{label:"下一步",action:function(){ AuditAction('78',"营销展开，进入下一步") } }
 			<?php }?>
 	     ]}
@@ -403,7 +407,7 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:78,label:"开发总结",memo:true ,
 		actions:[ 
 <?php if( $PD_KFZJ ){ ?>
-				{label:"保存",action:function(){ AuditAction('78',"保存") } },
+				{label:"保存",action:function(){ ForceAuditAction('78',"保存") } },
 				{label:"结束",action:function(){ AuditAction('80',"开发总结填写完成，结束开发流程") } }
 				<?php }?>
 	     ]}
@@ -430,7 +434,7 @@ html{-webkit-text-size-adjust: none;}
 			<div class="flow-action"></div>
 		</center>
 	</div>
-
+<form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
 	<div id="details_tab" style="border:0px;">
 	</div>	
 	
@@ -439,7 +443,7 @@ html{-webkit-text-size-adjust: none;}
 	</div>
 	
 	<div class="hide "  id="dev-tab">
-		<form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
+		
 		<input type="hidden"  id="TASK_ID" value="<?php echo $taskId;?>"/>
 		<div style="padding:4px 10px;margin-top:5px;margin-bottom:5px;" class="alert">
 		<?php 
@@ -470,7 +474,9 @@ html{-webkit-text-size-adjust: none;}
 						<td>
 							自有 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==1?"checked":"";?>  value="1"/>&nbsp;&nbsp;&nbsp;
 							跟卖 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==2?"checked":"";?>   value="2"/>&nbsp;&nbsp;&nbsp;
+							自有兼跟卖<input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==4?"checked":"";?>   value="4"/>&nbsp;&nbsp;&nbsp;
 							废弃 <input type="radio"  class="input 10-input 30-input 40-input"   name="DEV_STATUS"  <?php echo $productDev['DEV_STATUS']==3?"checked":"";?>  value="3"/>
+							
 						</td>
 						<td>
 						<?php  if( $pdStatus >=10 && $pdStatus!=15  && $pdStatus!=80 &&$PD_FORCE ){  ?>
@@ -489,7 +495,7 @@ html{-webkit-text-size-adjust: none;}
 								style="width:80%;" placeHolder="试销采购量" value="<?php echo $productDev['TRY_PURCHASE_NUM']?>" />
 						</td>
 					</tr>
-					<?php  if( $pdStatus >=50 ){  ?>
+					<?php  if( ($pdStatus >=50) ||  !empty($productDev['REAL_PRODUCT_ID']) ){  ?>
 					<tr>
 						<th style="width:20%;">
 							<?php  if( $pdStatus ==50 ){  ?>
@@ -706,7 +712,6 @@ html{-webkit-text-size-adjust: none;}
 				</tbody>
 			</table>
 			
-			</form>
 	</div>
 	
 	<div>
@@ -895,6 +900,7 @@ html{-webkit-text-size-adjust: none;}
 						<th>报价1</th>
 						<th>报价2</th>
 						<th>报价3</th>
+						<th>装箱规格</th>
 						<th>产品网址</th>
 					</tr>
 					</thead>
@@ -926,11 +932,12 @@ html{-webkit-text-size-adjust: none;}
 							<td>".$supplier['NUM1']."/".$supplier['OFFER1']."</td>
 							<td>".$supplier['NUM2']."/".$supplier['OFFER2']."</td>
 							<td>".$supplier['NUM3']."/".$supplier['OFFER3']."</td>
+							<td>".$supplier['PACKINGS_PECIFICATIONS']."</td>
 							<td rowspan=2>
 							 $url
 							</td>
 						</tr><tr class='$usedClz'>
-							<td colspan=10>".$supplier['MEMO']."</td>
+							<td colspan=11>".$supplier['MEMO']."</td>
 							
 						</tr> " ;
 					}?>
@@ -966,7 +973,7 @@ html{-webkit-text-size-adjust: none;}
 		</div>
 		
 	</div>
-	
+		</form>
 </body>
 
 </html>

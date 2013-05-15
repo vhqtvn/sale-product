@@ -29,7 +29,9 @@
 			LAST_UPDATED_BY, 
 			LAST_UPDATED_TIME, 
 			MEMO, 
-			STATUS
+			STATUS,
+			START_TIME,
+			END_TIME
 			)
 			VALUES
 			( 
@@ -39,7 +41,9 @@
 			'{@#loginId#}', 
 			NOW(), 
 			'{@#memo#}', 
-			'1'
+			'1', 
+			'{@#startTime#}',
+			'{@#endTime#}'
 			)
     </entry>
     
@@ -48,6 +52,8 @@
 			SET
 			TASK_CODE = '{@#taskCode#}' , 
 			LAST_UPDATED_BY = '{@#loginId#}' , 
+			START_TIME = '{@#startTime#}' , 
+			END_TIME = '{@#endTime#}' , 
 			LAST_UPDATED_TIME = NOW() , 
 			MEMO = '{@#memo#}' 
 			WHERE

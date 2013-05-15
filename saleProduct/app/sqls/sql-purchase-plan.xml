@@ -55,7 +55,8 @@
 				URL, 
 				IMAGE, 
 				PRODUCT_SIZE, 
-				PACKAGE_SIZE
+				PACKAGE_SIZE,
+				PACKINGS_PECIFICATIONS
 				)
 				VALUES
 				(
@@ -85,7 +86,8 @@
 				'{@#url#}', 
 				'{@#image#}', 
 				'{@#productSize#}', 
-				'{@#packageSize#}'
+				'{@#packageSize#}',
+				'{@#packingSpecifications#}'
 				)
     </entry>
     
@@ -110,6 +112,7 @@
 				offer5 = '{@#offer5#}' , 
 				status = '{@#status#}' , 
 				memo = '{@#memo#}' , 
+				PACKINGS_PECIFICATIONS='{@#packingSpecifications#}',
 				url = '{@#url#}' , 
 				{@image = '#image#' , }
 				product_size = '{@#productSize#}' , 

@@ -128,6 +128,10 @@
 							value="<?php echo $productSupplier['URL'];?>"/></td>
 					</tr>
 					<tr>
+						<th>装箱规格：</th><td><input type="text" id="packingSpecifications" name="packingSpecifications" 
+							value="<?php echo $productSupplier['PACKINGS_PECIFICATIONS'];?>"/></td>
+					</tr>
+					<tr>
 						<th>产品图片：</th>
 						<td><input name="supplierProductImage" type="file"/></td>
 					</tr>

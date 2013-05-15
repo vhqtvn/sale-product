@@ -99,11 +99,20 @@
 						<table class="form-table" >
 							<caption>基本信息</caption>
 								<tr>
-									<th>任务编码：</th><td><input type="text"  disabled id="taskCode"  
+									<th>任务编码：</th>
+									<td colspan="3"><input type="text"  disabled id="taskCode"  
 										 style="width:300px;" value="<?php echo $defaultCode;?>"/></td>
 								</tr>
 								<tr>
-									<th>备注：</th><td><textarea id="memo" style="width:300px;height:100px;" data-validator="required"
+									<th>开始时间：</th>
+									<td><input data-validator="required" type="text" id="startTime" data-widget="calendar"  style="width:150px!important;"
+										value="<?php echo $task['START_TIME'];?>"/></td>
+									<th>结束时间：</th>
+									<td><input data-validator="required" type="text" id="endTime" data-widget="calendar"  style="width:150px!important;"
+										value="<?php echo $task['END_TIME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>备注：</th><td colspan="3"><textarea id="memo" style="width:300px;height:100px;" data-validator="required"
 										><?php echo $task['MEMO']?></textarea></td>
 								</tr>
 							</table>

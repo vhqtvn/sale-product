@@ -217,7 +217,7 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
 						<div class="form-actions">
-							<button type="submit" class="btn btn-primary">保存</button>
+							<button type="submit" class="btn btn-primary save-btn">保存</button>
 							<button type="button" class="btn" onclick="window.close()">关闭</button>
 						</div>
 					</div>

@@ -103,7 +103,7 @@
 								</tr>
 								<tr>
 									<th>开始时间：</th>
-									<td><input data-validator="required" type="text" id="startTime" data-widget="calendar"
+									<td><input data-validator="required" type="text" id="startTime" data-widget="calendar" 
 										value="<?php echo $result['START_TIME'];?>"/></td>
 									<th>结束时间：</th>
 									<td><input data-validator="required" type="text" id="endTime" data-widget="calendar"

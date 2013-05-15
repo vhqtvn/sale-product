@@ -24,9 +24,13 @@ $(function(){
 			        {align:"center",key:"STATUS2",label:"跟卖",group:'开发状态',width:"4%",format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='2'>"+(val||'0')+"</a>"
 			        }},
+			        {align:"center",key:"STATUS4",label:"自有&跟卖",group:'开发状态',width:"4%",format:function(val,record){
+						return "<a href='#' class='fs-action' devstatus='4'>"+(val||'0')+"</a>"
+			        }},
+			        /*
 			        {align:"center",key:"STATUS15",label:"废弃",group:'开发状态',width:"4%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='15'>"+(val||'0')+"</a>"
-			        }},
+			        }},*/
 		           	{align:"center",key:"STATUS10",label:"产品分析",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='10'>"+(val||'0')+"</a>"
 			        }},
@@ -148,7 +152,7 @@ $(function(){
 							60:'制作Listing',70:'Listing审批',72:'采购试销',74:'库存到达',76:'营销展开',78:'开发总结',80:'处理完成'}}},
 				{align:"center",key:"DEV_STATUS",label:"开发状态",sort:true,width:"5%",format:function(val){
 					val = val||"" ;
-					var map = {1:'自有',2:'跟卖',3:'废弃'} ;
+					var map = {1:'自有',2:'跟卖',3:'废弃',4:'自有兼跟卖'} ;
 					return map[val] ;
 				}},
 				{align:"center",key:"COST_GROUP",label:"利润分类",width:"8%",sort:true,format:function(val,record){

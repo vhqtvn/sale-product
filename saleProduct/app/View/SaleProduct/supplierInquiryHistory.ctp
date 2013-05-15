@@ -79,6 +79,7 @@
 				           	{align:"center",key:"PAYMENT",label:"付款方式",width:"6%"},
 				           	{align:"center",key:"PRODUCT_SIZE",label:"产品尺寸",width:"6%"},
 				           	{align:"center",key:"PACKAGE_SIZE",label:"包装尺寸",width:"6%"},
+				        	{align:"center",key:"PACKINGS_PECIFICATIONS",label:"装箱规格",width:"6%"},
 				           	{align:"center",key:"NUM1",label:"报价1",width:"6%",format:function(val,record){
 									return val+"/"+record.OFFER1 ;
 					          }},
