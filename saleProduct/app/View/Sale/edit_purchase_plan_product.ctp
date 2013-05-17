@@ -51,7 +51,9 @@
 		//debug($plan) ; 
 		
 		$loginId 								= $user['LOGIN_ID'] ;
-		$pp_edit 								= $security->hasPermission($loginId , 'pp_edit') ;
+		$pp_edit 								= $security->hasPermission($loginId , 'ppp_edit') ;
+		$ppp_callback                      = $security->hasPermission($loginId , 'ppp_callback') ;//回退
+
 		$ppp_add_product				= $security->hasPermission($loginId , 'ppp_add_product') ;
 		$ppp_export							= $security->hasPermission($loginId , 'ppp_export') ;
 		$ppp_audit							= $security->hasPermission($loginId , 'ppp_audit') ;
@@ -79,6 +81,14 @@
 			$executor = $product['PURCHASE_CHARGER'] ;
 			$executorName = $product['PURCHASE_CHARGER_NAME'] ;
 		}
+		
+		//成本利润查看权限
+		//成本权限
+		//成本权限
+		$COST_EDIT_PROFIT   						= $security->hasPermission($loginId , 'COST_EDIT_PROFIT') ;
+		
+		$COST_VIEW_TOTAL  						= $security->hasPermission($loginId , 'COST_VIEW_TOTAL') ;//cen
+		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
 	?>
   
    <style>
@@ -183,6 +193,8 @@
 	</style>
 
    <script type="text/javascript">
+   var $COST_VIEW_TOTAL = '<?php echo $COST_VIEW_TOTAL;?>' ;
+   var  $COST_VIEW_PROFIT = '<?php echo $COST_VIEW_PROFIT;?>' ;
     var sku = '<?php echo $sku;?>' ;
     var planId =  '<?php echo $planId;?>' ;
    
@@ -226,6 +238,9 @@
 	        		{status:30,label:"限价确认",memo:true
 	        			<?php if( $ppp_setlimitprice) { ?>
 	        			,actions:[
+		      	        			<?php if( $ppp_callback ){ ?>
+		      	        			{label:"回退",action:function(){ AuditAction(20,"回退") }},
+		      	        			<?php }?>
 									{label:"保存",action:function(){ AuditAction(30,"保存") }},
 		      	        			{label:"确认限价",action:function(){ AuditAction(40,"确认限价") } }
         				]
@@ -234,6 +249,9 @@
 	        		{status:40,label:"分配执行人",memo:true
 	        			<?php if( $ppp_assign_executor ) { ?>
 	        			,actions:[
+<?php if( $ppp_callback ){ ?>
+{label:"回退",action:function(){ AuditAction(30,"回退") }},
+<?php }?>
 									{label:"保存",action:function(){ AuditAction(40,"保存") }},
 		      	        			{label:"分配采购执行人",action:function(){ AuditAction(45,"分配采购执行人") } }
         				]
@@ -242,6 +260,9 @@
 	        		{status:45,label:"采购执行",memo:true
 	        			<?php if( $loginId == $product['EXECUTOR'] ) { ?>
 	        			,actions:[
+<?php if( $ppp_callback ){ ?>
+{label:"回退",action:function(){ AuditAction(40,"回退") }},
+<?php }?>
 									{label:"保存",action:function(){ AuditAction(45,"保存") }},
 		      	        			{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
         				]
@@ -249,6 +270,9 @@
 	        		},{status:50,label:"QC验货",memo:true
 	        			<?php if( $ppp_qc) { ?>
 	        			,actions:[
+<?php if( $ppp_callback ){ ?>
+{label:"回退",action:function(){ AuditAction(45,"回退") }},
+<?php }?>
 									{label:"保存",action:function(){ AuditAction(50,"保存") }},
 		      	        			{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
         				]
@@ -256,6 +280,9 @@
 	        		},{status:60,label:"货品入库",memo:true
 	        			<?php if( $ppp_inwarehouse) { ?>
 	        			,actions:[
+<?php if( $ppp_callback ){ ?>
+{label:"回退",action:function(){ AuditAction(50,"回退") }},
+<?php }?>
 									{label:"保存",action:function(){ AuditAction(60,"保存") }},
 		      	        			{label:"入库确认",action:function(){ AuditAction(70,"入库确认") } }
         				]
@@ -264,6 +291,9 @@
 	        		{status:70,label:"采购确认",memo:true
 	        			<?php if( $ppp_confirm) { ?>
 	        			,actions:[
+<?php if( $ppp_callback ){ ?>
+{label:"回退",action:function(){ AuditAction(60,"回退") }},
+<?php }?>
 									{label:"保存",action:function(){ AuditAction(70,"保存") }},
 		      	        			{label:"确认采购",action:function(){ AuditAction(80,"采购确认") } }]
 	        			<?php };?>
@@ -315,7 +345,7 @@
 										<th>货品：</th><td colspan=3><a class="product-realsku"  sku="<?php echo $sku ;?>"  href="#"><?php echo $sku ;?></a>（<?php echo $title ;?>）</td>
 									</tr>
 									<tr>
-										<th><button class="btn btn-tags 10-input  input no-disabled">添加</button>标签：</th>
+										<th><button class="btn btn-tags 10-input  20-input 30-input  40-input 45-input input no-disabled">添加</button>标签：</th>
 										<td colspan=3>
 											<input id="tags"   type="hidden"   value="<?php echo $product['TAGS'];?>"/>
 											<ul class="tag-container" style="list-style: none;">

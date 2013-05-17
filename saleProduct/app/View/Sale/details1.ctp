@@ -209,7 +209,9 @@ html{-webkit-text-size-adjust: none;}
 	<?php }?>
 	<?php  if($COST_VIEW_TOTAL){ ?>
 	//总成本
-	costColumns.push( {align:"center",key:"TOTAL_COST",label:"总成本",forzen:true,width:"6%"} ) ;
+	costColumns.push( {align:"center",key:"TOTAL_COST",label:"总成本",forzen:true,width:"6%",format:function(val,record){
+			return val;
+		}} ) ;
 	<?php }?>
 	<?php  if($COST_VIEW_PURCHASE){ ?>
 	//采购成本

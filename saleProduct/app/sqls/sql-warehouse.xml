@@ -53,6 +53,7 @@ INSERT INTO sc_warehouse
    
    <entry key="sql_user_list_forwarehouse">
 		select * from sc_user
+		where status = '1'
    </entry>
    
    <entry key="sql_warehouse_manage_lists">

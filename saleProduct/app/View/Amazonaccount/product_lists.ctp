@@ -145,15 +145,7 @@
 			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"},
 			           	{align:"center",key:"STRATEGY_LABEL",label:"策略",group:"价格",width:"11%",format:function(val){
 			           		return val||"-" ;
-			           	}}//,
-			           	//{align:"center",key:"EXEC_PRICE",label:"执行价格",group:"价格",width:"8%"}
-			           	/*,
-			           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%"},
-			           	{align:"center",key:"FBM_COST",label:"总成本",group:"FBM",width:"6%"},
-			           	//{align:"center",key:"FBM_LOWER",label:"最低销售价",group:"FBM",width:"10%"},
-			           	{align:"center",key:"FBA_PRICE",label:"最低价",group:"FBA",width:"6%"},
-			           	{align:"center",key:"FBA_COST",label:"总成本",group:"FBA",width:"6%"}//,
-			           	//{align:"center",key:"FBA_LOWER",label:"最低销售价",group:"FBA",width:"10%"}*/
+			           	}}
 			         ],
 			         //ds:{type:"url",content:contextPath+"/amazongrid/product/"+accountId},
 			         ds:{type:"url",content:contextPath+"/grid/query"},

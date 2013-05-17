@@ -118,7 +118,7 @@ $(function () {
         //渲染竞争信息链接
 		//[offer-listing]
 		for(var asin in asins){
-			$(".offer-container").append("<li style='float:left;margin:2px 5px;' class='alert alert-info'><a offer-listing='"+asin+"'>"+asins[asin]+"("+asin+")"+"</a></li>") ;
+		//	$(".offer-container").append("<li style='float:left;margin:2px 5px;' class='alert alert-info'><a offer-listing='"+asin+"'>"+asins[asin]+"("+asin+")"+"</a></li>") ;
 		}
 	}) ;
     });
