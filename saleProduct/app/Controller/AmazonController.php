@@ -88,7 +88,7 @@ class AmazonController extends AppController {
     			$_products[] = array("SKU"=>$kq['sku'],"FEED_PRICE"=>$kq['price']) ;
     		}
     		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
-    		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/quantity") ;
+    		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
     		file_get_contents($url."?feed=".urlencode($Feed));
     		//echo $Feed;
     	}
