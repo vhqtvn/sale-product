@@ -154,6 +154,7 @@
 							</div>
 							<div class="qt">
 								<button class="btn btn-primary assgin-btn btn-danger">分配库存</button>
+								<button class="btn btn-primary price-btn btn-danger">调整价格</button>
 							</div>
 						</td>
 					</tr>

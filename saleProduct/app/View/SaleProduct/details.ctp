@@ -30,6 +30,7 @@
 			$action = "edit" ;
 		}
 		
+		$product_stock_quanity_assign = $security->hasPermission($loginId , 'product_stock_quanity_assign') ;
 	?>
    <script>
    
@@ -48,6 +49,10 @@
 				<?php } ?>
 				,{label:'供应商信息',url:contextPath+"/page/forward/Supplier.listsBySku/<?php echo $item['REAL_SKU'];?>",iframe:true}
 				,{label:'产品成本',url:contextPath+"/page/forward/Cost.listBySku/<?php echo $item['REAL_SKU'];?>",iframe:true}
+				<?php  if( $product_stock_quanity_assign ){?>
+				,{label:'库存价格调整',url:contextPath+"/page/forward/Warehouse.In.assign/<?php echo $item['ID'];?>",iframe:true}
+				,{label:'出入库',url:contextPath+"/page/forward/Warehouse.In.storageDetails/<?php echo $item['ID'];?>",iframe:true}
+				<?php }?>
 				,{label:'历史询价',url:contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/<?php echo $item['REAL_SKU'];?>",iframe:true}
 				,{label:'销量图',url:contextPath+"/page/forward/SaleProduct.saleChart/<?php echo $item['REAL_SKU'];?>",iframe:true}
 			] ,

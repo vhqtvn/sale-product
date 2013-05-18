@@ -43,7 +43,7 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
+					{align:"center",key:"ID",label:"操作", width:"6%",format:function(val,record){
 						var html = [] ;
 						html.push(  getImage('icon-grid.gif','查看','action view ') +"&nbsp;") ;
 						if(tabIndex < 2){
@@ -51,13 +51,13 @@
 								html.push(  getImage('edit.png','编辑','action update ') +"&nbsp;") ;
 							}
 						}
-						if( $product_stock_quanity_assign  ){
+						/*if( $product_stock_quanity_assign  ){
 							html.push(  getImage('retry.png','出入库','action inout ') +"&nbsp;") ;
 							html.push(  getImage('pkg.gif','库存分配','action assign ') +"&nbsp;") ;
 							
 							//html.push("<a href='#' class='action inout btn' val='"+val+"'>出入库</a>&nbsp;") ;
 							//html.push("<a href='#' class='action assign btn' val='"+val+"'>库存分配</a>&nbsp;") ;
-						}
+						}*/
 						return html.join("") ;
 					}},
 				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},

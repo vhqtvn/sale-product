@@ -5,9 +5,14 @@ $(function(){
 			columns:[
 				{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"10%"},
 				{align:"left",key:"SKU",label:"SKU",width:"15%",format:function(val,record){
+					
 					return val||record.REL_SKU ;
 				}},
-	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
+				{align:"left",key:"ASIN",label:"ASIN", width:"12%",format:function(val,record){
+	           		var memo = record.MEMO||"" ;
+	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
+	           	}},
+	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",group:"库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
 	           		return record.QUANTITY||0 ;
 	           	}},render:function(record){
 	           		if( record.FULFILLMENT_CHANNEL.indexOf("AMAZON") !=-1){
@@ -15,14 +20,31 @@ $(function(){
 	           			$(this).addClass("alert alert-danger");
 	           		}
 	           	}},
-	           	{align:"center",key:"QUANTITY",label:"账户库存",width:"7%"},
-	           	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
-	           	{align:"center",key:"UNSHIPPED_NUM",label:"待发货数量",width:"8%"},
-	        	{align:"center",key:"ORDER_NUM",label:"订单数量",width:"8%"},
-	           	{align:"left",key:"ASIN",label:"ASIN", width:"12%",format:function(val,record){
-	           		var memo = record.MEMO||"" ;
-	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
+	           	{align:"center",key:"QUANTITY",label:"账户库存",group:"库存",width:"7%"},
+	           	{align:"center",key:"UNSHIPPED_NUM",label:"待发货数量",group:"库存",width:"8%"},
+	        	{align:"center",key:"ORDER_NUM",label:"订单数量",group:"库存",width:"8%"},
+	        	{align:"center",key:"FEED_PRICE",label:'调整价格',group:'价格',width:"8%",format:{type:'editor',fields:['ACCOUNT_ID','SKU']}},
+	        	{align:"center",key:"PRICE",label:"账户价格",group:"价格",width:"6%"},
+	           	{align:"center",key:"SHIPPING_PRICE",label:"运费",group:"价格",width:"4%"},
+	           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"4%",format:function(val,record){
+	           		var pm = '' ;
+	           		if(record.FULFILLMENT_CHANNEL != 'Merchant') pm = record.FBA_PM  ;
+	           		else if( record.ITEM_CONDITION == '1' ) pm =   record.U_PM||'-'  ;
+	           		else if( record.IS_FM == 'FM' ) pm =   record.F_PM||'-'  ;
+	           		else if( record.IS_FM == 'NEW' ) pm =   record.N_PM||'-'  ;
+	           		if(!pm || pm == '0') return '-' ;
+	           		return pm ;
 	           	}},
+	           	{align:"center",key:"FBM_PRICE__",label:"最低价",group:"价格",width:"6%",format:function(val,record){
+	           		if(record.FULFILLMENT_CHANNEL != 'Merchant') return record.FBA_PRICE ;
+	           		if( record.ITEM_CONDITION == '1' ) return  record.FBM_U_PRICE ;
+	           		if( record.IS_FM == 'FM' ) return  record.FBM_F_PRICE ;
+	           		if( record.IS_FM == 'NEW' ) return  record.FBM_N_PRICE ;
+	           		return "" ;
+	           	}},
+	           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"6%"},
+	        	
+	        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
 	           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
 	           	}}
@@ -31,7 +53,7 @@ $(function(){
 			 limit:100,
 			 pageSizes:[100],
 			 height:function(){
-			 	return	$(window).height() - 260
+			 	return	$(window).height() - 280
 			 },
 			 autoWidth:false,
 			 title:"",
@@ -128,9 +150,35 @@ $(function(){
 				}
 			}
 		} ) ;*/
+	
+		$(".price-btn").click(function(){
+			if( window.confirm("确认同步价格吗？")){
+				var accountMap = {} ;
+				 $(":input[key='FEED_PRICE']").each(function(){
+					  var assignQuantity = $(this).val() ;
+					  var accountId = $(this).attr("ACCOUNT_ID") ;
+					  var sku = $(this).attr("SKU") ;
+					  
+					  var _amap = accountMap[accountId]||[] ;
+					  _amap.push( {sku:sku,price:assignQuantity||0} ) ;
+					  accountMap[accountId] = _amap ;
+				 }) ;
+				 
+				 $.ajax({
+						type:"post",
+						url:  contextPath+"/amazon/price" ,
+						data: accountMap ,
+						cache:false,
+						dataType:"text",
+						success:function(result,status,xhr){
+							alert("执行结束") ;
+						}
+					});
+			}
+		}) ;
 		
 		$(".assgin-btn").click(function(){
-			if( window.confirm("确认同步吗？")){
+			if( window.confirm("确认同步库存吗？")){
 				var accountMap = {} ;
 				 $(":input[key='ASSIGN_QUANTITY']").each(function(){
 					 

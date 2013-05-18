@@ -78,17 +78,16 @@ class AmazonController extends AppController {
     
     	foreach( $params as $key=>$value ){
     		$accountId = $key ;
-    		$skuQuantity = $value ;
+    		$skuPrice = $value ;
     
     		$_products = array() ;
     		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId)  ;
     		$account = $account[0]['sc_amazon_account']  ;
     		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-    		foreach ( $skuQuantity as $kq ){
-    			$_products[] = array("SKU"=>$kq['sku'],"FEED_QUANTITY"=>$kq['quantity']) ;
+    		foreach ( $skuPrice as $kq ){
+    			$_products[] = array("SKU"=>$kq['sku'],"FEED_PRICE"=>$kq['price']) ;
     		}
-    		$Feed = $this->Amazonaccount->getQuantityFeed($MerchantIdentifier , $_products) ;
-    
+    		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
     		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/quantity") ;
     		file_get_contents($url."?feed=".urlencode($Feed));
     		//echo $Feed;
