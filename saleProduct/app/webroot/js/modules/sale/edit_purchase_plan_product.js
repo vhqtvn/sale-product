@@ -64,9 +64,9 @@ $(function(){
 	           	{align:"center",key:"LOCAL_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 	            {align:"left",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:{type:'titleListing'}},
 	            {align:"center",key:"QUANTITY",label:"账号库存",width:"6%",forzen:false,align:"left"},
-	           {align:"center",key:"FBM_COST",label:"其他成本",group:"FBM",width:"6%",format:function(val,record){
+	           {align:"center",key:"FBM_COST",label:"成本",group:"FBM",width:"6%",format:function(val,record){
 	           		return "<a href='' class='cost' type='FBM' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
-	           	},permission:function(){ return $purchase_cost_view; } },
+	           	},permission:function(){ return $COST_VIEW_TOTAL; } },
 	           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%",permission:function(){ return $purchase_cost_view; }},
 	           	{align:"center",key:"FBM_PRICE",label:"利润额",group:"FBM",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
@@ -93,7 +93,7 @@ $(function(){
 	           		}else{
 	           			return lye ;
 	           		}
-	           	},permission:function(){ return $purchase_cost_view; }},
+	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
 	           	{align:"center",key:"FBM_PRICE",label:"利润率",group:"FBM",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
 	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
@@ -122,10 +122,10 @@ $(function(){
 	           		}else{
 	           			return lyl+"%" ;
 	           		}
-	           	},permission:function(){ return $purchase_cost_view; }},
-	           	{align:"center",key:"FBA_COST",label:"其他成本",group:"FBA",width:"6%",format:function(val,record){
+	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
+	           	{align:"center",key:"FBA_COST",label:"成本",group:"FBA",width:"6%",format:function(val,record){
 	           		return "<a href='' class='cost' type='FBA' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
-	           	},permission:function(){ return $purchase_cost_view; }},
+	           	},permission:function(){ return $COST_VIEW_TOTAL; }},
 	           	{align:"center",key:"FBA_PRICE",label:"最低价",group:"FBA",width:"6%",permission:function(){ return $purchase_cost_view; }},
 	           	{align:"center",key:"FBA_PRICE",label:"利润额",group:"FBA",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
@@ -153,7 +153,7 @@ $(function(){
 	           		}else{
 	           			return lye ;
 	           		}
-	           	},permission:function(){ return $purchase_cost_view; }},
+	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
 	           	{align:"center",key:"FBA_PRICE",label:"利润率",group:"FBA",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
 	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
@@ -174,7 +174,7 @@ $(function(){
 	           		}else{
 	           			return lyl+"%" ;
 	           		}
-	           	},permission:function(){ return $purchase_cost_view; }}
+	           	},permission:function(){ return $COST_VIEW_PROFIT; }}
 	           	
 	         ],
 	         ds:{type:"url",content:contextPath+"/grid/query"},
@@ -307,6 +307,21 @@ function AuditAction(status , statusLabel){
 	//			window.location.reload();
 	//		});
 	//	}
+	}
+}
+
+function ForceAuditAction(status , statusLabel){
+	if(window.confirm("确认【"+statusLabel+"】？")){
+				var memo = "("+statusLabel+")" + ($(".memo").val()||"")
+				var json1 = {id:id,status:status,memo:memo} ;
+		
+				var json = $("#personForm").toJson() ;
+				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
+					//执行状态更新
+					$.dataservice("model:Sale.doStatus",json1,function(result){
+						window.location.reload();
+					});
+				}) ;
 	}
 }
 

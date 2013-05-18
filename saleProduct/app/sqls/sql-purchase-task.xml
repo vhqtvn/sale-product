@@ -12,7 +12,39 @@
 
     <entry key="sql_purchase_task_list">
         select spt.* ,
-           (select name from sc_user where login_id = spt.created_by) as EXECUTOR_NAME
+           (select name from sc_user where login_id = spt.created_by) as EXECUTOR_NAME,
+           ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   ) as STATUS0,
+				( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 10 or sppd.status is null ) ) as STATUS10,
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 20 or sppd.status is null ) ) as STATUS20,	
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 25 or sppd.status is null ) ) as STATUS25,	
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 30 or sppd.status is null ) ) as STATUS30,	
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 40 or sppd.status is null ) ) as STATUS40,	
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 45 or sppd.status is null ) ) as STATUS45,	
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 50 or sppd.status is null ) ) as STATUS50,			
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 60 or sppd.status is null ) ) as STATUS60,			
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 70 or sppd.status is null ) ) as STATUS70,			
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 80 or sppd.status is null ) ) as STATUS80
          from sc_purchase_task spt 
          where 1=1
           {@ and spt.task_code = '#taskCode#'}
@@ -103,7 +135,19 @@
 		on sppd.SKU = srp.real_sku
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
-		    and sptp.task_id = '{@#taskId#}'
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+		    and sptp.task_id in (
+		    		select spt.id
+				         from sc_purchase_task spt 
+				         where 1=1
+				         {@ #$purchaseTask_view: and 1=0# }
+		    )
+		    {@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+			)}
     </entry>
     
     <entry key="sql_purchase_task_product_selectable">

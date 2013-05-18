@@ -53,6 +53,18 @@
 	
 	<script type="text/javascript">
 		var editPermission = <?php  echo $editPermission?'true':'false' ;?>
+
+		var img0 = '<?php echo $this->Html->image('example.gif',array("title"=>"所有")) ?>' ;
+		var img1 = '<?php echo $this->Html->image('example.gif',array("title"=>"未处理")) ?>' ;
+		var img2 = '<?php echo $this->Html->image('apply.png',array("title"=>"申请采购")) ?>' ;
+		var img25 = '<?php echo $this->Html->image('error.gif',array("title"=>"审批不通过，终止采购")) ?>' ;
+		var img3 = '<?php echo $this->Html->image('success.gif',array("title"=>"审批通过，限价待确认")) ?>' ;
+		var img4 = '<?php echo $this->Html->image('forum.gif',array("title"=>"限价确认完成，待分配责任人")) ?>' ;
+		var img45 = '<?php echo $this->Html->image('cmp.gif',array("title"=>"采购执行")) ?>' ;
+		var img5 = '<?php echo $this->Html->image('pkg.gif',array("title"=>"待QC验货产品")) ?>' ;
+		var img6 = '<?php echo $this->Html->image('cake.icon.png',array("title"=>"货品待入库")) ?>' ;
+		var img7 = '<?php echo $this->Html->image('icon-grid.gif',array("title"=>"采购确认")) ?>' ;
+		var img8 = '<?php echo $this->Html->image('test-pass-icon.png',array("title"=>"结束采购")) ?>' ;
 	</script>
 
 	 <style type="text/css">
@@ -86,7 +98,21 @@
 	
 	<div class="grid-task"></div>
 	<div style="clear:both;height:1px;" ></div>
-
+<div class="toolbar toolbar-auto toolbar1">
+		<table>
+			<tr>
+				<th>
+					关键字:
+				</th>
+				<td>
+					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题" style="width:400px;"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-task-product',qc:'.toolbar1'}">查询</button>
+				</td>
+			</tr>						
+		</table>
+	</div>	
 	<div class="grid-task-product" style="margin-top:5px;"></div>
 	</div>
 	<iframe src="" id="exportIframe" style="display:none"></iframe>

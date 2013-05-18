@@ -11,6 +11,41 @@ $(function(){
 		    {align:"center",key:"START_TIME",label:"开始时间",width:"10%" },
 		    {align:"center",key:"END_TIME",label:"结束时间",width:"10%" },
 		    {align:"left",key:"STATUS",label:"状态", width:"5%",format:{type:'json',content:{1:'编辑中',2:'采购中',3:'采购完成'}}},
+		    
+			{align:"center",key:"STATUS0",label:'全部',group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=''>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS10",label:img1,group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=10>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS20",label:img2,group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=20>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS25",label:img25,group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=25>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS30",label:img3,group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=30>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS40",label:img4,group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=40>"+val+"</a>" ;
+           	}},
+        	{align:"center",key:"STATUS45",label:img45,group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=45>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS50",label:img5,group:"状态",width:"3%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=50>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS60",label:img6,group:"状态",width:"3%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=60>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS70",label:img7,group:"状态",width:"3%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=70>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS80",label:img8,group:"状态",width:"3%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=80>"+val+"</a>" ;
+           	}},
+           	
 		    {align:"left",key:"MEMO",label:"备注", width:"25%"},
            	{align:"center",key:"LAST_UPDATED_TIME",label:"操作时间",width:"15%" },
             {align:"left",key:"EXECUTOR_NAME",label:"操作用户",width:"5%" },
@@ -44,6 +79,22 @@ $(function(){
 		 querys:{ sqlId:"sql_purchase_task_list" },
 		 loadMsg:"数据加载中，请稍候......",
 		 loadAfter:function(){
+			 $(".status-action").click(function(event){
+				 event.stopPropagation() ;
+				 var taskId = $(this).attr("planId") ;
+					var status = $(this).attr("status") ;
+					
+					var params = {} ;
+					params.taskId = taskId ;
+					if(status == 1){
+						params.status1 = 1 ;
+					}else{
+						params.status = status ;
+					}
+					$(".grid-task-product").llygrid("reload",params) ;
+					return false ;
+			 }) ;
+			 
 			 $(".btn-delete-plan").bind("click",function(event){
 				 event.stopPropagation() ;
 				 var record = $(this).parents("tr:first").data("record");
@@ -150,6 +201,10 @@ $(function(){
 		 }
 	}) ;
 	
+	window.StatusClick = function (el){
+		return false ;
+	} ;
+	
 	$(".grid-task-product").llygrid({
 		columns:[
 			//{align:"center",key:"ID",label:"编号",width:"4%"},
@@ -193,11 +248,11 @@ $(function(){
 		 limit:30,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-		 	return $(window).height() - 370 ;
+		 	return $(window).height() - 390 ;
 		 },
 		 title:"",
 		 indexColumn:false,
-		 querys:{taskId:'--',sqlId:"sql_purchase_task_product_list"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 querys:{taskId:'',sqlId:"sql_purchase_task_product_list"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......",
 		 loadAfter:function(){
 		 	$(".grid-checkbox").each(function(){

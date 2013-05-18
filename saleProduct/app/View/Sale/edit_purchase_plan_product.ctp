@@ -216,7 +216,7 @@
 	        		{status:10,label:"编辑中",memo:true
 	        			<?php if( $pp_edit ) { ?>
 	        			,actions:[
-									{label:"保存",action:function(){ AuditAction(10,"保存") }},
+									{label:"保存",action:function(){ ForceAuditAction(10,"保存") }},
 		      	        			{label:"保存提交审批",action:function(){ AuditAction(20,"保存并提交审批") }}
 		      	        	]
 	        			<?php };?>
@@ -230,8 +230,8 @@
 						}
 	        			<?php if( $ppp_audit ) { ?>
 	        			,actions:[{label:"审批通过",action:function(){ AuditAction(30,"审批通过") } },
-	        				{label:"审批不通过，继续编辑",action:function(){ AuditAction(10,"审批不通过，继续编辑") } },
-	        				{label:"审批不通过，结束采购",action:function(){ AuditAction(25,"审批不通过，结束采购") } }
+	        				{label:"审批不通过，继续编辑",action:function(){ ForceAuditAction(10,"审批不通过，继续编辑") } },
+	        				{label:"审批不通过，结束采购",action:function(){ ForceAuditAction(25,"审批不通过，结束采购") } }
         				]
 	        			<?php };?>
 	        		},
@@ -239,9 +239,9 @@
 	        			<?php if( $ppp_setlimitprice) { ?>
 	        			,actions:[
 		      	        			<?php if( $ppp_callback ){ ?>
-		      	        			{label:"回退",action:function(){ AuditAction(20,"回退") }},
+		      	        			{label:"回退",action:function(){ ForceAuditAction(20,"回退") }},
 		      	        			<?php }?>
-									{label:"保存",action:function(){ AuditAction(30,"保存") }},
+									{label:"保存",action:function(){ ForceAuditAction(30,"保存") }},
 		      	        			{label:"确认限价",action:function(){ AuditAction(40,"确认限价") } }
         				]
 	        			<?php };?>
@@ -250,9 +250,9 @@
 	        			<?php if( $ppp_assign_executor ) { ?>
 	        			,actions:[
 <?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ AuditAction(30,"回退") }},
+{label:"回退",action:function(){ ForceAuditAction(30,"回退") }},
 <?php }?>
-									{label:"保存",action:function(){ AuditAction(40,"保存") }},
+									{label:"保存",action:function(){ ForceAuditAction(40,"保存") }},
 		      	        			{label:"分配采购执行人",action:function(){ AuditAction(45,"分配采购执行人") } }
         				]
 	        			<?php };?>
@@ -261,9 +261,9 @@
 	        			<?php if( $loginId == $product['EXECUTOR'] ) { ?>
 	        			,actions:[
 <?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ AuditAction(40,"回退") }},
+{label:"回退",action:function(){ ForceAuditAction(40,"回退") }},
 <?php }?>
-									{label:"保存",action:function(){ AuditAction(45,"保存") }},
+									{label:"保存",action:function(){ ForceAuditAction(45,"保存") }},
 		      	        			{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
         				]
 	        			<?php };?>
@@ -271,9 +271,9 @@
 	        			<?php if( $ppp_qc) { ?>
 	        			,actions:[
 <?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ AuditAction(45,"回退") }},
+{label:"回退",action:function(){ ForceAuditAction(45,"回退") }},
 <?php }?>
-									{label:"保存",action:function(){ AuditAction(50,"保存") }},
+									{label:"保存",action:function(){ ForceAuditAction(50,"保存") }},
 		      	        			{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
         				]
 	        			<?php };?>
@@ -281,9 +281,9 @@
 	        			<?php if( $ppp_inwarehouse) { ?>
 	        			,actions:[
 <?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ AuditAction(50,"回退") }},
+{label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
 <?php }?>
-									{label:"保存",action:function(){ AuditAction(60,"保存") }},
+									{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
 		      	        			{label:"入库确认",action:function(){ AuditAction(70,"入库确认") } }
         				]
 	        			<?php };?>
@@ -292,9 +292,9 @@
 	        			<?php if( $ppp_confirm) { ?>
 	        			,actions:[
 <?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ AuditAction(60,"回退") }},
+{label:"回退",action:function(){ ForceAuditAction(60,"回退") }},
 <?php }?>
-									{label:"保存",action:function(){ AuditAction(70,"保存") }},
+									{label:"保存",action:function(){ ForceAuditAction(70,"保存") }},
 		      	        			{label:"确认采购",action:function(){ AuditAction(80,"采购确认") } }]
 	        			<?php };?>
 	        		},

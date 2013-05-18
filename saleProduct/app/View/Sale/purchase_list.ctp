@@ -121,9 +121,21 @@
 	<div class="grid-content">
 	</div>
 	<div style="clear:both;height:1px;" ></div>
-	<div class="row-fluid">
-	
-	</div>
+	<div class="toolbar toolbar-auto toolbar1">
+		<table>
+			<tr>
+				<th>
+					关键字:
+				</th>
+				<td>
+					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题" style="width:400px;"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
+				</td>
+			</tr>						
+		</table>
+	</div>	
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 	<iframe src="" id="exportIframe" style="display:none"></iframe>

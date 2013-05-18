@@ -62,7 +62,7 @@ $thisuser = new StaffSession( $loginId ); /*always reload???*/
 //print_r($thisuser) ;
 //1) is the user Logged in for real && is staff.
 if(!is_object($thisuser) || !$thisuser->getId() || !$thisuser->isValid()){
-	echo 33333333;
+	//echo 33333333;
     $msg=(!$thisuser || !$thisuser->isValid())?'Authentication Required':'Session timed out due to inactivity';
     staffLoginPage($msg);
     exit;
