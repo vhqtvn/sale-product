@@ -24,7 +24,7 @@
 		$accounts  = $funs['accounts'] ;
 		$accountSecuritys = $funs['accountSecuritys'] ;
 		$filterRules = $funs['filterRules'] ;
-
+	
 	?>
 
         <script type="text/javascript">
@@ -35,6 +35,8 @@
           var treeMap = {} ;
           
           <?php
+          
+          
           $index = 0 ;
           foreach( $Functions as $Record ){
 				$sfs = $Record['sc_security_function']  ;
@@ -44,6 +46,14 @@
 				$name = $sfs['NAME'] ;
 				$pid  = $sfs['PARENT_ID'] ;
 				$url  = $sfs['URL'] ;
+				
+				//format $url ;
+				if( substr($url, 0, 1)=="/" ){
+					$url = "/".$fileContextPath.$url;
+				}else{
+					$url = $contextPath.'/'.$url ;
+				}
+				
 				echo " var item$index = {id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} ;" ;
 				
 				echo " itemCache.push( item$index ) ;" ;
