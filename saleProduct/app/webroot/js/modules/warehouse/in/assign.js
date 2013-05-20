@@ -12,6 +12,9 @@ $(function(){
 	           		var memo = record.MEMO||"" ;
 	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 	           	}},
+	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
+	           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
+	           	}},
 	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",group:"库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
 	           		return record.QUANTITY||0 ;
 	           	}},render:function(record){
@@ -44,10 +47,7 @@ $(function(){
 	           	}},
 	           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"6%"},
 	        	
-	        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
-	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
-	           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
-	           	}}
+	        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"}
 	         ],
 	         ds:{type:"url",content:contextPath+"/grid/query"},
 			 limit:100,

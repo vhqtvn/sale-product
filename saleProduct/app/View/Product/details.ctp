@@ -466,7 +466,7 @@
 			<table class="table table-bordered">
 				<tr>
 					<th style="width:100px;">标题：</th>
-					<td><?php echo $product["TITLE"]?>(<?php echo $asin?>) </td>
+					<td ><a href="#" offer-listing="<?php echo $asin?>"><?php echo $product["TITLE"]?>(<?php echo $asin?>) </a></td>
 					<td rowspan="8">
 						<?php
 							foreach( $imgs as $img ){

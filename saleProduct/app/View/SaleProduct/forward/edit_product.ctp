@@ -22,12 +22,10 @@
 		echo $this->Html->script('modules/saleproduct/edit_product');
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-		$Config  = ClassRegistry::init("Config") ;
+		
 		$security  = ClassRegistry::init("Security") ;
 		
 		$groups = $SqlUtils->exeSql("sql_package_group_list",array() ) ;
-		
-		$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;
 		
 	?>
 	
@@ -140,6 +138,9 @@
 											</ul>
 											<hr style="margin:0px;clear:both;padding-top:3px;"/>
 											<?php 
+												$Config  = ClassRegistry::init("Config") ;
+												$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;
+											
 												echo '<b>相关网址：</b>' ;
 												foreach ( explode(",", $websites) as $website ){
 													$website = explode("||", $website) ;

@@ -90,11 +90,11 @@
 				}) ;
 			},200) ;
 				
-			
+			/*
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
-			})
+			})*/
 			
 			$(".query-btn").click(function(){
 				var asin = $("[name='asin']").val() ;

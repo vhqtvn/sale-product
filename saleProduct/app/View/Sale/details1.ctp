@@ -945,6 +945,21 @@ html{-webkit-text-size-adjust: none;}
 					}?>
 					</tbody>
 				</table>
+				
+											<?php 
+												$Config  = ClassRegistry::init("Config") ;
+												$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;
+											
+												echo '<b>相关网址：</b>' ;
+												foreach ( explode(",", $websites) as $website ){
+													$website = explode("||", $website) ;
+													$name = $website[0] ;
+													$url = $website[1] ;
+													
+													echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
+												}
+											?>
+						<hr style="margin:0px;clear:both;padding-top:3px;"/>
 			</fieldset>
 			<fieldset>
 				<legend>成本利润
