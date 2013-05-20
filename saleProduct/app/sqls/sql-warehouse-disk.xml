@@ -112,6 +112,9 @@
 		         select s1.real_id from sc_warehouse_disk_details s1, sc_warehouse_disk s2
 		           where s1.disk_id =s2.id and  s2.plan_id = '{@#planId#}'	
 		         )
+		         {@ and sc_real_product.REAL_SKU = '#REAL_SKU#'}
+		          {@ and sc_real_product.NAME like '%#NAME#%'}
+		           {@ and sc_real_product.MEMO like '%#MEMO#%'}
    </entry>
    
    <entry key="sql_warehouse_disk_details">
