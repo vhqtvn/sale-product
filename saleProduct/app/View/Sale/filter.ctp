@@ -40,7 +40,7 @@
 
 </head>
 <body>
-	<div class="toolbar toolbar-auto toolbar2">
+	<div class="toolbar toolbar-auto toolbar2  query-container">
 		<table>
 			<tr>
 				<th>
@@ -62,7 +62,7 @@
 	<div class="grid-content" style="width:99.5%">
 	</div>
 	<br/>
-	<div class="toolbar toolbar-auto toolbar1">
+	<div class="toolbar toolbar-auto toolbar1 query-container">
 		<table>
 			<tr>
 				<th>

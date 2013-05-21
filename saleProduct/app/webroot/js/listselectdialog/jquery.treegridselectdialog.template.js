@@ -105,11 +105,24 @@
 			hasQuery = true ;
 			var label = column.label ;
 			var key   = column.key ;
-			$("#select-searchform").append(label+'：<input class="input-small" name="'+key+'" type="text" value=""/>') ;
+			var q = $(label+'：<input class="input-small" name="'+key+'" type="text" value=""/>').appendTo("#select-searchform");
+			if( column.queryOptions ){
+				var qo = column.queryOptions ;
+				if(qo.placeHolder){
+					q.attr("placeHolder",qo.placeHolder) ;
+				}
+				if(qo.styleClass){
+					q.addClass(qo.styleClass) ;
+				}
+				
+				if(qo.style){
+					q.attr("style",qo.style);
+				}
+			}
 		}) ;
 
 		if( hasQuery ){
-			$("#select-searchform").append('<button class="queryBtn btn">查询</button>') ;
+			$("#select-searchform").append('<button class="queryBtn btn query-btn">查询</button>') ;
 			$("#select-searchform").append('<button type="reset" class="btn">重置</button>') ;
 		}else{
 			$(".search-panel").remove() ;

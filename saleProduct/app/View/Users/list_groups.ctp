@@ -45,7 +45,7 @@
 				</td>
 				<th></th>
 				<td>
-					<button class="btn btn-primary query" >查询</button>
+					<button class="btn btn-primary query query-btn" >查询</button>
 					<button class="btn btn-primary add-btn" >添加用户组</button>
 				</td>
 			</tr>						

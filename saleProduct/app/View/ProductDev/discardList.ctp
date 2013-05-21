@@ -41,7 +41,7 @@
 </head>
 <body>
 
-	<div class="toolbar toolbar-auto toolbar1">
+	<div class="toolbar toolbar-auto toolbar1 query-container">
 		<table>
 			<tr>
 				<th>

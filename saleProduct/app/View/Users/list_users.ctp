@@ -34,7 +34,7 @@
 				</td>
 				<th></th>
 				<td>
-					<button class="btn btn-primary query" >查询</button>
+					<button class="btn btn-primary query query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar'}">查询</button>
 					<button class="action add btn btn-primary">添加用户</button>
 				</td>
 			</tr>						

@@ -331,6 +331,7 @@
 		var headRowNum = 1 ;
 		var groupCols = {} ;
 		$(options.columns).each(function(index,col){
+			if(col.hide) return ;
 			col.width = col.width || (((1/options.columns.length)*100)+"%")
 			if( (col.width+"").indexOf("%")!=-1){
 				col.width =( width - 25) * parseInt( col.width.replace("%",""))/100 ;
@@ -352,7 +353,7 @@
 		
 		
 		$(options.columns).each(function(index){
-			
+			if(this.hide) return ;
 			if( this.permission ){//没权限，忽略
 				if( !this.permission()) return  ; 
 			}

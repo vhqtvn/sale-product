@@ -39,7 +39,7 @@
 				
 				<th></th>
 				<td>
-					<button class="btn btn-primary query" >查询</button>
+					<button class="btn btn-primary query query-btn" >查询</button>
 					<button class="action add btn btn-primary">添加物流软件商</button>
 				</td>
 			</tr>						

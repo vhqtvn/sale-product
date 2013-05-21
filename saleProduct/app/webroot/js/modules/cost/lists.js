@@ -49,7 +49,7 @@
 					querys.title = title ;
 				}
 				
-				$(".grid-content").llygrid("reload",querys) ;
+				$(".grid-content-details").llygrid("reload",querys) ;
 			}) ;
 			
 			$(".add-cost").click(function(){

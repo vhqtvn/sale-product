@@ -180,14 +180,14 @@
 					ds:{type:"url",content:contextPath+"/grid/query"},
 					pagesize:10,
 					columns:[//显示列
-			           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",query:true },
-			           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",query:true},
+			           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
+			           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%"},
 			           	{align:"center",key:"QUANTITY",label:"库存" ,width:"5%" },
-			           	
+			           	{align:"center",key:"searchKey",label:"关键字" ,hide:true,query:true,queryOptions:{placeHolder:'名称、SKU、备注',styleClass:"span4",style:"width:200px;"} },
 			           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",
 			           		content:{'base':"基本类型",'package':"打包货品"}}},
 			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'func',funcName:"renderGridImg"}},
-			           	{align:"center",key:"MEMO",label:"备注",width:"20%",query:true}
+			           	{align:"center",key:"MEMO",label:"备注",width:"20%"}
 			           	
 					]
 				}

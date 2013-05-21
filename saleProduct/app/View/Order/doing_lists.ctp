@@ -53,15 +53,15 @@
 					<tr>
 						<th>订单号：</th>
 						<td>
-							<input type="text" name="orderId"/>
+							<input type="text" name="orderId" class="span2" />
 						</td>
 						<th>内部订单号：</th>
 						<td>
-							<input type="text" name="orderNumber"/>
+							<input type="text" name="orderNumber" class="span2" />
 						</td>
 						<th>账号：</th>
 						<td>
-							<select name="accountId">
+							<select name="accountId" class="span2" >
 				     		<option value="">--选择--</option>
 					     	<?php
 					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
@@ -85,7 +85,7 @@
 						</td>
 						<th></th>
 						<td>
-							<button class="btn btn-primary query" >查询</button>
+							<button class="btn btn-primary query query-btn" >查询</button>
 						</td>
 					</tr>
 					<tr class="action-row">

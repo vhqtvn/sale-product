@@ -24,30 +24,7 @@
 	<script type="text/javascript" src="../grid/jquery.llygrid.js"></script>
 	<script type="text/javascript" src="../dialog/jquery.dialog.js"></script>
 	<script type="text/javascript" src="jquery.treegridselectdialog.template.js"></script>
-	<script>
-	 function formatGridData(data){
-			var records = data.record ;
-	 		var count   = data.count ;
-	 		
-	 		count = count[0][0]["count(*)"] ;
-	 		
-			var array = [] ;
-			$(records).each(function(){
-				var row = {} ;
-				for(var o in this){
-					var _ = this[o] ;
-					for(var o1 in _){
-						row[o1] = _[o1] ;
-					}
-				}
-				array.push(row) ;
-			}) ;
-		
-			var ret = {records: array,totalRecord:count } ;
-				
-			return ret ;
-		   }
-	</script>
+
 </head>
 
 <body class=" container-popup">
@@ -87,7 +64,7 @@
 									<a href="#" class="toggle"></a>
 								</div>
 								<div class="panel-content">
-									<div class="toolbar">
+									<div class="toolbar toolbar-auto">
 										<form class="form-inline" id="select-searchform" action="" data-widget="validator,grid-search" data-options="{gridId:'select-user-list'}">
 										</form>
 									</div>

@@ -152,7 +152,7 @@
 				return false ;
 			} ;
 
-			$(".query-btn").click(function(){
+			$(".plan-query").click(function(){
 				$(".grid-content").llygrid("reload",{name:$("#name").val(),type:$("#type").val()}) ;
 			}) ;
 			

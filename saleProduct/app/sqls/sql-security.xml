@@ -25,6 +25,7 @@
   SELECT sc_user.* , (select name from sc_security_groups where sc_security_groups.code = sc_user.group_code ) as GROUP_NAME
 			FROM sc_user 
 			where status = '1'
+			{@ and name = '#name#'}
    </entry>
    
    <entry key="sql_security_group_insert">

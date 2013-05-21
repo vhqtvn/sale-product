@@ -108,7 +108,7 @@
 					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题" style="width:400px;"/>
 				</td>								
 				<td class="toolbar-btns">
-					<button class="btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-task-product',qc:'.toolbar1'}">查询</button>
+					<button class="btn btn-primary query-btn" data-widget="grid-query"  data-options="{gc:'.grid-task-product',qc:'.toolbar1'}">查询</button>
 				</td>
 			</tr>						
 		</table>

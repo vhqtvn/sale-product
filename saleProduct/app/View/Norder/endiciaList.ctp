@@ -78,7 +78,7 @@
 				</td>
 						<th></th>
 						<td>
-							<button class="btn btn-primary query" >查询</button>
+							<button class="btn btn-primary query query-btn" >查询</button>
 							<button class="download btn btn-primary">下载订单处理信息</button>
 							
 							<button class="btn btn-danger toamazon" >同步AMAZON</button>

@@ -1155,3 +1155,19 @@ $("td[key='ORDER_ID']").live("click",function(){
 	var orderId = $.trim( $(this).text() ) ;
 	openCenterWindow(contextPath+"/page/forward/Norder.details/"+orderId,800,600) ;
 }) ;
+
+$(function(){
+	setTimeout(function(){
+			$(".query-container,.toolbar-auto").find(":input").keyup(function(e){
+				if(e.keyCode==13){
+					if(  $(this).parents(".query-container:first").length ){
+						$(this).parents(".query-container:first").find(".query-btn").click() ;
+					}else if(  $(this).parents(".toolbar-auto:first").length ){
+						$(this).parents(".toolbar-auto:first").find(".query-btn").click() ;
+					}
+				   
+				}
+		}) ;
+	},500) ;
+	
+}) ;

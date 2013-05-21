@@ -165,7 +165,7 @@
 			</tr>
 			<tr class="grid-query-button ">							
 				<td class="toolbar-btns">
-					<button class="query-action btn">查询</button>
+					<button class="query-action btn query-btn">查询</button>
 					<button class="select-scope btn">选择筛选范围</button>
 					<input type="text" class="select-scope-input" />
 					&nbsp;在账户产品中筛选:

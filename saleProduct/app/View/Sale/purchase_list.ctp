@@ -108,7 +108,7 @@
 					<input type="text" id="code"/>
 				</td>						
 				<td class="toolbar-btns">
-					<button class="query-btn btn btn-primary">查询</button>
+					<button class="query-btn btn btn-primary plan-query">查询</button>
 					<?php if( $pp_edit  ){ ?>
 					<button class="create-plan btn">创建采购/试销计划</button>
 					<?php } ?>
@@ -131,7 +131,7 @@
 					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题" style="width:400px;"/>
 				</td>								
 				<td class="toolbar-btns">
-					<button class="btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
+					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
 				</td>
 			</tr>						
 		</table>
