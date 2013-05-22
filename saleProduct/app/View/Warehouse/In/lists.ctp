@@ -21,6 +21,7 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('modules/warehouse/in/lists');
+		echo $this->Html->script('modules/warehouse/in-flow');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -43,7 +44,7 @@
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" >查询</button>
 					<?php if($hasEditPermission){ ?>
-					<button class="add-btn btn">添加物流计划单</button>
+					<button class="add-btn btn">添加入库单</button>
 					<?php } ?>
 				</td>
 			</tr>						

@@ -8,7 +8,7 @@
 
 	
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
@@ -20,6 +20,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('modules/warehouse/in/editTab');
+		echo $this->Html->script('modules/warehouse/in-flow');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -28,12 +29,12 @@
 		
 		//获取
 		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
-		
 	?>
 	
 	<script type="text/javascript">
      var inId = "<?php echo $inId;?>" ;
      var currentStatus = "<?php echo $warehoseIn['STATUS'];?>" ;
+     var flowType = "<?php echo $warehoseIn['FLOW_TYPE'];?>" ;
      
      function AuditAction(status , statusLabel){
 		if(window.confirm("确认【"+statusLabel+"】？")){
@@ -61,6 +62,17 @@
 		window.location.href = contextPath+"/excel/read/"+inId ;
 		//openCenterWindow(contextPath+"/excel/read/"+inId,860,630) ;
 	}
+
+	var flowPermissions = {
+				status_0 : <?php echo $security->hasPermission($loginId , 'IN_STATUS0')?"true":"false" ?>,
+				status_10 : <?php echo $security->hasPermission($loginId , 'IN_STATUS10')?"true":"false" ?>,
+				status_20 : <?php echo $security->hasPermission($loginId , 'IN_STATUS20')?"true":"false" ?>,
+				status_30 : <?php echo $security->hasPermission($loginId , 'IN_STATUS30')?"true":"false" ?>,
+				status_40 : <?php echo $security->hasPermission($loginId , 'IN_STATUS40')?"true":"false" ?>,
+				status_50 : <?php echo $security->hasPermission($loginId , 'IN_STATUS50')?"true":"false" ?>,
+				status_60 : <?php echo $security->hasPermission($loginId , 'IN_STATUS60')?"true":"false" ?>,
+				status_70 : true				
+	 }
      
      var flowData = [
 		{status:0,label:"编辑中",memo:true
@@ -77,7 +89,7 @@
 		{status:20,label:"待发货",memo:true
 			<?php if( $security->hasPermission($loginId , 'IN_STATUS20')) { ?>
 			,actions:[
-{label:"导出装箱单",action:function(){ printBox();} },
+				{label:"导出装箱单",action:function(){ printBox();} },
 				{label:"导出发票",action:function(){ printInvoice();} },
 				{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }
 			]
@@ -113,11 +125,12 @@
 			,actions:[
 						{label:"导出装箱单",action:function(){ printBox();} },
 						{label:"导出发票",action:function(){ printInvoice();} },
-						//{label:"打印入库单",action:function(){ printWarehouseIn();} },
 						{label:"查看入库货品",action:function(){ productInWarehouse();} } 
 			]
 		}
 	] ;
+
+    	var flowData = FlowFactory.get(flowType, flowPermissions ).flow ;
     </script>
 	
 	<style type="text/css">

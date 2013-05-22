@@ -43,6 +43,7 @@
 			ARRIVAL_PORT = '{@#arrivalPort#}' , 
 			PLAN_ARRIVAL_DATE = '{@#planArrivalDate#}' , 
 			{@REAL_ARRIVAL_DATE = '#realArrivalDate#' , }
+			{@flow_type = '#flowType#' , }
 			MEMO = '{@#memo#}' , 
 			{@ TYPE = '#type#' ,}
 			UPDATOR = '{@#loginId#}' , 
@@ -96,7 +97,8 @@
 			RECEIVE_COMPANY_COUNTRY, 
 			RECEIVE_COMPANY_CONTACTOR, 
 			RECEIVE_COMPANY_PHONE, 
-			RECEIVE_COMPANY_EMAIL
+			RECEIVE_COMPANY_EMAIL,
+			FLOW_TYPE
 			)
 			VALUES
 			(
@@ -128,7 +130,8 @@
 			'{@#receiveCompanyCountry#}', 
 			'{@#receiveCompanyContactor#}', 
 			'{@#receiveCompanyPhone#}', 
-			'{@#receiveCompanyEmail#}'
+			'{@#receiveCompanyEmail#}', 
+			'{@#flowType#}'
 			)
    </entry>
    

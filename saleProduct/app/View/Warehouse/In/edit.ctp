@@ -22,6 +22,7 @@
 		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('modules/warehouse/in/edit');
+		echo $this->Html->script('modules/warehouse/in-flow');
 		echo $this->Html->script('calendar/WdatePicker');
 	
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
@@ -129,8 +130,20 @@
 											   ?>
 											</select>
 									</td>
+									<th>入库流程：</th>
+									<td>
+										<select  data-validator="required"   id="flowType"  <?php echo $isRead?"disabled":"" ;?>>
+											<option value="">-选择入库流程-</option>
+											<option value="chinaToAmerican"  <?php echo $result['FLOW_TYPE']=='chinaToAmerican'?"selected":"";?>>中国到美国仓库</option>
+											<option value="chinaLocal" <?php echo $result['FLOW_TYPE']=='chinaLocal'?"selected":"";?>>中国本地采购入库</option>
+										</select>
+									</td>
+								</tr>
+							</tbody>
+							<tbody class="logistics-tbody" style="display:none;">
+								<tr>
 									<th>运输公司：</th>
-									<td><input data-validator="required" type="text" id="shipCompany"
+									<td colspan="3"><input data-validator="required" class="span9" type="text" id="shipCompany"
 										<?php echo $isRead?"readOnly":"" ;?>
 										value="<?php echo $result['SHIP_COMPANY'];?>"/></td>
 								</tr>

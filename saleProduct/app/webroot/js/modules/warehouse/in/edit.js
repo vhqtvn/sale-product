@@ -16,6 +16,24 @@
 				};
 				return false ;
 			}) ;
+	
+		var logisticsCacheHtml = $(".logistics-tbody").html() ;
+		
+		function initLogistics(){
+			var flowConfigName = $("#flowType").val() ;
+			var flow = FlowFactory.get(flowConfigName) ;
+			if( flow.logistics ){ //物流
+				$(".logistics-tbody").show().html(logisticsCacheHtml) ;
+			}else{
+				$(".logistics-tbody").empty();
+			}
+		}
+			
+		$("#flowType").change(function(){
+			initLogistics() ;
+		}) ;	
+		
+		initLogistics();
 			
    		var chargeGridSelect = {
 				title:'用户选择页面',
