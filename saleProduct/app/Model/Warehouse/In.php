@@ -44,6 +44,52 @@ class In extends AppModel {
 		}
 	}
 	
+	/**
+	 * 转仓出库
+	 * @param unknown_type $params
+	 */
+	public function transOutInventory($params){
+		$inId = $params['inId'] ;
+		$result = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+		$sourceWarehouseId = $result['SOURCE_WAREHOUSE_ID'] ;
+		$inventory  = ClassRegistry::init("Inventory") ;
+		
+		$outparams = array() ;
+		$outparams['warehouseId'] = $sourceWarehouseId ;
+		/**
+		 * $goodsId = $item->goodsId ;
+			$quantity = $item->quantity ;
+			$badQuantity = $item->badQuantity ;
+			$inventoryType = $item->inventoryType ;
+		 */
+		$products = $this->exeSql("sql_warehouse_in_products", array('inId'=>$inId)) ;
+		
+		$inventory  = ClassRegistry::init("Inventory") ;
+		
+		$inventoryParams = array() ;
+		$inventoryParams['warehouseId'] = $sourceWarehouseId ;//warehouseId
+		$inventoryParams['inId']  = $inId ;
+		$details = array() ;
+		
+		foreach($products as $product  ){
+			$product = $this->formatObject( $product ) ;
+		
+			$details[] = array(
+					'goodsId'=>$product['REAL_PRODUCT_ID']  ,
+					'quantity'=>$product['QUANTITY'] ,
+					'badQuantity'=>0 ,
+					'inventoryType'=>$product['INVENTORY_TYPE']
+			) ;
+			$inventoryParams['details'] =  json_encode( $details ) ;
+			
+		}
+		
+		//debug($inventoryParams) ;
+		
+		$inventory->out( $inventoryParams ) ;
+		$this->doStatus($params) ;
+	}
+	
 	public function doStatus($params){
 		$inId = $params['inId'] ;
 		$this->exeSql("sql_warehouse_in_update_status",$params) ;

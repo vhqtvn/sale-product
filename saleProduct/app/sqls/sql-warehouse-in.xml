@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sc_warehouse_in_product_select_out">
+				SELECT srp.*
+			FROM sc_real_product srp
+	</entry>
+	
+	<entry key="sc_warehouse_in_product_select_warehouse">
+				SELECT srp.*,
+				       sgi.QUANTITY AS WAREHOUSE_QUANTITY,
+				       sgi.TYPE as WH_TYPE
+				FROM sc_real_product srp ,
+				sc_goods_inventory sgi
+				WHERE srp.id = sgi.GOODS_ID
+				AND sgi.WAREHOUSE_ID = '{@#sourceWarehouseId#}'
+
+	</entry>
 
    <entry key="sql_warehouse_in_lists">
   		SELECT s1.* ,
@@ -44,6 +59,8 @@
 			PLAN_ARRIVAL_DATE = '{@#planArrivalDate#}' , 
 			{@REAL_ARRIVAL_DATE = '#realArrivalDate#' , }
 			{@flow_type = '#flowType#' , }
+			{@IN_SOURCE_TYPE = '#inSourceType#' , }
+			{@SOURCE_WAREHOUSE_ID = '#sourceWarehouseId#' , }
 			MEMO = '{@#memo#}' , 
 			{@ TYPE = '#type#' ,}
 			UPDATOR = '{@#loginId#}' , 
@@ -98,7 +115,9 @@
 			RECEIVE_COMPANY_CONTACTOR, 
 			RECEIVE_COMPANY_PHONE, 
 			RECEIVE_COMPANY_EMAIL,
-			FLOW_TYPE
+			FLOW_TYPE,
+			IN_SOURCE_TYPE,
+			SOURCE_WAREHOUSE_ID
 			)
 			VALUES
 			(
@@ -131,7 +150,9 @@
 			'{@#receiveCompanyContactor#}', 
 			'{@#receiveCompanyPhone#}', 
 			'{@#receiveCompanyEmail#}', 
-			'{@#flowType#}'
+			'{@#flowType#}', 
+			'{@#inSourceType#}', 
+			'{@#sourceWarehouseId#}'
 			)
    </entry>
    

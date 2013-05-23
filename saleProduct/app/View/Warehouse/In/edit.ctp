@@ -58,6 +58,7 @@
 	?>
 	<?php if($hasReEditPermission){?>
 	<script>
+			var inSourceType = '<?php echo $warehoseIn['IN_SOURCE_TYPE'];?>' ;
 			$(function(){
 				$(".reedit").css("cursor","pointer").click(function(){
 						$(this).parents("table:first").find(":input").removeAttr("disabled").removeAttr("readOnly") ;
@@ -75,10 +76,10 @@
 		<div class="container-fluid">
 
 	        <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	             <input type="hidden" id="id" value="<?php echo $result['ID'];?>"/>
-	            <input type="hidden" id="type" value="in"/>
-				<!-- panel 头部内容  此场景下是隐藏的-->
-				<div class="panel apply-panel">
+	             <input type="hidden"  id="id"      value="<?php echo $result['ID'];?>"/>
+	             <input type="hidden"  id="type"  value="in"/>
+				 <!-- panel 头部内容  此场景下是隐藏的-->
+				 <div class="panel apply-panel">
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
@@ -103,17 +104,31 @@
 									</td>
 								</tr>
 								<tr>
-									<th>备注：</th><td  colspan=3>
-										<textarea name="memo"  
-										<?php echo $isRead?"readOnly":"" ;?>
-										style="width:90%;height:50px;"><?php echo $result['MEMO'];?></textarea>
+									<th>入库类型：</th>
+									<td colspan="3">
+										外部采购入库&nbsp;<input type="radio"  name="inSourceType"  value="out" <?php echo $isRead?"disabled":"" ;?>
+											<?php echo $result['IN_SOURCE_TYPE']=='out'?"checked":"";?>   
+											data-validator="required" style="vertical-align: top;"/>&nbsp;&nbsp;&nbsp; 
+										转仓&nbsp;<input type="radio"  name="inSourceType"  value="warehouse"  <?php echo $isRead?"disabled":"" ;?>
+											<?php echo $result['IN_SOURCE_TYPE']=='warehouse'?"checked":"";?>   
+											data-validator="required"  style="vertical-align: top;"/>
+									</td>
+									<th class="trans-wh" style="display:none;">转仓仓库：</th>
+									<td class="trans-wh" style="display:none;">
+											<select  data-validator="required"   id="sourceWarehouseId"  <?php echo $isRead?"disabled":"" ;?>>
+										    	<option value="">--选择--</option>
+											   <?php 
+											     // sql_warehouse_lists
+											     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
+					                             foreach($warehouses as $w){
+					                             	  $w = $SqlUtils->formatObject( $w ) ;
+					                             	  $selected = $result['SOURCE_WAREHOUSE_ID'] == $w['ID'] ?"selected":"" ;
+					                             	  echo "<option $selected value='".$w['ID']."'>".$w['NAME']."</option>" ;
+					                             }
+											   ?>
+											</select>
 									</td>
 								</tr>
-							</tbody>
-						</table>
-						<table class="form-table " >
-							<caption>物流信息<?php if($hasReEditPermission){?><img class="reedit"  title="在编辑" src="/<?php echo $fileContextPath?>/app/webroot/img/edit.png"/><?php }?></caption>
-							<tbody>	
 								<tr>
 									<th>目标仓库：</th>
 									<td>
@@ -139,7 +154,17 @@
 										</select>
 									</td>
 								</tr>
+								<tr>
+									<th>备注：</th><td  colspan=3>
+										<textarea name="memo"  
+										<?php echo $isRead?"readOnly":"" ;?>
+										style="width:90%;height:50px;"><?php echo $result['MEMO'];?></textarea>
+									</td>
+								</tr>
 							</tbody>
+						</table>
+						<table class="form-table " >
+							<caption>物流信息<?php if($hasReEditPermission){?><img class="reedit"  title="在编辑" src="/<?php echo $fileContextPath?>/app/webroot/img/edit.png"/><?php }?></caption>
 							<tbody class="logistics-tbody" style="display:none;">
 								<tr>
 									<th>运输公司：</th>

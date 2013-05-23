@@ -1,5 +1,21 @@
 	$(function(){
 			var isSaved = false ;
+			
+			$("[name='inSourceType']").click(function(){
+				var val = $(this).val() ;
+				if(val == 'out'){ //外部采购入库
+					$(".trans-wh").hide() ;
+					$(".trans-wh").find(":input").removeAttr("data-validator") ;
+					$(this).parent().attr("colspan",3) ;
+				}else{ //转仓
+					$(".trans-wh").show() ;
+					$(this).parent().attr("colspan",1) ;
+					$(".trans-wh").find(":input").attr("data-validator","required") ;
+				}
+			}) ;
+			
+			$("[name='inSourceType']:checked").click();
+			
 			$(".btn-save").click(function(){
 				if( isSaved ) return ;
 				if( !$.validation.validate('#personForm').errorInfo ) {
@@ -11,7 +27,12 @@
 					json.planArrivalDate = json.planArrivalDate||"0000-00-00 00:00:00" ;
 					isSaved = true ;
 					$.dataservice("model:Warehouse.In.doSave",json,function(result){
-						window.close() ;
+						if( $("#id").val() ){
+							window.location.reload() ;
+						}else{
+							window.close() ;
+						}
+						
 					});
 				};
 				return false ;
@@ -21,7 +42,7 @@
 		
 		function initLogistics(){
 			var flowConfigName = $("#flowType").val() ;
-			var flow = FlowFactory.get(flowConfigName) ;
+			var flow = FlowFactory.get(flowConfigName,inSourceType) ;
 			if( flow.logistics ){ //物流
 				$(".logistics-tbody").show().html(logisticsCacheHtml) ;
 			}else{

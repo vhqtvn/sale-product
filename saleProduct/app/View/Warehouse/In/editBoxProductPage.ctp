@@ -23,9 +23,22 @@
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('calendar/WdatePicker');
 		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$boxId = $params['arg1'] ;
+		
+		$boxInstance = $SqlUtils->getObject("sql_warehouse_box_getById",array('boxId'=>$boxId)) ;
+		
+		$inId = $boxInstance['IN_ID'] ;
+		
+		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
+		
+		$inSourceType = $warehoseIn['IN_SOURCE_TYPE'] ;
+		$sourceWarehouseId = $inSourceType =='warehouse'? $warehoseIn['SOURCE_WAREHOUSE_ID']:"" ;
+		
 	?>
 	<script type="text/javascript">
    	var boxId = '<?php echo $params['arg1'] ;?>' ;	 
+   	var sourceWarehouseId = '<?php echo $sourceWarehouseId ;?>'
    </script>
 	<script>
 	$(function(){
@@ -42,7 +55,17 @@
 			};
 			return false ;
 		}) ;
-		
+
+		var sqlId = sourceWarehouseId?"sc_warehouse_in_product_select_warehouse":"sc_warehouse_in_product_select_out" ;
+		var columns = [//显示列
+						{align:"center",key:"REAL_SKU",label:"SKU",sort:true,width:"30%",query:true},
+						{align:"center",key:"NAME",label:"名称",sort:true,width:"30%",query:true},
+						{align:"center",key:"IMAGE_URL",label:"",sort:true,width:"10%",format:{type:'img'}}
+					] ;
+		if(sourceWarehouseId){
+			columns.push( {align:"center",key:"WAREHOUSE_QUANTITY",label:"仓库库存",sort:true,width:"10%"} ) ;
+		}
+		//alert( sqlId+"     "+sourceWarehouseId ) ;
 		var productGridSelect = {
 				title:'货品选择界面',
 				defaults:[],//默认值
@@ -53,15 +76,12 @@
 				grid:{
 					title:"用户选择",
 					params:{
-						sqlId:"sql_saleproduct_list"
+						sqlId:sqlId,
+						sourceWarehouseId : sourceWarehouseId
 					},
 					ds:{type:"url",content:contextPath+"/grid/query"},
 					pagesize:10,
-					columns:[//显示列
-						{align:"center",key:"REAL_SKU",label:"SKU",sort:true,width:"30%",query:true},
-						{align:"center",key:"NAME",label:"NAME",sort:true,width:"30%",query:true},
-						{align:"center",key:"IMAGE_URL",label:"",sort:true,width:"10%",format:{type:'img'}}
-					]
+					columns:columns
 				}
 		   } ;
 		   
@@ -70,6 +90,13 @@
 			var value = args.value ;
 			var label = args.label ;
 			var selectReocrds = args.selectReocrds ;
+
+			var warehouseQuantity = selectReocrds[value]['WAREHOUSE_QUANTITY'];
+
+			if(warehouseQuantity){
+				$("#QUANTITY").val("").attr("placeHolder","数量必须小于最大库存 "+warehouseQuantity+"") ;
+				$("#QUANTITY").attr("data-validator","required,range[1,"+warehouseQuantity+"]")
+			}
 			
 			$("#REAL_PRODUCT_ID").val(value) ;
 			$("#SKU").val(label) ;

@@ -126,7 +126,7 @@
 			}) ;
 			
 			$(".add-box-product").live("click",function(){
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId,550,440,function(){
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/",550,440,function(){
 					$(".grid-content-details").llygrid("reload",{},true);
 				}) ;
 			})

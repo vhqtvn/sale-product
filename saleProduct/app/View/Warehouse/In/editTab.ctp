@@ -36,7 +36,7 @@
      var currentStatus = "<?php echo $warehoseIn['STATUS'];?>" ;
      var flowType = "<?php echo $warehoseIn['FLOW_TYPE'];?>" ;
      
-     function AuditAction(status , statusLabel){
+     function AuditAction(status , statusLabel ){
 		if(window.confirm("确认【"+statusLabel+"】？")){
 			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
 			$.dataservice("model:Warehouse.In.doStatus",json,function(result){
@@ -44,7 +44,17 @@
 			});
 		}
 	}
-	
+
+    //转仓出库
+    function transOutInventory( status , statusLabel  ){
+    	if(window.confirm("确认【"+statusLabel+"】？")){
+			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
+			$.dataservice("model:Warehouse.In.transOutInventory",json,function(result){
+				window.location.reload();
+			});
+		}
+    }
+
 	function productInWarehouse(){
 		openCenterWindow(contextPath+"/page/forward/Warehouse.In.process/"+inId+"/"+status,860,630) ;
 	}
@@ -74,63 +84,7 @@
 				status_70 : true				
 	 }
      
-     var flowData = [
-		{status:0,label:"编辑中",memo:true
-			<?php if( $security->hasPermission($loginId , 'IN_STATUS0')) { ?>
-			,actions:[{label:"提交审批",action:function(){ AuditAction(10,"提交审批") }}]
-			<?php };?>
-		},
-		{status:10,label:"待审批",memo:true
-			<?php if( $security->hasPermission($loginId , 'IN_STATUS10')) { ?>
-			,actions:[{label:"审批通过",action:function(){ AuditAction(20,"审批通过") } },
-				{label:"审批不通过",action:function(){ AuditAction(0,"审批不通过") } }]
-			<?php };?>
-		},
-		{status:20,label:"待发货",memo:true
-			<?php if( $security->hasPermission($loginId , 'IN_STATUS20')) { ?>
-			,actions:[
-				{label:"导出装箱单",action:function(){ printBox();} },
-				{label:"导出发票",action:function(){ printInvoice();} },
-				{label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }
-			]
-			<?php };?>
-		},
-		{status:30,label:"已发货",memo:true
-			<?php if( $security->hasPermission($loginId , 'IN_STATUS30')) { ?>
-			,actions:[
-{label:"导出装箱单",action:function(){ printBox();} },
-						{label:"导出发票",action:function(){ printInvoice();} },
-						{label:"到达海关",action:function(){ AuditAction(40,"到达海关") } }
-			]
-			<?php };?>
-		},
-		{status:40,label:"到达海关",memo:true
-			<?php if( $security->hasPermission($loginId , 'IN_STATUS40')) { ?>
-			,actions:[{label:"开始验货",action:function(){ AuditAction(50,"开始验货") } }]
-			<?php };?>
-		},
-		{status:50,label:"验货中"
-			<?php if( $security->hasPermission($loginId , 'IN_STATUS50')) { ?>
-			,actions:[{label:"货品验收",action:function(){ productInWarehouse() ; } } ]
-			<?php };?>
-		},
-		{status:60,label:"入库中"
-			<?php if( $security->hasPermission($loginId , 'IN_STATUS60')) { ?>
-			,actions:[
-				{label:"货品入库",action:function(){ productInWarehouse() }   }
-			]
-			<?php };?>
-		},
-		{status:70,label:"入库完成"
-			,actions:[
-						{label:"导出装箱单",action:function(){ printBox();} },
-						{label:"导出发票",action:function(){ printInvoice();} },
-						{label:"查看入库货品",action:function(){ productInWarehouse();} } 
-			]
-		}
-	] ;
-
-    	var flowData = FlowFactory.get(flowType, flowPermissions ).flow ;
+    	var flowData = FlowFactory.get(flowType,'<?php echo $warehoseIn['IN_SOURCE_TYPE'];?>', flowPermissions ).flow ;
     </script>
 	
 	<style type="text/css">

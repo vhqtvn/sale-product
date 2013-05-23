@@ -13,8 +13,12 @@ $(function(){
 				}},
 				{align:"center",key:"IN_NUMBER",label:"入库号",width:"12%",forzen:false,align:"left"},
 	           	{align:"center",key:"CHARGER_NAME",label:"负责人",width:"6%",forzen:false,align:"left"},
+	           	{align:"center",key:"IN_SOURCE_TYPE",label:"入库类型",width:"9%",forzen:false,align:"left",format:function(val,record){
+	           		if(val == 'warehouse') return "转仓" ;
+	           		return "外部采购入库" ;
+	           	}},
 	           	{align:"center",key:"FLOW_TYPE",label:"入库流程",width:"9%",forzen:false,align:"left",format:function(val,record){
-	           		return FlowFactory.get(val).name||"" ;
+	           		return FlowFactory.get(val,record.IN_SOURCE_TYPE).name||"" ;
 	           	}},
 	           	{align:"center",key:"WAREHOUSE_NAME",label:"目标仓库",width:"12%"},
 	           	{align:"center",key:"SHIP_COMPANY",label:"运输公司",width:"15%"},

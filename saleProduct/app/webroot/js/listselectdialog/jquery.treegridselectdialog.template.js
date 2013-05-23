@@ -105,7 +105,7 @@
 			hasQuery = true ;
 			var label = column.label ;
 			var key   = column.key ;
-			var q = $(label+'：<input class="input-small" name="'+key+'" type="text" value=""/>').appendTo("#select-searchform");
+			var q = $("<span>"+  label+'：<input class="input-small" name="'+key+'" type="text" value=""/></span>').appendTo("#select-searchform");
 			if( column.queryOptions ){
 				var qo = column.queryOptions ;
 				if(qo.placeHolder){
