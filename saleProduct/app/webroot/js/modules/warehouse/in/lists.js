@@ -74,6 +74,7 @@ $(function(){
 			tabs:[
 				{label:'编辑中',content:"tab-content",custom:"0"},
 				{label:'待审批',content:"tab-content",custom:"10"},
+				{label:'转仓出库',content:"tab-content",custom:"15"},
 				{label:'待发货',content:"tab-content",custom:"20"},
 				{label:'已发货',content:"tab-content",custom:"30"},
 				{label:'到达海关',content:"tab-content",custom:"40"},
