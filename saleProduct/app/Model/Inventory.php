@@ -77,7 +77,7 @@ class Inventory extends AppModel {
 			//更新库存到货品表
 			$query['quantity'] = $quantity + $goods['QUANTITY'] ;
 			$query['badQuantity'] = $badQuantity + $goods['BAD_QUANTITY'] ;
-		//	debug( $query  );
+			//	debug( $query  );
 			
 			$this->exeSql("sql_warehouse_inventory_update", $query) ;
 		} 
