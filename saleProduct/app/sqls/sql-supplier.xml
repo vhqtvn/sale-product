@@ -11,6 +11,33 @@
                 {@  and sc_supplier.id in (
                    select sps.supplier_id  from sc_real_product_supplier sps where sps.real_sku = '#realSku#'
                 )}
+                {@
+                	and (
+                	 name like '%#searchKey#%'
+                	 or
+                	 sc_supplier.id in (
+	                   	select sps.supplier_id  from 
+	                   		sc_real_product_supplier sps ,
+	                   		sc_real_product srp
+	                   		where 
+	                   		srp.real_sku = sps.real_sku
+	                   		and (
+	                   		sps.real_sku = '#searchKey#'
+	                   		or srp.name like '%#searchKey#%'
+	                   		)
+	                 )
+	                 or
+	                 sc_supplier.id in (
+	                   	select sps.supplier_id  from 
+	                   		sc_product_supplier sps , sc_product sp
+	                   		where  
+	                   		sps.asin = sp.asin and (
+	                   		sps.asin = '#searchKey#'
+	                   		or sp.title like '%#searchKey#%'
+	                   		)
+	                 )
+	               )
+                }
    </entry>
    
 	<!-- 通过货品SKU获取到供应商 -->
