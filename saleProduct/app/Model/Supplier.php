@@ -76,7 +76,7 @@ class Supplier extends AppModel {
 			$time2 = explode ( ".", $time );
 			$time = $time2 [0];
 			$id  = $time ;
-			
+			$data['id'] = $id ;
 			$sql = "insert into sc_supplier(id,name,address,url,contactor,phone,mobile,fax,zip_code,email,qq,memo,products,creator,create_time)
 			values('$id','".$data['name']."','".$data['address']."','".$data['url']."','".$data['contactor']."'
 			,'".$data['phone']."','".$data['mobile']."','".$data['fax']."','".$data['zip_code']."','".$data['email']."'
@@ -89,6 +89,8 @@ class Supplier extends AppModel {
 		    $sql="insert into sc_product_supplier(supplier_id,asin,status) values('$id','$asin','valid')" ;
 		    $this->query($sql) ;
 		}
+		
+		return $data ;
 	}
 	
 	public function delSupplier($id){

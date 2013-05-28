@@ -142,6 +142,7 @@
 		
 		.flow-table{
 			text-align:center;
+			
 		}
 		
 		.flow-bar{
@@ -152,6 +153,7 @@
 			top:0px;
 			height:80px;
 			z-index:1000;
+			background: #FFF;
 		}
 		
 		body{
@@ -284,7 +286,7 @@
 {label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
 <?php }?>
 									{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
-		      	        			{label:"入库确认",action:function(){ AuditAction(70,"入库确认") } }
+		      	        			{label:"入库确认",action:function(){ WarehouseInAction(70,"入库确认") } }
         				]
 	        			<?php };?>
 	        		},
@@ -328,7 +330,7 @@
 						<div class="panel-content">
 							<!-- 数据列表样式 -->
 							<table class="form-table" >
-								<caption>采购产品信息</caption>
+								<caption>基本信息</caption>
 								<tbody>										   
 									<tr>
 										<th>编号：</th><td><?php echo $id ;?></td>
@@ -352,6 +354,37 @@
 											</ul>
 										</td>
 									</tr>
+								</tbody>
+						</table>
+						<table class="form-table" >
+								<caption>入库信息</caption>
+								<tbody>
+									<tr>
+										<th>入库仓库：</th>
+										<td colspan=1>
+											<select   id="warehouseId"  class="60-input input">
+										    	<option value="">--选择--</option>
+											   <?php 
+											     // sql_warehouse_lists
+											     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
+					                             foreach($warehouses as $w){
+					                             	  $w = $SqlUtils->formatObject( $w ) ;
+					                             	  $selected = $product['WAREHOUSE_ID'] == $w['ID'] ?"selected":"" ;
+					                             	  echo "<option $selected value='".$w['ID']."'>".$w['NAME']."</option>" ;
+					                             }
+											   ?>
+											</select>
+										</td>
+										<th>入库时间：</th>
+										<td><input id="warehouseTime" class="60-input input"   type="text"  data-widget="calendar"
+													<?php echo $status>=60?"data-validator='required'":"" ?>
+													value='<?php echo $product['WAREHOUSE_TIME'] ;?>' /></td>
+									</tr>
+								</tbody>
+						</table>
+						<table class="form-table" >
+								<caption>采购信息</caption>
+								<tbody>
 									<tr>
 										<th>采购时限：</th>
 										<td colspan=3>
@@ -421,7 +454,7 @@
 									</tr>
 									<tr>
 										<th>实际供应商：</th>
-										<td>
+										<td colspan=3>
 										<select id="realProvidor"   class=" 70-input  input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 										>
@@ -439,10 +472,7 @@
 										</select> 
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier  70-input  input">编辑</button>
 										</td>
-										<th>入库时间：</th>
-										<td><input id="warehouseTime" class="60-input input"   type="text"  data-widget="calendar"
-													<?php echo $status>=60?"data-validator='required'":"" ?>
-													value='<?php echo $product['WAREHOUSE_TIME'] ;?>' /></td>
+										
 									</tr>
 									<tr class="check-purchase-tr">	
 										<th>实际采购时间：</th>

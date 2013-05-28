@@ -38,6 +38,13 @@
     	order by s.create_time desc
     </entry>
     
+    <entry key="sql_saleproduct_getGoodsIdByPurchasePlanProductId">
+ 			select srp.* from
+ 			  sc_real_product srp,sc_purchase_plan_details sppd
+ 			  where srp.real_sku = sppd.sku
+ 			  and sppd.id = '{@#id#}'
+   </entry>
+    
 	<!--入库sql-->
 	<entry key="sql_saleproduct_quantity_in">
  			update sc_real_product set quantity = {@#genQuantity#} 

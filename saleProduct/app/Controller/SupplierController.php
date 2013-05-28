@@ -84,10 +84,10 @@ class SupplierController extends AppController {
 	 public function saveSupplier($asin=null){
  		$user =  $this->getCookUser() ;
  	
-		$this->Supplier->saveSupplier($this->request->data,$user,$asin) ;
+		$supplier = $this->Supplier->saveSupplier($this->request->data,$user,$asin) ;
 		
 		$this->response->type("json") ;
-		$this->response->body( "success")   ;
+		$this->response->body(  json_encode($supplier) )   ;
 
 		  return $this->response ;
 	 }

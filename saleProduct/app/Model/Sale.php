@@ -167,74 +167,42 @@ class Sale extends AppModel {
 	public function deletePurchasePlanProduct($data){
 		$id = $data["id"] ;
 		
-		/*$sql = "SELECT * from sc_purchase_plan_details  where id = '$id'";
-		$details = $this->query($sql);
-		$detail = $details[0]['sc_purchase_plan_details'] ;
-		
-		//copy to 
-		$sql = "
-				INSERT INTO sc_purchase_plan_details_delete 
-					( 
-					ASIN, 
-					PLAN_NUM, 
-					REAL_NUM, 
-					PLAN_ID, 
-					CREATOR, 
-					CREATE_TIME, 
-					QUOTE_PRICE, 
-					COST, 
-					PROVIDOR, 
-					SAMPLE, 
-					SAMPLE_CODE, 
-					DELETOR, 
-					DELETE_TIME
-					)
-					VALUES
-					(
-					'".$detail['ASIN']."', 
-					'".$detail['PLAN_NUM']."', 
-					'".$detail['REAL_NUM']."', 
-					'".$detail['PLAN_ID']."', 
-					'".$detail['CREATOR']."', 
-					'".$detail['CREATE_TIME']."', 
-					'".$detail['QUOTE_PRICE']."', 
-					'".$detail['COST']."', 
-					'".$detail['PROVIDOR']."', 
-					'".$detail['SAMPLE']."', 
-					'".$detail['SAMPLE_CODE']."', 
-					'".$data['loginId']."', 
-					NOW()
-					)" ;
-	 	$this->query($sql)  ;*/
-		
 		$sql = "delete from sc_purchase_plan_details_track where pd_id = '$id'" ;
 		$this->query($sql) ;
 		$sql = "delete from sc_purchase_plan_details where id = '$id'" ;
 		$this->query($sql) ;
 	}
 	
-	public function savePurchasePlanProduct($data){
-		
+	public function warehouseIn($data){
+		//保存采购canp
 		$this->exeSql("sql_update_sc_purchase_plan_details" , $data ) ;
-		/*$id = $data['id'] ;
-		$plan_num = $data["plan_num"] ;
-		$quote_price = $data["quote_price"] ;
-		$providor = $data["providor"] ;
-		$sample = $data["sample"] ;
-		$sample_code = $data["sample_code"] ;
-		$area =   $data["area"] ;
-		$memo =   $data["memo"] ;
+		//执行入库操作
+		$inventory  = ClassRegistry::init("Inventory") ;
 		
-		$sql = "update sc_purchase_plan_details set plan_num = '$plan_num',
-				quote_price = '$quote_price',
-				providor = '$providor',
-				sample = '$sample',
-				area = '$area',
-				sample_code = '$sample_code',
-				memo = '$memo'
-				where id = '$id'
-			" ;
-		$this->query($sql) ;*/
+		$inventoryParams = array() ;
+		$inventoryParams['warehouseId'] =$data['warehouseId']  ;
+		//$inventoryParams['diskId']  = $params['diskId'] ;
+		
+		$id = $data['id'] ;
+		//通过ID找到对应的货品ID
+		$obj = $this->getObject("sql_saleproduct_getGoodsIdByPurchasePlanProductId", array('id'=>$id)) ;
+		
+		$details = array() ;
+		$details[] = array(
+				'goodsId'=>$obj['ID'] ,
+				'quantity'=>$data['qualifiedProductsNum'] ,
+				'badQuantity'=>0 ,
+				'inventoryType'=>'1' //普通库存
+		) ;
+		
+		$inventoryParams['details'] =  json_encode( $details ) ;
+		
+		//return $inventoryParams;
+		$inventory->in( $inventoryParams ) ;
+	}
+	
+	public function savePurchasePlanProduct($data){
+		$this->exeSql("sql_update_sc_purchase_plan_details" , $data ) ;
 	}
 	
 	public function updatePurchasePlanProductStatus($data,$user){

@@ -287,12 +287,29 @@ $(function(){
 	
 }) ;
 
+function WarehouseInAction(status , statusLabel){
+	if(window.confirm("确认【"+statusLabel+"】？")){
+		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
+		var json1 = {id:id,status:status,memo:memo} ;
+		
+			if( !$.validation.validate('#personForm').errorInfo ) {
+				var json = $("#personForm").toJson() ;
+				$.dataservice("model:Sale.warehouseIn",json,function(result){
+					//alert( $.json.encode( result ));
+					//执行状态更新
+					$.dataservice("model:Sale.doStatus",json1,function(result){
+						window.location.reload();
+					});
+				}) ;
+			}
+	}
+}
+
 function AuditAction(status , statusLabel){
 	if(window.confirm("确认【"+statusLabel+"】？")){
 		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
 		var json1 = {id:id,status:status,memo:memo} ;
 		
-		//if( status == 10 || status == 20  ){ //确认采购
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
 				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
@@ -302,11 +319,6 @@ function AuditAction(status , statusLabel){
 					});
 				}) ;
 			}
-	//	}else{
-	//		$.dataservice("model:Sale.doStatus",json1,function(result){
-	//			window.location.reload();
-	//		});
-	//	}
 	}
 }
 
