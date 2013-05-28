@@ -19,7 +19,6 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('../grid/query');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('validator/jquery.validation');
 
@@ -35,7 +34,7 @@
   
    <script>
 		$(function(){
-				 var chargeGridSelect = {
+				var chargeGridSelect = {
 							title:'用户供应商',
 							defaults:[],//默认值
 							key:{value:'ID',label:'NAME'},//对应value和label的key
@@ -51,8 +50,12 @@
 								pagesize:10,
 								columns:[//显示列
 									{align:"center",key:"ID",label:"编号",width:"20%"},
-									{align:"center",key:"NAME",label:"名称",sort:true,width:"30%",query:true},
-									{align:"center",key:"ADDRESS",label:"地址",sort:true,width:"46%"}
+									{align:"center",key:"NAME",label:"名称",sort:true,width:"30%"},
+									{align:"center",key:"ADDRESS",label:"地址",sort:true,width:"46%"},
+									{align:"center",key:"searchKey",label:"关键字",query:true,hide:true,queryOptions:{placeHolder:"供应商名称、SKU、ASIN、产品名称",style:'width:230px;'}}
+								],
+								actions:[
+								     {label:"添加供应商",action:"window.opener.addSupplier"}
 								]
 							}
 					   } ;
@@ -65,7 +68,25 @@
 						$("#supplierName").val(label) ;
 						return false;
 					}) ;
+
+					/*$(".select-supplier").click(function(){
+						//openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $asin;?>",800,600,function(){
+						//	window.location.reload();
+						}) ;
+					}) ;*/
 		})
+		
+		function addSupplier(){
+			openCenterWindow(contextPath+"/supplier/add/asin/<?php echo $asin;?>", 800,600,function(){
+				var result = jQuery.dialogReturnValue() ;
+				var value = result.id ;
+				var label = result.name ;
+				$("#supplierId").val(value) ;
+				$("#supplierName").val(label) ;
+			}) ;
+			this.close();
+		}
+		
 		function validateForm(){
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				return true ;

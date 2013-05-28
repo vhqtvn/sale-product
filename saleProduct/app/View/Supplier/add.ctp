@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -106,25 +106,27 @@
 			
 
 			$("button").click(function(){
-				
-				if( !$.validation.validate('#personForm').errorInfo ) {
-					var json = $("#personForm").toJson() ;
-					var vals = $('#default-tree').tree().getSelectedIds()  ;
+
+				if(window.confirm("确认添加该供应商？")){
+					if( !$.validation.validate('#personForm').errorInfo ) {
+						var json = $("#personForm").toJson() ;
+						var vals = $('#default-tree').tree().getSelectedIds()  ;
+						
+						json.products = vals.join(",") ;
 					
-					json.products = vals.join(",") ;
-				
-					$.ajax({
-						type:"post",
-						url:contextPath+"/supplier/saveSupplier/"+asin,
-						data:json,
-						cache:false,
-						dataType:"text",
-						success:function(result,status,xhr){
-							window.opener.location.reload() ;
-							window.close() ;
-						}
-					}); 
-				};
+						$.ajax({
+							type:"post",
+							url:contextPath+"/supplier/saveSupplier/"+asin,
+							data:json,
+							cache:false,
+							dataType:"json",
+							success:function(result,status,xhr){
+								jQuery.dialogReturnValue(result) ;
+								window.close();
+							}
+						}); 
+					};
+				}
 			})
 		})
    </script>

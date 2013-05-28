@@ -34,7 +34,13 @@
    </script>
    
    <script type="text/javascript">
-   	var designText = <?php echo $warehouse['DESIGN_TEXT'] ;?> ;
+   <?php 
+   		if( empty(  $warehouse['DESIGN_TEXT'] ) ){
+   			echo "var designText =  null ;" ;
+   		}else{
+   			echo "var designText = ".$warehouse['DESIGN_TEXT'].';' ;
+   		}
+   ?>
    </script>
    
    <script type="text/javascript">
