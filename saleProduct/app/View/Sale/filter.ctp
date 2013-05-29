@@ -44,10 +44,10 @@
 		<table>
 			<tr>
 				<th>
-					任务编号:
+					关键字:
 				</th>
 				<td>
-					<input type="text" id="taskCode"/>
+					<input type="text" id="taskSearchkey" placeHolder="任务编号、任务名称"/>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar2'}">查询</button>

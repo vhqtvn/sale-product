@@ -43,6 +43,8 @@
 		$product_giveup = $security->hasPermission($loginId , 'product_giveup') ;
 		$view_giveup_product = $security->hasPermission($loginId , 'view_giveup_product') ;
 		$product_stock_quanity_assign = $security->hasPermission($loginId , 'product_stock_quanity_assign') ;
+		//销售状态变更权限
+		$product_onsale =  $security->hasPermission($loginId , 'product_onsale') ;
 
 		$user = $this->Session->read("product.sale.user") ;
 		$loginId = $user["GROUP_CODE"] ;
@@ -60,7 +62,7 @@
 		$product_giveup = <?php echo $product_giveup?'true':'false';?> ;
 		$view_giveup_product = <?php echo $view_giveup_product?'true':'false';?> ;
 		$product_stock_quanity_assign = <?php echo $product_stock_quanity_assign?'true':'false';?> ;
-	
+		$product_onsale = <?php echo $product_onsale?'true':'false';?> ;
 	
 	    var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
 	    var treeMap  = {} ;
@@ -109,7 +111,15 @@
 					<tr>
 						<th>关键字：</th>
 						<td>
-							<input type="text" id="searchKey" class="span4" placeHolder="输入名称、SKU、ASIN、备注进行查询"/>
+							<input type="text" id="searchKey" class="span3" placeHolder="输入名称、SKU、ASIN、备注进行查询"/>
+						</td>
+						<th>货品类型：</th>
+						<td>
+							<select class="span2" name="type">
+								<option value="">所有</option>
+								<option value="base">基本货品</option>
+								<option value="package">打包货品</option>
+							</select>
 						</td>
 						<th>仓库：</th>
 						<td>
@@ -124,16 +134,16 @@
                              }
 						   ?>
 							</select>
-						   <!--
-							<select class="span2" id="status">
+						</td>
+					</tr>
+					<tr>
+						<th>销售状态：</th>
+						<td>
+						    <select class="span2" name="isOnsale">
 								<option value="">所有</option>
-								<option value="1">正常库存</option>
-								<option value="2">低于告警库存</option>
-								<option value="3">低于安全库存</option>
-								<option value="4">告警库存未设置</option>
-								<option value="5">安全库存未设置</option>
+								<option value="1">在售</option>
+								<option value="0">未销售</option>
 							</select>
-						  -->
 						</td>
 						<th></th>
 						<td>
@@ -142,7 +152,7 @@
 							<button class="action add btn btn-primary">添加货品</button>
 							<?php  } ?>
 						</td>
-					</tr>						
+					</tr>							
 				</table>	
 				<hr style="margin:2px;"/>	
 			</div>

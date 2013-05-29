@@ -16,65 +16,65 @@ var currentId = '' ;
 						
 						return html.join("") ;
 					}},
-					{align:"center",key:"CODE",label:"任务编码",width:"15%",forzen:false,align:"left"},
-		           	{align:"center",key:"NAME",label:"任务名称",width:"15%",forzen:false,align:"left"},
-		           	{align:"center",key:"PLAN_NAME",label:"所属计划",width:"15%",forzen:false,align:"left"},
-		           	{align:"center",key:"START_TIME",label:"开始时间",width:"15%",forzen:false,align:"left"},
-		           	{align:"center",key:"END_TIME",label:"结束时间",width:"15%",forzen:false,align:"left"},
-		           	{align:"center",key:"TOTAL",label:"总产品",width:"5%"},
-		        	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"4%",format:function(val,record){
+					{align:"center",key:"CODE",label:"任务编码",width:"15%",forzen:false,align:"left",sort:true},
+		           	{align:"center",key:"NAME",label:"任务名称",width:"15%",forzen:false,align:"left",sort:true},
+		           	{align:"center",key:"PLAN_NAME",label:"所属计划",width:"15%",forzen:false,align:"left",sort:true},
+		           	{align:"center",key:"START_TIME",label:"开始时间",width:"15%",forzen:false,align:"left",sort:true},
+		           	{align:"center",key:"END_TIME",label:"结束时间",width:"15%",forzen:false,align:"left",sort:true},
+		           	{align:"center",key:"TOTAL",label:"总产品",width:"5%",sort:true},
+		        	{align:"center",key:"STATUS1",label:"自有",group:'开发状态',width:"4%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='1'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS2",label:"跟卖",group:'开发状态',width:"4%",format:function(val,record){
+			        {align:"center",key:"STATUS2",label:"跟卖",group:'开发状态',width:"4%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='2'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS4",label:"自有&跟卖",group:'开发状态',width:"4%",format:function(val,record){
+			        {align:"center",key:"STATUS4",label:"自有&跟卖",group:'开发状态',width:"4%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' devstatus='4'>"+(val||'0')+"</a>"
 			        }},
 			        /*
 			        {align:"center",key:"STATUS15",label:"废弃",group:'开发状态',width:"4%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='15'>"+(val||'0')+"</a>"
 			        }},*/
-		           	{align:"center",key:"STATUS10",label:"产品分析",group:'流程状态',width:"6%",format:function(val,record){
+		           	{align:"center",key:"STATUS10",label:"产品分析",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='10'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS20",label:"询价",group:'询价|流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS20",label:"询价",group:'询价|流程状态',width:"6%",sort:true,format:function(val,record){
 						return  "<a href='#' class='fs-action' status='20'>"+(val||'0')+"</a>" ;
 			        }},
-			        {align:"center",key:"STATUS20_UNASIGN",label:"未分配",group:'询价|流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS20_UNASIGN",label:"未分配",group:'询价|流程状态',width:"6%",sort:true,format:function(val,record){
 						return  "<a href='#' class='fs-action' unasignstatus='20'>"+(val||'0')+"</a>" ;
 			        }},
-			        {align:"center",key:"STATUS20_MY",label:"我的询价",group:'询价|流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS20_MY",label:"我的询价",group:'询价|流程状态',width:"6%",sort:true,format:function(val,record){
 						return  "<a href='#' class='fs-action' mystatus='20'>"+(val||'0')+"</a>" ;
 			        }},
-			        {align:"center",key:"STATUS25",label:"成本利润",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS25",label:"成本利润",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='25'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS30",label:"产品经理审批",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS30",label:"产品经理审批",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='30'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS40",label:"总监审批",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS40",label:"总监审批",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='40'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS50",label:"货品录入",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS50",label:"货品录入",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='50'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS60",label:"制作Listing",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS60",label:"制作Listing",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='60'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS70",label:"Listing审批",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS70",label:"Listing审批",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='70'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS72",label:"试销采购",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS72",label:"试销采购",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='72'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS74",label:"库存到达",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS74",label:"库存到达",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='74'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS76",label:"营销展开",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS76",label:"营销展开",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='76'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS78",label:"开发总结",group:'流程状态',width:"6%",format:function(val,record){
+			        {align:"center",key:"STATUS78",label:"开发总结",group:'流程状态',width:"6%",sort:true,format:function(val,record){
 						return "<a href='#' class='fs-action' status='78'>"+(val||'0')+"</a>"
 			        }},
 			        {align:"center",key:"STATUS80",label:"结束",group:'流程状态',width:"6%",format:function(val,record){

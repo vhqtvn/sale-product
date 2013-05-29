@@ -9,6 +9,11 @@ class SaleProduct extends AppModel {
 		return $records ;
 	}
 	
+	function onSale($params){
+		$sql = "update sc_real_product set is_onsale ='{@#isOnsale#}' where id = '{@#id#}'" ;
+		$this->exeSql($sql, $params) ;
+	}
+	
 	function giveup($id,$type){
 		if( $type == 1 ){//作废
 			$sql = "update sc_real_product set status='0' where id = '$id'" ;
