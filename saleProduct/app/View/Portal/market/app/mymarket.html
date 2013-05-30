@@ -1,0 +1,99 @@
+<div class="AppDetailMaxBox">
+    <div class="AppMarketBox">
+        <div class="Roof_Beam">
+            <div class="Roof_Beam_name">购物篮</div>
+            <div class="Roof_Beam_draw"></div>
+        </div>
+        <div class="Roof_Beam_post">
+            <div class="Roof_Beam_post_option">
+                <input type="checkbox" />
+                <label>全选</label>
+                <a href="javascript:" class="market_delete">删除</a>
+                <a href="javascript:" class="market_BTN">合并付款</a>
+                <a href="javascript:" class="market_BTN">评价</a>
+            </div>
+        </div>
+        <div class="Roof_Beam_flowBox">
+            <div class="Roof_Beam_flow">
+                <div class="Roof_Beam_flowpoint">
+                    <label class="OnFlowPoint">我的购物车</label>
+                    <label>确认订单</label>
+                    <label>确认收货</label>
+                    <label>确认付款</label>
+                    <label>给予评价</label>
+                </div>
+            </div>
+        </div>
+        <div class="Roof_Beam_flow_detaileBox">
+            <div class="Roof_Beam_flow_detaile">
+                <span class="Roof_Beam_flow_strip">订单编号：{{model.id}}，订单时间：{{model.orderTime}}
+                {{currentUser.loginId}}
+                </span>
+            </div>
+            <div class="Roof_Beam_flow_detaile_tab">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="15px;"><input type="checkbox" /></th>
+                            <th>产品名称</th>
+                            <th>区域</th>
+                            <th>购买方式</th>
+                            <th>购买数量</th>
+                            <th>价格</th>
+                           <!--  <th>操作</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {{#each model.orderItems}}
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>
+                            	<img src="portal/layouts/webos/themes/appstore/images/appimg/app_03.png" />
+                                <div class="AppInfor">
+                                    <h3>{{itemParametersMap.productName}}</h3>
+                                    <label>
+                                        {{#each itemParametersMap.specs}}
+                                            {{key}}:{{value}}
+                                        {{/each}}
+                                    </label>
+                                </div>
+                            </td>
+                            <td>亚太引擎</td>
+                            <td>按{{tenancyUnit}}</td>
+                            <td>{{quantity}}</td>
+                            <td>销售价：<span style="color:red">{{price}}元/{{tenancyUnit}}</span><br/>
+                            	<span style="color:#ccc">(市场价：{{marketPrice}}元/{{tenancyUnit}})</span>
+                            </td>
+                            <!-- <td class="app_operate">
+                                <a href="javascript:">删除</a>
+                                <a href="javascript:">备注</a>
+                                <a href="javascript:">分享</a>
+                            </td> -->
+                        </tr>
+                       {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="indent_operateBox">
+        <div class="indent_operate">
+            <div class="indent_operate_right">
+                <div class="indent_operate_account">
+                    <label>商品总价：</label>
+                    <h1>{{totalPric}}</h1>
+                    <label>元</label>
+                    <a href="javascript://"  class="market_account"  {{action "createOrder" on="click"}}>结算</a>
+                </div>
+            </div>
+            <div class="indent_operate_left">
+                <div class="Roof_Beam_post_option">
+                    <input type="checkbox" />
+                    <label>全选</label>
+                    <a href="javascript:" class="market_delete">删除</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

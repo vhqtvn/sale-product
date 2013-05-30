@@ -1,0 +1,136 @@
+<div class="region region_lm more_container">						
+	<div class="appPanel">
+    </div>
+</div>
+
+<script  id="app_render" type="text/x-jquery-tmpl">
+<div class="AppDetailMaxBox" appid='{appId}' title='{appName}'>
+    <div class="AppDetail_SubBox">
+        <div class="appdetile_box">
+            <div class="appdetile_merchandise">
+                <div class="appdetile_merchandise_detile" style="width:auto">
+					{appIcon}
+					<div class="appdetail-title">
+                    <h1>{appName}</h1>
+                    <p class="app_star">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span class="applist_GrayStar"></span>
+                        <label><!-- （已有100人评论） --></label>
+                    </p>
+					</div>
+                    <div class="clear"></div>
+				
+                    <p><label>下载次数：</label><span>200次</span></p>
+                    <p><label>所属分类：</label><span>{appCategory}</span></p>
+                    <p><label>版本信息：</label><span>{{=version}}</span></p>
+                    <p><label>版本更新时间：</label><span>{{=createTime}}</span></p>
+					<p>&nbsp;</p>
+
+					<div class="appdetile_merchandise_term">
+                            <div class="row">
+								<label>购买方案：</label>
+								<select class="__schema __price">
+									{{each productSchema content="#app_schema_render"}}
+                            	</select>
+							</div>
+
+							{{each productSpec content="#app_spec_render"}}
+						
+							<div class="row">
+								<label>附加功能：</label>
+								<ul style="display:inline">
+									{{each appeProducts content="#app_appe_prdt"}}
+								</ul>
+							</div>
+						
+                           <!-- <div class="row"><label>购买数量：</label><input type="text" value="1"></div> -->
+                    </div>
+
+                    <div class="appdetile_merchandise_BuyBtn appNoBuy">
+                        <a class="ToBuy" href="javascript:" added='{addedNum}'>立即购买</a>	
+						<br/>		
+						<div class="appdetail-seeall">
+							<input type='checkbox' value='{appId}' id='{appId}_seeall1'>
+							<label for='{appId}_seeall1'>所有人可见</label>
+						</div>
+					</div>
+					
+					<div class="appdetile_merchandise_BuyBtn appBuyed" style="display:none">
+                        <a class="ToBuy" href="javascript:" added='{addedNum}'>卸载</a>	
+						<br/>		
+						<div class="appdetail-seeall">
+						</div>
+					</div>
+
+                    <div class="app_price">
+                        <h1>￥</h1><span class="a_price"></span> <label>（<a class="a_schema"></a>）</label>
+                    </div>
+                    <div class="app_2D">
+                        <img src="{webosImgRoot}images/appmerchandise/2d.png">
+                        <div class="clear"></div>
+                        <a href="javascript:">如何使用二维码下载？</a>
+                    </div>
+                    <div class="Goto_com">
+                        <a href="javascript:">开发商站点</a>
+                        <a href="javascript:">应用软件技术支持</a>
+                    </div>
+                </div>
+            </div>
+            <div class="appdetile_relevance">
+                <div class="appdetile_relevance_l">
+                    <div class="appdetile_AppExplain">
+                        <div class="appdetile_title">
+                            软件详情
+                        </div>
+                        <div class="appdetile_AppExplain_details">
+                            <p>{{=detailDesc}}</p>
+                        </div>
+                    </div>
+                    <div class="app_photoList">
+                        <div class="appdetile_title">
+                            软件截图
+                        </div>
+                        <div id="app_photoBOX">
+                            <div style="width: 1150px; position: relative;" id="app_photoRoll" class="app_photoRoll ui-draggable">
+                               <!-- <img src="{thumbnailUrl}"/> -->
+								{{each productImages content="#app_img_list"}}								
+                            </div>	
+                        </div>
+                    </div>
+                 </div>  
+            </div>
+            
+        </div>
+    </div>
+</div>
+</script>
+
+<script id="app_schema_render" type="text/x-jquery-tmpl">
+		<option value="{{=schemaId}}">{{=schemaName}}</option>
+</script>
+
+<script id="app_img_list" type="text/x-jquery-tmpl">
+	<img src="/product/download?filepath={{=path}}"/>
+</script>
+
+<script id="app_appe_prdt" type="text/x-jquery-tmpl">
+	<li>
+		<input type="checkbox" class="__price __appe" id="{{=id}}" value="0" />{{=name}}
+	</li>
+</script>
+
+<script id="app_spec_render" type="text/x-jquery-tmpl">
+		<div class="row">
+			<label>{{=name}}：</label>
+            <ul class="specList">
+	           {{each specValues content="#app_specValue_render"}}       
+            </ul>
+		</div>
+</script>
+
+<script id="app_specValue_render" type="text/x-jquery-tmpl">
+	    <li><a href="javascript://"  class="__spec __price" value="{{=specValueId}}"><span>{{=specDisplay}}</span></a></li>
+</script>

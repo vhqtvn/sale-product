@@ -1,0 +1,37 @@
+@charset "utf-8";
+/* CSS Document */
+ 
+ /* search */ 
+ #search_bar {position:absolute;top:70px;right:10px;z-index:1;}/* fix ie7*/
+ .search_bar {position:relative;height:auto !important;min-height:30px;height:30px;width:205px;background:url(../images/search-bar.png) no-repeat;_background:url(../images/search-bar.gif) no-repeat;}
+ #search_value {margin:0 5px 0 10px;height:20px;line-height:20px;width:150px;background:none;border:none;color:#666;font-size:12px;}
+ #search_bt {width:30px;height:25px;background:none;border:none;}
+ .key_list {display:none;position:absolute;top:25px;left:12px;z-index:120;width:170px;padding:0 5px;background:#fbfdfe;border:1px solid #6c9cbd;}
+ .key_result {}
+ .key_result li {height:25px;line-height:25px;color:#666;cursor:pointer;}
+ .key_result li span.key_event {float:right;color:#20672d;}
+ .key_result li a {text-decoration:underline;}
+ 
+ 
+ .weather {width:210px;height:240px;overflow:hidden;background:url(../images/weather-bg.png) no-repeat;}
+
+ /* 系统公告 */ 
+.deskbox {position:absolute;overflow:hidden;*zoom:1;background:rgba(0,0,0,0.3);}
+.deskbox h3{font:bold 16px/1.5em "微软雅黑";padding:2px 0 2px 12px;color:#fff;} 
+
+.web_note{width:280px;}
+
+.tab_menu {height:30px;line-height:30px;border-bottom:1px solid #42491d;}
+.tab_menu li {float:left;}
+.tab_menu li a {display:block;width:71px;text-align:center;padding:0 10px;background:#fff;border:1px solid #fff;border-bottom:none;}
+.tab_menu li a:hover,
+.tab_menu li a.current {background:#42491d;color:#fff;border:1px solid #333;-moz-border-radius:5px 5px 0 0;-khtml-border-radius:5px 5px 0 0;-webkit-border-radius:5px 5px 0 0;border-radius:5px 5px 0 0;}
+.tab_content {display:none;border:1px solid #333;-moz-border-radius:0 0 5px 5px;-khtml-border-radius:0 0 5px 5px;-webkit-border-radius:0 0 5px 5px;border-radius:0 0 5px 5px;background:#fff;}
+.tab_content ul{margin:0;padding:0;list-style:none;}
+.tab_content ul li{height:22px;margin:5px auto;position:relative;}
+.tab_content ul li a{width:210px;font:14px/1.5em "微软雅黑";overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:block;color:#666;top:2px;left:12px;position:absolute;}
+.tab_content ul li a:hover{color:#2c98d6;}
+.tab_content ul li span{font:12px/1.5em "微软雅黑";width:40px;color:#fff;top:2px;right:12px;position:absolute;}
+
+.common_icon {top:100px;right:20px;width:280px;}
+.common_icon .nav_ico {position:relative;}

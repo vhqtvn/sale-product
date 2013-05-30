@@ -1,0 +1,91 @@
+<div class="AppDetailMaxBox"  {{bindAttr  appid="model.id"}}  {{bindAttr title="model.name"}}>
+    <div class="AppDetail_SubBox">
+        <div class="appdetile_box">
+<div class="appdetile_merchandise">
+<div class="appdetile_merchandise_detile">
+    <img src="portal/layouts/webos/themes/appstore/images/appimg/app_01.png"/>
+    <h1>{{model.name}}</h1>
+    <p class="app_star">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span class="applist_GrayStar"></span>
+        <label>（已有100人评论）</label>
+    </p>
+    <div class="clear"></div>
+    <p><label>下载次数：</label><span>{{model.sales}}次</span></p>
+    <p><label>软件大小：</label><span>{{model.exProperties.size}}K</span></p>
+    <p><label>所属分类：</label><span>{{model.cateId}}</span></p>
+    <p><label>版本更新时间：</label><span>{{model.updateTime}}</span></p>
+    <p><label>系统要求：</label><span>{{model.exProperties.sysRequired}}</span></p>
+	<div class="appdetile_merchandise_term">
+	    <div class="row">
+			<label>购买方案：</label>
+			<select class="__schema __price">
+				{{#each model.productSchema}}
+					<option {{bindAttr value="schemaId"}} >{{schemaName}}</option>
+				{{/each}}
+	    	</select>
+		</div>
+		{{#each model.productSpec}}
+		<div class="row">
+			<label>{{name}}：</label>
+            <ul class="specList">
+				{{#each specValues}}
+				 <li><a href="javascript://"  class="__spec __price" {{bindAttr  value="specValueId" }}><span>{{specDisplay}}</span></a></li>
+				{{/each}}
+            </ul>
+		</div>
+		{{/each}}
+
+		<div class="row">
+			<label>附加功能：</label>
+			<ul class="specList">
+				{{#each model.appeProducts}}
+					<li >
+					<a href="javascript://" style="width:100px;text-align:left;" ><input type="checkbox"  {{action "updateSelectedAppe" on="click"}}  class="__appe" {{bindAttr id="id"}}  value="0" /> &nbsp;&nbsp;{{name}}</a>
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+	</div>
+    <div class="appdetile_merchandise_BuyBtn">
+        <a href="javascript:" class="ToBuy" {{action "toBuy" on="click"}}>立即购买</a>
+        <a href="javascript:" class="ToBasket">放入购物篮</a>
+    </div>
+    <div class="app_price">
+        <h1>￥</h1><span class="a_price"></span> <label>（<a class="a_schema"></a>）</label>
+    </div>
+</div>
+</div>
+<div class="appdetile_relevance">
+<div class="appdetile_relevance_l">
+    <div class="appdetile_AppExplain">
+        <div class="appdetile_title">
+            软件详情
+        </div>
+        <div class="appdetile_AppExplain_details">
+        	<p>{{{model.detailDesc}}}</p>
+        </div>
+    </div>
+    <div class="app_photoList">
+        <div class="appdetile_title">
+            软件截图
+        </div>
+        <div class="app_photoBOX" id="app_photoBOX">
+            <div class="app_photoRoll" id="app_photoRoll">
+            	{{#each model.attachments}}
+		            		<img src="http://boss.bingocc.com/product/download?filepath={{unbound path}}" />
+            	{{/each}}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+        </div>
+        <div class="main_content_right_foot">广州市品高软件开发有限公司</div>
+    </div>
+</div>
+
+

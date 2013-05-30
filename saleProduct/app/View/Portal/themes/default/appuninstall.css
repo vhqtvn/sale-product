@@ -1,0 +1,46 @@
+@charset "utf-8";
+/* 控制面板 */
+#app_uninstall_container{
+	position:relative;
+	vertical-align: top;
+	height:100%;
+}
+
+#app_uninstall_container ul li{
+	float:left;
+	display:block;
+	position:relative;
+}
+
+#app_uninstall_container .nav_ico h2{
+	color:#000;
+	font-weight:bold;
+}
+
+.desktopcontainer #app_uninstall_container .ico_absolute{
+	position:relative;
+}
+
+.control_class {
+	clear:both;
+	border-left:none;
+	border-right:none;
+	border-bottom:none;
+	margin-bottom:10px;
+}
+.control_class legend {
+	font-size:12px;
+	font-weight:bold;
+	color:#333;
+}
+
+.app_uninstall{
+	background:url("images/ico_del.gif");
+	width:16px;
+	height:16px;
+	position:absolute;
+	right:1px;
+	top:-1px;
+	cursor:pointer;
+	display:block;
+}

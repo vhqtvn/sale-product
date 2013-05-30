@@ -1,0 +1,96 @@
+  <style>
+  .sel{width:240px;height:370px;}
+  .btn{width:50px;font-weight:bold;font-size:14px; }
+  
+    .desk_permissoin .title{
+    	font-weight:bold;
+    	display:block;
+    	margin:5px;
+    }
+  </style>
+  
+
+ </HEAD>
+<div class="desk_permissoin">
+ <table>
+	<tr>
+		<td>
+		  <span class="title">可选角色</span>
+		  <select multiple class="sel" id="sel_left">
+		  </select>
+		</td>
+		<td>	
+			<p><button class="btn" id="btn_1">&gt;&gt; </button></p>
+			<p><button class="btn" id="btn_2">&gt;</button></p>
+			<p><button class="btn" id="btn_3">&lt;</button></p>
+			<p><button class="btn" id="btn_4">&lt;&lt;</button></p>
+			
+		</td>
+		<td>
+			 <span class="title">已分配角色</span>
+			 <select multiple class="sel" id="sel_right">
+			 </select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3">
+		  <button class="dp_save">保存</button>
+		</td>
+	</tr>
+</table>
+</div>
+   <script>
+ (function(){
+	   function checkBtn(){
+			jQuery("#sel_left>option").length > 0 ? jQuery("#btn_1").removeAttr("disabled") : jQuery("#btn_1").attr("disabled","disabled");
+			jQuery("#sel_left option:selected").length > 0 ? jQuery("#btn_2").removeAttr("disabled") : jQuery("#btn_2").attr("disabled","disabled");
+			jQuery("#sel_right option:selected").length > 0 ? jQuery("#btn_3").removeAttr("disabled") : jQuery("#btn_3").attr("disabled","disabled");
+			jQuery("#sel_right>option").length > 0 ? jQuery("#btn_4").removeAttr("disabled") : jQuery("#btn_4").attr("disabled","disabled");
+		}
+		
+		function clickBtn(e){
+			if("btn_1" == e.target.id){
+				jQuery("#sel_left>option").appendTo("#sel_right");
+			}else if("btn_2" == e.target.id){
+				jQuery("#sel_left option:selected").appendTo("#sel_right");
+			}else if("btn_3" == e.target.id){
+				jQuery("#sel_right option:selected").appendTo("#sel_left");
+			}else if("btn_4" == e.target.id){
+				jQuery("#sel_right>option").appendTo("#sel_left");
+			}
+			checkBtn();
+		}
+
+		function loadDeskPermission(){
+			var deskId = window._currentConfigDeskId ;
+			webosService.loadDeskPermisson(deskId,function(data){
+				$(data).each(function(index,perm){
+					var id 			= perm.ID||perm.id ;
+					var name 		= perm.NAME||perm.name ;
+					var checked 	= perm.CHECKED||perm.checked ;
+					if(checked=='1'){
+						$("#sel_right").append("<option value='"+id+"'>"+name+"</option>");
+					}else{
+						$("#sel_left").append("<option value='"+id+"'>"+name+"</option>");
+					}
+				}) ;
+			});
+		}
+
+		$(".desk_permissoin button.dp_save").click(function(){
+			var deskId = window._currentConfigDeskId ;
+			var roleIds = [] ;
+			jQuery("#sel_right option").each(function(){
+				roleIds.push( $(this).val()  ) ;
+			});
+			webosService.saveDeskPermisson(deskId,roleIds,function(){
+				webos.window.close_window( window._currentPermWindow ) ;
+			}) ;
+		}) ;
+
+		$("#sel_left,#sel_right").bind("change",checkBtn);
+		$("#btn_1,#btn_2,#btn_3,#btn_4").bind("click",clickBtn);
+		checkBtn();
+		loadDeskPermission()
+ })() ;
+  </script>

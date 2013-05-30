@@ -1,0 +1,101 @@
+@charset "utf-8";
+/*--------添加应用页面 搜索 模块---------*/
+.app_front_index .app_content{position:relative;width:100%;height:auto !important;margin:0 auto;zoom:1;min-height: 540px;height:540px;background:#fff;overflow:hidden;}
+.app_front_index .front_side{height:100%;width:90px;position:absolute;top:0px;left:0;background: #F5FAFC;border-right:1px solid #A6A6A6;color:#45659E;padding-top:15px; font-
+
+size:13px;}
+.app_front_index .front_side {_position:static;_display:inline;_float:left;}
+.app_front_index .front_side .catNavTrigger{height:32px;line-height:32px; width:83px;float:right;margin:0px -1px 5px;background:url(images/market/cat_bg.gif) no-repeat 0 -66px; 
+
+text-align:left; font-size:12px;cursor:pointer;}
+.app_front_index .front_side .select{background-position:0 0;color:#4565A0;font-weight:bold;}
+.app_front_index .front_side .hover{background-position:0 -33px;}
+.app_front_index .front_side .catNavTrigger .cat_icon{float:left;width:16px;height:16px;margin:8px 4px 0 8px;}
+.cat_icon{background:url(images/market/cat_icon.png) no-repeat;}
+
+.app_front_index .frontListUl{margin:0px;padding:0px;list-style:none;}
+.app_front_index .frontListUl li{cursor:pointer;height:28px;border:1px dashed #B2D1F1;width:100px;position:relative;float:left;margin:5px 10px;}
+.app_front_index .frontListUl li:hover{background:#D0E5FD;}
+.app_front_index .frontListUl li a.appListItem{display:block;padding:0 7px 0 8px;line-height:28px;text-align:left;}
+.app_front_index .frontListUl li.appListLast{ border-bottom:none;}
+.app_front_index .frontListUl li.select{ height:92px;}
+.app_front_index ul.tabblock{display:block;}
+
+.app_front_index .region_lm_top_front{background:RGB(156,219,244);border:1px solid #7CC7E3;padding:5px;margin-bottom:10px;}
+
+.app_front_index .frontListUl li .appIcon{
+	margin:auto;
+}
+
+.app_front_index .frontListUl li .appName{
+	display:block;
+	margin:auto;
+	text-align:center;
+}
+
+.app_front_index .frontListUl li .appAddAction{
+	display:block;
+	margin:auto;
+	text-align:center;
+}
+
+.app_front_index .frontListUl li .appAddedBtn{
+	width:16px;
+	height:16px;
+	background:url("images/delete.png");
+	cursor:poninter;
+	position:absolute;
+	top:5px;
+	right:5px;
+}
+
+.app_front_index .frontListUl li .appAddBtn{
+	width:16px;
+	height:16px;
+	cursor:poninter;
+	background:url("images/add.gif");
+	position:absolute;
+	top:5px;
+	right:5px;
+}
+
+.app_front_index ul.frontListUl li.select a.appListItem{height:92px;}
+
+
+.app_front_index .front_main{
+	margin-left:145px;
+}
+
+.app_front_index .front_side{
+	width:140px;
+}
+
+.app_front_index .front_side .catnavtrigger {
+	width:130px;
+	background:#eee;
+	border:1px solid #aaa;
+}
+
+.app_front_index .column2 {
+	width:650px;
+}
+
+.app_front_index .front_side div.select {
+	width:130px;
+	background:#fff;
+	border:1px solid #aaa;
+	border-right: none;
+	padding-left:1px;
+}
+
+.app_front_index .front_side .catNavTrigger {
+	width:130px;
+	background:#eee;
+border:1px solid #aaa;
+}
+
+.app_front_index .more_list .frontListUl li{
+	height:84px;
+	max-height: 150px;
+	
+}

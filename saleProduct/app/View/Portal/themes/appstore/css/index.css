@@ -1,0 +1,421 @@
+@charset "utf-8";
+/* CSS Document */
+/*公共属性*/
+.container{ background:url(../images/indeximg/index_bg.jpg) repeat-x center bottom;z-index:-9999;}
+.sidebar_navbox,.sidebar_menu,.sidebar_footnav ul li,.menu_content_left,.menu_content_left_search input,.menu_content_left_search a,.menu_content_left_btn ul li,.applist_icon,.applist_detile,.applist_detile span,.app_star span,.appdetile_merchandise_icon,.appdetile_merchandise_detile,.applist_page span,.app_star label,.appdetile_merchandise_BuyBtn a,.ToComment_btn a,.AppComment p label,.appdetile_merchandise_term p label,.appdetile_merchandise_term p a,.appdetile_merchandise_term p input,.appdetile_merchandise_term div,.appdetile_merchandise_term div p span,.app_price h1,.app_price span,.app_price label{float:left;}
+.sidebar_menu,.sidebar_navbox,.menu_content_left_appbox ul li,.main_content_right,.AppDetailMaxBox{position:relative;}
+.sidebar_menu_opacityBG,.sidebar_footnav,.sidebar_menu_opacityFrame,.menu_content_left_btn,.applist_AppDetile,.app_price,.app_2D,.Goto_com{position:absolute;}
+.sidebar_footnav ul li a,.menu_content_left_search a,.menu_content_left_btn ul li a,.applist_detile span,.applist_AppDetile,.app_star span,.applist_page span,.app_star label,.appdetile_merchandise_BuyBtn a,.ToComment a{display:block;}
+.sidebar_footnav,.menu_content_left_btn{background:url(../images/indeximg/main_footnav_bg.png) repeat;}
+.sidebar_footnav,.menu_content_left_btn{overflow:hidden;}
+.sidebar_footnav_cut,.sidebar_footnav ul li a,.menu_content_left_btn ul li.app_btnBG,.applist_detile span,.applist_AppDetile,.app_star span,.applist_page span,.applist_page span.applist_pageOn{background:url(../images/indeximg/main_footnav_btn.png) no-repeat;}
+.sidebar_footnav_cut,.sidebar_footnav ul li a,.menu_content_left_btn ul li a,.main_content_right_foot{height:30px;}
+.main_none{display:none;}
+/*透明背景和边框*/
+/*.sidebar_menu .sidebar_menu_opacityFrame{width:88px;}
+.menu_content_left .sidebar_menu_opacityFrame{width:202px;}
+.sidebar_menu_opacityFrame{border:1px solid #fff;top:0px;left:0px;z-index:0;}
+.sidebar_menu_opacityBG{background:#fff;top:0px;left:0px;z-index:0;}*/
+/*左边主菜单栏开始
+.sidebar_menu,.sidebar_nav{ background:url(../images/indeximg/main_bg.png) repeat-y -66px 0;}
+.sidebar_menu{height:100%;width:231px;!important}
+.sidebar_navbox{}
+.menu_content_leftbox{padding:0 0 0 4px;}
+.sidebar_navbox,.menu_content_leftbox{z-index:1;}
+*/
+/*LOGO
+.appstore_logo{height:70px; background:url(../images/indeximg/applogo.png) no-repeat center center;}
+*/
+
+/*导航*/
+.sidebar_nav ul li.sidebar_navin,.sidebar_nav ul li a,.sidebar_nav_head,.shopping_cart{background:url(../images/indeximg/main_nav.png) no-repeat;}
+.sidebar_nav_head{width:50px;height:7px;background-position:-50px -76px;}
+.sidebar_nav{width:50px;height:1000px;background-position:-297px 0px;}
+.sidebar_nav ul{padding:20px 0 10px 4px; background:url(../images/indeximg/main_nav_cut.png) repeat-x bottom;}
+.sidebar_nav ul li{margin-bottom:6px;}
+.sidebar_nav ul li.sidebar_navin{background-position:3px -77px;}
+.sidebar_nav ul li a{width:38px;height:38px;display:inline-block;}
+.sidebar_nav ul li a.sidebar_nav_home{background-position:2px 3px;}
+.sidebar_nav ul li a.sidebar_nav_app{background-position:-38px 3px;}
+.sidebar_nav ul li a.sidebar_nav_manage{background-position:-79px 3px;}
+.sidebar_nav ul li a.sidebar_nav_manager{background-position:-120px 3px;}
+.sidebar_nav ul li a.sidebar_nav_home:hover{background-position:2px -39px;}
+.sidebar_nav ul li a.sidebar_nav_app:hover{background-position:-38px -39px;}
+.sidebar_nav ul li a.sidebar_nav_manage:hover{background-position:-79px -39px;}
+.sidebar_nav ul li a.sidebar_nav_manager:hover{background-position:-120px -39px;}
+.shopping_cart{color:#fff;padding-top:30px;margin-top:20px;background-position:-122px -87px;}
+.shopping_cart:hover{ text-decoration:underline;}
+/*用户信息*/
+/*.sidebar_sbody{width:60px;margin:auto;padding-top:30px;}
+.sidebar_sbody_photo{width:56px;height:56px;border:4px solid #fff;}
+.sidebar_sbody_photo img{width:56px;height:56px;}
+.sidebar_sbody ul{padding-top:10px;}
+.sidebar_sbody ul li a{color:#FFFFFF;font-size:13px;line-height:24px;}
+.sidebar_sbody ul li a:hover{ text-decoration:underline;}*/
+/*底部按钮*/
+/*.sidebar_footnav{bottom:1px;left:0px;}
+.sidebar_footnav_cut{width:2px;background:url(../images/indeximg/main_footnav_cut.png) repeat-y;}
+.sidebar_footnav ul li a{width:44px;}
+.sidebar_footnav ul li a.sidebar_login{background-position:0 2px;}
+.sidebar_footnav ul li a.sidebar_register{background-position:-42px 2px;}
+.sidebar_footnav ul li a.sidebar_login:hover{background-position:0 -30px;}
+.sidebar_footnav ul li a.sidebar_register:hover{background-position:-42px -30px;}*/
+/*左边主菜单栏结束*/
+/*主内容开始*/
+.main{margin-left:232px;height:100%;}
+.main_content{width:100%;height:100%;}
+.menu_content_left{height:100%;z-index:1;}
+/*左边应用列表开始*/
+/*查询栏*/
+.menu_content_left_search{height:54px;width:170px; background:url(../images/indeximg/main_nav_cut.png) repeat-x top;}
+.menu_content_left_search p{padding:10px 0 0 12px;}
+.menu_content_left_search input,.menu_content_left_search a{background:url(../images/indeximg/menu_content_left_search.png) no-repeat;}
+.menu_content_left_search input{width:123px;height:26px;line-height:26px;text-indent:6px;}
+.menu_content_left_search a{width:26px;height:26px;background-position:-123px 0;}
+.menu_content_left_search a:hover{background-position:-123px -26px;}
+/*应用列表*/
+.menu_content_left_appbox{width:170px;overflow:hidden; position:relative;}
+.menu_content_left_applist{width:360px;height:360px;}
+.menu_content_left_applist ul{padding-left:1px;float:left;}
+
+.menu_content_left_applist ul li{height:53px;width:170px;padding:8px 2px 1px 2px;margin-top:-3px;*margin-top:-6px;overflow:hidden;background:url(../images/indeximg/applist_card.png) no-repeat 0 4px;cursor:pointer;}
+.menu_content_left_applist ul li.applist_HoverApp{background-position:0 -57px}
+.menu_content_left_applist ul li.applist_onApp{background-position:0px -118px;}
+
+.applist_icon{padding-right:8px;}
+.applist_icon img{width:50px;height:50px;}
+.applist_detile{text-align:left;}
+.applist_detile a{color:#fff;font-size:16px;line-height:16px;}
+.applist_detile h5{color:#f2f2f2;font-size:12px;font-weight:100;line-height:20px;}
+.app_star span{width:12px;height:12px;margin-right:3px;background-position:0 -89px;}
+.app_star span.applist_GrayStar{background-position:-12px -89px;}
+.applist_AppDetile{width:50px;height:17px;background-position:0 -72px;right:4px;bottom:6px;color:#fff;}
+.applist_AppDetile:hover{background-position:-50px -72px;}
+.menu_content_left_page{width:170px;margin-top:10px;}
+.applist_page{display:inline-block;}
+.applist_page span{width:10px;height:10px;margin-right:6px;background-position:-38px -90px;cursor:pointer;}
+.applist_page span.applist_pageOn{background-position:-26px -90px;}
+
+/*应用列表底部按钮*/
+.menu_content_left_btn{bottom:1px;left:50px; position:fixed;}
+.menu_content_left_btn ul li a{width:90px;color:#fff;line-height:30px;border-top:1px solid #2f6089;}
+.menu_content_left_btn ul li a:hover{background-position:-116px -28px;}
+.menu_content_left_btn ul li.app_btnBG{background:url(../images/indeximg/main_footnav_Onbtn.png) repeat-x;}
+/*左边应用列表结束*/
+/*右边应用详细开始*/
+.main_content_right{height:100%;overflow-x:hidden;overflow-y:auto;}
+.appdetile_merchandise_BuyBtn a,.ToComment a,.Goto_com a{background:url(../images/appmerchandise/APPmerchandise_btn.jpg) no-repeat;}
+.appdetile_AppExplain,.appdetile_comment,.app_photoList{margin-bottom:6px;background:#fcfeff;border:1px solid #eaf0f3;padding:10px 6px 20px 6px;}
+.appdetile_comment{padding:20px;}
+.appdetile_relevance_l{margin-right:190px;}
+.appdetile_relevance_r{width:175px;float:right;}
+.appdetile_relevance_h{width:175px;height:30px;text-indent:12px;line-height:30px;color:#fff;background:url(../images/appmerchandise/appdetile_relevance.jpg) no-repeat;}
+.appdetile_relevance_search{margin-bottom:20px;}
+.appdetile_relevance_input,.appdetile_relevanceApps{background:#f1f5f9;border:1px solid #dde3ee;width:173px;padding:10px 0;display:inline-block;}
+
+.appdetile_relevance_input p input,.appdetile_relevance_input p a{height:23px;line-height:23px;background:url(../images/appmerchandise/appdetile_relevance_search.jpg) no-repeat;float:left;}
+.appdetile_relevance_input p input{width:122px;text-indent:4px;margin-left:12px;}
+.appdetile_relevance_input p a{display:block;width:28px;background-position:-128px 0;}
+.appdetile_relevance_input p a:hover{background-position:-128px -23px;}
+
+.appdetile_relevanceApps ul{padding-left:4px;}
+.appdetile_relevanceApps ul li{clear:both;display:inline-block;cursor:pointer;border-bottom:1px solid #c1c4c7;margin-bottom:6px;width:167px;padding-bottom:4px;}
+.appdetile_relevanceApps .applist_detile a{color:#000;font-size:14px;}
+.appdetile_relevanceApps .applist_detile h5{color:#555555;font-size:12px;}
+/*选择产品规格*/
+.appdetile_box{padding:20px 10px 0 20px;}
+.appdetile_merchandise{overflow:hidden;}
+.appdetile_merchandise_detile{text-align:left;}
+.appdetile_merchandise_icon{width:300px;height:200px;}
+.appdetile_merchandise_icon img{height:150px;width:150px;margin:25px 0 0 75px;}
+.appdetile_merchandise_detile{padding:0 0 10px 18px;}
+.appdetile_merchandise_detile img{float:left;}
+.appdetile_merchandise_detile h1{line-height:50px;}
+.app_star label{margin-top:-5px;}
+.appdetile_merchandise_detile p label,.appdetile_merchandise_detile p span{line-height:24px;font-size:13px;}
+
+.appdetile_merchandise_term{display:inline-block;margin-top:10px;padding-right:40px;border:1px solid #a5d7ef; background:#edf6fa;}
+.appdetile_merchandise_term div{margin:10px 0 0 20px;}
+.appdetile_merchandise_term div p{overflow:hidden;margin-bottom:10px;}
+.appdetile_merchandise_term div p a{line-height:20px;margin-right:2px;padding:0 4px;background:#fff;border:1px solid #a5d7ef;color:#385063;}
+.appdetile_merchandise_term div p span{line-height:20px;font-size:12px;}
+.appdetile_merchandise_term div p label{font-size:12px;width:80px;line-height:20px;text-align:right;}
+.appdetile_merchandise_term div p input{line-height:20px;width:50px; background:#fff;border:1px solid #a5d7ef;}
+
+.appdetile_merchandise_term .row{
+	line-height:17px;
+	text-align: left;
+	clear:both;
+	padding-left:20px;
+	width:auto;
+	vertical-align: middle;
+}
+
+.appdetile_merchandise_term input{
+	float:left;
+	*margin:4px 0 0 5px;
+	margin:2px 0 0 5px;
+}
+
+.appdetile_merchandise_term{
+	height:auto;
+	overflow:hidden;
+	padding-bottom:5px;
+}
+
+.appdetile_merchandise_detile  .row{
+	margin:10px 5px;
+}
+
+.appdetile_merchandise_detile  .row .current{
+	background:#4d77a4;
+	border:1px solid #3a5674;
+	color:#FFF;
+}
+
+
+/*应用价格*/
+.app_price{top:80px;left:200px;}
+.app_price h1{line-height:100px;}
+.app_price label{line-height:110px;}
+.app_price span{font-size:60px;color:#ff8f10;font-weight:bold;margin:0 4px;}
+.specList{display:inline;}
+.specList li{list-style-type:none;display:inline;}
+.specList a{padding:3px;color:#273c52; border:1px solid #ccc;margin:3px 5px 3px 0px; width:80px; text-align:center;}
+.specList a:hover{background-color:#eee;text-decoration: none;}
+/*二维码
+.app_2D{top:30px;left:448px;width:150px;}
+.app_2D a{ text-decoration:underline;}*/
+/*跳转开发商
+.Goto_com{top:80px;right:10px;}
+.Goto_com a{display:block;width:175px;height:35px;margin-bottom:6px;background-position:0 -95px;text-align:center;line-height:35px;color:#fff;}
+.Goto_com a:hover{background-position:-175px -95px;}*/
+/*应用购买*/
+.appdetile_merchandise_BuyBtn{overflow:hidden;margin-top:10px;}
+.appdetile_merchandise_BuyBtn a.ToBuy{width:148px;height:47px;line-height:47px;color:#fff;font-size:20px;margin-right:20px;text-align:center;}
+.appdetile_merchandise_BuyBtn a.ToBuy:hover{background-position:0 -47px;}
+.appdetile_merchandise_BuyBtn a.ToBasket{width:122px;height:29px; line-height:29px;margin-top:10px;background-position:-151px 0;color:#8daab5;text-indent:40px;}
+.appdetile_merchandise_BuyBtn a.ToBasket:hover{background-position:-151px -29px;}
+/*应用详细介绍*/
+.appdetile_title{line-height:30px;width:750px; margin:12px 0;font-size:16px;background:url(../images/appmerchandise/APPmerchandise_cut.jpg) no-repeat bottom;}
+/*应用更新说明*/
+.appdetile_AppExplain_details p{line-height:24px;}
+/*应用评论列表
+.ToComment{}
+.ToComment p{line-height:24px;}
+.ToComment textarea{resize:none;font-family:微软雅黑,宋体,Tahoma; font-size:12px;}
+.ToComment_btn{padding-top:10px;}
+.ToComment_btn a{width:60px;height:30px;margin-left:420px;text-align:center;line-height:30px; background-position:-152px -58px;color:#fff;}
+.ToComment_btn a:hover{background-position:-212px -58px;}
+.appdetile_commentBox{overflow:hidden;}
+.AppCommentList{padding:10px 0;border-bottom:1px solid #d1d1d1;}
+.AppCommentList .app_star{float:right;}
+.AppComment{margin-right:100px;}
+.AppCommentList .app_star span{margin-top:6px;}
+.AppComment p{line-height:24px;}
+.AppComment p label{margin-right:10px;}*/
+/*应用截图*/
+.app_photoBOX{overflow:hidden;margin:10px 30px;height:300px;border:4px solid #aebbcc; position:relative;}
+.app_photoRoll{display:inline-block;cursor:pointer;}
+.app_photoRoll img{width:200px;float:left;margin:10px 0 20px 20px;}
+/*右边应用详细结束*/
+/*右边主页内容开始*/
+.index_main_con{padding:30px 0 0 20px;;text-align:left;}
+.index_main_ap,.index_main_piece{width:820px;margin-bottom:20px;}
+.index_main_ap{background:#fff; position:relative;overflow:hidden;}
+.index_main_apBox{display:inline-block;width:2460px;}
+.index_main_apBox img{width:808px;height:368px;border:6px solid #fff;float:left;}
+.index_main_ap .menu_content_left_page{position:absolute;bottom:14px;right:-30px;}
+.index_main_piece{height:220px; background:url(../images/indexmain/index_main_piece_BG.png) repeat-x 0 23px;}
+.index_main_piece .myAppBox .BuyApp{cursor:pointer;}
+.index_main_piece .myAppBox a{color:#fff;}
+
+.index_main_piece_option{width:600px;height:24px;border-bottom:1px solid #fff;}
+.whitelight{float:left;background:url(../images/indexmain/on_option.png) no-repeat;}
+.whitelight a{float:left;padding-left:10px;font-size:14px;display:block;color:#fff;line-height:24px;margin-right:20px; background:url(../images/indexmain/on_option_point.png) no-repeat 0 center;}
+.whitelight .on_option{font-size:16px;}
+/*右边主页内容结束*/
+/*右边个人信息内容开始*/
+.Roof_Beam{height:78px; background:#a6dcf8;border-bottom:1px solid #cbebfc;position:relative;}
+
+.Roof_Beam_name{width:148px;height:78px;margin-left:20px;line-height:70px;text-align:center;font-size:16px;background:url(../images/Roof_Beam/Roof_Beam_name.png) no-repeat center;}
+.Roof_Beam_draw{width:136px;height:73px;background:url(../images/Roof_Beam/Roof_Beam_BG.png) no-repeat;position:absolute;top:5px;right:0;}
+
+.person_data_box{border-top:1px solid #a3c8da;padding:30px 20px 20px 20px;}
+.person_data_tabBox{margin-bottom:20px;}
+.person_data_tab{background:#f0f9fe;border:1px solid #dee7f0;}
+.person_data_tab_head{height:37px;position:relative;background:url(../images/Roof_Beam/person_data_tab_head.png) repeat-x;}
+
+.person_data_tab_tap a,.recordBtn{display:block;float:left;border-right:1px solid #dee7f0;height:37px;width:84px;line-height:38px;text-align:center;color:#30485a;background:url(../images/pc/person_data_tab_tap.png) no-repeat;}
+.person_data_tab_tap a.ontap{ background-position:0 -37px;}
+
+.recordBtn{position:absolute;top:0;right:0;background-position:0 -74px;border-right:none;border-left:1px solid #dee7f0;color:#fff;}
+.person_data_tab_tap a:hover,.recordBtn:hover{ text-decoration:underline;}
+
+.person_data_tab_box{padding:10px;}
+.person_dataBox{display:none;}
+.person_data_tab_box table{ border-collapse:collapse;width:100%;}
+.person_data_tab_box table tr th,.person_data_tab_box table tr td{
+	border:1px solid #dee7f0;
+	padding:6px;
+	font-size: 12px;
+	}
+.person_data_tab_box table tr th{color:#393a3a;text-align:center;}
+.person_data_tab_box table tr td img{float: left;height: 45px;margin-right: 4px;width: 45px;}
+
+.myAppBox{display:inline-block;padding:20px 10px;}
+.myApp,.BuyApp{float:left;margin-right:16px;}
+.myApp div{width:75px;height:66px; background:url(../images/pc/Roof_Beam_icon.png) no-repeat;}
+.myApp a{display:block;width:75px;line-height:26px;color:#30485a;text-align:center;}
+.myApp div.myApp_ON2{background-position:-75px 0;}
+.myApp div.myApp_ON3{background-position:-150px 0;}
+.myApp div.myApp_ON4{background-position:0px -66px;}
+.myApp div.myApp_ON5{background-position:-75px -66px;}
+.myApp div.myApp_ON6{background-position:-150px -66px;}
+
+.BuyApp div{width:64px;height:64px;}
+.BuyApp a{display:block;width:64px;line-height:26px;color:#30485a;text-align:center;}
+.BuyApp div.BuyApp_ON1{ background:url(../images/appimg/app_01.png) no-repeat;}
+.BuyApp div.BuyApp_ON2{ background:url(../images/appimg/app_02.png) no-repeat;}
+.BuyApp div.BuyApp_ON3{ background:url(../images/appimg/app_03.png) no-repeat;}
+.BuyApp div.BuyApp_ON4{ background:url(../images/appimg/app_04.png) no-repeat;}
+.BuyApp div.BuyApp_ON5{ background:url(../images/appimg/app_05.png) no-repeat;}
+.BuyApp div.BuyApp_ON6{ background:url(../images/appimg/app_06.png) no-repeat;}
+/*右边个人信息内容结束*/
+/*右边应用列表开始*/
+.AppList_Box{padding:40px 0 0 0;}
+.AppList_CardBox{height:534px;display:none;background:url(../images/applist/applistBG.png) repeat-x 0 34px;}
+.AppList_CardBox_show{display:block;}
+.AppList_Card,.page_pointBox a,.freebiaozhi{ background:url(../images/applist/applistMain.png) no-repeat;}
+
+.AppList_Name{text-align:left;padding-left:20px;}
+.AppList_Name h1{font-size:26px;font-weight:100;}
+.AppList_Name h2{font-size:18px;font-weight:100;}
+
+.AppList_CardList{overflow:hidden;}
+.AppList_CardListBox{height:420px;width:500%;}
+.App_tuijian,.AppList_CardBox_center{display:inline-block;}
+.AppList_CardBoxNO,.AppList_Card{float:left;}
+.AppList_CardBoxNO{}
+.AppList_Card{width:218px;height:120px;cursor:pointer;padding-top:10px;margin:0 20px 10px 0;position:relative;background-position:0 10px;}
+.AppList_CardBox_center{width:960px;margin:auto;}
+.App_minzi{padding:10px 0 0 14px;}
+.App_minzi .applist_icon{margin:-20px 10px 0 0;}
+.App_tuijian{width:138px;float:left;margin:44px 0 0 10px;}
+.App_tuijian label{float:left;}
+.App_tuijian p span{margin-top:3px;}
+.freebiaozhi{width:52px;height:26px;line-height:26px;top:94px;left:155px;position:absolute;background-position:-5px -128px;}
+
+.page_pointBox{display:inline-block;padding-top:10px;}
+.page_pointBox a{display:block;float:left;height:20px;width:20px;margin-right:5px;background-position:-91px -128px;}
+.page_pointBox a.AppList_OnPage{ background-position:-67px -128px;}
+.page_pointBox a:hover{ background-position:-138px -128px;}
+.page_pointBox a.AppList_OnPage:hover{ background-position:-115px -128px;}
+/*右边应用列表结束*/
+/*右边购物篮开始*/
+.AppMarketBox{padding-bottom:30px;}
+.Roof_Beam_post{height:28px; background:url(../images/Roof_Beam/Roof_Beam_post.png) repeat-x;}
+.Roof_Beam_post_option a,.Roof_Beam_flow,.Roof_Beam_flowpoint label,.indent_operate_account a,.Register_runOK a{background:url(../images/Roof_Beam/Roof_Beam_main.png) no-repeat;}
+
+.Roof_Beam_post_option{padding:4px 0 0 10px;}
+.Roof_Beam_post_option a:hover{ text-decoration:underline;}
+.Roof_Beam_post_option input,.Roof_Beam_post_option label,.Roof_Beam_post_option a{float:left;line-height:20px;}
+.Roof_Beam_post_option label,.Roof_Beam_post_option a{margin-right:10px;}
+.Roof_Beam_post_option input{margin:4px 3px 0 0;*margin:0px;}
+.Roof_Beam_post_option label{color:#282828;}
+.Roof_Beam_post_option a.market_BTN{width:57px;color:#fff; background-position:-26px -54px;text-align:center;}
+.Roof_Beam_post_option a.market_delete{color:#282828;padding-left:14px;background-position:-4px -81px;}
+/*流程条*/
+.Roof_Beam_flowBox{padding:16px 0 20px 0;}
+.Roof_Beam_flow{width:750px;height:48px;margin:auto;text-align:center;}
+.Roof_Beam_flowpoint{display:inline-block;}
+.Roof_Beam_flowpoint label{display:inline-block;line-height:40px;width:60px;padding-right:40px;color:#282828;background-position:-674px -52px;text-align:right;}
+.Roof_Beam_flowpoint label.OnFlowPoint{ color:#e47272;background-position:-573px -52px;}
+/*流程条结束*/
+.Roof_Beam_flow_strip{display:inline-block;line-height:37px;padding:0 20px 0 10px;background:#a6dcf8 url(../images/Roof_Beam/Roof_Beam_flow_strip.png) no-repeat right;margin-bottom:14px;}
+.Roof_Beam_flow_strip2{
+	line-height:20px;
+	padding:0 20px 0 10px;
+	background:#a6dcf8;
+	margin-bottom:14px;
+	font-size: 12px;
+	}
+.Roof_Beam_flow_detaileBox{padding-bottom:30px;}
+.Roof_Beam_flow_detaile_tab{padding:0 10px;}
+.Roof_Beam_flow_detaile_tab table{ border-collapse:collapse;width:100%;}
+.Roof_Beam_flow_detaile_tab table th,.app_state,.app_operate{text-align:center;}
+.Roof_Beam_flow_detaile_tab table th,.Roof_Beam_flow_detaile_tab table td{
+	border:1px solid #d5d5d5; 
+	background:#f6f6f6;
+	padding:5px;
+	font-size: 12px;
+	}
+.Roof_Beam_flow_detaile_tab table td img{width:45px;height:45px;margin-right:4px;float:left;}
+.Roof_Beam_flow_detaile_tab table td .AppInfor{float:left;}
+.Roof_Beam_flow_detaile_tab table td .AppInfor h3{font-size:14px;}
+.Roof_Beam_flow_detaile_tab table td .AppInfor label{color:#4d7494;display:block;line-height:14px;}
+.app_state a{text-decoration:underline;font-size:14px;}
+.app_state a.waitPay{color:#ed4f4f; }
+.app_state a.Payed{color:#57e10c; }
+.app_state a.waitAssess{color:#ff6600; }
+.app_operate a{color:#19aafe;}
+.app_operate a:hover{text-decoration:underline;}
+
+.indent_operateBox{ background:#e7f2fd;height:56px;border-top:1px solid #c3dce9;border-bottom:1px solid #c3dce9;}
+.indent_operate{width:100%;}
+.indent_operate_right{float:right;margin:16px 100px 0 0;}
+.indent_operate_account label,.indent_operate_account h1,.indent_operate_account a{float:left;}
+.indent_operate_account label{line-height:40px;margin-left:6px;}
+.indent_operate_account h1{font-size:28px;color:#ff4800;line-height:30px;}
+.indent_operate_account a{width:83px;height:30px;margin-left:20px;line-height:30px;color:#fff;text-align:center;background-position:-455px -56px;}
+.indent_operate_account a.step{display:none;}
+.indent_operate_account a:hover{ text-decoration:underline;}
+
+.indent_operate_left{float:left;}
+.indent_operate_left .Roof_Beam_post_option{margin-top:14px;}
+/*右边购物篮结束*/
+/*右边注册流程开始*/
+.RegisterBox{padding-bottom:30px;}
+.Register_runBox{text-align:center;}
+.Register_run1,.Register_run2,.Register_run3{width:700px;padding:40px 10px;display:none;border:1px solid #cfdae6;background:#eef6ff;margin:auto;text-align:left;}
+.Register_run_show{display:block;}
+.Register_data{margin-bottom:10px;}
+.Register_data label{width:80px;text-align:right;line-height:24px;}
+.Register_data input{width:160px;height:24px;line-height:24px; background:#fff;border:1px solid #cbcbcb;}
+.Register_data span.Register_explain{color:#9f9f9f;margin-left:3px;}
+.Register_data span.Register_warn{color:#ff3f3f;margin-left:3px;}
+.Register_data select{width:140px;}
+.Register_runOK{text-align:center;}
+.Register_runOK p{color:#ff0000;font-size:20px;line-height:30px;}
+.Register_runOK h1{color:#2d2d2d;font-size:14px;font-weight:100;line-height:40px;}
+.Register_runOK a{width:148px;height:54px;line-height:54px;margin-top:20px;color:#fff;font-size:24px; background-position:-91px -51px;}
+.Register_runOK a:hover{ background-position:-248px -51px;}
+/*右边注册流程结束*/
+/*右边购买流程开始*/
+.ToBuy_flowBox{padding:20px;text-align:center;}
+.ToBuy_flow{border:1px solid #76aac7; background:#fff;padding:20px;}
+.ToBuy_flow1{margin:auto;text-align:left;}
+.ToBuy_flow_tit{font-size:18px;margin-bottom:30px;color:#42689a;}
+.choice_phone_photo,.choice_stage div a{ background:url(../images/ToBuy/ToBuyMain.png) no-repeat;}
+.choice_phone_input,.choice_phone_photo{float:left;}
+.choice_phone_pic{margin-bottom:20px;}
+.choice_phone_pic label{line-height:24px;}
+.choice_phone_pic select{width:180px;height:24px;line-height:24px;}
+.choice_phone_pic span{display:inline-block;width:230px;color:#b1c2d8;}
+
+.choice_phone_photo{width:206px;height:184px;margin:-62px 0 0 100px;text-align:center;}
+.choice_phone_photo img{width:90px;height:110px;margin:36px auto;}
+
+.choice_stage{display:inline-block;margin-top:20px;}
+.choice_stage div{float:left;margin-right:50px;cursor:pointer;padding:20px 40px 20px 20px;}
+.choice_stage div.onchoice{ background:#f1f6f9;}
+.choice_stage div a{line-height:50px;padding-left:60px;color:#333333;}
+.choice_stage div a:hover{ text-decoration:underline;}
+.choice_stage div.stage_apple a{background-position:-227px -15px;}
+.choice_stage div.stage_android a{background-position:-227px -76px;}
+.choice_stage div.stage_saiban1 a{background-position:-227px -137px;}
+.choice_stage div.stage_saiban2 a{background-position:-227px -200px;}
+
+/*右边购买流程结束*/
+.main_content_right_foot{line-height:30px;margin-top:20px;border:2px solid #fefefe;border-left:none;text-align:center; background:#989999;color:#fff;}
+/*主内容结束*/

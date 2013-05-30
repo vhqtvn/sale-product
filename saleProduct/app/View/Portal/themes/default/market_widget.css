@@ -1,0 +1,24 @@
+@charset "utf-8";
+
+/* 添加widget市场 */
+ .app_main {width:80%;}
+ .widget_map{ margin-bottom:10px;width:100%;}
+ .widget_map_title{ height:26px; font-size:14px; line-height:26px; background-color:#f4f4f4; text-indent:10px; font-weight:bold}
+ .widget_map_title span{ float:left;}
+ .widget_map_title .fun_check{ float:right; margin:2px 20px 0 0}
+ .widget_map ul{ padding:10px;}
+ .app_nav{ width:140px; height:85px; position:relative; float:left; margin:0 1px 1px 0; }
+ .app_nav_hover{background:url(images/main.png) no-repeat -390px -450px;}
+ .app_nav_ico,.app_nav h2,.app_nav .fun_check{ position:absolute;}
+ .app_nav_ico{ top:20px; left:5px;width:45px;height:45px;}
+ .app_nav h2{ left:55px; top:15px; font-size:13px;right:3px; font-weight:normal;vertical-align: middle;}
+ .app_nav .fun_check{ left:53px; top:52px;}
+ 
+ .app_widget_block{
+ 	border:1px solid #eee;
+ 	 -webkit-border-radius: 5px;
+  	-moz-border-radius: 5px;
+ 	border-radius: 5px;
+ 	margin:2px 3px;
+ }
+ 

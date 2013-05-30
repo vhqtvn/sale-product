@@ -1,0 +1,134 @@
+<script type="text/javascript" src="js/themeJS/personcenter.js"></script>
+<div class="AppDetailMaxBox">
+    <div class="person_centerBOX">
+        <div class="Roof_Beam">
+            <div class="Roof_Beam_name">个人中心</div>
+            <div class="Roof_Beam_draw"></div>
+        </div>
+        <div class="person_data_box">
+            <div class="person_data_tabBox">
+                <div class="person_data_tab" style="max-width:100%">
+                    <div class="person_data_tab_head">
+                        <div class="person_data_tab_tap">
+                            <a href="javascript:" class="ontap">订单列表</a>
+                            <a href="javascript:">消费记录</a>
+                        </div>
+                        <a href="javascript:" class="recordBtn">历史记录</a>
+                    </div>
+                    <div class="person_data_tab_box" >
+                    	<div class="person_dataBox tableshow" style="display:block;">
+                        	<table>
+                        <tr>
+                            <th style="width:15px;"><input type="checkbox" /></th>
+                            <th>产品名称</th>
+                            <th style="width:80px">区域</th>
+                            <th style="width:80px">购买方式</th>
+                            <th style="width:80px">购买数量</th>
+                            <th style="width:120px">价格</th>
+                            <th style="width:80px">交易状态</th>
+                            <th style="width:80px">操作</th>
+                        </tr>
+                    </table>
+                    {{#each model.resultSet}}
+                    <table>
+                    <caption>
+                        <div class="Roof_Beam_flow_detaile"  style="text-align:left">
+                            <p class="Roof_Beam_flow_strip2" style="margin:5px 0px 0px 0px">订单编号：{{id}}，订单时间：{{orderTime}}
+                            </p>
+                        </div>
+                    </caption>
+                    <tbody>
+                    {{#each orderItems}}
+                        <tr>
+                            <td style="width:15px;"><input type="checkbox" /></td>
+                            <td>
+                            	<img src="portal/layouts/webos/themes/appstore/images/appimg/app_03.png" style="float:left" />
+                                <div class="AppInfor" style="float:left">
+                                    <h3>{{itemParametersMap.productName}}</h3>
+                                    <label>
+                                        {{#each itemParametersMap.specs}}
+                                            {{key}}:{{value}}
+                                        {{/each}}
+                                    </label>
+                                </div>
+                            </td>
+                            <td style="width:80px;text-align:center">亚太引擎</td>
+                            <td style="width:80px;text-align:center">按{{tenancyUnit}}</td>
+                            <td style="width:80px;text-align:center">{{quantity}}</td>
+                            <td style="width:120px;text-align:center">销售价：<span style="color:red">{{price}}元/{{tenancyUnit}}</span><br/>
+                            	<span style="color:#ccc">(市场价：{{marketPrice}}元/{{tenancyUnit}})</span>
+                            </td>
+                            <td style="width:80px;text-align:center">
+	                            {{#if service}}
+									{{#if_eq service.status compare=4}}
+										开通成功
+									{{/if_eq}}
+									{{#if_neq service.status compare=4}}
+										开通中
+									{{/if_neq}}
+	                            {{else}}
+	                            	待处理
+	                            {{/if}}
+                            </td>
+                            <td style="width:80px;text-align:center" class="app_operate">
+                                <a href="javascript:">删除</a><br/>
+                                <a href="javascript:">评价</a><br/>
+                                <a href="javascript:">进入</a><br/>
+                            </td>
+                        </tr>
+                       {{/each}}
+                    </tbody>
+                </table>
+                {{/each}}
+                        </div>
+                        <div class="person_dataBox">
+                        	<table>
+                            <thead>
+                                <tr>
+                                    <th width="12%">成交时间</th>
+                                    <th width="12%">应用名称</th>
+                                    <th width="15%">卖家</th>
+                                    <th>评论</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>3-28</td>
+                                    <td>待付款</td>
+                                    <td>nameID123</td>
+                                    <td>应用等待付款</td>
+                                </tr>
+                                <tr>
+                                    <td>3-28</td>
+                                    <td>待付款</td>
+                                    <td>nameID123</td>
+                                    <td>应用等待付款</td>
+                                </tr>
+                                <tr>
+                                    <td>3-28</td>
+                                    <td>待付款</td>
+                                    <td>nameID123</td>
+                                    <td>应用等待付款</td>
+                                </tr>
+                                <tr>
+                                    <td>3-28</td>
+                                    <td>待付款</td>
+                                    <td>nameID123</td>
+                                    <td>应用等待付款</td>
+                                </tr>
+                                <tr>
+                                    <td>3-28</td>
+                                    <td>待付款</td>
+                                    <td>nameID123</td>
+                                    <td>应用等待付款</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

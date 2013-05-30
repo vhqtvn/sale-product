@@ -1,0 +1,24 @@
+@charset "utf-8";
+
+/* 设置页面 */
+
+#setting_content {background:#d1d1d1;border:1px solid #d1d1d1;}
+.setting_side {width:200px;position:absolute;left:1px;top:1px;height:auto !important;min-height:450px;height:450px;float:left;background:#ebeff2;}
+.cat_icon {width:24px;height:24px;margin:3px 5px 0 5px;display:inline-block;overflow:hidden;float:left;}
+.cat_icon img {height:24px;width:24px;}
+#setting_nav .catNavTrigger  {clear:both;height:32px;line-height:32px;overflow:hidden;background:url(images/setting_bg.png) repeat-x 0 -50px;border-bottom:1px solid #d1d1d1;}
+#setting_nav .select,
+#setting_nav .hover{color:#fff;background:url(images/setting_bg.png) repeat-x 0 -100px;}
+.nav_title {height:32px;line-height:32px;text-align:center;font-size:14px;border-bottom:1px solid #d1d1d1;background:url(images/setting_bg.png) repeat-x;}
+#settingpage_container {margin-left:201px;}
+.settingpage_container_head {background:#fff;border-bottom:1px solid #d1d1d1;height:28px;padding-top:4px;}
+.setting_title {height:28px;line-height:28px;width:100px;padding:0 5px;margin:0 0 0 10px;text-align:center;position:relative;background:#ededed;
+	-moz-border-radius:5px 5px 0 0 ;
+	-webkit-border-radius:5px 5px 0 0 ;
+	border-radius:5px 5px 0 0 ;
+}
+.setting_title_l,
+.setting_title_r {width:5px;height:28px;position:absolute;top:0;}
+
+.setting_title_l {left:0;}
+.setting_title_r {right:0;}

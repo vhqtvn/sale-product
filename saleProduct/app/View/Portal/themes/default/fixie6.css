@@ -1,0 +1,57 @@
+@charset "utf-8";
+
+/* 头部hack */
+.header_user {background:url(images/user_bg.gif) 0 -15px no-repeat;}
+.user_icon,.arrow_down_icon{background:url(images/new_ui_icon_1.gif) -190px -17px no-repeat ;}
+.arrow_down_icon{background-position:-228px -17px;}
+.header_title {background:none;filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src="images/title_bg.png");}
+.header_title a {position:relative;}
+.header_link a span {background:url(images/new_ui_icon_1.gif) no-repeat;}
+#task_tool span {background:url(images/new_ui_icon_1.gif) no-repeat;}
+.title_name_icon{background:url(images/new_ui_icon_1.gif) -355px -16px no-repeat;}
+.deskIco0 {background:url(images/new_ui_icon_1.gif) -147px -184px no-repeat; }
+.deskIco1 {background:url(images/new_ui_icon_1.gif) -233px -185px no-repeat; }
+.deskIco2 {background:url(images/new_ui_icon_1.gif) -189px -185px no-repeat; }
+
+/* 窗口 */
+.win_head,.w_title,.w_l_t,.w_r_t{height:45px;}
+.win_bottom,.w_c_b,.w_l_b,.w_r_b{height:27px;padding:0;margin:0;}
+.w_l_b,.w_l_t,.w_l_c{margin-right:-3px;}
+.w_r_b,.w_r_t,.w_r_c{margin-left:-3px;}
+.w_content,.w_title {padding:0;margin:0;}
+
+/* 开始菜单，桌面分页切换 */
+#deskpage,
+#deskpage .img_l,
+#deskpage .img_l:hover,
+#deskpage .img_r,
+#deskpage .img_r:hover,
+.deskpage_list li,
+.deskpage_list li.Current,
+.deskpage_list li:hover ,
+.deskpage_list li.hoverTip,
+.iconApp div.iconadd,
+.iconApp div.iconadd_return,
+body .app_remove,
+#start_logo a.logo_button,
+.start_menu .start_menu_top,
+.start_menu .start_menu_bottom,
+.start_menu_bottom .logo_button,
+.menu_list li .list_icon,
+.help_arrow,
+.startsonMenuContainer .starsonMenu_top,
+.startsonMenuContainer .starsonMenu_bottom,
+.sonmenu_list li .list_icon{background-image:url(images/list_bg.gif);}
+
+#deskpage {background:url(images/pagebg_repeat.png) repeat-x}
+.deskpage_left{
+	background-image:url(images/list_bg.gif);
+}
+
+.deskpage_right{
+	background-image:url(images/list_bg.gif);
+}
+.deskpage_list li,
+.deskpage_list li:hover ,
+.deskpage_list li.hoverTip {color:#ccc;}
+.showTip {background-image:url(images/new_ui_icon_1.gif);}

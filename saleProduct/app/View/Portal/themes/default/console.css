@@ -1,0 +1,44 @@
+@charset "utf-8";
+/* 控制面板 */
+#app_console_container{
+	position:relative;
+	vertical-align: top;
+	height:100%;
+}
+
+#app_console_container ul li{
+	float:left;
+	display:block;
+}
+
+#app_console_container .nav_ico{
+	display:block;
+}
+
+#app_console_container .nav_ico h2{
+	color:#000;
+	font-weight:bold;
+}
+
+.desktopcontainer #app_console_container .ico_absolute{
+	position:relative;
+}
+
+.control_class {
+	clear:both;
+	border-left:none;
+	border-right:none;
+	border-bottom:none;
+	margin-bottom:10px;
+}
+.control_class legend {
+	font-size:12px;
+	font-weight:bold;
+	color:#333;
+}
+
+#app_console_container .appicon{
+	width:48px;
+	height:48px;
+	padding:0px;
+}

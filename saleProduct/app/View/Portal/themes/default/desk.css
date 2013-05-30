@@ -1,0 +1,47 @@
+.app_desk_addicon{
+	background:url("images/add_desk.png") no-repeat;
+}
+
+.app_desk_add{
+	cursor:pointer;
+}
+
+.app_desk_thumbnail{
+	background:url("images/desk_thumbnail.png");
+}
+
+.app_desk_input{
+	width:80px;
+	border:1px solid #BBB;
+}
+
+div.app_desk_mg{
+	padding:10px ;
+	overflow:hidden;
+}
+
+.app_desk_ico{
+	position:relative;
+}
+
+.app_desk_del{
+	background:url("images/ico_del.gif");
+	width:16px;
+	height:16px;
+	position:absolute;
+	right:1px;
+	top:-1px;
+	cursor:pointer;
+	display:block;
+}
+
+.app_desk_admin{
+	background:url("images/ico_admin.gif");
+	width:16px;
+	height:16px;
+	position:absolute;
+	right:1px;
+	top:20px;
+	cursor:pointer;
+	display:block;
+}
