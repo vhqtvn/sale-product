@@ -176,6 +176,20 @@ html{-webkit-text-size-adjust: none;}
    		body{
 			padding-top:55px!important;
    		}
+   		
+   		.flag_container li{
+			float:left;
+   		}
+   		
+   		.flag_container{
+			display:block;
+   			height:20px;
+   		}
+   		
+   		.flag_container .alert{
+			padding:2px 10px;
+   			margin:0px 5px;
+   		}
  </style>
  
  <script>
@@ -437,7 +451,7 @@ html{-webkit-text-size-adjust: none;}
 		</center>
 	</div>
 <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	<div id="details_tab" style="border:0px;">
+	<div id="details_tab" style="border:0px;position:fixed;top:60px;">
 	</div>	
 	
 	<div class="hide"  id="track-tab">
@@ -461,7 +475,19 @@ html{-webkit-text-size-adjust: none;}
 		</div>
 		<hr style="margin:0px;clear:both;padding-top:3px;"/>
 		
-		<table class="form-table"  style="margin:5px 2px;">
+		
+		
+		<ul style="list-style: none;" class="flag_container">
+			<li><a href="#flag1" class="alert alert-info">开发标题</a></li>
+			<li><a href="#flag2" class="alert alert-info">基本信息分析</a></li>
+			<li><a href="#flag3" class="alert alert-info">产品风险分析</a></li>
+			<li><a href="#flag4" class="alert alert-info">产品关键字分析</a></li>
+			<li><a href="#flag5" class="alert alert-info">产品方案</a></li>
+			<li><a href="#flag6" class="alert alert-info">营销计划与策略</a></li>
+		</ul>
+		<div style="clear:both;"></div>
+	 <div style="height:500px;overflow:auto;">	
+		<table class="form-table"  style="margin:5px 2px;" id="flag1">
 				<tbody>
 					<tr>
 						<th>开发标题：</th>
@@ -533,9 +559,9 @@ html{-webkit-text-size-adjust: none;}
 				</tbody>
 			</table>
 		
-		<table class="form-table " >
+		<table class="form-table "   id="flag2">
 				<caption>
-				基本信息
+				基本信息分析
 				<?php if( $PD_REEDIT_BASE){ 
 					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 				}?>
@@ -556,7 +582,7 @@ html{-webkit-text-size-adjust: none;}
 				</tbody>
 			</table>
 			
-			<table class="form-table " >
+			<table class="form-table "   id="flag3">
 				<caption>
 				产品风险分析
 				<?php if( $PD_REEDIT_GM){ 
@@ -582,7 +608,7 @@ html{-webkit-text-size-adjust: none;}
 				</tbody>
 			</table>
 			
-			<table class="form-table " >
+			<table class="form-table "   id="flag4">
 				<caption>
 					产品关键字分析
 					<?php if( $PD_REEDIT_ZY){ 
@@ -651,7 +677,7 @@ html{-webkit-text-size-adjust: none;}
 				</tbody>
 			</table>
 	
-			<table class="form-table"  style="margin:5px 2px;">
+			<table class="form-table"  style="margin:5px 2px;"  id="flag5">
 				<caption>产品方案<?php if( $PD_REEDIT_YX){ 
 					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 				}?></caption>
@@ -665,7 +691,7 @@ html{-webkit-text-size-adjust: none;}
 				</tbody>
 			</table>
 			
-			<table class="form-table " >
+			<table class="form-table "   id="flag6">
 				<caption>
 				营销计划与策略
 				<?php if( $PD_REEDIT_YX){ 
@@ -713,7 +739,7 @@ html{-webkit-text-size-adjust: none;}
 					</tr>
 				</tbody>
 			</table>
-			
+		</div>
 	</div>
 	
 	<div>
@@ -961,6 +987,8 @@ html{-webkit-text-size-adjust: none;}
 											?>
 						<hr style="margin:0px;clear:both;padding-top:3px;"/>
 			</fieldset>
+			
+			
 			<fieldset>
 				<legend>成本利润
 				<?php  if( $pdStatus ==25 && $COST_EDIT ){  ?>

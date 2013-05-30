@@ -104,6 +104,11 @@ class Supplier extends AppModel {
 	public function saveProductSupplierBySku($data){
 		$sku = $data['sku'] ;
 		$suppliers = $data['suppliers'] ;
+		
+		/**
+		 * 删除安排对应的供应商
+		 */
+		$this->exeSql("delete from sc_real_product_supplier where real_sku = '{@#sku#}' ", $data) ;
 	
 		foreach( explode(',',$suppliers) as $supplier ){
 			try{

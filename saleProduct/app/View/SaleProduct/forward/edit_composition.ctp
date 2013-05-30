@@ -11,11 +11,13 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 	?>
   
    <style>
@@ -35,9 +37,52 @@
    <script>
 		$(function(){
 			
-			$(".select-p").click(function(){
+			$(".select-p1").click(function(){
 				openCenterWindow(contextPath+"/saleProduct/forward/select/<?php echo $id;?>",750,500) ;
 			});
+
+			var productGridSelect = {
+					title:'货品选择界面',
+					defaults:[],//默认值
+					key:{value:'ID',label:'REAL_SKU'},//对应value和label的key
+					multi:false ,
+					width:700,
+					height:600,
+					grid:{
+						title:"用户选择",
+						params:{
+							sqlId:"sql_saleproduct_select_list",
+							id:'<?php echo $id;?>'
+						},
+						ds:{type:"url",content:contextPath+"/grid/query"},
+						pagesize:10,
+						columns:[//显示列
+							{align:"center",key:"REAL_SKU",label:"SKU",sort:true,width:"30%",query:true},
+							{align:"center",key:"NAME",label:"NAME",sort:true,width:"30%",query:true},
+							{align:"center",key:"IMAGE_URL",label:"",sort:true,width:"10%",format:{type:'img'}}
+						]
+					}
+			   } ;
+			   
+			$(".select-p").listselectdialog( productGridSelect,function(){
+				var args = jQuery.dialogReturnValue() ;
+				var value = args.value ;
+				var label = args.label ;
+				var selectReocrds = args.selectReocrds ;
+				
+				$("#REAL_PRODUCT_ID").val(value) ;
+			
+				if( !$.validation.validate('#personForm').errorInfo ) {
+						var json = $("#personForm").toJson() ;
+						json = $.extend({},json) ;
+						json.ASIN = asin ;
+						$.dataservice("model:ProductDev.doFlow",json,function(result){
+							window.location.reload() ;
+						});
+				} ;
+				
+				return false;
+			}) ;
 			
 			$(".save-btn").click(function(){
 				if( !$.validation.validate('#personForm').errorInfo ) {

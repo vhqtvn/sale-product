@@ -27,40 +27,7 @@
    var taskId = '' ;
   
 	$(function(){
-			/*UPDATE sale_product1.sc_purchase_supplier_inquiry 
-		SET
-		ID = 'ID' , 
-		SUPPLIER_ID = 'SUPPLIER_ID' , 
-		SKU = 'SKU' , 
-		ASIN = 'ASIN' , 
-		PLAN_ID = 'PLAN_ID' , 
-		IS_USED = 'IS_USED' , 
-		WEIGHT = 'WEIGHT' , 
-		CYCLE = 'CYCLE' , 
-		PACKAGE = 'PACKAGE' , 
-		PAYMENT = 'PAYMENT' , 
-		NUMBER_OFFER = 'NUMBER_OFFER' , 
-		CREATOR = 'CREATOR' , 
-		CREATE_TIME = 'CREATE_TIME' , 
-		NUM1 = 'NUM1' , 
-		OFFER1 = 'OFFER1' , 
-		NUM2 = 'NUM2' , 
-		OFFER2 = 'OFFER2' , 
-		NUM3 = 'NUM3' , 
-		OFFER3 = 'OFFER3' , 
-		NUM4 = 'NUM4' , 
-		OFFER4 = 'OFFER4' , 
-		NUM5 = 'NUM5' , 
-		OFFER5 = 'OFFER5' , 
-		STATUS = 'STATUS' , 
-		MEMO = 'MEMO' , 
-		URL = 'URL' , 
-		IMAGE = 'IMAGE' , 
-		PRODUCT_SIZE = 'PRODUCT_SIZE' , 
-		PACKAGE_SIZE = 'PACKAGE_SIZE'
-		
-		WHERE
-		ID = 'ID' ;*/
+			
 			$(".grid-content-details").llygrid({
 				columns:[
 							//名称	产品重量	生产周期	包装方式	付款方式	产品尺寸	包装尺寸	报价1	报价2	报价3
@@ -70,6 +37,15 @@
 					     	{align:"center",key:"NAME",label:"供应商名称",width:"15%",forzen:false,align:"left",format:function(val,record){
 									return "<a href='#' supplier-id='"+record.SUPPLIER_ID+"'>"+val+"<a>" ;
 						     }},
+				           	{align:"center",key:"NUM1",label:"报价1",width:"6%",format:function(val,record){
+									return val+"/"+record.OFFER1 ;
+					          }},
+				           	{align:"center",key:"NUM2",label:"报价2",width:"6%",format:function(val,record){
+								return val+"/"+record.OFFER2 ;
+					          }},
+				           	{align:"center",key:"NUM3",label:"报价2",width:"6%",format:function(val,record){
+								return val+"/"+record.OFFER3 ;
+					          }},
 						     {align:"center",key:"URL",label:"产品网址",width:"10%",forzen:false,align:"left",format:function(val,record){
 									return "<a href='"+val+"' target='_blank'>"+val+"<a>" ;
 						     }},
@@ -79,16 +55,7 @@
 				           	{align:"center",key:"PAYMENT",label:"付款方式",width:"6%"},
 				           	{align:"center",key:"PRODUCT_SIZE",label:"产品尺寸",width:"6%"},
 				           	{align:"center",key:"PACKAGE_SIZE",label:"包装尺寸",width:"6%"},
-				        	{align:"center",key:"PACKINGS_PECIFICATIONS",label:"装箱规格",width:"6%"},
-				           	{align:"center",key:"NUM1",label:"报价1",width:"6%",format:function(val,record){
-									return val+"/"+record.OFFER1 ;
-					          }},
-				           	{align:"center",key:"NUM2",label:"报价2",width:"6%",format:function(val,record){
-								return val+"/"+record.OFFER2 ;
-					          }},
-				           	{align:"center",key:"NUM3",label:"报价2",width:"6%",format:function(val,record){
-								return val+"/"+record.OFFER3 ;
-					          }}
+				        	{align:"center",key:"PACKINGS_PECIFICATIONS",label:"装箱规格",width:"6%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,

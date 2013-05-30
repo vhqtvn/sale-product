@@ -16,9 +16,7 @@
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
-		echo $this->Html->script('../grid/query');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
 		echo $this->Html->script('validator/jquery.validation');
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
@@ -37,6 +35,12 @@
 			if( $("#login_id").val()  ){
 				$("#login_id").attr("disabled",true) ;
 			}
+
+			$(".supplier-select").click(function(){
+				openCenterWindow(contextPath+"/supplier/listsSelectBySku/<?php echo $sku;?>",800,600,function(){
+					window.location.reload() ;
+				}) ;
+			}) ;
 		})
 		function validateForm(){
 			if( !$.validation.validate('#personForm').errorInfo ) {
@@ -81,6 +85,7 @@
 													}
 											?>
 						</select>
+						<button class="supplier-select btn">选择</button>
 						</td>
 					</tr>
 					<tr>

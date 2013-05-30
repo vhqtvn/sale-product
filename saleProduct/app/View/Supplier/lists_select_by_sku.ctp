@@ -24,7 +24,7 @@
    <script type="text/javascript">
    
    var sku = '<?php echo $sku;?>' ;
-
+	
 	$(function(){
 			$(".grid-content").llygrid({
 				columns:[
@@ -97,7 +97,6 @@
 					sku:sku,
 					suppliers:suppliers.join(",")
 				},function(){
-					window.opener.location.reload() ;
 					window.close() ;
 				}) ;
 			}) ;

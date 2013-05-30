@@ -107,11 +107,15 @@
 			}) ;
 			
 			$(".add-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/addBySku/<?php echo $sku;?>",800,600) ;
+				openCenterWindow(contextPath+"/supplier/addBySku/<?php echo $sku;?>",800,600,function(){
+					window.location.reload() ;
+				}) ;
 			}) ;
 
 			$(".supplier-select").click(function(){
-				openCenterWindow(contextPath+"/supplier/listsSelectBySku/<?php echo $sku;?>",800,600) ;
+				openCenterWindow(contextPath+"/supplier/listsSelectBySku/<?php echo $sku;?>",800,600,function(){
+					window.location.reload() ;
+				}) ;
 			}) ;
 
 			
