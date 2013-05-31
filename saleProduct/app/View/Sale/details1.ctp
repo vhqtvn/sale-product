@@ -281,7 +281,7 @@ html{-webkit-text-size-adjust: none;}
 				json.trackMemo = memo ;
 				
 				$.dataservice("model:ProductDev.doFlow",json,function(result){
-					window.location.reload() ;
+						window.location.reload() ;
 				});
 			}
  	 }
@@ -998,13 +998,24 @@ html{-webkit-text-size-adjust: none;}
 				<br/><br/><br/>
 				<table  class="form-table">
 					<tr>
-						<th>销售最低限价:</th>
+						<th>FBA销售最低限价:</th>
 						<td>
-								<input type="text"  class="input 10-input"  id="SALE_LOWEST_PRICE"  value="<?php echo $productDev['SALE_LOWEST_PRICE']?>" />
+								<input type="text"  class="input 10-input " style="width:80px;"  id="SALE_LOWEST_PRICE_FBA"  value="<?php echo $productDev['SALE_LOWEST_PRICE_FBA']?>" />
 						</td>
-						<th>销售建议价:</th>
+						<th>FBA销售建议价:</th>
 						<td>
-								<input type="text"  class="input 10-input"   id="SALE_SUGGEST_PRICE"  value="<?php echo $productDev['SALE_SUGGEST_PRICE']?>" />
+								<input type="text"  class="input 10-input span2"  style="width:80px;" id="SALE_SUGGEST_PRICE_FBA"  value="<?php echo $productDev['SALE_SUGGEST_PRICE_FBA']?>" />
+								<?php if( $PD_SALE_RPICE ){ 
+									echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+								}?>
+						</td>
+						<th>FBM销售最低限价:</th>
+						<td>
+								<input type="text"  class="input 10-input span2" style="width:80px;"  id="SALE_LOWEST_PRICE_FBM"  value="<?php echo $productDev['SALE_LOWEST_PRICE_FBM']?>" />
+						</td>
+						<th>FBM销售建议价:</th>
+						<td>
+								<input type="text"  class="input 10-input span2"  style="width:80px;"  id="SALE_SUGGEST_PRICE_FBM"  value="<?php echo $productDev['SALE_SUGGEST_PRICE_FBM']?>" />
 								<?php if( $PD_SALE_RPICE ){ 
 									echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 								}?>

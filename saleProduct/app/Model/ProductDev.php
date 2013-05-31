@@ -48,7 +48,23 @@ class ProductDev extends AppModel {
 		}
 	}
 	
+	function getLowestLimitPrice($goodsId){
+		$dev = $this->getObject("sql_pdev_getLastestLimitPriceProduct", array('id'=>$goodsId)) ;
+		return $dev;
+	}
+	
 	function doFlow( $params ){
+		$pd = $this->getObject("sql_pdev_findByAsinAndTaskId", $params) ;
+		if( empty($pd) ){
+			$this->exeSql("sql_pdev_insert", $params) ;
+		}else{
+			$this->exeSql("sql_pdev_update", $params) ;
+		}
+		//保存轨迹
+		$this->exeSql("sql_pdev_track_insert", $params) ;
+	}
+	
+	function saveLimitPriceToGoods( $params ){
 		$pd = $this->getObject("sql_pdev_findByAsinAndTaskId", $params) ;
 		if( empty($pd) ){
 			$this->exeSql("sql_pdev_insert", $params) ;

@@ -79,6 +79,13 @@
 					)
      </entry>
      
+     <entry key="sql_pdev_getLastestLimitPriceProduct">
+		     SELECT s.* FROM sc_product_dev s WHERE s.real_product_id = '{@#id#}'
+		 AND s.SALE_LOWEST_PRICE_FBA IS NOT NULL
+		 ORDER BY  s.CREATE_TIME DESC
+		LIMIT 0,1
+     </entry>
+     
       <entry key="sql_pdev_update">
 UPDATE sc_product_dev 
 	SET
@@ -90,6 +97,10 @@ UPDATE sc_product_dev
 			{@ SUPPLIER_MAX_PRICE = '#SUPPLIER_MAX_PRICE#',}
 			{@ SALE_LOWEST_PRICE = '#SALE_LOWEST_PRICE#',}
 			{@ SALE_SUGGEST_PRICE = '#SALE_SUGGEST_PRICE#',}
+			{@ SALE_LOWEST_PRICE_FBA = '#SALE_LOWEST_PRICE_FBA#',}
+			{@ SALE_SUGGEST_PRICE_FBA = '#SALE_SUGGEST_PRICE_FBA#',}
+			{@ SALE_LOWEST_PRICE_FBM = '#SALE_LOWEST_PRICE_FBM#',}
+			{@ SALE_SUGGEST_PRICE_FBM = '#SALE_SUGGEST_PRICE_FBM#',}
 			{@ INQUIRY_CHARGER = '#INQUIRY_CHARGER#',}
 			{@ TRY_PURCHASE_NUM = '#TRY_PURCHASE_NUM#',}
 			END_TIME = NOW() , 

@@ -1135,10 +1135,13 @@ $.llygrid.format.purchaseProductStatus = {
 			switch(val){
 				case '10':  message = "编辑中";break;
 				case '20':  message = "等待审批";break;
-				case '20':  message = "审批不通过";break;
+				case '25':  message = "审批不通过";break;
 				case '30':  message = "限价确认";break;
 				case '40':  message = "分配执行人";break;
-				case '45':  message = "采购执行";break;
+				case '45':  message = "待询价";break;
+				case '46':  message = "采购申请";break;
+				case '47':  message = "待交易";break;
+				case '48':  message = "待发货";break;
 				case '50':  message = "QC验货";break;
 				case '60':  message = "入库";break;
 				case '70':  message = "采购确认";break;

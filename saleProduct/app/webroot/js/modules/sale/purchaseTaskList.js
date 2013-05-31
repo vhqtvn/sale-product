@@ -30,8 +30,17 @@ $(function(){
            	{align:"center",key:"STATUS40",label:img4,group:"状态",width:"4%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=40>"+val+"</a>" ;
            	}},
-        	{align:"center",key:"STATUS45",label:img45,group:"状态",width:"4%",format:function(val,record){
+        	{align:"center",key:"STATUS45",label:"询价",group:"状态",width:"4%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=45>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS46",label:"申请",group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=46>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS47",label:"交易",group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=47>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"STATUS48",label:"发货",group:"状态",width:"4%",format:function(val,record){
+           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=48>"+val+"</a>" ;
            	}},
            	{align:"center",key:"STATUS50",label:img5,group:"状态",width:"3%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=50>"+val+"</a>" ;
@@ -266,7 +275,7 @@ $(function(){
 	
 	$(".edit-action").live("click",function(){
 		var val = $(this).attr("val") ;//采购计划ID
-		openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,910,620,function(){
+		openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,980,620,function(){
 			$(".grid-content-details").llygrid("reload",{},true) ;
 		}) ;
 	}) ;

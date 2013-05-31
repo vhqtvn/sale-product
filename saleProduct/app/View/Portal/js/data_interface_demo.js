@@ -671,6 +671,17 @@ var _deskActions = [{
 				"url" : null,
 				"displayGroup" : null
 			},*/ {
+				"seqId" : "hl_1",
+				"name" : "传统首页",
+				"type" : "headLinks",
+				"parentId" : "hl",
+				"portalId" : "default",
+				"code" : null,
+				"styleClass" : "set_collection",
+				"func" : "webos.utils.addFavorite(window.location,document.title)",
+				"url" : null,
+				"displayGroup" : null
+			},{
 				"seqId" : "hl_3",
 				"name" : "添加收藏",
 				"type" : "headLinks",

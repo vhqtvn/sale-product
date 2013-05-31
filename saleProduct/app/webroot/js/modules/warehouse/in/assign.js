@@ -21,12 +21,22 @@ $(function(){
 	           		if( record.FULFILLMENT_CHANNEL.indexOf("AMAZON") !=-1){
 	           			$(this).find("[key='ASSIGN_QUANTITY']").html("&nbsp;&nbsp;"+(record.QUANTITY||0)) ;
 	           			$(this).addClass("alert alert-danger");
+	           		}else{
+	           			
 	           		}
 	           	}},
 	           	{align:"center",key:"QUANTITY",label:"账户库存",group:"库存",width:"7%"},
 	           	{align:"center",key:"UNSHIPPED_NUM",label:"待发货数量",group:"库存",width:"8%"},
 	        	{align:"center",key:"ORDER_NUM",label:"订单数量",group:"库存",width:"8%"},
-	        	{align:"center",key:"FEED_PRICE",label:'调整价格',group:'价格',width:"8%",format:{type:'editor',fields:['ACCOUNT_ID','SKU']}},
+	        	{align:"center",key:"FEED_PRICE",label:'调整价格',group:'价格',width:"8%",format:{type:'editor',fields:['ACCOUNT_ID','SKU']},render:function(record){
+	        		if( record.FULFILLMENT_CHANNEL.indexOf("AMAZON") !=-1){
+	        			var price = $(".SALE_LOWEST_PRICE_FBM").text();
+	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",">="+$(".SALE_LOWEST_PRICE_FBM").text()) ;
+	           		}else{
+	           			var price = $(".SALE_LOWEST_PRICE_FBA").text();
+	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",">="+$(".SALE_LOWEST_PRICE_FBA").text()) ;
+	           		}
+	        	}},
 	        	{align:"center",key:"PRICE",label:"账户价格",group:"价格",width:"6%"},
 	           	{align:"center",key:"SHIPPING_PRICE",label:"运费",group:"价格",width:"4%"},
 	           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"4%",format:function(val,record){
@@ -53,7 +63,7 @@ $(function(){
 			 limit:100,
 			 pageSizes:[100],
 			 height:function(){
-			 	return	$(window).height() - 280
+			 	return	$(window).height() - 320;
 			 },
 			 autoWidth:false,
 			 title:"",
@@ -83,13 +93,46 @@ $(function(){
 				 $(".assignable-quantity").html(assignableQuantity) ;
 				 
 				 calcAssignedQuantity() ;
+				 calcPrice() ;
 				 
 				 $(":input[key='ASSIGN_QUANTITY']").keyup(function(){
+					 //计算库存
 					 calcAssignedQuantity();
+				 }) ;
+				 
+				 $(":input[key='FEED_PRICE']").keyup(function(){
+					 //计算价格
+					 calcPrice();
 				 }) ;
 			 }
 		} ;
 	$(".grid-content").llygrid(gridConfig) ;
+	
+	function calcPrice(){
+		var isPass = true ;
+		$(":input[key='FEED_PRICE']").each(function(){
+			var lowestPrice = $(this).attr("lowestPrice");
+			var val = $(this).val() ;
+			if( lowestPrice && val ){
+				lowestPrice = parseFloat(lowestPrice) ;
+				val = parseFloat(val) ;
+				if( val < lowestPrice ){
+					$(this).removeClass("pass").addClass("nopass") ;
+					isPass = false ;
+				}else{
+					$(this).removeClass("nopass").addClass("pass");
+				}
+			}else{
+				$(this).removeClass("nopass").removeClass("pass");
+			}
+		}) ;
+		
+		if(!isPass){
+			$(".price-btn").attr("disabled","disabled") ;
+		}else{
+			$(".price-btn").removeAttr("disabled") ;
+		}
+	}
 	
 	function calcAssignedQuantity(){
 		var quantity = 0 ;

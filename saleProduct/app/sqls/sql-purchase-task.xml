@@ -20,31 +20,40 @@
 						and ( sppd.status = 10 or sppd.status is null ) ) as STATUS10,
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 20 or sppd.status is null ) ) as STATUS20,	
+						and ( sppd.status = 20   ) ) as STATUS20,	
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 25 or sppd.status is null ) ) as STATUS25,	
+						and ( sppd.status = 25  ) ) as STATUS25,	
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 30 or sppd.status is null ) ) as STATUS30,	
+						and ( sppd.status = 30 ) ) as STATUS30,	
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 40 or sppd.status is null ) ) as STATUS40,	
+						and ( sppd.status = 40 ) ) as STATUS40,	
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 45 or sppd.status is null ) ) as STATUS45,	
+						and ( sppd.status = 45  ) ) as STATUS45,	
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 50 or sppd.status is null ) ) as STATUS50,			
+						and ( sppd.status = 46 ) ) as STATUS46,
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 60 or sppd.status is null ) ) as STATUS60,			
+						and ( sppd.status = 47  ) ) as STATUS47,	
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 70 or sppd.status is null ) ) as STATUS70,			
+						and ( sppd.status = 48  ) ) as STATUS48,	
 			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 80 or sppd.status is null ) ) as STATUS80
+						and ( sppd.status = 50 ) ) as STATUS50,			
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 60 ) ) as STATUS60,			
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 70  ) ) as STATUS70,			
+			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
+						and ( sppd.status = 80  ) ) as STATUS80
          from sc_purchase_task spt 
          where 1=1
           {@ and spt.task_code = '#taskCode#'}

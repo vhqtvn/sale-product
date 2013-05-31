@@ -101,6 +101,15 @@
 			padding:2px 3px;
 			/*background:#EFEFEF;*/
 		}
+		
+		.nopass{
+			background:red;
+		}
+		
+		.pass{
+			background:green;
+			color:#FFF!important;
+		}
 	</style>
 </head>
 <body>
@@ -111,7 +120,14 @@
 		
 		$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
 		
-		//debug($product) ;
+		$ProductDev  = ClassRegistry::init("ProductDev") ;
+		$dev = $ProductDev->getLowestLimitPrice($realProductId) ;
+		/*
+		'SALE_LOWEST_PRICE_FBA' => '123',
+		'SALE_LOWEST_PRICE_FBM' => '22',
+		'SALE_SUGGEST_PRICE_FBA' => '11',
+		'SALE_SUGGEST_PRICE_FBM' => '33'
+		*/
 	?>
 	<div class="box row-fluid">
 			<div class="box-content span8" style="width:96%;">
@@ -154,6 +170,29 @@
 							</div>
 							<div class="qt">
 								<button class="btn btn-primary assgin-btn btn-danger">分配库存</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan=3>
+							<div class="qt">
+								<div class='qt-label'>FBA最低限价：</div>
+								<div class='qt-value SALE_LOWEST_PRICE_FBA' style="color:red;font-size:15px;"><?php echo $dev['SALE_LOWEST_PRICE_FBA'] ?></div>
+							</div>
+							<div class="qt">
+								<div class='qt-label'>FBA销售建议价：</div>
+								<div class='qt-value SALE_SUGGEST_PRICE_FBA' ><?php echo $dev['SALE_SUGGEST_PRICE_FBA'] ?></div>
+							</div>
+							<div class="qt">
+								<div class='qt-label'>FBM最低限价：</div>
+								<div class='qt-value SALE_LOWEST_PRICE_FBM' style="color:red;font-size:13px;"><?php echo $dev['SALE_LOWEST_PRICE_FBM'] ?></div>
+							</div>
+							<div class="qt">
+								<div class='qt-label'>FBM销售建议价：</div>
+								<div class='qt-value SALE_SUGGEST_PRICE_FBM' ><?php echo $dev['SALE_SUGGEST_PRICE_FBM'] ?></div>
+							</div>
+							
+							<div class="qt">
 								<button class="btn btn-primary price-btn btn-danger">调整价格</button>
 							</div>
 						</td>

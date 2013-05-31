@@ -251,30 +251,63 @@
 	        		{status:40,label:"分配执行人",memo:true
 	        			<?php if( $ppp_assign_executor ) { ?>
 	        			,actions:[
-<?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ ForceAuditAction(30,"回退") }},
-<?php }?>
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(30,"回退") }},
+									<?php }?>
 									{label:"保存",action:function(){ ForceAuditAction(40,"保存") }},
 		      	        			{label:"分配采购执行人",action:function(){ AuditAction(45,"分配采购执行人") } }
         				]
 	        			<?php };?>
 	        		},
-	        		{status:45,label:"采购执行",memo:true
+	        		{status:45,label:"询价",memo:true
 	        			<?php if( $loginId == $product['EXECUTOR'] ) { ?>
 	        			,actions:[
-<?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ ForceAuditAction(40,"回退") }},
-<?php }?>
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(40,"回退") }},
+									<?php }?>
 									{label:"保存",action:function(){ ForceAuditAction(45,"保存") }},
-		      	        			{label:"采购执行",action:function(){ AuditAction(50,"采购执行") } }
+		      	        			{label:"已询价",action:function(){ AuditAction(46,"已询价") } }
+        				]
+	        			<?php };?>
+	        		},
+	        		{status:46,label:"采购申请",memo:true
+	        			<?php if( $loginId == $product['EXECUTOR'] ) { ?>
+	        			,actions:[
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(45,"回退") }},
+									<?php }?>
+									{label:"保存",action:function(){ ForceAuditAction(46,"保存") }},
+		      	        			{label:"已申请",action:function(){ AuditAction(47,"已申请") } }
+        				]
+	        			<?php };?>
+	        		},
+	        		{status:47,label:"交易",memo:true
+	        			<?php if( $loginId == $product['EXECUTOR'] ) { ?>
+	        			,actions:[
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(46,"回退") }},
+									<?php }?>
+									{label:"保存",action:function(){ ForceAuditAction(47,"保存") }},
+		      	        			{label:"已交易",action:function(){ AuditAction(48,"已交易") } }
+        				]
+	        			<?php };?>
+	        		},
+	        		{status:48,label:"发货",memo:true
+	        			<?php if( $loginId == $product['EXECUTOR'] ) { ?>
+	        			,actions:[
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(47,"回退") }},
+									<?php }?>
+									{label:"保存",action:function(){ ForceAuditAction(48,"保存") }},
+		      	        			{label:"已发货",action:function(){ AuditAction(50,"已发货") } }
         				]
 	        			<?php };?>
 	        		},{status:50,label:"QC验货",memo:true
 	        			<?php if( $ppp_qc) { ?>
 	        			,actions:[
-<?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ ForceAuditAction(45,"回退") }},
-<?php }?>
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(45,"回退") }},
+									<?php }?>
 									{label:"保存",action:function(){ ForceAuditAction(50,"保存") }},
 		      	        			{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
         				]
@@ -282,9 +315,9 @@
 	        		},{status:60,label:"货品入库",memo:true
 	        			<?php if( $ppp_inwarehouse) { ?>
 	        			,actions:[
-<?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
-<?php }?>
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
+									<?php }?>
 									{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
 		      	        			{label:"入库确认",action:function(){ WarehouseInAction(70,"入库确认") } }
         				]
@@ -293,9 +326,9 @@
 	        		{status:70,label:"采购确认",memo:true
 	        			<?php if( $ppp_confirm) { ?>
 	        			,actions:[
-<?php if( $ppp_callback ){ ?>
-{label:"回退",action:function(){ ForceAuditAction(60,"回退") }},
-<?php }?>
+									<?php if( $ppp_callback ){ ?>
+									{label:"回退",action:function(){ ForceAuditAction(60,"回退") }},
+									<?php }?>
 									{label:"保存",action:function(){ ForceAuditAction(70,"保存") }},
 		      	        			{label:"确认采购",action:function(){ AuditAction(80,"采购确认") } }]
 	        			<?php };?>
