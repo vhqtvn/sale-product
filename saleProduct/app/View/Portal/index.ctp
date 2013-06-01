@@ -144,7 +144,6 @@
 			<p>
 				<span class="user_icon"></span>
 				<span class="arrow_down_icon"></span>
-				系统管理员
 			</p>
 		</div>		
 		<div class="header_link">
@@ -152,9 +151,10 @@
 		<div class="header_title">
 			<div class="title_name">
 				<span class="title_name_icon"></span>
-				<strong>我的办公台</strong>
+				<strong></strong>
 			</div>
 			<div class="title_time"></div>
+			<div class="title_name" style="float:right;width:auto;margin-right:20px;"><?php echo $User['NAME'];?></div>
 		</div>
 	</div>
 	<!-- 桌面内容动态加载 -->
@@ -187,9 +187,9 @@
 		<div class="start_menu_top"></div>
 		<div class="start_menu_main">
 			<div class="menu_weicome">
-				<img src="images/avatar.png" alt=""/>
+				<img src="/<?php echo $fileContextPath;?>/app/webroot/img/m/smiley-happy.png" alt=""/>
 				<div class="menu_weicome_font">
-					欢迎您，请&nbsp; <a href="###">登录</a>
+					欢迎您，<?php echo $User['NAME'];?>
 				</div>
 			</div>
 

@@ -40,7 +40,12 @@ class UsersController extends AppController
                 if($status == 1){
                 	$this->redirect("/home/phone");
                 }else{
-                	$this->redirect("/home");
+                	$portal = $this->data['portal'] ;
+                	if( $portal == 'portal' ){
+                		$this->redirect("/portal");
+                	}else{
+                		$this->redirect("/home");
+                	}
                 }
             }  
             // Else, they supplied incorrect data:  

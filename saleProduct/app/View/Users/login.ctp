@@ -38,6 +38,13 @@
 						<input tabindex="2" class="inputtext" type="password" name="password" id="password"></td>
 					</tr>
 					
+					<tr>
+						<td>
+							传统首页：<input  name="portal" value="home"  type="radio"  checked="checked"/>&nbsp;&nbsp;
+							桌面风格：<input  name="portal" value="portal"  type="radio"  />
+						</td>
+					</tr>
+					
 					<?php if ($error): ?>
 					<tr>
 					<td style="color:red;">
