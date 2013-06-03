@@ -120,8 +120,8 @@
 		
 		$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
 		
-		$ProductDev  = ClassRegistry::init("ProductDev") ;
-		$dev = $ProductDev->getLowestLimitPrice($realProductId) ;
+	//	$ProductDev  = ClassRegistry::init("ProductDev") ;
+	//	$dev = $ProductDev->getLowestLimitPrice($realProductId) ;
 		/*
 		'SALE_LOWEST_PRICE_FBA' => '123',
 		'SALE_LOWEST_PRICE_FBM' => '22',
@@ -177,19 +177,19 @@
 						<td colspan=3>
 							<div class="qt">
 								<div class='qt-label'>FBA最低限价：</div>
-								<div class='qt-value SALE_LOWEST_PRICE_FBA' style="color:red;font-size:15px;"><?php echo $dev['SALE_LOWEST_PRICE_FBA'] ?></div>
+								<div class='qt-value SALE_LOWEST_PRICE_FBA' style="color:red;font-size:15px;"><?php echo $product['SALE_LOWEST_PRICE_FBA'] ?></div>
 							</div>
 							<div class="qt">
 								<div class='qt-label'>FBA销售建议价：</div>
-								<div class='qt-value SALE_SUGGEST_PRICE_FBA' ><?php echo $dev['SALE_SUGGEST_PRICE_FBA'] ?></div>
+								<div class='qt-value SALE_SUGGEST_PRICE_FBA' ><?php echo $product['SALE_SUGGEST_PRICE_FBA'] ?></div>
 							</div>
 							<div class="qt">
 								<div class='qt-label'>FBM最低限价：</div>
-								<div class='qt-value SALE_LOWEST_PRICE_FBM' style="color:red;font-size:13px;"><?php echo $dev['SALE_LOWEST_PRICE_FBM'] ?></div>
+								<div class='qt-value SALE_LOWEST_PRICE_FBM' style="color:red;font-size:13px;"><?php echo $product['SALE_LOWEST_PRICE_FBM'] ?></div>
 							</div>
 							<div class="qt">
 								<div class='qt-label'>FBM销售建议价：</div>
-								<div class='qt-value SALE_SUGGEST_PRICE_FBM' ><?php echo $dev['SALE_SUGGEST_PRICE_FBM'] ?></div>
+								<div class='qt-value SALE_SUGGEST_PRICE_FBM' ><?php echo $product['SALE_SUGGEST_PRICE_FBM'] ?></div>
 							</div>
 							
 							<div class="qt">
