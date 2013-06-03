@@ -2,6 +2,10 @@
 class SaleProduct extends AppModel {
 	var $useTable = "sc_product_flow" ;
 	
+	function saveLimitPrice($params){
+		$this->exeSql("sql_saleproduct_saveLimitPrice", $params) ;
+	}
+	
 	function getChartForSku($params){
 		$sku = $params['sku'] ;
 		$records = $this->exeSqlWithFormat("sql_chart_realSku_quantity", array('sku'=>$sku)) ;

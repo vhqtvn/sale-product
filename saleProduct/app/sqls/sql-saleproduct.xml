@@ -284,6 +284,19 @@
 	]]>	      
     </entry>
     
+    <entry key="sql_saleproduct_saveLimitPrice">
+    <![CDATA[
+	    UPDATE sc_real_product 
+			SET
+			SALE_LOWEST_PRICE_FBA = '{@#SALE_LOWEST_PRICE_FBA#}' , 
+			SALE_SUGGEST_PRICE_FBA = '{@#SALE_SUGGEST_PRICE_FBA#}' , 
+			SALE_LOWEST_PRICE_FBM = '{@#SALE_LOWEST_PRICE_FBM#}' , 
+			SALE_SUGGEST_PRICE_FBM = '{@#SALE_SUGGEST_PRICE_FBM#}'
+			WHERE
+			ID = '{@#ID#}'
+	]]>	      
+    </entry>
+    
     <entry key="sql_saleproduct_composition_list">
     <![CDATA[
     SELECT s2.*,

@@ -18,13 +18,17 @@ $(function(){
 	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
 	if( currentStatus >=45 )tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
 
-	var status = [10,20,25,30,40,45,50,60,70] ;
+	var status = [10,20,25,30,40,45,46,47,48,50,60,70] ;
 	if( $reedit_pp_product ){//再编辑
 		$(status).each(function(){
 			if( this <= currentStatus ){
 				$("."+this+"-input").removeAttr("disabled") ;
 			}
 		}) ;
+	}
+	
+	if( $ppp_assign_executor && ( currentStatus>=40 && currentStatus <= 48) ){
+		$(".btn-charger").show() ;
 	}
 	
 	//widget init

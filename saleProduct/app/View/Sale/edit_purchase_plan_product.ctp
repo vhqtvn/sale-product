@@ -58,11 +58,13 @@
 		$ppp_export							= $security->hasPermission($loginId , 'ppp_export') ;
 		$ppp_audit							= $security->hasPermission($loginId , 'ppp_audit') ;
 		$ppp_setlimitprice				= $security->hasPermission($loginId , 'ppp_setlimitprice') ;
+		
 		//分配执行人，计划负责人等于当前用户
 		$ppp_assign_executor			= $loginId == $plan['EXECUTOR'] || $security->hasPermission($loginId , 'ppp_assign_executor') ;
 		$ppp_qc								= $security->hasPermission($loginId , 'ppp_qc') ;
 		$ppp_inwarehouse				= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
 		$ppp_confirm 						= $security->hasPermission($loginId , 'ppp_confirm') ;
+		
 		//在编辑功能
 		$reedit_pp_product				= $security->hasPermission($loginId , 'reedit_pp_product') ;
 		

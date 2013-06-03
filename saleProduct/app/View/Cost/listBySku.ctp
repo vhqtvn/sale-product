@@ -55,6 +55,9 @@
 		$COST_EDIT_SALEPRICE   				= $security->hasPermission($loginId , 'COST_EDIT_SALEPRICE') ;
 		
 		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE ;
+		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$product = $SqlUtils->getObject("select * from sc_real_product where real_sku='{@#sku#}'",array('sku'=>$sku )) ;
 	?>
   
    <script type="text/javascript">
@@ -130,7 +133,7 @@
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					return $(window).height() - 100 ;
+					return $(window).height() - 170 ;
 				 },
 				 title:"",
 				 indexColumn:true,
@@ -160,6 +163,14 @@
 					 }) ;
 			}) ;
 			<?php }?>
+
+
+			$(".save-sale-price .save-limit").click(function(){
+				var json = $(".save-sale-price").toJson() ;
+				$.dataservice("model:SaleProduct.saveLimitPrice",json,function(){
+					//window.location.reload() ;
+				}) ;
+			}) ;
    	 });
    </script>
    
@@ -171,11 +182,48 @@
 
 </head>
 <body>
-	<div class="query-bar">
-	<?php  if( $COST_EDIT ){?>
-		<button class="add-cost btn btn-primary">添加成本</button>
-	<?php }?>
-	</div>
+	<div class="toolbar toolbar-auto">
+				<table style="width:100%;" class="query-table  save-sale-price">	
+						<input type="hidden"    id="ID"  value="<?php echo $product['ID']?>" />
+					<tr>
+						<th>FBA销售最低限价:</th>
+						<td>
+								<input type="text"    id="SALE_LOWEST_PRICE_FBA" class="span2"  value="<?php echo $product['SALE_LOWEST_PRICE_FBA']?>" />
+						</td>
+						<th>FBA销售建议价:</th>
+						<td>
+								<input type="text"  id="SALE_SUGGEST_PRICE_FBA" class="span2"    value="<?php echo $product['SALE_SUGGEST_PRICE_FBA']?>" />
+						</td>
+					</tr>
+					<tr>
+						<th>FBM销售最低限价:</th>
+						<td>
+								<input type="text"   id="SALE_LOWEST_PRICE_FBM" class="span2"    value="<?php echo $product['SALE_LOWEST_PRICE_FBM']?>" />
+						</td>
+						<th>FBM销售建议价:</th>
+						<td>
+								<input type="text"   id="SALE_SUGGEST_PRICE_FBM" class="span2"    value="<?php echo $product['SALE_SUGGEST_PRICE_FBM']?>" />
+						</td>
+						<th></th>
+						<td>
+							<button class="save-limit btn btn-primary">保存限价</button>
+							<?php  if( $COST_EDIT ){?>
+								<button class="add-cost btn btn-primary">添加成本</button>
+							<?php }?>
+						</td>
+					</tr>							
+				</table>	
+			</div>
+	
+	<div class="toolbar toolbar-auto">
+				<table style="width:100%;" class="query-table">	
+					<tr>
+						
+					</tr>							
+				</table>	
+				<hr style="margin:2px;"/>	
+			</div>
+	
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 </body>

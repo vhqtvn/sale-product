@@ -996,6 +996,7 @@ html{-webkit-text-size-adjust: none;}
 				<?php 	}?>
 				</legend>
 				<br/><br/><br/>
+				<?php /*
 				<table  class="form-table">
 					<tr>
 						<th>FBA销售最低限价:</th>
@@ -1022,6 +1023,7 @@ html{-webkit-text-size-adjust: none;}
 						</td>
 					</tr>
 				</table>
+				*/ ?>
 				<div  style="width:990px;position:relative;" >
 				<div class="grid-cost" style="width:990px;"></div>
 				</div>
