@@ -135,7 +135,7 @@
 			srp.name as TITLE,
 			srp.IMAGE_URL,
 			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
-			SU.NAME AS EXECUTOR_NAME,
+			su.NAME AS EXECUTOR_NAME,
 			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
 		FROM 
 		sc_purchase_task_products sptp,
