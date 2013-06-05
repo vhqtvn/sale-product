@@ -135,11 +135,13 @@
 			srp.name as TITLE,
 			srp.IMAGE_URL,
 			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
-			(select name from sc_user where login_id = sppd.executor ) as EXECUTOR_NAME,
+			SU.NAME AS EXECUTOR_NAME,
 			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
 		FROM 
 		sc_purchase_task_products sptp,
 		sc_purchase_plan_details sppd 
+		LEFT JOIN sc_user su
+		on su.login_id = sppd.executor
 		left join sc_real_product srp
 		on sppd.SKU = srp.real_sku
 		WHERE 1=1 
@@ -156,6 +158,7 @@
 		    )
 		    {@ and (
 				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
 			)}
     </entry>
     
