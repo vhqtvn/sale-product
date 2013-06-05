@@ -27,8 +27,9 @@ $(function(){
 		}) ;
 	}
 	
+	
 	if( $ppp_assign_executor && ( currentStatus>=40 && currentStatus <= 48) ){
-		$(".btn-charger").show() ;
+		$(".btn-charger").removeAttr("disabled").show() ;
 	}
 	
 	//widget init

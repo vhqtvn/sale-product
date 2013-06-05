@@ -12,7 +12,7 @@ String.prototype.endWith=function(str){
       return reg.test(this);        
 } 
 
-String.prototype.getQueryString = function(name){ //name 是URL的参数名字 
+String.prototype.getQueryString = function(name){ // name 是URL的参数名字
 	var reg = new RegExp("(^|&|\\?)"+ name +"=([^&]*)(&|$)"), r; 
 	if (r=this.match(reg)) return (unescape(r[2])||"").split("#")[0]; return null; 
 }; 
@@ -23,7 +23,7 @@ webosService.quit = function(){
 
 
 jQuery.utils = {
-	//解析URL
+	// 解析URL
 	parseUrl : function(url,params){
 		url = jQuery.trim(url) ;
 		if( url.startWith("~") ){
@@ -49,24 +49,27 @@ jQuery.utils = {
 		}
 	}
 }
-/////////////////////////////////////////////
+
+// ///////////////////////////////////////////
 Portal = window.Portal||{} ;
 Portal.services = Portal.services||{} ;
+
+webosService.url.widget_index = Config.contextPath+"/app/View/Portal/market/widget/widget_index.html" ;
 
 Portal.services = {
 	saveDesk:function(deskConfig,appFunction,portalCode){
 		deskConfig = $.parseJSON(deskConfig) ;
 		for( var deskId in deskConfig ){
-			//alert(deskId) ;
+			// alert(deskId) ;
 			var deskName = $("[deskId='"+deskId+"']").find(".showTip").text() ;
-			//alert(deskName);
+			// alert(deskName);
 			deskConfig[deskId].name = deskName ;
 		}
 		
 		$.dataservice("model:Portal.saveDeskConfig",{deskConfig: JSON.stringify(deskConfig) },function(){
-			//保存成功
+			// 保存成功
 		}) ;
-		//return result ;
+		// return result ;
 	},loadDeskItems:function(portalCode){
 		var desks = null ;
 		$.dataservice("model:Portal.loadDeskConfig",{},function(result){
@@ -81,7 +84,7 @@ Portal.services = {
 			var widgets = desk.widgets||[] ;
 			$(apps).each(function(index,app){
 				var id = app.id ;
-				//alert(id);
+				// alert(id);
 				var appDetail = treeMap['id_'+id] ;
 				for(var o in appDetail){
 					app[o] = appDetail[o] ;
@@ -108,10 +111,10 @@ Portal.services = {
 		return widgets ;
 	},loadDeskStart:function(portalCode){
 		console.log(indexdata) ;
-		//return [ indexdata ];
+		// return [ indexdata ];
 		
 		return [[
-		],indexdata] ;//前为菜单信息，后卫应用功能信息
+		],indexdata] ;// 前为菜单信息，后卫应用功能信息
 	},loadDeskSysThemes:function(portalCode){
 		return _deskThemes;
 	},loadDeskTheme:function(portalCode){
@@ -130,29 +133,36 @@ Portal.services = {
 		
 		alert("TODO: saveDeskPanel") ;
 		
-		//var result = Portal.rest.json(Config.contextPath+Portal.restConfig.saveDeskPanel, params ) ;
-		//return result ;
+		// var result =
+		// Portal.rest.json(Config.contextPath+Portal.restConfig.saveDeskPanel,
+		// params ) ;
+		// return result ;
 	},deleteDeskPanel:function(panel){
 		alert("TODO: deleteDeskPanel") ;
-		//panel.portalCode = Config.portalCode ;
-		//var result = Portal.rest.json(Config.contextPath+Portal.restConfig.deleteDeskPanel, panel ) ;
-		//return result ;
+		// panel.portalCode = Config.portalCode ;
+		// var result =
+		// Portal.rest.json(Config.contextPath+Portal.restConfig.deleteDeskPanel,
+		// panel ) ;
+		// return result ;
 	},addApp:function(app){
 		alert("TODO: addApp") ;
-		//app.portalCode = app.portalId = Config.portalCode ;
-		//var result = Portal.rest.json(Config.contextPath+Portal.restConfig.addApp, app ) ;
-		//return result ;
+		// app.portalCode = app.portalId = Config.portalCode ;
+		// var result =
+		// Portal.rest.json(Config.contextPath+Portal.restConfig.addApp, app ) ;
+		// return result ;
 	},uninstallApp:function(app){
 		alert("TODO: uninstallApp") ;
-		//app.portalCode = app.portalId = Config.portalCode ;
-		//var result = Portal.rest.json(Config.contextPath+Portal.restConfig.uninstallApp, app ) ;
-		//return result ;
+		// app.portalCode = app.portalId = Config.portalCode ;
+		// var result =
+		// Portal.rest.json(Config.contextPath+Portal.restConfig.uninstallApp,
+		// app ) ;
+		// return result ;
 	},httpproxy:function( url , params ){
-		if(url.startWith("list-app-category")){//获取应用分类
+		if(url.startWith("list-app-category")){// 获取应用分类
 			return _marketApps ;
 		}
 		
-		if( url.startWith("list-app?") ){//远程加载对应分类的应用
+		if( url.startWith("list-app?") ){// 远程加载对应分类的应用
 			return   [
 					{id:"baidu",name:"百度",url:"http://www.baidu.com",description:"1111",thumbnail:"",configUrl:""},
 					{id:"google",name:"谷歌",url:"http://www.google.com",description:"2222",thumbnail:"",configUrl:""},
@@ -164,7 +174,7 @@ Portal.services = {
 
 
 
-///////////////////////////////data/////////////////////////////////////////////////////
+// /////////////////////////////data/////////////////////////////////////////////////////
 
 var _defaultDeskConfig = {
 	"desk_A":{
@@ -589,7 +599,7 @@ var _deskActions = [{
 				"func" : "webos.window.close_all() ;",
 				"url" : null,
 				"displayGroup" : "g1"
-			}, /*{
+			},{
 				"seqId" : "bcm_4",
 				"name" : "添加",
 				"type" : "bodyContextMenus",
@@ -598,25 +608,16 @@ var _deskActions = [{
 				"func" : null,
 				"url" : null,
 				"displayGroup" : "g2"
-			}, {
-				"seqId" : "bcm_8",
-				"name" : "切换主题",
-				"type" : "bodyContextMenus",
-				"parentId" : "bcm",
-				"portalId" : "default",
-				"func" : "webosService.window.theme() ;",
-				"url" : null,
-				"displayGroup" : "g2"
-			}, {
-				"seqId" : "bcm_9",
-				"name" : "控制面板",
-				"type" : "bodyContextMenus",
-				"parentId" : "bcm",
-				"portalId" : "default",
-				"func" : "webosService.window.console() ;",
-				"url" : null,
-				"displayGroup" : "g2"
-			},*/{
+			},  /*
+				 * { "seqId" : "bcm_8", "name" : "切换主题", "type" :
+				 * "bodyContextMenus", "parentId" : "bcm", "portalId" :
+				 * "default", "func" : "webosService.window.theme() ;", "url" :
+				 * null, "displayGroup" : "g2" }, { "seqId" : "bcm_9", "name" :
+				 * "控制面板", "type" : "bodyContextMenus", "parentId" : "bcm",
+				 * "portalId" : "default", "func" :
+				 * "webosService.window.console() ;", "url" : null,
+				 * "displayGroup" : "g2" },
+				 */{
 				"seqId" : "bcm_11",
 				"name" : "注销用户",
 				"type" : "bodyContextMenus",
@@ -625,16 +626,7 @@ var _deskActions = [{
 				"func" : "webosService.quit() ;",
 				"url" : null,
 				"displayGroup" : "g3"
-			},/* {
-				"seqId" : "bcm_6",
-				"name" : "添加快捷方式",
-				"type" : "bodyContextMenus",
-				"parentId" : "bcm_4",
-				"portalId" : "default",
-				"func" : "webosService.window.addShortcut() ;",
-				"url" : null,
-				"displayGroup" : null
-			}, {
+			},{
 				"seqId" : "bcm_7",
 				"name" : "添加小挂件",
 				"type" : "bodyContextMenus",
@@ -643,45 +635,28 @@ var _deskActions = [{
 				"func" : "webosService.window.addWidget() ;",
 				"url" : null,
 				"displayGroup" : null
-			}, {
-				"seqId" : "control_2",
-				"name" : "切换主题",
-				"type" : "controlPanel",
-				"parentId" : "control",
-				"portalId" : "default",
-				"func" : "webosService.window.theme() ;",
-				"url" : null,
-				"displayGroup" : null
-			}, {
-				"seqId" : "control",
-				"name" : "控制面板",
-				"type" : "controlPanel",
-				"parentId" : null,
-				"portalId" : "default",
-				"func" : null,
-				"url" : null,
-				"displayGroup" : null
-			}, {
-				"seqId" : "control_3",
-				"name" : "桌面管理",
-				"type" : "controlPanel",
-				"parentId" : "control",
-				"portalId" : "default",
-				"func" : "webosService.window.desk();",
-				"url" : null,
-				"displayGroup" : null
-			},*/ /*{
-				"seqId" : "hl_1",
-				"name" : "传统首页",
-				"type" : "headLinks",
-				"parentId" : "hl",
-				"portalId" : "default",
-				"code" : null,
-				"styleClass" : "set_collection",
-				"func" : "webos.utils.addFavorite(window.location,document.title)",
-				"url" : null,
-				"displayGroup" : null
-			},*/{
+			},/*
+				 * { "seqId" : "bcm_6", "name" : "添加快捷方式", "type" :
+				 * "bodyContextMenus", "parentId" : "bcm_4", "portalId" :
+				 * "default", "func" : "webosService.window.addShortcut() ;",
+				 * "url" : null, "displayGroup" : null }, { "seqId" :
+				 * "control_2", "name" : "切换主题", "type" : "controlPanel",
+				 * "parentId" : "control", "portalId" : "default", "func" :
+				 * "webosService.window.theme() ;", "url" : null, "displayGroup" :
+				 * null }, { "seqId" : "control", "name" : "控制面板", "type" :
+				 * "controlPanel", "parentId" : null, "portalId" : "default",
+				 * "func" : null, "url" : null, "displayGroup" : null }, {
+				 * "seqId" : "control_3", "name" : "桌面管理", "type" :
+				 * "controlPanel", "parentId" : "control", "portalId" :
+				 * "default", "func" : "webosService.window.desk();", "url" :
+				 * null, "displayGroup" : null },
+				 */ /*
+					 * { "seqId" : "hl_1", "name" : "传统首页", "type" :
+					 * "headLinks", "parentId" : "hl", "portalId" : "default",
+					 * "code" : null, "styleClass" : "set_collection", "func" :
+					 * "webos.utils.addFavorite(window.location,document.title)",
+					 * "url" : null, "displayGroup" : null },
+					 */{
 				"seqId" : "hl_3",
 				"name" : "添加收藏",
 				"type" : "headLinks",
@@ -766,18 +741,13 @@ var _deskActions = [{
 				"func" : null,
 				"url" : null,
 				"displayGroup" : null
-			},/* {
-				"seqId" : "sm_1",
-				"name" : "控制面板",
-				"type" : "startMenus",
-				"parentId" : "sm",
-				"portalId" : "default",
-				"code" : "list_setting",
-				"styleClass" : null,
-				"func" : "webosService.window.console() ;",
-				"url" : null,
-				"displayGroup" : null
-			},*/ {
+			},/*
+				 * { "seqId" : "sm_1", "name" : "控制面板", "type" : "startMenus",
+				 * "parentId" : "sm", "portalId" : "default", "code" :
+				 * "list_setting", "styleClass" : null, "func" :
+				 * "webosService.window.console() ;", "url" : null,
+				 * "displayGroup" : null },
+				 */ {
 				"seqId" : "sm_2",
 				"name" : "应用程序",
 				"type" : "startMenus",
@@ -830,18 +800,13 @@ var _deskActions = [{
 				"func" : "webos.window.close_all() ;",
 				"url" : null,
 				"displayGroup" : null
-			}/*, {
-				"seqId" : "ta_5",
-				"name" : "切换主题",
-				"type" : "taskActions",
-				"parentId" : "ta",
-				"portalId" : "default",
-				"code" : "skin",
-				"styleClass" : null,
-				"func" : "webosService.window.theme() ;",
-				"url" : null,
-				"displayGroup" : null
-			}*/, {
+			}/*
+				 * , { "seqId" : "ta_5", "name" : "切换主题", "type" :
+				 * "taskActions", "parentId" : "ta", "portalId" : "default",
+				 * "code" : "skin", "styleClass" : null, "func" :
+				 * "webosService.window.theme() ;", "url" : null, "displayGroup" :
+				 * null }
+				 */, {
 				"seqId" : "ta_6",
 				"name" : "退出系统",
 				"type" : "taskActions",
