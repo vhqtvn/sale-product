@@ -107,6 +107,7 @@
 			var groupCols = options.groupCols ;
 		
 			$(columns).each(function(index,col){
+				this.sort = this.sort === false ?false :true ; 
 				var rowspan = options.headRowNum ;
 				var sort = this.sort?"lly-sort-col":"" ;
 				var styles = ['width:'+this.width+'px'] ;
@@ -119,7 +120,6 @@
 					rowspan = rowspan - gs.length ;
 					for(var i = gs.length ;i>0 ;i--){//1,2
 						var g = gs[i-1] ;
-						
 						var colspan = groupCols[g].length ;
 						if( !$(".lly-grid-2-head table.grid-table thead th[group='"+g+"']",target)[0]  ){
 							$("<th class='lly-grid-head-column' colSpan='"+colspan+"' group='"+g+"'>"+g+"</th>")
@@ -558,6 +558,13 @@
 		
 		$(".lly-sort-col",target).unbind("click.sort").bind('click.sort',function(){
 			var span = $(this).find("span[sort]") ;
+			$(this).parents(".lly-grid:first").find("span[sort]").each(function(){
+				if( $(this)[0] == span[0] ) {
+					return ;
+				} ;
+				$(this).remove();
+			}) ;
+			
 			var sort = "desc" ;
 			if( span[0] ){
 				sort = span.attr("sort")=="desc"?"asc":"desc" ;
