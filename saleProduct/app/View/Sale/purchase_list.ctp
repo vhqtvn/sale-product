@@ -128,7 +128,7 @@
 					关键字:
 				</th>
 				<td>
-					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题" style="width:400px;"/>
+					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题、执行人" style="width:400px;"/>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
