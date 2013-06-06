@@ -22,7 +22,11 @@
     -->
     <entry key="sql_account_product_list">
     <![CDATA[	
-		SELECT  * FROM sc_amazon_account_product 
+		SELECT  sc_amazon_account_product.* ,
+					(case when sc_amazon_account_product.title is  null then sp.title else sc_amazon_account_product.title end ) as P_TITLE
+					FROM sc_amazon_account_product 
+					LEFT JOIN sc_product sp
+					ON sp.ASIN = sc_amazon_account_product.ASIN
 					where status = 'Y'
 					{@ and title like '%#title#%' }
 					{@ and asin = '#asin#' }

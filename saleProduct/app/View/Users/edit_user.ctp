@@ -50,12 +50,15 @@
 								<tr>
 									<th>登录名：</th>
 									<td><input type="text"  data-validator="required"
-										id="account" value="<?php echo  $u['LOGIN_ID'];?>"/></td>
+										id="account" value="<?php echo  $u['LOGIN_ID'];?>"
+										<?php if( !empty($u['LOGIN_ID']) ) echo "disabled" ;?>
+										/></td>
 								</tr>
 								<tr>
 									<th>用户名：</th>
 									<td><input type="text"  data-validator="required"
-										id="name" value="<?php echo  $u['NAME'];?>"/></td>
+										id="name" value="<?php echo  $u['NAME'];?>"
+										/></td>
 								</tr>
 								<tr>
 									<th>用户组：</th><td>
