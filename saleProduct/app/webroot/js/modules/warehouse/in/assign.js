@@ -63,7 +63,7 @@ $(function(){
 			 limit:100,
 			 pageSizes:[100],
 			 height:function(){
-			 	return	$(window).height() - 320;
+			 	return	$(window).height() - 340;
 			 },
 			 autoWidth:false,
 			 title:"",
