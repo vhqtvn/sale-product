@@ -69,7 +69,10 @@ class AmazonFeedProcess extends AppModel {
 		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
 		$log  = ClassRegistry::init("Log") ;
 		
-		$asin 		= $productItem['product-id'] ;
+		$asin 		= $productItem['asin1'] ;
+		if( empty($asin) ){
+			$asin = $productItem['product-id'] ;
+		}
 		$sku  		= $productItem['seller-sku'] ;
 		$listingId  = $productItem['listing-id'] ;
 		$quantity  	= $productItem['quantity'] ;
