@@ -88,28 +88,25 @@
 							}
 							return html.join("") ;
 						}},
+						/*
 						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
 							html.push('<a href="#" class="edit-account-product" val="'+val+'"><?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?></a>&nbsp;') ;
 							return html.join("") ;
+						}},*/
+						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
+						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
+								return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/saleProduct/details/10007/sku'>"+(val||"")+"</a>"
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
-			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+val+"</a>" ;
+			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||"")+"</a>" ;
 			           	}},
-			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
-			           		if(val){
-			           			val = val.replace(/%/g,'%25') ;
-			           		}else{
-			           			return "" ;
-			           		}
-			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
-			           	}},
-			           	{align:"center",key:"P_TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
+			           	{align:"center",key:"LOCAL_URL",label:"图片",width:"6%",forzen:false,align:"left",format:{type:'img'}},
+			           	{align:"center",key:"P_TITLE",label:"产品标题",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
 			           	}},
-			           	
 			           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
 			           		if(!val) return '-' ;
 			           		return Math.round(val) ;
@@ -121,11 +118,9 @@
 			           		return '' ;
 			           	}},
 			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
-			           	{align:"center",key:"SKU",label:"SKU",width:"8%"},
 			           	{align:"center",key:"QUANTITY",label:"库存",width:"6%"},
 			           	 {align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
-			            {align:"center",key:"FEED_PRICE",label:'Price<?php echo $this->Html->image('example.gif',array("title"=>"修改")) ?>',group:'价格',width:"6%",format:{type:'editor',fields:['SKU']}},
-			           	{align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
+			           {align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
 			           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"8%",format:function(val,record){
 			           		var pm = '' ;
 			           		if(record.FULFILLMENT_CHANNEL != 'Merchant') pm = record.FBA_PM  ;
@@ -157,9 +152,7 @@
 					 querys:{accountId:accountId,sqlId:"sql_account_product_list"},
 					 loadMsg:"数据加载中，请稍候......",
 					 loadAfter:function(){
-						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
-						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
-						//$(".country-area-flag").parents("tr").css("background","#EEE") ;
+						 $(".grid-content").uiwidget();
 					 }
 				} ;
 	       

@@ -198,15 +198,6 @@
 						</td>
 					</tr>
 				</table>
-				<div>快捷链接: 
-				<?php 
-					$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
-					$accounts = $amazonAccount->getAllAccounts();
-					foreach( $accounts as  $account){
-						echo "<a data-widget='dialog' data-options='{width:1000,height:650}' href=' $contextPath/amazonaccount/productLists/4'>".$account['sc_amazon_account']['NAME']."-产品营销</a> &nbsp;&nbsp;" ;
-					}
-				?>
-				</div>
 			</div>
 	</div>
 	
