@@ -97,7 +97,7 @@
 						}},*/
 						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
 						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
-								return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/saleProduct/details/10007/sku'>"+(val||"")+"</a>"
+								return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/saleProduct/details/"+val+"/sku#ui-tabs-5'>"+(val||"")+"</a>"
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;

@@ -451,7 +451,7 @@ html{-webkit-text-size-adjust: none;}
 		</center>
 	</div>
 <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	<div id="details_tab" style="border:0px;position:fixed;top:60px;">
+	<div id="details_tab" style="border:0px;position:fixed;top:60px;left:0px;right:0px;">
 	</div>	
 	
 	<div class="hide"  id="track-tab">
@@ -558,6 +558,34 @@ html{-webkit-text-size-adjust: none;}
 					<?php 	} ?>
 				</tbody>
 			</table>
+			
+			<div class="row-fluid">
+					<div class="span6">
+						<table  class="form-table">
+							<tr>
+								<th>供应限价:</th>
+								<td>
+										<input type="text" class="input 25-input"  id="SUPPLIER_MAX_PRICE"  value="<?php echo $productDev['SUPPLIER_MAX_PRICE']?>" />
+										<?php if( $PD_SUPPLIER_MAX_PRICE ){ 
+											echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+										}?>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="span6">
+						<table  class="form-table">
+							<tr>
+								<th>询价负责人:</th>
+								<td>
+										
+										<input type="hidden"  id="INQUIRY_CHARGER"  value="<?php echo $charger;?>" />
+										<input type="text"  disabled  id="INQUIRY_CHARGER_NAME"  value="<?php echo $chargerName;?>" />
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
 		
 		<table class="form-table "   id="flag2">
 				<caption>
@@ -876,158 +904,6 @@ html{-webkit-text-size-adjust: none;}
 				?>
 				</table>
 			</div>
-		</div>
-		<div id="supplier-tab" class="ui-tabs-panel apply-panel" style="height: 100px; display: block; ">
-			<fieldset>
-				<legend>
-				产品询价
-				<?php  if( $pdStatus ==20 && $PD_INQUIRY  ){  ?>
-					<button class="supplier-select btn">添加询价</button>
-				<?php 	}?>
-				</legend>
-				
-				<div class="row-fluid">
-					<div class="span6">
-						<table  class="form-table">
-							<tr>
-								<th>供应限价:</th>
-								<td>
-										<input type="text" class="input 25-input"  id="SUPPLIER_MAX_PRICE"  value="<?php echo $productDev['SUPPLIER_MAX_PRICE']?>" />
-										<?php if( $PD_SUPPLIER_MAX_PRICE ){ 
-											echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-										}?>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div class="span6">
-						<table  class="form-table">
-							<tr>
-								<th>询价负责人:</th>
-								<td>
-										
-										<input type="hidden"  id="INQUIRY_CHARGER"  value="<?php echo $charger;?>" />
-										<input type="text"  disabled  id="INQUIRY_CHARGER_NAME"  value="<?php echo $chargerName;?>" />
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-						
-				<table class="form-table">
-					<thead>
-					<tr>
-						<th></th>
-						<th>供应商</th>
-						<th>产品重量</th>
-						<th>生产周期</th>
-						<th>包装方式</th>
-						<th>付款方式</th>
-						<th>产品尺寸</th>
-						<th>包装尺寸</th>
-						<th>报价1</th>
-						<th>报价2</th>
-						<th>报价3</th>
-						<th>装箱规格</th>
-						<th>产品网址</th>
-					</tr>
-					</thead>
-					<tbody>
-					<?php
-					$suppliers = $SqlUtils->exeSql("sql_list_supplierInquiryByAsin",array('asin'=>$asin)) ;
-					//$suppliers  = $this->Product->getProductSupplier($asin) ;
-					 foreach($suppliers as $supplier){
-					 	$supplier = $SqlUtils->formatObject( $supplier ) ;
-					 	$urls = "" ;
-					 	if( !empty($supplier['IMAGE']) ){
-					 		$urls = "<img src='/".$fileContextPath."/".$supplier['IMAGE']."' style='width:80px;height:50px;'>" ;
-					 	}
-					 	
-					 	$url = "<a href='".$supplier['URL']."' target='_blank'>".$supplier['URL']."</a>" ;
-						
-						$usedClz = "" ;
-						echo "<tr class='$usedClz'>
-							<td rowspan=2 > " ;
-							 if( $pdStatus ==20 && $PD_INQUIRY ){ echo  "<a href='#' class='update-supplier' inquiryId='".$supplier['ID']."' >修改询价</a>"; }
-							 echo "</td>
-							 <td supplier-id='".$supplier['SUPPLIER_ID']."'>".$supplier['SUPPLIER_NAME']."</td>
-							<td>".$supplier['WEIGHT']."</td>
-							<td>".$supplier['CYCLE']."</td>
-							<td>".$supplier['PACKAGE']."</td>
-							<td>".$supplier['PAYMENT']."</td>
-							<td>".$supplier['PRODUCT_SIZE']."</td>
-							<td>".$supplier['PACKAGE_SIZE']."</td>
-							<td>".$supplier['NUM1']."/".$supplier['OFFER1']."</td>
-							<td>".$supplier['NUM2']."/".$supplier['OFFER2']."</td>
-							<td>".$supplier['NUM3']."/".$supplier['OFFER3']."</td>
-							<td>".$supplier['PACKINGS_PECIFICATIONS']."</td>
-							<td rowspan=2>
-							 $url
-							</td>
-						</tr><tr class='$usedClz'>
-							<td colspan=11>".$supplier['MEMO']."</td>
-							
-						</tr> " ;
-					}?>
-					</tbody>
-				</table>
-				
-											<?php 
-												$Config  = ClassRegistry::init("Config") ;
-												$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;
-											
-												echo '<b>相关网址：</b>' ;
-												foreach ( explode(",", $websites) as $website ){
-													$website = explode("||", $website) ;
-													$name = $website[0] ;
-													$url = $website[1] ;
-													
-													echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
-												}
-											?>
-						<hr style="margin:0px;clear:both;padding-top:3px;"/>
-			</fieldset>
-			
-			
-			<fieldset>
-				<legend>成本利润
-				<?php  if( $pdStatus ==25 && $COST_EDIT ){  ?>
-				<button class="add-cost btn">添加成本</button>
-				<?php 	}?>
-				</legend>
-				<br/><br/><br/>
-				<?php /*
-				<table  class="form-table">
-					<tr>
-						<th>FBA销售最低限价:</th>
-						<td>
-								<input type="text"  class="input 10-input " style="width:80px;"  id="SALE_LOWEST_PRICE_FBA"  value="<?php echo $productDev['SALE_LOWEST_PRICE_FBA']?>" />
-						</td>
-						<th>FBA销售建议价:</th>
-						<td>
-								<input type="text"  class="input 10-input span2"  style="width:80px;" id="SALE_SUGGEST_PRICE_FBA"  value="<?php echo $productDev['SALE_SUGGEST_PRICE_FBA']?>" />
-								<?php if( $PD_SALE_RPICE ){ 
-									echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-								}?>
-						</td>
-						<th>FBM销售最低限价:</th>
-						<td>
-								<input type="text"  class="input 10-input span2" style="width:80px;"  id="SALE_LOWEST_PRICE_FBM"  value="<?php echo $productDev['SALE_LOWEST_PRICE_FBM']?>" />
-						</td>
-						<th>FBM销售建议价:</th>
-						<td>
-								<input type="text"  class="input 10-input span2"  style="width:80px;"  id="SALE_SUGGEST_PRICE_FBM"  value="<?php echo $productDev['SALE_SUGGEST_PRICE_FBM']?>" />
-								<?php if( $PD_SALE_RPICE ){ 
-									echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-								}?>
-						</td>
-					</tr>
-				</table>
-				*/ ?>
-				<div  style="width:990px;position:relative;" >
-				<div class="grid-cost" style="width:990px;"></div>
-				</div>
-			</fieldset>
 		</div>
 		
 	</div>

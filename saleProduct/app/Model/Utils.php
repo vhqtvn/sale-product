@@ -52,10 +52,16 @@ class Utils extends AppModel {
 		$rootIds = array ();
 		
 		foreach ( $records as $record ) {
-			$record = $this->formatObject ( $record );
-			$pid = $record ['PARENT_ID'];
-			$id = $record ['ID'];
-			$record = array ('id' => $id, 'pid' => $pid, 'text' => $record ['TEXT'] );
+			$record1 = $this->formatObject ( $record );
+			$pid = $record1 ['PARENT_ID'];
+			$id = $record1 ['ID'];
+			
+			$record = array ('id' => $id, 'pid' => $pid, 'text' => $record1 ['TEXT'] );
+			foreach( $record1 as $k=>$v ){
+				$record[$k] = $v ;
+			}
+			
+			
 			if (empty ( $pid )) {
 				$roots [] = $record;
 			}
@@ -63,6 +69,7 @@ class Utils extends AppModel {
 			
 			$items [] = $record;
 		}
+		
 		
 		//{id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} 
 		foreach ( $items as $item ) {
@@ -89,15 +96,39 @@ class Utils extends AppModel {
 			}
 		}
 		
-		$results = array ();
+		//debug( $keyMap ) ;
+		
+		/*$results = array ();
 		foreach ( $roots as $root ) {
 			$id = $root ['id'];
 			if (isset ( $keyMap [$id] )) {
 				$results [] = $keyMap [$id];
 			}
-		
 		//$results[] = $root ;
+		}*/
+		
+		$results = array ();
+		foreach ( $roots as $root ) {
+			$id = $root ['id'];
+			if (isset ( $keyMap [$id] )) {
+				$t = $keyMap [$id];
+				$cd = array ();
+				if (! empty ( $t ['childNodes'] )) {
+					foreach ( $t ['childNodes'] as $cnode ) {
+						$_id = $cnode ['id'];
+						if (isset ( $keyMap [$_id] )) {
+							$cd [] = $keyMap [$_id];
+						}
+					}
+					;
+				}
+				$keyMap [$id] ['childNodes'] = $cd;
+				$results [] = $keyMap [$id];
+			}
+		
+			//$results[] = $root ;
 		}
+		
 		return json_encode ( $results );
 	}
 	

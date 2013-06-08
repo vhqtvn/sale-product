@@ -20,6 +20,17 @@
 		
 		$loginId = $user["GROUP_CODE"] ;//transfer_specialist cashier purchasing_officer general_manager product_specialist
 		$sku = $params['arg1'] ;
+		$type = $params['arg2'] ;
+		
+		if( $type == 'asin' ){
+			$asin = $sku ;
+			$sku = '' ;
+			//通过ASIN查找对应的SKU
+			$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+			$product = $SqlUtils->getObject("select srp.* from sc_real_product srp,
+					sc_product_dev spd where srp.id = spd.real_product_id and spd.asin='{@#asin#}'",array('asin'=>$asin )) ;
+			$sku =$product['REAL_SKU'] ;
+		}
 		
 		$security  = ClassRegistry::init("Security") ;
 		$loginId   = $user['LOGIN_ID'] ;
@@ -76,7 +87,7 @@
 			}}) ;
 			<?php }?>
 			columns.push( {align:"center",key:"TYPE",label:"成本类型", width:"6%" }) ;
-
+			columns.push(	{align:"center",key:"LAST_UPDATE_TIME",label:"更新时间",width:"15%"} ) ;
 			<?php  if($COST_VIEW_PROFIT){ ?>
 			//利润率
 			columns.push({align:"center",key:"PROFIT_NUM",label:"产品利润",forzen:true,width:"7%",format:function(val ,record){
@@ -125,7 +136,7 @@
            	//其他成本
            	columns.push(	{align:"center",key:"OTHER_COST",label:"其他成本",width:"8%"} ) ;
            	<?php }?>
-           	columns.push(	{align:"center",key:"LAST_UPDATE_TIME",label:"更新时间",width:"15%"} ) ;
+           	
            	
 			$(".grid-content-details").llygrid({
 				columns : columns ,
@@ -137,7 +148,7 @@
 				 },
 				 title:"",
 				 indexColumn:true,
-				 querys:{realSku:'<?php echo $sku;?>',sqlId:"sql_cost_product_details_list"},
+				 querys:{realSku:'<?php echo $sku;?>',asin:'<?php $asin?>',sqlId:"sql_cost_product_details_list"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){
@@ -185,6 +196,7 @@
 	<div class="toolbar toolbar-auto">
 				<table style="width:100%;" class="query-table  save-sale-price">	
 						<input type="hidden"    id="ID"  value="<?php echo $product['ID']?>" />
+					<?php if( !empty($sku)){ ?>
 					<tr>
 						<th>FBA销售最低限价:</th>
 						<td>
@@ -195,7 +207,9 @@
 								<input type="text"  id="SALE_SUGGEST_PRICE_FBA" class="span2"    value="<?php echo $product['SALE_SUGGEST_PRICE_FBA']?>" />
 						</td>
 					</tr>
+					<?php } ?>
 					<tr>
+						<?php if( !empty($sku)){ ?>
 						<th>FBM销售最低限价:</th>
 						<td>
 								<input type="text"   id="SALE_LOWEST_PRICE_FBM" class="span2"    value="<?php echo $product['SALE_LOWEST_PRICE_FBM']?>" />
@@ -205,25 +219,19 @@
 								<input type="text"   id="SALE_SUGGEST_PRICE_FBM" class="span2"    value="<?php echo $product['SALE_SUGGEST_PRICE_FBM']?>" />
 						</td>
 						<th></th>
+						<?php } ?>
 						<td>
-							<button class="save-limit btn btn-primary">保存限价</button>
+							<?php if( !empty($sku)){ ?>
+							<button class="save-limit btn ">保存限价</button>
+							<?php } ?>
 							<?php  if( $COST_EDIT ){?>
-								<button class="add-cost btn btn-primary">添加成本</button>
+								<button class="add-cost btn">添加成本</button>
 							<?php }?>
 						</td>
 					</tr>							
 				</table>	
 			</div>
-	
-	<div class="toolbar toolbar-auto">
-				<table style="width:100%;" class="query-table">	
-					<tr>
-						
-					</tr>							
-				</table>	
-				<hr style="margin:2px;"/>	
-			</div>
-	
+
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 </body>

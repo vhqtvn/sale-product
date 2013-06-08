@@ -169,6 +169,14 @@
 
 		$('#default-tree').tree({//tree为容器ID
 				source:'array',
+				nodeFormat:function(node){
+					if( node.type == 'FUNCTION' ){ //功能
+						node.icon = "/"+fileContextPath+"/app/webroot/img/config.gif" ;
+					}else if(node.type == 'DATA'){
+						node.icon = "/"+fileContextPath+"/app/webroot/img/cake.icon.png" ;
+					}
+					return node ;
+				},
 				data:treeData,
 				showCheck:true
            }) ;

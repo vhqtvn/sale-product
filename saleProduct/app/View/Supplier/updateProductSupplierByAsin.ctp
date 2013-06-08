@@ -25,10 +25,21 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		
 		$productSupplier = null ;
-		$asin = $params['arg1'] ;
-		$inquiryId = $params['arg2'] ;
+		$type = $params['arg1'] ;
+		$value = $params['arg2'] ;
+		$inquiryId = $params['arg3'] ;
 		if( !empty($inquiryId) ){
 			$productSupplier = $SqlUtils->getObject("sql_getSupplierInquiryByInquiryId",array('id'=>$inquiryId)) ;
+		}
+		
+		$asin = "" ;
+		$sku = "" ;
+		$suppliers = array() ;
+		if( $type =='asin' ){
+			$asin = $value ;
+		}else if($type == 'sku'){
+			$sku = $value ;
+			$suppliers = $SqlUtils->exeSql("sql_getProductSuppliersBySku",array('realSku'=>$sku)) ;
 		}
 	?>
   
@@ -69,11 +80,12 @@
 						return false;
 					}) ;
 
-					/*$(".select-supplier").click(function(){
-						//openCenterWindow(contextPath+"/supplier/listsSelect/<?php echo $asin;?>",800,600,function(){
-						//	window.location.reload();
+					$(".supplier-select").click(function(){
+						openCenterWindow(contextPath+"/supplier/listsSelectBySku/<?php echo $sku;?>",800,600,function(){
+							window.location.reload() ;
 						}) ;
-					}) ;*/
+					}) ;
+
 		})
 		
 		function addSupplier(){
@@ -106,20 +118,43 @@
 		<div class="container-fluid">
 			<form action="<?php echo $contextPath;?>/supplier/saveProductSupplierXJ" id="personForm" data-widget="validator"
 				method="post"  enctype="multipart/form-data"  class="form-horizontal" >
-				<input type="hidden" id="asin" name="asin" value="<?php echo $asin;?>"/>	   
+				<input type="hidden" id="asin" name="asin" value="<?php echo $asin;?>"/>	 
+				<input type="hidden" id="sku" name="sku" value="<?php echo $sku;?>"/>	   
 				<input type="hidden" id="id" name="id" value="<?php echo $productSupplier['ID'];?>"/>
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 					
 				<table class="form-table">
+					<?php  if( !empty($sku) ){ ?>
 					<tr>
+						<th>供应商名称：</th><td>
+						<select id="supplierId"  name="supplierId"   >
+											<option value="">--</option>
+											<?php
+													foreach($suppliers as $suppli){
+														$suppli = $SqlUtils->formatObject($suppli) ;
+														$temp = '' ;
+														if( $supplierId == $suppli['ID']){
+															$temp = "selected" ;
+														}
+														echo "<option $temp value='".$suppli['ID']."'>".$suppli['NAME']."</option>" ;
+													}
+											?>
+						</select>
+						<button class="supplier-select btn">选择供应商</button>
+						</td>
+					</tr>
+					<?php }else{ ?>
+						<tr>
 						<th>供应商名称：</th><td>
 							<input id="supplierId" name="supplierId"  type="hidden" value="<?php echo $productSupplier['SUPPLIER_ID']; ?>"/>
 							<input id="supplierName" name="supplierName"  type="text" readonly value="<?php echo $productSupplier['SUPPLIER_NAME']; ?>"/>
 							<button class="btn select-supplier">选择供应商</button>
 						</td>
 					</tr>
+					<?php }?>
+					
 					<tr>
 						<th>产品重量：</th><td><input type="text" id="weight"  name="weight" 
 							value="<?php echo $productSupplier['WEIGHT'];?>"/></td>

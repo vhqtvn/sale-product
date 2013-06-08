@@ -7,15 +7,19 @@
     	from sc_purchase_supplier_inquiry s ,
     	sc_supplier ss
     	where
-    	( s.sku = '{@#realSku#}'
-    	 or s.asin in (
+    	( 
+    		s.sku = '{@#realSku#}'
+    	 	or 
+    	 	s.asin in (
     	 		select spd.asin 
     	 		from sc_real_product srp,
     	 		sc_product_dev spd
     	 		 where 
     	 		 srp.id = spd.real_product_id
     	 		 and srp.real_sku = '{@#realSku#}'
-    	 )
+    	 	)
+    	 	or 
+    	 	s.asin = '{@#asin#}'
     	)
     	and s.supplier_id = ss.id
     	order by s.create_time desc

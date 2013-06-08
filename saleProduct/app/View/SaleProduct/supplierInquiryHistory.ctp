@@ -20,6 +20,17 @@
 		
 		$loginId = $user["GROUP_CODE"] ;//transfer_specialist cashier purchasing_officer general_manager product_specialist
 		$sku = $params['arg1'] ;
+		$type = $params['arg2'] ;
+		$asin = "" ;
+		if( $type == 'asin' ){
+			$asin = $sku ;
+			$sku = "" ;
+			//通过ASIN查找对应的SKU
+			$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+			$product = $SqlUtils->getObject("select srp.* from sc_real_product srp,
+    	 					sc_product_dev spd where srp.id = spd.real_product_id and spd.asin='{@#asin#}'",array('asin'=>$asin )) ;
+			$sku =$product['REAL_SKU'] ;
+		}
 	?>
   
    <script type="text/javascript">
@@ -65,7 +76,7 @@
 				 },
 				 title:"",
 				 indexColumn:true,
-				 querys:{realSku:'<?php echo $sku;?>',sqlId:"sql_list_supplierInquiryHistory"},
+				 querys:{realSku:'<?php echo $sku;?>',asin:'<?php echo $asin;?>',sqlId:"sql_list_supplierInquiryHistory"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){
@@ -79,7 +90,15 @@
 			}) ;
 
 			$(".supplier-select").click(function(){
-				openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/<?php echo $sku;?>",800,600,function(){
+				<?php
+					$url = "" ; 
+					if(empty($sku)){
+						$url = "/page/forward/Supplier.updateProductSupplierByAsin/asin/".$asin ;
+					}else{
+						$url = "/page/forward/Supplier.updateProductSupplierByAsin/sku/".$sku ;
+					}
+				?>
+				openCenterWindow(contextPath+"<?php echo $url;?>",800,600,function(){
 					$(".grid-content-details").llygrid("reload",{},true);
 					}) ;
 			}) ;
@@ -103,8 +122,21 @@
 					</tr>						
 				</table>	
 	 </div>
-	
+		<?php 
+			$Config  = ClassRegistry::init("Config") ;
+			$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;
+		
+			echo '<b>相关网址：</b>' ;
+			foreach ( explode(",", $websites) as $website ){
+				$website = explode("||", $website) ;
+				$name = $website[0] ;
+				$url = $website[1] ;
+				
+				echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
+			}
+		?>
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
+
 </body>
 </html>
