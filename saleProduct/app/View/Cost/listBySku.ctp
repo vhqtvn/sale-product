@@ -21,7 +21,7 @@
 		$loginId = $user["GROUP_CODE"] ;//transfer_specialist cashier purchasing_officer general_manager product_specialist
 		$sku = $params['arg1'] ;
 		$type = $params['arg2'] ;
-		
+		$asin = "" ;
 		if( $type == 'asin' ){
 			$asin = $sku ;
 			$sku = '' ;
@@ -31,6 +31,7 @@
 					sc_product_dev spd where srp.id = spd.real_product_id and spd.asin='{@#asin#}'",array('asin'=>$asin )) ;
 			$sku =$product['REAL_SKU'] ;
 		}
+		
 		
 		$security  = ClassRegistry::init("Security") ;
 		$loginId   = $user['LOGIN_ID'] ;
@@ -69,6 +70,7 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$product = $SqlUtils->getObject("select * from sc_real_product where real_sku='{@#sku#}'",array('sku'=>$sku )) ;
+		
 	?>
   
    <script type="text/javascript">
@@ -136,7 +138,13 @@
            	//其他成本
            	columns.push(	{align:"center",key:"OTHER_COST",label:"其他成本",width:"8%"} ) ;
            	<?php }?>
-           	
+
+           	var querys = {sqlId:"sql_cost_product_details_list"} ;
+			if( '<?php echo $sku;?>' ){
+				querys['realSku'] = '<?php echo $sku;?>' ;
+			}else{
+				querys['asin'] = '<?php echo $asin;?>' ;
+			}
            	
 			$(".grid-content-details").llygrid({
 				columns : columns ,
@@ -148,7 +156,7 @@
 				 },
 				 title:"",
 				 indexColumn:true,
-				 querys:{realSku:'<?php echo $sku;?>',asin:'<?php $asin?>',sqlId:"sql_cost_product_details_list"},
+				 querys:querys,
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){
@@ -161,15 +169,26 @@
 				 }
 			}) ;
 			<?php  if( $COST_EDIT ){?>
+
+			<?php
+					$url = "" ; 
+					if(empty($sku)){
+						$url = "/page/forward/cost.add_by_sku/asin/".$asin ;
+					}else{
+						$url = "/page/forward/cost.add_by_sku/sku/".$sku ;
+					}
+				?>
+			
 			$(".edit-action").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/"+id,880,650,function(){
+				
+				openCenterWindow(contextPath+"<?php echo $url;?>/"+id,880,650,function(){
 					$(".grid-content-details").llygrid("reload",{},true) ;
 				}) ;
 			})
 			
 			$(".add-cost").click(function(){
-				 	openCenterWindow(contextPath+"/cost/addBySku/<?php echo $sku;?>/",880,650,function(){
+				 	openCenterWindow(contextPath+"<?php echo $url;?>/",880,650,function(){
 				 		$(".grid-content-details").llygrid("reload",{},true) ;
 					 }) ;
 			}) ;
@@ -184,7 +203,7 @@
 			}) ;
    	 });
    </script>
-   
+
    <style>
    		*{
    			font:12px "微软雅黑";

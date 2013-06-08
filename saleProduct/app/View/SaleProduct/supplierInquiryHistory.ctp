@@ -38,6 +38,13 @@
    var taskId = '' ;
   
 	$(function(){
+
+			var querys = {sqlId:"sql_list_supplierInquiryHistory"} ;
+			if( '<?php echo $sku;?>' ){
+				querys['realSku'] = '<?php echo $sku;?>' ;
+			}else{
+				querys['asin'] = '<?php echo $asin;?>' ;
+			}
 			
 			$(".grid-content-details").llygrid({
 				columns:[
@@ -76,7 +83,7 @@
 				 },
 				 title:"",
 				 indexColumn:true,
-				 querys:{realSku:'<?php echo $sku;?>',asin:'<?php echo $asin;?>',sqlId:"sql_list_supplierInquiryHistory"},
+				 querys:querys,
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){

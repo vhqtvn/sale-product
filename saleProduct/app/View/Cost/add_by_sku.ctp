@@ -39,6 +39,25 @@
 		$COST_VIEW_SALEPRICE					= ( $security->hasPermission($loginId , 'COST_VIEW_SALEPRICE') )|| $COST_EDIT_SALEPRICE ;
 		
 		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE||$COST_EDIT_PROFIT ;
+	
+		$type = $params['arg1'] ;
+		$value = $params['arg2'] ;
+		$id = $params['arg3'] ;
+
+		$asin = "" ;
+		$sku = "" ;
+		$suppliers = array() ;
+		if( $type =='asin' ){
+			$asin = $value ;
+		}else if($type == 'sku'){
+			$sku = $value ;
+		}
+		
+		$productCost = null ;
+		if( !empty($id) ){
+			$Cost  = ClassRegistry::init("Cost") ;
+			$productCost =  $Cost->getProductCost( $id  ) ;
+		}
 	?>
    <style>
 
@@ -58,8 +77,6 @@
 
    <script>
    		var groupCode = '<?php echo $loginId;?>' ;
-   		var sku = '<?php echo $sku;?>' ;
-   
 
    		$(function(){
    					
@@ -132,6 +149,7 @@
 						<!-- 数据列表样式 -->
 						<input type="hidden" id="ID" value="<?php echo $id;?>"/>
 						<input type="hidden" id="SKU" value="<?php echo $sku;?>"/>
+						<input type="hidden" id="ASIN" value="<?php echo $asin;?>"/>
 						
 						<table class="form-table" >
 							<tr>
