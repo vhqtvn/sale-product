@@ -33,25 +33,27 @@
                 dataType: "json",
                 url: settings.url,
                 path: '.' ,
-                asyn: true ,//是否异步加载，如果为叶子节点
+                asyn: true ,//鏄惁寮傛鍔犺浇锛屽鏋滀负鍙跺瓙鑺傜偣
                 //checkIcons: ["checkbox_0.gif", "checkbox_1.gif", "checkbox_2.gif"],
                 checkIcons: ["bbit-tree-checkbox0", "bbit-tree-checkbox1", "bbit-tree-checkbox2"],
-                showCheck: false, //是否显示选择            
-                onCheck: false, //当checkstate状态变化时所触发的事件，但是不会触发因级联选择而引起的变化
+                showCheck: false, //鏄惁鏄剧ず閫夋嫨            
+                onCheck: false, //褰揷heckstate鐘舵€佸彉鍖栨椂鎵€瑙﹀彂鐨勪簨浠讹紝浣嗘槸涓嶄細瑙﹀彂鍥犵骇鑱旈€夋嫨鑰屽紩璧风殑鍙樺寲
                 onNodeClick: false,
                 cascadeCheck: true, //'UP DOWN true(all) false'
-                root:{value:'root',text:'根节点',icon:'bbit-tree-root'},
+                root:{value:'root',text:'鏍硅妭鐐�',icon:'bbit-tree-root'},
                 data: null,
-                clicktoggle: true, //点击节点展开和收缩子节点
+                clicktoggle: true, //鐐瑰嚮鑺傜偣灞曞紑鍜屾敹缂╁瓙鑺傜偣
                 theme: "bbit-tree-arrows", //bbit-tree-lines ,bbit-tree-no-lines,bbit-tree-arrows
-                //定义默认图片地址
+                //瀹氫箟榛樿鍥剧墖鍦板潃
                 icons:{floderOpen:"bbit-tree-folderopen",leaf:"bbit-tree-leaf",floder:"bbit-tree-folder",loading:'bbit-tree-loading'},
                 params : {},
                 rootId:"root",
-                rootText : false
+                rootText : false,
+                isRootExpand:false,
+                isTriState:false
             };
         
-        //扩展属性 相对root和icons单独进行设置，否则导致属性丢失
+        //鎵╁睍灞炴€� 鐩稿root鍜宨cons鍗曠嫭杩涜璁剧疆锛屽惁鍒欏鑷村睘鎬т涪澶�
         if(settings && settings.root){
         	extendSubProp('root',['value','text','icon']) ;
         }
@@ -68,10 +70,10 @@
         //test data
         var count=0;
         
-        //定义内部常量
+        //瀹氫箟鍐呴儴甯搁噺
         var _no_check  	= 0 ;
         var _yes_check 	= 1 ;
-        var _hasf_check = 1 ;
+        var _hasf_check = dfop.isTriState?2:1 ;
         
         var me = $(this);
         var id = me.attr("id");
@@ -107,8 +109,6 @@
         	//treeData = eval('('+ jsonStr +')');
         }
 
-        dfop.isRootExpand = false;// $.isArray( treeData ) && (treeData.length>=2)  ;
-        
         var treenodes = dfop.data = $.isArray(treeData)?treeData:[treeData] ;
         
         var __= dfop.data||( dfop.dataProxy?(dfop.dataProxy.type=='data'?dfop.dataProxy.value:null):null ) ;
@@ -121,15 +121,22 @@
        
         if(dfop.onLoaded){
           	dfop.onLoaded() ;
-         }
+        }
         
         InitEvent(me);
         html = null;
+        
+		if(  dfop.expandLevel  && !dfop.asyn ){
+			 setTimeout(function(){
+				$(me).tree().expandLevel(null,dfop.expandLevel ) ;
+			},0) ;
+		}
 
-        //通过AJAX从后台取数据
+        //閫氳繃AJAX浠庡悗鍙板彇鏁版嵁
         function loadJsonTreeByURL(params,async,showCheck)
         {
-            var tree = '';
+            var tree = '';		
+            
 		  	asyn = asyn ? 'true' : 'false';
 		  	showCheck = showCheck ? 'true' : 'false';
 		  	
@@ -138,50 +145,13 @@
 		  	
 		  	var service_param = {CommandName:dfop.CommandName};
 			service_param = $.extend(service_param, params);
-			$.dataservice(dfop.CommandName,service_param,function (response){
-				if(settings.recordFormat){
-					var result = [] ;
-					$(response).each(function(index , record){
-						var item = {} ;
-						for(var o in record){
-							for(var o1 in record[o]){
-								item[o1] = record[o][o1] ;
-							}
-						}
-						item.id = item.ID ;
-						item.text = item.NAME ;
-						item.parentId = item.PARENT_ID ;
-						result.push(item) ;
-					}) ;
-					tree =formatTree( result );// settings.recordFormat(response) ;
-				}else{
-					tree = response;
-				}
-			},{async:false,url:dfop.url}) ;
+			
+			$.dataservice(dfop.CommandName,service_param,function (response){tree = response;},{async:false,url:dfop.url}) ;
                  
 		  	return tree;
   		}
-  		
-  		function formatTree(result){
-  			var root = [] ;
-  			var map = {} ;
-  			$(result).each(function(index,item){
-  				if(!item.parentId){
-  					root.push(item) ;
-  				}else{
-  					map[item.parentId] = map[item.parentId]||[] ;
-  					map[item.parentId].push(item) ;
-  				}
-  			}) ;
-  			
-  			$(root).each(function(index,item){
-  				item['childNodes'] = map[item.id]  ;
-  			}) ;
-  			
-  			return root ;
-  		}
         
-        //扩展子属性
+        //鎵╁睍瀛愬睘鎬�
         function extendSubProp(sub,props){
         	$(props).each( function(){
         		if( settings[sub][this] == undefined ) settings[sub][this] = dfop[sub][this] ;
@@ -192,6 +162,14 @@
         function buildtree(data, ht) {
             ht.push("<div class='bbit-tree-bwrap'>"); // Wrap ;
             ht.push("<div class='bbit-tree-body'>"); // body ;
+            
+            //闇€瑕佹浛鎹㈠浘鐗囩殑鑺傜偣
+           /* if( iconPath.indexOf(".") != -1 ){//缁濆璺緞
+            	ht.push("<div class='bbit-tree-node-icon' style='background-image:url("+iconPath+")'></div>");
+            }else{//鏍峰紡
+            	ht.push("<div class='bbit-tree-node-icon "+iconPath+"'></div>");
+            }*/
+            
             ht.push("<ul class='bbit-tree-root ", dfop.theme, "'>"); //root
             if (data && data.length > 0) {
                 var l = data.length;
@@ -228,7 +206,7 @@
             
         }
         
-        //获取树请求以后的对象
+        //鑾峰彇鏍戣姹備互鍚庣殑瀵硅薄
         function getJsonData(data){
         
         	var ret = data ;
@@ -240,14 +218,16 @@
    
         //endregion
         function buildnode(nd, ht, deep, path, isend) {
-        	
+        	var isRootExpand =  dfop.isRootExpand ;
+ 
+        	var initDeep = isRootExpand?0:1 ;
         	nd = dfop.nodeFormat(nd) ;
-            var nid = (nd.id+"").replace(/[^\w]/gi, "_");
+            var nid = (nd.id+"");//.replace(/[^\w]/gi, "_");
             ht.push("<li class='bbit-tree-node ui-color-default'>");
             ht.push("<div id='", id, "_", nid, "' nodeid='",nid,"' tpath='", path, "' unselectable='on' title='", nd.text, "'");
             var cs = [];
             cs.push("bbit-tree-node-el");
-            //自定义图标
+            //鑷畾涔夊浘鏍�
             var _icon = nd.icon ;
             var _refIcon = nd.refIcon ;//open
             var iconPath = null ;
@@ -261,20 +241,20 @@
                 iconPath = _icon?_icon:dfop.icons.leaf ;
             }
             
-            //deep == 0 表示为根节点
-            iconPath = deep == 0?dfop.root.icon:iconPath;
-
+            //deep == 0 琛ㄧず涓烘牴鑺傜偣
+            iconPath = deep == 0 ?(nd.icon||dfop.root.icon):iconPath;
+            
             if (nd.classes) { cs.push(nd.classes); }
 
             ht.push(" class='", cs.join(" "), "'>");
             //span indent
             ht.push("<span class='bbit-tree-node-indent'>");
             
-            if (deep == 1) {
-            	if(dfop.isRootExpand) ht.push("<div class='bbit-tree-blank'></div>");
-            }else if (deep > 1) {
-            	if(dfop.isRootExpand) ht.push("<div class='bbit-tree-blank'></div>");
-                for (var j = 1; j < deep; j++) {
+            if (deep == initDeep) {
+            	//ht.push("<div class='bbit-tree-blank'></div>");
+            }else if (deep >= initDeep+1) {
+            	//ht.push("<div class='bbit-tree-blank'></div>");
+                for (var j = initDeep; j < deep; j++) {
                     ht.push("<div class='bbit-tree-blank'></div>");
                 }
             }
@@ -291,17 +271,17 @@
             }else {
                 cs.push(isend ? "bbit-tree-elbow-end" : "bbit-tree-elbow");
             }
-            
-            if( dfop.isRootExpand || deep>0 ) {
+
+            if(  deep>=initDeep ) {
             	ht.push("<div class='bbit-tree-ec-icon bbit-tree-blank ", cs.join(" "), "'></div>");
             }
-            //if(deep>0){
-            	
-            //}
-            
-            
-            //需要替换图片的节点
-            ht.push("<div class='bbit-tree-node-icon "+iconPath+"'></div>");
+         
+            //闇€瑕佹浛鎹㈠浘鐗囩殑鑺傜偣
+            if( iconPath.indexOf(".") != -1 ){//缁濆璺緞
+            	ht.push("<div class='bbit-tree-node-icon' style='background-image:url("+$.utils.parseUrl(iconPath)+")'></div>");
+            }else{//鏍峰紡
+            	ht.push("<div class='bbit-tree-node-icon "+iconPath+"'></div>");
+            }
             
             //checkbox
             if (isShowCheck(nd)) {
@@ -313,8 +293,9 @@
 				ht.push("<div  id='", id, "_", nid, "_cb' class='bbit-tree-node-cb",disableClz," ",dfop.checkIcons[nd.checkstate],"'></div>");
               
               }
+            
             //a
-            ht.push("<a hideFocus class='bbit-tree-node-anchor "+nd.type+"' tabIndex=1 href='javascript:void(0);'>");
+            ht.push("<a hideFocus class='bbit-tree-node-anchor' tabIndex=1 href='javascript:void(0);'>");
             ht.push("<span unselectable='on'>", nd.text, "</span>");
             ht.push("</a>");
             ht.push("</div>");
@@ -346,7 +327,7 @@
         		(nd.childNodes && nd.childNodes.length>0  )
         }
         
-        function isComplete(nd){//是否已经加载完成
+        function isComplete(nd){//鏄惁宸茬粡鍔犺浇瀹屾垚
         	if( nd.hasChildren && !nd.childNodes ){
         		nd.complete = false ;
         	}else if(typeof(nd.complete) == 'undefined'){
@@ -364,7 +345,9 @@
         
         function getItem(node) {
         	var nodeid =node.attr("nodeid");
+
         	var sn =  searchNode(nodeid)||{};
+        	
         	return sn.node ;
         	/*
         	//nodeid
@@ -380,7 +363,7 @@
         }
         
         function checkAll(state){//treenodes
-        	for( var i=0 ;i < treenodes.length ;i++){ //删除数据
+        	for( var i=0 ;i < treenodes.length ;i++){ //鍒犻櫎鏁版嵁
         		__search( treenodes[i]) ;
         		check(treenodes[i],state,1) ;
         		
@@ -398,13 +381,13 @@
         }
         
         /**
-         * 复选框选择事件
-         * item ：数据项
-         * state：鼠标点击节点状态
-         * type: 0-遍历父节点  1-遍历子节点
+         * 澶嶉€夋閫夋嫨浜嬩欢
+         * item 锛氭暟鎹」
+         * state锛氶紶鏍囩偣鍑昏妭鐐圭姸鎬�
+         * type: 0-閬嶅巻鐖惰妭鐐�  1-閬嶅巻瀛愯妭鐐�
          */
         function check(item, state, type) {
-			var nid = item.id.replace(/[^\w]/gi, "_");
+			var nid = item.id;//.replace(/[^\w]/gi, "_");
             var et = $("#" + id + "_" + nid + "_cb");
             if (et.length == 1 && et.hasClass('ui-state-disabled')) {
                 return ;
@@ -413,7 +396,7 @@
             var pstate = item.checkstate;
             if (type == 1) {
                 item.checkstate = state;
-            } else {// 上溯
+            } else {// 涓婃函
                 var cs = item.childNodes;
                 var l = cs.length;
                 var ch = true;
@@ -425,11 +408,11 @@
                 }
                 item.checkstate = ch?state:_hasf_check ;
             }
-
+            
             if(pstate != item.checkstate){
             	if( dfop.onChecking ){
 		        	if( dfop.onChecking( item.id , item.text ,!(pstate==1?true:false),item  ) === false ) {
-		        		item.checkstate = pstate ;//还原状态
+		        		item.checkstate = pstate ;//杩樺師鐘舵€�
 		        		return ;
 		        	};
 	        	}
@@ -437,8 +420,8 @@
             
             //change show
             if (item.render && pstate != item.checkstate) {
-            	// 如果向上遍历 && 当前鼠标点击节点没有选中 && 当前取消选择父节点,则父节点仍然保持选中状态
-            	if( type == 0 && state == _no_check &&  item.checkstate == _no_check ){
+            	// 濡傛灉鍚戜笂閬嶅巻 && 褰撳墠榧犳爣鐐瑰嚮鑺傜偣娌℃湁閫変腑 && 褰撳墠鍙栨秷閫夋嫨鐖惰妭鐐�,鍒欑埗鑺傜偣浠嶇劧淇濇寔閫変腑鐘舵€�
+            	if( ( !dfop.isTriState ) && type == 0 && state == _no_check &&  item.checkstate == _no_check ){
             		item.checkstate = _hasf_check;
             	}
             	
@@ -453,7 +436,7 @@
 	        	}
             }
         }
-        //遍历子节点
+        //閬嶅巻瀛愯妭鐐�
         function cascade(fn, item, args) {
             if (fn(item, args, 1) != false) {
                 if (item.childNodes != null && item.childNodes.length > 0) {
@@ -464,7 +447,7 @@
                 }
             }
         }
-        //冒泡的祖先
+        //鍐掓场鐨勭鍏�
         function bubble(fn, item, args) {
             var p = item.parent;
             while (p) {
@@ -493,7 +476,7 @@
         function _expandNode(e , et ,item ,path , level , asyn,isRoot){
         	var ul = $(this).next(); //"bbit-tree-node-ct"
         	
-        	if( dfop.onExpand ){ //节点展开事件
+        	if( dfop.onExpand ){ //鑺傜偣灞曞紑浜嬩欢
         		dfop.onExpand( item.id , item, ul.hasClass("bbit-tree-node-ct") , isComplete(item) ) ;
         	}
 
@@ -501,7 +484,7 @@
                 ul.show();
             }else {
                 var deep = path.split(".").length;
-                if ( isComplete(item) ) {//表示字节点加载完成
+                if ( isComplete(item) ) {//琛ㄧず瀛楄妭鐐瑰姞杞藉畬鎴�
                     item.childNodes != null && asnybuild(item.childNodes, deep, path, ul, item);
                 }else {
                     $(this).addClass("ui-state-highlight");
@@ -511,7 +494,7 @@
                         item.complete = true;
                         item.childNodes = data;
                         asnybuild(data, deep, path, ul, item);
-                        //if level>=0 展开该节点
+                        //if level>=0 灞曞紑璇ヨ妭鐐�
                         if( (level>=1 && level<100) || isRoot ) expandAll(item , asyn ,level ) ;
                     });
                 }
@@ -524,7 +507,7 @@
             }else if ($(et).hasClass("bbit-tree-elbow-end-plus")){
                 $(et).swapClass("bbit-tree-elbow-end-plus", "bbit-tree-elbow-end-minus");
             }
-            //图标转换
+            //鍥炬爣杞崲
             setNodeIcon.call(this,item,1) ;
             
         }
@@ -535,7 +518,7 @@
         		if(typeof(item) == 'string'){//item id
 	        		item = getItemById(item) ;
 	        	}
-	            var nid = item.id.replace(/[^\w]/gi, "_");
+	            var nid = item.id;//.replace(/[^\w]/gi, "_");
 	            var div = $("#" + id + "_" + nid + " div.bbit-tree-ec-icon");
 	            et = div ;
 	            me = div.parent() ;
@@ -549,58 +532,62 @@
             }else if ($(et).hasClass("bbit-tree-elbow-end-minus")){
                 $(et).swapClass("bbit-tree-elbow-end-minus", "bbit-tree-elbow-end-plus");
             }
-            //图标转换
+            //鍥炬爣杞崲
             setNodeIcon.call(me,item,2) ;
         }
         
         /**
-         * 节点单击事件
+         * 鑺傜偣鍗曞嚮浜嬩欢
          */
         function nodeClick(e) {
             var path = $(this).attr("tpath");
             var et = e.target || e.srcElement;
             
             var item = getItem( $(this) );
-           
+            
             if (et.tagName == "DIV") {
             	if( $(et).hasClass("bbit-tree-node-icon")  ){
             		et = $(et).prev(); 
             	}
-                // +号需要展开 "bbit-tree-node-expanded" : "bbit-tree-node-collapsed"
+                // +鍙烽渶瑕佸睍寮€ "bbit-tree-node-expanded" : "bbit-tree-node-collapsed"
                 if ($(et).hasClass("bbit-tree-elbow-plus") || $(et).hasClass("bbit-tree-elbow-end-plus")) {
                 	_expandNode.call( this ,e, et , item,path ) ;
-                }else if ($(et).hasClass("bbit-tree-elbow-minus") || $(et).hasClass("bbit-tree-elbow-end-minus")) {  //- 号需要收缩                    
+                }else if ($(et).hasClass("bbit-tree-elbow-minus") || $(et).hasClass("bbit-tree-elbow-end-minus")) {  //- 鍙烽渶瑕佹敹缂�                    
                 	_collNode.call(this , e , et , item) ;
-              }else if ($(et).hasClass("bbit-tree-node-cb") && !$(et).hasClass('ui-state-disabled')) // 点击了Checkbox
+              }else if ($(et).hasClass("bbit-tree-node-cb") && !$(et).hasClass('ui-state-disabled')) // 鐐瑰嚮浜咰heckbox
                 {
                     var s = item.checkstate != _yes_check ? _yes_check : _no_check;
                     var r = true;
-                    if (dfop.onCheck) {
-                    	var _a = typeof(dfop.onCheck) == 'string'?eval(dfop.onCheck):dfop.onCheck ;
-                    	r = _a.call(et,item.id,item.text,!(item.checkstate==1?true:false),item,et);
-                    }
+                    
                     if (r != false) {
                         if (dfop.cascadeCheck) {
-                        	if( 'UP' == dfop.cascadeCheck || dfop.cascadeCheck === true ){
-                        		//向上溯
-                            	bubble(check, item, s);
-                        	}
                         	var self = false ;
                         	if( 'DOWN' == dfop.cascadeCheck || dfop.cascadeCheck === true ){
                         		self = true ;
-                        		//向下遍历
+                        		//鍚戜笅閬嶅巻
                             	cascade(check, item, s);
                         	}
                         	
-                        	if(!self)check(item, s, 1);//选中自己
+                        	if(!self)check(item, s, 1);//閫変腑鑷繁
+                        	
+                        	if( 'UP' == dfop.cascadeCheck || dfop.cascadeCheck === true ){
+                        		//鍚戜笂婧�
+                            	bubble(check, item, s);
+                        	}
+                        	
                         }else {
                             check(item, s, 1);
                         }
                     }
+                    
+                    if (dfop.onCheck) {
+                    	var _a = typeof(dfop.onCheck) == 'string'?eval(dfop.onCheck):dfop.onCheck ;
+                    	r = _a.call(et,item.id,item.text,!(item.checkstate==1?true:false),item,et);
+                    }
                 }
             }else if(et.tagName == 'SPAN'){
                 if (dfop.citem){
-                    var nid = dfop.citem.id.replace(/[^\w]/gi, "_");
+                    var nid = dfop.citem.id;//.replace(/[^\w]/gi, "_");
                     $("#" + id + "_" + nid).removeClass("bbit-tree-selected ui-state-active active");
                 }
                 dfop.citem = item;
@@ -617,14 +604,14 @@
         }
         
         /**
-         * 双击事件,打开合并菜单
+         * 鍙屽嚮浜嬩欢,鎵撳紑鍚堝苟鑿滃崟
          */
         function nodeDblClick(e){
         	var path = $(this).attr("tpath");
             var et = e.target || e.srcElement;
             var item = getItem( $(this) ) ;
             if(et.tagName == 'SPAN'){
-            	//获取指定的对象
+            	//鑾峰彇鎸囧畾鐨勫璞�
             	et = $(this).find('.bbit-tree-node-icon').prev() ;
                 if ($(et).hasClass("bbit-tree-elbow-plus") || $(et).hasClass("bbit-tree-elbow-end-plus")) {
                     var ul = $(this).next(); //"bbit-tree-node-ct"
@@ -652,7 +639,7 @@
                         $(et).swapClass("bbit-tree-elbow-end-plus", "bbit-tree-elbow-end-minus");
                     }
                     setNodeIcon.call(this,item,1) ;
-                }else if ($(et).hasClass("bbit-tree-elbow-minus") || $(et).hasClass("bbit-tree-elbow-end-minus") ) {  //- 号需要收缩                    
+                }else if ($(et).hasClass("bbit-tree-elbow-minus") || $(et).hasClass("bbit-tree-elbow-end-minus") ) {  //- 鍙烽渶瑕佹敹缂�                    
                 	$(this).next().hide();
                 	
                     $(this).swapClass("bbit-tree-node-expanded", "bbit-tree-node-collapsed");
@@ -673,7 +660,7 @@
 	                var ht = [];
 	                var ids = [] ;
 	                
-	                //获取原来有多少个节点
+	                //鑾峰彇鍘熸潵鏈夊灏戜釜鑺傜偣
 	                var base =  ul.children('li').length  ;
 	                
 	                for (var i = 0; i < l; i++) {
@@ -694,17 +681,17 @@
 	            }
 	            ul.addClass("bbit-tree-node-ct").css({ "z-index": 0, position: "static", visibility: "visible", top: "auto", left: "auto", display: "" });
 	       		ul.prev().find('.bbit-tree-node-icon').removeClass().addClass("bbit-tree-node-icon "+ (pnode.icon||dfop.icons.floderOpen) ) ;//
-	       		//如果原来是叶子节点，需要修改
+	       		//濡傛灉鍘熸潵鏄彾瀛愯妭鐐癸紝闇€瑕佷慨鏀�
 	       		ul.prev().find('.bbit-tree-ec-icon').removeClass().addClass('bbit-tree-ec-icon bbit-tree-elbow-minus') ;
-	       }else{//没有节点
-        		//替换样式
+	       }else{//娌℃湁鑺傜偣
+        		//鏇挎崲鏍峰紡
         		var et = ul.prev().find('.bbit-tree-ec-icon') ;
         		if( et.hasClass("bbit-tree-elbow-end-minus") ){
         			et.removeClass().addClass('bbit-tree-ec-icon bbit-tree-elbow-end') ;
         		}else{
         			et.removeClass().addClass('bbit-tree-ec-icon bbit-tree-elbow') ;
         		}
-        		//替换图片,设置为叶子节点的图片
+        		//鏇挎崲鍥剧墖,璁剧疆涓哄彾瀛愯妭鐐圭殑鍥剧墖
         		ul.prev().find('.bbit-tree-node-icon').removeClass().addClass('bbit-tree-node-icon '+( pnode.icon||dfop.icons.leaf )) ;
         	}   
         	ul.prev().removeClass("ui-state-highlight");
@@ -712,7 +699,7 @@
         
         function asnyloadc(pnode, isAsync, callback) {
             if ( dfop.url ) {
-            	//构造调用参数
+            	//鏋勯€犺皟鐢ㄥ弬鏁�
                 var param = builparam(pnode);
                 if(param != null){
 	                dfop.params["parentId"] = param.parentId;
@@ -729,7 +716,7 @@
             }
         }
         
-        //构造参数
+        //鏋勯€犲弬鏁�
         function builparam(node) {
         	var param = dfop.dataProxy?dfop.dataProxy.params:{} ;
         	if (node && node != null){
@@ -741,7 +728,7 @@
             return param;
         }
         
-        //绑定事件到节点
+        //缁戝畾浜嬩欢鍒拌妭鐐�
         function bindevent() {
             $(this).hover(function() {
                 $(this).addClass("bbit-tree-node-over ui-state-hover");
@@ -758,7 +745,7 @@
                  }
              }) ;
              
-             if(dfop.contextMenu){//如果存在右键菜单
+             if(dfop.contextMenu){//濡傛灉瀛樺湪鍙抽敭鑿滃崟
             	 $(this).bind('contextmenu', function(e){
             		 _contextMenu.call(this,e) ;
             	 });
@@ -775,13 +762,20 @@
         	$(this).contextmenu(options).show(e) ;
         }
         
-        //初始化事件
+        //鍒濆鍖栦簨浠�
         function InitEvent(parent) {
             var nodes = $("li.bbit-tree-node>div", parent);
             nodes.each(bindevent);
         }
          
-        function expandAll(_item , asyn ,level , isRoot){//展开所有节点
+        function expandAll(_item , asyn ,level , isRoot){//灞曞紑鎵€鏈夎妭鐐�
+        	if(!_item){
+        		$( treenodes ).each(function(index,item){
+        			expandAll(item,asyn ,level , isRoot) ;
+        		});
+        		return ;
+        	}
+        	
         	if( level === 0 ) return ;
         	level = parseInt(level||10000) ;
         	
@@ -789,21 +783,25 @@
         		_item = getItemById(_item) ;
         	}
         	var item = _item||this;
-            var nid = item.id.replace(/[^\w]/gi, "_");
+        	if(!_item){
+        		//alert(item.id)
+        	}
+        	
+            var nid = item.id;//.replace(/[^\w]/gi, "_");
             var div = $("#" + id + "_" + nid + " div.bbit-tree-ec-icon");
             
             if (div.length > 0) {
             	var path = div.parent().attr("tpath");
-            	//非叶子节点
+            	//闈炲彾瀛愯妭鐐�
             	if( !isLeaf(item) )
             		_expandNode.call( div.parent(), null,div,item,path,level,asyn,isRoot) ;
 	        }
 	        level-- ;
             
-        	//展开所有节点
+        	//灞曞紑鎵€鏈夎妭鐐�
         	$(item.childNodes).each(function(){
         		var _ = this ;
-	            var nid = _.id.replace(/[^\w]/gi, "_");
+	            var nid = _.id;//.replace(/[^\w]/gi, "_");
 	            var div = $("#" + id + "_" + nid + " div.bbit-tree-ec-icon");
 	            if( !asyn &&  _.complete === false && level > 100 ) return ; 
 	            expandAll( _ , asyn , level ) ;
@@ -812,15 +810,15 @@
         
         function expandnode(_item) {
             var item = _item||this;
-            var nid = item.id.replace(/[^\w]/gi, "_");
+            var nid = item.id;//.replace(/[^\w]/gi, "_");
             var div = $("#" + id + "_" + nid + " div.bbit-tree-ec-icon");
             if (div.length > 0) {
                 div.click();
             }
         }
         
-        function getItemById(itemId){//获取item通过ID
-        	var nid = itemId.replace(/[^\w-]/gi, "_");
+        function getItemById(itemId){//鑾峰彇item閫氳繃ID
+        	var nid = itemId;//.replace(/[^\w-]/gi, "_");
             var node = $("#" + id + "_" + nid);
             if (node.length > 0) {
                 var path = node.attr("tpath");
@@ -831,7 +829,7 @@
         }
         
         function refresh(itemId) {
-            var nid = itemId.replace(/[^\w-]/gi, "_");
+            var nid = itemId;//.replace(/[^\w-]/gi, "_");
             var node = $("#" + id + "_" + nid);
             if (node.length > 0) {
                 node.addClass("ui-state-highlight");
@@ -863,7 +861,7 @@
                     });
                 }
             }else {
-                alert("该节点还没有生成");
+                alert("璇ヨ妭鐐硅繕娌℃湁鐢熸垚");
             }
         }
         
@@ -875,7 +873,7 @@
         var count = 0;
         
         /**
-         * 获取节点items选中值
+         * 鑾峰彇鑺傜偣items閫変腑鍊�
          */
         function getck(items, c, fn) {
             for (var i = 0, l = items.length; i < l; i++) {
@@ -913,7 +911,7 @@
         		if( dfop.onDisabling(item,bool) === false ) return ;
         	}
         	item = typeof(item) == 'string'?getItemById(item) : item ;
-        	var nid = item.id.replace(/[^\w]/gi, "_");
+        	var nid = item.id;//.replace(/[^\w]/gi, "_");
             var div = $("#" + id + "_" + nid + " div.bbit-tree-node-cb");
             if(false === bool){
             	div.removeClass('ui-state-disabled') ;
@@ -925,10 +923,10 @@
         	}
         }
         
-        function searchNode(item){//节点搜索
+        function searchNode(item){//鑺傜偣鎼滅储
         	var _id = typeof(item)=='string'?item:item.id ;
-        	
-        	for( var i=0 ;i < treenodes.length ;i++){ //删除数据
+    
+        	for( var i=0 ;i < treenodes.length ;i++){ //鍒犻櫎鏁版嵁
         		var s = __search(_id , treenodes[i] , treenodes , i , null) ;
             	if( s ) return s;
             }
@@ -981,7 +979,7 @@
                 refresh(id);
             },
             expandAll:function(item,asyn,level){
-            	expandAll(item||treenodes[0],asyn,level,true) ;
+            	expandAll(item,asyn,level,true) ;
             },
             checkAll:function(state){
             	checkAll(state) ;
@@ -1000,18 +998,18 @@
             		if( dfop.onDeleting( _id , sn.node )=== false ) return  ;
             	}
             	
-	            var nid = _id.replace(/[^\w]/gi, "_");
+	            var nid = _id;//.replace(/[^\w]/gi, "_");
 	            $("#" + id + "_" + nid).next("ul").remove();
-	            $("#" + id + "_" + nid).parent().remove() ; //删除DOM节点
+	            $("#" + id + "_" + nid).parent().remove() ; //鍒犻櫎DOM鑺傜偣
 	            
 	            if(sn){
 	            	//
 	            	if( dfop.citem && dfop.citem.id == sn.node.id ) dfop.citem = null ;
 	            	
 	            	sn.array.splice(sn.index,1) ;
-	            	if( (!sn.array||sn.array.length<=0) && sn.pnode){//如果节点不存在，需要将父节点转换
+	            	if( (!sn.array||sn.array.length<=0) && sn.pnode){//濡傛灉鑺傜偣涓嶅瓨鍦紝闇€瑕佸皢鐖惰妭鐐硅浆鎹�
 	            		var parentId = sn.pnode.id ;
-	            		var nid = parentId.replace(/[^\w-]/gi, "_");
+	            		var nid = parentId;//.replace(/[^\w-]/gi, "_");
 	            		var ul = $("#" + id + "_" + nid).next() ;
 	            		var et = ul.prev().find('.bbit-tree-ec-icon') ;
 		        		if( et.hasClass("bbit-tree-elbow-end-minus") ){
@@ -1019,7 +1017,7 @@
 		        		}else{
 		        			et.removeClass().addClass('bbit-tree-ec-icon bbit-tree-elbow') ;
 		        		}
-		        		//替换图片,设置为叶子节点的图片
+		        		//鏇挎崲鍥剧墖,璁剧疆涓哄彾瀛愯妭鐐圭殑鍥剧墖
 		        		ul.prev().find('.bbit-tree-node-icon').removeClass().addClass('bbit-tree-node-icon '+(sn.pnode.icon||dfop.icons.leaf )) ;
 	            	}
 	            }
@@ -1034,7 +1032,7 @@
             	}
             	
             	var text = item.text ;
-	            var nid = _id.replace(/[^\w]/gi, "_");
+	            var nid = _id;//.replace(/[^\w]/gi, "_");
 	            $("#" + id + "_" + nid).find('a span').html(text) ;
 	            
 	            var sn = searchNode(_id) ;
@@ -1057,17 +1055,17 @@
 	            var pnode = getItemById(parentId) ;
 	            var nodes = $.isArray(item)?item:[item] ;
 	            
-	            var nid = parentId.replace(/[^\w-]/gi, "_");
+	            var nid = parentId;//.replace(/[^\w-]/gi, "_");
 	            var path = $("#" + id + "_" + nid).attr("tpath");
 	            var deep = path.split(".").length;
 	            
-	            //如果父节点没有展开，需要展开父节点
+	            //濡傛灉鐖惰妭鐐规病鏈夊睍寮€锛岄渶瑕佸睍寮€鐖惰妭鐐�
 	            if(!pnode.isExpand){
 	            	expandnode(pnode) ;
 	            }
 	            
 	            var ul = $("#" + id + "_" + nid).next() ;
-	            if( !ul.get(0) ){//如果ul不存在，则需要添加一个ul节点
+	            if( !ul.get(0) ){//濡傛灉ul涓嶅瓨鍦紝鍒欓渶瑕佹坊鍔犱竴涓猽l鑺傜偣
 	            	$("#" + id + "_" + nid).parent().append("<ul style='display:none;'></ul>") ;
 	            	ul = $("#" + id + "_" + nid).next() ;
 	            }
@@ -1092,7 +1090,7 @@
             		item && ( item.node.checkstate = (state===true||state===1)?1:0 );
             	}else{
             		item.checkstate = (state===true||state===1)?0:1 ;
-            		var nid = item.id.replace(/[^\w]/gi, "_");
+            		var nid = item.id;//.replace(/[^\w]/gi, "_");
 	            	var div = $("#" + id + "_" + nid + " div.bbit-tree-node-cb");
 	            	div.click() ;
             	}
@@ -1106,12 +1104,12 @@
     };
     
     $.extend($.fn , {
-    	getSelectedIds :function() { //获取所有选中的节点的Value数组
+    	getSelectedIds :function() { //鑾峰彇鎵€鏈夐€変腑鐨勮妭鐐圭殑Value鏁扮粍
 	        if (this[0].t) {
 	            return this[0].t.getSelectedValues();
 	        }
 	        return null;
-	    },getSelectNodes:function(gethalfchecknode) {//获取所有选中的节点的Item数组
+	    },getSelectNodes:function(gethalfchecknode) {//鑾峰彇鎵€鏈夐€変腑鐨勮妭鐐圭殑Item鏁扮粍
 	        if (this[0].t) {
 	            return this[0].t.getSelectedNodes(gethalfchecknode);
 	        }
@@ -1125,7 +1123,7 @@
 	        if (this[0].t) {
 	            return this[0].t.refresh(ItemOrItemId);
 	        }
-	    },expandAll: function(item,asyn,event){//item需要展开的节点，默认根节点，asyn时候展开异步节点
+	    },expandAll: function(item,asyn,event){//item闇€瑕佸睍寮€鐨勮妭鐐癸紝榛樿鏍硅妭鐐癸紝asyn鏃跺€欏睍寮€寮傛鑺傜偣
 	    	if (this[0].t) {
 	            return this[0].t.expandAll(item,asyn,null);
 	        }
@@ -1133,7 +1131,7 @@
 	    	if (this[0].t) {
 	            return this[0].t.collapse(item);
 	        }
-	    },expandLevel:function(item,level){//item需要展开的节点，默认根节点，level层次
+	    },expandLevel:function(item,level){//item闇€瑕佸睍寮€鐨勮妭鐐癸紝榛樿鏍硅妭鐐癸紝level灞傛
 	    	if (this[0].t) {
 	            return this[0].t.expandAll(item,true,level);
 	        }
@@ -1141,7 +1139,7 @@
 	    	if (this[0].t) {
 	            return this[0].t.isLeaf(item);
 	        }
-	    },treeOption:function(option,value){//获取属性或设置属性
+	    },treeOption:function(option,value){//鑾峰彇灞炴€ф垨璁剧疆灞炴€�
 	    	if (this[0].t) {
 	            return this[0].t.treeOption(option,value);
 	        }
@@ -1186,7 +1184,7 @@
     
     $.fn.tree = function(json_obj){
     	if( !this.length ){
-    		alert("初始化树失败。选择器["+this.selector +"]不存在，请检查书写是否有误！") ;
+    		alert("鍒濆鍖栨爲澶辫触銆傞€夋嫨鍣╗"+this.selector +"]涓嶅瓨鍦紝璇锋鏌ヤ功鍐欐槸鍚︽湁璇紒") ;
     		return ;
     	}
     	

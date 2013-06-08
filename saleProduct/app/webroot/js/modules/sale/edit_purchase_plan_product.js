@@ -16,7 +16,10 @@ $(function(){
 		tabs.push({label:'关联ASIN',content:"ref-asins"}) ;
 	}
 	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
-	if( currentStatus >=45 )tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
+	if( currentStatus >=45 ){
+		//tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
+		tabs.push( {label:'货品询价',iframe:true,url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+sku} ) ;
+	}
 
 	var status = [10,20,25,30,40,45,46,47,48,50,60,70] ;
 	if( $reedit_pp_product ){//再编辑

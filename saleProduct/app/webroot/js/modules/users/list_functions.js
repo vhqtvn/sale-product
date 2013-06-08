@@ -4,6 +4,14 @@ $(function(){
 				source:'array',
 				data:treeData ,
 				isRootExpand:true,
+				nodeFormat:function(node){
+					if( node.TYPE == 'FUNCTION' ){ //功能
+						node.icon = "/"+fileContextPath+"/app/webroot/img/config.gif" ;
+					}else if(node.TYPE == 'DATA'){
+						node.icon = "/"+fileContextPath+"/app/webroot/img/cake.icon.png" ;
+					}
+					return node ;
+				},
 				onNodeClick:function(id, text, record,node){
 					$(".grid-content").llygrid("reload",{id:id}) ;
 				}

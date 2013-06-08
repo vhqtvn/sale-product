@@ -17,29 +17,7 @@
 		 		$(".grid-cost").llygrid("reload",{},true) ;
 			 }) ;
 	   }) ;
- 		
- 		$(".grid-cost").llygrid({
-			columns: costColumns,
-	         ds:{type:"url",content:contextPath+"/grid/query"},
-			 limit:30,
-			 pageSizes:[10,20,30,40],
-			 height:function(){
-				return 100 ;
-			 },
-			 title:"",
-			 indexColumn:true,
-			 querys:{asin:asin,sqlId:"sql_cost_product_details_list"},
-			 loadMsg:"数据加载中，请稍候......",
-			 loadAfter:function(){
-				 $(".edit-action").bind("click",function(){
-					 	var row = $(this).parents("tr:first").data("record");
-						var id = $(this).attr("val") ;
-						openCenterWindow(contextPath+"/cost/add/"+row.ASIN+"/"+id,880,650,function(){
-							$(".grid-cost").llygrid("reload",{},true) ;
-						}) ;
-					})
-			 }
-		}) ;
+
  		
  		
  		var taskSelect = {
@@ -206,13 +184,17 @@
 			var tab = $('#details_tab').tabs( {
 				tabs:[
 				     {label:'产品开发',content:"dev-tab"},
-				     {label:'询价与成本利润',content:"supplier-tab",iframe:true},
+				     {label:'产品询价',url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+asin+"/asin",iframe:true},
+				     {label:'成本利润',url: contextPath+"/page/forward/Cost.listBySku/"+asin+"/asin",iframe:true},
+				    // {label:'成本利润',content:"supplier-tab",iframe:true},
 					 {label:'基本信息',content:"baseinfo-tab"},
 					 {label:'竞争信息',content:"competetion-tab"},
 					 {label:'产品分类',url:contextPath+"/product/assignCategory/"+asin,iframe:true},
 					 {label:'开发轨迹',content:"track-tab"}
 				] ,
-				height:'300px'
+				height:function(){
+					return $(window).height() - 100 ;
+				}
 			} ) ;
 			
 			$(".supplier-select").click(function(){

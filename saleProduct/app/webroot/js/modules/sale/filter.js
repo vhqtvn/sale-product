@@ -191,32 +191,31 @@ var currentId = '' ;
 					{align:"center",key:"COST_GROUP",label:"利润分类",width:"8%",sort:true,format:function(val,record){
 						var INQUIRY_COUNT = record.INQUIRY_COUNT ;
 						var COST_COUNT = record.COST_COUNT ;
-						if( INQUIRY_COUNT<=0 ) return "待询价" ;
-						if( COST_COUNT<=0 ) return "待成本核算" ;
-						if( !val ) return "未算利润" ;
 						
-						var s = val.split(",") ;
-						var maxProfit = 0 ;
-						var maxType ;
-						$(s).each(function(){
-							var ss = this.split("|") ;
-							var type = ss[0] ;
-							var profit = parseFloat(ss[1]||0)/100 ;
-							maxProfit = Math.max(maxProfit,profit) ;
-						}) ;
-						if(maxProfit <=0 ) return "亏本" ;
-						if(maxProfit <0.15 ) return "低利润" ;
-						return "利润达标" ;
-						
+						if( val ){
+							var s = val.split(",") ;
+							var maxProfit = 0 ;
+							var maxType ;
+							$(s).each(function(){
+								var ss = this.split("|") ;
+								var type = ss[0] ;
+								var profit = parseFloat(ss[1]||0)/100 ;
+								maxProfit = Math.max(maxProfit,profit) ;
+							}) ;
+							if(maxProfit <=0 ) return "亏本" ;
+							if(maxProfit <0.15 ) return "低利润" ;
+							return "利润达标" ;
+						}else{
+							if( INQUIRY_COUNT<=0 ) return "待询价" ;
+							if( COST_COUNT<=0 ) return "待成本核算" ;
+							if( !val ) return "未算利润" ;
+						}
 					   }},
 					   {align:"center",key:"COST_GROUP",label:"利润值",width:"8%",sort:true,format:function(val,record){
 							var INQUIRY_COUNT = record.INQUIRY_COUNT ;
 							var COST_COUNT = record.COST_COUNT ;
-							if( INQUIRY_COUNT<=0 ) return "" ;
-							if( COST_COUNT<=0 ) return "" ;
-							if( !val ) return "" ;
-							
-							return val ||"";
+							if( val ) return val ;
+							return "" ;
 						   },permission:function(){
 							   return $COST_VIEW_PROFIT ;
 						   }},
