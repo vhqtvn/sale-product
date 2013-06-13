@@ -131,6 +131,23 @@
 				$(me).tree().expandLevel(null,dfop.expandLevel ) ;
 			},0) ;
 		}
+		
+		function __formatGridData(records){
+			var array = [] ;
+			$(records).each(function(){
+				var row = {} ;
+				for(var o in this){
+					var _ = this[o] ;
+					for(var o1 in _){
+						row[o1] = _[o1] ;
+						row[o1.toLowerCase()] = _[o1] ;
+					}
+				}
+				array.push(row) ;
+			}) ;
+		
+			return array ;
+		}
 
         //閫氳繃AJAX浠庡悗鍙板彇鏁版嵁
         function loadJsonTreeByURL(params,async,showCheck)
@@ -147,7 +164,9 @@
 			service_param = $.extend(service_param, params);
 			
 			$.dataservice(dfop.CommandName,service_param,function (response){tree = response;},{async:false,url:dfop.url}) ;
-                 
+			
+			tree = __formatGridData(tree); 
+
 		  	return tree;
   		}
         

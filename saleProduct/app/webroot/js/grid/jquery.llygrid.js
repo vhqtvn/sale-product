@@ -618,6 +618,7 @@
 				case "reload":
 					params = params||{} ;
 					//params.curPage = 1 ;//重新定位到第一页
+					params.curPage = 1 ;
 					reload($(this),params,_options) ;
 					break ;
 				case "addEvent":

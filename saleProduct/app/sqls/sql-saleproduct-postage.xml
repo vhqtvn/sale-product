@@ -120,7 +120,7 @@
 	</entry>
 	
 	<entry key="sql_postage_vendor_tree">
-		select ID , name as text , NAME from sc_postage_vendor
+		select ID , name as TEXT , NAME from sc_postage_vendor
 	</entry>
 	
 	<entry key="sql_postage_service_grid">
