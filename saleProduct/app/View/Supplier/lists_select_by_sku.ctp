@@ -38,6 +38,7 @@
 					}}},
 		           	{align:"center",key:"NAME",label:"名称", width:"15%"},
 		           	{align:"center",key:"ADDRESS",label:"地址",width:"15%"},
+		           	{align:"left",key:"EVALUATE",label:"评价",width:"15%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
 		           	{align:"center",key:"CONTACTOR",label:"联系人",width:"8%"},
 		           	{align:"center",key:"PHOME",label:"联系电话",width:"12%"},
 		           	{align:"center",key:"EMAIL",label:"EMAIL",width:"10%"},

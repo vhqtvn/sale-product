@@ -50,8 +50,8 @@
 							defaults:[],//默认值
 							key:{value:'ID',label:'NAME'},//对应value和label的key
 							multi:false,
-							width:600,
-							height:560,
+							width:800,
+							height:600,
 							grid:{
 								title:"供应商选择",
 								params:{

@@ -26,29 +26,7 @@
    
    var taskId = '' ;
    
-   //result.records , result.totalRecord
- 	function formatGridData(data){
- 		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-   }
+
 
 	$(function(){
 			$(".grid-content").llygrid({
@@ -65,8 +43,9 @@
 							html.push("<a href='#' class='action-view' val='"+val+"'>查看</a>&nbsp;") ;
 							return html.join("") ;
 					}},
-		           	{align:"center",key:"NAME",label:"名称", width:"15%"},
-		           	{align:"center",key:"ADDRESS",label:"地址",width:"15%"},
+		           	{align:"left",key:"NAME",label:"名称", width:"15%"},
+		           	{align:"left",key:"ADDRESS",label:"地址",width:"15%"},
+		           	{align:"left",key:"EVALUATE",label:"评价",width:"15%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
 		           	{align:"center",key:"CONTACTOR",label:"联系人",width:"6%"},
 		           	{align:"center",key:"PHONE",label:"联系电话",width:"8%"},
 		           	{align:"center",key:"MOBILE",label:"手机",width:"8%"},
@@ -93,7 +72,9 @@
 			
 			$(".action-update").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/supplier/add/"+id,800,600) ;
+				openCenterWindow(contextPath+"/supplier/add/"+id,800,600,function(){
+					$(".grid-content").llygrid("reload",{},true)
+				}) ;
 			});
 			
 			$(".action-del").live("click",function(){
