@@ -46,30 +46,15 @@ class Supplier extends AppModel {
 		}
 	}
 	
-	public function saveSupplier($data,$user,$asin=null){
-		$loginId = $user['LOGIN_ID'] ;
+	public function saveSupplier($data){
+		$loginId = $data['loginId'] ;
+		
 		
 		$id = '' ;
 		
 		if( isset($data['id']) && !empty($data["id"]) ){
 			$id = $data['id'] ;
-			
-			$sql = " update sc_supplier set 
-					name = '".$data['name']."' ,
-					address = '".$data['address']."' ,
-					email = '".$data['email']."' ,
-					url = '".$data['url']."' ,
-					contactor = '".$data['contactor']."' ,
-					phone = '".$data['phone']."' ,
-					mobile = '".$data['mobile']."' ,
-					fax = '".$data['fax']."' ,
-					qq = '".$data['qq']."' ,
-					memo = '".$data['memo']."' ,
-					products = '".$data['products']."' ,
-					zip_code = '".$data['zip_code']."' 
-					where id = '".$data['id']."'
-					" ;
-			$this->query($sql) ;
+			$this->exeSql("sql_supplier_update", $data) ;
 		}else{
 			$time = explode ( " ", microtime () );
 			$time = $time [1] . ($time [0] * 1000);
@@ -77,18 +62,31 @@ class Supplier extends AppModel {
 			$time = $time2 [0];
 			$id  = $time ;
 			$data['id'] = $id ;
-			$sql = "insert into sc_supplier(id,name,address,url,contactor,phone,mobile,fax,zip_code,email,qq,memo,products,creator,create_time)
-			values('$id','".$data['name']."','".$data['address']."','".$data['url']."','".$data['contactor']."'
-			,'".$data['phone']."','".$data['mobile']."','".$data['fax']."','".$data['zip_code']."','".$data['email']."'
-			,'".$data['qq']."','".$data['memo']."','".$data['products']."','$loginId',NOW())" ;
 			
-			$this->query($sql) ;
+			$this->exeSql("sql_supplier_insert", $data) ;
 		}
 		
+		$metas = $this->exeSqlWithFormat("select * from sc_supplier_evaluate_meta",array()) ;
+		foreach($metas as $meta){
+			$sql = "sql_supplier_eva_findBySupplieAndMeta" ;
+			$eva = $this->getObject($sql, array("supplierId"=>$data['id'],"metaCode"=>$meta['CODE']) ) ;
+			if(empty($eva)){//inset
+				$sql="sql_supplier_eva_save" ;
+				$this->exeSql($sql, array("supplierId"=>$data['id'],"metaCode"=>$meta['CODE'] ,
+						 'score'=>$data[$meta['CODE'].'_select'],'memo'=>$data[$meta['CODE'].'_memo'],'loginId'=>$loginId)) ;
+			}else{
+				$sql="sql_supplier_eva_update" ;
+				$this->exeSql($sql, array("supplierId"=>$data['id'],
+						"metaCode"=>$meta['CODE'] ,
+						'score'=>$data[$meta['CODE'].'_select'],'memo'=>$data[$meta['CODE'].'_memo'],'loginId'=>$loginId,'id'=>$eva['ID'])) ;
+			}
+		}
+		
+		/*
 		if(!empty($asin)){//保存到产品
 		    $sql="insert into sc_product_supplier(supplier_id,asin,status) values('$id','$asin','valid')" ;
 		    $this->query($sql) ;
-		}
+		}*/
 		
 		return $data ;
 	}
