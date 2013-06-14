@@ -1,5 +1,15 @@
 
 		$(function(){
+			
+			$(".action").live("click",function(){
+				var record = $(this).parents("tr:first").data("record")||{} ;
+				var id = record.ID;
+				if( $(this).hasClass("view") ){
+					openCenterWindow(contextPath+"/saleProduct/details/"+record.REAL_SKU+"/sku",900,650) ;
+				}
+				return false ;
+			});
+			
 			$('#default-tree').tree({//tree为容器ID
 				source:'array',
 				data:treeData ,
