@@ -3,6 +3,7 @@
     <entry key="sql_list_supplierInquiryHistory">
     	select s.* ,
     	ss.NAME,
+    	ss.EVALUATE,
     	(select name from sc_user where login_id = s.creator) as USERNAME
     	from sc_purchase_supplier_inquiry s ,
     	sc_supplier ss

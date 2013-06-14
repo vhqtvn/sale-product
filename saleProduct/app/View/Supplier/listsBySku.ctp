@@ -45,6 +45,7 @@
 							return html.join("") ;
 					}},
 		           	{align:"center",key:"NAME",label:"名称", width:"15%"},
+		        	{align:"left",key:"EVALUATE",label:"评价",width:"10%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
 		           	{align:"center",key:"ADDRESS",label:"地址",width:"15%"},
 		           	{align:"center",key:"CONTACTOR",label:"联系人",width:"6%"},
 		           	{align:"center",key:"PHONE",label:"联系电话",width:"8%"},

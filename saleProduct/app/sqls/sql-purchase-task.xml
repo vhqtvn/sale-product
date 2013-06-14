@@ -136,6 +136,7 @@
 			srp.IMAGE_URL,
 			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
 			su.NAME AS EXECUTOR_NAME,
+			( select sc_user.name from sc_user where sc_user.login_id = sppd.creator ) as CREATOR_NAME,
 			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
 		FROM 
 		sc_purchase_task_products sptp,

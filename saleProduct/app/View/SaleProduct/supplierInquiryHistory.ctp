@@ -55,6 +55,7 @@
 					     	{align:"center",key:"NAME",label:"供应商名称",width:"15%",forzen:false,align:"left",format:function(val,record){
 									return "<a href='#' supplier-id='"+record.SUPPLIER_ID+"'>"+val+"<a>" ;
 						     }},
+						     {align:"left",key:"EVALUATE",label:"供应商评价",width:"10%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
 				           	{align:"center",key:"NUM1",label:"报价1",width:"6%",format:function(val,record){
 									return val+"/"+record.OFFER1 ;
 					          }},

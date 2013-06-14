@@ -238,6 +238,7 @@ $(function(){
            	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
            	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
         	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
+        	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
         	{align:"center",key:"SUPPIERABLE_NUM",label:"可采购",group:'采购数量',width:"5%"},
         	{align:"center",key:"PLAN_NUM",label:"计划采购",group:'采购数量',width:"5%"},
         	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"已采购",group:'采购数量',width:"5%"},

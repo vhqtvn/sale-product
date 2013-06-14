@@ -74,6 +74,7 @@
 			spc.PURCHASE_CHARGER,
 			(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
 			(SELECT NAME FROM sc_supplier WHERE id = sppd.PROVIDOR ) AS PROVIDOR_NAME,
+			( select sc_user.name from sc_user where sc_user.login_id = sppd.creator ) as CREATOR_NAME,
 			su.NAME AS EXECUTOR_NAME
 		FROM sc_purchase_plan_details sppd 
 		LEFT JOIN sc_user su
