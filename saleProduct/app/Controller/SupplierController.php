@@ -79,6 +79,8 @@ class SupplierController extends AppController {
 		
 		$categorys = $this->Product->getProductCategory();  
     	$this->set("categorys",$categorys) ;
+    	$this->set("view",true) ;
+    	$this->layout="../Supplier/add";
 	 }
 
 	 public function saveSupplier($asin=null){

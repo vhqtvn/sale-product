@@ -5,24 +5,9 @@
     <title>供应商</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
-
+	
    <?php
-   		include_once ('config/config.php');
-   
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('../js/tree/jquery.tree');
-		echo $this->Html->css('default/style');
-		echo $this->Html->css('../js/tab/jquery.ui.tabs');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('jquery-ui');
-		echo $this->Html->script('../grid/query');
-		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('validator/jquery.validation');
-		echo $this->Html->script('tree/jquery.tree');
-		echo $this->Html->script('tab/jquery.ui.tabs');
+   		include ('config/config.php');
 		
 		$id = "" ;
 		$name = '' ;
@@ -37,6 +22,7 @@
 		$qq ="" ;
 		$products = "" ;
 		$memo = '' ;
+		$evaluate= '' ;
 		
 		 if( $supplier !=null){
 		 	$id =$supplier[0]['sc_supplier']["ID"] ;
@@ -52,9 +38,37 @@
 			$qq  =$supplier[0]['sc_supplier']["QQ"] ;
 			$products  =$supplier[0]['sc_supplier']["PRODUCTS"] ;
 			$memo = $supplier[0]['sc_supplier']["MEMO"]; 
+			$evaluate = $supplier[0]['sc_supplier']["EVALUATE"]; 
 		 }
+		 
+		 $SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		 $categorys = $SqlUtils->exeSql("sql_saleproduct_categorytreeBySupplier",array('supplierId'=>$id) ) ;
+		 
+		// debug($categorys) ;
+		$isView = false ;
+		if( isset($view) ){
+			$isView = true ;
+		}
 	?>
 	
+	
+	<link href="/<?php echo $fileContextPath?>/app/webroot/favicon.ico" type="image/x-icon" rel="icon" />
+	<link href="/<?php echo  $fileContextPath;?>/app/webroot/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/validator/jquery.validation.css" />
+	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/tree/jquery.tree.css" />
+	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/default/style.css" />
+	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/tab/jquery.ui.tabs.css" />
+	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/grid/jquery.llygrid.css" />
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/jquery.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/common.js"></script>
+	<script type="text/javascript" src="/<?php  echo $fileContextPath;?>/app/webroot/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/../grid/query.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/jquery.json.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/grid/jquery.llygrid.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/validator/jquery.validation.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/tree/jquery.tree.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/tab/jquery.ui.tabs.js"></script>
+	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/modules/supplier/add.js"></script>
 	
   
    <style>
@@ -92,10 +106,12 @@
 		.eva-ul li textarea{
 			margin:5px 2px;
 		}
+		
+
    </style>
 
    <script>
-		var asin = '<?php echo $asin;?>' ;
+		var supplierId = '<?php echo $id ;?>'
    
    	    var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
 	    var treeMap  = {} ;
@@ -104,67 +120,15 @@
 	    	$ss = explode(",",$products) ;
 	    	$Utils  = ClassRegistry::init("Utils") ;
 	    	
-	    	$Utils->echoTreeScript( $categorys ,$ss, function( $item, $index ,$ss ){
-			    	$id__ = $item ['ID'];
-					$name__ = $item ['NAME'];
-					echo " var item$index = {id:'$id__',text:'$name__',memo:'" . $item ['MEMO'] . "',isExpand:true} ;";
-					
-					foreach ( $ss as $s ) {
-						if ($s == $id__) {
-							echo " item$index ['checkstate'] = 1 ;";
-						}
-					}
+	    	$Utils->echoTreeScript( $categorys ,null, function( $sfs, $index ,$ss ){
+			    	$id   = $sfs['ID'] ;
+	    			$name = $sfs['NAME']."(".$sfs['TOTAL'].")" ;
+	    			$pid  = $sfs['PARENT_ID'] ;
+	    			echo " var item$index = {id:'$id',text:'$name',isExpand:true} ;" ;
 	    	} ) ;
 		?>
    
    
-		$(function(){
-			$('#default-tree').tree({//tree为容器ID
-				source:'array',
-				data:treeData ,
-				showCheck:true,
-				cascadeCheck:false
-           }) ;
-
-			var tab = $('#tabs-default').tabs( {//$this->layout="index";
-				tabs:[
-					{label:'基本信息',content:"base-info"}
-					,{label:'评价',content:"evaluate"}
-					,{label:'供应产品',content:"supllie-product"}
-				] ,
-				height:'588x'
-			} ) ;
-
-			$(".commit").click(function(){
-
-				if(window.confirm("确认保存？")){
-					if( !$.validation.validate('#personForm').errorInfo ) {
-						var json = $("#personForm").toJson() ;
-						var vals = $('#default-tree').tree().getSelectedIds()  ;
-						
-						json.products = vals.join(",") ;
-
-						$.dataservice("model:Supplier.saveSupplier",json,function(result){
-							jQuery.dialogReturnValue(result) ;
-							window.close();
-						}) ;
-						/*
-						$.ajax({
-							type:"post",
-							url:contextPath+"/supplier/saveSupplier/"+asin,
-							data:json,
-							cache:false,
-							dataType:"json",
-							success:function(result,status,xhr){
-								jQuery.dialogReturnValue(result) ;
-								window.close();
-							}
-						}); 
-						*/
-					};
-				}
-			})
-		})
    </script>
 
 </head>
@@ -177,37 +141,45 @@
 			<table class="table table-bordered">
 				<caption>供应商信息</caption>
 				<tr>
-					<th>供应商名称：</th>
-					<td colspan="3"><input  data-validator="required" type="text" id="name" value="<?php echo $name;?>"/></td>
+					<th>供应商名称111：</th>
+					<td colspan="3"><input <?php if($isView)echo "readonly='readOnly'";?>  data-validator="required" type="text" id="name" value="<?php echo $name;?>"/></td>
 				</tr>
 				<tr>
-					<th>供应商地址：</th><td colspan="3"><input  data-validator="required" type="text" id="address" value="<?php echo $address;?>"/></td>
+					<th>供应商地址：</th><td colspan="3"><input  <?php if($isView)echo "readonly='readOnly'";?>   data-validator="required" type="text" id="address" value="<?php echo $address;?>"/></td>
 				</tr>
 				<tr>
-					<th>联系人：</th><td><input type="text" id="contactor" value="<?php echo $contactor;?>"/></td>
-					<th>联系电话：</th><td><input type="text" id="phone" value="<?php echo $phone;?>"/></td>
+					<th>联系人：</th><td><input  <?php if($isView)echo "readonly='readOnly'";?>  type="text" id="contactor" value="<?php echo $contactor;?>"/></td>
+					<th>联系电话：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="phone" value="<?php echo $phone;?>"/></td>
 				</tr>
 				<tr>
-					<th>手机：</th><td><input type="text" id="mobile" value="<?php echo $mobile;?>"/></td>
-					<th>传真：</th><td><input type="text" id="fax" value="<?php echo $fax;?>"/></td>
+					<th>手机：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="mobile" value="<?php echo $mobile;?>"/></td>
+					<th>传真：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="fax" value="<?php echo $fax;?>"/></td>
 				</tr>
 				<tr>
-					<th>QQ/MSN/Skype：</th><td><input type="text" id="qq" value="<?php echo $qq;?>"/></td>
-					<th>Email：</th><td><input type="text" id="email" value="<?php echo $email;?>"/></td>
+					<th>QQ/MSN/Skype：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="qq" value="<?php echo $qq;?>"/></td>
+					<th>Email：</th><td><input  <?php if($isView)echo "readonly='readOnly'";?>  type="text" id="email" value="<?php echo $email;?>"/></td>
 				</tr>
 				<tr>
-					<th>邮编：</th><td colspan="3"><input type="text" id="zip_code" value="<?php echo $zip_code;?>"/></td>
+					<th>邮编：</th><td colspan="3"><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="zip_code" value="<?php echo $zip_code;?>"/></td>
 				</tr>
 				<tr>
-					<th>网址：</th><td colspan="3"><input type="text" id="url" value="<?php echo $url;?>"/></td>
+					<th>网址：</th><td colspan="3"><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="url" value="<?php echo $url;?>"/></td>
 				</tr>
 				<tr>
-					<th>备注：</th><td colspan="3"><textarea id="memo" style="width:300px;height:80px;"><?php echo $memo;?></textarea></td>
+					<th>备注：</th><td colspan="3"><textarea <?php if($isView)echo "readonly='readOnly'";?>   id="memo" style="width:300px;height:80px;"><?php echo $memo;?></textarea></td>
 				</tr>
 			</table>
 	</div>
 	<div id="supllie-product">
-		<div id="default-tree" class="tree" style="padding: 5px;overflow-y:auto;overflow-x:hidden;height:460px; "></div>
+		<div class="row-fluid">
+			<div class="span3">
+				<div id="default-tree" class="tree" style="padding: 5px;overflow-y:auto;overflow-x:hidden;height:460px; "></div>
+			</div>
+			<div class="span9" style="margin-left:1px;"> 
+				<div class="grid-content"  style="width:605px;;" ></div>
+			</div>
+		</div>
+		
 	</div>
 	
 	<div id="evaluate">
@@ -216,12 +188,12 @@
 					<tr>
 						<th>总体评价:</th>
 						<td>
-								<select name="evaluate">
+								<select name="evaluate"   <?php if($isView)echo "disabled='disabled'";?>>
 										<option value="">--选择评价--</option>
-										<option value="4">优先推荐</option>
-										<option value="3">推荐</option>
-										<option value="2">备选</option>
-										<option value="1">不推荐</option>
+										<option value="4" <?php if($evaluate==4)echo 'selected';?>>优先推荐</option>
+										<option value="3" <?php if($evaluate==3)echo 'selected';?>>推荐</option>
+										<option value="2" <?php if($evaluate==2)echo 'selected';?>>备选</option>
+										<option value="1" <?php if($evaluate==1)echo 'selected';?>>不推荐</option>
 								</select>
 						</td>
 					</tr>							
@@ -247,7 +219,7 @@
 		?>
 		<li>
 			<?php echo $meta['NAME']?>：
-			<select id="<?php echo $meta['CODE']?>_select"></select>
+			<select  <?php if($isView)echo "disabled='disabled'";?>   id="<?php echo $meta['CODE']?>_select"></select>
 				<script>
 					var options = <?php echo $meta['OPTIONS'];?> ;
 					var selectId = '<?php echo $meta['CODE']?>_select' ;
@@ -260,20 +232,22 @@
 					}
 				</script>
 				
-				<textarea id="<?php echo $meta['CODE']?>_memo" style="width:85%;;height:60px;"></textarea>
+				<textarea <?php if($isView)echo "readonly='readOnly'";?>   id="<?php echo $meta['CODE']?>_memo" style="width:85%;;height:60px;"></textarea>
 		</li>
 <?php 	}
 	
 	?>
 	</ul>
 	</div>
-					<div class="panel-foot" style="position:fixed;bottom:0px;left:0px;right:0px;">
+	<?php  if( !$isView ){?>
+					<div class="panel-foot" style="position:fixed;bottom:0px;left:0px;right:0px;" >
 						<div class="form-actions col2">
 							<button  type="submit" class="btn btn-primary commit">提&nbsp;交</button>
 							
 							<button onclick="window.close();" class="btn">关&nbsp;闭</button>
 						</div>
 					</div>
+	<?php }?>
 </form>
 </body>
 </html>

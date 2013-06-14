@@ -382,6 +382,54 @@
     </entry>
     
      
-  
+  <!--查询货品分类树-->
+    <entry key="sql_saleproduct_categorytreeBySupplier">
+    <![CDATA[
+        select sc_product_category.*,
+              (select count(*) from sc_real_product where 
+	              	sc_real_product.category_id = sc_product_category.id
+	              	and sc_real_product.real_sku in (
+	              		select real_sku from sc_real_product_supplier srps where srps.supplier_id = '{@#supplierId#}'
+	              	)
+              	 ) as TOTAL
+              from sc_product_category
+              
+   
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_listBySupllierId">
+ 			SELECT sc_real_product.*,
+		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id
+		        	and status = 1 ) AS LOCK_QUANTITY ,
+		        ( select sum(quantity) from sc_goods_inventory sgi where sgi.goods_id = sc_real_product.id  and type = '1'
+		           {@ and warehouse_id = '#warehouseId#' }
+		         )  as COMMON_QUANTITY,
+		         ( select sum(quantity) from sc_goods_inventory sgi where sgi.goods_id = sc_real_product.id  and type = '2'
+		            {@ and warehouse_id = '#warehouseId#' }
+		          )  as FBA_QUANTITY
+		         from sc_real_product where 1=1
+		     {@ and is_onsale='#isOnsale#'}
+ 			{@ and type='#type#'}
+ 			{@ and status='#status#'}
+ 			{@ and name like '%#name#%'}
+ 			{@ and ( name like '%#searchKey#%' or real_sku like '%#searchKey#%'  or memo like '%#searchKey#%' 
+ 			  or real_sku in (
+ 			    select sr.real_sku from sc_real_product_rel sr ,sc_amazon_account_product sp where sr.sku = sp.sku
+ 			    and sp.asin like '%#searchKey#%'
+ 			)
+ 			)}
+ 			{@ and real_sku='#sku#'}
+ 			{@ and name like '%#NAME#%'}
+ 			{@ and real_sku in (
+ 			    select sr.real_sku from sc_real_product_rel sr ,sc_amazon_account_product sp where sr.sku = sp.sku
+ 			    and sp.asin = '#asin#'
+ 			)}
+ 			{@ and real_sku='#REAL_SKU#'}
+ 			{@ and category_id='#categoryId#'}
+ 			and sc_real_product.real_sku in (
+	              		select real_sku from sc_real_product_supplier srps where srps.supplier_id = '{@#supplierId#}'
+	       )
+   </entry>
     
 </properties>
