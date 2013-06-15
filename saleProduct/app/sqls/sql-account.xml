@@ -24,6 +24,10 @@
     <![CDATA[	
 		SELECT  sc_amazon_account_product.* ,
 					(case when ( sc_amazon_account_product.title is  null  or sc_amazon_account_product.title = '') then sp.title else sc_amazon_account_product.title end ) as P_TITLE,
+					(CASE WHEN ( sc_amazon_account_product.title IS  NULL  OR sc_amazon_account_product.title = '') 
+					THEN (
+					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.ASIN LIMIT 0,1)
+					) ELSE sc_amazon_account_product.LOCAL_URL END ) AS P_LOCAL_URL,
 					srpr.REAL_ID,
 					srpr.REAL_SKU
 					FROM sc_amazon_account_product 

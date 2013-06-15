@@ -54,15 +54,8 @@
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 			           	}},
-			           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:function(val,record){
-			           		if(val){
-			           			val = val.replace(/%/g,'%25') ;
-			           		}else{
-			           			return "" ;
-			           		}
-			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:25px;height:25px;'>" ;
-			           	}},
-			           	{align:"center",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:function(val,record){
+			           	{align:"center",key:"P_LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
+			           	{align:"center",key:"P_TITLE",label:"名称",width:"10%",forzen:false,align:"left",format:function(val,record){
 			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
 			           	}},
 			           	
