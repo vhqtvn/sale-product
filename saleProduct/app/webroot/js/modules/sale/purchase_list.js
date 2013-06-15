@@ -203,8 +203,8 @@
 		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		        	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
-		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"5%"},
-		           	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"5%"},
+		           	{align:"center",key:"PLAN_NUM",label:"计划采购数量",width:"5%"},
+		           	{align:"center",key:"QUOTE_PRICE",label:"计划采购价",width:"5%"},
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
 		          
