@@ -439,8 +439,11 @@
  			{@ and real_sku='#REAL_SKU#'}
  			{@ and category_id='#categoryId#'}
  			and sc_real_product.real_sku in (
-	              		select real_sku from sc_real_product_supplier srps where srps.supplier_id = '{@#supplierId#}'
+	              		select real_sku from sc_real_product_supplier srps where srps.supplier_id is not null 
+	              		AND srps.supplier_id !=''
+	              		and srps.supplier_id = '{@#supplierId#}'
 	       )
+	       and sc_real_product.status = 1
    </entry>
     
 </properties>
