@@ -18,7 +18,6 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		
-		$loginId = $user["GROUP_CODE"] ;//transfer_specialist cashier purchasing_officer general_manager product_specialist
 		$sku = $params['arg1'] ;
 		$type = $params['arg2'] ;
 		$asin = "" ;
@@ -31,11 +30,26 @@
     	 					sc_product_dev spd where srp.id = spd.real_product_id and spd.asin='{@#asin#}'",array('asin'=>$asin )) ;
 			$sku =$product['REAL_SKU'] ;
 		}
+		
+		
+		$security  = ClassRegistry::init("Security") ;
+		$loginId 						= $user['LOGIN_ID'] ;
+		$PD_INQUIRY	= $security->hasPermission($loginId , 'PD_INQUIRY')   ;//询价权限
+		
 	?>
   
    <script type="text/javascript">
    
    var taskId = '' ;
+
+   <?php
+			$url = "" ; 
+			if(empty($sku)){
+				$url = "/page/forward/Supplier.updateProductSupplierByAsin/asin/".$asin ;
+			}else{
+				$url = "/page/forward/Supplier.updateProductSupplierByAsin/sku/".$sku ;
+			}
+		?>
   
 	$(function(){
 
@@ -49,6 +63,14 @@
 			$(".grid-content-details").llygrid({
 				columns:[
 							//名称	产品重量	生产周期	包装方式	付款方式	产品尺寸	包装尺寸	报价1	报价2	报价3
+							<?php if($PD_INQUIRY){ ?>
+							{align:"center",key:"TASK_ID",label:"操作",width:"5%",format:function(val,record){
+									var html = [] ;
+									html.push( getImage("edit.png","修改","process-action") ) ;
+									if( record.DAY_NUM > 7 ) return "" ;
+									return html.join("") ;
+							}},
+							 <?php }?>
 							{align:"center",key:"CREATE_TIME",label:"询价时间",width:"15%",forzen:false,align:"left"},
 							{align:"center",key:"USERNAME",label:"提交人",width:"6%",forzen:false,align:"left"},
 							{align:"center",key:"IMAGE",label:"图片",width:"4%",forzen:false,align:"left",format:{type:'img'}},
@@ -88,24 +110,23 @@
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){
-				 		
 						var val = $(this).attr("value") ;
 						if( $(".product-list ul li[asin='"+val+"']").length ){
 							$(this).attr("checked",true) ;
 						}
 					}) ;
+
+					$(".process-action").click(function(){
+						var record = $(this).parents("tr:first").data("record");
+						openCenterWindow(contextPath+"<?php echo $url;?>/"+record.ID,800,600,function(){
+							$(".grid-content-details").llygrid("reload",{},true);
+							}) ;
+					}) ;
 				 }
 			}) ;
 
 			$(".supplier-select").click(function(){
-				<?php
-					$url = "" ; 
-					if(empty($sku)){
-						$url = "/page/forward/Supplier.updateProductSupplierByAsin/asin/".$asin ;
-					}else{
-						$url = "/page/forward/Supplier.updateProductSupplierByAsin/sku/".$sku ;
-					}
-				?>
+				
 				openCenterWindow(contextPath+"<?php echo $url;?>",800,600,function(){
 					$(".grid-content-details").llygrid("reload",{},true);
 					}) ;
@@ -121,6 +142,7 @@
 
 </head>
 <body>
+<?php if($PD_INQUIRY){ ?>
 	<div class="toolbar toolbar-auto">
 				<table style="width:100%;" class="query-table">	
 					<tr>
@@ -130,6 +152,7 @@
 					</tr>						
 				</table>	
 	 </div>
+	 <?php }?>
 		<?php 
 			$Config  = ClassRegistry::init("Config") ;
 			$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;

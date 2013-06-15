@@ -4,6 +4,7 @@
     	select s.* ,
     	ss.NAME,
     	ss.EVALUATE,
+    	( TO_DAYS( NOW() ) - TO_DAYS(s.CREATE_TIME) ) as DAY_NUM,
     	(select name from sc_user where login_id = s.creator) as USERNAME
     	from sc_purchase_supplier_inquiry s ,
     	sc_supplier ss

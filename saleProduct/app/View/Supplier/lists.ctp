@@ -43,6 +43,7 @@
 							html.push("<a href='#' class='action-view' val='"+val+"'>查看</a>&nbsp;") ;
 							return html.join("") ;
 					}},
+		        	{align:"center",key:"CODE",label:"编号", width:"8%"},
 		           	{align:"left",key:"NAME",label:"名称", width:"15%"},
 		        	{align:"left",key:"EVALUATE",label:"评价",width:"10%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
 		           	{align:"left",key:"ADDRESS",label:"地址",width:"15%"},

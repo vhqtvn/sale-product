@@ -135,7 +135,7 @@
 													foreach($suppliers as $suppli){
 														$suppli = $SqlUtils->formatObject($suppli) ;
 														$temp = '' ;
-														if( $supplierId == $suppli['ID']){
+														if( $productSupplier['SUPPLIER_ID'] == $suppli['ID']){
 															$temp = "selected" ;
 														}
 														echo "<option $temp value='".$suppli['ID']."'>".$suppli['NAME']."</option>" ;
