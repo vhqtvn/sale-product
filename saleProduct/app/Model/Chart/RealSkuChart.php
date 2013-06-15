@@ -5,7 +5,7 @@
  * @author Administrator
  *
  */
-class RealSkuPriceChart extends AppModel {
+class RealSkuChart extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
 	public function load( $params ){

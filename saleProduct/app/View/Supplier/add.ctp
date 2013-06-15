@@ -181,18 +181,7 @@
 				</tr>
 			</table>
 	</div>
-	<div id="supllie-product">
-		<div class="row-fluid">
-			<div class="span3">
-				<div id="default-tree" class="tree" style="padding: 5px;overflow-y:auto;overflow-x:hidden;height:460px; "></div>
-			</div>
-			<div class="span9" style="margin-left:1px;"> 
-				<div class="grid-content"  style="width:605px;;" ></div>
-			</div>
-		</div>
-		
-	</div>
-	
+
 	<div id="evaluate">
 		<div class="toolbar toolbar-auto">
 				<table style="width:100%;" class="query-table  save-sale-price">

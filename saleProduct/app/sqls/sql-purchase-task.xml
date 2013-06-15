@@ -163,6 +163,41 @@
 			)}
     </entry>
     
+    <entry key="sql_purchase_product_listBySupplierId">
+		SELECT DISTINCT  
+			sppd.* ,
+			srp.name as TITLE,
+			srp.IMAGE_URL,
+			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
+			su.NAME AS EXECUTOR_NAME,
+			( select sc_user.name from sc_user where sc_user.login_id = sppd.creator ) as CREATOR_NAME,
+			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
+		FROM 
+		sc_purchase_task_products sptp,
+		sc_purchase_plan_details sppd 
+		LEFT JOIN sc_user su
+		on su.login_id = sppd.executor
+		left join sc_real_product srp
+		on sppd.SKU = srp.real_sku
+		WHERE 1=1 
+		    and sptp.product_id = sppd.id
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+		    and sptp.task_id in (
+		    		select spt.id
+				         from sc_purchase_task spt 
+				         where 1=1
+				         {@ #$purchaseTask_view: and 1=0# }
+		    )
+		    {@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
+			)}
+			and sppd.REAL_PROVIDOR = '{@#supplierId#}'
+    </entry>
+    
     <entry key="sql_purchase_task_product_selectable">
     <![CDATA[
     	SELECT DISTINCT  
