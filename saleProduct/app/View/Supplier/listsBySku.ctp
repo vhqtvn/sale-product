@@ -45,8 +45,9 @@
 							return html.join("") ;
 					}},
 		           	{align:"center",key:"NAME",label:"名称", width:"15%"},
-		        	{align:"left",key:"EVALUATE",label:"评价",width:"10%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
-		           	{align:"center",key:"ADDRESS",label:"地址",width:"15%"},
+		        	{align:"left",key:"EVALUATE",label:"评价",width:"6%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
+		        	{align:"center",key:"REAL_QUOTE_PRICE",label:"最近交易价格",width:"10%"},
+		           	{align:"center",key:"REAL_PURCHASE_DATE",label:"最近交易时间",width:"13%"},
 		           	{align:"center",key:"CONTACTOR",label:"联系人",width:"6%"},
 		           	{align:"center",key:"PHONE",label:"联系电话",width:"8%"},
 		           	{align:"center",key:"MOBILE",label:"手机",width:"8%"},

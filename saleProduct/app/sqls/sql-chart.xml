@@ -3,6 +3,19 @@
     <entry key="sql_">
     </entry>
 
+    
+    <entry key="sql_saleproduct_listHistoryTradePrice">
+    <![CDATA[
+   SELECT sppd.REAL_QUOTE_PRICE ,
+   				sppd.REAL_PURCHASE_DATE ,
+   				ss.NAME
+   FROM  sc_purchase_plan_details sppd 
+   left join sc_supplier ss
+   on ss.id = sppd.REAL_PROVIDOR
+	WHERE sppd.REAL_QUOTE_PRICE IS NOT NULL
+	AND sppd.SKU = '{@#sku#}'
+	]]>	      
+    </entry>
    
     <entry key="sql_chart_realSku_quantity">
  			SELECT DATE_FORMAT( so.purchase_date, "%Y-%m" ) AS P_DATE, srpr.REAL_SKU , SUM(soi.Quantity_Ordered)  AS QUANTITY, 'TOTAL' AS TYPE,'' AS ASIN

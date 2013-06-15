@@ -39,7 +39,15 @@
    
     <entry key="sql_supplier_list">
  			SELECT sc_supplier.* ,
-			( select sc_user.name from sc_user where sc_user.login_id = sc_supplier.creator ) as USERNAME
+			( select sc_user.name from sc_user where sc_user.login_id = sc_supplier.creator ) as USERNAME,
+			(SELECT sppd.REAL_QUOTE_PRICE FROM sc_purchase_plan_details sppd 
+					WHERE sppd.REAL_PROVIDOR = sc_supplier.ID
+				         AND 	sppd.REAL_QUOTE_PRICE IS NOT NULL
+					 ORDER BY sppd.ID DESC LIMIT 0,1) AS REAL_QUOTE_PRICE,
+				(SELECT sppd.REAL_PURCHASE_DATE FROM sc_purchase_plan_details sppd 
+					WHERE sppd.REAL_PROVIDOR = sc_supplier.ID
+						AND 	sppd.REAL_QUOTE_PRICE IS NOT NULL	
+					 ORDER BY sppd.ID DESC  LIMIT 0,1) AS REAL_PURCHASE_DATE
 			FROM sc_supplier
 			 where 1=1
                 {@  and name like '%#name#%'}
@@ -124,6 +132,7 @@
     	INSERT INTO sc_supplier 
 			(ID, 
 			NAME, 
+			CODE,
 			ADDRESS, 
 			CONTACTOR, 
 			PHONE, 
@@ -142,6 +151,7 @@
 			VALUES
 			('{@#id#}', 
 			'{@#name#}', 
+			'{@#code#}', 
 			'{@#address#}', 
 			'{@#contactor#}', 
 			'{@#phone#}', 
@@ -165,6 +175,7 @@
     	UPDATE sc_supplier 
 			SET
 			name = '{@#name#}' , 
+			code = '{@#code#}' , 
 			address = '{@#address#}' , 
 			contactor = '{@#contactor#}' , 
 			phone = '{@#phone#}' , 

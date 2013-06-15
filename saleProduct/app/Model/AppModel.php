@@ -37,6 +37,18 @@ class AppModel extends Model {
 		  	
 		}
 		
+		public function getDefaultCodeOnlyIndex($code){
+			$index = $this->getMaxValue($code , null , 1) ;
+			if( strlen($index) < 5 ){
+				$len = 5-strlen($index) ;
+				for($i=0 ;$i < $len ;$i++){
+					$index = '0'.$index ;
+				}
+			}
+			$defaultCode = "$code-".$index ;
+			return $defaultCode ;
+		}
+		
 		/**
 		 * code
 		 * @param unknown_type $code

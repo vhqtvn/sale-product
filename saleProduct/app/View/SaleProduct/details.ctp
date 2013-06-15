@@ -54,12 +54,20 @@
 				,{label:'出入库',url:contextPath+"/page/forward/Warehouse.In.storageDetails/<?php echo $item['ID'];?>",iframe:true}
 				<?php }?>
 				,{label:'历史询价',url:contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/<?php echo $item['REAL_SKU'];?>",iframe:true}
+				,{label:'交易价格曲线',url:contextPath+"/page/forward/SaleProduct.priceChart/<?php echo $item['REAL_SKU'];?>",iframe:true}
 				,{label:'销量图',url:contextPath+"/page/forward/SaleProduct.saleChart/<?php echo $item['REAL_SKU'];?>",iframe:true}
 			] ,
 			height:'588x'
 		} ) ;
   	})
   </script>
+  
+  <style type="text/css">
+.WdateDiv, .ui-corner-all {
+background: #fff;
+border: none;
+}
+  </style>
 
 </head>
 <body style="overflow-y:auto;padding:2px;">

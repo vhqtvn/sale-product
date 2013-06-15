@@ -10,7 +10,7 @@ class RealSkuPriceChart extends AppModel {
 	
 	public function load( $params ){
 		$sku = $params['sku'] ;
-		$records = $this->exeSqlWithFormat("sql_chart_realSku_quantity", array('sku'=>$sku)) ;
+		$records = $this->exeSqlWithFormat("sql_saleproduct_listHistoryTradePrice", array('sku'=>$sku)) ;
 		
 		return array( "categories"=>'','records'=>$records ) ;
 	}

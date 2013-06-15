@@ -371,6 +371,9 @@
 )
 	]]>	      
     </entry>
+
+    
+    
     
     <!--查询货品分类树-->
     <entry key="sql_saleproduct_categorytree">

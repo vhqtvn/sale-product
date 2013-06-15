@@ -162,7 +162,7 @@
 		}
 		
 		body{
-			padding-top:80px;
+			padding-top:78px;
 		}
 		
 		.flow-action{

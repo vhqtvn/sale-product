@@ -23,10 +23,12 @@
 		$products = "" ;
 		$memo = '' ;
 		$evaluate= '' ;
+		$code = "" ;
 		
 		 if( $supplier !=null){
 		 	$id =$supplier[0]['sc_supplier']["ID"] ;
 			$name =$supplier[0]['sc_supplier']["NAME"] ;
+			$code =$supplier[0]['sc_supplier']["CODE"] ;
 			$address =$supplier[0]['sc_supplier']["ADDRESS"] ;
 			$contactor =$supplier[0]['sc_supplier']["CONTACTOR"] ;
 			$phone =$supplier[0]['sc_supplier']["PHONE"] ;
@@ -49,6 +51,12 @@
 		if( isset($view) ){
 			$isView = true ;
 		}
+		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$defaultCode = $code;
+		if( empty($code) ){
+			$defaultCode = $SqlUtils->getDefaultCodeOnlyIndex("SUP") ;
+		}
 	?>
 	
 	
@@ -70,7 +78,6 @@
 	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/tab/jquery.ui.tabs.js"></script>
 	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/modules/supplier/add.js"></script>
 	
-  
    <style>
    		*{
    			font:12px "微软雅黑";
@@ -141,8 +148,12 @@
 			<table class="table table-bordered">
 				<caption>供应商信息</caption>
 				<tr>
-					<th>供应商名称111：</th>
+					<th>供应商名称：</th>
 					<td colspan="3"><input <?php if($isView)echo "readonly='readOnly'";?>  data-validator="required" type="text" id="name" value="<?php echo $name;?>"/></td>
+				</tr>
+				<tr>
+					<th>供应商编码：</th>
+					<td colspan="3"><input <?php  echo "readonly='readOnly'";?>  data-validator="required" type="text" id="code" value="<?php echo $defaultCode;?>"/></td>
 				</tr>
 				<tr>
 					<th>供应商地址：</th><td colspan="3"><input  <?php if($isView)echo "readonly='readOnly'";?>   data-validator="required" type="text" id="address" value="<?php echo $address;?>"/></td>
