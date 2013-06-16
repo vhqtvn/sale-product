@@ -59,6 +59,8 @@
                 	and (
                 	 name like '%#searchKey#%'
                 	 or
+                	 memo like  '%#searchKey#%'
+                	 or
                 	 sc_supplier.id in (
 	                   	select sps.supplier_id  from 
 	                   		sc_real_product_supplier sps ,
