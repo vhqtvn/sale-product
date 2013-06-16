@@ -11,24 +11,15 @@
    include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 		echo $this->Html->css('default/style');
-		echo $this->Html->css('../js/tab/jquery.ui.tabs');
-		echo $this->Html->css('../js/grid/jquery.llygrid');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('jquery.ui');
-		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('grid/query');
-		echo $this->Html->script('validator/jquery.validation');	
-		echo $this->Html->script('tab/jquery.ui.tabs');
-		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('modules/norder/details');
-		echo $this->Html->script('calendar/WdatePicker');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -145,11 +136,11 @@
 				  ?>
 				  	<tr>
 				  		<td style="width:100%;">
-				  			<div class="alert alert-success" style="margin:2px;font-weight:bold;"><?php  echo $item['Title'] ;?>
+				  			<div class="alert alert-success" style="margin:2px;font-weight:bold;"><span offer-listing="<?php  echo $item['ASIN'] ;?>"><?php  echo $item['Title'] ;?></span>
 				  					<?php 
 				  					
 				  						if( !empty($item['NAME']) ){
-				  							echo "[ ".$item['REAL_SKU']." ]（".$item['NAME']."）" ;
+				  							echo "[ <span product-realsku='".$item['REAL_SKU']."'>".$item['REAL_SKU']."</span> ]（".$item['NAME']."）" ;
 				  						}
 				  					?>
 				  				</div>
