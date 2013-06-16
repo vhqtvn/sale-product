@@ -1,16 +1,6 @@
 
 		$(function(){
 			
-			$(".action").live("click",function(){
-				var record = $(this).parents("tr:first").data("record")||{} ;
-				var id = record.ID;
-				if( $(this).hasClass("view") ){
-					openCenterWindow(contextPath+"/saleProduct/details/"+record.REAL_SKU+"/sku",900,650) ;
-				}
-				return false ;
-			});
-			
-			
 
 			var tab = $('#tabs-default').tabs( {//$this->layout="index";
 				tabs:[
