@@ -105,13 +105,20 @@
 					}
 	           }) ;
 
+
+				$(".action").live("click",function(){
+					var record = $(this).parents("tr:first").data("record")||{} ;
+					var id = record.ID;
+					if( $(this).hasClass("view") ){
+						openCenterWindow(contextPath+"/saleProduct/details/"+record.REAL_SKU+"/sku",900,650) ;
+					}
+					return false ;
+				});
+				
+				
+
 				$(".grid-content").llygrid({
 					columns:[
-						{align:"center",key:"ID",label:"操作", width:"6%",format:function(val,record){
-							var html = [] ;
-							html.push(  getImage('icon-grid.gif','查看','action view ') +"&nbsp;") ;
-							return html.join("") ;
-						}},
 					 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
 					 	{align:"center",key:"IS_ONSALE",label:"销售状态",width:"5%",format:function(val,record){
 					 		if(val == 1){
@@ -121,7 +128,9 @@
 					 		return   getImage('unchecked.gif','未销售','unsale-status');
 					 	}},
 			           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-			           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true},
+			           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true,format:function(val,record){
+								return "<a href='#' class='action view'>"+val+"</a>" ;
+				        }},
 			           	{align:"center",key:"QUANTITY",label:"总",group:"库存",width:"5%",sort:true },
 			        	{align:"center",key:"COMMON_QUANTITY",label:"普通",group:"库存",width:"5%" ,sort:true},
 			        	{align:"center",key:"FBA_QUANTITY",label:"FBA",group:"库存",width:"5%" ,sort:true},

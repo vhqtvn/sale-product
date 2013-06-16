@@ -65,8 +65,10 @@
 		         ds:{type:"url",content:contextPath+"/grid/query/"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
-				 height:400,
-				 title:"产品列表",
+				 height:function(){
+					return $(window).height()-110
+				},
+				 title:"",
 				 indexColumn:true,
 				 querys:{sqlId:"sql_supplier_list"},
 				 loadMsg:"数据加载中，请稍候......"
@@ -102,10 +104,10 @@
 			
 			
 			$(".query-btn").click(function(){
-				var name = $("[name='name']").val() ;
+				var searchKey = $("[name='searchKey']").val() ;
 				var querys = {} ;
-				if(name){
-					querys.name = name ;
+				if(searchKey){
+					querys.searchKey = searchKey ;
 				}
 				$(".grid-content").llygrid("reload",querys) ;	
 			}) ;
@@ -127,11 +129,8 @@
 <div class="toolbar toolbar-auto">
 		<table>
 			<tr>
-				<th>
-					供应商名称:
-				</th>
 				<td>
-					<input type="text" name="name"/>
+					<input type="text" name="searchKey"  placeHolder="输入供应商名称、ASIN、SKU搜索、备注" class="span4"/>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary">查询</button>
