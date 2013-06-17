@@ -164,13 +164,13 @@
 				var val = $(this).attr("val") ;
 				openCenterWindow(contextPath+"/amazonaccount/editAccountProduct/"+val,600,480) ;
 			}) ;
-			
+			/*
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				var sku = $(this).attr("sku") ;
 				openCenterWindow(contextPath+"/product/details/"+asin+"/"+accountId+"/"+sku,950,650) ;
 			}) ;
-			
+			*/
 			$(".query-btn").click(function(){
 				$(".grid-content").llygrid("reload",getQueryCondition(),
 					{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	

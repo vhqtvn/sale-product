@@ -211,6 +211,8 @@ class Amazon {
 				'MaxErrorRetry' => 3,
 		);
 		
+		debug( $config) ;
+		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
 		     $this->AWS_SECRET_ACCESS_KEY, 
