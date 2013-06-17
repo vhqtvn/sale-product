@@ -198,6 +198,7 @@ class Amazonaccount extends AppModel {
 						AWS_SECRET_ACCESS_KEY, 
 						APPLICATION_NAME, 
 						APPLICATION_VERSION, 
+						PLATFORM_ID,
 						MERCHANT_ID, 
 						MARKETPLACE_ID, 
 						MERCHANT_IDENTIFIER
@@ -215,6 +216,7 @@ class Amazonaccount extends AppModel {
 						'".$data['AWS_SECRET_ACCESS_KEY']."', 
 						'".$data['APPLICATION_NAME']."', 
 						'".$data['APPLICATION_VERSION']."', 
+						'".$data['PLATFORM_ID']."', 
 						'".$data['MERCHANT_ID']."', 
 						'".$data['MARKETPLACE_ID']."', 
 						'".$data['MERCHANT_IDENTIFIER']."'
@@ -233,6 +235,7 @@ class Amazonaccount extends AppModel {
 				AWS_SECRET_ACCESS_KEY = '".$data['AWS_SECRET_ACCESS_KEY']."' , 
 				APPLICATION_NAME = '".$data['APPLICATION_NAME']."' , 
 				APPLICATION_VERSION = '".$data['APPLICATION_VERSION']."' , 
+				PLATFORM_ID = '".$data['PLATFORM_ID']."' , 
 				MERCHANT_ID = '".$data['MERCHANT_ID']."' , 
 				MERCHANT_IDENTIFIER = '".$data['MERCHANT_IDENTIFIER']."' , 
 				MARKETPLACE_ID = '".$data['MARKETPLACE_ID']."'

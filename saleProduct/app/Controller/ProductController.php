@@ -35,7 +35,7 @@ class ProductController extends AppController {
 				$this->set('rule', $rule);
 		 }
 		 
-		$accounts = $this->Amazonaccount->getAccountsFront() ;
+		$accounts = $this->Amazonaccount->getAllAccounts() ;
 		$this->set('accounts', $accounts);
     }
 

@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+  		 include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -82,10 +82,11 @@
 		      
 		           		return "<a href='#' class='show-products' val='"+record.ID+"'>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"UPLOAD_TIME",label:"上传时间",width:"20%"},
+		        	{align:"center",key:"PLATFORM_NAME",label:"平台",width:"15%"},
+		           	{align:"center",key:"UPLOAD_TIME",label:"上传时间",width:"15%"},
 		           	{align:"center",key:"USERNAME",label:"上传者",width:"10%"},
 		           		{align:"center",key:"TOTAL",label:"产品总数",width:"10%"},
-					{align:"center",key:"ID",label:"获取操作",width:"25%",format:function(val,record){
+					{align:"center",key:"ID",label:"获取操作",width:"8%",format:function(val,record){
 						var html = [] ;
 					html.push("<a href='#' class='gather-action' val='"+val+"'>信息获取</a>&nbsp;&nbsp;") ;
 					return html.join("") ;
@@ -95,7 +96,9 @@
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:400,
+				 height:function(){
+					return $(window).height() - 200;
+				},
 				 title:"上传列表",
 				 indexColumn:false,
 				 querys:{sqlId:"sql_product_upload"},
@@ -106,9 +109,9 @@
 				var id = currentGroup.id ;
 				var text = currentGroup.name ;
 				if(id){
-					openCenterWindow(contextPath+"/product/uploadPage/"+id+"/"+text,600,400) ;
+					openCenterWindow(contextPath+"/product/uploadPage/"+id+"/"+text,650,450) ;
 				}else
-					openCenterWindow(contextPath+"/product/uploadPage",600,400) ;
+					openCenterWindow(contextPath+"/product/uploadPage",650,450) ;
 			}) ;
 			
 			

@@ -41,6 +41,7 @@ class GatherUploadController extends AppController {
 	
 		$params = $this->request->data  ;
 		$groupId = $params["groupId"] ;
+		$platformId = $params["platformId"] ;
 		
 		$fileName = $_FILES['productFile']["name"] ;
 		$myfile = $_FILES['productFile']['tmp_name'] ;
@@ -48,7 +49,7 @@ class GatherUploadController extends AppController {
 		//save db
 		$id = "UC_".date('U') ;
 		
-		$this->GatherService->saveUpload($id, $fileName,$groupId,$user ) ;
+		$this->GatherService->saveUpload($id, $fileName,$groupId,$user,$platformId ) ;
 		
 		$file_handle = fopen($myfile , "r");
 		while (!feof($file_handle)) {
@@ -59,7 +60,7 @@ class GatherUploadController extends AppController {
 				} ;
 		   		//save to sc_gather_product id task_id asin
 		   		try{
-		   		$this->GatherService->saveGatherAsin($id, trim($line) ) ;
+		   		$this->GatherService->saveGatherAsin($id, trim($line) ,$platformId) ;
 		   		}catch(Exception $e){}
 		   }
 		}
@@ -77,8 +78,9 @@ class GatherUploadController extends AppController {
 		$user =  $this->getCookUser() ;
 		$name 	= $params["name"] ;
 		$groupId = $params["groupId"] ;
+		$platformId = $params["platformId"] ;
 		$asins 	= $params["asins"] ;
-		$this->GatherService->saveUpload($id, $name,$groupId,$user) ;
+		$this->GatherService->saveUpload($id, $name,$groupId,$user,$platformId) ;
 		
 		$asinss = explode(",",$asins) ;
 		foreach( $asinss as $asin ){
@@ -87,7 +89,7 @@ class GatherUploadController extends AppController {
 					continue ;
 				} ; 
 				try{
-				$this->GatherService->saveGatherAsin($id, trim($asin) ) ;
+					$this->GatherService->saveGatherAsin($id, trim($asin),$platformId ) ;
 				}catch(Exception $e){}
 			}
 		} ;
@@ -126,8 +128,9 @@ class GatherUploadController extends AppController {
 		foreach( $array as $arr ){
 			$index = $index + 1 ;
 			$asin = $arr['sc_gather_asin']['asin'] ;
-			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] details" );
-			$this->GatherData->asinInfo($asin ,$id,$index,$this->taskId ) ;
+			$platformId = $arr['sc_gather_asin']['platform_id'] ;
+			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."]($platformId) details" );
+			$this->GatherData->asinInfoPlatform($asin, $platformId ,$id,$index,$this->taskId ) ;
 		}
 		$this->Log->savelog($this->taskId, "end!" );
 	} 
@@ -143,8 +146,9 @@ class GatherUploadController extends AppController {
 		foreach( $array as $arr ){
 			$index = $index + 1 ;
 			$asin = $arr['sc_gather_asin']['asin'] ;
+			$platformId = $arr['sc_gather_asin']['platform_id'] ;
 			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] competitions" );
-			$this->GatherData->asinCompetition($asin,$id ,$index,$this->taskId ) ;
+			$this->GatherData->asinCompetitionPlatform($asin,$platformId,$id ,$index,$this->taskId ) ;
 		}
 		$this->Log->savelog($this->taskId, "end!" );
     }
@@ -159,8 +163,9 @@ class GatherUploadController extends AppController {
 		foreach( $array as $arr ){
 			$index = $index + 1 ;
 			$asin = $arr['sc_gather_asin']['asin'] ;
+			$platformId = $arr['sc_gather_asin']['platform_id'] ;
 			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] fba" );
-			$this->GatherData->asinFbas($asin,$id ,$index,$this->taskId ) ;
+			$this->GatherData->asinFbasPlatform($asin,$platformId,$id ,$index,$this->taskId ) ;
 		}
 		$this->Log->savelog($this->taskId, "end!" );
     }

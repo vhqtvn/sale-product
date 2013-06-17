@@ -40,9 +40,16 @@ class Amazon {
 		$this->APPLICATION_ID       = $APPLICATION_ID;
 	}
 	
+	public function getAccountPlatform($accountId){
+		$System = ClassRegistry::init("System") ;
+		return $System->getAccountPlatformConfig($accountId ) ;
+	}
+	
 	public function getFeedReport1($accountId ,$reportType,$querys =array()){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' =>  "https://mws.amazonservices.com",
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,
@@ -111,8 +118,10 @@ class Amazon {
 	}
 	
 	public function getFeedReport2($accountId ,$reportType,$reportRequestId){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' =>  "https://mws.amazonservices.com",
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,
@@ -157,8 +166,10 @@ class Amazon {
 	}
 	
 	public function getFeedReport3($accountId ,$reportType,$reportId){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' => "https://mws.amazonservices.com",
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,
@@ -191,12 +202,14 @@ class Amazon {
 	 * 发送report请求,获取产品信息
 	 */
 	public function getProductReport1( $accountId,$log = null ){
-		 $config = array (
-			  'ServiceURL' =>  "https://mws.amazonservices.com",
-			  'ProxyHost' => null,
-			  'ProxyPort' => -1,
-			  'MaxErrorRetry' => 3,
-			);
+		 $platform = $this->getAccountPlatform($accountId) ;
+		
+		$config = array (
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
 		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
@@ -248,12 +261,14 @@ class Amazon {
 	}
 	
 	public function getProductReport2( $accountId , $reportRequestId,$log = null ){
-		 $config = array (
-			  'ServiceURL' =>  "https://mws.amazonservices.com",
-			  'ProxyHost' => null,
-			  'ProxyPort' => -1,
-			  'MaxErrorRetry' => 3,
-			);
+		 $platform = $this->getAccountPlatform($accountId) ;
+		
+		$config = array (
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
 		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
@@ -295,12 +310,14 @@ class Amazon {
 	}
 	
 	public function getProductReport3( $accountId ,$reportId,$log=null){
-		 $config = array (
-		  'ServiceURL' => "https://mws.amazonservices.com",
-		  'ProxyHost' => null,
-		  'ProxyPort' => -1,
-		  'MaxErrorRetry' => 3,
-		 );
+		$platform = $this->getAccountPlatform($accountId) ;
+		
+		$config = array (
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
 		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
@@ -325,12 +342,14 @@ class Amazon {
 	
 	public function getProductActiveReport1( $accountId,$log = null  ){
 
-		 $config = array (
-			  'ServiceURL' =>  "https://mws.amazonservices.com",
-			  'ProxyHost' => null,
-			  'ProxyPort' => -1,
-			  'MaxErrorRetry' => 3,
-			);
+		 $platform = $this->getAccountPlatform($accountId) ;
+		
+		$config = array (
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
 		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
@@ -382,12 +401,14 @@ class Amazon {
 	}
 	
 	public function getProductActiveReport2( $accountId , $reportRequestId,$log = null ){
-		 $config = array (
-			  'ServiceURL' =>  "https://mws.amazonservices.com",
-			  'ProxyHost' => null,
-			  'ProxyPort' => -1,
-			  'MaxErrorRetry' => 3,
-			);
+		 $platform = $this->getAccountPlatform($accountId) ;
+		
+		$config = array (
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
 		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
@@ -429,12 +450,14 @@ class Amazon {
 	}
 	
 	public function getProductActiveReport3( $accountId ,$reportId,$log=null){
-		 $config = array (
-		  'ServiceURL' => "https://mws.amazonservices.com",
-		  'ProxyHost' => null,
-		  'ProxyPort' => -1,
-		  'MaxErrorRetry' => 3,
-		 );
+		 $platform = $this->getAccountPlatform($accountId) ;
+		
+		$config = array (
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
 		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
@@ -518,11 +541,13 @@ class Amazon {
 	}
 	
 	public function postFeedSubmission( $accountId ,$feed , $loginId ,$feedType){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-		  'ServiceURL' => "https://mws.amazonservices.com",
-		  'ProxyHost' => null,
-		  'ProxyPort' => -1,
-		  'MaxErrorRetry' => 3,
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
 		);
 		
 		 $service = new MarketplaceWebService_FeedClient(
@@ -598,11 +623,13 @@ class Amazon {
 	}
 	
 	public function getFeedSubmissionResult($accountId,$feedSubmissionId){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-		  'ServiceURL' => "https://mws.amazonservices.com",
-		  'ProxyHost' => null,
-		  'ProxyPort' => -1,
-		  'MaxErrorRetry' => 3,
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
 		);
 		
 		 $service = new MarketplaceWebService_FeedClient(
@@ -662,12 +689,14 @@ class Amazon {
 
 	
 	public function getFBAInventory1($accountId){ //_GET_AFN_INVENTORY_DATA_
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-			  'ServiceURL' =>  "https://mws.amazonservices.com",
-			  'ProxyHost' => null,
-			  'ProxyPort' => -1,
-			  'MaxErrorRetry' => 3,
-			);
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
+				'ProxyHost' => null,
+				'ProxyPort' => -1,
+				'MaxErrorRetry' => 3,
+		);
 		
 		 $service = new MarketplaceWebService_Client(
 		     $this->AWS_ACCESS_KEY_ID, 
@@ -718,8 +747,10 @@ class Amazon {
 	}
 	
 	public function getFBAInventory2( $accountId , $reportRequestId ){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' =>  "https://mws.amazonservices.com",
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,
@@ -764,8 +795,10 @@ class Amazon {
 	}
 	
 	public function getFBAInventory3( $accountId ,$reportId){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' => "https://mws.amazonservices.com",
+				'ServiceURL' => $platform['AMAZON_ROOT_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,

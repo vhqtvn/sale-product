@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_platform_list">
+    <![CDATA[	
+		select * from sc_platform
+	]]>	      
+    </entry>
+    
+     <entry key="sql_getPlatformConfig_ForAccountId">
+    <![CDATA[	
+		select spc.* from sc_platform sp , sc_amazon_account saa, sc_platform_config spc
+		 where 
+		sp.id = saa.platform_id 
+		and sps.platform_id = sp.id
+		and saa.id = '{@#accountId#}'
+	]]>	      
+    </entry>
+    
+    <entry key="sql_getPlatformConfigByPlatformId">
+    <![CDATA[	
+		select spc.* from sc_platform sp  , sc_platform_config spc
+		 where  
+		 spc.platform_id = sp.id
+		and sp.id = '{@#platformId#}'
+	]]>	      
+    </entry>
+</properties>

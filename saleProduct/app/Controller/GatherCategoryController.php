@@ -67,7 +67,7 @@ class GatherCategoryController extends AppController {
 	 */
 	public function baseInfo($accountId , $categoryId ){
 		try{
-		
+			$config = $this->System->getAccountPlatformConfig($accountId) ;
 			$asinArray =  $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 			
 			//开始获取产品信息
@@ -82,7 +82,7 @@ class GatherCategoryController extends AppController {
 				
 				$index = $index + 1 ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] details  " );
-				$this->GatherData->asinInfo($asin,$accountId,$index,$this->taskId) ;
+				$this->GatherData->asinInfoPlatform($asin, $config['PLATFORM_ID'] ,$accountId,$index,$this->taskId) ;
 			} 
 			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );

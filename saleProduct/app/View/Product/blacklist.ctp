@@ -65,7 +65,7 @@
 			           		return "<img src='/"+fileContextPath+"/"+val+"' onclick='showImg(this)' style='width:50px;height:50px;'>" ;
 			           	}},
 			           	{align:"center",key:"TITLE",label:"TITLE",width:"30%",forzen:false,align:"left",format:function(val,record){
-			           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+			           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
 			           	}},
 			           	{align:"center",key:"DESCRIPTION",label:"废弃理由",width:"30%"} ,
 			            {align:"center",key:"ID",label:"操作",width:"10%",format:function(val,record){

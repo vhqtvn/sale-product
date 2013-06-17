@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
@@ -149,9 +149,14 @@
  	
  	$(function(){
 			$(".base-gather").click(function(){
+				var platformId = $("[name='platformId']").val() ;
+				if(!platformId) {
+					alert("必须选择平台！");
+					return ;
+				}
 				$.ajax({
 					type:"post",
-					url:contextPath+"/gatherProduct/execute/<?php echo $asin?>",
+					url:contextPath+"/gatherProduct/execute/<?php echo $asin?>/"+platformId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -161,9 +166,6 @@
 					}
 				}); 
 			}) ;
-			
-			
-			
 			
 			$(".category").click(function(){
 				openCenterWindow(contextPath+"/product/assignCategory/<?php echo $asin?>",400,500) ;
@@ -323,109 +325,29 @@
  </script>
 
 </head>
-<body style="overflow-y:auto;padding:2px;">
-	<div class="row-fluid">
-		<div class="span11">
+<body style="overflow-y:auto;padding:2px;padding-top:30px;">
+	<div class="row-fluid" style="position:fixed;top:0px;left:0px;right:0px;height:30px;z-index:1;">
+		<div class="span12">
 			<div class="toolbar">
-				<div class="row-fluid" style="margin:5px;">
-					<div class="span2">
 						<button class="base-gather btn">信息获取</button>
-					</div>
-					<div class="span7 toobar-btns">
-						 <button class="apply add-product-knowlege btn btn-primary">添加产品知识</button>
-					</div>
-				</div>
-				<div>
-						<?php
-							foreach($strategys as $strategy){
-								$temp = "" ;
-								if( $product["STRATEGY"] == $strategy['sc_config']['KEY']){
-									echo$strategy['sc_config']['LABEL'] ;
-								} ;
-							} ;
-						?>
-				</div>	
-				<div>
-				    <textarea id="description" placeHolder="添加产品知识" style="width:98%;height:40px;"></textarea> 
-					<div class="description-container">
-						<pre><?php echo $product["COMMENT"]?></pre>
-						<pre style="position:relative;text-align:left;" class="pre-knowledge"><?php echo $product["KNOWLEDGE"]?>
-						</pre>
-					</div>
-					<textarea id="description_hidden" style="display:none;"><?php echo $product["COMMENT"]?></textarea>
-				</div>
+						<select name="platformId"
+								<?php  if(!empty($product["TITLE"])) echo "disabled";?>
+							  style="margin:0px;padding:0px;height:25px;">
+								<option value="">--选择平台--</option>
+								<?php 
+									$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+									$platforms = $SqlUtils->exeSql("sql_platform_list",array()) ;
+									foreach( $platforms as $s){
+										$s = $SqlUtils->formatObject($s) ;
+										$selected = '' ;
+										if( $s['ID'] == $product['PLATFORM_ID'] ){
+											$selected = "selected" ;
+										}
+										echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;
+									}
+								?>
+							</select>
 			</div>
-		</div>
-		<div class="span1">
-		<?php  
-			$testStatus = $product['TEST_STATUS'] ;
-			$userStatus = $product['USER_STATUS'] ;
-			
-			if( $group == 'manage' || $group== 'general_manager' || $group == 'sale_specialist' ){
-				if( $testStatus == 'testing' ){
-					echo "<div class='alert alert-info'>
-							试销中(PV:$flow)
-							<button class='btn normal-sell' testStatus='formal'>正式销售</button><div style='height:5px;'></div>
-							<button class='btn uninstall-product' testStatus='uninstall'>下架</button>
-					</div>" ;
-				}else if( $testStatus == 'formal' ){
-					echo "<div class='alert alert-warning'>
-						正式销售(PV:$flow)
-						<button class='btn testing-sell'  testStatus='testing'>试销</button><div style='height:5px;'></div>
-						<button class='btn uninstall-product' testStatus='uninstall'>下架</button>
-				</div>" ;
-				}else if( $testStatus == 'uninstall' ){
-					echo "<div class='alert alert-warning'>
-						已下架
-				</div>" ;
-				}else{
-					echo "<div class='alert alert-warning'>
-						待开发
-				</div>" ;
-				}
-				
-				if($userStatus == "focus"){
-					echo "<div class='alert alert-success alert-focus'>
-						异常关注
-						<button class='btn btn-small strong-focus' testStatus='unfocus'>取消关注</button>
-				</div>" ;
-				}else{
-					echo "<div class='alert alert-info alert-focus'>
-						<button class='btn btn-primary strong-focus' testStatus='focus'>添加关注</button>
-				</div>" ;
-				}
-			}else{
-				if( $testStatus == 'testing' ){
-					if( empty($flow) ){
-						echo "<div class='alert alert-info'>
-								试销中(流量测试中)
-						</div>" ;
-					}else{
-						echo "<div class='alert alert-info'>
-								试销中(PV:$flow)
-						</div>" ;
-					}
-				}else if( $testStatus == 'formal' ){
-					echo "<div class='alert alert-warning'>
-						正式销售(PV:$flow)
-				</div>" ;
-				}else if( $testStatus == 'uninstall' ){
-					echo "<div class='alert alert-warning'>
-						已下架
-				</div>" ;
-				}else{
-					echo "<div class='alert alert-warning'>
-						待开发
-				</div>" ;
-				}
-				
-				if($userStatus == "focus"){
-					echo "<div class='alert alert-success alert-focus'>
-						异常关注
-				</div>" ;
-				}
-			}
-		?>
 		</div>
 	</div>
 	
@@ -469,10 +391,12 @@
 					<td ><a href="#" offer-listing="<?php echo $asin?>"><?php echo $product["TITLE"]?>(<?php echo $asin?>) </a></td>
 					<td rowspan="8">
 						<?php
+							$imgString = "" ;
 							foreach( $imgs as $img ){
 								$url = str_replace("%" , "%25",$img['LOCAL_URL']) ;
-								echo "<img src='/".$fileContextPath."/".$url."'>" ;
+								$imgString = "<img src='/".$fileContextPath."/".$url."'>" ;
 							} ;
+							echo $imgString ;
 						?>
 					</td>
 				</tr>
@@ -605,74 +529,6 @@
 				</table>
 			</div>
 		</div>
-		<?php /*
-		<div id="supplier-tab" class="ui-tabs-panel" style="height: 100px; display: block; ">
-			<button class="supplier btn">添加产品供应商</button>
-			<button class="supplier-select btn">选择产品供应商</button>
-			<table class="table table-bordered">
-				<tr>
-					<th>操作</th>
-					<th>名称</th>
-					<th>产品重量</th>
-					<th>生产周期</th>
-					<th>包装方式</th>
-					<th>付款方式</th>
-					<th>产品尺寸</th>
-					<th>包装尺寸</th>
-					<th>报价1</th>
-					<th>报价2</th>
-					<th>报价3</th>
-					<th></th>
-				</tr>
-				<?php foreach($suppliers as $supplier){
-					$urls = "" ;
-					if( $supplier['sc_product_supplier']['URL'] != '' ){
-						if( $supplier['sc_product_supplier']['IMAGE'] != "" ){
-							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>
-								<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>
-							</a>" ;
-						}else{
-							$urls = "	<a href='".$supplier['sc_product_supplier']['URL']."' target='_blank'>产品网址</a>" ;
-						}
-					}else if($supplier['sc_product_supplier']['IMAGE'] != ""){
-						$urls = "<img src='/".$fileContextPath."/".$supplier['sc_product_supplier']['IMAGE']."' style='width:80px;height:50px;'>" ;
-					}
-					
-					$isUsed = "" ;
-					if( $hasSetSupplierPermission ){
-						$isUsed = $supplier['sc_product_supplier']['IS_USED'] == 1?"":"<button class='btn used' supplierId='".$supplier['sc_supplier']['ID']."'>采用</button>" ;
-					}
-					
-					
-					$usedClz = $supplier['sc_product_supplier']['IS_USED'] == 1?"used-clz":"" ;
-					echo "<tr class='$usedClz'>
-						<td rowspan=2 ><a href='#' class='update-supplier' supplierId='".$supplier['sc_supplier']['ID']."' >修改询价</a></td>
-						<td>
-						<a href='#' supplier-id='".$supplier['sc_supplier']['ID']."'>".$supplier['sc_supplier']['NAME']."</a>
-						$isUsed
-						</td>
-						<td>".$supplier['sc_product_supplier']['WEIGHT']."</td>
-						<td>".$supplier['sc_product_supplier']['CYCLE']."</td>
-						<td>".$supplier['sc_product_supplier']['PACKAGE']."</td>
-						<td>".$supplier['sc_product_supplier']['PAYMENT']."</td>
-						<td>".$supplier['sc_product_supplier']['PRODUCT_SIZE']."</td>
-						<td>".$supplier['sc_product_supplier']['PACKAGE_SIZE']."</td>
-						<td>".$supplier['sc_product_supplier']['NUM1']."/".$supplier['sc_product_supplier']['OFFER1']."</td>
-						<td>".$supplier['sc_product_supplier']['NUM2']."/".$supplier['sc_product_supplier']['OFFER2']."</td>
-						<td>".$supplier['sc_product_supplier']['NUM3']."/".$supplier['sc_product_supplier']['OFFER3']."</td>
-						<td rowspan=2>
-						  $urls
-						</td>
-					</tr><tr class='$usedClz'>
-						<td colspan=10>".$supplier['sc_product_supplier']['MEMO']."
-						</td>
-						
-					</tr> " ;
-				}?>
-				
-			</table>
-		</div>
-		*/ ?>
 	</div>
 	
 </body>

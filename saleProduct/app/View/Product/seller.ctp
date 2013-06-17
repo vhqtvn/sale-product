@@ -20,47 +20,22 @@
 	?>
   
    <script type="text/javascript">
-   //result.records , result.totalRecord
-//result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
 	$(function(){
 		$(".message,.loading").hide() ;
 		
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"编号", width:"8%"},
 		           	{align:"center",key:"NAME",label:"商家名称",width:"20%",forzen:false,align:"left",format:function(val,record){
 		           		var val1 = record.ID ;
 		           		return "<a href='#' class='show-products' val='"+val1+"'>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"URL",label:"商家地址",width:"30%",format:function(val,record){
+		           	{align:"center",key:"PLATFORM_NAME",label:"平台",width:"15%"},
+		           	{align:"center",key:"URL",label:"商家地址",width:"20%",format:function(val,record){
 		           		return "<a href='"+val+"' target='_blank'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"TOTAL",label:"产品总数",width:"8%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"8%"},
-				    {align:"center",key:"ID",label:"操作",width:"20%",format:function(val,record){
+				    {align:"center",key:"ID",label:"操作",width:"15%",format:function(val,record){
 						var html = [] ;
 						html.push("<a href='#' class='gather-action btn' val='"+val+"'>产品获取</a>&nbsp;") ;
 						if(record.TOTAL <= 0){
@@ -82,7 +57,9 @@
 			}) ;
 
 			$(".register").click(function(){
-				openCenterWindow(contextPath+"/seller/add",600,400) ;
+				openCenterWindow(contextPath+"/seller/add",600,400,function(){
+					$(".grid-content").llygrid("reload",{},true) ;
+				}) ;
 			}) ;
 			
 			$(".show-products").live("click",function(){

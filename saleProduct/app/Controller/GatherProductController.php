@@ -18,7 +18,9 @@ class GatherProductController extends AppController {
 	var $uses = array('Utils', 'Config','GatherData','GatherMarketing',"Amazonaccount","Log","Tasking");
 	public $taskId = null ;
 	
-	public function execute($asin , $accountId = null , $productId = null ){
+	public function execute($asin , $platformId ){
+		$accountId = null ;
+		$productId = null ;
 		$status = $this->Tasking->status("gather_product",$asin,$accountId) ;
 		if( $status ){//执行中
 			$this->response->type("json");
@@ -29,9 +31,9 @@ class GatherProductController extends AppController {
 		}
 		try{
 			try{
-				$this->baseInfo( $asin ,$accountId  ) ;
-				$this->competition( $asin ,$accountId  ) ;
-				$this->fba( $asin ,$accountId  ) ;
+				$this->baseInfo( $asin ,$platformId  ) ;
+				$this->competition( $asin ,$platformId  ) ;
+				$this->fba( $asin ,$platformId  ) ;
 			
 				if(!empty($productId)){
 					$this->price( $productId ,$accountId  ) ;
@@ -55,22 +57,22 @@ class GatherProductController extends AppController {
 	/**
 	 * 基本信息
 	 */
-	public function baseInfo($asin , $accountId = null  ){
-		$this->GatherData->asinInfo($asin,$accountId) ;
+	public function baseInfo($asin , $platformId  ){
+		$this->GatherData->asinInfoPlatform($asin,$platformId) ;
 	}
 	
 	/**
 	 * 竞争信息
 	 */
-	public function competition($asin , $accountId = null ){
-		$this->GatherData->asinCompetition($asin,$accountId ) ;
+	public function competition($asin , $platformId = null ){
+		$this->GatherData->asinCompetitionPlatform($asin,$platformId ) ;
 	}
 	
 	/**
 	 * fba竞争信息
 	 */
-	public function fba($asin , $accountId = null ){
-		$this->GatherData->asinFbas($asin,$accountId ) ;
+	public function fba($asin , $platformId ){
+		$this->GatherData->asinFbasPlatform($asin,$platformId ) ;
 	}
 	
 	/**

@@ -40,8 +40,19 @@
 		
 	?>
 	
-	<script>
+	<script type="text/javascript">
 		$(function(){
+				var args =	$.dialogAraguments() ;
+				var platformId = "" ;
+				if(args){
+					platformId = args.platformId ;
+				}
+
+				if(platformId && !$("[name='platformId']").val()){
+					$("[name='platformId']").val(platformId) ;
+					$("[name='platformId']").attr("disabled","disabled");
+				}
+			
 				$(".btn-save").click(function(){
 					var form = "#personForm" ;
 					if( !$.validation.validate(form).errorInfo ) {
@@ -80,6 +91,26 @@
 								<tr>
 									<th>任务名称：</th><td colspan=3><input data-validator="required" type="text" id="name"
 										value="<?php echo $result['NAME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>所属平台</th>
+									<td>
+									<select name="platformId"  data-validator="required"  class="input 10-input" >
+										<option value="">--选择平台--</option>
+										<?php 
+											$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+											$strategys = $SqlUtils->exeSql("sql_platform_list",array()) ;
+											foreach( $strategys as $s){
+												$s = $SqlUtils->formatObject($s) ;
+												$selected = '' ;
+												if( $s['ID'] == $result['PLATFORM_ID'] ){
+													$selected = "selected" ;
+												}
+												echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;
+											}
+										?>
+										</select>
+									</td>
 								</tr>
 								<tr>
 									<th>开发计划：</th>

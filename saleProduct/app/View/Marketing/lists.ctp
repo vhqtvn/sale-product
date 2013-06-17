@@ -89,7 +89,7 @@
 		           		
 		           	}},
 		           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"10%"},
 		           	{align:"center",key:"TARGET_PRICE",label:"AMAZON最低价",width:"10%"},

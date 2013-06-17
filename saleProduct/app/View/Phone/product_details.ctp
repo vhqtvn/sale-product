@@ -88,20 +88,6 @@
 
  	
  	$(function(){
-			$(".base-gather").click(function(){
-				$.ajax({
-					type:"post",
-					url:contextPath+"/gatherProduct/execute/<?php echo $asin?>",
-					data:{},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						alert("获取完成");
-						window.location.reload() ;
-					}
-				}); 
-			}) ;
-			
 			
 			$("[supplier-id]").click(function(){
 				var id = $(this).attr("supplier-id") ;

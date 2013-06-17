@@ -12,12 +12,14 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/validator/jquery.validation');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
+		echo $this->Html->script('validator/jquery.validation');
 		
 	?>
   
@@ -26,10 +28,19 @@
 
 	$(function(){
 		var query = new Query(ruleScripts, $(".grid-query")).render() ;
-		var querys = {querys:query.fetch()||{},scope:"---",accounts:''} ;
+		var querys = {querys:query.fetch()||{},scope:"---",accounts:'',platformId:''} ;
 		$(".grid-query-button .query-action").click(function(){
-			querys = query.fetch()||{} ;
-			$(".grid-content").llygrid("reload",{querys:querys,scope:$(".select-scope-input").val(),accounts:getAccounts() }) ;
+			if( !$.validation.validate(".rule-query-table").errorInfo ) {
+				querys = query.fetch()||{} ;
+				var params = {
+					querys : querys,
+					scope : $(".select-scope-input").val(),
+					accounts : getAccounts(),
+					platformId : $("[name='platformId']").val()
+				} ;
+				$(".grid-content").llygrid("reload", params ) ;
+			}
+			
 			return false ;
 		}) ;
 		
@@ -37,14 +48,16 @@
 			openCenterWindow(contextPath+"/product/filterScope",800,600) ;
 		}) ;
 		
-		$(".grid-query-button .save-result").click(function(){
-				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask",600,300,function(result){
+		$(".save-result").click(function(){
+				var platformId = $("[name='platformId']").val() ;
+				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask",680,430,{platformId:platformId  },function(result){
 					var params = $.dialogReturnValue()  ;
 					if(!params) return ;
 					var querys  = query.fetch() ; 
 					params.querys = querys ;
 					params.scope = $(".select-scope-input").val() ;
 					params.accounts = getAccounts() ;
+					params.platformId = $("[name='platformId']").val() ;
 
 					$.dataservice("model:ProductDev.saveTaskResult",params,function(){
 						alert( "筛选结果保存成功！" ) ;
@@ -53,38 +66,17 @@
 					//alert( $.json.encode( $.dialogReturnValue() ) );
 				}) ;
 			
-			/*var val = window.prompt("请输入产品开发任务名称（最好有意义名字）");
-			if(val && $.trim(val)){
-				querys = query.fetch() ;
-				//querys.filterName = val ;
-				
-				var params = {querys:querys,filterName:val,scope:$(".select-scope-input").val(),accounts:getAccounts()} ;
-
-				$.ajax({
-					type:"post",
-					url:contextPath+"/grid/saveFilterResult",
-					data:params ,
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						alert("筛选结果保存成功！");
-					}
-				}); 
-				
-			}else{
-				//alert("名称不能为空！");
-			}*/
 			return false ;
 		}) ;
 		
-		$(".grid-content").llygrid({
+	var llygrid= 	$(".grid-content").llygrid({
 			columns:[
 	           	{align:"center",key:"ASIN",label:"ASIN", width:"10%",format:function(val,record){
 		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
 		           	}},
 		        {align:"center",key:"LOCAL_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a target='_blank' href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"'>"+val+"</a>" ;
+		           		return "<a target='_blank' href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"'>"+val+"</a>" ;
 		           	}},
 	           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"7%"},
 	           	{align:"center",key:"FM_NUM",label:"FM数量",width:"7%"},
@@ -97,11 +89,21 @@
 	         ds:{type:"url",content:contextPath+"/grid/rule"},
 			 limit:20,
 			 pageSizes:[10,20,30,40],
-			 height:400,
-			 title:"规则列表",
+			 height:function(){
+					return $(window).height() - $(".toolbar").height() - 100 ;
+			},
+			 title:"规则产品列表",
 			 indexColumn:true,
 			 querys:querys,
-			 loadMsg:"数据加载中，请稍候......"
+			 loadMsg:"数据加载中，请稍候......",
+			 loadAfter:function(){
+				var options = $(".grid-content").data("options") ;
+				if(options.records && options.records.length >0){
+					$(".save-result").removeAttr("disabled");
+				}else{
+					$(".save-result").attr("disabled","disabled");
+				};
+			}
 		}) ;
 	}) ;
 	
@@ -131,6 +133,7 @@
 
 		.query-item{
 			float:left;
+   			width:280px;
 		}
 
 		.query-label,.relation-label,.query-content{
@@ -138,6 +141,7 @@
 		}
 		.query-label {
 			margin:3px 5px;
+			width:80px;
 		}
 
 		.query-label label{
@@ -157,17 +161,42 @@
 	
 	
 	<div class="toolbar toolbar-auto">
-		<table>
+		<table data-widget="validator" class="rule-query-table">
 			<tr>
-				<td>
+				<td colspan="3">
 				<div class="grid-query"></div>
 				</td>
 			</tr>
 			<tr class="grid-query-button ">							
-				<td class="toolbar-btns">
+				<td class="toolbar-btns1">
 					<button class="query-action btn query-btn">查询</button>
 					<button class="select-scope btn">选择筛选范围</button>
 					<input type="text" class="select-scope-input" />
+					&nbsp;&nbsp;
+				</td>
+				<th>
+					市场平台：
+				</th>
+				<td>
+					<select name="platformId"  data-validator="required"  class="input 10-input" >
+							<option value="">--选择平台--</option>
+							<?php 
+								$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+								$strategys = $SqlUtils->exeSql("sql_platform_list",array()) ;
+								foreach( $strategys as $s){
+									$s = $SqlUtils->formatObject($s) ;
+									$selected = '' ;
+									if( $s['ID'] == $result['PLATFORM_ID'] ){
+										$selected = "selected" ;
+									}
+									echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;
+								}
+							?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
 					&nbsp;在账户产品中筛选:
 					<?php
 						$index = 0 ;
@@ -177,7 +206,7 @@
 							$index++ ;
 						} ;
 					?>
-					<button class="save-result btn btn-primary">保存筛选结果</button>
+					<button class="save-result btn btn-primary" disabled>保存筛选结果</button>
 				</td>
 			</tr>						
 		</table>					

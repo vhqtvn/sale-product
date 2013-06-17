@@ -26,7 +26,6 @@ class ProductDev extends AppModel {
 				$params['ASIN'] = trim($asin);
 				$this->exeSql("sql_pdev_insert", $params) ;
 			}
-			
 		}
 	}
 	
@@ -99,6 +98,7 @@ class ProductDev extends AppModel {
 	
 		$scope =  $query["scope"] ;
 		$accounts = $query['accounts'] ;
+		$platformId = $query['platformId'] ;
 	
 		$accountWhere = "" ;
 		if( !empty($accounts) ){
@@ -107,7 +107,7 @@ class ProductDev extends AppModel {
 	
 		$sql = '' ;
 		if( trim($scope)== ""){
-			$sql = 'SELECT DISTINCT sc_product.asin FROM sc_product
+			$sql = "SELECT DISTINCT sc_product.asin FROM sc_product
 			LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
 			LEFT JOIN sc_sale_fba  ON sc_sale_fba.asin = sc_product.asin
 			LEFT JOIN sc_sale_potential_ranking  ON sc_sale_potential_ranking.asin = sc_product.asin
@@ -115,7 +115,9 @@ class ProductDev extends AppModel {
 			LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 			WHERE 1 = 1  and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
 			and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd )
-			and sc_product.asin not in (select sc_product_black.asin from sc_product_black) '.$accountWhere ;
+			and sc_product.asin not in (select sc_product_black.asin from sc_product_black)
+							and sc_product.platform_id = '$platformId' 
+							 $accountWhere" ;
 	
 			$_querys = json_decode( $query["querys"]  ) ;
 			
@@ -149,7 +151,9 @@ class ProductDev extends AppModel {
 			LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 			WHERE sc_product.asin = sc_gather_asin.asin and sc_gather_asin.task_id in  ( $scopes )
 			and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
-			and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd ) $accountWhere" ;
+			and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd ) 
+			and sc_product.platform_id = '$platformId'
+			$accountWhere" ;
 	
 			$_querys = json_decode( $query["querys"]  ) ;
 	

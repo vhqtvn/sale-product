@@ -11,6 +11,7 @@ class Grid extends AppModel {
 		
 		$scope =  $query["scope"] ;
 		$accounts = $query['accounts'] ;
+		$platformId = $query['platformId'] ;
 		
 		$accountWhere = "" ;
 		if( !empty($accounts) ){
@@ -18,7 +19,7 @@ class Grid extends AppModel {
 		}
 		
 		if( trim($scope)== ""){
-			$sql = 'SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
+			$sql = "SELECT DISTINCT sc_product.*,sc_product_flow_details.DAY_PAGEVIEWS,
 				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
 				sc_sale_fba.FBA_NUM,
 				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,
@@ -31,7 +32,9 @@ class Grid extends AppModel {
                 LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 				WHERE 1 = 1 and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
 				and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd )
-				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) '.$accountWhere;
+				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) 
+				and sc_product.platform_id = '$platformId' 
+				 $accountWhere ";
 	
 	
 			foreach ($query["querys"] as $value) {  
@@ -73,7 +76,9 @@ class Grid extends AppModel {
 				WHERE sc_product.asin = sc_gather_asin.asin and sc_gather_asin.task_id in (".$scopes.")
                  and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd )
                  and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd )
-				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) $accountWhere ";
+				and sc_product.asin not in (select sc_product_black.asin from sc_product_black)
+				and sc_product.platform_id = '$platformId'
+ 			$accountWhere ";
 	
 			foreach ($query["querys"] as $value) {  
 					if( gettype($value) == "array" ){
@@ -108,6 +113,7 @@ class Grid extends AppModel {
 		
 		$scope =  $query["scope"] ;
 		$accounts = $query['accounts'] ;
+		$platformId = $query['platformId'] ;
 		
 		$accountWhere = "" ;
 		if( !empty($accounts) ){
@@ -115,7 +121,7 @@ class Grid extends AppModel {
 		}
 		
 		if( trim($scope)== ""){
-			$sql = 'SELECT DISTINCT sc_product.* FROM sc_product
+			$sql = "SELECT DISTINCT sc_product.* FROM sc_product
 							LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
 				LEFT JOIN sc_sale_fba  ON sc_sale_fba.asin = sc_product.asin
 							LEFT JOIN sc_sale_potential_ranking  ON sc_sale_potential_ranking.asin = sc_product.asin
@@ -123,7 +129,9 @@ class Grid extends AppModel {
 							LEFT JOIN sc_product_flow_details  ON sc_product_flow_details.asin = sc_product.asin
 							where 1 = 1 and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd ) 
 							and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd )
-							 and sc_product.asin not in (select sc_product_black.asin from sc_product_black) '.$accountWhere ;
+							 and sc_product.asin not in (select sc_product_black.asin from sc_product_black)
+							and sc_product.platform_id = '$platformId' 
+							$accountWhere" ;
 	
 			foreach ($query["querys"] as $value) {  
 					if( gettype($value) == "array" ){
@@ -158,7 +166,9 @@ class Grid extends AppModel {
 				WHERE sc_product.asin = sc_gather_asin.asin and sc_gather_asin.task_id in (".$scopes.")
 				 and sc_product.asin not in ( select spfd.asin  from sc_product_filter_details spfd ) 
 				 and sc_product.asin not in ( select spfd.asin  from sc_product_dev spfd )
-				and sc_product.asin not in (select sc_product_black.asin from sc_product_black) $accountWhere";
+				and sc_product.asin not in (select sc_product_black.asin from sc_product_black)
+				and sc_product.platform_id = '$platformId'
+ 			$accountWhere";
 	
 			foreach ($query["querys"] as $value) {  
 					if( gettype($value) == "array" ){

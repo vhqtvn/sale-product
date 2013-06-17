@@ -21,8 +21,8 @@ class GatherService extends AppModel {
 		$sql = "select * from sc_product where asin =  '".$a."'" ;
 		$product = $this->query($sql) ;
 		if( count($product)<=0 ){
-			$sql = "insert into sc_product(asin,PRODUCTDETAILS,TECHDETAILS,title,DESCRIPTION,DIMENSIONS,BRAND,WEIGHT,COMMITTIME) 
-					values('".$a."','".$p."' ,'".$te."' ,'".$t."' ,'".$d."' , '".$DIMENSIONS."' ,'".$BRAND."' ,'".$WEIGHT."',NOW())" ;
+			$sql = "insert into sc_product(asin,PRODUCTDETAILS,TECHDETAILS,title,DESCRIPTION,DIMENSIONS,BRAND,WEIGHT,COMMITTIME,PLATFORM_ID) 
+					values('".$a."','".$p."' ,'".$te."' ,'".$t."' ,'".$d."' , '".$DIMENSIONS."' ,'".$BRAND."' ,'".$WEIGHT."',NOW(),'".$array['PLATFORM_ID']."')" ;
 		}else{
 			$sql = "update sc_product set  
 					PRODUCTDETAILS = '".$p."' ,  
@@ -32,7 +32,8 @@ class GatherService extends AppModel {
 					DIMENSIONS = '".$DIMENSIONS."' , 
 					BRAND = '".$BRAND."' , 
 					WEIGHT = '".$WEIGHT."',
-					COMMITTIME = NOW()
+					COMMITTIME = NOW(),
+					PLATFORM_ID='".$array['PLATFORM_ID']."'
 					where asin = '".$a."'" ;
 		}
 
@@ -336,18 +337,18 @@ class GatherService extends AppModel {
 	/**
 	 * 保存上传或通过URL获取的产品
 	 */
-	function saveGatherAsin($id ,$asin){
-		$sql = "insert into sc_gather_asin(task_id,asin) values('".$id."','".$asin."' )" ;
+	function saveGatherAsin($id ,$asin,$platformId ){
+		$sql = "insert into sc_gather_asin(task_id,asin,platform_id) values('".$id."','".$asin."','$platformId' )" ;
 		$this->query($sql) ;
 	}
 	
 	function getSellerUrl($id){
-			$sql =  "select url from sc_seller where id  = ".$id;
+			$sql =  "select url,platform_id from sc_seller where id  = ".$id;
 			return $this->query($sql );
 	}
 	
 	function listTaskAsins($taskId){
-		$sql = "select asin from sc_gather_asin where task_id = '".$taskId."'" ;
+		$sql = "select asin,platform_id from sc_gather_asin where task_id = '".$taskId."'" ;
 		return $this->query($sql) ;
 	}
 	
@@ -360,9 +361,9 @@ class GatherService extends AppModel {
 	/**
 	 * 保存上传
 	 */
-	function saveUpload($id ,$fileName,$groupId,$user){
+	function saveUpload($id ,$fileName,$groupId,$user,$platformId){
 		$loginId = $user["LOGIN_ID"] ;
-		$sql = "insert into sc_upload(id , name,group_id,upload_time,uploador) values('".$id."','".$fileName."','$groupId',NOW(),'$loginId')" ;
+		$sql = "insert into sc_upload(id , name,group_id,upload_time,uploador,platform_id) values('".$id."','".$fileName."','$groupId',NOW(),'$loginId','$platformId')" ;
 		$this->query($sql) ;
 	}
 }

@@ -17,7 +17,7 @@ class GatherLevelController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Utils', 'Config','GatherData',"Amazonaccount","Log","GatherMarketing","Tasking");
+	var $uses = array('Utils', 'Config','GatherData',"Amazonaccount","Log","GatherMarketing","Tasking","System");
 	public $taskId = null ;
 	
 	/**
@@ -56,6 +56,8 @@ class GatherLevelController extends AppController {
 	 */
 	public function baseInfo($accountId , $level ){
 		try{
+			
+			$config = $this->System->getAccountPlatformConfig($accountId) ;
 		
 			$asinArray =  $this->Amazonaccount->getAccountProductsForLevel($accountId,$level) ;
 			
@@ -72,7 +74,7 @@ class GatherLevelController extends AppController {
 				$index = $index + 1 ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] details" );
 				//echo $asin.'<br>' ;
-				$this->GatherData->asinInfo($asin,$accountId,$index,$this->taskId) ;
+				$this->GatherData->asinInfoPlatform($asin, $config['PLATFORM_ID'] ,$accountId,$index,$this->taskId) ;
 			} 
 			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );
@@ -88,6 +90,8 @@ class GatherLevelController extends AppController {
 	 */
 	public function competition($accountId , $level ){
 		try{
+			$config = $this->System->getAccountPlatformConfig($accountId) ;
+			
 			//获取商家产品asin
 			$array = $this->Amazonaccount->getAccountProductsForLevel($accountId,$level) ;
 
@@ -102,7 +106,7 @@ class GatherLevelController extends AppController {
 				$index = $index + 1 ;
 				$asin = $arr['sc_amazon_account_product']['ASIN'] ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] competitions" );
-				$this->GatherData->asinCompetition($asin,$accountId,$index,$this->taskId) ;
+				$this->GatherData->asinCompetitionPlatform($asin, $config['PLATFORM_ID'] ,$accountId,$index,$this->taskId) ;
 			}
 			$this->Log->savelog($this->taskId, "end!" );
 		
@@ -117,6 +121,8 @@ class GatherLevelController extends AppController {
 	public function fba($accountId , $level ){
 		//更新获取状态
 		try{
+			$config = $this->System->getAccountPlatformConfig($accountId) ;
+			
 			$array =  $this->Amazonaccount->getAccountProductsForLevel($accountId,$level) ;
 			$index = 0 ;
 			$this->Log->savelog($this->taskId, "start gather fba" );
@@ -129,7 +135,7 @@ class GatherLevelController extends AppController {
 				$index = $index + 1 ;
 				$asin = $arr['sc_amazon_account_product']['ASIN'] ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] fba" );
-				$this->GatherData->asinFbas($asin,$accountId,$index,$this->taskId) ;
+				$this->GatherData->asinFbasPlatform($asin, $config['PLATFORM_ID'] ,$accountId,$index,$this->taskId) ;
 			}
 			$this->Log->savelog($this->taskId, "end!" );
 		}catch(Exception $e){

@@ -36,13 +36,21 @@ class AmazonOrder {
 		$this->APPLICATION_ID       = $APPLICATION_ID;
 	}
 	
+	public function getAccountPlatform($accountId){
+		$System = ClassRegistry::init("System") ;
+		return $System->getAccountPlatformConfig($accountId ) ;
+	}
+	
 	/**
 	 * 保存订单
 	 * @param unknown_type $order
 	 */
 	function getOrderItems($orderId,$accountId){
+		
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' => "https://mws.amazonservices.com/Orders/2011-01-01",
+				'ServiceURL' =>  $platform['AMAZON_ORDER_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,
@@ -214,8 +222,10 @@ class AmazonOrder {
 		$MaxResultsPerPage = null
 	 */
 	public function getOrders($querys=array(),$accountId){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' => "https://mws.amazonservices.com/Orders/2011-01-01",
+				'ServiceURL' =>  $platform['AMAZON_ORDER_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,
@@ -440,8 +450,10 @@ class AmazonOrder {
 	}
 	
 	function getOrdersByNextToken($nextToken,$accountId){
+		$platform = $this->getAccountPlatform($accountId) ;
+		
 		$config = array (
-				'ServiceURL' => "https://mws.amazonservices.com/Orders/2011-01-01",
+				'ServiceURL' => $platform['AMAZON_ORDER_SERVICE_URL'],// "https://mws.amazonservices.com",
 				'ProxyHost' => null,
 				'ProxyPort' => -1,
 				'MaxErrorRetry' => 3,

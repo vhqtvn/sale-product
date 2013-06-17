@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+		<entry key="sql_getProductByAsin">
+				select * from sc_product where asin = '{@#asin#}'
+		</entry>
+		
 		<entry key="sql_pdev_findByAsinAndTaskId">
 				select 
 					sc_product_dev.* ,
@@ -161,7 +165,8 @@ UPDATE sc_product_dev
 				MEMO, 
 				PLAN_ID,
 				START_TIME,
-				END_TIME
+				END_TIME,
+				PLATFORM_ID
 				)
 				VALUES
 				('{@#id#}', 
@@ -172,7 +177,8 @@ UPDATE sc_product_dev
 				'{@#memo#}', 
 				'{@#planId#}',
 				'{@#startTime#}', 
-				'{@#endTime#}'
+				'{@#endTime#}', 
+				'{@#platformId#}'
 				)
      </entry>
      
@@ -182,6 +188,7 @@ UPDATE sc_product_dev
 			NAME = '{@#name#}' , 
 			MEMO = '{@#memo#}' , 
 			CODE = '{@#code#}',
+			PLATFORM_ID = '{@#platformId#}',
 			START_TIME = '{@#startTime#}' , 
 			END_TIME = '{@#endTime#}'
 			WHERE
@@ -312,6 +319,7 @@ UPDATE sc_product_dev
 	SELECT sc_product_filter.* ,
 			spdp.CODE as PLAN_CODE,
 			spdp.NAME as PLAN_NAME,
+			( SELECT sp.name FROM sc_platform sp WHERE sp.id = sc_product_filter.platform_id ) AS PLATFORM_NAME,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
@@ -344,6 +352,7 @@ UPDATE sc_product_dev
 	SELECT sc_product_filter.* ,
 			spdp.CODE as PLAN_CODE,
 			spdp.NAME as PLAN_NAME,
+			( SELECT sp.name FROM sc_platform sp WHERE sp.id = sc_product_filter.platform_id ) AS PLATFORM_NAME,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  ) AS TOTAL,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status =1 ) AS STATUS1,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.dev_status = 2 ) AS  STATUS2,
@@ -510,7 +519,8 @@ WHERE  spfd.task_id = spf.id
     
         <entry key="sql_product_upload">
        		SELECT sc_upload.*,( select count(1) from sc_gather_asin where sc_gather_asin.task_id = sc_upload.id ) as TOTAL,
-				( select sc_user.name from sc_user where sc_user.login_id = sc_upload.uploador limit 0,1 ) as USERNAME
+				( select sc_user.name from sc_user where sc_user.login_id = sc_upload.uploador ) as USERNAME,
+				( select sp.name from sc_platform sp where sp.id = sc_upload.platform_id) as PLATFORM_NAME
               FROM sc_upload 
               where 1=1 
               {@ #$VIEW_PU# }

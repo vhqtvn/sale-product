@@ -6,6 +6,7 @@ ini_set("memory_limit", "62M");
 ini_set("post_max_size", "24M");
 
 App::import('Model', 'GatherService') ;
+App::import('Model', 'System') ;
 App::import('Model', 'Utils') ;
 App::import('Model', 'Log') ;
 App::import('Model', 'Task') ;
@@ -19,10 +20,42 @@ App :: import('Vendor', 'Amazon');
  */
 class GatherData extends AppModel {
 	var $useTable = "sc_product_flow" ;
+	
+	public function getAmazonSiteUrl($asin,$platform=null){
+		$system = new System() ;
+		
+		$product = $this->getObject("sql_getProductByAsin", array("asin"=>$asin)) ;
+		if( !empty($product) ){
+			$platform_ = $product['PLATFORM_ID'] ;
+			if( !empty($platform_) ){
+				$platform = $platform_ ;
+			}
+		}
+		if( empty($platform) ) $platform = 1 ;
+		
+		//通过平台获取URL路径
+		$config = $system->getPlatformConfig($platform) ;
+		
+		debug($asin."  ".$platform) ;
+		debug($config) ;
+		
+		$siteUrl = $config["AMAZON_SITE_URL"] ;
+		
+		return $siteUrl ;
+	}
+	
+	public function asinInfoPlatform($asin,$platform ,$id=null,$index = null,$logId=null){
+		$this->_asinInfo($asin,$platform ,$id,$index, $logId ) ;
+	}
+	
+	public function asinInfo($asin,$id=null,$index = null,$logId=null){
+		$this->_asinInfo($asin,null,$id,$index, $logId ) ;
+	}
+	
 	/**
 	 * 获取ASIN基本信息
 	 */
-	public function asinInfo($asin,$id=null,$index = null,$logId=null){
+	public function _asinInfo($asin,$platform=null,$id=null,$index = null,$logId=null){
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
@@ -32,8 +65,10 @@ class GatherData extends AppModel {
 			return ;
 		} ; 
 		
+		$siteUrl = $this->getAmazonSiteUrl($asin,$platform) ;//  $config["AMAZON_SITE_URL"] ;
+		
 		try{
-			$url = "http://www.amazon.com/dp/" . $asin;
+			$url = "$siteUrl/dp/" . $asin;
 			$snoopy = new Snoopy ;
 			$snoopy->agent =  $this->getAgent($index) ;
 			$snoopy->referer = $url ;
@@ -98,6 +133,7 @@ class GatherData extends AppModel {
 					$array['DIMENSIONS'] = trim($Dimensions) ;
 					$array['WEIGHT'] = trim($Weight) ;
 					$array['BRAND'] = trim($brand) ;
+					$array['PLATFORM_ID'] = $platform;
 					//DIMENSIONS
 					//WEIGHT
 					
@@ -176,16 +212,26 @@ class GatherData extends AppModel {
 		}
 	}
 	
+	public function asinCompetitionPlatform($asin,$platformId ,$id = null,$index=null,$logId = null ){
+		$this->_asinCompetition($asin,$platformId ,$id,$index,$logId  ) ;
+	}
+	
+	public function asinCompetition($asin ,$id = null,$index=null,$logId = null ){
+		$this->_asinCompetition($asin,null ,$id,$index,$logId  ) ;
+	}
+	
 	/**
 	 * 获取ASIN竞争信息
 	 */
-	public function asinCompetition($asin ,$id = null,$index=null,$logId = null ){
+	public function _asinCompetition($asin,$platformId=null ,$id = null,$index=null,$logId = null ){
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
 		
+		$siteUrl = $this->getAmazonSiteUrl($asin,$platformId) ;//  $config["AMAZON_SITE_URL"] ;
+		
 		$d = date("U") ;
-		$url =  "http://www.amazon.com/gp/offer-listing/".$asin."?ie=UTF8&dd=$d"  ;
+		$url =  "$siteUrl/gp/offer-listing/".$asin."?ie=UTF8&dd=$d"  ;
 		
 		//echo $url ;
 		$snoopy = new Snoopy ;
@@ -233,16 +279,28 @@ class GatherData extends AppModel {
 		unset($snoopy) ;
 	}
 	
+	
+	public function asinFbasPlatform($asin,$platformId ,$id = null,$index=null,$logId = null ){
+		$this->_asinFbas($asin,$platformId ,$id,$index,$logId  ) ;
+	}
+	
+	public function asinFbas($asin ,$id = null,$index=null,$logId = null ){
+		$this->_asinFbas($asin,null ,$id,$index,$logId  ) ;
+	}
+	
+	
 	/**
 	 * 获取ASIN FBA竞争信息
 	 */
-	public function asinFbas($asin ,$id = null ,$index=null,$logId = null){
+	public function _asinFbas($asin,$platformId = null ,$id = null ,$index=null,$logId = null){
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
 		
+		$siteUrl = $this->getAmazonSiteUrl($asin,$platformId) ;//  $config["AMAZON_SITE_URL"] ;
+		
 		$d = date("U") ;
-		$url = "http://www.amazon.com/gp/offer-listing/$asin?shipPromoFilter=1&dd=$d" ;
+		$url = "$siteUrl/gp/offer-listing/$asin?shipPromoFilter=1&dd=$d" ;
 		
 		$snoopy = new Snoopy ;
 		$snoopy->agent =  $this->getAgent($index) ;
@@ -291,7 +349,9 @@ class GatherData extends AppModel {
 		$log = new Log() ;
 		
 		try{
-			$url = "http://www.amazon.com/gp/offer-listing/$asin/?condition=$condition&me=$code" ;
+			$siteUrl = $this->getAmazonSiteUrl($asin,null) ;
+			
+			$url = "$siteUrl/gp/offer-listing/$asin/?condition=$condition&me=$code" ;
 	
 			$d = date("U") ;
 			$url = $url."&ddd=$d" ;
@@ -345,6 +405,7 @@ class GatherData extends AppModel {
 	/////////////////////////////////////////////////////
 	/**
 	 * 通过URL获取产品
+	 * @param $id  商家采集ID
 	 */
 	public function sellerAsins($id,$logId=null){
 		$utils = new Utils() ;
@@ -355,6 +416,7 @@ class GatherData extends AppModel {
 		$index = 0 ;
 		$sellerurl = $service->getSellerUrl($id);
 		$url = $sellerurl[0]['sc_seller']['url'];
+		$platformId =  $sellerurl[0]['sc_seller']['platform_id'];
 		
 		
 		for ($j = 1; $j < 200; $j++) {
@@ -388,7 +450,7 @@ class GatherData extends AppModel {
 							if( strlen(trim($productName)) < 9 || strlen(trim($productName)) >=11 ) {
 								continue ;
 							} ;
-							$service->saveGatherAsin($id, trim($productName) ) ;
+							$service->saveGatherAsin($id, trim($productName) ,$platformId) ;
 						} catch (Exception $e) {
 							$log->savelog($logId,$productName." has exists!") ;
 						}
