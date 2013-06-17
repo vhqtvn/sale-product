@@ -24,37 +24,11 @@
 	?>
   
    <script type="text/javascript">
-   //result.records , result.totalRecord
-//result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
-
+  
 	$(function(){
-		$(".message,.loading").hide() ;
-		
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"操作",width:"25%",format:function(val,record){
+					{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						html.push("<a href='#' class='edit-account' val='"+val+"'>修改</a>&nbsp;&nbsp;") ;
@@ -62,12 +36,15 @@
 					}},
 		           	{align:"center",key:"NAME",label:"账户名称",width:"35%",forzen:false,align:"left"},
 		           	{align:"center",key:"CODE",label:"账户Code",width:"15%"},
+		        	{align:"center",key:"PLATFORM_NAME",label:"所属平台",width:"15%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"8%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:10,
 				 pageSizes:[10,20,30,40],
-				 height:200,
+				 height:function(){
+					return $(window).height() - 120;
+				},
 				 title:"商家列表",
 				 indexColumn:false,
 				 querys:{sqlId:"sql_account_list",countSqlId:"sql_account_list_count"},
@@ -76,12 +53,12 @@
 			
 
 			$(".register").click(function(){
-				openCenterWindow(contextPath+"/amazonaccount/add",650,530) ;
+				openCenterWindow(contextPath+"/amazonaccount/add",750,530) ;
 			}) ;
 			
 			$(".edit-account").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/amazonaccount/add/"+val,650,530) ;
+				openCenterWindow(contextPath+"/amazonaccount/add/"+val,750,530) ;
 			}) ;
 		
    	 });
@@ -92,26 +69,6 @@
    <style>
    		*{
    			font:12px "微软雅黑";
-   		}
-   		
-   		.message{
-   			width:600px;
-   			border:1px solid #CCC;
-   			overflow:auto;
-   			margin:5px;
-   			height:200px;
-   			background:#000;
-   			color:#FFF;
-   			margin-bottom:0px;
-   		}
-   		
-   		.loading{
-   			width:600px;
-   			background:#000;
-   			color:#FFF;
-   			margin-top:-1px;
-   			display:hidden;
-   			margin-left:6px;
    		}
    </style>
 
@@ -125,12 +82,6 @@
 	
 	<div class="grid-content">
 	
-	</div>
-	
-	<div class="message">
-	</div>
-	<div class="loading">
-		处理中......
 	</div>
 </body>
 </html>

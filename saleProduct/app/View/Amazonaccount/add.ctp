@@ -36,7 +36,7 @@
 		}
 		
 		input{
-			width:98%;
+			width:90%;
 		}
 		.table th, .table td{
 			padding:5px 8px;
@@ -50,7 +50,7 @@
 				
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
-
+					json.CODE = json.CODE||json.MERCHANT_ID ;
 					$.ajax({
 						type:"post",
 						url:contextPath+"/amazonaccount/saveAccount",
@@ -58,8 +58,8 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							window.opener.location.reload() ;
-							window.close() ;
+							//window.opener.location.reload() ;
+							//window.close() ;
 						}
 					}); 
 				};
@@ -68,49 +68,85 @@
    </script>
 
 </head>
-<body>
-<form id="personForm" action="#" data-widget="validator,ajaxform">
-<input type="hidden" id="ID" value="<?php echo $account[0]['sc_amazon_account']['ID'];?>"/>
-	<table class="table table-bordered">
-		<tr>
-			<td style="width:170px;">账户名称：</td><td><input data-validator="required" type="text" id="NAME" value="<?php echo $account[0]['sc_amazon_account']['NAME'];?>"/></td>
-		</tr>
-		<tr>
-			<td>账户CODE：</td><td><input data-validator="required" type="text" id="CODE" value="<?php echo $account[0]['sc_amazon_account']['CODE'];?>"/>
-			<br/>
-			<div class="alert alert-success" style="margin:0px;padding:0px;">取值http://www.amazon.com/s/?me=XXXXXXXXX，XXXXXXXXX为账户CODE</div>
-			</td>
-		</tr>
-		<tr>
-			<td>操作主机：</td><td><input type="text"  id="DOMAIN" value="<?php echo $domain;?>"/></td>
-		</tr>
-		<tr>
-			<td>定时任务上下文：</td><td><input type="text"  id="CONTEXT" value="<?php echo $account[0]['sc_amazon_account']['CONTEXT'];?>"/></td>
-		</tr>
-		<tr>
-			<td>AWS_ACCESS_KEY_ID：</td><td><input type="text" id="AWS_ACCESS_KEY_ID" value="<?php echo $account[0]['sc_amazon_account']['AWS_ACCESS_KEY_ID'];?>"/></td>
-		</tr>
-		<tr>
-			<td>AWS_SECRET_ACCESS_KEY：</td><td><input type="text" id="AWS_SECRET_ACCESS_KEY" value="<?php echo $account[0]['sc_amazon_account']['AWS_SECRET_ACCESS_KEY'];?>"/></td>
-		</tr>
-		<tr>
-			<td>APPLICATION_NAME：</td><td><input type="text" id="APPLICATION_NAME" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_NAME'];?>"/></td>
-		</tr>
-		<tr>
-			<td>APPLICATION_VERSION：</td><td><input type="text" id="APPLICATION_VERSION" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_VERSION'];?>"/></td>
-		</tr>
-		<tr>
-			<td>MERCHANT_ID：</td><td><input type="text" id="MERCHANT_ID" value="<?php echo $account[0]['sc_amazon_account']['MERCHANT_ID'];?>"/></td>
-		</tr>
-		<tr>
-			<td>MARKETPLACE_ID：</td><td><input type="text" id="MARKETPLACE_ID" value="<?php echo $account[0]['sc_amazon_account']['MARKETPLACE_ID'];?>"/></td>
-		</tr>
-		<tr>
-			<td>MERCHANT_IDENTIFIER：</td><td><input type="text" id="MERCHANT_IDENTIFIER" value="<?php echo $account[0]['sc_amazon_account']['MERCHANT_IDENTIFIER'];?>"/></td>
-		</tr>
-		<tr>
-			<td></td><td><button type="submit" class="btn btn-primary">保存</button></td>
-		</tr>
-	</table>
-</form>
+
+<body class="container-popup">
+	<!-- apply 主场景 -->
+	<div class="apply-page">
+		<!-- 页面标题 -->
+		<div class="page-title">
+			<h2>账户信息</h2>
+		</div>
+		<div class="container-fluid">
+
+	        <form id="personForm" action="#" data-widget="validator,ajaxform" class="form-horizontal" >
+	        	<input type="hidden" id="ID" value="<?php echo $account[0]['sc_amazon_account']['ID'];?>"/>
+	        	<input type="hidden" id="URL" value="<?php echo $account[0]['sc_amazon_account']['URL'];?>"/>
+				<!-- panel 头部内容  此场景下是隐藏的-->
+				<div class="panel apply-panel">
+					<!-- panel 中间内容-->
+					<div class="panel-content">
+						<!-- 数据列表样式 -->
+						<table class="form-table " >
+							<tbody>										   
+								<tr>
+									<th style="width:170px;">账户名称：</th><td colspan="3"><input data-validator="required" type="text" id="NAME" value="<?php echo $account[0]['sc_amazon_account']['NAME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>所属平台：</th>
+									<td colspan="3">
+									<select id="PLATFORM_ID"    style="width:97%;" class="input 10-input" >
+										<option value="">--选择平台--</option>
+										<?php 
+											$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+											$strategys = $SqlUtils->exeSql("sql_platform_list",array()) ;
+											foreach( $strategys as $s){
+												$s = $SqlUtils->formatObject($s) ;
+												$selected = '' ;
+												if( $s['ID'] == $account[0]['sc_amazon_account']['PLATFORM_ID'] ){
+													$selected = "selected" ;
+												}
+												echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;
+											}
+										?>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th>操作主机：</th><td><input type="text"  id="DOMAIN" value="<?php echo $domain;?>"/></td>
+									<th>定时任务上下文：</th><td><input type="text"  id="CONTEXT" value="<?php echo $account[0]['sc_amazon_account']['CONTEXT'];?>"/></td>
+								</tr>
+								<tr>
+									<th>APPLICATION_NAME：</th><td colspan="3"><input type="text" id="APPLICATION_NAME" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_NAME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>AWS_ACCESS_KEY_ID：</th><td colspan="3"><input type="text" id="AWS_ACCESS_KEY_ID" value="<?php echo $account[0]['sc_amazon_account']['AWS_ACCESS_KEY_ID'];?>"/></td>
+								</tr>
+								<tr>
+									<th>AWS_SECRET_ACCESS_KEY：</th><td colspan="3"><input type="text" id="AWS_SECRET_ACCESS_KEY" value="<?php echo $account[0]['sc_amazon_account']['AWS_SECRET_ACCESS_KEY'];?>"/></td>
+								</tr>
+								
+								<tr>
+									<th>APPLICATION_VERSION：</th><td><input type="text" id="APPLICATION_VERSION" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_VERSION'];?>"/></td>
+									<th>MERCHANT_ID：</th><td><input type="text" id="MERCHANT_ID" value="<?php echo $account[0]['sc_amazon_account']['MERCHANT_ID'];?>"/></td>
+								</tr>
+								<tr>
+									<th>MARKETPLACE_ID：</th><td><input type="text" id="MARKETPLACE_ID" value="<?php echo $account[0]['sc_amazon_account']['MARKETPLACE_ID'];?>"/></td>							
+									<th>MERCHANT_IDENTIFIER：</th><td><input type="text" id="MERCHANT_IDENTIFIER" value="<?php echo $account[0]['sc_amazon_account']['MERCHANT_IDENTIFIER'];?>"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<!-- panel脚部内容-->
+                    <div class="panel-foot">
+						<div class="form-actions ">
+							<button type="button" class="btn btn-primary save-user">提&nbsp;交</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
 </html>
