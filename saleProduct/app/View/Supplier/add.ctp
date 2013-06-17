@@ -145,41 +145,119 @@
 <div id="tabs-default" ></div>
 	<div id="base-info">
 			<input type="hidden" id="id" value="<?php echo $id;?>"/>
-			<table class="table table-bordered">
+			<!-- panel 头部内容  此场景下是隐藏的-->
+				<div class="panel apply-panel">
+					<!-- panel 中间内容-->
+					<div class="panel-content">
+			<table  class="form-table" >
 				<caption>供应商信息</caption>
 				<tr>
 					<th>供应商名称：</th>
-					<td colspan="3"><input <?php if($isView)echo "readonly='readOnly'";?>  data-validator="required" type="text" id="name" value="<?php echo $name;?>"/></td>
+					<td colspan="3">
+						<?php if($isView){
+							echo $name;
+						}else{ ?>
+							<input   data-validator="required" type="text" id="name" value="<?php echo $name;?>"/>
+						<?php }?>
+					</td>
 				</tr>
 				<tr>
 					<th>供应商编码：</th>
-					<td colspan="3"><input <?php  echo "readonly='readOnly'";?>  data-validator="required" type="text" id="code" value="<?php echo $defaultCode;?>"/></td>
+					<td colspan="3">
+						<?php if($isView){
+							echo $defaultCode;
+						}else{ ?>
+							<input readonly='readOnly'   data-validator="required" type="text" id="defaultCOde" value="<?php echo $defaultCode;?>"/>
+						<?php }?>
+					</td>
 				</tr>
 				<tr>
-					<th>供应商地址：</th><td colspan="3"><input  <?php if($isView)echo "readonly='readOnly'";?>   data-validator="required" type="text" id="address" value="<?php echo $address;?>"/></td>
+					<th>供应商地址：</th><td colspan="3">
+						<?php if($isView){
+							echo $address;
+						}else{ ?>
+							<input    data-validator="required" type="text" id="address" value="<?php echo $address;?>"/>
+						<?php }?>
+					</td>
 				</tr>
 				<tr>
-					<th>联系人：</th><td><input  <?php if($isView)echo "readonly='readOnly'";?>  type="text" id="contactor" value="<?php echo $contactor;?>"/></td>
-					<th>联系电话：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="phone" value="<?php echo $phone;?>"/></td>
+					<th>联系人：</th><td>
+					<?php if($isView){
+							echo $contactor;
+						}else{ ?>
+							<input data-validator="required" type="text" id="contactor" value="<?php echo $contactor;?>"/>
+						<?php }?>
+						</td>
+					<th>联系电话：</th><td>
+					<?php if($isView){
+							echo $phone;
+						}else{ ?>
+							<input data-validator="required" type="text" id="phone" value="<?php echo $phone;?>"/>
+						<?php }?>
+					</td>
 				</tr>
 				<tr>
-					<th>手机：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="mobile" value="<?php echo $mobile;?>"/></td>
-					<th>传真：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="fax" value="<?php echo $fax;?>"/></td>
+					<th>手机：</th><td>
+					<?php if($isView){
+							echo $mobile;
+						}else{ ?>
+							<input data-validator="required" type="text" id="mobile" value="<?php echo $mobile;?>"/>
+						<?php }?>
+						</td>
+					<th>传真：</th><td>
+					<?php if($isView){
+							echo $fax;
+						}else{ ?>
+							<input data-validator="required" type="text" id="fax" value="<?php echo $fax;?>"/>
+						<?php }?>
+						
+						</td>
 				</tr>
 				<tr>
-					<th>QQ/MSN/Skype：</th><td><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="qq" value="<?php echo $qq;?>"/></td>
-					<th>Email：</th><td><input  <?php if($isView)echo "readonly='readOnly'";?>  type="text" id="email" value="<?php echo $email;?>"/></td>
+					<th>QQ/MSN/Skype：</th><td>
+					<?php if($isView){
+							echo $qq;
+						}else{ ?>
+							<input data-validator="required" type="text" id="qq" value="<?php echo $qq;?>"/>
+						<?php }?>
+						</td>
+					<th>Email：</th><td>
+					<?php if($isView){
+							echo $email;
+						}else{ ?>
+							<input data-validator="required" type="text" id="email" value="<?php echo $email;?>"/>
+						<?php }?>
+						</td>
 				</tr>
 				<tr>
-					<th>邮编：</th><td colspan="3"><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="zip_code" value="<?php echo $zip_code;?>"/></td>
+					<th>邮编：</th><td colspan="3">
+					<?php if($isView){
+							echo $zip_code;
+						}else{ ?>
+							<input data-validator="required" type="text" id="zip_code" value="<?php echo $zip_code;?>"/>
+						<?php }?>
+						</td>
 				</tr>
 				<tr>
-					<th>网址：</th><td colspan="3"><input <?php if($isView)echo "readonly='readOnly'";?>   type="text" id="url" value="<?php echo $url;?>"/></td>
+					<th>网址：</th><td colspan="3">
+					<?php if($isView){
+							echo "<a href='$url' target='_blank'>$url</a>";
+						}else{ ?>
+							<input data-validator="required" type="text" id="url" value="<?php echo $url;?>"/>
+						<?php }?>
+						</td>
 				</tr>
 				<tr>
-					<th>备注：</th><td colspan="3"><textarea <?php if($isView)echo "readonly='readOnly'";?>   id="memo" style="width:300px;height:80px;"><?php echo $memo;?></textarea></td>
+					<th>备注：</th><td colspan="3">
+					<?php if($isView){
+							echo $memo;
+						}else{ ?>
+							<textarea     id="memo" style="width:300px;height:80px;"><?php echo $memo;?></textarea></td>
+						<?php }?>
 				</tr>
 			</table>
+			</div>
+			</div>
 	</div>
 
 	<div id="evaluate">
