@@ -18,6 +18,7 @@ var currentId = '' ;
 					}},
 					{align:"center",key:"CODE",label:"任务编码",width:"15%",forzen:false,align:"left",sort:true},
 		           	{align:"center",key:"NAME",label:"任务名称",width:"15%",forzen:false,align:"left",sort:true},
+		        	{align:"center",key:"PLATFORM_NAME",label:"平台",width:"10%",forzen:false,align:"left",sort:true},
 		           	{align:"center",key:"PLAN_NAME",label:"所属计划",width:"15%",forzen:false,align:"left",sort:true},
 		           	{align:"center",key:"START_TIME",label:"开始时间",width:"15%",forzen:false,align:"left",sort:true},
 		           	{align:"center",key:"END_TIME",label:"结束时间",width:"15%",forzen:false,align:"left",sort:true},
@@ -225,7 +226,7 @@ var currentId = '' ;
 		           	{align:"center",key:"LOCAL_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"开发标题",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"P_TITLE",label:"产品标题",width:"20%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||"")+"</a>" ;
+		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||"")+"</a>" ;
 		           	}},
 		           	{align:"center",key:"PPC_STRATEGY_NAME",label:"竞价排名策略",width:"15%"},
 	           		{align:"center",key:"LOGI_STRATEGY",label:"物流策略",width:"10%"},

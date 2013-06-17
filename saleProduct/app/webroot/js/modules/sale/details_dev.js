@@ -118,9 +118,14 @@
  	
  	$(function(){
 			$(".base-gather").click(function(){
+				var platformId = $("[name='platformId']").val() ;
+				if(!platformId) {
+					alert("必须选择平台！");
+					return ;
+				}
 				$.ajax({
 					type:"post",
-					url:contextPath+"/gatherProduct/execute/"+asin,
+					url:contextPath+"/gatherProduct/execute/"+asin+"/"+platformId,
 					data:{},
 					cache:false,
 					dataType:"text",

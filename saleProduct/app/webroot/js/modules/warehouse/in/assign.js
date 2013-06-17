@@ -13,7 +13,7 @@ $(function(){
 	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 	           	}},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
-	           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
+	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
 	           	}},
 	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",group:"库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
 	           		return record.QUANTITY||0 ;

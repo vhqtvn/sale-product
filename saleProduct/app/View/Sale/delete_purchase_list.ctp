@@ -65,7 +65,7 @@
 		           		
 		           	}},
 		           	{align:"center",key:"TITLE",label:"TITLE",width:"15%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"PLAN_NAME",label:"采购计划名称",width:"12%"},
 		           	{align:"center",key:"CREATOR_NAME",label:"创建人",width:"6%"},

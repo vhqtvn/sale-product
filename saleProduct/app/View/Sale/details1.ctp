@@ -48,8 +48,7 @@
 		}
 		
 		if( isset($flows) ){
-			if( !empty($flows) )
-			{
+			if( !empty($flows) ){
 				$flow = $flows[0]['sc_product_flow_details']["DAY_PAGEVIEWS"] ;
 			}
 		}
@@ -79,6 +78,8 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		
+		$task = $SqlUtils->getObject("sql_pdev_task_getById",array("id"=>$taskId)) ;
+		
 		$productDev = $SqlUtils->getObject("sql_pdev_findByAsinAndTaskId",array('ASIN'=>$asin,'TASK_ID'=>$taskId)) ;
 		
 		$pdStatus = 10 ;
@@ -87,6 +88,8 @@
 			$pdStatus = $productDev['FLOW_STATUS'] ;
 			$devStatus = $productDev['DEV_STATUS'] ;
 		}
+		
+		//debug($product) ;
 		
 		//询价负责人
 		$category = $SqlUtils->getObject("sql_getSingleProductCategoryByAsin" , array("asin"=>$asin)) ;
@@ -163,7 +166,7 @@ html{-webkit-text-size-adjust: none;}
    		
    		.flow-bar{
 			position:fixed;
-   			top:0px;
+   			top:30px;
    			padding-top:10px;
    			left:0px;
    			right:0px;
@@ -174,7 +177,7 @@ html{-webkit-text-size-adjust: none;}
    		}
    		
    		body{
-			padding-top:55px!important;
+			padding-top:85px!important;
    		}
    		
    		.flag_container li{
@@ -264,6 +267,7 @@ html{-webkit-text-size-adjust: none;}
  	var asin = '<?php echo $asin;?>' ;
  	var username = '<?php echo $username;?>' ;
  	var pdStatus = '<?php echo $pdStatus;?>' ;
+ 	var platformId = '<?php echo $product['PLATFORM_ID'] ;?>' ;
 
  	function  ForceAuditAction(status , statusLabel,fixParams){
 			if(window.confirm("确认【"+statusLabel+"】吗？")){
@@ -440,18 +444,47 @@ html{-webkit-text-size-adjust: none;}
 
 </head>
 <body style="overflow-y:auto;padding:2px;">
+	<table  style="position:absolute;left:2px;top:2px;">
+		<tr>
+			<td><?php if($PD_TRANSFER && $pdStatus !=80 && $pdStatus!=15  ){?>
+		<button class="transfer-action btn"  >转交</button>
+		<?php }?></td>
+		<td><button class="base-gather btn" >信息获取</button></td>
+		<td>
+			<select name="platformId"
+				<?php  if(!empty($product["TITLE"])) echo "disabled";?>
+			  style="margin:0px;padding:0px;height:25px;">
+				<option value="">--选择平台--</option>
+				<?php 
+					$platformId = $product['PLATFORM_ID'] ;
+					if(empty($platformId)){
+						$platformId = $task['PLATFORM_ID'] ;
+					}
+				
+					$strategys = $SqlUtils->exeSql("sql_platform_list",array()) ;
+					foreach( $strategys as $s){
+						$s = $SqlUtils->formatObject($s) ;
+						$selected = '' ;
+						if( $s['ID'] == $product['PLATFORM_ID'] ){
+							$selected = "selected" ;
+						}
+						echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;
+					}
+				?>
+			</select>
+		</td>
+		</tr>
+	</table>
+	
+		
 	<div  class="flow-bar">
-		<button class="base-gather btn"  style="position:absolute;left:2px;top:2px;">信息获取</button>
-		<?php if($PD_TRANSFER && $pdStatus !=80 && $pdStatus!=15  ){?>
-		<button class="transfer-action btn"  style="position:absolute;left:2px;top:27px;">转交</button>
-		<?php }?>
 		<center>
 			<table class="flow-table"></table>
 			<div class="flow-action"></div>
 		</center>
 	</div>
 <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	<div id="details_tab" style="border:0px;position:fixed;top:60px;left:0px;right:0px;">
+	<div id="details_tab" style="border:0px;position:fixed;top:90px;left:0px;right:0px;">
 	</div>	
 	
 	<div class="hide"  id="track-tab">
@@ -778,10 +811,12 @@ html{-webkit-text-size-adjust: none;}
 					<td><a href="#"  offer-listing="<?php echo $product["ASIN"]?>"><?php echo $product["TITLE"]?>(<?php echo $product["ASIN"]?>) </a></td>
 					<td rowspan="8">
 						<?php
+							$imgString = "" ;
 							foreach( $imgs as $img ){
 								$url = str_replace("%" , "%25",$img['LOCAL_URL']) ;
-								echo "<img src='/".$fileContextPath."/".$url."'>" ;
+								$imgString = "<img src='/".$fileContextPath."/".$url."'>" ;
 							} ;
+							echo $imgString ;
 						?>
 					</td>
 				</tr>

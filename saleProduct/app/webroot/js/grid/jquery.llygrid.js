@@ -713,7 +713,7 @@
 			},
 			'titleListing':{
 				body:function(val,record,col){
-					return "<a href='http://www.amazon.com/gp/offer-listing/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+					return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
 				}
 			},
 			"editor":{

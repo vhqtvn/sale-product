@@ -11,33 +11,27 @@
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
+		
+		echo $this->Html->css('../js/validator/jquery.validation');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
+		
+		echo $this->Html->script('validator/jquery.validation');
 	?>
 
 	<script>
 		$(function(){
 			$("button").click(function(){
-				var name = $("[name='name']").val() ;
-				var url = $("[name='url']").val() ;
 
-				if( !($.trim(name) && $.trim(url)) ){
-					alert("名称和地址不能为空！");
-					return ;
+				if( !$.validation.validate('#personForm').errorInfo ) {
+					var json = $("#personForm").toJson() ;
+					
+					$.dataservice("model:Seller.saveSeller",json,function(result){
+							window.close();
+					});
 				}
-
-				$.ajax({
-					type:"post",
-					url:contextPath+"/seller/save",
-					data:{name:name,url:url},
-					cache:false,
-					dataType:"text",
-					success:function(result,status,xhr){
-						alert(result);
-					}
-				}); 
 			}) ;
 		}) ;
 	</script>
@@ -71,12 +65,32 @@
 								<tr>
 									<th><label>商家名称：</label></th>
 									<td>
-									<input type="text" name="name" class="input-large">
+									<input type="text"  data-validator="required" name="name" class="input-large">
 									</td>
                                 </tr>
                                 <tr>
+									<th>所属平台</th>
+									<td>
+									<select name="platformId"  data-validator="required"  class="input 10-input" >
+										<option value="">--选择平台--</option>
+										<?php 
+											$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+											$strategys = $SqlUtils->exeSql("sql_platform_list",array()) ;
+											foreach( $strategys as $s){
+												$s = $SqlUtils->formatObject($s) ;
+												$selected = '' ;
+												if( $s['ID'] == $account[0]['sc_amazon_account']['PLATFORM_ID'] ){
+													$selected = "selected" ;
+												}
+												echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;
+											}
+										?>
+										</select>
+									</td>
+								</tr>
+                                <tr>
 									<th><label>商家地址：</label></th>
-									<td><input type="text" name="url" class="input-large"></td>
+									<td><input type="text" name="url"  data-validator="required"  class="input-large"></td>
 								</tr>
 							</tbody>
 						</table>

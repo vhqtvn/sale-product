@@ -1132,7 +1132,7 @@ $("[supplier-id]").live("click",function(){
 
 $("[offer-listing]").live("click",function(){
 	var sku = $(this).attr("offer-listing") ;
-	openCenterWindow("http://www.amazon.com/gp/offer-listing/"+sku) ;
+	openCenterWindow(""+contextPath+"/page/forward/Platform.asin/"+sku) ;
 	return false ;
 })
 
