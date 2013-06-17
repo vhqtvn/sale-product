@@ -11,7 +11,7 @@
 		select spc.* from sc_platform sp , sc_amazon_account saa, sc_platform_config spc
 		 where 
 		sp.id = saa.platform_id 
-		and sps.platform_id = sp.id
+		and spc.platform_id = sp.id
 		and saa.id = '{@#accountId#}'
 	]]>	      
     </entry>
