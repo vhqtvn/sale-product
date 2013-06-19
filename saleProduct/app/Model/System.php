@@ -38,7 +38,6 @@ class System extends AppModel {
 		foreach( $items as $item ){
 			$result[ $item['KEY'] ] = $item['VALUE'] ;
 		}
-	
 		return $result ;
 	}
 

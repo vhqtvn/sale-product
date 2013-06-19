@@ -3,6 +3,10 @@
 	<entry key="sc_warehouse_in_product_select_out">
 				SELECT srp.*
 			FROM sc_real_product srp
+			where 1=1
+			{@ and srp.REAL_SKU like '%#REAL_SKU#%'}
+			{@ and srp.NAME like '%#NAME#%'}
+			order by srp.real_sku
 	</entry>
 	
 	<entry key="sc_warehouse_in_product_select_warehouse">

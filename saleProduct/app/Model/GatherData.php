@@ -10,6 +10,7 @@ App::import('Model', 'System') ;
 App::import('Model', 'Utils') ;
 App::import('Model', 'Log') ;
 App::import('Model', 'Task') ;
+App::import('Model', 'System') ;
 
 App :: import('Vendor', 'Snoopy');
 App :: import('Vendor', 'simple_html_dom');
@@ -20,6 +21,7 @@ App :: import('Vendor', 'Amazon');
  */
 class GatherData extends AppModel {
 	var $useTable = "sc_product_flow" ;
+	var $platformId = null ;
 	
 	public function getAmazonSiteUrl($asin,$platform=null){
 		$system = new System() ;
@@ -31,13 +33,13 @@ class GatherData extends AppModel {
 				$platform = $platform_ ;
 			}
 		}
+		
 		if( empty($platform) ) $platform = 1 ;
+		
+		$this->platformId = $platform;
 		
 		//通过平台获取URL路径
 		$config = $system->getPlatformConfig($platform) ;
-		
-		debug($asin."  ".$platform) ;
-		debug($config) ;
 		
 		$siteUrl = $config["AMAZON_SITE_URL"] ;
 		
@@ -59,7 +61,7 @@ class GatherData extends AppModel {
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
-		
+		$system = new System() ;
 		//判断是否为合法的ASIN
 		if( strlen(trim($asin)) < 9 || strlen(trim($asin)) >=11 ) {
 			return ;
@@ -79,6 +81,13 @@ class GatherData extends AppModel {
 				//debug($Result) ;
 				$html = new simple_html_dom();
 				$html->load( $Result  ,true ,false );
+				
+				$config = $system->getPlatformConfig( $this->platformId ) ;
+				$keyMaps = null ;
+				if( isset($config['AMAZON_GATHER_KEY_MAP']) ){
+					$keyMaps = $config['AMAZON_GATHER_KEY_MAP'] ;
+					$keyMaps = json_decode($keyMaps) ;
+				}
 				
 				try{
 					//get title
@@ -103,18 +112,39 @@ class GatherData extends AppModel {
 					$productDetails = '' ;
 					$Dimensions = '' ;
 					$Weight = '' ;
+					
+					$pd = "Product Details" ;
+					if(!empty( $keyMaps )){
+						$pd = $keyMaps->Product_Details ;
+					}
+					$pdd = "Product Dimensions:" ;
+					if(!empty( $keyMaps )){
+						$pdd = $keyMaps->Product_Dimensions ;
+					}
+					
+					$sw= "Shipping Weight:" ;
+					if(!empty( $keyMaps )){
+						$sw = $keyMaps->Shipping_Weight ;
+					}
+					
+					$vsrap= "(View shipping rates and policies)" ;
+					if(!empty( $keyMaps )){
+						$vsrap = $keyMaps->vsrap ;
+					}
+					
 					foreach(  $html->find("h2") as $e){ 
-						if( $e->plaintext == 'Product Details' ) {
+						
+						if( $e->plaintext == $pd ) {
 							$productDetails = $e->next_sibling ()->plaintext ;
 							
 							foreach(  $e->next_sibling()->find("b") as $f ){
-								if( trim( $f->plaintext ) == "Product Dimensions:" ){
+								if( trim( $f->plaintext ) == $pdd ){
 									$Dimensions = $f->parent()->plaintext ;
-									$Dimensions = str_replace("Product Dimensions:" ,"",$Dimensions);
-								}else if( trim( $f->plaintext ) == "Shipping Weight:" ){
+									$Dimensions = str_replace($pdd ,"",$Dimensions);
+								}else if( trim( $f->plaintext ) == $sw ){
 									$Weight = $f->parent()->plaintext ;
-									$Weight = str_replace("Shipping Weight:" ,"",$Weight);
-									$Weight = str_replace("(View shipping rates and policies)" ,"",$Weight);
+									$Weight = str_replace($sw ,"",$Weight);
+									$Weight = str_replace($vsrap ,"",$Weight);
 								}
 							}
 						}
@@ -160,13 +190,33 @@ class GatherData extends AppModel {
 					}
 					//return ;
 					//保存竞争信息-----------------------------------------------------
+					
+					
 					if( $html != null ){
+						$outof= "out of" ;
+						if(!empty( $keyMaps )){
+							$outof = $keyMaps->out_of ;
+						}
+						$reviews1= "reviews" ;
+						if(!empty( $keyMaps )){
+							$reviews1 = $keyMaps->reviews ;
+						}
+						$review1= "review" ;
+						if(!empty( $keyMaps )){
+							$review1 = $keyMaps->review ;
+						}
+						
+						$inblank= "in&nbsp;" ;
+						if(!empty( $keyMaps )){
+							$inblank = $keyMaps->inblank ;
+						}
+						
 						//get point
 						$rating = $html->find(".acrRating",0) ;
 						$point = "" ;
 						if($rating != null ){
 							$txt = $rating->plaintext ;
-							$arry = explode("out of",$txt) ;
+							$arry = explode($outof,$txt) ;
 							$point = trim( $arry[0] ) ;
 						}
 						//get review
@@ -176,7 +226,7 @@ class GatherData extends AppModel {
 							$txt = $views->plaintext ;
 							$txt = str_replace( array('"',')','(',","),"",$txt ) ;
 							$reviews = trim( $txt ) ;
-							$reviews = str_replace( array("reviews","review"),"",$reviews ) ;
+							$reviews = str_replace( array($reviews1,$review1),"",$reviews ) ;
 							$reviews = trim($reviews) ;
 						}
 						//get ranking
@@ -188,7 +238,7 @@ class GatherData extends AppModel {
 								$type = $item->find(".zg_hrsr_ladder",0) ;
 								
 								$rankText = str_replace("#","",$rank->plaintext) ;
-								$typeText = str_replace("in&nbsp;","",$type->plaintext) ;
+								$typeText = str_replace($inblank,"",$type->plaintext) ;
 								
 								$rankArray[] = array("rank"=>trim( $rankText ),"type"=>trim($typeText) ) ;
 							}
@@ -227,6 +277,7 @@ class GatherData extends AppModel {
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
+		$system = new System() ;
 		
 		$siteUrl = $this->getAmazonSiteUrl($asin,$platformId) ;//  $config["AMAZON_SITE_URL"] ;
 		
@@ -253,17 +304,32 @@ class GatherData extends AppModel {
 				$base = array('FM_NUM'=>'0','NM_NUM'=>'0','UM_NUM'=>'0') ;
 				$details = array() ;
 				
+				$config = $system->getPlatformConfig( $this->platformId ) ;
+				$fmFlag = 'Featured Merchants' ;
+				$newFlag =  'New' ;
+				$uFlag =  'Used' ;
+				$keyMaps = null ;
+				if( isset($config['AMAZON_GATHER_KEY_MAP']) ){
+					$keyMaps = $config['AMAZON_GATHER_KEY_MAP'] ;
+					$keyMaps = json_decode($keyMaps) ;
+					if(!empty($keyMaps)){
+						$fmFlag = $keyMaps->Featured_Merchants ;
+						$newFlag = $keyMaps->New ;
+						$uFlag = $keyMaps->Used ;
+					}
+				}
+				
 				foreach(  $html->find("h2") as $e){ 
-					if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
-						$returns = $utils->_processRowCompetetion($e,$details,"F" ,$base , 'FM_NUM') ;
+					if( $e->plaintext == $fmFlag ) {//1-5 of 15 offers 
+						$returns = $utils->_processRowCompetetion($e,$details,"F" ,$base , 'FM_NUM',$keyMaps) ;
 						$details = $returns[0] ;
 						$base = $returns[1] ;
-					}else if( $e->plaintext == 'New' ) {
-						$returns = $utils->_processRowCompetetion($e,$details,"N" ,$base , 'NM_NUM') ;
+					}else if( $e->plaintext == $newFlag ) {
+						$returns = $utils->_processRowCompetetion($e,$details,"N" ,$base , 'NM_NUM',$keyMaps) ;
 						$details = $returns[0] ;
 						$base = $returns[1] ;
-					}else if( $e->plaintext == 'Used' ) {
-						$returns = $utils->_processRowCompetetion($e,$details,"U" ,$base , 'UM_NUM') ;
+					}else if( $e->plaintext == $uFlag ) {
+						$returns = $utils->_processRowCompetetion($e,$details,"U" ,$base , 'UM_NUM',$keyMaps) ;
 						$details = $returns[0] ;
 						$base = $returns[1] ;
 					}
@@ -296,6 +362,7 @@ class GatherData extends AppModel {
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
+		$system = new System() ;
 		
 		$siteUrl = $this->getAmazonSiteUrl($asin,$platformId) ;//  $config["AMAZON_SITE_URL"] ;
 		
@@ -316,12 +383,27 @@ class GatherData extends AppModel {
 				
 				$base = array() ;
 				$details = array() ;
+				
+				$config = $system->getPlatformConfig( $this->platformId ) ;
+				$fmFlag = 'Featured Merchants' ;
+				$newFlag =  'New' ;
+				$uFlag =  'Used' ;
+				$keyMaps = null ;
+				if( isset($config['AMAZON_GATHER_KEY_MAP']) ){
+					$keyMaps = $config['AMAZON_GATHER_KEY_MAP'] ;
+					$keyMaps = json_decode($keyMaps) ;
+					if(!empty($keyMaps)){
+						$fmFlag = $keyMaps->Featured_Merchants ;
+						$newFlag = $keyMaps->New ;
+						$uFlag = $keyMaps->Used ;
+					}
+				}
 		
 				$count = 0 ;
 				foreach(  $html->find("h2") as $e){ 
-					if( $e->plaintext == 'Featured Merchants' ) {//1-5 of 15 offers 
+					if( $e->plaintext ==$fmFlag ) {//1-5 of 15 offers 
 						$count++ ;
-						$returns = $utils->_processRowCompetetion($e,$details,"FBA" ,$base , 'FBA_NUM') ;
+						$returns = $utils->_processRowCompetetion($e,$details,"FBA" ,$base , 'FBA_NUM',$keyMaps) ;
 						$details = $returns[0] ;
 						$base = $returns[1] ;
 					}

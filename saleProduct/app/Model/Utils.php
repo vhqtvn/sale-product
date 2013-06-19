@@ -210,11 +210,21 @@ class Utils extends AppModel {
 		return json_encode ( $results );
 	}
 	
-	public function _processRowCompetetion($e, $details, $type, $base, $numType) {
+	public function _processRowCompetetion($e, $details, $type, $base, $numType,$keyMaps=null) {
+		$of = "of" ;
+		$offers = "offers" ;
+		$positive = "positive" ;
+		$total_ratings = "total ratings" ;
+		if(!empty($keyMaps)){
+			$of = $keyMaps->of ;
+			$offers = $keyMaps->offers ;
+			$positive = $keyMaps->positive ;
+			$total_ratings = $keyMaps->total_ratings ;
+		}
 		
 		$numberofresults = $e->next_sibling ()->plaintext;
-		$ary = explode ( "of", $numberofresults );
-		$_ = str_replace ( "offers", "", $ary [1] );
+		$ary = explode ( $of, $numberofresults );
+		$_ = str_replace ( $offers, "", $ary [1] );
 		$umNum = trim ( $_ );
 		$base [$numType] = $umNum;
 		
@@ -263,7 +273,7 @@ class Utils extends AppModel {
 			$positiveInfo = $sellerInformation->find ( ".rating a b", 0 );
 			if ($positiveInfo != null) {
 				$prePositive = $positiveInfo->plaintext;
-				$prePositive = trim ( str_replace ( array ("positive", '%' ), "", $prePositive ) );
+				$prePositive = trim ( str_replace ( array ($positive, '%' ), "", $prePositive ) );
 			}
 			
 			$totalRatingInfo = $sellerInformation->find ( ".rating", 0 );
@@ -272,7 +282,7 @@ class Utils extends AppModel {
 				$totalRating = explode ( "(", $totalRating );
 				if (count ( $totalRating ) >= 2) {
 					$totalRating = $totalRating [1];
-					$totalRating = explode ( "total ratings", $totalRating );
+					$totalRating = explode ( $total_ratings, $totalRating );
 					$totalRating = $totalRating [0];
 					$totalRating = trim ( str_replace ( array (",", '%' ), "", $totalRating ) );
 				} else {
