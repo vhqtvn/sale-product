@@ -79,7 +79,7 @@
 		var img45 = '<?php echo $this->Html->image('cmp.gif',array("title"=>"采购执行")) ?>' ;
 		var img5 = '<?php echo $this->Html->image('pkg.gif',array("title"=>"待QC验货产品")) ?>' ;
 		var img6 = '<?php echo $this->Html->image('cake.icon.png',array("title"=>"货品待入库")) ?>' ;
-		var img7 = '<?php echo $this->Html->image('icon-grid.gif',array("title"=>"采购确认")) ?>' ;
+		var img7 = '<?php echo $this->Html->image('icon-grid.gif',array("title"=>"采购审计")) ?>' ;
 		var img8 = '<?php echo $this->Html->image('test-pass-icon.png',array("title"=>"结束采购")) ?>' ;
 	</script>
 

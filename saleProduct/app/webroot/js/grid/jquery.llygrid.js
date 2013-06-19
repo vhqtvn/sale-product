@@ -1152,7 +1152,7 @@ $.llygrid.format.purchaseProductStatus = {
 				case '48':  message = "待发货";break;
 				case '50':  message = "QC验货";break;
 				case '60':  message = "入库";break;
-				case '70':  message = "采购确认";break;
+				case '70':  message = "采购审计";break;
 				case '80':  message = "结束";break;
 			}
 			return message||val ;

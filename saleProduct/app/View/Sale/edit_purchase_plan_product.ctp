@@ -314,14 +314,14 @@
         				]
 	        			<?php };?>
 	        		},
-	        		{status:70,label:"采购确认",memo:true
+	        		{status:70,label:"采购审计",memo:true
 	        			<?php if( $ppp_confirm) { ?>
 	        			,actions:[
 									<?php if( $ppp_callback ){ ?>
 									{label:"回退",action:function(){ ForceAuditAction(60,"回退") }},
 									<?php }?>
 									{label:"保存",action:function(){ ForceAuditAction(70,"保存") }},
-		      	        			{label:"确认采购",action:function(){ AuditAction(80,"采购确认") } }]
+		      	        			{label:"采购审计",action:function(){ AuditAction(80,"采购审计") } }]
 	        			<?php };?>
 	        		},
 	        		{status:80,label:"结束"}
