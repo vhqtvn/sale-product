@@ -2,13 +2,12 @@
 class Product extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
-	function getProductCategory($asin = null ){
+	function getProductCategory($asin = null,$taskId = null ){
 		if( !empty($asin) ){
 			return	$this->exeSql("sql_getProductCategoryByAsin", array('asin'=>$asin)) ;
 		}else{
-			return	$this->exeSql("sql_getProductCategoryByDefault", array()) ;
+			return	$this->exeSql("sql_getProductCategoryByDefault", array('taskId'=>$taskId)) ;
 		}
-		
 	}
 	
 	function setSupplierFlag($params){

@@ -25,7 +25,7 @@ class ProductController extends AppController {
 	public function index($id=null) {
 		$this->set('taskId', $id);
 		
-		$categorys = $this->Product->getProductCategory();  
+		$categorys = $this->Product->getProductCategory(null , $id);  
     	$this->set("categorys",$categorys) ;
     }
 

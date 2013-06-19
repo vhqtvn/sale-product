@@ -460,12 +460,12 @@ html{-webkit-text-size-adjust: none;}
 					if(empty($platformId)){
 						$platformId = $task['PLATFORM_ID'] ;
 					}
-				
+					
 					$strategys = $SqlUtils->exeSql("sql_platform_list",array()) ;
 					foreach( $strategys as $s){
 						$s = $SqlUtils->formatObject($s) ;
 						$selected = '' ;
-						if( $s['ID'] == $product['PLATFORM_ID'] ){
+						if( $s['ID'] == $platformId ){
 							$selected = "selected" ;
 						}
 						echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;

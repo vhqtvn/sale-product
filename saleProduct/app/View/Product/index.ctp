@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>llygrid demo</title>
+    <title>产品列表</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
@@ -60,7 +60,7 @@
 				if(taskId){
 					initParams = {sqlId:"sql_task_product_list",countSqlId:"sql_task_product_list_count",taskId:taskId};
 				}
-				
+				initParams.categoryId = "--" ;
 				$(".grid-content").llygrid({
 					columns:[
 			           	{align:"center",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
@@ -80,9 +80,11 @@
 			           	{align:"center",key:"QUALITY_POINTS",label:"质量分",width:"5%"}
 			         ],
 			         ds:{type:"url",content:contextPath+"/grid/query/"},
-					 limit:30,
+					 limit:20,
 					 pageSizes:[10,20,30,40],
-					 height:400,
+					 height:function(){
+						return $(window).height() - 150 ;
+					},
 					 title:"",
 					 indexColumn:false,
 					 querys:initParams,
@@ -103,6 +105,7 @@
 				var querys = {} ;
 				querys.asin = asin ;
 				querys.title = title ;
+				querys.categoryId = '' ;
 				
 				if(ts == 'focus'){
 					querys.user_status = ts ;
@@ -141,6 +144,7 @@
 								<td>
 									<input type="text" name="title" class="input-medium"/>
 								</td>
+								<!-- 
 								<th>
 									状态:
 								</th>
@@ -152,7 +156,8 @@
 										<option value="uninstall">下架</option>
 										<option value="focus">异常关注</option>
 									</select>
-								</td>								
+								</td>		
+								 -->						
 								<td class="toolbar-btns" rowspan="3">
 									<button class="query-btn btn btn-primary">查询</button>
 								</td>
