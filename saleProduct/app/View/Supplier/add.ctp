@@ -145,6 +145,8 @@
 <div id="tabs-default" ></div>
 	<div id="base-info">
 			<input type="hidden" id="id" value="<?php echo $id;?>"/>
+			<input type="hidden" id="sku" value="<?php echo $sku;?>"/>
+			<input type="hidden" id="asin" value="<?php echo $asin;?>"/>
 			<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
@@ -167,7 +169,7 @@
 						<?php if($isView){
 							echo $defaultCode;
 						}else{ ?>
-							<input readonly='readOnly'   data-validator="required" type="text" id="defaultCOde" value="<?php echo $defaultCode;?>"/>
+							<input readonly='readOnly'   data-validator="required" type="text" id="code" value="<?php echo $defaultCode;?>"/>
 						<?php }?>
 					</td>
 				</tr>
@@ -185,14 +187,14 @@
 					<?php if($isView){
 							echo $contactor;
 						}else{ ?>
-							<input data-validator="required" type="text" id="contactor" value="<?php echo $contactor;?>"/>
+							<input  type="text" id="contactor" value="<?php echo $contactor;?>"/>
 						<?php }?>
 						</td>
 					<th>联系电话：</th><td>
 					<?php if($isView){
 							echo $phone;
 						}else{ ?>
-							<input data-validator="required" type="text" id="phone" value="<?php echo $phone;?>"/>
+							<input  type="text" id="phone" value="<?php echo $phone;?>"/>
 						<?php }?>
 					</td>
 				</tr>
@@ -201,14 +203,14 @@
 					<?php if($isView){
 							echo $mobile;
 						}else{ ?>
-							<input data-validator="required" type="text" id="mobile" value="<?php echo $mobile;?>"/>
+							<input  type="text" id="mobile" value="<?php echo $mobile;?>"/>
 						<?php }?>
 						</td>
 					<th>传真：</th><td>
 					<?php if($isView){
 							echo $fax;
 						}else{ ?>
-							<input data-validator="required" type="text" id="fax" value="<?php echo $fax;?>"/>
+							<input  type="text" id="fax" value="<?php echo $fax;?>"/>
 						<?php }?>
 						
 						</td>
@@ -218,14 +220,14 @@
 					<?php if($isView){
 							echo $qq;
 						}else{ ?>
-							<input data-validator="required" type="text" id="qq" value="<?php echo $qq;?>"/>
+							<input  type="text" id="qq" value="<?php echo $qq;?>"/>
 						<?php }?>
 						</td>
 					<th>Email：</th><td>
 					<?php if($isView){
 							echo $email;
 						}else{ ?>
-							<input data-validator="required" type="text" id="email" value="<?php echo $email;?>"/>
+							<input  type="text" id="email" value="<?php echo $email;?>"/>
 						<?php }?>
 						</td>
 				</tr>
@@ -234,7 +236,7 @@
 					<?php if($isView){
 							echo $zip_code;
 						}else{ ?>
-							<input data-validator="required" type="text" id="zip_code" value="<?php echo $zip_code;?>"/>
+							<input  type="text" id="zip_code" value="<?php echo $zip_code;?>"/>
 						<?php }?>
 						</td>
 				</tr>
@@ -243,7 +245,7 @@
 					<?php if($isView){
 							echo "<a href='$url' target='_blank'>$url</a>";
 						}else{ ?>
-							<input data-validator="required" type="text" id="url" value="<?php echo $url;?>"/>
+							<input type="text" id="url" value="<?php echo $url;?>"/>
 						<?php }?>
 						</td>
 				</tr>
