@@ -66,11 +66,6 @@
 				 }
 			}) ;
 			
-			$(".action-update").live("click",function(){
-				var id = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/supplier/add/"+id,400,300) ;
-			})
-			
 			$(".query-btn").click(function(){
 				var name = $("[name='name']").val() ;
 				var querys = {} ;
@@ -80,12 +75,10 @@
 				$(".grid-content").llygrid("reload",querys) ;	
 			}) ;
 			
-			$(".select-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/addBySku/"+sku , 800,600) ;
-			}) ;
-
 			$(".add-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/addBySku/"+sku , 800,600) ;
+				openCenterWindow(contextPath+"/supplier/add/sku/"+sku , 800,600,function(){
+						window.location.reload();
+				}) ;
 			}) ;
 			
 			$(".save-product-supplier").click(function(){
@@ -156,6 +149,7 @@
      			?>
      		</ul>
      </div>
+     
      
      <div class="panel-foot">
 						<div class="form-actions col2">
