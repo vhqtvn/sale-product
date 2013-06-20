@@ -28,17 +28,27 @@ class SupplierController extends AppController {
 	 public function add($id = null, $idValue = null ){
 	 	if( $id == 'asin' ){
 	 		$this->set("asin",$idValue) ;
+	 		$this->set("sku",'') ;
 	 		$this->set("id",'') ;
 	 		$Supplier = null ;
-	 		if( !empty($id) ){
-	 			$Supplier =  $this->Supplier->getSupplier( $id  ) ;
-	 		}
-	 		$this->set("supplier",$Supplier) ;
+	 		
+	 		$this->set("supplier",null) ;
+	 		
+	 		$categorys = $this->Product->getProductCategory();
+	 		$this->set("categorys",$categorys) ;
+	 	}else if( $id == 'sku' ){
+	 		$this->set("sku",$idValue) ;
+	 		$this->set("asin",'') ;
+	 		$this->set("id",'') ;
+	 		$Supplier = null ;
+	 	
+	 		$this->set("supplier",null ) ;
 	 		
 	 		$categorys = $this->Product->getProductCategory();
 	 		$this->set("categorys",$categorys) ;
 	 	}else{
 	 		$this->set("asin",'') ;
+	 		$this->set("sku",'') ;
 	 		$this->set("id",$id) ;
 	 		$Supplier = null ;
 	 		if( !empty($id) ){
