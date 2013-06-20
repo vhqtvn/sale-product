@@ -173,9 +173,9 @@
 			<?php
 					$url = "" ; 
 					if(empty($sku)){
-						$url = "/page/forward/cost.add_by_sku/asin/".$asin ;
+						$url = "/page/forward/Cost.add_by_sku/asin/".$asin ;
 					}else{
-						$url = "/page/forward/cost.add_by_sku/sku/".$sku ;
+						$url = "/page/forward/Cost.add_by_sku/sku/".$sku ;
 					}
 				?>
 			
