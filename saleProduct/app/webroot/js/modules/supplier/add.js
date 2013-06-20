@@ -1,14 +1,16 @@
 
 		$(function(){
 			
+			var tabs = [] ;
+			tabs.push(	{label:'基本信息',content:"base-info"}) ;
+			tabs.push({label:'评价',content:"evaluate"}) ;
+			if( supplierId ){
+				tabs.push({label:'供应产品',iframe:true,url:contextPath+"/page/forward/Supplier.supplierProductList/"+supplierId}) ;
+				tabs.push({label:'采购记录',iframe:true,url:contextPath+"/page/forward/Supplier.purchaseProductList/"+supplierId}) ;
+			}
 
 			var tab = $('#tabs-default').tabs( {//$this->layout="index";
-				tabs:[
-					{label:'基本信息',content:"base-info"}
-					,{label:'评价',content:"evaluate"}
-					,{label:'供应产品',iframe:true,url:contextPath+"/page/forward/Supplier.supplierProductList/"+supplierId}
-					,{label:'采购记录',iframe:true,url:contextPath+"/page/forward/Supplier.purchaseProductList/"+supplierId}
-				] ,
+				tabs: tabs ,
 				height:function(){
 					return $(window).height() - 65 ;
 				}
