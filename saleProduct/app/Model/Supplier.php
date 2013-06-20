@@ -49,7 +49,6 @@ class Supplier extends AppModel {
 	public function saveSupplier($data){
 		$loginId = $data['loginId'] ;
 		
-		
 		$id = '' ;
 		
 		if( isset($data['id']) && !empty($data["id"]) ){
@@ -64,6 +63,13 @@ class Supplier extends AppModel {
 			$data['id'] = $id ;
 			
 			$this->exeSql("sql_supplier_insert", $data) ;
+		}
+		
+		if(!empty($data['sku'])){//保存到产品
+			try{
+				$this->exeSql("sql_realProduct_supplierInsert", array('sku'=>$data['sku'],'supplierId'=>$id,'loginId'=>$loginId )) ;
+			}catch(Exception $e){
+			}
 		}
 		
 		$metas = $this->exeSqlWithFormat("select * from sc_supplier_evaluate_meta",array()) ;
