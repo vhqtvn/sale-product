@@ -2,6 +2,10 @@
 class System extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	public function getPlatform($platform){
+		return $this->getObject("select * from sc_platform where id = '{@#platformId#}'", array('platformId'=>$platform)) ;
+	}
+	
 	public function getAccountPlatformConfig($accountId){
 		$items = $this->exeSqlWithFormat("sql_getPlatformConfig_ForAccountId",array("accountId"=>$accountId)) ;
 		

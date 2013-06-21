@@ -97,7 +97,7 @@
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					return $(window).height() - 200;
+					return $(window).height() - 140;
 				},
 				 title:"上传列表",
 				 indexColumn:false,
@@ -181,9 +181,9 @@
 </head>
 
 
-<body style="magin:0px;padding:0px;">
-	<div data-widget="layout" style="width:100%;height:90%;">
-		<div region="center" split="true" border="true" title="上传任务" style="padding:2px;">
+<body style="magin:0px;padding:0px;"  data-widget="layout">
+	<div data-widget="layout" style="width:100%;height:100%;">
+		<div region="center" split="true" border="true"  title="上传任务"style="padding:2px;">
 			<button class="upload-product btn btn-primary">添加产品</button>
 			<div class="grid-content" style="width:99%;">
 			
@@ -195,10 +195,10 @@
 				处理中......
 			</div>
 		</div>
-		<div region="west" icon="icon-edit" split="true" border="true" title="上传任务组" style="width:180px;">
+		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:200px;">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>
 		</div>
    </div>
-	
+
 </body>
 </html>

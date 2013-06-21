@@ -54,6 +54,18 @@
                  {@  and name like '%#NAME#%'}
                 {@  and sc_supplier.id in (
                    select sps.supplier_id  from sc_real_product_supplier sps where sps.real_sku = '#realSku#'
+                   union
+                   SELECT  sp.id FROM 
+						sc_real_product srp,
+						sc_real_product_rel srpr,
+						sc_amazon_account_product saap,
+						sc_product_supplier sps,
+						sc_supplier sp
+						WHERE srp.id = srpr.REAL_ID
+						AND srpr.SKU = saap.SKU
+						AND sps.ASIN = saap.ASIN
+						and sp.id = sps.supplier_id
+						AND srp.REAL_SKU = '#realSku#'
                 )}
                 {@
                 	and (

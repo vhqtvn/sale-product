@@ -82,7 +82,16 @@ class GatherCategoryController extends AppController {
 				
 				$index = $index + 1 ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] details  " );
-				$this->GatherData->asinInfoPlatform($asin, $config['PLATFORM_ID'] ,$accountId,$index,$this->taskId) ;
+				
+				$gatherParams = array(
+						"asin"=>$asin,
+						"platformId"=>$config['PLATFORM_ID'],
+						"id"=>$accountId,
+						"index"=>$index,
+						"taskId"=>$this->taskId
+				) ;
+				
+				$this->GatherData->asinInfoPlatform($gatherParams) ;
 			} 
 			//获取产品信息结束
 			$this->Log->savelog($this->taskId,"end!" );
@@ -99,6 +108,7 @@ class GatherCategoryController extends AppController {
 	public function competition($accountId , $categoryId ){
 		try{
 			//获取商家产品asin
+			$config = $this->System->getAccountPlatformConfig($accountId) ;
 			$array = $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 
 			$index = 0 ;
@@ -112,7 +122,16 @@ class GatherCategoryController extends AppController {
 				$index = $index + 1 ;
 				$asin = $arr['sc_amazon_account_product']['ASIN'] ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] competitions" );
-				$this->GatherData->asinCompetition($asin,$accountId,$index,$this->taskId ) ;
+				
+				$gatherParams = array(
+						"asin"=>$asin,
+						"platformId"=>$config['PLATFORM_ID'],
+						"id"=>$accountId,
+						"index"=>$index,
+						"taskId"=>$this->taskId
+				) ;
+				
+				$this->GatherData->asinCompetitionPlatform($gatherParams) ;
 			}
 			$this->Log->savelog($this->taskId, "end!" );
 		
@@ -127,6 +146,7 @@ class GatherCategoryController extends AppController {
 	public function fba($accountId , $categoryId ){
 		//更新获取状态
 		try{
+			$config = $this->System->getAccountPlatformConfig($accountId) ;
 			$array =  $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 			$index = 0 ;
 			$this->Log->savelog($this->taskId, "start gather fba" );
@@ -140,7 +160,16 @@ class GatherCategoryController extends AppController {
 				$index = $index + 1 ;
 				$asin = $arr['sc_amazon_account_product']['ASIN'] ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] fba" );
-				$this->GatherData->asinFbas($asin,$accountId,$index,$this->taskId ) ;
+				
+				$gatherParams = array(
+						"asin"=>$asin,
+						"platformId"=>$config['PLATFORM_ID'],
+						"id"=>$accountId,
+						"index"=>$index,
+						"taskId"=>$this->taskId
+				) ;
+				
+				$this->GatherData->asinFbasPlatform($gatherParams) ;
 			}
 			$this->Log->savelog($this->taskId, "end!" );
 		}catch(Exception $e){
@@ -156,6 +185,7 @@ class GatherCategoryController extends AppController {
 		$account = $account[0]['sc_amazon_account'] ;
 
 		try{
+			$config = $this->System->getAccountPlatformConfig($accountId) ;
 			$asinArray =  $this->Amazonaccount->getAccountProducts($accountId,$categoryId) ;
 			
 			//开始获取产品信息
@@ -174,7 +204,18 @@ class GatherCategoryController extends AppController {
 				
 				$index = $index + 1 ;
 				$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] price" );
-				$this->GatherData->asinPrice($asin,$account['CODE'],$condition,$accountId ,$index,$this->taskId) ;
+				
+				$gatherParams = array(
+						"asin"=>$asin,
+						"platformId"=>$config['PLATFORM_ID'],
+						"code"=>$account['CODE'],
+						"condition"=>$condition,
+						"id"=>$accountId,
+						"index"=>$index,
+						"taskId"=>$this->taskId
+				) ;
+				
+				$this->GatherData->asinPrice( $gatherParams ) ;
 				
 			} 
 			//获取产品信息结束

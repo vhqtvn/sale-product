@@ -15,7 +15,7 @@ class GatherProductController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array('Utils', 'Config','GatherData','GatherMarketing',"Amazonaccount","Log","Tasking");
+	var $uses = array('Utils', 'Config','GatherData','GatherMarketing',"Amazonaccount","Log","Tasking","System");
 	public $taskId = null ;
 	
 	public function execute($asin , $platformId ){
@@ -58,33 +58,67 @@ class GatherProductController extends AppController {
 	 * 基本信息
 	 */
 	public function baseInfo($asin , $platformId  ){
-		$this->GatherData->asinInfoPlatform($asin,$platformId) ;
+		$gatherParams = array(
+				"asin"=>$asin,
+				"platformId"=>$platformId,
+				"id"=>"",
+				"index"=>"",
+				"taskId"=>""
+		) ;
+		$this->GatherData->asinInfoPlatform($gatherParams) ;
 	}
 	
 	/**
 	 * 竞争信息
 	 */
 	public function competition($asin , $platformId = null ){
-		$this->GatherData->asinCompetitionPlatform($asin,$platformId ) ;
+		$gatherParams = array(
+				"asin"=>$asin,
+				"platformId"=>$platformId,
+				"id"=>"",
+				"index"=>"",
+				"taskId"=>""
+		) ;
+		$this->GatherData->asinCompetitionPlatform($gatherParams) ;
 	}
 	
 	/**
 	 * fba竞争信息
 	 */
 	public function fba($asin , $platformId ){
-		$this->GatherData->asinFbasPlatform($asin,$platformId ) ;
+		$gatherParams = array(
+				"asin"=>$asin,
+				"platformId"=>$platformId,
+				"id"=>"",
+				"index"=>"",
+				"taskId"=>""
+		) ;
+		$this->GatherData->asinFbasPlatform($gatherParams ) ;
 	}
 	
 	/**
 	 * 价格信息
 	 */
 	public function price($productId , $accountId ){
+		$config = $this->System->getAccountPlatformConfig($accountId) ;
 		$account = $this->Amazonaccount->getAccount($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		
 		$product =  $this->Amazonaccount->getAccountProduct($productId) ;
 		$asin = $product[0]['sc_amazon_account_product']['ASIN'] ;
 		$condition = $product[0]['sc_amazon_account_product']['CONDITION'] ;
+		
+		$gatherParams = array(
+				"asin"=>$asin,
+				"platformId"=>$config['PLATFORM_ID'],
+				"code"=>$account['CODE'],
+				"condition"=>$condition,
+				"id"=>$accountId,
+				"index"=>"",
+				"taskId"=>""
+		) ;
+		
+		$this->GatherData->asinPrice( $gatherParams ) ;
 
 		$this->GatherData->asinPrice($asin,$account['CODE'],$condition,$accountId ) ;
 

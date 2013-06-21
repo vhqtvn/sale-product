@@ -457,11 +457,11 @@
 				</tr>
 				<tr>
 					<th>TECH Details：</th>
-					<td colspan="2"><?php echo $product["TECHDETAILS"]?></td>
+					<td colspan="2"><?php echo htmlspecialchars_decode( $product["TECHDETAILS"] ); ?></td>
 				</tr>
 				<tr>
 					<th>PRODUCT Description：</th>
-					<td colspan="2"><?php echo $product["DESCRIPTION"]?> </td>
+					<td colspan="2"><?php echo htmlspecialchars_decode($product["DESCRIPTION"]);?> </td>
 				</tr>
 				<!--
 				<tr>

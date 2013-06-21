@@ -59,15 +59,12 @@ class SupplierController extends AppController {
 	 		$categorys = $this->Product->getProductCategory();
 	 		$this->set("categorys",$categorys) ;
 	 	}
-	 	
 	 }
 	 
 	 public function addBySku($sku){
 	 		$this->set("sku",$sku) ;
-
 	 		$categorys = $this->Product->getProductCategory();
 	 		$this->set("categorys",$categorys) ;
-	 	
 	 }
 	 
 	 
@@ -81,6 +78,9 @@ class SupplierController extends AppController {
 	 
 	  public function view($id = null){
 	 	$this->set("id",$id) ;
+	 	$this->set("asin","") ;
+	 	$this->set("sku","") ;
+	 	
 	 	$Supplier = null ;
 	 	if( !empty($id) ){
 			 $Supplier =  $this->Supplier->getSupplier( $id  ) ;

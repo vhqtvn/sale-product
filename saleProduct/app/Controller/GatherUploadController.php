@@ -130,7 +130,16 @@ class GatherUploadController extends AppController {
 			$asin = $arr['sc_gather_asin']['asin'] ;
 			$platformId = $arr['sc_gather_asin']['platform_id'] ;
 			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."]($platformId) details" );
-			$this->GatherData->asinInfoPlatform($asin, $platformId ,$id,$index,$this->taskId ) ;
+			
+			$gatherParams = array(
+					"asin"=>$asin,
+					"platformId"=>$platformId,
+					"id"=>$id,
+					"index"=>$index,
+					"taskId"=>$this->taskId
+				) ;
+			
+			$this->GatherData->asinInfoPlatform($gatherParams ) ;
 		}
 		$this->Log->savelog($this->taskId, "end!" );
 	} 
@@ -148,7 +157,16 @@ class GatherUploadController extends AppController {
 			$asin = $arr['sc_gather_asin']['asin'] ;
 			$platformId = $arr['sc_gather_asin']['platform_id'] ;
 			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] competitions" );
-			$this->GatherData->asinCompetitionPlatform($asin,$platformId,$id ,$index,$this->taskId ) ;
+			
+			$gatherParams = array(
+					"asin"=>$asin,
+					"platformId"=>$platformId,
+					"id"=>$id,
+					"index"=>$index,
+					"taskId"=>$this->taskId
+			) ;
+			
+			$this->GatherData->asinCompetitionPlatform($gatherParams ) ;
 		}
 		$this->Log->savelog($this->taskId, "end!" );
     }
@@ -165,7 +183,15 @@ class GatherUploadController extends AppController {
 			$asin = $arr['sc_gather_asin']['asin'] ;
 			$platformId = $arr['sc_gather_asin']['platform_id'] ;
 			$this->Log->savelog($this->taskId, "start get product[ index: ".$index." ][".$asin."] fba" );
-			$this->GatherData->asinFbasPlatform($asin,$platformId,$id ,$index,$this->taskId ) ;
+			
+			$gatherParams = array(
+					"asin"=>$asin,
+					"platformId"=>$platformId,
+					"id"=>$id,
+					"index"=>$index,
+					"taskId"=>$this->taskId
+			) ;
+			$this->GatherData->asinFbasPlatform($gatherParams ) ;
 		}
 		$this->Log->savelog($this->taskId, "end!" );
     }
