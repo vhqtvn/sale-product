@@ -4,6 +4,15 @@
 				select * from sc_product where asin = '{@#asin#}'
 		</entry>
 		
+		<!-- 产品是否正在开发中 -->
+		<entry key="sql_productIsDeving">
+				select spd.*,
+						(select spf.name from sc_product_filter spf where spf.id = spd.TASK_ID ) as TASK_NAME
+						 from sc_product_dev spd
+						where spd.flow_status not in ('15','80')
+					AND ASIN =  '{@#asin#}'
+		</entry>
+		
 		<entry key="sql_pdev_findByAsinAndTaskId">
 				select 
 					sc_product_dev.* ,

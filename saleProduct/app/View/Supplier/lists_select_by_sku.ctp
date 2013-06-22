@@ -76,9 +76,16 @@
 			}) ;
 			
 			$(".add-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/add/sku/"+sku , 800,600,function(){
-						window.location.reload();
-				}) ;
+				if(sku){
+					if(window.opener.addSupplierBySku){
+						window.opener.addSupplierBySku() ;
+						window.close() ;
+					}
+				}else{
+					openCenterWindow(contextPath+"/supplier/add/sku/"+sku , 800,600,function(){
+							window.location.reload();
+					}) ;
+				}
 			}) ;
 			
 			$(".save-product-supplier").click(function(){

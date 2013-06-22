@@ -156,11 +156,16 @@ var currentId = '' ;
 					}) ;
 					 
 					 $(".add-asin").bind("click",function(event){
-						 var row =  $(this).parents("tr:first").data("record") ;
+						 	var row =  $(this).parents("tr:first").data("record") ;
 						    event.preventDefault() ;
 						    event.stopPropagation()  ;
 							var taskId = row.ID;
-						 openCenterWindow(contextPath+"/page/forward/ProductDev.addAsinToTask/"+taskId,550,350) ;
+							openCenterWindow(contextPath+"/page/forward/ProductDev.addAsinToTask/"+taskId,550,350,function(){
+								var rv = jQuery.dialogReturnValue() ;
+								if(rv){
+									$(".grid-content-details").llygrid("reload",{},true) ;
+								}
+							}) ;
 							return false ;
 					}) ;
 				}
@@ -171,7 +176,7 @@ var currentId = '' ;
 					{align:"center",key:"TASK_ID",label:"操作",width:"5%",format:function(val,record){
 							var html = [] ;
 							if(record.FLOW_STATUS <= 10){
-								//if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-tp-action") ) ;
+								if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-tp-action") ) ;
 							}
 							
 							html.push( getImage("edit.png","处理","process-action") ) ;
@@ -249,8 +254,11 @@ var currentId = '' ;
 							var row =  $(this).parents("tr:first").data("record") ;
 							var taskId = row.TASK_ID ;
 							var asin = row.ASIN ;
-							openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin,1000,650,function(){
-								$(".grid-content-details").llygrid("reload",{},true) ;
+							var devId = row.ID ;
+							openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin,1000,650,function(win , rt){
+								if(rt){
+									$(".grid-content-details").llygrid("reload",{},true) ;
+								}
 							}) ;
 						}) ;
 					 	

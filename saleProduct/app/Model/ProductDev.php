@@ -2,6 +2,10 @@
 class ProductDev extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
+	function getProductDev($id){
+		return $this->getObject("select * from sc_product_dev where id='{@#id#}'", array("id"=>$id)) ;
+	}
+	
 	//迁移
 	function taskProductTransfer($params){
 		//get source task
@@ -21,12 +25,31 @@ class ProductDev extends AppModel {
 	function addAsinToTask($params){
 		$params['FLOW_STATUS'] = 10 ;//默认状态
 		$asins = $params['asins'] ;
+		
+		
+		$return = array() ;
+		
 		foreach ( explode(",", $asins) as $asin ){
+			
 			if( !empty( $asin ) ){
+				//format asin
+				preg_match_all("/[A-Za-z0-9-_]/i",$asin,$result);
+				$asin=implode('',$result[0]);
+				
 				$params['ASIN'] = trim($asin);
-				$this->exeSql("sql_pdev_insert", $params) ;
+				
+				//判断ASIN是否正在开发中 结束标志：80（结束） 和 （15废弃）
+				$p = $this->getObject("sql_productIsDeving", array("asin"=>trim($asin) )) ;
+				if( !empty($p) ){
+					$return[] = $p['ASIN']."(任务名称：".$p['TASK_NAME'].")" ;
+				}else{
+					$this->exeSql("sql_pdev_insert", $params) ;
+				}
+				
 			}
 		}
+		
+		return $return ;
 	}
 	
 	function deleteTaskProduct($params){

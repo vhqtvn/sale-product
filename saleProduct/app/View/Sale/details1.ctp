@@ -269,6 +269,8 @@ html{-webkit-text-size-adjust: none;}
  	var pdStatus = '<?php echo $pdStatus;?>' ;
  	var platformId = '<?php echo $product['PLATFORM_ID'] ;?>' ;
 
+ 	jQuery.dialogReturnValue(false) ;
+
  	function  ForceAuditAction(status , statusLabel,fixParams){
 			if(window.confirm("确认【"+statusLabel+"】吗？")){
 				var json = $("#personForm").toJson() ;
@@ -285,6 +287,7 @@ html{-webkit-text-size-adjust: none;}
 				json.trackMemo = memo ;
 				
 				$.dataservice("model:ProductDev.doFlow",json,function(result){
+						jQuery.dialogReturnValue(true) ;
 						window.location.reload() ;
 				});
 			}
@@ -694,7 +697,7 @@ html{-webkit-text-size-adjust: none;}
 						<td>	<input type="text" id="CK_SR_CPC"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_CPC']?>"/></td>
 					</tr>
 					<tr>
-						<th>Amazon关键字1：</th>
+						<th>Amazon/Ebay关键字1：</th>
 						<td><input type="text" id="OP_KEY1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY1']?>"/></td>
 						<td>	<input type="text" id="OK_VALID_COMP1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP1']?>"/></td>
 						<td>	<input type="text" id="OK_SR_SEARCH1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH1']?>"/></td>
@@ -702,7 +705,7 @@ html{-webkit-text-size-adjust: none;}
 						<td>	<input type="text" id="OK_SR_CPC1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC1']?>"/></td>
 					</tr>
 					<tr>
-						<th>Amazon关键字2：</th>
+						<th>Amazon/Ebay关键字2：</th>
 						<td><input type="text" id="OP_KEY2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY2']?>"/></td>
 						<td>	<input type="text" id="OK_VALID_COMP2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP2']?>"/></td>
 						<td>	<input type="text" id="OK_SR_SEARCH2"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_SEARCH2']?>" /></td>
@@ -710,7 +713,7 @@ html{-webkit-text-size-adjust: none;}
 						<td>	<input type="text" id="OK_SR_CPC2"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OK_SR_CPC2']?>" /></td>
 					</tr>
 					<tr>
-						<th>Amazon关键字3：</th>
+						<th>Amazon/Ebay关键字3：</th>
 						<td><input type="text" id="OP_KEY3"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OP_KEY3']?>" /></td>
 						<td>	<input type="text" id="OK_VALID_COMP3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP3']?>"/></td>
 						<td>	<input type="text" id="OK_SR_SEARCH3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH3']?>"/></td>
@@ -718,7 +721,7 @@ html{-webkit-text-size-adjust: none;}
 						<td>	<input type="text" id="OK_SR_CPC3"     class="input 10-input"   style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC3']?>"/></td>
 					</tr>
 					<tr>
-						<th>Amazon关键字4：</th>
+						<th>Amazon/Ebay关键字4：</th>
 						<td><input type="text" id="OP_KEY4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OP_KEY4']?>"/></td>
 						<td>	<input type="text" id="OK_VALID_COMP4"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OK_VALID_COMP4']?>" /></td>
 						<td>	<input type="text" id="OK_SR_SEARCH4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH4']?>"/></td>
@@ -726,7 +729,7 @@ html{-webkit-text-size-adjust: none;}
 						<td>	<input type="text" id="OK_SR_CPC4"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_CPC4']?>" /></td>
 					</tr>
 					<tr>
-						<th>eBay关键字：</th><td colspan=5>
+						<th>其他关键字：</th><td colspan=5>
 							<input  type="text" id="EBAY_KEY"  class="input 10-input"   style="width:90%;"  
 							value="<?php echo $productDev['EBAY_KEY'];?>"/></td>
 					</tr>

@@ -82,11 +82,26 @@
 
 					$(".supplier-select").click(function(){
 						openCenterWindow(contextPath+"/supplier/listsSelectBySku/<?php echo $sku;?>",800,600,function(){
-							window.location.reload() ;
+							if(!isAddSupplierBySku){
+								isAddSupplierBySku = false;
+								window.location.reload() ;
+							}
 						}) ;
 					}) ;
 
-		})
+		});
+		var isAddSupplierBySku = false ;
+		function addSupplierBySku(){
+			isAddSupplierBySku = true ;
+			openCenterWindow(contextPath+"/supplier/add/sku/<?php echo $sku;?>", 800,600,function(){
+				var result = jQuery.dialogReturnValue() ;
+				var value = result.id ;
+				var label = result.name ;
+				$("select[name='supplierId']").append( "<option value='"+value+"' selected='selected'>"+label+"</option>" );
+				$("select[name='supplierId']").val(value) ;
+			}) ;
+			//this.close();
+		}
 		
 		function addSupplier(){
 			openCenterWindow(contextPath+"/supplier/add/asin/<?php echo $asin;?>", 800,600,function(){
@@ -96,7 +111,7 @@
 				$("#supplierId").val(value) ;
 				$("#supplierName").val(label) ;
 			}) ;
-			this.close();
+			//this.close();
 		}
 		
 		function validateForm(){

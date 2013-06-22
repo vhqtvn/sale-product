@@ -110,7 +110,7 @@
 			}) ;
 			
 			$(".add-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/addBySku/<?php echo $sku;?>",800,600,function(){
+				openCenterWindow(contextPath+"/supplier/add/sku/<?php echo $sku;?>",800,600,function(){
 					window.location.reload() ;
 				}) ;
 			}) ;

@@ -100,7 +100,8 @@ jQuery.open = function(){//url,width,height,params,callback,fixParams
 		
 		var _callbak = function(){
 			if( jQuery.unblock ){jQuery.unblock() ; }
-			callback(window);
+			var rv = jQuery.dialogReturnValue() ;
+			callback(window,rv);
 		}
 		try{
 			if( jQuery.browser.msie ){

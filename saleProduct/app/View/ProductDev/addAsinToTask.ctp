@@ -39,7 +39,14 @@
 						var json = $("#personForm").toJson() ;
 						
 						$.dataservice("model:ProductDev.addAsinToTask",json,function(result){
-							window.location.reload();
+							if(result){
+								alert("保存完成。\n以下产品为正在开发中的产品：\n"+result);
+							}else{
+								alert("保存成功！");
+							}
+							jQuery.dialogReturnValue(true) ;
+							window.close();
+							//window.location.reload();
 						});
 					}
 				}
