@@ -255,6 +255,7 @@
 			sppd.* ,
 			srp.name as TITLE,
 			srp.IMAGE_URL,
+			(select code from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_CODE,
 			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
 			(select CONTACTOR from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_CONTACTOR,
 			(select MOBILE from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_PHONE,

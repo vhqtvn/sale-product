@@ -28,7 +28,7 @@
 		$task = $SqlUtils->getObject("sql_purchase_task_getById",array('taskId'=>$taskId)) ;
 		
 		$SqlUtils->exeSql("sql_purchase_task_updateStatus",array( 'taskId'=>$taskId,'status'=>'2')) ;
-		
+	
 		
 		$Grid  = ClassRegistry::init("Grid") ;
 		$recordSql = $SqlUtils->getRecordSql( array('taskId'=>$taskId,'sqlId'=>'sql_purchase_task_productsForPrint','start'=>0,'limit'=>1000)) ; 
@@ -179,6 +179,15 @@
 				$title	=	$pd['TITLE'] ;
 				$tags = $pd['TAGS'] ;
 				
+				$providor = $pd['PROVIDOR_CODE'] ;
+				if( !empty($providor) ){
+					$providor = str_replace("SUP-", "", $providor) ;
+				}else{
+					$providor = $pd['PROVIDOR'] ;
+				}
+				
+				$qtc = $providor.'-'.$task['ID'].'-'.$sku ;
+				
 				if( !empty($localUrl) ){
 					$localUrl = str_replace("%" , "%25",$localUrl) ;
 					$localUrl = "<img src='/".$fileContextPath."/".$localUrl."' style='height:112px;'>" ;
@@ -189,6 +198,8 @@
 				<div class="product-image" style="width:152px;height:122px;float:left;">'.$localUrl.'</div>
 				<div class="product-base" style="width:202px;float:left;">
 				<div class="product-content product-asin">SKU: '.$sku.'</div>
+				<div class="product-content product-asin">QTC: '.$qtc.'</div>
+				<hr style="margin:2px;height:1px;"/>
 				<div class="product-content product-title">'.$title.'</div>
 				<div class="product-content product-gg"></div>
 				<hr style="margin:2px;"/><div class="product-content product-gg">标签：'.$tags.'</div>

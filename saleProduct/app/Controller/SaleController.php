@@ -3,7 +3,7 @@
 class SaleController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Sale', 'Product','Supplier');
+    var $uses = array('Sale', 'Product','Supplier',"ProductDev");
 	
 	 public function productFilter($id = null , $type = null){
 	 	$this->set('id', $id );
@@ -68,6 +68,13 @@ class SaleController extends AppController {
 	}
 	
 	public function details1($taskId,$asin,$type=null,$status=null){
+		//判断$asin是ID还是ASIN
+		/*if( strpos($asin, 'id$$$') === 0 ){
+			$devId = str_replace('id$$$', "", $asin) ;
+			$pdev = $this->ProductDev->getProductDev($devId) ;
+			$asin = $pdev["ASIN"] ;
+		}*/
+		
 		$details = $this->Product->getProductDetails($asin) ;
 		$images   = $this->Product->getProductImages($asin) ;
 		$competitions  = $this->Product->getProductCompetitionDetails($asin) ;
