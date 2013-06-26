@@ -29,7 +29,6 @@
 		
 		$SqlUtils->exeSql("sql_purchase_task_updateStatus",array( 'taskId'=>$taskId,'status'=>'2')) ;
 	
-		
 		$Grid  = ClassRegistry::init("Grid") ;
 		$recordSql = $SqlUtils->getRecordSql( array('taskId'=>$taskId,'sqlId'=>'sql_purchase_task_productsForPrint','start'=>0,'limit'=>1000)) ; 
     	$products = $Grid->query( $recordSql ) ;
@@ -130,10 +129,29 @@
    </style>
 
 </head>
+
+<script>
+	$( function(){
+			$(".print-btn").click(function(){
+					if( window.confirm("确认打印采购确认单？") ){
+						$.dataservice("model:Sale.savePrintTime",{'printTime':'',taskId:''}, function(){
+							$(".print").hide() ;
+							window.print() ;
+						});
+					}
+				}) ;
+
+			document.oncontextmenu=function(e){return false;} 
+		})
+   </script>
+   
 <body>
 	<center>
 		<h1>采购确认单</h1>
 		<hr style="margin:2px;margin-bottom:5px;"/>
+		<div class="print"  style="position:absolute;right:5px;top:5px;" >
+			<a  class=" print-btn btn btn-primary" target="_self">打印</a>
+		</div>
 	</center>
 	<div style="padding:5px 10px;font-size:13px;font-weight:bold;">
 	   <div class="row-fluid title-bar">
@@ -230,6 +248,20 @@
 			<?php 
 					$totalPrice = $pd['QUOTE_PRICE'] * $pd['SUPPIERABLE_NUM'] ;
 		           	if($totalPrice) $totalPrice = $totalPrice ;// .toFixed(2) ;
+		          
+		           	$payType = $pd['PAY_TYPE'] ;
+		           
+		           	
+		           	if( $payType == "dh" ){
+		           		$payType = "电汇" ;
+		           	}else 	if( $payType == "zfb" ){
+		           		$payType = "支付宝" ;
+		           	}else 	if( $payType == "df" ){
+		           		$payType = "物流代收" ;
+		           	}else 	if( $payType == "zqzf" ){
+		           		$payType = "账期支付" ;
+		           	}
+		           	
 
 		           	$html = '
 		           		<div>
@@ -247,7 +279,7 @@
 										<div class="label-content span8">'.$totalPrice.'</div>
 									</div><hr style="margin:2px;"/>
 									<div style="text-align:left;">支付方式:</div>
-									<div class="label-content">'.$pd['PAY_TYPE'].'</div>
+									<div class="label-content">'.$payType.'</div>
 								</div>
 						</div>
 		           		' ;
@@ -256,7 +288,25 @@
 			</td>
 			<td style="text-align:center;vertical-align: middle;font-weight:bold;"><?php 
 				$data =  $pd['PROMISE_DELIVERY_DATE']  ;
-				echo str_replace( "00:00:00", "",$data) ;
+				
+				if( $data == "1" ){
+					$data = "常备库存" ;
+				}else 	if( $data == "2" ){
+					$data = "少量库存" ;
+				}else 	if( $data == "3" ){
+					$data = "3天以内" ;
+				}else 	if( $data == "7" ){
+					$data = "7天以内" ;
+				}else 	if( $data == "15" ){
+					$data = "15天以内" ;
+				}else 	if( $data == "30" ){
+					$data = "30天以内" ;
+				}else 	if( $data == "31" ){
+					$data = "30天以上" ;
+				}
+				
+				
+				echo $data;
 			?></td>
 			<td>
 				<?php 

@@ -183,16 +183,43 @@
 							value="<?php echo $productSupplier['PACKAGE_SIZE'];?>"/></td>
 					</tr>
 					<tr>
-						<th>生产周期：</th><td><input type="text" id="cycle" name="cycle" 
-							value="<?php echo $productSupplier['CYCLE'];?>"/></td>
+						<th>生产周期：</th><td>
+							<select  id="cycle" name="cycle" >
+												<option value="">--</option>
+												<option value="1"  <?php if( $productSupplier['CYCLE'] == '1' ) echo 'selected' ;?>>常备库存</option>
+												<option value="2" <?php if( $productSupplier['CYCLE'] == '2' ) echo 'selected' ;?>>少量库存</option>
+												<option value="3" <?php if( $productSupplier['CYCLE'] == '3' ) echo 'selected' ;?>>3天内</option>
+												<option value="7" <?php if( $productSupplier['CYCLE'] == '7' ) echo 'selected' ;?>>7天内</option>
+												<option value="15" <?php if( $productSupplier['CYCLE'] == '15' ) echo 'selected' ;?>>15天以内</option>
+												<option value="30" <?php if( $productSupplier['CYCLE'] == '30' ) echo 'selected' ;?>>30天以内</option>
+												<option value="31" <?php if( $productSupplier['CYCLE'] == '31' ) echo 'selected' ;?>>30天以上</option>
+											</select>
+							</td>
 					</tr>
 					<tr>
-						<th>包装方式：</th><td><input type="text" id="package" name="package" 
-							value="<?php echo $productSupplier['PACKAGE'];?>"/></td>
+						<th>包装方式：</th><td>
+						<select  id="package" name="package" >
+							<option value="">--</option>
+							<option value="1"  <?php if( $productSupplier['PACKAGE'] == '1' ) echo 'selected' ;?>>祼包装</option>
+							<option value="2" <?php if( $productSupplier['PACKAGE'] == '2' ) echo 'selected' ;?>>塑料袋</option>
+							<option value="3" <?php if( $productSupplier['PACKAGE'] == '3' ) echo 'selected' ;?>>塑料盒</option>
+							<option value="4" <?php if( $productSupplier['PACKAGE'] == '4' ) echo 'selected' ;?>>吸塑</option>
+							<option value="5" <?php if( $productSupplier['PACKAGE'] == '5' ) echo 'selected' ;?>>瓦楞盒</option>
+							<option value="6" <?php if( $productSupplier['PACKAGE'] == '6' ) echo 'selected' ;?>>白盒</option>
+							<option value="7" <?php if( $productSupplier['PACKAGE'] == '7' ) echo 'selected' ;?>>彩盒</option>
+						</select>
+						</td>
 					</tr>
 					<tr>
-						<th>付款方式：</th><td><input type="text" id="payment" name="payment" 
-							value="<?php echo $productSupplier['PAYMENT'];?>"/></td>
+						<th>付款方式：</th><td>
+							<select  id="payment" name="payment" >
+								<option value="">--</option>
+								<option value="dh"  <?php if( $productSupplier['PAYMENT'] == 'dh' ) echo 'selected' ;?>>电汇</option>
+								<option value="zfb" <?php if( $productSupplier['PAYMENT'] == 'zfb' ) echo 'selected' ;?>>支付宝</option>
+								<option value="df" <?php if( $productSupplier['PAYMENT'] == 'df' ) echo 'selected' ;?>>物流代收</option>
+								<option value="zqzf" <?php if( $productSupplier['PAYMENT'] == 'zqzf' ) echo 'selected' ;?>>账期支付</option>
+							</select>
+						</td>
 					</tr>
 					<tr>
 						<th>产品网址：</th><td><input type="text" id="url" name="url" 

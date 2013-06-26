@@ -4,10 +4,14 @@ class Sale extends AppModel {
 	
 	function savePrintTime($params){
 		$printTime = $params['printTime'] ;
-    	$products = $this->exeSqlWithFormat("sql_purchase_task_productInedForPrint", $params) ;
+    	$products = $this->exeSqlWithFormat("sql_purchase_task_productInedForPrint", array("taskId"=>$params['taskId'],"printTimeNull"=>1)) ;
+    	
     	foreach( $products as $product ){
-    		$id = $product['ID'] ;
-    		$this->exeSql("update sc_purchase_plan_details set print_time = '{@#printTime#}' where id = '{@#id#}' and print_time is null", array('id'=>$id,'printTime'=>$printTime)) ;
+    		$id = $product['TASK_ID'] ;
+    		
+    		$this->exeSql("update sc_purchase_task_products set print_time = '{@#printTime#}' where task_id = '{@#taskId#}'
+                    and product_id = '{@#productId#}'
+    				and print_time is null", array('taskId'=>$id,'productId'=>$product['PRODUCT_ID'],'printTime'=>$printTime)) ;
     	}
 	}
 	
@@ -175,7 +179,7 @@ class Sale extends AppModel {
 	
 	public function warehouseIn($data){
 		//保存采购canp
-		$this->exeSql("sql_update_sc_purchase_plan_details" , $data ) ;
+		$this->exeSql("sql_update_sc_purchase_task_product" , $data ) ;
 		//执行入库操作
 		$inventory  = ClassRegistry::init("Inventory") ;
 		
@@ -183,7 +187,7 @@ class Sale extends AppModel {
 		$inventoryParams['warehouseId'] =$data['warehouseId']  ;
 		//$inventoryParams['diskId']  = $params['diskId'] ;
 		
-		$id = $data['id'] ;
+		$id = $data['productId'] ;
 		//通过ID找到对应的货品ID
 		$obj = $this->getObject("sql_saleproduct_getGoodsIdByPurchasePlanProductId", array('id'=>$id)) ;
 		
@@ -204,6 +208,16 @@ class Sale extends AppModel {
 	public function savePurchasePlanProduct($data){
 		$this->exeSql("sql_update_sc_purchase_plan_details" , $data ) ;
 	}
+	
+	public function savePurchaseTaskProduct($data){
+		$this->exeSql("sql_update_sc_purchase_task_product" , $data ) ;
+		
+		//更新计划产品实际采购数量
+		$this->exeSql(" UPDATE sc_purchase_plan_details SET real_purchase_num = (
+				SELECT SUM(sptp.QUALIFIED_PRODUCTS_NUM) FROM sc_purchase_task_products sptp WHERE sptp.PRODUCT_ID = sc_purchase_plan_details.ID
+		)  where  id= '{@#productId#}' " , $data ) ;
+	}
+	
 	
 	public function updatePurchasePlanProductStatus($data,$user){
 		$id = $data['id'] ;
@@ -239,6 +253,19 @@ class Sale extends AppModel {
 			values('".$asin."','".$description."','".$user['LOGIN_ID']."',NOW())" ;
 		$this->query($sql) ;
 		}catch(Exception $e){}
+	}
+	
+	public function doTaskProductStatus($data){
+		//设置产品状态为废弃
+		$id = $data["id"] ;
+		$taskId = $data["taskId"] ;
+		$memo =   $data["memo"] ;
+		$status = $data["status"] ;
+		$data['productId'] = $id ;
+		//更新状态
+		$this->exeSql("sql_purchase_task_product_updateStatus", $data) ;
+		//添加轨迹
+		$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 	}
 	
 	public function doStatus($data){

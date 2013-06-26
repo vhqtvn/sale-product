@@ -1136,6 +1136,22 @@ function viewSupplier(id){
 }
 
 /////////////
+$.llygrid.format.purchasePlanProductStatus = {
+		body:function(val,record,col){
+			val = val ||'10' ;
+			var message = "" ;
+			switch(val){
+				case '10':  message = "编辑中";break;
+				case '20':  message = "等待审批";break;
+				case '25':  message = "审批不通过";break;
+				case '30':  message = "限价确认";break;
+				case '40':  message = "分配执行人";break;
+				default: message ="执行采购" ;
+			}
+			return message||val ;
+		}
+} ;
+
 $.llygrid.format.purchaseProductStatus = {
 		body:function(val,record,col){
 			val = val ||'10' ;
@@ -1154,6 +1170,54 @@ $.llygrid.format.purchaseProductStatus = {
 				case '60':  message = "入库";break;
 				case '70':  message = "采购审计";break;
 				case '80':  message = "结束";break;
+			}
+			return message||val ;
+		}
+} ;
+
+$.llygrid.format.cycle = {
+		body:function(val,record,col){
+			val = val ||'' ;
+			var message = "" ;
+			switch(val){
+				case '1':  message = "常备库存";break;
+				case '2':  message = "少量库存";break;
+				case '3':  message = "3天内";break;
+				case '7':  message = "7天内";break;
+				case '15':  message = "15天以内";break;
+				case '30':  message = "30天以内";break;
+				case '31':  message = "30天以上";break;
+			}
+			return message||val ;
+		}
+} ;
+
+$.llygrid.format['package'] = {
+		body:function(val,record,col){
+			val = val ||'' ;
+			var message = "" ;
+			switch(val){
+				case '1':  message = "祼包装";break;
+				case '2':  message = "塑料袋";break;
+				case '3':  message = "塑料盒";break;
+				case '4':  message = "吸塑";break;
+				case '5':  message = "瓦楞盒";break;
+				case '6':  message = "白盒";break;
+				case '7':  message = "彩盒";break;
+			}
+			return message||val ;
+		}
+} ;
+
+$.llygrid.format['payment'] = {
+		body:function(val,record,col){
+			val = val ||'' ;
+			var message = "" ;
+			switch(val){
+				case 'dh':  message = "电汇";break;
+				case 'zfb':  message = "支付宝";break;
+				case 'df':  message = "物流代收";break;
+				case 'zqzf':  message = "账期支付";break;
 			}
 			return message||val ;
 		}

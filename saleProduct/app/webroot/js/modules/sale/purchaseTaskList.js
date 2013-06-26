@@ -1,13 +1,35 @@
 $(function(){
 	$(".create-task").click(function(){
-		openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/",730,380,function(){
-			$(".grid-task").llygrid("reload",{}) ;
+		openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/",730,380,function(win,ret){
+			if(ret){
+				$(".grid-task").llygrid("reload",{}) ;
+			}
 		}) ;
 	}) ;
 	
 	$(".grid-task").llygrid({
 		columns:[
-		    {align:"left",key:"TASK_CODE",label:"编号", width:"15%"},
+		         {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
+		            	var html = [] ;
+		            	if( record.STATUS==1 && editPermission) {
+		            		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;
+		            		html.push( getImage("edit.png","编辑任务","btn-edit-plan")+"&nbsp;" ) ;
+		            		html.push( getImage("pkg.gif","选择货品","btn-select-product") ) ;
+		            	}
+		            	
+		            	if( editPermission  ){
+		            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
+		            	}
+		            	
+		            	if( record.STATUS != 1 ){
+		            		html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
+		            	}
+		            	return html.join("") ;
+		            },permission:function(){
+		            	return true;
+		            }},
+		    {align:"left",key:"TASK_CODE",label:"编号", width:"13%"},
+		    {align:"left",key:"NAME",label:"名称", width:"13%"},
 		    {align:"center",key:"START_TIME",label:"开始时间",width:"10%" },
 		    {align:"center",key:"END_TIME",label:"结束时间",width:"10%" },
 		    {align:"left",key:"STATUS",label:"状态", width:"5%",format:{type:'json',content:{1:'编辑中',2:'采购中',3:'采购完成'}}},
@@ -15,6 +37,7 @@ $(function(){
 			{align:"center",key:"STATUS0",label:'全部',group:"状态",width:"4%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=''>"+val+"</a>" ;
            	}},
+           	/*
            	{align:"center",key:"STATUS10",label:img1,group:"状态",width:"4%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=10>"+val+"</a>" ;
            	}},
@@ -29,7 +52,7 @@ $(function(){
            	}},
            	{align:"center",key:"STATUS40",label:img4,group:"状态",width:"4%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=40>"+val+"</a>" ;
-           	}},
+           	}},*/
         	{align:"center",key:"STATUS45",label:"询价",group:"状态",width:"4%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=45>"+val+"</a>" ;
            	}},
@@ -57,25 +80,8 @@ $(function(){
            	
 		    {align:"left",key:"MEMO",label:"备注", width:"25%"},
            	{align:"center",key:"LAST_UPDATED_TIME",label:"操作时间",width:"15%" },
-            {align:"left",key:"EXECUTOR_NAME",label:"操作用户",width:"5%" },
-            {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
-            	var html = [] ;
-            	if( record.STATUS==1 && editPermission) {
-            		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;
-            		html.push( getImage("pkg.gif","选择货品","btn-select-product") ) ;
-            	}
-            	
-            	if( editPermission  ){
-            		html.push( getImage("edit.png","编辑任务","btn-edit-plan")+"&nbsp;" ) ;
-            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
-            	}
-            	
-            	html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
-            	//html.push('<a href="#" class="print-product" val="'+val+'">打印</a>') ;
-            	return html.join("") ;
-            },permission:function(){
-            	return true;
-            }}
+            {align:"left",key:"EXECUTOR_NAME",label:"操作用户",width:"5%" }
+           
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:30,
@@ -119,8 +125,10 @@ $(function(){
 			 $(".btn-edit-plan").bind("click",function(){
 				 event.stopPropagation() ;
 				 var record = $(this).parents("tr:first").data("record");
-				 openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/"+record.ID,730,380,function(){
-						$(".grid-task").llygrid("reload",{},true) ;
+				 openCenterWindow(contextPath+"/page/forward/Sale.createPurchaseTask/"+record.ID,730,380,function(win,ret){
+					 	if(ret){
+					 		$(".grid-task").llygrid("reload",{},true) ;
+						}
 					}) ;
 				 return false ;
 			 }) ;
@@ -160,31 +168,19 @@ $(function(){
 								ds:{type:"url",content:contextPath+"/grid/query"},
 								pagesize:10,
 								columns:[//显示列
-									{align:"center",key:"ID",label:"编号",width:"100"},
-									{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
-									{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
-						           		var r = record.PLAN_START_TIME||"" ;
-						           		var r1 = record.PLAN_END_TIME||"" ;
-						           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
-						           	}},
+									//{align:"center",key:"ID",label:"编号",width:"20"},
+									//{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
+									{align:"left",key:"PLAN_START_TIME",label:"开始时限",width:"13%"},
+						           	{align:"left",key:"PLAN_END_TIME",label:"结束时限",width:"13%"},
 									{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 						           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 						           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
 						        	{align:"center",key:"searchKey",label:"关键字",hidden:true,query:true,align:"left"},
-						        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
-						           	{align:"center",key:"SUPPIERABLE_NUM",label:"可采购",width:"5%"},
-						        	{align:"center",key:"PLAN_NUM",label:"计划采购",width:"5%"},
-						        	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"已采购",width:"5%"},
-						           	{align:"center",key:"QUOTE_PRICE",label:"采购限价",width:"5%"},
-						           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
-						           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
-						          
-						           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"12%",format:function(val,record){
-						           		if(!val) return "";
-						           		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
-						           	}} ,
-						           	{align:"center",key:"SAMPLE",label:"样品",format:{type:"json",content:{'0':'无','1':'准备中','2':'有'}},width:"6%"},
-						            {align:"center",key:"SAMPLE_CODE",label:"样品编码",width:"8%"}
+						           	{align:"right",key:"SUPPIERABLE_NUM",label:"可采购",width:"8%"},
+						        	{align:"right",key:"PLAN_NUM",label:"计划采购",width:"8%"},
+						        	{align:"right",key:"QUALIFIED_PRODUCTS_NUM",label:"已采购",width:"8%"},
+						           	{align:"right",key:"LIMIT_PRICE",label:"采购限价",width:"8%"},
+						        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"}
 								]
 							}
 					   } ;
@@ -275,8 +271,10 @@ $(function(){
 	}) ;
 	
 	$(".edit-action").live("click",function(){
+		 var record = $(this).parents("tr:first").data("record");
 		var val = $(this).attr("val") ;//采购计划ID
-		openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,980,620,function(){
+		//openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,980,620,function(){
+		openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_task_product/"+val+"/"+record.TASK_ID,980,620,function(){
 			$(".grid-content-details").llygrid("reload",{},true) ;
 		}) ;
 	}) ;

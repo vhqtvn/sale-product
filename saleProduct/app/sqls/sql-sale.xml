@@ -80,20 +80,18 @@
     
     <entry key="sql_purchase_plan_getAsinFromSku">
     		select distinct sp.* ,
-    			s1.QUOTE_PRICE,
+				s1.LIMIT_PRICE,
     			s3.SKU,
     			s3.QUANTITY,
 				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL,
 				( SELECT TOTAL_COST - PURCHASE_COST
 				FROM sc_product_cost 
 				WHERE sc_product_cost.asin = sp.asin AND
-					( sc_product_cost.type='FBM' OR sc_product_cost.type IS NULL )  ) AS FBM_COST,
-					
+					( sc_product_cost.type='FBM' OR sc_product_cost.type IS NULL )  ) AS FBM_COST,	
 				( SELECT MIN(sc_sale_competition_details.seller_price+sc_sale_competition_details.seller_ship_price) FROM sc_sale_competition_details
 						WHERE sc_sale_competition_details.asin = sp.asin
 						and ( type like 'F%' or type like 'N%' )
-						 ) AS FBM_PRICE,
-						
+						 ) AS FBM_PRICE,	
 				( SELECT MIN(sc_sale_fba_details.seller_price) FROM sc_sale_fba_details
 						WHERE sc_sale_fba_details.asin = sp.asin ) AS FBA_PRICE,
 				( SELECT TOTAL_COST - PURCHASE_COST

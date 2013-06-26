@@ -91,9 +91,9 @@
 									return "<a href='"+val+"' target='_blank'>"+val+"<a>" ;
 						     }},
 				           	{align:"center",key:"WEIGHT",label:"产品重量",width:"6%",forzen:false,align:"left"},
-				           	{align:"center",key:"CYCLE",label:"生产周期",width:"6%"},
-				           	{align:"center",key:"PACKAGE",label:"包装方式",width:"6%"},
-				           	{align:"center",key:"PAYMENT",label:"付款方式",width:"6%"},
+				           	{align:"center",key:"CYCLE",label:"生产周期",width:"6%",format:{type:"cycle"}},
+				           	{align:"center",key:"PACKAGE",label:"包装方式",width:"6%",format:{type:"package"}},
+				           	{align:"center",key:"PAYMENT",label:"付款方式",width:"6%",format:{type:"payment"}},
 				           	{align:"center",key:"PRODUCT_SIZE",label:"产品尺寸",width:"6%"},
 				           	{align:"center",key:"PACKAGE_SIZE",label:"包装尺寸",width:"6%"},
 				        	{align:"center",key:"PACKINGS_PECIFICATIONS",label:"装箱规格",width:"6%"}

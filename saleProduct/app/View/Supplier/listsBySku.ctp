@@ -66,7 +66,9 @@
 		         ds:{type:"url",content:contextPath+"/grid/query/"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
-				 height:400,
+				 height:function(){
+						return $(window).height() - 130 ;
+				 },
 				 title:"产品列表",
 				 indexColumn:true,
 				 querys:{sqlId:"sql_supplier_list",realSku:'<?php echo $sku;?>'},

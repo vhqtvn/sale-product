@@ -66,6 +66,7 @@
 					var json = $("#personForm").toJson() ;
 					__ = true ;
 					$.dataservice("model:Sale.savePurchasePlan",json,function(){
+						jQuery.dialogReturnValue(true);
 						window.close();
 					}) ;
 				};

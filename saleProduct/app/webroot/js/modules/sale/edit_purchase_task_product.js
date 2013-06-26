@@ -4,8 +4,6 @@ $(function(){
 		 	val = val.replace("$","") ;
 		 	return $.trim(val) ;
 	 }
-	 
-	 jQuery.dialogReturnValue(false) ;
 
 	 //设置页面是否刻度
 
@@ -25,7 +23,7 @@ $(function(){
 		tabs.push( {label:'供应商信息',iframe:true,url: contextPath+"/page/forward/Supplier.listsBySku/"+sku} ) ;
 
 	var status = [10,20,25,30,40,45,46,47,48,50,60,70] ;
-	if( $reedit_pp_product ){//再编辑
+	if( $reedit_pp_product && status <=70 ){//再编辑
 		$(status).each(function(){
 			if( this <= currentStatus ){
 				$("."+this+"-input").removeAttr("disabled") ;
@@ -42,7 +40,7 @@ $(function(){
 	var tab = $('#details_tab').tabs( {
 		tabs:tabs ,
 		height:function(){
-			return $(window).height() - 155 ;
+			return $(window).height() - 135 ;
 		}
 	} ) ;
 	
@@ -81,9 +79,9 @@ $(function(){
 	           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%",permission:function(){ return $purchase_cost_view; }},
 	           	{align:"center",key:"FBM_PRICE",label:"利润额",group:"FBM",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
-	           					- parseFloat(formatMoney(record.LIMIT_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
+	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
 	           		
-	           		if( !record.LIMIT_PRICE  || record.QUOTE_PRICE == '0' ){
+	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
 	           			return "-" ;
 	           		}
 	           		
@@ -95,7 +93,7 @@ $(function(){
 	           			return "-" ;
 	           		}
 	           		
-	           		if( parseFloat(formatMoney(record.LIMIT_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
+	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
 	           			return "-" ;
 	           		}
 	           		lye = lye.toFixed(2) ;
@@ -107,9 +105,9 @@ $(function(){
 	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
 	           	{align:"center",key:"FBM_PRICE",label:"利润率",group:"FBM",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
-	           					- parseFloat(formatMoney(record.LIMIT_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
+	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
 	           		
-	           		if( !record.LIMIT_PRICE  || record.LIMIT_PRICE == '0' ){
+	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
 	           			return "-" ;
 	           		}
 	           		
@@ -122,11 +120,11 @@ $(function(){
 	           			return "-" ;
 	           		}
 	           		
-	           		if( parseFloat(formatMoney(record.LIMIT_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
+	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
 	           			return "-" ;
 	           		}
 	           		
-	           		var lyl = (lye / ( parseFloat(formatMoney(record.LIMIT_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) ))*100 ;
+	           		var lyl = (lye / ( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) ))*100 ;
 	           		lyl = lyl.toFixed(2) ;
 	           		if( lyl < 0 ){
 	           			return "<font color='red'>"+lyl+"%</font>"
@@ -140,9 +138,9 @@ $(function(){
 	           	{align:"center",key:"FBA_PRICE",label:"最低价",group:"FBA",width:"6%",permission:function(){ return $purchase_cost_view; }},
 	           	{align:"center",key:"FBA_PRICE",label:"利润额",group:"FBA",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
-	           					- parseFloat(formatMoney(record.LIMIT_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
+	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
 	           		
-	           		if( !record.LIMIT_PRICE  || record.LIMIT_PRICE == '0' ){
+	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
 	           			return "-" ;
 	           		}
 	           		
@@ -155,7 +153,7 @@ $(function(){
 	           			return "-" ;
 	           		}
 	           		
-	           		if( parseFloat(formatMoney(record.LIMIT_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
+	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
 	           			return "-" ;
 	           		}
 	           		lye = lye.toFixed(2) ;
@@ -167,18 +165,18 @@ $(function(){
 	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
 	           	{align:"center",key:"FBA_PRICE",label:"利润率",group:"FBA",width:"6%",format:function(val,record){
 	           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
-	           					- parseFloat(formatMoney(record.LIMIT_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
+	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
 	           		
-	           		if( !record.LIMIT_PRICE  || record.LIMIT_PRICE == '0' ){ return "-" ; } 
+	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){ return "-" ; } 
 	           		if( !record.FBA_PRICE || record.FBA_PRICE == '0'){ return "-" ; } 
 	           		if( !record.FBA_COST || record.FBA_COST == '0'){ return "-" ; }
 	           		
 	           		
-	           		if( parseFloat(formatMoney(record.LIMIT_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
+	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
 	           			return "-" ;
 	           		}
 	           		
-	           		var lyl = (lye / ( parseFloat(formatMoney(record.LIMIT_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) ))*100 ;
+	           		var lyl = (lye / ( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) ))*100 ;
 	           		lyl = lyl.toFixed(2) ;
 	           		if( lyl < 0 ){
 	           			return "<font color='red'>"+lyl+"%</font>"
@@ -301,18 +299,17 @@ $(function(){
 function WarehouseInAction(status , statusLabel){
 	if(window.confirm("确认【"+statusLabel+"】？")){
 		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
-		var json1 = {id:id,status:status,memo:memo} ;
+		var json1 = {id:id,taskId:taskId,status:status,memo:memo} ;
 		
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
-				$.dataservice("model:Sale.warehouseIn",json,function(result){
+				//$.dataservice("model:Sale.warehouseIn",json,function(result){
 					//alert( $.json.encode( result ));
 					//执行状态更新
-					$.dataservice("model:Sale.doStatus",json1,function(result){
-						jQuery.dialogReturnValue(true) ;
+					$.dataservice("model:Sale.doTaskProductStatus",json1,function(result){
 						window.location.reload();
 					});
-				}) ;
+				//}) ;
 			}
 	}
 }
@@ -320,14 +317,13 @@ function WarehouseInAction(status , statusLabel){
 function AuditAction(status , statusLabel){
 	if(window.confirm("确认【"+statusLabel+"】？")){
 		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
-		var json1 = {id:id,status:status,memo:memo} ;
+		var json1 = {id:id,taskId:taskId,status:status,memo:memo} ;
 		
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
-				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
+				$.dataservice("model:Sale.savePurchaseTaskProduct",json,function(){
 					//执行状态更新
-					$.dataservice("model:Sale.doStatus",json1,function(result){
-						jQuery.dialogReturnValue(true) ;
+					$.dataservice("model:Sale.doTaskProductStatus",json1,function(result){
 						window.location.reload();
 					});
 				}) ;
@@ -338,13 +334,12 @@ function AuditAction(status , statusLabel){
 function ForceAuditAction(status , statusLabel){
 	if(window.confirm("确认【"+statusLabel+"】？")){
 				var memo = "("+statusLabel+")" + ($(".memo").val()||"")
-				var json1 = {id:id,status:status,memo:memo} ;
-		
+				var json1 = {id:id,taskId:taskId,status:status,memo:memo} ;
+				
 				var json = $("#personForm").toJson() ;
-				$.dataservice("model:Sale.savePurchasePlanProduct",json,function(){
+				$.dataservice("model:Sale.savePurchaseTaskProduct",json,function(){
 					//执行状态更新
-					$.dataservice("model:Sale.doStatus",json1,function(result){
-						jQuery.dialogReturnValue(true) ;
+					$.dataservice("model:Sale.doTaskProductStatus",json1,function(result){
 						window.location.reload();
 					});
 				}) ;

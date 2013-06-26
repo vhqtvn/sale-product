@@ -69,6 +69,7 @@
 					var json = $("#personForm").toJson() ;
 
 					$.dataservice("model:Sale.savePurchaseTask",json,function(){
+						jQuery.dialogReturnValue(true) ;
 						window.close();
 					}) ;
 				};
@@ -102,6 +103,11 @@
 									<th>任务编码：</th>
 									<td colspan="3"><input type="text"  disabled id="taskCode"  
 										 style="width:300px;" value="<?php echo $defaultCode;?>"/></td>
+								</tr>
+								<tr>
+									<th>任务名称：</th>
+									<td colspan="3"><input type="text" data-validator="required"   id="name"  
+										 style="width:300px;" value="<?php echo $task['NAME'];?>"/></td>
 								</tr>
 								<tr>
 									<th>开始时间：</th>

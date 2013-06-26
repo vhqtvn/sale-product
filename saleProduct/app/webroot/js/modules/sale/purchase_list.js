@@ -58,6 +58,7 @@
 		           	{align:"center",key:"STATUS40",label:img4,group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=40>"+val+"</a>" ;
 		           	}},
+		           	/*
 		           	{align:"center",key:"STATUS45",label:"询价",group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=45>"+val+"</a>" ;
 		           	}},
@@ -81,7 +82,7 @@
 		           	}},
 		           	{align:"center",key:"STATUS80",label:img8,group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=80>"+val+"</a>" ;
-		           	}},
+		           	}},*/
 		           	{align:"center",key:"EXECUTOR_NAME",label:"负责人",width:"4%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"4%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"}
@@ -106,8 +107,8 @@
 					 $(".edit_purchase_plan").bind("click",function(event){
 						 	event.stopPropagation() ;
 							var val = $(this).attr("val") ;//采购计划ID
-							openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,460,function(){
-								$(".grid-content").llygrid("reload",{}) ;
+							openCenterWindow(contextPath+"/sale/createPurchasePlan/"+val,600,460,function(win,ret){
+								if(ret)$(".grid-content").llygrid("reload",{}) ;
 							}) ;
 							return false;
 						}) ;
@@ -128,8 +129,8 @@
 							event.stopPropagation() ;
 							var val = $(this).attr("val") ;
 							//openCenterWindow(contextPath+"/sale/addPurchasePlanOuterProduct/"+val,600,400) ;
-							openCenterWindow(contextPath+"/page/forward/Sale.selectPurchaseProduct/"+val,900,600,function(){
-								$(".grid-content").llygrid("reload",{},true) ;
+							openCenterWindow(contextPath+"/page/forward/Sale.selectPurchaseProduct/"+val,900,600,function(win,ret){
+								if(ret)$(".grid-content").llygrid("reload",{},true) ;
 							}) ;
 							return false ;
 						});
@@ -166,8 +167,8 @@
 			}) ;
 			
 			$(".create-plan").click(function(){
-				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,460,function(){
-					$(".grid-content").llygrid("reload",{}) ;
+				openCenterWindow(contextPath+"/sale/createPurchasePlan/",600,460,function(win,ret){
+					if(ret)$(".grid-content").llygrid("reload",{}) ;
 				}) ;
 			}) ;
 			
@@ -192,29 +193,38 @@
 						}
 						return html.join("") ;	
 					}},
-					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
-					{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
+					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"8%",format: function(val ,record){
+						val = val || 10 ;
+						var message = "" ;
+						switch(val){
+							case '10':  message = "编辑中";break;
+							case '20':  message = "等待审批";break;
+							case '25':  message = "审批不通过";break;
+							case '30':  message = "限价确认";break;
+							case '40':  message = "分配执行人";break;
+						}
+						
+						if("" == message){
+							if( record.PLAN_NUM - record.REAL_PURCHASE_NUM > 0  ) message = "采购进行中" ;
+							else message = "采购已完成" ;
+						}
+						
+						return message ;
+					} },
+					{align:"left",key:"PLAN_TIME",label:"采购时限",width:"14%",format:function(val,record){
 		           		var r = record.PLAN_START_TIME||"" ;
 		           		var r1 = record.PLAN_END_TIME||"" ;
 		           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
 		           	}},
 					{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
-		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
+		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		        	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
-		           	{align:"center",key:"PLAN_NUM",label:"计划采购数量",width:"5%"},
-		           	{align:"center",key:"QUOTE_PRICE",label:"计划采购价",width:"5%"},
-		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
-		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
-		          
-		           	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"12%",format:function(val,record){
-		           		if(!val) return "";
-		           		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
-		           	}} ,
-		           	{align:"center",key:"SAMPLE",label:"样品",format:{type:"json",content:{'0':'无','1':'准备中','2':'有'}},width:"6%"},
-		            {align:"center",key:"SAMPLE_CODE",label:"样品编码",width:"8%"}
-		           	
+		           	{align:"center",key:"PLAN_NUM",label:"计划采购数量",width:"8%"},
+		           	{align:"center",key:"REAL_PURCHASE_NUM",label:"实际采购数量",width:"8%"},
+		           	{align:"center",key:"LIMIT_PRICE",label:"采购限价",width:"5%"},
+		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"13%",forzen:false,align:"left"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
@@ -254,8 +264,11 @@
 			
 			$(".edit-action").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,980,620,function(){
-					$(".grid-content-details").llygrid("reload",{},true) ;
+				openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_plan_product/"+val,980,620,function(win,ret){
+					if(ret){
+						$(".grid-content-details").llygrid("reload",{},true) ;
+					}
+					
 				}) ;
 			}) ;
 

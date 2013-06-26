@@ -73,12 +73,11 @@
 			srp.CATEGORY_ID,
 			spc.PURCHASE_CHARGER,
 			(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
-			(SELECT NAME FROM sc_supplier WHERE id = sppd.PROVIDOR ) AS PROVIDOR_NAME,
-			( select sc_user.name from sc_user where sc_user.login_id = sppd.creator ) as CREATOR_NAME,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
 			su.NAME AS EXECUTOR_NAME
 		FROM sc_purchase_plan_details sppd 
 		LEFT JOIN sc_user su
-		on su.login_id = sppd.executor
+		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
 		ON sppd.SKU = srp.real_sku
 		LEFT JOIN sc_product_category spc
@@ -152,30 +151,15 @@
    </entry>
    
     <entry key="sql_update_sc_purchase_plan_details">
-        update sc_purchase_plan_details 
-        	set plan_num = '{@#plan_num#}',
-				quote_price = '{@#quote_price#}',
+        UPDATE sc_purchase_plan_details 
+        	SET plan_num = '{@#plan_num#}',
 				limit_price  = '{@#limit_price#}',
-				providor = '{@#providor#}',
-				sample = '{@#sample#}',
-				area = '{@#area#}',
-				sample_code = '{@#sample_code#}',
 				memo = '{@#memo#}',
 				executor = '{@#executor#}',
 				tags  = '{@#tags#}'
-				{@ ,pay_Type = '#payType#'}
-				{@ ,real_num = '#realNum#'}
-				{@ ,real_quote_price =  '#realQuotePrice#'}
-				{@ ,REAL_PROVIDOR =  '#realProvidor#'}
-				{@ ,QUALIFIED_PRODUCTS_NUM = '#qualifiedProductsNum#'}
-				{@ ,bad_PRODUCTS_NUM = '#badProductsNum#'}
-				{@ ,check_Memo = '#checkMemo#'}
-				{@ ,real_purchase_date = '#realPurchaseDate#'}
 				{@ ,plan_start_time = '#planStartTime#'}
 				{@ ,plan_end_time = '#planEndTime#'}
-				{@ ,warehouse_time = '#warehouseTime#'}
-				{@ ,PROMISE_DELIVERY_DATE = '#promiseDeliveryDate#'}
-				where id = '{@#id#}'
+				WHERE id = '{@#id#}'
    </entry>
    
    <entry key="sql_marketing_test_list">

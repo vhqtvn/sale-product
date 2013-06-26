@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 	<entry key="sql_purchase_task_groupByPrintTime">
-				SELECT sppd.PRINT_TIME,COUNT(sppd.PRINT_TIME) AS TOTAL FROM 
-			sc_purchase_plan_details sppd,
+				SELECT sptp.PRINT_TIME,COUNT(sptp.PRINT_TIME) AS TOTAL FROM 
 			sc_purchase_task_products sptp 
-			WHERE sppd.id = sptp.PRODUCT_ID
-			AND sptp.TASK_ID = '{@#taskId#}'
-			AND sppd.PRINT_TIME IS NOT NULL
-			GROUP BY sppd.PRINT_TIME
+			WHERE   sptp.TASK_ID = '{@#taskId#}'
+			AND sptp.PRINT_TIME IS NOT NULL
+			GROUP BY sptp.PRINT_TIME
+		</entry>
+		
+		
+		<entry key="sql_purchase_task_product_updateStatus">
+				UPDATE sc_purchase_task_products 
+					SET
+					status = '{@#status#}'
+					where
+					task_id = '{@#taskId#}' 
+					and product_id = '{@#productId#}' 
+		</entry>
+		
+		<entry key="sql_update_sc_purchase_task_product">
+				UPDATE sc_purchase_task_products 
+					SET
+					real_num = '{@#realNum#}' , 
+					real_quote_price = '{@#realQuotePrice#}' , 
+					quote_price = '{@#quotePrice#}' , 
+					providor = '{@#providor#}' , 
+					real_providor = '{@#realProvidor#}' , 
+					area = '{@#area#}' , 
+					{@status = '#status#' , }
+					real_purchase_date = '{@#realPurchaseDate#}' , 
+					qualified_products_num = '{@#qualifiedProductsNum#}' , 
+					bad_products_num = '{@#badProductsNum#}' , 
+					check_memo = '{@#checkMemo#}' , 
+					warehouse_time = '{@#warehouseTime#}' , 
+					warehouse_id = '{@#warehouseId#}' , 
+					pay_type = '{@#payType#}' , 
+					promise_delivery_date = '{@#promiseDeliveryDate#}'
+					where
+					task_id = '{@#taskId#}' 
+					and product_id = '{@#productId#}' 
 		</entry>
 
     <entry key="sql_purchase_task_list">
@@ -72,7 +103,8 @@
 			MEMO, 
 			STATUS,
 			START_TIME,
-			END_TIME
+			END_TIME,
+			NAME
 			)
 			VALUES
 			( 
@@ -84,7 +116,8 @@
 			'{@#memo#}', 
 			'1', 
 			'{@#startTime#}',
-			'{@#endTime#}'
+			'{@#endTime#}',
+			'{@#name#}'
 			)
     </entry>
     
@@ -96,13 +129,14 @@
 			START_TIME = '{@#startTime#}' , 
 			END_TIME = '{@#endTime#}' , 
 			LAST_UPDATED_TIME = NOW() , 
-			MEMO = '{@#memo#}' 
+			MEMO = '{@#memo#}' ,
+			NAME = '{@#name#}' 
 			WHERE
 			ID = '{@#id#}' 
     </entry>
     
     <entry key="sql_purchase_task_updateStatus">
-        update sc_purchase_task set status = '{@#status#}' where id = '{@#taskId#}' and (status = '1' or status is null )
+        update sc_purchase_task set status = '{@#status#}' and PURCHASE_CONFIRM_DATE = NOW()  where id = '{@#taskId#}' and (status = '1' or status is null )
     </entry>
     
     
@@ -119,18 +153,19 @@
         
 		INSERT INTO sc_purchase_task_products 
 			(TASK_ID, 
-			PRODUCT_ID
+			PRODUCT_ID,
+			STATUS
 			)
 			VALUES
 			('{@#taskId#}', 
-			'{@#productId#}'
+			'{@#productId#}',
+			'45'
 			)
 
     </entry>
     
-    <!-- and sppd.executor = '{@#Evn.loginId#}' -->
-    <entry key="sql_purchase_task_product_list">
-		SELECT DISTINCT  
+    <!-- 
+    SELECT DISTINCT  
 			sppd.* ,
 			srp.name as TITLE,
 			srp.IMAGE_URL,
@@ -147,6 +182,50 @@
 		on sppd.SKU = srp.real_sku
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
+		      {@ and sptp.task_id = '#taskId#'}
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+		    and sptp.task_id in (
+		    		select spt.id
+				         from sc_purchase_task spt 
+				         where 1=1
+				         {@ #$purchaseTask_view: and 1=0# }
+		    )
+		    {@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
+			)}
+    -->
+    <entry key="sql_purchase_task_product_list">
+		SELECT DISTINCT  
+			sppd.ID, 
+			sppd.ASIN, 
+			sppd.SKU, 
+			sppd.PLAN_NUM, 
+			sppd.REAl_PURCHASE_NUM, 
+			sppd.PLAN_ID,
+			sppd.LIMIT_PRICE,
+			sppd.EXECUTOR, 
+			sppd.PLAN_START_TIME, 
+			sppd.PLAN_END_TIME, 
+			sppd.TAGS,
+			sptp.* ,
+			srp.name AS TITLE,
+			srp.IMAGE_URL,
+			(SELECT NAME FROM sc_supplier WHERE id =sptp.PROVIDOR ) AS PROVIDOR_NAME,
+			su.NAME AS EXECUTOR_NAME,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
+			( sppd.PLAN_NUM - IFNULL(sppd.REAl_PURCHASE_NUM,0) ) AS SUPPIERABLE_NUM
+		FROM 
+		sc_purchase_task_products sptp,
+		sc_purchase_plan_details sppd 
+		LEFT JOIN sc_user su
+		ON su.login_id = sppd.executor
+		LEFT JOIN sc_real_product srp
+		ON sppd.SKU = srp.real_sku
+		WHERE 1=1 
+		    AND sptp.product_id = sppd.id
 		    {@ and sptp.task_id = '#taskId#'}
 		    {@ and sptp.task_id = '#taskId#'}
 		    {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
@@ -202,65 +281,72 @@
     <![CDATA[
     	SELECT DISTINCT  
 			sppd.* ,
-			srp.name as TITLE,
+			srp.name AS TITLE,
 			srp.IMAGE_URL,
-			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
-			(select name from sc_user where login_id = sppd.executor ) as EXECUTOR_NAME,
-			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
+			(SELECT NAME FROM sc_user WHERE login_id = sppd.executor ) AS EXECUTOR_NAME,
+			( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) AS SUPPIERABLE_NUM
 		FROM sc_purchase_plan_details sppd 
-		left join sc_real_product srp
-		on sppd.SKU = srp.real_sku
+		LEFT JOIN sc_real_product srp
+		ON sppd.SKU = srp.real_sku
 		WHERE 1=1 
-			and sppd.status >=45
-			and sppd.executor = '{@#Evn.loginId#}'
+		  	and sppd.executor = '{@#Evn.loginId#}'
+		  AND not EXISTS(
+		    SELECT sptp.product_id FROM sc_purchase_task_products sptp
+			WHERE sptp.product_id = sppd.ID AND sptp.STATUS < 80
+		  )
 			and sppd.id not in (
 				select product_id from sc_purchase_task_products where task_id = '{@#taskId#}'
 			)
 			{@ and ( srp.real_sku = '#searchKey#'  or srp.name like '%#searchKey#%'  or srp.memo  like '%#searchKey#%')}
-			and ( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) > 0
+			and ( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) > 0
 	]]>
     </entry>
     
     <!-- 获取入库完成的 -->
     <entry key="sql_purchase_task_productInedForPrint">
-		SELECT DISTINCT  
-			sppd.* ,
-			srp.name as TITLE,
+			SELECT DISTINCT  
+			sppd.SKU ,
+			sppd.TAGS,
+			sptp.*,
+			srp.name AS TITLE,
 			srp.IMAGE_URL,
-			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
-			(select CONTACTOR from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_CONTACTOR,
-			(select MOBILE from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_PHONE,
-			(select name from sc_user where login_id = sppd.executor ) as EXECUTOR_NAME,
-			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM,
-			(select su.name from sc_purchase_plan_details_track sppdt , sc_user su
-				 where sppdt.PD_ID =sppd.ID and sppdt.STATUS = 60
-				 and sppdt.creator = su.login_id
-				  limit 0,1  ) as WARHOUSE_USERNAME
+			(SELECT NAME FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_NAME,
+			(SELECT CONTACTOR FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_CONTACTOR,
+			(SELECT MOBILE FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_PHONE,
+			(SELECT NAME FROM sc_user WHERE login_id = sppd.executor ) AS EXECUTOR_NAME,
+			( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) AS SUPPIERABLE_NUM,
+			(SELECT su.name FROM sc_purchase_plan_details_track sppdt , sc_user su
+				 WHERE sppdt.PD_ID =sppd.ID AND sppdt.STATUS = 60
+				 AND sppdt.creator = su.login_id
+				  LIMIT 0,1  ) AS WARHOUSE_USERNAME
 		FROM 
-		sc_purchase_task_products sptp,
-		sc_purchase_plan_details sppd
-		left join sc_real_product srp
-		on sppd.SKU = srp.real_sku
+			sc_purchase_task_products sptp,
+			sc_purchase_plan_details sppd
+			LEFT JOIN sc_real_product srp
+			ON sppd.SKU = srp.real_sku
 		WHERE 1=1 
-		    and sptp.product_id = sppd.id
-		    and sptp.task_id = '{@#taskId#}'
-			{@ and sppd.print_time = '#printTime#'}
-			{@ and sppd.print_time is null and '#printTimeNull#' = '#printTimeNull#'}
-			and sppd.warehouse_time is not null
-			and sppd.status > 60
+		    AND sptp.product_id = sppd.id
+		      and sptp.task_id = '{@#taskId#}'
+			{@ and sptp.print_time = '#printTime#'}
+			{@ and sptp.print_time is null and '#printTimeNull#' = '#printTimeNull#'}
+		    AND sptp.warehouse_time IS NOT NULL
+		    AND sptp.status > 60
    </entry>
     
     <entry key="sql_purchase_task_productsForPrint">
 		SELECT DISTINCT  
-			sppd.* ,
-			srp.name as TITLE,
+		    sppd.SKU,
+		    sppd.TAGS,
+		    sppd.MEMO,
+			sptp.* ,
+			srp.name AS TITLE,
 			srp.IMAGE_URL,
-			(select code from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_CODE,
-			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
-			(select CONTACTOR from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_CONTACTOR,
-			(select MOBILE from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_PHONE,
-			(select name from sc_user where login_id = sppd.executor ) as EXECUTOR_NAME,
-			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
+			(SELECT CODE FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_CODE,
+			(SELECT NAME FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_NAME,
+			(SELECT CONTACTOR FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_CONTACTOR,
+			(SELECT MOBILE FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_PHONE,
+			(SELECT NAME FROM sc_user WHERE login_id = sppd.executor ) AS EXECUTOR_NAME,
+			( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) AS SUPPIERABLE_NUM
 		FROM 
 		sc_purchase_task_products sptp,
 		sc_purchase_plan_details sppd 
@@ -270,6 +356,6 @@
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'
 			and sppd.executor = '{@#Evn.loginId#}'
-			and ( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) > 0
+			and ( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) > 0
    </entry>
 </properties>
