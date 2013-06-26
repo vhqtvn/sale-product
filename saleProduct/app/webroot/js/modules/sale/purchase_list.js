@@ -205,7 +205,7 @@
 						}
 						
 						if("" == message){
-							if( record.PLAN_NUM - record.REAL_PURCHASE_NUM > 0  ) message = "采购进行中" ;
+							if( record.PLAN_NUM - (record.REAL_PURCHASE_NUM||0) > 0  ) message = "采购进行中" ;
 							else message = "采购已完成" ;
 						}
 						

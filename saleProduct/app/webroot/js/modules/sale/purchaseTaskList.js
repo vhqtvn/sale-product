@@ -12,12 +12,12 @@ $(function(){
 		         {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
 		            	var html = [] ;
 		            	if( record.STATUS==1 && editPermission) {
-		            		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;
-		            		html.push( getImage("edit.png","编辑任务","btn-edit-plan")+"&nbsp;" ) ;
+		            		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;           		
 		            		html.push( getImage("pkg.gif","选择货品","btn-select-product") ) ;
 		            	}
 		            	
 		            	if( editPermission  ){
+		            		html.push( getImage("edit.png","编辑任务","btn-edit-plan")+"&nbsp;" ) ;
 		            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
 		            	}
 		            	

@@ -333,6 +333,7 @@
 		    AND sptp.status > 60
    </entry>
     
+    <!-- and sppd.executor = '{@#Evn.loginId#}' -->
     <entry key="sql_purchase_task_productsForPrint">
 		SELECT DISTINCT  
 		    sppd.SKU,
@@ -355,7 +356,6 @@
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'
-			and sppd.executor = '{@#Evn.loginId#}'
 			and ( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) > 0
    </entry>
 </properties>

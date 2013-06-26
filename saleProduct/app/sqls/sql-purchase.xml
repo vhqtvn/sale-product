@@ -92,6 +92,7 @@
 				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
 				or su.name like '%#searchKey#%'
 			)}
+			order by sppd.create_time desc
    </entry>
    
    <entry key="sql_purchase_plan_details_listForPrint">
