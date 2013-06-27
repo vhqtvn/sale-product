@@ -42,54 +42,42 @@
 		</entry>
 
     <entry key="sql_purchase_task_list">
+     <![CDATA[
         select spt.* ,
            (select name from sc_user where login_id = spt.created_by) as EXECUTOR_NAME,
+           ( select count(1) from sc_purchase_task_products sptp where sptp.task_id = spt.id and sptp.status < 80  ) as TP_STATUS,
            ( select count(*) from sc_purchase_task_products sptp 
 						where sptp.task_id = spt.id   ) as STATUS0,
-				( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 10 or sppd.status is null ) ) as STATUS10,
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 20   ) ) as STATUS20,	
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 25  ) ) as STATUS25,	
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 30 ) ) as STATUS30,	
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 40 ) ) as STATUS40,	
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 45  ) ) as STATUS45,	
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 46 ) ) as STATUS46,
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 47  ) ) as STATUS47,	
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 48  ) ) as STATUS48,	
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 50 ) ) as STATUS50,			
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 60 ) ) as STATUS60,			
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 70  ) ) as STATUS70,			
-			 ( select count(*) from sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-						where sptp.task_id = spt.id  and sppd.id = sptp.product_id
-						and ( sppd.status = 80  ) ) as STATUS80
+			 ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status = 45  ) ) as STATUS45,	
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  46 ) ) as STATUS46,
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  47  ) ) as STATUS47,	
+			 ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status = 48  ) ) as STATUS48,	
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  50 ) ) as STATUS50,			
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  60 ) ) as STATUS60,			
+			 ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status = 70  ) ) as STATUS70,			
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  80  ) ) as STATUS80
          from sc_purchase_task spt 
          where 1=1
           {@ and spt.task_code = '#taskCode#'}
          {@ #$purchaseTask_view: and 1=0# }
          order by spt.id desc
+        ]]>
     </entry>
     
      <entry key="sql_purchase_task_insert">
@@ -136,7 +124,7 @@
     </entry>
     
     <entry key="sql_purchase_task_updateStatus">
-        update sc_purchase_task set status = '{@#status#}' and PURCHASE_CONFIRM_DATE = NOW()  where id = '{@#taskId#}' and (status = '1' or status is null )
+        update sc_purchase_task set status = '{@#status#}' , PURCHASE_CONFIRM_DATE = NOW()  where id = '{@#taskId#}'
     </entry>
     
     
@@ -244,13 +232,13 @@
     
     <entry key="sql_purchase_product_listBySupplierId">
 		SELECT DISTINCT  
-			sppd.* ,
+			sptp.* ,
+			sppd.SKU,
 			srp.name as TITLE,
 			srp.IMAGE_URL,
-			(select name from sc_supplier where id = sppd.PROVIDOR ) as PROVIDOR_NAME,
+			(select name from sc_supplier where id = sptp.PROVIDOR ) as PROVIDOR_NAME,
 			su.NAME AS EXECUTOR_NAME,
-			( select sc_user.name from sc_user where sc_user.login_id = sppd.creator ) as CREATOR_NAME,
-			( sppd.PLAN_NUM - IFNULL(sppd.QUALIFIED_PRODUCTS_NUM,0) ) as SUPPIERABLE_NUM
+			( select sc_user.name from sc_user where sc_user.login_id = sppd.creator ) as CREATOR_NAME
 		FROM 
 		sc_purchase_task_products sptp,
 		sc_purchase_plan_details sppd 
@@ -274,7 +262,7 @@
 				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
 				or su.name like '%#searchKey#%'
 			)}
-			and sppd.REAL_PROVIDOR = '{@#supplierId#}'
+			and sptp.REAL_PROVIDOR = '{@#supplierId#}'
     </entry>
     
     <entry key="sql_purchase_task_product_selectable">
@@ -333,7 +321,10 @@
 		    AND sptp.status > 60
    </entry>
     
-    <!-- and sppd.executor = '{@#Evn.loginId#}' -->
+    <!-- and sppd.executor = '{@#Evn.loginId#}' 
+    
+			and ( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) > 0
+    -->
     <entry key="sql_purchase_task_productsForPrint">
 		SELECT DISTINCT  
 		    sppd.SKU,
@@ -356,6 +347,5 @@
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'
-			and ( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) > 0
    </entry>
 </properties>

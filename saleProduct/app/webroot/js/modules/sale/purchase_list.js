@@ -10,7 +10,7 @@
 
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"",width:"8%",format:function(val,record){
+		           	{align:"center",key:"ID",label:"",width:"7%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;
 						if( status == 1){
@@ -19,7 +19,7 @@
 								html.push('<img title="修改" class="edit_purchase_plan" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/edit.png"/>&nbsp;');
 							}
 							$ppp_add_product && html.push('<img title="添加货品" class="add-outer-product" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/add.png"/>&nbsp;');
-							$ppp_export && html.push('<img title="导出" class="export-product" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/excel.gif"/>');
+							//$ppp_export && html.push('<img title="导出" class="export-product" val="'+val+'" src="/'+fileContextPath+'/app/webroot/img/excel.gif"/>');
 							return html.join("") ;
 						}
 						return "" ;
@@ -221,10 +221,10 @@
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		        	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
-		           	{align:"center",key:"PLAN_NUM",label:"计划采购数量",width:"8%"},
-		           	{align:"center",key:"REAL_PURCHASE_NUM",label:"实际采购数量",width:"8%"},
+		           	{align:"center",key:"PLAN_NUM",label:"计划采购数量",width:"7%"},
+		           	{align:"center",key:"REAL_PURCHASE_NUM",label:"实际采购数量",width:"7%"},
 		           	{align:"center",key:"LIMIT_PRICE",label:"采购限价",width:"5%"},
-		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"13%",forzen:false,align:"left"}
+		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"11%",forzen:false,align:"left"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,

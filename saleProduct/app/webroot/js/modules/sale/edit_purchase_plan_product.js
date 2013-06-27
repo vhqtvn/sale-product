@@ -28,13 +28,13 @@ $(function(){
 	if( $reedit_pp_product ){//再编辑
 		$(status).each(function(){
 			if( this <= currentStatus ){
-				$("."+this+"-input").removeAttr("disabled") ;
+				$("."+this+"-input").removeAttr("disabled").show() ;
 			}
 		}) ;
 	}
 	
 	
-	if( $ppp_assign_executor && ( currentStatus>=40 && currentStatus <= 48) ){
+	if( $ppp_assign_executor  &&  $(".running-task").length >=0 ){
 		$(".btn-charger").removeAttr("disabled").show() ;
 	}
 	

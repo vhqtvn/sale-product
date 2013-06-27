@@ -10,6 +10,7 @@ $(function(){
 	$(".grid-task").llygrid({
 		columns:[
 		         {align:"left",key:"ID",label:"操作",width:"10%" ,format:function(val,record){
+		        	 	var tpStatus = record.TP_STATUS ;
 		            	var html = [] ;
 		            	if( record.STATUS==1 && editPermission) {
 		            		html.push( getImage("delete.gif","删除任务","btn-delete-plan") ) ;           		
@@ -17,7 +18,8 @@ $(function(){
 		            	}
 		            	
 		            	if( editPermission  ){
-		            		html.push( getImage("edit.png","编辑任务","btn-edit-plan")+"&nbsp;" ) ;
+		            		if(tpStatus>0)html.push( getImage("edit.png","编辑任务","btn-edit-plan")+"&nbsp;" ) ;
+		            		//if(tpStatus>0) 暂时不加
 		            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
 		            	}
 		            	
@@ -32,7 +34,11 @@ $(function(){
 		    {align:"left",key:"NAME",label:"名称", width:"13%"},
 		    {align:"center",key:"START_TIME",label:"开始时间",width:"10%" },
 		    {align:"center",key:"END_TIME",label:"结束时间",width:"10%" },
-		    {align:"left",key:"STATUS",label:"状态", width:"5%",format:{type:'json',content:{1:'编辑中',2:'采购中',3:'采购完成'}}},
+		    {align:"left",key:"STATUS",label:"状态", width:"5%",format:function(val,record){
+		    	var tpStatus = record.TP_STATUS ;
+		    	if(val == 1) return "编辑中" ;
+		    	return tpStatus>0?"采购中":"采购完成" ;
+		    }},
 		    
 			{align:"center",key:"STATUS0",label:'全部',group:"状态",width:"4%",format:function(val,record){
            		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action' planId='"+record.ID+"' status=''>"+val+"</a>" ;
@@ -136,7 +142,8 @@ $(function(){
 			 $(".print-product").bind("click",function(event){
 				 event.stopPropagation() ;
 				 var record = $(this).parents("tr:first").data("record");
-				if( (record.STATUS==1 && window.confirm("是否确认打印，如果点击确定，该任务单将不能更改！") ) || record.STATUS >1){
+		
+				if( ((record.STATUS==1||record.STATUS=='null'||!record.STATUS) && window.confirm("是否确认打印，如果点击确定，该任务单将不能更改！") ) || record.STATUS >1){
 					var val = record.ID ;
 					openCenterWindow(contextPath+"/page/forward/Sale.purchaseTaskPrint/"+val,1000,700) ;
 				}
@@ -231,6 +238,7 @@ $(function(){
            		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
            	}},
 			{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+			{align:"left",key:"QTC",label:"QTC", width:"13%",format:{type:"href",href: contextPath+"/page/forward/Sale.qtc/{QTC}"}},
            	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
            	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
         	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},

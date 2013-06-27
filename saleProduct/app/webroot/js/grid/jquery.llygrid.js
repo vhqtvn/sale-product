@@ -881,7 +881,7 @@
 						href = href.replace("{"+o+"}",encodeURIComponent(record[o])) ;
 					}
 					var target = col.format.target||'_blank' ;
-					return "<a href='"+href+"' target='"+target+"'>"+val+"</a>" ;
+					return "<a href='"+href+"' target='"+target+"'>"+(val||"")+"</a>" ;
 				}
 			}
 		},
