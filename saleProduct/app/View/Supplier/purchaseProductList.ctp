@@ -45,11 +45,6 @@
 						return html.join("") ;	
 					}},
 					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
-					{align:"left",key:"PLAN_TIME",label:"采购时限",width:"15%",format:function(val,record){
-		           		var r = record.PLAN_START_TIME||"" ;
-		           		var r1 = record.PLAN_END_TIME||"" ;
-		           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
-		           	}},
 		        	{align:"center",key:"QUOTE_PRICE",label:"计划采购价",width:"10%"},
 		           	{align:"center",key:"REAL_QUOTE_PRICE",label:"实际采购价",width:"10%"},
 					{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
@@ -57,9 +52,8 @@
 		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"8%",forzen:false,align:"left"},
 		        	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
-		        	{align:"center",key:"SUPPIERABLE_NUM",label:"可采购",group:'采购数量',width:"5%"},
-		        	{align:"center",key:"PLAN_NUM",label:"计划采购",group:'采购数量',width:"5%"},
-		        	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"已采购",group:'采购数量',width:"5%"},
+		        	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"合格数量" ,width:"5%"},
+		        	{align:"center",key:"BAD_PRODUCTS_NUM",label:"不合格数量" ,width:"5%"},
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}}
 		         ],

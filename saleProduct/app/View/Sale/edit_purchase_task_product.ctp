@@ -364,7 +364,8 @@
 											</select>
 										</td>
 										<th>入库时间：</th>
-										<td><input id="warehouseTime" class="60-input input"   type="text"  data-widget="calendar"
+										<td><input id="warehouseTime" class="60-input input"  data-options="{'isShowWeek':'true','dateFmt':'yyyy-MM-dd HH:mm:ss'}"
+											  type="text"  data-widget="calendar"
 													<?php echo $status>=60?"data-validator='required'":"" ?>
 													value='<?php echo $taskProduct['WAREHOUSE_TIME'] ;?>' /></td>
 									</tr>
@@ -450,7 +451,9 @@
 									</tr>
 									<tr class="check-purchase-tr">	
 										<th>实际采购时间：</th>
-										<td><input id="realPurchaseDate"  data-widget="calendar"  type="text"   class="70-input input" 
+										<td><input id="realPurchaseDate"  data-widget="calendar" 
+											data-options="{'isShowWeek':'true','dateFmt':'yyyy-MM-dd HH:mm:ss'}"
+											 type="text"   class="70-input input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 											value='<?php echo $taskProduct['REAL_PURCHASE_DATE'] ;?>' /></td>
 										<th>实际采购价：</th>

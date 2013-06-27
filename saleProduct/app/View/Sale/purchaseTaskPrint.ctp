@@ -130,7 +130,7 @@
 
 </head>
 
-<script>
+<script type="text/javascript">
 	$( function(){
 			$(".print-btn").click(function(){
 					if( window.confirm("确认打印采购确认单？") ){
@@ -204,7 +204,21 @@
 					$providor = $pd['PROVIDOR'] ;
 				}
 				
-				$qtc = $providor.'-'.$task['ID'].'-'.$sku ;
+				if(empty($providor)){
+					echo "<div class='alert alert-danger'>未选择供应商</div>" ;
+				}else{
+					$qtc = $pd['QTC'] ;
+					if( empty($qtc) ){
+						$qtc = $providor.'-'.$task['ID'].'-'.$sku ;
+						$SqlUtils->exeSql("update sc_purchase_task_products set qtc = '{@#qtc#}' where task_id='{@#taskId#}' and product_id='{@#productId#}'",
+								array("qtc"=>$qtc,"taskId"=>$taskId,"productId"=>$pd['PRODUCT_ID'])) ;
+					}
+				}
+				
+			
+				
+				//更新QTC到数据库
+				//debug($pd) ;
 				
 				if( !empty($localUrl) ){
 					$localUrl = str_replace("%" , "%25",$localUrl) ;

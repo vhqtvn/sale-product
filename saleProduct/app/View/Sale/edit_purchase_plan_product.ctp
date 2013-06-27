@@ -38,7 +38,7 @@
 		$product = $Sale->getProductPlanProduct($planProductId) ;
 		
 		$sku = $product["SKU"]  ;
-		$suppliers = $Supplier->getProductSuppliersBySku( $sku  ) ;
+		//$suppliers = $Supplier->getProductSuppliersBySku( $sku  ) ;
 		
 		$loginId = $user['LOGIN_ID'] ;
 		
@@ -69,7 +69,7 @@
 		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
 		
 		//获取货品供应商询价
-		$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$product["PLAN_ID"] ,'sku'=>$product["SKU"])) ;
+		//$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$product["PLAN_ID"] ,'sku'=>$product["SKU"])) ;
 		
 		$status = $product['STATUS'] ;
 		$executor = $product['EXECUTOR'] ;
@@ -250,6 +250,20 @@
 		      	        			{label:"分配采购执行人",action:function(){ AuditAction(45,"分配采购执行人") } }
         				]
 	        			<?php };?>
+	        		},
+	        		{status:41,label:"采购进行中",memo:true,format:function(node){
+									if( currentStatus> 40 ){
+										node.status = currentStatus ;
+										node.label = "采购进行中" ;
+										node.statusClass = "active" ;
+										node.isbreak = true ;
+								   }
+							}
+	        			<?php if( $ppp_assign_executor ) { ?>
+	        			,actions:[
+		      	        			{label:"保存",action:function(){ ForceAuditAction(currentStatus,"保存") }}
+    					]
+	        			<?php };?>
 	        		}
 	        	] ;
    </script>
@@ -365,7 +379,7 @@
 										case '80':  $message = "结束";break;
 									}
 									?>  
-									<tr>
+									<tr  class="running-task">
 										<td><a target="_blank" href="<?php echo $contextPath;?>/page/forward/Sale.edit_purchase_task_product/<?php echo $p['PRODUCT_ID'];?>/<?php echo $p['TASK_ID'];?>"><?php echo  $p['TASK_NAME'] ;?></a></td>
 										<td><?php echo  $message ;?></td>
 										<td><?php echo  $p['REAL_PROVIDOR_NAME'] ;?></td>
