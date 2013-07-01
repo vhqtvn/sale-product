@@ -17,6 +17,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('dialog/jquery.dialog');
 		
 		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
@@ -76,8 +77,8 @@
 			
 			$(".action-update").live("click",function(){
 				var id = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/supplier/add/"+id,800,600,function(){
-					$(".grid-content").llygrid("reload",{},true)
+				openCenterWindow(contextPath+"/supplier/add/"+id,800,600,function(win,ret){
+					if(ret)$(".grid-content").llygrid("reload",{},true)
 				}) ;
 			});
 			
@@ -113,7 +114,9 @@
 			}) ;
 			
 			$(".add-btn").click(function(){
-				openCenterWindow(contextPath+"/supplier/add/",800,600) ;
+				openCenterWindow(contextPath+"/supplier/add/",800,600,function(win,ret){
+					if(ret)$(".grid-content").llygrid("reload",{})
+				}) ;
 			}) ;
    	 });
    </script>

@@ -199,7 +199,7 @@
 				
 				$providor = $pd['PROVIDOR_CODE'] ;
 				if( !empty($providor) ){
-					$providor = str_replace("SUP-", "", $providor) ;
+					//$providor = $providor ;
 				}else{
 					$providor = $pd['PROVIDOR'] ;
 				}
@@ -210,6 +210,11 @@
 					$qtc = $pd['QTC'] ;
 					if( empty($qtc) ){
 						$qtc = $providor.'-'.$task['ID'].'-'.$sku ;
+						
+						$qtc = str_replace("SUP-00", "", $qtc) ;
+						$qtc = str_replace("SUP-0", "", $qtc) ;
+						$qtc = str_replace("-10000", "-", $qtc) ;
+						
 						$SqlUtils->exeSql("update sc_purchase_task_products set qtc = '{@#qtc#}' where task_id='{@#taskId#}' and product_id='{@#productId#}'",
 								array("qtc"=>$qtc,"taskId"=>$taskId,"productId"=>$pd['PRODUCT_ID'])) ;
 					}

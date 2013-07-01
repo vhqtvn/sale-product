@@ -251,15 +251,22 @@
         				]
 	        			<?php };?>
 	        		},
-	        		{status:41,label:"采购进行中",memo:true,format:function(node){
+	        		{status:41,label:"采购进行中",memo:false,format:function(node){
+
+	        			var text = "采购进行中" ;
+						<?php if( $product['PLAN_NUM'] <=$product['REAL_PURCHASE_NUM']  ){
+							echo "text = '采购已完成' ;" ;
+						} ?>
 									if( currentStatus> 40 ){
-										node.status = currentStatus ;
-										node.label = "采购进行中" ;
+										node.status = currentStatus  ;
+										node.label = text ;
 										node.statusClass = "active" ;
 										node.isbreak = true ;
 								   }
 							}
-	        			<?php if( $ppp_assign_executor ) { ?>
+	        			<?php
+
+	        			if( ($product['PLAN_NUM'] > $product['REAL_PURCHASE_NUM'] )&& $ppp_assign_executor ) { ?>
 	        			,actions:[
 		      	        			{label:"保存",action:function(){ ForceAuditAction(currentStatus,"保存") }}
     					]

@@ -52,7 +52,8 @@
 	?>
 	
 	<script type="text/javascript">
-		var editPermission = <?php  echo $editPermission?'true':'false' ;?>
+		var editPermission = <?php  echo $editPermission?'true':'false' ;?> ;
+		var loginId = '<?php echo $loginId ;?>' ;
 
 		var img0 = '<?php echo $this->Html->image('example.gif',array("title"=>"所有")) ?>' ;
 		var img1 = '<?php echo $this->Html->image('example.gif',array("title"=>"未处理")) ?>' ;
