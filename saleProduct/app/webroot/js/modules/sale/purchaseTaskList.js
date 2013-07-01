@@ -23,7 +23,7 @@ $(function(){
 		            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
 		            	}
 		            	
-		            	if( record.STATUS != 1 ){
+		            	if( record.STATUS != 1 && (editPermission || ( loginId == record.CREATED_BY )) ){
 		            		html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
 		            	}
 		            	return html.join("") ;

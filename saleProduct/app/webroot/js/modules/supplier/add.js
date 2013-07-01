@@ -25,7 +25,7 @@
 						json.products = "";//vals.join(",") ;
 
 						$.dataservice("model:Supplier.saveSupplier",json,function(result){
-							jQuery.dialogReturnValue(result) ;
+							jQuery.dialogReturnValue(true) ;
 							window.close();
 						}) ;
 					};
