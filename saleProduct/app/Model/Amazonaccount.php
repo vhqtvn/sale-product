@@ -739,7 +739,7 @@ $Feed = <<<EOD
     <MerchantIdentifier>$MerchantIdentifier</MerchantIdentifier>
   </Header>
   <MessageType>Product</MessageType>
-  <PurgeAndReplace>true</PurgeAndReplace>
+  <PurgeAndReplace>false</PurgeAndReplace>
 EOD;
 /////////////////////////////////////////////////////
 		$index = 0 ;
@@ -762,7 +762,7 @@ EOD;
 $Feed .= <<<EOD
   <Message>
     <MessageID>$index</MessageID>
-    <OperationType>Insert</OperationType>
+    <OperationType>Update</OperationType>
     <Product>
       <SKU>$sku</SKU>
       <StandardProductID>
