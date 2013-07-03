@@ -73,11 +73,17 @@
     </entry>
     
     <entry key="sql_product_list">
+    select tt.* from (
        		SELECT DISTINCT sc_product.ASIN, 
-				sc_product.TITLE,sc_product_flow_details.DAY_PAGEVIEWS,
-				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
-				sc_sale_fba.FBA_NUM,sc_sale_competition.TARGET_PRICE,
-				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,
+				sc_product.TITLE,
+				sc_product_flow_details.DAY_PAGEVIEWS+0 as DAY_PAGEVIEWS,
+				sc_sale_competition.FM_NUM+0 as  FM_NUM,
+				sc_sale_competition.NM_NUM+0 as NM_NUM ,
+				sc_sale_competition.UM_NUM+0 as UM_NUM ,
+				sc_sale_fba.FBA_NUM+0 as  FBA_NUM,
+				sc_sale_competition.TARGET_PRICE+0 as TARGET_PRICE ,
+				CONVERT( sc_sale_potential.REVIEWS_NUM ,DECIMAL(8,0))   as REVIEWS_NUM,
+				 CONVERT( sc_sale_potential.QUALITY_POINTS ,DECIMAL(8,1))  as QUALITY_POINTS,
 				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL  
 				FROM sc_product
 				LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
@@ -91,7 +97,7 @@
                 {@  and sc_product.user_status = '#user_status#' }
                 {@  and sc_product.asin in ( select sc_product_category_rel.asin  
                 		from sc_product_category_rel where sc_product_category_rel.category_id = '#categoryId#' ) }
-               
+      ) tt         
     </entry>
     
     <entry key="sql_product_list_count">
@@ -107,12 +113,17 @@
     </entry>
     
     <entry key="sql_task_product_list">
+    select tt.* from (
        		SELECT DISTINCT sc_product.ASIN, 
-				sc_product.TITLE
-       			,sc_product_flow_details.DAY_PAGEVIEWS,
-				sc_sale_competition.FM_NUM,sc_sale_competition.NM_NUM,sc_sale_competition.UM_NUM,
-				sc_sale_fba.FBA_NUM,sc_sale_competition.TARGET_PRICE,
-				sc_sale_potential.REVIEWS_NUM,sc_sale_potential.QUALITY_POINTS,
+				sc_product.TITLE,
+       			sc_product_flow_details.DAY_PAGEVIEWS+0 as DAY_PAGEVIEWS,
+				sc_sale_competition.FM_NUM+0 as  FM_NUM,
+				sc_sale_competition.NM_NUM+0 as NM_NUM ,
+				sc_sale_competition.UM_NUM+0 as UM_NUM ,
+				sc_sale_fba.FBA_NUM+0 as  FBA_NUM,
+				sc_sale_competition.TARGET_PRICE+0 as TARGET_PRICE ,
+				CONVERT( sc_sale_potential.REVIEWS_NUM ,DECIMAL(8,0))   as REVIEWS_NUM,
+				 CONVERT( sc_sale_potential.QUALITY_POINTS ,DECIMAL(8,1))  as QUALITY_POINTS,
 				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL  
 				FROM sc_gather_asin  , sc_product
 				LEFT JOIN sc_sale_competition  ON sc_sale_competition.asin = sc_product.asin
@@ -123,7 +134,7 @@
        		    {@  and sc_gather_asin.task_id = '#taskId}' }
                 {@  and sc_product.title like '%#title#%' }
                 {@  and sc_product.asin = '#asin#' }
-               
+     ) tt          
     </entry>
     
     <entry key="sql_task_product_list_count">

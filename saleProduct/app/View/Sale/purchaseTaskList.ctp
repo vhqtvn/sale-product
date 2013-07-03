@@ -48,11 +48,12 @@
 		$security  = ClassRegistry::init("Security") ;
 		
 		$editPermission 	=  $security->hasPermission($loginId , 'purchaseTask_edit') ;
-		
+		$printPermission 	=  $security->hasPermission($loginId , 'purchaseTask_print_inwharehouse') ;
 	?>
 	
 	<script type="text/javascript">
 		var editPermission = <?php  echo $editPermission?'true':'false' ;?> ;
+		var printPermission = <?php  echo $printPermission?'true':'false' ;?> ;
 		var loginId = '<?php echo $loginId ;?>' ;
 
 		var img0 = '<?php echo $this->Html->image('example.gif',array("title"=>"所有")) ?>' ;

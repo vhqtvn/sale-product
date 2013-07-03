@@ -4,6 +4,10 @@ $(function(){
 		 	val = val.replace("$","") ;
 		 	return $.trim(val) ;
 	 }
+	 
+	 $(".reedit").click(function(){
+			$(this).parents("table:first").find(".input").removeAttr("disabled") ;
+		}) ;
 
 	 //设置页面是否刻度
 
@@ -23,13 +27,13 @@ $(function(){
 		tabs.push( {label:'供应商信息',iframe:true,url: contextPath+"/page/forward/Supplier.listsBySku/"+sku} ) ;
 
 	var status = [10,20,25,30,40,45,46,47,48,50,60,70] ;
-	if( $reedit_pp_product && status <=70 ){//再编辑
+	/*if( $reedit_pp_product && status <=70 ){//再编辑
 		$(status).each(function(){
 			if( this <= currentStatus ){
 				$("."+this+"-input").removeAttr("disabled") ;
 			}
 		}) ;
-	}
+	}*/
 	
 	
 	if( $ppp_assign_executor && ( currentStatus>=40 && currentStatus <= 48) ){
@@ -410,13 +414,13 @@ var Flow = function(){
 					$(".memo-control").show();
 				}
 				
-				if( $reedit_pp_product ){
+				/*if( $reedit_pp_product ){
 					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>再编辑</button>&nbsp;&nbsp;")
 					.appendTo(".btn-container").click(function(){
 						//me.action() ;
 						AuditAction(currentStatus,"再编辑") 
 					}) ; 
-				}
+				}*/
 				
 				$(actions||[]).each(function(){
 					var me = this ;

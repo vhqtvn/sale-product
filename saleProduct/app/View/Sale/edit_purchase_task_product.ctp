@@ -345,7 +345,9 @@
 								</tbody>
 						</table>
 						<table class="form-table" >
-								<caption>入库信息</caption>
+								<caption>入库信息<?php if( $reedit_pp_product  && $status < 80){ 
+								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+								}?></caption>
 								<tbody>
 									<tr>
 										<th>入库仓库：</th>
@@ -372,7 +374,9 @@
 								</tbody>
 						</table>
 						<table class="form-table" >
-								<caption>采购信息</caption>
+								<caption>采购信息<?php if( $reedit_pp_product && $status < 80 ){ 
+								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+								}?></caption>
 								<tbody>
 									
 									<tr class="real-purchase-tr">

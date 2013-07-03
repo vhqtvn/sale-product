@@ -22,8 +22,8 @@ $(function(){
 		            		//if(tpStatus>0) 暂时不加
 		            		html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
 		            	}
-		            	
-		            	if( record.STATUS != 1 && (editPermission || ( loginId == record.CREATED_BY )) ){
+		            	//&& (editPermission || ( loginId == record.CREATED_BY ))
+		            	if( record.STATUS != 1 && printPermission  ){
 		            		html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
 		            	}
 		            	return html.join("") ;
