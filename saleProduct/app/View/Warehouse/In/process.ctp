@@ -191,7 +191,7 @@
 						</td>
 						<td style="width:30%;">
 								<div class="product-title"><?php echo $product['NAME'] ?></div>
-								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><?php echo $product['SKU'] ?></div></div>
+								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><a href="#" product-realsku="<?php echo $product['SKU'] ?>"><?php echo $product['SKU'] ?></a></div></div>
 								<div class="pd"><div class='pd-label'>跟踪码：</div><div class='pd-value'><?php echo $product['PRODUCT_TRACKCODE'] ?></div></div>
 								<div class="pd"><div class='pd-label'>供货时间：</div><div class='pd-value'><?php echo $product['DELIVERY_TIME'] ?></div></div>
 						</td>
@@ -305,7 +305,8 @@
 						</td>
 						<td style="width:30%;">
 								<div class="product-title"><?php echo $product['NAME'] ?></div>
-								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><?php echo $product['SKU'] ?></div></div>
+								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'>
+									<a href="#" product-realsku="<?php echo $product['SKU'] ?>"><?php echo $product['SKU'] ?></a></div></div>
 						</td>
 						<td style="width:25%;">
 						<?php echo $product['P_MEMO'] ?><br/>
