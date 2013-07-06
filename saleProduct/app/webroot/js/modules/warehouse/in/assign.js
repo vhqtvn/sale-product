@@ -5,8 +5,10 @@ $(function(){
 			columns:[
 				{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"10%"},
 				{align:"left",key:"SKU",label:"SKU",width:"15%",format:function(val,record){
-					
-					return val||record.REL_SKU ;
+					var html = [] ;
+					html.push('<a href="#" class="sale-strategy" val="'+val+'">'+val+'</a>&nbsp;') ;
+					return html.join("") ;
+					//return val||record.REL_SKU ;
 				}},
 				{align:"left",key:"ASIN",label:"ASIN", width:"12%",format:function(val,record){
 	           		var memo = record.MEMO||"" ;
@@ -107,6 +109,11 @@ $(function(){
 			 }
 		} ;
 	$(".grid-content").llygrid(gridConfig) ;
+	
+	$(".sale-strategy").live("click",function(){
+		var record = $(this).parents("tr:first").data("record");
+		openCenterWindow(contextPath+"/page/forward/Sale.strategy.strategyConfigForListing/"+record.ACCOUNT_ID+"/"+record.SKU+"/"+record.ID ,1100,500) ;
+	}) ;
 	
 	function calcPrice(){
 		var isPass = true ;

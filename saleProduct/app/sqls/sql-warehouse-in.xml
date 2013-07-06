@@ -24,6 +24,7 @@
   		SELECT s1.* ,
 		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
 		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME,
+		(select CREATE_TIME from sc_warehouse_in_track st where st.in_id = s1.id and st.status = 70 limit 0,1) as IN_TIME,
 		(SELECT COUNT(*)  FROM sc_warehouse_box_product s2 , sc_warehouse_box s3 
 		        WHERE s2.box_id = s3.id AND s3.in_id = s1.id AND ( s2.status IS NULL OR s2.status !=1 ) ) AS STATUS1
 		  FROM sc_warehouse_in s1

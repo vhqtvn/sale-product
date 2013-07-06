@@ -77,7 +77,9 @@
 				    {align:"center",key:"BOX_NUMBER",label:"包装箱",width:"5%"},
 					{align:"center",key:"IMAGE_URL",label:"",width:"2%",format:{type:'img'}},
 		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
-	           		{align:"center",key:"SKU",label:"SKU",width:"5%"},
+	           		{align:"center",key:"SKU",label:"SKU",width:"5%",format:function(val,reocrd){
+	           			return "<a href='#' product-realsku='"+val+"'>"+val+"</a>" ;
+	           		}},
 	           		{align:"center",key:"INVENTORY_TYPE",label:"库存类型",width:"5%",format:{type:'json',content:{1:'普通库存',2:'FBA库存'}}}, 
 	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%"},
 	           		{align:"center",key:"DELIVERY_TIME",label:"供货时间",width:"6%"},

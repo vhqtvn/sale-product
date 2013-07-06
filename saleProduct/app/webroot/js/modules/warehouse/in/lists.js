@@ -12,8 +12,10 @@ $(function(){
 					}
 				}},
 				{align:"center",key:"IN_NUMBER",label:"入库号",width:"12%",forzen:false,align:"left"},
+				{align:"center",key:"IN_TIME",label:"入库时间",width:"13%",forzen:false,align:"left"},
 	           	{align:"center",key:"CHARGER_NAME",label:"负责人",width:"6%",forzen:false,align:"left"},
 	           	{align:"center",key:"IN_SOURCE_TYPE",label:"入库类型",width:"9%",forzen:false,align:"left",format:function(val,record){
+	           		alert( $.json.encode(record) ) ;
 	           		if(val == 'warehouse') return "转仓" ;
 	           		return "外部采购入库" ;
 	           	}},

@@ -79,8 +79,8 @@ var StrategyConfig = {
 				
 				openCenterWindow(contextPath+"/page/forward/Sale.strategy.setting",
 						400,200,function(){
-					var result = $.dialogReturnValue() ;
-					me.parent("td").find("span").html(result.price) ;
+					var result = $.dialogReturnValue()||{} ;
+					me.parent("td").find("span").html(result.price||"") ;
 					
 					if(result.price){
 						me.parent("td").removeClass("label-info").addClass("label-success");
