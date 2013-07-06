@@ -664,13 +664,24 @@ class TaskAsynAmazonController extends AppController {
 	 * 库存更新
 	 */
 	public function price( $accountId  ){
-	
+		$this->Log->savelog("testAdjustFeed", $accountId);
 		$id = "UC_Quantity_".date('U') ;
+		
+		$domain = $_SERVER['SERVER_NAME'] ;
+		$this->Log->savelog("testAdjustFeed", $domain);
+		
 		$account = $this->Amazonaccount->getAccount($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
-	
+		
+		$query = $this->request->query ;
+		$params = $this->request->data ;
+		
 		$params = $this->requestMap()  ;
 		$Feed = $params['feed'] ;
+		
+		$this->Log->savelog("testAdjustFeed",$Feed  );
+		//$this->Log->savelog("testFeed222",json_encode($query));
+		//return ;
 	
 		$amazon = new Amazon(
 				$account['AWS_ACCESS_KEY_ID'] ,

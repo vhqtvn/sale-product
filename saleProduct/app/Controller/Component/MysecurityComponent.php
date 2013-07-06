@@ -46,6 +46,7 @@ class MysecurityComponent extends Component {
 			|| $this->startsWith($url,"gatherLevel") 
 			|| $this->startsWith($url,"taskAsynAmazon") 
 			|| $this->startsWith($url,"gatherCategory")
+			|| $this->startsWith($url,"accountStrategy")
 		){
 			return true ;
 		}

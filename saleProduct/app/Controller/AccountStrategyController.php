@@ -17,7 +17,7 @@ class AccountStrategyController extends AppController {
 	
     public function adjustPrice(){
     	
-    	//date_default_timezone_set("Asia/Shanghai") ;
+    	date_default_timezone_set("Asia/Shanghai") ;
     	
     	echo date('Y-m-d H:i:s',time());
     	$hour = date("H") +0  ;
@@ -26,6 +26,9 @@ class AccountStrategyController extends AppController {
     	if( $week == 7 ){
     		$week = 0 ;
     	}
+    	//查找当前时间段需要调价的Listing
+    	echo $hour."----".$week ;
+    	
     	
     	//获取系统对应账号
     	$accounts = $this->Amazonaccount->getAllAccounts() ;
@@ -35,12 +38,11 @@ class AccountStrategyController extends AppController {
     		$accountId   = $sfs['ID'] ;
     		$listings = $this->SqlUtils->exeSqlWithFormat("sql_saleStrategy_findExcetableListingConfig" , array( "hour"=>$hour , "week"=>$week,"accountId"=>$accountId )) ;
     		
-    		
     		if( !empty( $listings ) ){
     			$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
     			$account = $account[0]['sc_amazon_account'] ;
     			$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-    			
+    			//debug() ;
     			$_products = array() ;
     			for( $i = 0 ;$i < count($listings) ;$i++  ){
     				$product = $listings[$i] ;
@@ -52,20 +54,20 @@ class AccountStrategyController extends AppController {
     			}
     			
     			$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
-    			
+    			//debug($account) ;
     			$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
+    			$url = $url.'?1' ;
     			//echo $url."?feed=".urlencode($Feed) ;
     			//$url = $url."?feed=".urlencode($Feed) ;
-    			
-    			$this->triggerRequest($url,array("feed"=>urlencode($Feed) )) ;
+    			echo $url ;
+    			//echo $Feed ;
+    			$this->triggerRequest($url,array("feed"=>$Feed )) ;
     			//triggerRequest($url) ;
     			//file_get_contents($url."?feed=".urlencode($Feed));
     		}
     	} ;
     	
     	
-    	//查找当前时间段需要调价的Listing
-    	echo $hour."----".$week ;
     	
     }
 }
