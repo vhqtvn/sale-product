@@ -9,7 +9,7 @@ foreach( $accounts as $ac ) {
 	$random = date("U") ;
 	$url = "http://".$domain."/".$context."/index.php/gatherLevel/execute/".$accountId."/A?".$random ;
 	
-	triggerRequest($url) ;
+	sock_get($url) ;
 }
 //$random = date("U") ;
 //file_get_contents("http://".domain."/".context."/index.php/gatherLevel/execute/".accountId."/A?".$random);

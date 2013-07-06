@@ -14,7 +14,7 @@
 	$random = date("U") ;
 	$url = "http://".$domain."/".$context."/index.php/taskAsynAmazon/asynAmazonFba/".$accountId."?".$random ;
 
-	triggerRequest($url) ;
+	sock_get($url) ;
 }
 //	 file_get_contents("http://".domain."/".context."/index.php/taskAsynAmazon/asynAmazonFba/".accountId."?".$random);
 	 

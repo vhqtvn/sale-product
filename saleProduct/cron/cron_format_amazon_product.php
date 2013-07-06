@@ -9,7 +9,7 @@ foreach( $accounts as $ac ) {
 	$random = date("U") ;
 	$url = "http://".$domain."/".$context."/index.php/taskAsynAmazon/formatAmazonProducts/".$accountId."?".$random ;
 
-	triggerRequest($url) ;
+	sock_get($url) ;
 }
 //file_get_contents("http://".domain."/".context."/index.php/taskAsynAmazon/formatAmazonProducts/".accountId."?".$random);
 	 
