@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_saleStrategy_deleteConfig">
+			DELETE FROM sc_sale_schedule  WHERE  LISTING_SKU = '{@#sku#}' and account_id = '{@#accountId#}'
+    </entry>
+    
+    <entry key="sql_saleStrategy_findListingConfig">
+			select * from sc_sale_schedule where LISTING_SKU = '{@#sku#}' and account_id = '{@#accountId#}'
+    </entry>
+    
+    <entry key="sql_saleStrategy_findExcetableListingConfig">
+			select * from sc_sale_schedule where hour = '{@#hour#}' and week = '{@#week#}' and account_id = '{@#accountId#}'
+    </entry>
+    
+     <entry key="sql_saleStrategy_insertListingConfig">
+			INSERT INTO sc_sale_schedule 
+				(
+				LISTING_SKU, 
+				ACCOUNT_ID, 
+				WEEK, 
+				HOUR, 
+				PRICE, 
+				CREATE_TIME, 
+				CREATOR
+				)
+				VALUES
+				(
+				'{@#sku#}', 
+				'{@#accountId#}', 
+				'{@#week#}', 
+				'{@#hour#}', 
+				'{@#price#}', 
+				NOW(), 
+				'{@#loginId#}'
+				)
+    </entry>
+    
+</properties>

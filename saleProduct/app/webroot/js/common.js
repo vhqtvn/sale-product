@@ -171,12 +171,12 @@ function showCenterModalDialog(URL,dlgWidth,dlgHeight,arg){
 function _openCenterWindow(URL,wndWidth,wndHeight){
 	var wndLeft = (window.screen.width-wndWidth)/2;
 	var wndTop  = (window.screen.height-wndHeight)/2;
-	var form    = "width=" + wndWidth + ",height=" + wndHeight + ",left=" + wndLeft + ",top=" + wndTop + ",resizable=yes";
+	var form    = "width=" + wndWidth + ",height=" + wndHeight + ",left=" + wndLeft + ",top=" + wndTop + ",resizable=yes,menubar=no, scrollbars=no, resizable=no,location=no, status=no";
 	 return window.open(URL,'',form);        
 }
 
-function openCenterWindow(URL,wndWidth,wndHeight,callback){
-	return $.open(URL, wndWidth ,wndHeight ,  callback ) ;
+function openCenterWindow(URL,wndWidth,wndHeight,callback, args){
+	return $.open(URL, wndWidth ,wndHeight ,  callback ,args) ;
 	/*var wndLeft = (window.screen.width-wndWidth)/2;
 	var wndTop  = (window.screen.height-wndHeight)/2;
 	var form    = "width=" + wndWidth + ",height=" + wndHeight + ",left=" + wndLeft + ",top=" + wndTop + ",resizable=yes";

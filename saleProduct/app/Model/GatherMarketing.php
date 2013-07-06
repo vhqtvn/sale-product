@@ -40,7 +40,6 @@ class GatherMarketing extends AppModel {
 		if($categoryStratery == "VIP"){
 			return $this->_processStrateryForVIP( $product ,$productCategory,$accountName ) ;
 		}
-		
 	}
 	
 	public function _processStrateryForDEFAULT($product ,$productCategory,$accountName){

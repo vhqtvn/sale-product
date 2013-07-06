@@ -249,7 +249,9 @@ $(function(){
            	{align:"center",key:"QUOTE_PRICE",label:"采购价",width:"5%"},
            	{align:"center",key:"AREA",label:"采购地区",width:"6%",
            			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}},
-          
+           	{align:"center",key:"WAREHOUSE_TIME",label:"入库时间",width:"10%",format:function(val,record){
+           		return (val||"").replace("00:00:00","") ;
+           	}},
            	{align:"center",key:"PROVIDOR_NAME",label:"供应商信息",width:"12%",format:function(val,record){
            		if(!val) return "";
            		return "<a href='#' supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
