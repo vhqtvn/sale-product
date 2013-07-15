@@ -1,7 +1,5 @@
 <?php
 
-App :: import('Vendor', 'Amazon');
-
 class AmazonaccountController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
@@ -292,141 +290,11 @@ class AmazonaccountController extends AppController {
 	 		return $this->response;
 	 	}
 	 	
-		
-		/*$account = $this->Amazonaccount->getAccount($accountId) ;
-    	$account = $account[0]['sc_amazon_account'] ;
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
-		
-		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
-		
-		$this->Amazonaccount->saveAccountFeed($result) ;*/
-
 		$this->response->type("html");
 		$this->response->body("success");
 		return $this->response;
 	 }
 	 
-	/* public function doAmazonQuantity(){
-	 	
-	 	$id = "UC_Quantity_".date('U') ;
-	 	
-	 	$params = $this->request->data  ;
-		$accountId = $params["accountId"] ;
-		
-		$user =  $this->getCookUser() ;
-		$loginId = $user["LOGIN_ID"] ;
-		
-		$account = $this->Amazonaccount->getAccount($accountId) ;
-		$account = $account[0]['sc_amazon_account'] ;
-		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-		$products = $this->Amazonaccount->listAccountUpdatableProductForQuantity( $account["ID"] ) ;
-		
-		$_products = array() ;
-		for( $i = 0 ;$i < count($products) ;$i++  ){
-			$product = $products[$i]['sc_amazon_account_product'] ;
-
-			$sku = $product["SKU"] ;
-			$quantity = $product["FEED_QUANTITY"] ;
-			
-			$_products[] = array("SKU"=>$sku,"FEED_QUANTITY"=>$quantity) ;
-		}
-		
-		$Feed = $this->Amazonaccount->getQuantityFeed($MerchantIdentifier , $_products) ;
-
-		$account = $this->Amazonaccount->getAccount($accountId) ;
-    	$account = $account[0]['sc_amazon_account'] ;
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
-		
-		$result = $amazon->updateInventory($accountId,$Feed,$loginId) ;
-		
-		$this->Amazonaccount->saveAccountFeed($result) ;
-
-		$this->response->type("html");
-		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
-		return $this->response;
-
-	 }*/
-	 
-	
-	/**
-	 * 更新库存
-	 */
-	 
-	 /*
-	public function doUploadAmazonQuantity(){
-		$params = $this->request->data  ;
-		$accountId = $params["accountId"] ;
-		
-		$account = $this->Amazonaccount->getAccount($accountId) ;
-		$account = $account[0]['sc_amazon_account'] ;
-		
-		$fileName = $_FILES['priceFile']["name"] ;
-		$myfile = $_FILES['priceFile']['tmp_name'] ;
-		$user =  $this->getCookUser() ;
-		$loginId = $user["LOGIN_ID"] ;
-		//save db
-		$id = "UC_".date('U') ;
-		
-		$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-		
-		$file_handle = fopen($myfile , "r");
-		$index = 0 ;
-		$_products = array() ;
-		while (!feof($file_handle)) {
-		   $line = fgets($file_handle);
-		   if( trim($line) != "" ){
-		   		$array = explode(",",$line) ;
-		   		$sku = trim($array[0]) ;
-		   		$quantity = trim($array[1]) ;
-		   		if( empty($sku) || empty($quantity) ) continue ;
-		 
-		   		//up sc_amazon_account_product
-		   		$this->Amazonaccount->saveAccountProductFeedQuantity( array('accountId'=>$accountId,'sku'=>$sku,'feedQuantity'=>$quantity) ) ;
-		   	
-		   		$_products[] = array("SKU"=>$sku,"FEED_QUANTITY"=>$quantity ) ;
-		 	}
-		}
-		fclose($file_handle);
-		
-		$Feed = $this->Amazonaccount->getQuantityFeed($MerchantIdentifier , $_products) ;
-
-		$account = $this->Amazonaccount->getAccount($accountId) ;
-    	$account = $account[0]['sc_amazon_account'] ;
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
-		
-		$result = $amazon->updateInventory($accountId,$Feed,$loginId) ;
-		
-		print_r($result) ;
-		$this->Amazonaccount->saveAccountFeed($result) ;
-
-		$this->response->type("html");
-		$this->response->body("<script type='text/javascript'>window.parent.uploadSuccess('".$id."');</script>");
-		return $this->response;
-	}*/
 
 	public function doUploadAmazonPrice(){
 		$params = $this->request->data  ;
@@ -468,22 +336,6 @@ class AmazonaccountController extends AppController {
 		
 		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
 		file_get_contents($url."?feed=".urlencode($Feed));
-
-		/*$account = $this->Amazonaccount->getAccount($accountId) ;
-    	$account = $account[0]['sc_amazon_account'] ;
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
-		
-		$result = $amazon->updatePrice($accountId,$Feed,$loginId) ;
-		
-		$this->Amazonaccount->saveAccountFeed($result) ;*/
 
 		$this->response->type("html");
 		$this->response->body("success");

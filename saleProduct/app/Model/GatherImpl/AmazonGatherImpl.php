@@ -14,7 +14,6 @@ App::import('Model', 'System') ;
 
 App :: import('Vendor', 'Snoopy');
 App :: import('Vendor', 'simple_html_dom');
-App :: import('Vendor', 'Amazon');
 
 
 class AmazonGatherImpl extends AppModel {

@@ -7,7 +7,6 @@ ini_set("post_max_size", "24M");
 
 App :: import('Vendor', 'Snoopy');
 App :: import('Vendor', 'simple_html_dom');
-App :: import('Vendor', 'Amazon');
 
 class TaskUploadController extends AppController {
 	

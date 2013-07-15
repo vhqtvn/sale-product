@@ -31,12 +31,25 @@ $(function(){
 	           	{align:"center",key:"UNSHIPPED_NUM",label:"待发货数量",group:"库存",width:"8%"},
 	        	{align:"center",key:"ORDER_NUM",label:"订单数量",group:"库存",width:"8%"},
 	        	{align:"center",key:"FEED_PRICE",label:'调整价格',group:'价格',width:"8%",format:{type:'editor',fields:['ACCOUNT_ID','SKU']},render:function(record){
+	        		var shipFee = parseFloat(record.SHIPPING_PRICE||0)
 	        		if( record.FULFILLMENT_CHANNEL.indexOf("AMAZON") !=-1){
-	        			var price = $(".SALE_LOWEST_PRICE_FBM").text();
-	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",">="+$(".SALE_LOWEST_PRICE_FBM").text()) ;
+	        			var price = parseFloat($(".SALE_LOWEST_PRICE_FBM").text()||0) - shipFee;
+	        			var ph = "" ;
+	        			if( price >0  ){
+	        				ph =">="+price ;
+	        			}else{
+	        				ph = "-" ;
+	        			}
+	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",ph) ;
 	           		}else{
-	           			var price = $(".SALE_LOWEST_PRICE_FBA").text();
-	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",">="+$(".SALE_LOWEST_PRICE_FBA").text()) ;
+	           			var price = parseFloat($(".SALE_LOWEST_PRICE_FBA").text()||0) - shipFee;
+	           			var ph = "" ;
+	        			if( price >0  ){
+	        				ph =">="+price ;
+	        			}else{
+	        				ph = "-" ;
+	        			}
+	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",ph ) ;
 	           		}
 	        	}},
 	        	{align:"center",key:"PRICE",label:"账户价格",group:"价格",width:"6%"},

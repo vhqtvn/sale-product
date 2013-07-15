@@ -5,8 +5,6 @@ set_time_limit(0);
 ini_set("memory_limit", "62M");
 ini_set("post_max_size", "24M");
 
-App :: import('Vendor', 'Amazon');
-
 /**
  * 按照获取类别进行获取
  */
@@ -31,11 +29,7 @@ class GatherCategoryController extends AppController {
 		file_get_contents($url."?".$random);
 	}
 	
-	/**
-	 * 执营销集分类获取
-	 */
 	public function execute( $accountId , $categoryId ){
-		
 		$status = $this->Tasking->status("gather_category",$categoryId,$accountId) ;
 		if( $status ){//执行中
 			return ;
@@ -181,7 +175,7 @@ class GatherCategoryController extends AppController {
 	 * 价格信息
 	 */
 	public function price($accountId , $categoryId ){
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 
 		try{
@@ -233,7 +227,7 @@ class GatherCategoryController extends AppController {
 		$products = $this->Amazonaccount->getAccountProductsForCategorySale( $accountId , $categoryId ) ;
 	
 		//获取账号相关信息
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		$accountName = $account['NAME'] ;
 		
@@ -291,18 +285,11 @@ class GatherCategoryController extends AppController {
 		}
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
 		
-		$result = $amazon->updatePrice($accountId,$Feed,"cron") ;
-		$this->Amazonaccount->saveAccountFeed($result) ;
+		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
+		$url = $url.'?1' ;
+		
+		$this->triggerRequest($url,array("feed"=>$Feed )) ;
 	}
     
 }

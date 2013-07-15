@@ -23,8 +23,8 @@ class AccountStrategyController extends AppController {
     	$hour = date("H") +0  ;
     	$week = date("w") +0;
     	
-    	if( $week == 7 ){
-    		$week = 0 ;
+    	if( $week == 0 ){
+    		$week = 7 ;
     	}
     	//查找当前时间段需要调价的Listing
     	echo $hour."----".$week ;

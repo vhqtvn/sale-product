@@ -3,8 +3,6 @@
 ini_set("memory_limit", "62M");
 ini_set("post_max_size", "24M");
 
-App :: import('Vendor', 'Amazon');
-
 
 /**
  * 单个产品获取
@@ -101,7 +99,7 @@ class GatherProductController extends AppController {
 	 */
 	public function price($productId , $accountId ){
 		$config = $this->System->getAccountPlatformConfig($accountId) ;
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		
 		$product =  $this->Amazonaccount->getAccountProduct($productId) ;
@@ -131,7 +129,7 @@ class GatherProductController extends AppController {
 		//获取分类产品信息
 		
 		//获取账号相关信息
-		$account = $this->Amazonaccount->getAccount($accountId) ;
+		$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
 		$account = $account[0]['sc_amazon_account'] ;
 		$accountName = $account['NAME'] ;
 		
@@ -185,17 +183,10 @@ class GatherProductController extends AppController {
 		}
 		
 		$Feed = $this->Amazonaccount->getPriceFeed($MerchantIdentifier , $_products) ;
-    	$amazon = new Amazon(
-				$account['AWS_ACCESS_KEY_ID'] , 
-				$account['AWS_SECRET_ACCESS_KEY'] ,
-			 	$account['APPLICATION_NAME'] ,
-			 	$account['APPLICATION_VERSION'] ,
-			 	$account['MERCHANT_ID'] ,
-			 	$account['MARKETPLACE_ID'] ,
-			 	$account['MERCHANT_IDENTIFIER'] 
-		) ;
+    	
+		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/price") ;
+		$url = $url.'?1' ;
 		
-		$result = $amazon->updatePrice($accountId,$Feed,"cron") ;
-		$this->Amazonaccount->saveAccountFeed($result) ;
+		$this->triggerRequest($url,array("feed"=>$Feed )) ;
 	}
 }
