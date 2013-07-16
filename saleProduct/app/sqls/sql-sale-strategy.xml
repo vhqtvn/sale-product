@@ -35,4 +35,34 @@
 				)
     </entry>
     
+    
+    <entry key="sql_saleStrategyMemo_find">
+			SELECT sssm.*,
+ (SELECT su.name FROM sc_user su WHERE su.login_id = sssm.creator ) AS USERNAME
+ FROM sc_sale_schedule_memo sssm WHERE sssm.sku= '{@#sku#}' AND sssm.account_id = '{@#accountId#}'
+ order by sssm.create_date desc
+    </entry>
+    
+    <entry key="sql_saleStrategyMemo_delete">
+    	delete from sc_sale_schedule_memo where id = '{@#memoId#}'
+    </entry>
+    
+    <entry key="sql_saleStrategyMemo_insert">
+		    INSERT INTO sc_sale_schedule_memo 
+			(
+			SKU, 
+			ACCOUNT_ID, 
+			MEMO, 
+			CREATOR, 
+			CREATE_DATE
+			)
+			VALUES
+			(
+			'{@#sku#}', 
+			'{@#accountId#}', 
+			'{@#memo#}', 
+			'{@#loginId#}', 
+			NOW()
+			)
+	</entry>
 </properties>

@@ -30,4 +30,14 @@ class SaleStrategy extends AppModel {
 			
 		}
 	}
+	
+	function saveStragegyMemo($params){
+		$this->exeSql("sql_saleStrategyMemo_insert", $params ) ;
+	}
+	
+	function deleteStragegyMemo($params){
+		$this->exeSql("sql_saleStrategyMemo_delete", $params ) ;
+	}
+	
+	
 }

@@ -84,6 +84,16 @@
 			font-size:13px;
 		}
 		
+		ul li{
+			list-style: none;
+			padding:3px;
+			position:relative;
+		}
+		
+		ul li .delete{
+			position:absolute;
+			cursor:pointer;
+		}
 	</style>
 	
 	<script type="text/javascript">
@@ -186,20 +196,48 @@
 							</div>
 							<div class="span11"  style="margin-left:0px;">
 								<div class="strategy-div">
-								<table class="form-table strategy-details "  style="margin-left:0px;">
-									<thead>										   
-										<tr class="hour-row">
-											
-										</tr>
-									</thead>
-									<tbody>
-										
-									</tbody>
-								</table>
+									<table class="form-table strategy-details "  style="margin-left:0px;">
+										<thead>										   
+											<tr class="hour-row">
+												
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>
 						<!-- 数据列表样式 -->
+						
+						<!-- 备注 -->
+						<div style="height:174px;overflow-y:auto;">
+							<ul>
+							<?php 
+							$memos  = $SqlUtils->exeSqlWithFormat("sql_saleStrategyMemo_find",array("accountId"=>$params['arg1'],"sku"=>$params['arg2'])) ;
+							//debug($memos) ;
+							foreach( $memos as $memo ){
+							?>
+								<li class="memo-item"  memoId ="<?php echo $memo['ID'];?>">
+									<?php echo $memo['MEMO'];?>
+									&nbsp;&nbsp;&nbsp;&nbsp;(
+									<?php echo $memo['USERNAME'] ;?>
+									&nbsp;
+									<?php echo $memo['CREATE_DATE'] ;?>
+									)
+								</li>
+							<?php 
+							//	debug($memo) ;
+							}
+							?>
+							<li>
+							<textarea placeHolder="输入备注" style="width:80%;" class="stragegymemo"></textarea>
+							<button class="btn  save-stragegymemo"> 保存</button>
+							</li>
+							
+							</ul>
+							
+						</div>
 						
 					</div>
 					

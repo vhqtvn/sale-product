@@ -25,6 +25,34 @@ $(function(){
 			});
 		}
 	}) ;
+	
+	$(".save-stragegymemo").click(function(){
+		var strategy = [] ;
+
+		var json = {} ;
+		json.memo = $(".stragegymemo").val() ;
+		json.sku = sku ;
+		json.accountId = accountId ;
+		
+			$.dataservice("model:SaleStrategy.saveStragegyMemo",json,function(result){
+					window.location.reload();
+			});
+	}) ;
+	
+	$(".memo-item").hover(function(){
+		$(this).append("<a class='delete'>删除</a>") ;
+	},function(){
+		$(this).find(".delete").remove();
+	}) ;
+	
+	$("ul li .delete").live("click",function(){
+		var memoId = $(this).parents("li:first").attr("memoId");
+		if( window.confirm("确认删除吗？") ){
+			$.dataservice("model:SaleStrategy.deleteStragegyMemo",{memoId:memoId},function(result){
+					window.location.reload();
+			});
+		}
+	}) ;
 			
 }) ;
 

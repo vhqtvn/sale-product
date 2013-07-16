@@ -125,7 +125,7 @@ $(function(){
 	
 	$(".sale-strategy").live("click",function(){
 		var record = $(this).parents("tr:first").data("record");
-		openCenterWindow(contextPath+"/page/forward/Sale.strategy.strategyConfigForListing/"+record.ACCOUNT_ID+"/"+record.SKU+"/"+record.ID ,1100,500) ;
+		openCenterWindow(contextPath+"/page/forward/Sale.strategy.strategyConfigForListing/"+record.ACCOUNT_ID+"/"+record.SKU+"/"+record.ID ,1100,650) ;
 	}) ;
 	
 	function calcPrice(){
