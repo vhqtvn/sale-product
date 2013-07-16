@@ -44,9 +44,10 @@ $(function () {
 		$(result).each(function(){
 			if(this.ASIN){
 				asins[this.ASIN] = this.REAL_SKU ;
+				seriresName[this.ASIN+"_"+this.REAL_SKU] = [] ;
+			}else{
+				seriresName[this.REAL_SKU] = [] ;
 			}
-			var rs =  this.REAL_SKU  ;
-			seriresName[rs] = [] ;
 		}) ;
 
 		//init series
@@ -56,10 +57,17 @@ $(function () {
 				$(categories).each(function(index , pDate){
 						var hasData = false ;
 						$(result).each(function(){
-							if( this.REAL_SKU == realSku && this.P_DATE == pDate ){
-								hasData = true ;
-								seriresName[rs].push( parseInt(this.QUANTITY) ) ;
+							if( this.TYPE == 'TOTAL' ){
+								if( this.REAL_SKU == realSku && this.P_DATE == pDate ){
+									hasData = true ;
+									seriresName[rs].push( parseInt(this.QUANTITY) ) ;
 								}
+							}else{
+								if( this.ASIN+"_"+this.REAL_SKU == realSku && this.P_DATE == pDate ){
+									hasData = true ;
+									seriresName[rs].push( parseInt(this.QUANTITY) ) ;
+								}
+							}
 						}) ;
 						if(!hasData){
 							seriresName[rs].push( 0) ;
