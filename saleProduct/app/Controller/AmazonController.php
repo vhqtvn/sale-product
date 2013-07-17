@@ -181,6 +181,54 @@ class AmazonController extends AppController {
 
 		return $this->response ;
     }
+    
+    public function getFBAReport1($accountId){
+    	$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/startAsynAmazonFba") ;
+    	$random = date("U") ;
+    
+    	file_get_contents($url."?".$random);
+    
+    	$this->response->type("json") ;
+    	$this->response->body( "success")   ;
+    
+    	return $this->response ;
+    }
+    
+    
+    public function getFBAReport2($accountId){
+    	$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/asynAmazonFba") ;
+    	$random = date("U") ;
+    
+    	file_get_contents($url."?".$random);
+    
+    
+    	$this->response->type("json") ;
+    	$this->response->body( "success")   ;
+    
+    	return $this->response ;
+    }
+    
+    public function getFBAReport3($accountId){
+    	$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
+    	$account = $account[0]['sc_amazon_account'] ;
+    
+    	$url = $this->Utils->buildUrl($account,"taskAsynAmazon/asynAmazonFba") ;
+    	$random = date("U") ;
+    
+    	file_get_contents($url."?".$random);
+    
+    
+    	$this->response->type("json") ;
+    	$this->response->body( "success")   ;
+    
+    	return $this->response ;
+    }
 
     public function getProductReport1($accountId){
     	$account = $this->Amazonaccount->getAccountIngoreDomainById($accountId) ;
