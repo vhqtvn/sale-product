@@ -21,6 +21,7 @@
 	</entry>
 
    <entry key="sql_warehouse_in_lists">
+   select * from (
   		SELECT s1.* ,
 		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
 		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME,
@@ -32,6 +33,7 @@
 		  and s1.type = 'in'
 		  {@ and s1.IN_NUMBER like '%#inNumber#%'}
 		  {@ and s1.status = '#status#'}
+  ) t order by t.IN_TIME desc
    </entry>
    
    <entry key="sql_warehouse_in_getById">

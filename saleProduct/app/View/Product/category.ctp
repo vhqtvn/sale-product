@@ -160,7 +160,7 @@
 				title:'产品分类选择页面',
 				valueField:"#up-category .parentId",
 				labelField:"#up-category .parentName",
-				key:{value:'ID',label:'NAME'},//对应value和label的key
+				key:{value:'ID',label:'TEXT'},//对应value和label的key
 				width:500,
 				height:500,
 				multi:false ,

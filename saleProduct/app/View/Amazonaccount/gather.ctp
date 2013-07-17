@@ -25,8 +25,9 @@
   	$(function(){
   		var tab = $('#tabs-default').tabs( {
 			tabs:[
-				{label:'产品明细同步（从账户同步）',url:contextPath+'/amazonaccount/asynPage/active/<?php echo $accountId?>',iframe:true,id:"testId"},
-				{label:'库存价格同步（从账户同步）',url:contextPath+'/amazonaccount/asynPage/common/<?php echo $accountId?>',iframe:true},
+				{label:'产品明细同步',url:contextPath+'/amazonaccount/asynPage/active/<?php echo $accountId?>',iframe:true,id:"testId"},
+				{label:'库存价格同步',url:contextPath+'/amazonaccount/asynPage/common/<?php echo $accountId?>',iframe:true},
+				{label:'FBA库存价格同步',url:contextPath+'/amazonaccount/asynPage/fba/<?php echo $accountId?>',iframe:true},
 				{label:'产品数据获取',url:contextPath+'/amazonaccount/gatherPage/<?php echo $accountId?>',iframe:true,id:"testId"}
 			] ,
 			height:'500px'

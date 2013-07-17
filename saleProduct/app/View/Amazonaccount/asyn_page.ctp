@@ -44,10 +44,14 @@
 
    <script>
    var type = '<?php echo $type;?>' ;
-   var flag = "" ;
+   var flag = "Product" ;
    if(type == 'active'){
-   	 flag = 'Active' ;
+   	 flag = 'ProductActive' ;
+   }else  if(type == 'fba'){
+   	 flag = 'FBA' ;
    }
+
+   
    
    		var accountId = '<?php echo $id;?>' ;
 		$(function(){
@@ -56,6 +60,8 @@
 			var sqlId = "sql_product_asyn_history" ;
 			if(type == 'active'){
 		   	 sqlId = "sql_product_active_asyn_history" ;
+		   }else  if(type == 'fba'){
+			   sqlId = "sql_product_fba_asyn_history" ;
 		   }
 			
 			$(".grid-content").llygrid({
@@ -83,7 +89,7 @@
 				$(this).html("请求处理中.....").attr("diasbled",true) ;
 				$.ajax({
 					type:"post",
-					url:contextPath+"/amazon/getProduct"+flag+"Report1/"+accountId,
+					url:contextPath+"/amazon/get"+flag+"Report1/"+accountId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -97,7 +103,7 @@
 				$(this).html("请求处理中.....").attr("diasbled",true) ;
 				$.ajax({
 					type:"post",
-					url:contextPath+"/amazon/getProduct"+flag+"Report2/"+accountId,
+					url:contextPath+"/amazon/get"+flag+"Report2/"+accountId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -111,7 +117,7 @@
 				$(this).html("请求处理中.....").attr("diasbled",true) ;
 				$.ajax({
 					type:"post",
-					url:contextPath+"/amazon/getProduct"+flag+"Report3/"+accountId,
+					url:contextPath+"/amazon/get"+flag+"Report3/"+accountId,
 					data:{},
 					cache:false,
 					dataType:"text",
@@ -127,7 +133,7 @@
 		function getStatus(){
 			$.ajax({
 				type:"post",
-				url:contextPath+"/amazon/getProduct"+flag+"Asyns/"+accountId,
+				url:contextPath+"/amazon/get"+flag+"Asyns/"+accountId,
 				data:{},
 				cache:false,
 				dataType:"text",
