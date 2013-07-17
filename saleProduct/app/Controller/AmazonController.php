@@ -275,6 +275,17 @@ class AmazonController extends AppController {
 		return $this->response ;
     }
     
+    public function getFBAAsyns($id){
+    	$user =  $this->getCookUser() ;
+    
+    	$accountAsyn = $this->Amazonaccount->getAccountAsyn($id,"_GET_AFN_INVENTORY_DATA_") ;
+    
+    	$this->response->type("text") ;
+    	$this->response->body( json_encode( $accountAsyn ) )   ;
+    
+    	return $this->response ;
+    }
+    
 	 public function getProductAsyns($id){
 	 	$user =  $this->getCookUser() ;
 	 	
