@@ -17,6 +17,7 @@ $(function(){
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
 	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
 	           	}},
+	           	{align:"center",key:"DAY_PAGEVIEWS",label:"流量",width:"7%"},
 	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",group:"库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
 	           		return record.QUANTITY||0 ;
 	           	}},render:function(record){

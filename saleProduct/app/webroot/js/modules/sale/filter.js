@@ -294,6 +294,15 @@ var currentId = '' ;
 				}) ;
 			}) ;
    	 });
+	
+	function formatGridQuery( json, jsonOptions ){
+		if( jsonOptions.qc == '.toolbar1' ){
+			for( var o in json){
+				json[o] =( json[o]+"").replace("/","") ;
+			}
+		}
+		return json ;
+	}
    	 
    	 
    function showImg(el){

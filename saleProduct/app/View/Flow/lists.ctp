@@ -22,38 +22,18 @@
   
    <script type="text/javascript">
      var taskId = "<?php echo $taskId;?>"
-   //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
 
 	$(function(){
 		$(".message,.loading").hide() ;
 			$(".grid-content").llygrid({
 				columns:[
-		           	{align:"center",key:"ID",label:"编号", width:"5%"},
-		           	{align:"center",key:"ASIN",label:"ASIN", width:"10%"},
-		           	{align:"center",key:"TITLE",label:"TITLE", width:"10%"},
-		           	{align:"center",key:"PAGEVIEWS",label:"PAGEVIEWS", width:"10%"},
+		           	{align:"center",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
+		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
+		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+		           	}},
+		           	{align:"right",key:"PAGEVIEWS",label:"PAGEVIEWS", width:"10%"},
 		           	{align:"center",key:"PAGEVIEWS_PERCENT",label:"PAGEVIEWS_PERCENT", width:"10%"},
 		           	{align:"center",key:"BUY_BOX_PERCENT",label:"BUY_BOX_PERCENT", width:"10%"},
 		           	{align:"center",key:"UNITS_ORDERED",label:"UNITS_ORDERED", width:"10%"},
@@ -65,7 +45,9 @@
 		         ds:{type:"url",content:contextPath+"/grid/query/"+taskId},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:400,
+				 height:function(){
+					return $(window).height() - 150 ;
+				 },
 				 title:"流量信息列表",
 				 indexColumn:true,
 				 querys:{sqlId:"sql_flow_details_list",taskId:taskId},
@@ -105,14 +87,23 @@
 
 </head>
 <body>
+<div class="toolbar toolbar-auto toolbar1 query-container">
+		<table>
+			<tr>
+				<th>
+				ASIN:
+				</th>
+				<td>
+					<input type="text" id="asin" placeHolder="输入ASIN" style="width:400px;"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
+				</td>
+			</tr>						
+		</table>
+	</div>	
 	<div class="grid-content">
 	
-	</div>
-	
-	<div class="message">
-	</div>
-	<div class="loading">
-		处理中......
 	</div>
 </body>
 </html>

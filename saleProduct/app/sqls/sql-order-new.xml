@@ -287,10 +287,10 @@
 	</entry>
 	
 	
-	<entry key="sql_sc_order_list">
-	<![CDATA[
-	    SELECT so.* ,
+	<!-- 
+	SELECT so.* ,
 	         (select name from sc_amazon_account where id = so.account_id) as ACCOUNT_NAME,
+			,
 			 (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
 	                    	FROM sc_order_item soi
 	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
@@ -298,16 +298,53 @@
 				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
 			 ) AS ORDER_PRODUCTS 
 		  FROM sc_order so
+	 -->
+	<entry key="sql_sc_order_list">
+	<![CDATA[
+	    SELECT so.* ,
+	         (select name from sc_amazon_account where id = so.account_id) as ACCOUNT_NAME
+	        {@  ,
+			 (SELECT GROUP_CONCAT( CONCAT(s4.IMAGE_URL,'|',s4.id) SEPARATOR ';' ) 
+	                    	FROM sc_order_item soi
+	                    	LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
+				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
+				WHERE so.order_id = soi.order_id and
+					'#showImage#' = '#showImage#'
+				 GROUP BY soi.order_id	 
+			 ) AS ORDER_PRODUCTS 
+			 }
+		  FROM sc_order so
 		   WHERE 1=1  
+		    {@ and (
+		    	so.order_id = '#searchKey#'
+		    	or 
+		    	so.order_number = '#searchKey#'
+		    	or
+		    	exists (
+		         select 1 from sc_order_item soi where soi.seller_sku = '#searchKey#'
+		        )
+		        or
+		        exists (
+		        	select 1 from sc_order_item soi , sc_real_product_rel srpr
+		        	where soi.seller_sku = srpr.sku
+		        	and srpr.real_sku =  '#searchKey#'
+		        )
+		        or
+		         exists (
+		        	select 1 from sc_order_item soi , sc_amazon_account_product saap
+		        	where soi.seller_sku = saap.sku
+		        	and saap.asin =  '#searchKey#'
+		        )
+		    ) }
+		     {@ and so.account_id = '#accountId#'}
+		     {@ and date(so.LAST_UPDATE_DATE) >=date( '#startTime#')}
+		     {@ and date(so.LAST_UPDATE_DATE) <= date('#endTime#') }
 		    {@ and so.ORDER_STATUS = '#status#'}
 		    {@ and so.fulfillment_channel = '#type#'}
-		     {@ and so.account_id = '#accountId#'}
 		    {@ and so.order_id = '#orderId#'}
-		     {@ and so.order_id = '#ORDER_ID#'}
-		      {@ and so.ORDER_NUMBER = '#ORDER_NUMBER#'}
+		    {@ and so.order_id = '#ORDER_ID#'}
+		     {@ and so.ORDER_NUMBER = '#ORDER_NUMBER#'}
 		    {@ and so.order_number = '#orderNumber#'}
-		    {@ and date(so.LAST_UPDATE_DATE) >=date( '#startTime#')}
-		     {@ and date(so.LAST_UPDATE_DATE) <= date('#endTime#') }
 		     {@ 
 		       and exists (
 		         select 1 from sc_order_item soi where soi.seller_sku = '#sku#'

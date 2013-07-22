@@ -132,8 +132,12 @@
 			},0) ;
 		}
 		
+		
 		function __formatGridData(records){
 			var array = [] ;
+			var root = [] ;
+			var map = {} ;
+			var parentMap = {} ;
 			$(records).each(function(){
 				var row = {} ;
 				for(var o in this){
@@ -141,12 +145,28 @@
 					for(var o1 in _){
 						row[o1] = _[o1] ;
 						row[o1.toLowerCase()] = _[o1] ;
+						if( o1.toLowerCase() == 'parent_id' ){
+							row['parentId'] =  _[o1] ;
+						}
 					}
 				}
-				array.push(row) ;
+				if(!row.parentId){
+					root.push(row) ;
+				}else{
+					parentMap[row.parentId] = parentMap[row.parentId]||[] ;
+					parentMap[row.parentId].push(row) ;
+				}
+				
+				map[row['id']] = row ;
+				//array.push(row) ;
 			}) ;
-		
-			return array ;
+			
+			for(var o in map){
+				var ps = parentMap[o] ;
+				map[o].childNodes = ps ;
+			}
+			
+			return root ;
 		}
 
         //閫氳繃AJAX浠庡悗鍙板彇鏁版嵁

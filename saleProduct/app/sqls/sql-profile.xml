@@ -159,6 +159,7 @@
 			{@ UNION
 			SELECT * FROM sc_product_flow_details_history WHERE task_id = '#taskId#' }
 		) t
+		where 1=1  {@ and t.asin = '#asin#'}
     </entry>
     
     <!--帅选规则管理-->

@@ -17,7 +17,7 @@ $(function(){
 				method : 'post',
 				asyn : true, //异步
 				rootId  : 'root',
-				rootText : '根节点',
+				rootText : '产品分类',
 				CommandName : 'sqlId:sql_saleproduct_categorytree',
 				recordFormat:true,
 				params : {

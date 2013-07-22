@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -77,15 +77,12 @@
 			<tr>
 				<th>订单号：</th>
 				<td>
-					<input type="text" name="orderId"/>
+					<input type="text" name="searchKey" placeHolder="订单号、内部订单号、Listing SKU、货品SKU、ASIN"  style="width:315px;"/>
 				</td>
-				<th>内部订单号：</th>
-				<td>
-					<input type="text" name="orderNumber"/>
-				</td>
+				
 				<th>账号：</th>
 				<td>
-					<select name="accountId">
+					<select name="accountId"  class="span2">
 		     		<option value="">--选择--</option>
 			     	<?php
 			     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
@@ -97,15 +94,13 @@
 			     	?>
 					</select>
 				</td>
-			</tr>
-			<tr>
-				<th>日期：</th>
+				<th>开始日期：</th>
 				<td>
-					<input type="text" name="dateTime" data-widget="calendar"/>
+					<input type="text" name="startTime" data-widget="calendar"  style="width:100px;"/>
 				</td>
-				<th>SKU：</th>
+				<th>结束日期：</th>
 				<td>
-					<input type="text" name="sku"/>
+					<input type="text" name="startTime" data-widget="calendar"    style="width:100px;"/>
 				</td>
 				<th></th>
 				<td>

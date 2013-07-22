@@ -12,12 +12,14 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/validator/jquery.validation');
+		echo $this->Html->css('../js/messagebox/jquery.messagebox');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('messagebox/jquery.messagebox');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -28,6 +30,35 @@
    <style>
    		*{
    			font:12px "微软雅黑";
+   		}
+   		
+   		.message{
+			z-index:1;
+   			background: #CCC;
+   			 -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; /* ie8  */
+		    filter:alpha(opacity=50);    /* ie5-7  */
+		    -moz-opacity:0.5;    /* old mozilla browser like netscape  */
+		    -khtml-opacity: 0.5;    /* for really really old safari */ 
+		    opacity: 0.5;   
+   			left:0px;
+   			top:0px;
+   			bottom:0px;
+   			right:0px;
+   			position:fixed;
+   			display:none;
+   		}
+   		
+   		.message >div{
+   			position:absolute;;
+			display:block;
+   			background:#FFF;
+   			z-index:2;
+   			top:20px;
+   		 	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"; /* ie8  */
+		    filter:alpha(opacity=100);    /* ie5-7  */
+		    -moz-opacity:1;    /* old mozilla browser like netscape  */
+		    -khtml-opacity: 1;    /* for really really old safari */ 
+		    opacity: 1;   
    		}
  </style>
  
@@ -40,12 +71,24 @@
 						
 						$.dataservice("model:ProductDev.addAsinToTask",json,function(result){
 							if(result){
-								alert("保存完成。\n以下产品为正在开发中的产品：\n"+result);
+								var items = [] ;
+								$(result).each(function(){
+									var asin = this.split("(")[0] ;
+									items.push("<a target='_blank' href='"+contextPath+"/sale/details1/<?php echo $taskId;?>/"+asin+"'>"+this+"</a>") ;
+								}) ;
+								
+								$.messageBox.info({message:"保存完成。<br/>以下产品为正在开发中的产品：<br/>"+items.join("&nbsp;&nbsp;&nbsp;&nbsp;"),callback:function(){
+									jQuery.dialogReturnValue(true) ;
+									window.close();
+								} }) ;
+								//alert("保存完成。\n以下产品为正在开发中的产品：\n"+result);
 							}else{
 								alert("保存成功！");
+								jQuery.dialogReturnValue(true) ;
+								window.close();
 							}
-							jQuery.dialogReturnValue(true) ;
-							window.close();
+							//jQuery.dialogReturnValue(true) ;
+							//window.close();
 							//window.location.reload();
 						});
 					}
@@ -91,6 +134,10 @@
 				</div>
 			</form>
 		</div>
+	</div>
+	
+	<div class="message">
+		<div></div>
 	</div>
 </body>
 

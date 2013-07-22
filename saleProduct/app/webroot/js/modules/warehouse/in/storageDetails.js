@@ -83,7 +83,7 @@ $(function(){
 		
 		var tab = $('#details_tab').tabs( {
 			tabs:[
-				{label:'计划盘点出入库',content:"assign-grid"},
+				{label:'出入库历史',content:"assign-grid"},
 				{label:'RAM入库',content:"ram-grid"},
 				{label:'订单出库',content:"order-grid"}
 			] ,

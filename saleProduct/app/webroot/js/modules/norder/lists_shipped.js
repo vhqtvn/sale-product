@@ -1,6 +1,11 @@
 	$(function(){
 			var sqlId = "sql_sc_order_list" ;
 			
+			var params = {sqlId:sqlId,accountId:'',status:status,type:type} ;
+			if(status == 'Pending' || status=='Unshipped'){
+				params.showImage = 1 ;
+			}
+			
 			$(".grid-content").llygrid({
 				columns:[
 				      	{align:"center",key:"ORDER_ID",label:"Order Id", width:"15%"},
@@ -28,11 +33,11 @@
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-				 	return $(window).height() - $(".toolbar-auto").height() -155 ;
+				 	return $(window).height() - $(".toolbar-auto").height() -105 ;
 				 },
 				 title:"订单信息列表",
 				 indexColumn:false,
-				 querys:{sqlId:sqlId,accountId:'',status:status,type:type},
+				 querys:params,
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 			
