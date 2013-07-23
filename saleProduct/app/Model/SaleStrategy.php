@@ -2,6 +2,12 @@
 class SaleStrategy extends AppModel {
 	var $useTable = "sc_seller" ;
 	
+	function clearListingConfig($params){
+		$sku 			= $params['sku'];
+		$accountId = $params['accountId'];
+		$this->exeSql("sql_saleStrategy_deleteConfig", array('sku'=>$sku,'accountId'=>$accountId)) ;
+	}
+	
 	function saveListingConfig($params){
 		$sku 			= $params['sku'];
 		$accountId = $params['accountId'];

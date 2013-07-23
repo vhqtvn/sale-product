@@ -155,9 +155,13 @@
     
     <entry key="sql_flow_details_list">
     	select * from (
-       		 SELECT * FROM sc_product_flow_details WHERE 1=1 {@ and task_id = '#taskId#' }
+       		 SELECT spfd.*,spf.START_TIME,spf.END_TIME FROM sc_product_flow_details spfd,
+       		  sc_product_flow spf
+       		  WHERE 1=1 and spfd.task_id = spf.id {@ and task_id = '#taskId#' }
 			{@ UNION
-			SELECT * FROM sc_product_flow_details_history WHERE task_id = '#taskId#' }
+			SELECT spfd.*,spf.START_TIME,spf.END_TIME FROM sc_product_flow_details_history spfd,
+       		  sc_product_flow spf
+       		   WHERE spfd.task_id = spf.id and task_id = '#taskId#' }
 		) t
 		where 1=1  {@ and t.asin = '#asin#'}
     </entry>

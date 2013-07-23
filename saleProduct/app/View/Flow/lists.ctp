@@ -33,7 +33,10 @@
 		           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
 		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
 		           	}},
-		           	{align:"right",key:"PAGEVIEWS",label:"PAGEVIEWS", width:"10%"},
+		           	{align:"right",key:"PAGEVIEWS",label:"总流量", width:"10%"},
+		        	{align:"right",key:"DAY_PAGEVIEWS",label:"每日流量", width:"10%"},
+		        	{align:"center",key:"START_TIME",label:"开始时间", width:"10%"},
+		        	{align:"center",key:"END_TIME",label:"结束时间", width:"10%"},
 		           	{align:"center",key:"PAGEVIEWS_PERCENT",label:"PAGEVIEWS_PERCENT", width:"10%"},
 		           	{align:"center",key:"BUY_BOX_PERCENT",label:"BUY_BOX_PERCENT", width:"10%"},
 		           	{align:"center",key:"UNITS_ORDERED",label:"UNITS_ORDERED", width:"10%"},

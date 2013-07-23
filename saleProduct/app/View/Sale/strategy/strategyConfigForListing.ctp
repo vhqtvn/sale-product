@@ -59,6 +59,16 @@
 			position:absolute;
 		}
 		
+		.clear_config{
+			display:none;
+			position:absolute;
+			cursor:pointer;
+			width:13px;
+			height:13px;
+			left:2px;
+			top:2px;
+		}
+		
 		.strategy-details tbody td{
 			position:relative;
 		}
@@ -244,6 +254,7 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
 						<div class="form-actions">
+							<button type="button" class="btn btn-danger clear-stragegy">清&nbsp;空</button>
 							<button type="button" class="btn btn-primary save-stragegy">提&nbsp;交</button>
 						</div>
 					</div>

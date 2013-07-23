@@ -2,6 +2,17 @@ $(function(){
 			//创建容器
 	StrategyConfig.initContainer() ;
 	
+	$(".clear-stragegy").click(function(){
+		if( window.confirm("确认清空该Listing所有的定时定价配置？") ){
+			var json = {} ;
+			json.sku = sku ;
+			json.accountId = accountId ;
+			$.dataservice("model:SaleStrategy.clearListingConfig",json,function(result){
+					window.location.reload();
+			});
+		}
+	}) ;
+	
 	$(".save-stragegy").click(function(){
 		var strategy = [] ;
 		
@@ -68,7 +79,7 @@ var StrategyConfig = {
 			//create body
 			var row = ["<tr>"] ;
 			for(var i=0 ;i<24 ;i++){
-				row.push("<td class='value-cell' hour='"+i+"'>"+getImage("edit_2.png","配置","edit_config")+"<span></span></td>") ;
+				row.push("<td class='value-cell' hour='"+i+"'>"+getImage("cancel.png","重置","clear_config")+getImage("edit_2.png","配置","edit_config")+"<span></span></td>") ;
 			}
 
 			$(".strategy-details tbody").empty() ;
@@ -78,8 +89,11 @@ var StrategyConfig = {
 			
 			$(".strategy-details tbody td").hover(function(){
 				$(this).find(".edit_config").show();
+				if( $(this).find("span").text() )
+					$(this).find(".clear_config").show();
 			},function(){
 				$(this).find(".edit_config").hide();
+				$(this).find(".clear_config").hide();
 			}) ;
 			
 			$(configs).each(function(){
@@ -100,6 +114,11 @@ var StrategyConfig = {
 				$(this).parent().removeClass("alert") ;
 			}) ;
 			
+			$(".clear_config").click(function(){
+				var me = $(this) ;
+				me.parent("td").find("span").html("") ;
+				me.parent("td").removeClass("label-info label-success");
+			}) ;
 			
 			$(".edit_config").click(function(){
 				var me = $(this) ;
