@@ -27,6 +27,8 @@ class TaskUploadController extends AppController {
 		
 		$Days=round(( $endTime-$startTime )/3600/24);
 		
+		$Days = $Days + 1 ;
+		
 		$id = "F_".date('U') ;
 		//save db
 		$user =  $this->getCookUser() ;
