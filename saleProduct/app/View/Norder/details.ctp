@@ -136,7 +136,7 @@
 				  ?>
 				  	<tr>
 				  		<td style="width:100%;">
-				  			<div class="alert alert-success" style="margin:2px;font-weight:bold;"><span offer-listing="<?php  echo $item['ASIN'] ;?>"><?php  echo $item['Title'] ;?></span>
+				  			<div class="alert alert-success" style="margin:2px;font-weight:bold;"><span offer-listing="<?php  echo $item['LISTING_ASIN'] ;?>"><?php  echo $item['Title'] ;?></span>
 				  					<?php 
 				  					
 				  						if( !empty($item['NAME']) ){
