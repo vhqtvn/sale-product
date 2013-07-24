@@ -359,11 +359,14 @@
 	
 	<entry key="sql_sc_order_item_list">
 	    SELECT soi.* ,
-	    			s4.*
-		  FROM sc_order_item soi
+       s4.*,
+       saap.ASIN AS LISTING_ASIN
+		  FROM 
+			sc_amazon_account_product saap,
+		  	sc_order_item soi
 				 LEFT JOIN sc_real_product_rel s3 ON s3.sku = soi.seller_sku
 				 LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
-		   WHERE 1=1 
+		   WHERE 1=1 AND saap.SKU = soi.Seller_SKU
 		    {@ and soi.order_id = '#orderId#'}
 	</entry>
 	
