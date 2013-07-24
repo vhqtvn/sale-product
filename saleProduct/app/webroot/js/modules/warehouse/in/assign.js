@@ -21,7 +21,8 @@ $(function(){
 	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",group:"库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
 	           		return record.QUANTITY||0 ;
 	           	}},render:function(record){
-	           		if( record.FULFILLMENT_CHANNEL.indexOf("AMAZON") !=-1){
+	           		var fc = record.FULFILLMENT_CHANNEL||"" ;
+	        		if( fc.indexOf("AMAZON") !=-1){
 	           			$(this).find("[key='ASSIGN_QUANTITY']").html("&nbsp;&nbsp;"+(record.QUANTITY||0)) ;
 	           			$(this).addClass("alert alert-danger");
 	           		}else{
@@ -32,8 +33,9 @@ $(function(){
 	           	{align:"center",key:"UNSHIPPED_NUM",label:"待发货数量",group:"库存",width:"8%"},
 	        	{align:"center",key:"ORDER_NUM",label:"订单数量",group:"库存",width:"8%"},
 	        	{align:"center",key:"FEED_PRICE",label:'调整价格',group:'价格',width:"8%",format:{type:'editor',fields:['ACCOUNT_ID','SKU']},render:function(record){
-	        		var shipFee = parseFloat(record.SHIPPING_PRICE||0)
-	        		if( record.FULFILLMENT_CHANNEL.indexOf("AMAZON") !=-1){
+	        		var shipFee = parseFloat(record.SHIPPING_PRICE||0);
+	        		var fc = record.FULFILLMENT_CHANNEL||"" ;
+	        		if( fc.indexOf("AMAZON") !=-1){
 	        			var price = parseFloat($(".SALE_LOWEST_PRICE_FBA").text()||0) - shipFee;
 	        			var ph = "" ;
 	        			if( price >0  ){
