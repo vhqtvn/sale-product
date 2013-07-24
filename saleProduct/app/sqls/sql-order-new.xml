@@ -322,18 +322,21 @@
 		    	or
 		    	exists (
 		         select 1 from sc_order_item soi where soi.seller_sku = '#searchKey#'
+		         and soi.order_id = so.order_id
 		        )
 		        or
 		        exists (
 		        	select 1 from sc_order_item soi , sc_real_product_rel srpr
 		        	where soi.seller_sku = srpr.sku
 		        	and srpr.real_sku =  '#searchKey#'
+		        	 and soi.order_id = so.order_id
 		        )
 		        or
 		         exists (
 		        	select 1 from sc_order_item soi , sc_amazon_account_product saap
 		        	where soi.seller_sku = saap.sku
 		        	and saap.asin =  '#searchKey#'
+		        	 and soi.order_id = so.order_id
 		        )
 		    ) }
 		     {@ and so.account_id = '#accountId#'}
