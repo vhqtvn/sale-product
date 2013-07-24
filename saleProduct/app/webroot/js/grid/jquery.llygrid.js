@@ -1231,6 +1231,9 @@ $.uiwidget.register("grid-query",function(selector){
 			var gc = jsonOptions.gc ;
 			var qc = jsonOptions.qc ;
 			var json = $(qc).toJson() ;
+			if(window.formatGridQuery ){
+				json = formatGridQuery(json,jsonOptions) ;
+			}
 			$(gc).llygrid("reload",json,true) ;
 		}) ;
 	});
