@@ -169,3 +169,7 @@
 		.ui-tabs{
 			border:none!important;
 		}
+		
+		[offer-listing]{
+		cursor:pointer;
+		}
