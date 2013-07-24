@@ -136,9 +136,9 @@
 		     <td>流量文件：</td>
 		     <td><input name="flowFile" type="file"/></td>
 		     <td>开始时间：</td>
-		     <td><input name="startTime" type="text"/></td>
+		     <td><input name="startTime" type="text"  readonly="readonly"  data-widget="calendar"/></td>
 		     <td>结束时间：</td>
-		     <td><input name="endTime" type="text"/></td> 
+		     <td><input name="endTime" type="text"  readonly="readonly"  data-widget="calendar"/></td> 
 		     <td colSpan=2 align=center><input type="submit" value="上传流量文件"></td> 
 		    </tr>
 		   </table>
