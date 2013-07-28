@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
