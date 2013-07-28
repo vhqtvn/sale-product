@@ -263,6 +263,8 @@
 		var val = record[valueKey]||record["value"] ;
 		var lab = record[labelKey]||record["label"] ;
 		
+		if(!val || val == 'undefined')return ;
+		
 		selectReocrds[val] = record ;
 		
 		$(".selected-container ul").find("[val='"+val+"']").remove() ;

@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+    
+    <!--
+    	TODO:
+    	outAemricanArea: 1
+    	inAemricanArea : 0
+    	
+    	当空时设置：
+    	itemContidtionNull:1
+    	
+    	fulfillmentChannelNull:1
+    	
+    	isPriceQuery:1
+    	isQuantityQuery:1
+    	
+    	pm:other ==>0
+    	
+    	uncategory：1
+    -->
+   
+   <entry key="sql_ebay_category_list">
+   		select sec.category_id as id , sec.name as text,sec.fullname , sec.parent_id, 
+   		(select 1 from sc_ebay_category s1 where s1.parent_id = sec.category_id limit 0,1 ) as hasChildren 
+   		  from sc_ebay_category sec where parent_id = '{@#parentId#}'
+   </entry>
+   
+   <!-- 
+     array(
+			'bindproductname_val' => '',
+			'bindproductdescription_val' => '',
+			'bindproductsku_val' => '',
+			'bindproductpicture_val' => '',
+			'listingduration_fixedprice' => 'Days_3',
+			'listingduration_auction' => 'Days_1',
+			//'buyitnowprice' => '0.0',
+			'template' => '',
+			'basicinfo' => '',
+
+			'detail_wuliu_profile' => '',
+			
+			'detail_location_profile' => '',
+			
+			'privatelisting' => 'false',
+			'sku' => '',
+			'desc' => '',
+			'aktion' => '',
+			'muban_id' => '',
+			'goods_id' => '0',
+			'languageid' => ''
+		) 
+     -->
+   <entry key="sql_ebay_template_insert">
+   INSERT INTO sc_ebay_template 
+	(ID, 
+	SITE, 
+	CONDITIONID,
+	LISTINGTYPE, 
+	PRODUCTID, 
+	PRODUCTIDVAL, 
+	PRIMARYCATEGORY, 
+	PRIMARYCATEGORYTEXT,
+	ATTRIBUTE, 
+	SECONDARYCATEGORY, 
+	SECONDARYCATEGORYTEXT,
+	ATTRIBUTE2, 
+	ITEMTITLE, 
+	SUBTITLE, 
+	QUANTITY,
+	LOTSIZE, 
+	LISTINGDURATION, 
+	STARTPRICE, 
+	BUYITNOWPRICE,
+	RESERVEPRICE, 
+	SECONDOFFER, 
+	ITEMDESCRIPTION, 
+	DISPATCHTIME, 
+	LOCATION, 
+	PAYMENTMETHODS1, 
+	PAYMENTMETHODS2, 
+	PAYMENTMETHODS3, 
+	POSTALCODE, 
+	COUNTRY, 
+	PAYPAL, 
+	DETAIL_RETURN_PROFILE, 
+	HITCOUNTER, 
+	GALLERY, 
+	RP_RETURNSACCEPTEDOPTION, 
+	RP_REUNDOPTION, 
+	RP_RETURNSWITHINOPTION, 
+	RP_SHIPPINGCOSTPAIDBYOPTION, 
+	RP_DESCRIPTION, 
+	BRD_MBPV_COUNT, 
+	BRD_MBPV_PERIOD, 
+	BRD_MUIS_COUNT, 
+	BRD_MUIS_PERIOD, 
+	BRD_MIR_MIC, 
+	SD_SSO1_SHIPPINGSERVICE, 
+	SD_SSO1_SHIPPINGSERVICECOST, 
+	SD_SSO1_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_SSO2_SHIPPINGSERVICE, 
+	SD_SSO2_SHIPPINGSERVICECOST, 
+	SD_SSO2_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_SSO3_SHIPPINGSERVICE, 
+	SD_SSO3_SHIPPINGSERVICECOST, 
+	SD_SSO3_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO1_SHIPPINGSERVICE, 
+	SD_ISSO1_SHIPPINGSERVICECOST, 
+	SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO1_SHIPTOLOCASTION, 
+	SD_ISSO2_SHIPPINGSERVICE, 
+	SD_ISSO2_SHIPPINGSERVICECOST, 
+	SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO2_SHIPTOLOCATION, 
+	SD_ISSO3_SHIPPINGSERVICE, 
+	SD_ISSO3_SHIPPINGSERVICECOST, 
+	SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO3_SHIPTOLOCATION, 
+	SD_SALESTAXSTATE, 
+	SD_SALESTAXPERCENT, 
+	SD_SHIPPINGTYPE, 
+	URL0, 
+	URL1, 
+	URL2, 
+	URL3, 
+	URL4, 
+	URL5
+	)
+	VALUES
+	('{@#guid#}', 
+	'{@#site#}', 
+	'{@#conditionid#}', 
+	'{@#listingtype#}', 
+	'{@#productid#}', 
+	'{@#productidval#}', 
+	'{@#primarycategory#}', 
+	'{@#primarycategorytext#}', 
+	'{@#attribute#}', 
+	'{@#secondarycategory#}', 
+	'{@#secondarycategorytext#}', 
+	'{@#attribute2#}', 
+	'{@#itemtitle#}', 
+	'{@#subtitle#}', 
+	'{@#quantity#}', 
+	'{@#lotsize#}', 
+	'{@#listingduration#}', 
+	'{@#startprice#}', 
+	'{@#buyitnowprice#}', 
+	'{@#reserveprice#}', 
+	'{@#secondoffer#}', 
+	'{@#itemdescription#}', 
+	'{@#dispatchtime#}', 
+	'{@#location#}', 
+	'{@#PAYMENTMETHODS1#}', 
+	'{@#PAYMENTMETHODS2#}', 
+	'{@#PAYMENTMETHODS3#}', 
+	'{@#postalcode#}', 
+	'{@#country#}', 
+	'{@#paypal#}', 
+	'{@#detail_return_profile#}', 
+	'{@#hitcounter#}', 
+	'{@#gallery#}', 
+	'{@#RP_RETURNSACCEPTEDOPTION#}', 
+	'{@#RP_REUNDOPTION#}', 
+	'{@#RP_RETURNSWITHINOPTION#}', 
+	'{@#RP_SHIPPINGCOSTPAIDBYOPTION#}', 
+	'{@#RP_DESCRIPTION#}', 
+	'{@#BRD_MBPV_COUNT#}', 
+	'{@#BRD_MBPV_PERIOD#}', 
+	'{@#BRD_MUIS_COUNT#}', 
+	'{@#BRD_MUIS_PERIOD#}', 
+	'{@#BRD_MIR_MIC#}', 
+	'{@#SD_SSO1_SHIPPINGSERVICE#}', 
+	'{@#SD_SSO1_SHIPPINGSERVICECOST#}', 
+	'{@#SD_SSO1_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_SSO2_SHIPPINGSERVICE#}', 
+	'{@#SD_SSO2_SHIPPINGSERVICECOST#}', 
+	'{@#SD_SSO2_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_SSO3_SHIPPINGSERVICE#}', 
+	'{@#SD_SSO3_SHIPPINGSERVICECOST#}', 
+	'{@#SD_SSO3_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO1_SHIPPINGSERVICE#}', 
+	'{@#SD_ISSO1_SHIPPINGSERVICECOST#}', 
+	'{@#SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO1_SHIPTOLOCASTION#}', 
+	'{@#SD_ISSO2_SHIPPINGSERVICE#}', 
+	'{@#SD_ISSO2_SHIPPINGSERVICECOST#}', 
+	'{@#SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO2_SHIPTOLOCATION#}', 
+	'{@#SD_ISSO3_SHIPPINGSERVICE#}', 
+	'{@#SD_ISSO3_SHIPPINGSERVICECOST#}', 
+	'{@#SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO3_SHIPTOLOCATION#}', 
+	'{@#SD_SALESTAXSTATE#}', 
+	'{@#SD_SALESTAXPERCENT#}', 
+	'{@#SD_SHIPPINGTYPE#}', 
+	'{@#URL0#}', 
+	'{@#URL1#}', 
+	'{@#URL2#}', 
+	'{@#URL3#}', 
+	'{@#URL4#}', 
+	'{@#URL5#}'
+	)
+	</entry>
+	
+	<entry key="sql_ebay_template_update">
+		UPDATE  sc_ebay_template 
+			SET
+			site = '{@#site#}' , 
+			CONDITIONID='{@#conditionid#}',
+			listingtype = '{@#listingtype#}' , 
+			quantity = '{@#quantity#}' , 
+			productid = '{@#productid#}' , 
+			productidval = '{@#productidval#}' , 
+			primarycategory = '{@#primarycategory#}' , 
+			primarycategorytext = '{@#primarycategorytext#}' , 
+			attribute = '{@#attribute#}' , 
+			secondarycategory = '{@#secondarycategory#}' , 
+			secondarycategorytext = '{@#secondarycategorytext#}' , 
+			attribute2 = '{@#attribute2#}' , 
+			itemtitle = '{@#itemtitle#}' , 
+			subtitle = '{@#subtitle#}' , 
+			lotsize = '{@#lotsize#}' , 
+			listingduration = '{@#listingduration#}' , 
+			startprice = '{@#startprice#}' , 
+			buyitnowprice = '{@#buyitnowprice#}' , 
+			reserveprice = '{@#reserveprice#}' , 
+			secondoffer = '{@#secondoffer#}' , 
+			itemdescription = '{@#itemdescription#}' , 
+			dispatchtime = '{@#dispatchtime#}' , 
+			location = '{@#location#}' , 
+			PAYMENTMETHODS1 = '{@#PAYMENTMETHODS1#}' , 
+			PAYMENTMETHODS2 = '{@#PAYMENTMETHODS2#}' , 
+			PAYMENTMETHODS3 = '{@#PAYMENTMETHODS3#}' , 
+			postalcode = '{@#postalcode#}' , 
+			country = '{@#country' , 
+			paypal = '{@#paypal#}' , 
+			detail_return_profile = '{@#detail_return_profile#}' , 
+			hitcounter = '{@#hitcounter#}' , 
+			gallery = '{@#gallery#}' , 
+			RP_RETURNSACCEPTEDOPTION = '{@#RP_RETURNSACCEPTEDOPTION#}' , 
+			RP_REUNDOPTION = '{@#RP_REUNDOPTION#}' , 
+			RP_RETURNSWITHINOPTION = '{@#RP_RETURNSWITHINOPTION#}' , 
+			RP_SHIPPINGCOSTPAIDBYOPTION = '{@#RP_SHIPPINGCOSTPAIDBYOPTION#}' , 
+			RP_DESCRIPTION = '{@#RP_DESCRIPTION#}' , 
+			BRD_MBPV_COUNT = '{@#BRD_MBPV_COUNT#}' , 
+			BRD_MBPV_PERIOD = '{@#BRD_MBPV_PERIOD#}' , 
+			BRD_MUIS_COUNT = '{@#BRD_MUIS_COUNT#}' , 
+			BRD_MUIS_PERIOD = '{@#BRD_MUIS_PERIOD#}' , 
+			BRD_MIR_MIC = '{@#BRD_MIR_MIC#}' , 
+			SD_SSO1_SHIPPINGSERVICE = '{@#SD_SSO1_SHIPPINGSERVICE#}' , 
+			SD_SSO1_SHIPPINGSERVICECOST = '{@#SD_SSO1_SHIPPINGSERVICECOST#}' , 
+			SD_SSO1_SHIPPINGSERVICEADDITIONALCOST = '{@#SD_SSO1_SHIPPINGSERVICEADDITIONALCOST#}' , 
+			SD_SSO2_SHIPPINGSERVICE = '{@#SD_SSO2_SHIPPINGSERVICE#}' , 
+			SD_SSO2_SHIPPINGSERVICECOST = '{@#SD_SSO2_SHIPPINGSERVICECOST#}' , 
+			SD_SSO2_SHIPPINGSERVICEADDITIONALCOST = '{@#SD_SSO2_SHIPPINGSERVICEADDITIONALCOST#}' , 
+			SD_SSO3_SHIPPINGSERVICE = '{@#SD_SSO3_SHIPPINGSERVICE#}' , 
+			SD_SSO3_SHIPPINGSERVICECOST = '{@#SD_SSO3_SHIPPINGSERVICECOST#}' , 
+			SD_SSO3_SHIPPINGSERVICEADDITIONALCOST = '{@#SD_SSO3_SHIPPINGSERVICEADDITIONALCOST#}' , 
+			SD_ISSO1_SHIPPINGSERVICE = '{@#SD_ISSO1_SHIPPINGSERVICE#}' , 
+			SD_ISSO1_SHIPPINGSERVICECOST = '{@#SD_ISSO1_SHIPPINGSERVICECOST#}' , 
+			SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST = '{@#SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST#}' , 
+			SD_ISSO1_SHIPTOLOCASTION = '{@#SD_ISSO1_SHIPTOLOCASTION#}' , 
+			SD_ISSO2_SHIPPINGSERVICE = '{@#SD_ISSO2_SHIPPINGSERVICE#}' , 
+			SD_ISSO2_SHIPPINGSERVICECOST = '{@#SD_ISSO2_SHIPPINGSERVICECOST#}' , 
+			SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST = '{@#SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST#}' , 
+			SD_ISSO2_SHIPTOLOCATION = '{@#SD_ISSO2_SHIPTOLOCATION#}' , 
+			SD_ISSO3_SHIPPINGSERVICE = '{@#SD_ISSO3_SHIPPINGSERVICE#}' , 
+			SD_ISSO3_SHIPPINGSERVICECOST = '{@#SD_ISSO3_SHIPPINGSERVICECOST#}' , 
+			SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST = '{@#SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST#}' , 
+			SD_ISSO3_SHIPTOLOCATION = '{@#SD_ISSO3_SHIPTOLOCATION#}' , 
+			SD_SALESTAXSTATE = '{@#SD_SALESTAXSTATE#}' , 
+			SD_SALESTAXPERCENT = '{@#SD_SALESTAXPERCENT#}' , 
+			SD_SHIPPINGTYPE = '{@#SD_SHIPPINGTYPE#}' , 
+			URL0 = '{@#URL0#}' , 
+			URL1 = '{@#URL1#}' , 
+			URL2 = '{@#URL2#}' , 
+			URL3 = '{@#URL3#}' , 
+			URL4 = '{@#URL4#}' , 
+			URL5 = '{@#URL5#}'
+			
+			WHERE
+			ID = '{@#id#}' 
+	</entry>
+	
+	<entry key="sql_ebay_profile_logistics_list">
+		select * from  sc_ebay_profile_logistics
+	</entry>
+	
+	<entry key="sql_ebay_profile_location_list">
+   select * from sc_ebay_profile_location
+   </entry>
+   
+   <entry key="sql_ebay_profile_return_list">
+   select * from sc_ebay_profile_return
+   </entry>
+   
+   <entry key="sql_ebay_profile_logistics_get">
+		select * from  sc_ebay_profile_logistics where id = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_ebay_profile_location_get">
+   select * from sc_ebay_profile_location where id = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_ebay_profile_return_get">
+   select * from sc_ebay_profile_return where id = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_ebay_profile_logistics_delete">
+		delete from  sc_ebay_profile_logistics where id = '{@#id#}'
+	</entry>
+	
+	<entry key="sql_ebay_profile_location_delete">
+   delete from sc_ebay_profile_location where id = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_ebay_profile_return_delete">
+   delete from sc_ebay_profile_return where id = '{@#id#}'
+   </entry>
+	
+	<entry key="sql_ebay_profile_logistics_insert">
+   INSERT INTO sc_ebay_profile_logistics
+	(ID,
+	NAME,
+	DISPATCHTIME, 
+	SD_SSO1_SHIPPINGSERVICE, 
+	SD_SSO1_SHIPPINGSERVICECOST, 
+	SD_SSO1_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_SSO2_SHIPPINGSERVICE, 
+	SD_SSO2_SHIPPINGSERVICECOST, 
+	SD_SSO2_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_SSO3_SHIPPINGSERVICE, 
+	SD_SSO3_SHIPPINGSERVICECOST, 
+	SD_SSO3_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO1_SHIPPINGSERVICE, 
+	SD_ISSO1_SHIPPINGSERVICECOST, 
+	SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO1_SHIPTOLOCASTION, 
+	SD_ISSO2_SHIPPINGSERVICE, 
+	SD_ISSO2_SHIPPINGSERVICECOST, 
+	SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO2_SHIPTOLOCATION, 
+	SD_ISSO3_SHIPPINGSERVICE, 
+	SD_ISSO3_SHIPPINGSERVICECOST, 
+	SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST, 
+	SD_ISSO3_SHIPTOLOCATION, 
+	SD_SALESTAXSTATE, 
+	SD_SALESTAXPERCENT, 
+	SD_SHIPPINGTYPE
+	)
+	VALUES
+	('{@#guid#}', 
+	'{@#name#}', 
+	'{@#dispatchtime#}', 
+	'{@#SD_SSO1_SHIPPINGSERVICE#}', 
+	'{@#SD_SSO1_SHIPPINGSERVICECOST#}', 
+	'{@#SD_SSO1_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_SSO2_SHIPPINGSERVICE#}', 
+	'{@#SD_SSO2_SHIPPINGSERVICECOST#}', 
+	'{@#SD_SSO2_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_SSO3_SHIPPINGSERVICE#}', 
+	'{@#SD_SSO3_SHIPPINGSERVICECOST#}', 
+	'{@#SD_SSO3_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO1_SHIPPINGSERVICE#}', 
+	'{@#SD_ISSO1_SHIPPINGSERVICECOST#}', 
+	'{@#SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO1_SHIPTOLOCASTION#}', 
+	'{@#SD_ISSO2_SHIPPINGSERVICE#}', 
+	'{@#SD_ISSO2_SHIPPINGSERVICECOST#}', 
+	'{@#SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO2_SHIPTOLOCATION#}', 
+	'{@#SD_ISSO3_SHIPPINGSERVICE#}', 
+	'{@#SD_ISSO3_SHIPPINGSERVICECOST#}', 
+	'{@#SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST#}', 
+	'{@#SD_ISSO3_SHIPTOLOCATION#}', 
+	'{@#SD_SALESTAXSTATE#}', 
+	'{@#SD_SALESTAXPERCENT#}', 
+	'{@#SD_SHIPPINGTYPE#}'
+	)
+	</entry>
+	
+	<entry key="sql_ebay_profile_location_insert">
+   INSERT INTO sc_ebay_profile_location
+	(ID, 
+	NAME,
+	LOCATION, 
+	POSTALCODE, 
+	COUNTRY, 
+	RP_RETURNSACCEPTEDOPTION, 
+	RP_REUNDOPTION, 
+	RP_RETURNSWITHINOPTION, 
+	RP_SHIPPINGCOSTPAIDBYOPTION, 
+	RP_DESCRIPTION
+	)
+	VALUES
+	('{@#guid#}', 
+	'{@#name#}', 
+	'{@#location#}', 
+	'{@#postalcode#}', 
+	'{@#country#}', 
+	'{@#RP_RETURNSACCEPTEDOPTION#}', 
+	'{@#RP_REUNDOPTION#}', 
+	'{@#RP_RETURNSWITHINOPTION#}', 
+	'{@#RP_SHIPPINGCOSTPAIDBYOPTION#}', 
+	'{@#RP_DESCRIPTION#}'
+	)
+	</entry>
+	
+	<entry key="sql_ebay_profile_return_insert">
+   INSERT INTO sc_ebay_profile_return
+	(ID, 
+	NAME, 
+	PAYMENTMETHODS1, 
+	PAYMENTMETHODS2, 
+	PAYMENTMETHODS3, 
+	PAYPAL
+	)
+	VALUES
+	('{@#guid#}', 
+	'{@#name#}', 
+	'{@#PAYMENTMETHODS1#}', 
+	'{@#PAYMENTMETHODS2#}', 
+	'{@#PAYMENTMETHODS3#}', 
+	'{@#paypal#}'
+	)
+	</entry>
+</properties>

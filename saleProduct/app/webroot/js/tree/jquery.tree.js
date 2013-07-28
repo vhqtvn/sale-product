@@ -252,6 +252,7 @@
         	if(typeof data == 'string'){
         		eval( 'ret = '+data ) ;
         	}
+        	
         	return dfop.dataFormat(ret) ;
         }
    
@@ -530,6 +531,25 @@
                     $(this).find('.bbit-tree-node-icon').removeClass().addClass('bbit-tree-node-icon '+dfop.icons.loading);
                     asnyloadc(item, true, function(data) {
                     	data = getJsonData(data) ;
+                    	
+                    	var array = [] ;
+            			$(data).each(function(){
+            				var row = {} ;
+            				for(var o in this){
+            					var _ = this[o] ;
+            					for(var o1 in _){
+            						row[o1] = _[o1] ;
+            						row[o1.toLowerCase()] = _[o1] ;
+            						if( o1.toLowerCase() == 'parent_id' ){
+            							row['parentId'] =  _[o1] ;
+            						}
+            					}
+            				}
+            				array.push(row) ;
+            			}) ;
+            			data = array ;
+            			
+                    	//data = __formatGridData(data) ;
                         item.complete = true;
                         item.childNodes = data;
                         asnybuild(data, deep, path, ul, item);

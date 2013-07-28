@@ -15,10 +15,13 @@ $(function(){
 			tree:{
 				title:"产品分类选择页面",
 				method : 'post',
+				nodeFormat:function(node){
+					node.complete = false ;
+				},
 				asyn : true, //异步
 				rootId  : 'root',
 				rootText : '产品分类',
-				CommandName : 'sqlId:sql_saleproduct_categorytree',
+				CommandName : 'sqlId:sql_ebay_category_list',
 				recordFormat:true,
 				params : {
 				}

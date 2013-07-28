@@ -1,0 +1,55 @@
+/******* modify at your own risk *********/
+.combobox
+{
+    display: inline;
+    padding:0;
+}
+
+.combobox input
+{
+    padding: 0;
+    margin: 0;
+    display:inline;
+    vertical-align:bottom;
+}
+
+.combobox .button
+{
+    padding: 0;
+    margin: 0;
+    display:inline;
+    vertical-align:bottom;
+}
+
+#comboboxDropdown
+{
+    margin: 0;
+    padding: 0;
+    border: solid 1px #ccc;
+    border-width: 1px 1px 0;
+    position: absolute;
+    display: none;
+    z-index:1001;
+}
+
+#comboboxDropdown li
+{
+    list-style-type: none;
+    border: solid 1px #ccc;
+    border-width: 0 0 1px;
+    cursor: pointer;
+    padding: 3px;
+}
+
+/******* modify this to custom the appearance of the suggestions *******/
+#comboboxDropdown li
+{
+    color: black;
+    background-color: white;
+}
+
+#comboboxDropdown li.selected
+{
+    color: white;
+    background-color: black;
+}

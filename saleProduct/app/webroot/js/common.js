@@ -18,9 +18,10 @@ window.Config = window.Config || {
 } ;
 window.Global = window.Global || window.Config ;
 
+document.write("<script type='text/javascript' src='/"+fileContextPath+"/app/webroot/js/blockui/jquery.blockui.js'></script>") ;
+document.write("<link rel='stylesheet' type='text/css' href='/"+fileContextPath+"/app/webroot/js/blockui/jquery.blockui.css'/>") ;
 
 /*******************************************
- @description 打开窗口
  @example
     打开窗口            ： jQuery.open( url , width , height , params ,callback ) ;
     在打开窗口中获取参数 ： var args        = jQuery.dialogAraguments() ;
@@ -521,7 +522,7 @@ jQuery.dataservice = function(commandName , params , callback , reqParams ){
 	reqParams 			= reqParams||{} ;
 	reqParams.data 		= params ;
 	reqParams.type		= 'post' ;
-	reqParams.noblock 	= reqParams.noblock === false?false:true ;
+	reqParams.noblock 	= false ;//reqParams.noblock === false?false:true ;
 	reqParams.url 		= Config.contextPath+"/index.php/form/dataService" ;
 	reqParams.dataType 	= commandName?'json':"text" ;
 	//alert(reqParams.url);

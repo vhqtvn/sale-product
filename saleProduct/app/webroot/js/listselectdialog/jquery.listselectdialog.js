@@ -23,6 +23,9 @@
 					$(_p.labelField).val(label) ;
 				}
 			}
+			if(params.after){
+				params.after(args) ;
+			}
 		} ;
 		
 		//build default values defaults:[{value:'1',label:'广东省'},{value:'11',label:'广州市'}],
