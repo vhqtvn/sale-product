@@ -20,6 +20,9 @@
     	
     	uncategory：1
     -->
+   <entry key="sql_ebay_template_listByAccount">
+   		select * from sc_ebay_template where account_id = '{@#accountId#}'
+   </entry>
    
    <entry key="sql_ebay_category_list">
    		select sec.category_id as id , sec.name as text,sec.fullname , sec.parent_id, 
@@ -58,6 +61,7 @@
 	SITE, 
 	CONDITIONID,
 	LISTINGTYPE, 
+	CURRENCY,
 	PRODUCTID, 
 	PRODUCTIDVAL, 
 	PRIMARYCATEGORY, 
@@ -133,6 +137,7 @@
 	'{@#site#}', 
 	'{@#conditionid#}', 
 	'{@#listingtype#}', 
+	'{@#currency#}', 
 	'{@#productid#}', 
 	'{@#productidval#}', 
 	'{@#primarycategory#}', 
@@ -211,6 +216,7 @@
 			site = '{@#site#}' , 
 			CONDITIONID='{@#conditionid#}',
 			listingtype = '{@#listingtype#}' , 
+			currency='{@#currency#}', 
 			quantity = '{@#quantity#}' , 
 			productid = '{@#productid#}' , 
 			productidval = '{@#productidval#}' , 
@@ -235,7 +241,7 @@
 			PAYMENTMETHODS2 = '{@#PAYMENTMETHODS2#}' , 
 			PAYMENTMETHODS3 = '{@#PAYMENTMETHODS3#}' , 
 			postalcode = '{@#postalcode#}' , 
-			country = '{@#country' , 
+			country = '{@#country#}' , 
 			paypal = '{@#paypal#}' , 
 			detail_return_profile = '{@#detail_return_profile#}' , 
 			hitcounter = '{@#hitcounter#}' , 

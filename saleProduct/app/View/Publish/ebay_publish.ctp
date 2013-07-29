@@ -36,6 +36,7 @@
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		
 		$PublishUtils  = ClassRegistry::init("PublishUtils") ;
+		$Utils  = ClassRegistry::init("Utils") ;
 		
 		$accountId = $params['arg1'] ;
 		$templateId = $params['arg2'] ;
@@ -62,7 +63,7 @@
 
 		<div class="bottom694 span-24 last" style="width: 100%">
 			<div class="content">
-				<form action="<?php echo $contextPath;?>/publishEbay/doPublish" method="post" name="m" id="m" target="_self"   data-widget="validator">
+				<form action="<?php echo $contextPath;?>/publishEbay/saveTemplate" method="post" name="m" id="m" target="_self"   data-widget="validator">
 					<input type="hidden" id="currency" name="currency" value="USD" />
 					<input type="hidden" id="id" name="id" value="" class="val_ID" />
 					<table class="ebay_table" id="pos_site">
@@ -1265,9 +1266,10 @@
 	</div>
 
 	<script type="text/javascript">
+
 		  function loadCondition(accountId,categoryId,selected){
 			  $.ajax({
-		          url:'http://localhost/saleProductService/index.php/ebay/getCategoryFeathers/'+accountId+'/'+categoryId,
+		          url:'<?php  echo $Utils->buildUrlByAccountId($accountId, "ebay/getCategoryFeathers") ; ?>/'+categoryId,
 		          dataType:"jsonp",
 		          jsonp:"jsonpcallback",
 		          success:function(data){

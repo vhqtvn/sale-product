@@ -124,7 +124,7 @@ class PublishEbayController extends AppController {
 			'languageid' => ''
 		) 
      */
-	public function doPublish(){
+	public function saveTemplate(){
 		$data =  $this->request->data ;
 		
 		if(!isset($data['quantity'])){
@@ -139,6 +139,8 @@ class PublishEbayController extends AppController {
 				$pms .= ",".$pm ;
 			}
 		}
+		
+		debug($data) ;
 		
 		//format parymethod
 		$data['PAYMENTMETHODS1'] = $pms ;
@@ -158,24 +160,29 @@ class PublishEbayController extends AppController {
 		$data['SD_SSO1_SHIPPINGSERVICE'] 								= $data['shippingdetails']['ShippingServiceOptions'][0]['ShippingService'] ;
 		$data['SD_SSO1_SHIPPINGSERVICECOST'] 						=$data['shippingdetails']['ShippingServiceOptions'][0]['ShippingServiceCost'] ;
 		$data['SD_SSO1_SHIPPINGSERVICEADDITIONALCOST'] = $data['shippingdetails']['ShippingServiceOptions'][0]['ShippingServiceAdditionalCost'] ;
+		
 		$data['SD_SSO2_SHIPPINGSERVICE'] 								= $data['shippingdetails']['ShippingServiceOptions'][1]['ShippingService'] ;
 		$data['SD_SSO2_SHIPPINGSERVICECOST'] 						=$data['shippingdetails']['ShippingServiceOptions'][1]['ShippingServiceCost'] ;
 		$data['SD_SSO2_SHIPPINGSERVICEADDITIONALCOST'] = $data['shippingdetails']['ShippingServiceOptions'][1]['ShippingServiceAdditionalCost'] ;
+		
 		$data['SD_SSO3_SHIPPINGSERVICE'] 								= $data['shippingdetails']['ShippingServiceOptions'][2]['ShippingService'] ;
 		$data['SD_SSO3_SHIPPINGSERVICECOST'] 						=$data['shippingdetails']['ShippingServiceOptions'][2]['ShippingServiceCost'] ;
 		$data['SD_SSO3_SHIPPINGSERVICEADDITIONALCOST'] = $data['shippingdetails']['ShippingServiceOptions'][2]['ShippingServiceAdditionalCost'] ;
+		
 		$data['SD_ISSO1_SHIPPINGSERVICE'] 								= $data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingService'] ;
-		$data['SD_ISSO1_SHIPPINGSERVICECOST'] 						= $data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingService'] ;
-		$data['SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST'] 	= $data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingService'] ;
-		$data['SD_ISSO1_SHIPTOLOCASTION'] 								= $data['shippingdetails']['InternationalShippingServiceOption'][3]['ShipToLocation'] ;
+		$data['SD_ISSO1_SHIPPINGSERVICECOST'] 						= $data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingServiceCost'] ;
+		$data['SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST'] 	= $data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingServiceAdditionalCost'] ;
+		$data['SD_ISSO1_SHIPTOLOCASTION'] 								= $this->formatLocation( $data['shippingdetails']['InternationalShippingServiceOption'][3]['ShipToLocation'] );
+		
 		$data['SD_ISSO2_SHIPPINGSERVICE'] 								= $data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingService'] ;
-		$data['SD_ISSO2_SHIPPINGSERVICECOST'] 						= $data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingService'] ;
-		$data['SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST'] 	= $data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingService'] ;
-		$data['SD_ISSO2_SHIPTOLOCASTION'] 								= $data['shippingdetails']['InternationalShippingServiceOption'][4]['ShipToLocation'] ;
+		$data['SD_ISSO2_SHIPPINGSERVICECOST'] 						= $data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingServiceCost'] ;
+		$data['SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST'] 	= $data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingServiceAdditionalCost'] ;
+		$data['SD_ISSO2_SHIPTOLOCATION'] 								= $this->formatLocation(  $data['shippingdetails']['InternationalShippingServiceOption'][4]['ShipToLocation'] ) ;
+	
 		$data['SD_ISSO3_SHIPPINGSERVICE'] 								= $data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingService'] ;
-		$data['SD_ISSO3_SHIPPINGSERVICECOST'] 						= $data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingService'] ;
-		$data['SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST'] 	= $data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingService'] ;
-		$data['SD_ISSO3_SHIPTOLOCASTION'] 								= $data['shippingdetails']['InternationalShippingServiceOption'][5]['ShipToLocation'] ;
+		$data['SD_ISSO3_SHIPPINGSERVICECOST'] 						= $data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingServiceCost'] ;
+		$data['SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST'] 	= $data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingServiceAdditionalCost'] ;
+		$data['SD_ISSO3_SHIPTOLOCATION'] 								=  $this->formatLocation(  $data['shippingdetails']['InternationalShippingServiceOption'][5]['ShipToLocation'] );
 		$data['SD_SALESTAXSTATE'] = $data['shippingdetails']['SalesTax']['SalesTaxState'] ;
 		$data['SD_SALESTAXPERCENT'] = $data['shippingdetails']['SalesTax']['SalesTaxPercent'] ;
 		$data['SD_SHIPPINGTYPE'] = $data['shippingdetails']['ShippingType'] ;
@@ -194,121 +201,158 @@ class PublishEbayController extends AppController {
 			$this->Utils->exeSql("sql_ebay_template_update", $data) ;
 		}
 		
+		$this->response->type("text") ;
+		$this->response->body("success")   ;
 		
-		return ;
+		return $this->response ;
+	}
+	
+	public  function doPublish($templateId){
+		
+		$data = $this->Utils->getObject("select * from sc_ebay_template where id='{@#id#}'",array("id"=>$templateId))  ;
+		
+		$listingType = $data['LISTINGTYPE'] ;
+		
+		$tagName = "" ;
+		if( $listingType == 'Chinese' ){
+			$tagName ="AddItemRequest" ;
+		}else{
+			$tagName ="AddFixedPriceItemRequest" ;
+		}
 		
 		$xml = "
-		<AddItemRequest>
+		<".$tagName.">
 			<Version><![CDATA[815]]></Version>
 			<Item>
-				<Country>".$data['country']."</Country>
-				<Currency>".$data['currency']."</Currency>
-				<Description><![CDATA[".$data['itemdescription']."]]></Description>
-				<ListingDuration><![CDATA[".$data['listingduration']."]]></ListingDuration>
-			    <ListingType>".$data['listingtype']."</ListingType>
-			    <Location><![CDATA[".$data['location']."]]></Location>
-			    <PaymentMethods>".$pms."</PaymentMethods>
-			    <PayPalEmailAddress><![CDATA[".$data['paypal']."]]></PayPalEmailAddress>
+				<Country>".$data['COUNTRY']."</Country>
+				<Currency>".$data['CURRENCY']."</Currency>
+				<Description><![CDATA[".$data['ITEMDESCRIPTION']."]]></Description>
+				<ListingDuration><![CDATA[".$data['LISTINGDURATION']."]]></ListingDuration>
+			    <ListingType>".$data['LISTINGTYPE']."</ListingType>
+			    <Location><![CDATA[".$data['LOCATION']."]]></Location>
+			    <PaymentMethods>".$data['PAYMENTMETHODS1']."</PaymentMethods>
+			    <PayPalEmailAddress><![CDATA[".$data['PAYPAL']."]]></PayPalEmailAddress>
 			    <PrimaryCategory>
-			    	<CategoryID><![CDATA[".$data['primarycategory']."]]></CategoryID>
+			    	<CategoryID><![CDATA[".$data['PRIMARYCATEGORY']."]]></CategoryID>
 			    </PrimaryCategory>
-			    <Quantity>".$data['quantity']."</Quantity>
+			    <Quantity>".$data['QUANTITY']."</Quantity>
 			    <ShippingDetails>
-				     <ShippingType><![CDATA[".$data['shippingdetails']['ShippingType']."]]></ShippingType>
+				     <ShippingType><![CDATA[".$data['SD_SHIPPINGTYPE']."]]></ShippingType>
 				    <ShippingServiceOptions>
 				    	<ShippingServicePriority>1</ShippingServicePriority>
-					    <ShippingService><![CDATA[".$data['shippingdetails']['ShippingServiceOptions'][0]['ShippingService']."]]></ShippingService>
-					    <ShippingServiceCost currencyID=\"USD\" >".$data['shippingdetails']['ShippingServiceOptions'][0]['ShippingServiceCost']."</ShippingServiceCost>
-					    <ShippingServiceAdditionalCost>".$data['shippingdetails']['ShippingServiceOptions'][0]['ShippingServiceAdditionalCost']."</ShippingServiceAdditionalCost>
+					    <ShippingService><![CDATA[".$data['SD_SSO1_SHIPPINGSERVICE']."]]></ShippingService>
+					    <ShippingServiceCost>".$data['SD_SSO1_SHIPPINGSERVICECOST']."</ShippingServiceCost>
+					    <ShippingServiceAdditionalCost>".$data['SD_SSO1_SHIPPINGSERVICEADDITIONALCOST']."</ShippingServiceAdditionalCost>
 					</ShippingServiceOptions>" ;
-		if( !empty($data['shippingdetails']['ShippingServiceOptions'][1]['ShippingService']) ){
+		if( !empty($data['SD_SSO2_SHIPPINGSERVICE']) ){
 			$xml .= "		<ShippingServiceOptions>
 				<ShippingServicePriority>1</ShippingServicePriority>
-				<ShippingService><![CDATA[".$data['shippingdetails']['ShippingServiceOptions'][1]['ShippingService']."]]></ShippingService>
-				<ShippingServiceCost currencyID=\"USD\" >".$data['shippingdetails']['ShippingServiceOptions'][1]['ShippingServiceCost']."</ShippingServiceCost>
-				<ShippingServiceAdditionalCost>".$data['shippingdetails']['ShippingServiceOptions'][1]['ShippingServiceAdditionalCost']."</ShippingServiceAdditionalCost>
+				<ShippingService><![CDATA[".$data['SD_SSO2_SHIPPINGSERVICE']."]]></ShippingService>
+				<ShippingServiceCost>".$data['SD_SSO2_SHIPPINGSERVICECOST']."</ShippingServiceCost>
+				<ShippingServiceAdditionalCost>".$data['SD_SSO2_SHIPPINGSERVICEADDITIONALCOST']."</ShippingServiceAdditionalCost>
 				</ShippingServiceOptions>" ;
 		}
-
-		if( !empty($data['shippingdetails']['ShippingServiceOptions'][2]['ShippingService']) ){
-			$xml .= "	
+		
+		if( !empty($data['SD_SSO3_SHIPPINGSERVICE']) ){
+			$xml .= "
 					<ShippingServiceOptions>
 						<ShippingServicePriority>1</ShippingServicePriority>
-					    <ShippingService><![CDATA[".$data['shippingdetails']['ShippingServiceOptions'][2]['ShippingService']."]]></ShippingService>
-					    <ShippingServiceCost currencyID=\"USD\" >".$data['shippingdetails']['ShippingServiceOptions'][2]['ShippingServiceCost']."</ShippingServiceCost>
-					    <ShippingServiceAdditionalCost>".$data['shippingdetails']['ShippingServiceOptions'][2]['ShippingServiceAdditionalCost']."</ShippingServiceAdditionalCost>
+					    <ShippingService><![CDATA[".$data['SD_SSO3_SHIPPINGSERVICE']."]]></ShippingService>
+					    <ShippingServiceCost>".$data['SD_SSO3_SHIPPINGSERVICECOST']."</ShippingServiceCost>
+					    <ShippingServiceAdditionalCost>".$data['SD_SSO3_SHIPPINGSERVICEADDITIONALCOST']."</ShippingServiceAdditionalCost>
 					  </ShippingServiceOptions>" ;
 		}
 		
-		if( !empty($data['shippingdetails']['ShippingServiceOptions'][3]['ShippingService']) ){
-			$xml .= "	
+		if( !empty($data['SD_ISSO1_SHIPPINGSERVICE']) ){
+			$xml .= "
 					<InternationalShippingServiceOption>
 						<ShippingServicePriority>1</ShippingServicePriority>
-						<ShippingService><![CDATA[".$data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingService']."]]></ShippingService>
-					    <ShippingServiceCost currencyID=\"USD\" >".$data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingServiceCost']."</ShippingServiceCost>
-					    <ShippingServiceAdditionalCost>".$data['shippingdetails']['InternationalShippingServiceOption'][3]['ShippingServiceAdditionalCost']."</ShippingServiceAdditionalCost>
-					    <ShipToLocation>".$data['shippingdetails']['InternationalShippingServiceOption'][3]['ShipToLocation']."</ShippingServicePriority>
+						<ShippingService><![CDATA[".$data['SD_ISSO1_SHIPPINGSERVICE']."]]></ShippingService>
+					    <ShippingServiceCost>".$data['SD_ISSO1_SHIPPINGSERVICECOST']."</ShippingServiceCost>
+					    <ShippingServiceAdditionalCost>".$data['SD_ISSO1_SHIPPINGSERVICEADDITIONALCOST']."</ShippingServiceAdditionalCost>
+					    <ShipToLocation><![CDATA[".$data['SD_ISSO1_SHIPTOLOCASTION']."]]></ShipToLocation>
 					</InternationalShippingServiceOption>" ;
 		}
 		
-		if( !empty($data['shippingdetails']['ShippingServiceOptions'][4]['ShippingService']) ){
-			$xml .= "	
+		if( !empty($data['SD_ISSO2_SHIPPINGSERVICE']) ){
+			$xml .= "
 					<InternationalShippingServiceOption>
 						<ShippingServicePriority>1</ShippingServicePriority>
-						<ShippingService><![CDATA[".$data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingService']."]]></ShippingService>
-					    <ShippingServiceCost currencyID=\"USD\" >".$data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingServiceCost']."</ShippingServiceCost>
-					    <ShippingServiceAdditionalCost>".$data['shippingdetails']['InternationalShippingServiceOption'][4]['ShippingServiceAdditionalCost']."</ShippingServiceAdditionalCost>
-					    <ShipToLocation>".$data['shippingdetails']['InternationalShippingServiceOption'][4]['ShipToLocation']."</ShippingServicePriority>
+						<ShippingService><![CDATA[".$data['SD_ISSO2_SHIPPINGSERVICE']."]]></ShippingService>
+					    <ShippingServiceCost>".$data['SD_ISSO2_SHIPPINGSERVICECOST']."</ShippingServiceCost>
+					    <ShippingServiceAdditionalCost>".$data['SD_ISSO2_SHIPPINGSERVICEADDITIONALCOST']."</ShippingServiceAdditionalCost>
+					    <ShipToLocation><![CDATA[".$data['SD_ISSO2_SHIPTOLOCATION']."]]></ShipToLocation>
 					</InternationalShippingServiceOption>" ;
 		}
 		
-		if( !empty($data['shippingdetails']['ShippingServiceOptions'][5]['ShippingService']) ){
-			$xml .= "	
+		if( !empty($data['SD_ISSO3_SHIPPINGSERVICE']) ){
+			$xml .= "
 					<InternationalShippingServiceOption>
 						<ShippingServicePriority>1</ShippingServicePriority>
-						<ShippingService><![CDATA[".$data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingService']."]]></ShippingService>
-					    <ShippingServiceCost currencyID=\"USD\" >".$data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingServiceCost']."</ShippingServiceCost>
-					    <ShippingServiceAdditionalCost>".$data['shippingdetails']['InternationalShippingServiceOption'][5]['ShippingServiceAdditionalCost']."</ShippingServiceAdditionalCost>
-					    <ShipToLocation>".$data['shippingdetails']['InternationalShippingServiceOption'][5]['ShipToLocation']."</ShippingServicePriority>
+						<ShippingService><![CDATA[".$data['SD_ISSO3_SHIPPINGSERVICE']."]]></ShippingService>
+					    <ShippingServiceCost>".$data['SD_ISSO3_SHIPPINGSERVICECOST']."</ShippingServiceCost>
+					    <ShippingServiceAdditionalCost>".$data['SD_ISSO3_SHIPPINGSERVICEADDITIONALCOST']."</ShippingServiceAdditionalCost>
+					    <ShipToLocation><![CDATA[".$data['SD_ISSO3_SHIPTOLOCATION']."]]></ShipToLocation>
 					</InternationalShippingServiceOption>" ;
 		}
-			$xml .= "	
+		
+		
+		if( $listingType == 'Chinese' ){
+			$xml .= "
 			    </ShippingDetails>
-			    <StartPrice><![CDATA[".$data['startprice']."]]></StartPrice>
-			    <BuyItNowPrice><![CDATA[".$data['buyitnowprice']."]]></BuyItNowPrice>
-			    <Title><![CDATA[".$data['itemtitle']."]]></Title>";
+			    <StartPrice><![CDATA[".$data['STARTPRICE']."]]></StartPrice>
+			    <BuyItNowPrice><![CDATA[".$data['BUYITNOWPRICE']."]]></BuyItNowPrice>
+			    <Title><![CDATA[".$data['ITEMTITLE']."]]></Title>";
+		}else{
+			$xml .= "
+			    </ShippingDetails>
+			    <StartPrice><![CDATA[".$data['BUYITNOWPRICE']."]]></StartPrice>
+			    <Title><![CDATA[".$data['ITEMTITLE']."]]></Title>";
+		}
+		
+		if( $data['CONDITIONID'] ){
+			$xml .= "	   <ConditionID><![CDATA[".$data['CONDITIONID']."]]></ConditionID>";
+		}
 			
-			if( isset($data['subtitle']) && !empty($data['subtitle']) ){
-				$xml .= "	   <SubTitle><![CDATA[".$data['subtitle']."]]></SubTitle>";
-			}
-			 
-			  $xml .= "	   
-			  <DispatchTimeMax>".$data['dispatchtime']."</DispatchTimeMax>
+		if( isset($data['SUBTITLE']) && !empty($data['SUBTITLE']) ){
+			$xml .= "	   <SubTitle><![CDATA[".$data['SUBTITLE']."]]></SubTitle>";
+		}
+		
+		$xml .= "
+			  <DispatchTimeMax>".$data['DISPATCHTIME']."</DispatchTimeMax>
 			    <ReturnPolicy>
-			    	<ReturnsAcceptedOption><![CDATA[".$data['return_policy']['ReturnsAcceptedOption']."]]></ReturnsAcceptedOption>
-			    	<RefundOption><![CDATA[".$data['return_policy']['RefundOption']."]]></RefundOption>
-			    	<ReturnsWithinOption><![CDATA[".$data['return_policy']['ReturnsWithinOption']."]]></ReturnsWithinOption>
-			    	<ShippingCostPaidByOption><![CDATA[".$data['return_policy']['ShippingCostPaidByOption']."]]></ShippingCostPaidByOption>
-			    	<Description><![CDATA[".$data['return_policy']['Description']."]]></Description>
+			    	<ReturnsAcceptedOption><![CDATA[".$data['RP_RETURNSACCEPTEDOPTION']."]]></ReturnsAcceptedOption>
+			    	<RefundOption><![CDATA[".$data['RP_REUNDOPTION']."]]></RefundOption>
+			    	<ReturnsWithinOption><![CDATA[".$data['RP_RETURNSWITHINOPTION']."]]></ReturnsWithinOption>
+			    	<ShippingCostPaidByOption><![CDATA[".$data['RP_SHIPPINGCOSTPAIDBYOPTION']."]]></ShippingCostPaidByOption>
+			    	<Description><![CDATA[".$data['RP_DESCRIPTION']."]]></Description>
 			    </ReturnPolicy>
 			</Item>
-		</AddItemRequest>" ;
-			  
-			  echo 1111111111;
-			$return =  file_get_contents("http://localhost/saleProductService/index.php/eBay/doItem/6/2342342") ;
+		</".$tagName.">" ;
+			//echo 1111111;
+		$params = http_build_query(  array("xml"=>$xml) ) ;
 			
-			$params = http_build_query(  array("xml"=>$xml) ) ;
-			
-			$return = $this->Post("http://localhost/saleProductService/index.php/eBay/doItem/6/2342342", $params);
+		$baseUrl = $this->Utils->buildUrlByAccountId($data['ACCOUNT_ID'], "ebay/doItem") ;
+		//debug( $xml ) ;
+		$return = $this->Post($baseUrl."/".$data['LISTINGTYPE'] , $params);
+	
+		$this->response->type("json") ;
+		$this->response->body($return)   ;
 		
-			debug($return) ;
-			echo 22222222222;
-			debug($xml) ;
-		
-		/*'startprice' => '0.0',
-			'reserveprice' => '0.0',
-			'buyitnowprice' => '0.0',
-			'secondoffer' => '0.0',*/
+		return $this->response ;
+	}
+	
+	function formatLocation( $locations ){
+		if( empty( $locations ) ) return "" ;
+		$ls = "" ;
+		foreach( $locations as $l ){
+			if( empty($ls) ){
+				$ls = $l ;
+			} else{
+				$ls = ",".$l ;
+			}
+		}
+		return $ls ;
 	}
 
 }

@@ -34,6 +34,17 @@ class Utils extends AppModel {
 		;
 	}
 	
+	public function buildUrlByAccountId($accountId, $action) {
+		$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+		$account = $Amazonaccount->getAccountIngoreDomainById($accountId) ;
+		$account = $account[0]['sc_amazon_account'] ;
+
+		$domain = $account ['DOMAIN'];
+		$context = $account ['CONTEXT'];
+		$url = "http://" . $domain . "/" . $context . "/index.php/" . $action . "/" . $account ['ID'];
+		return $url;
+	}
+	
 	public function buildUrl($account, $action) {
 		$domain = $account ['DOMAIN'];
 		$context = $account ['CONTEXT'];

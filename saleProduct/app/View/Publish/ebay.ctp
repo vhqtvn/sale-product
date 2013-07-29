@@ -24,9 +24,13 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
+		
+		$accountId = $params['arg1'] ;
 
 	?>
-	
+	<script type="text/javascript">
+		var accountId = '<?php echo $accountId;?>'
+	</script>
 
 	 <style type="text/css">
 		img{
@@ -48,6 +52,7 @@
 				</td>								
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
+					<button class="btn btn-primary  new-template">新增模板</button>
 				</td>
 			</tr>						
 		</table>
