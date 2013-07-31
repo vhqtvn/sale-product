@@ -137,7 +137,7 @@
 						$.dataservice("model:Sale.savePrintTime",{'printTime':'',taskId:''}, function(){
 							$(".print").hide() ;
 							window.print() ;
-						});
+						},{noblock:true});
 					}
 				}) ;
 
