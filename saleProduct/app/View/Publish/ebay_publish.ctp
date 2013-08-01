@@ -208,8 +208,8 @@
 														</span> <span class="upview" style=""> <span>0</span> CNY
 														</span>
 													</div> <script language="javascript">
-	<?php echo $PublishUtils->getShippingServiceCost("reserveprice") ?>
-</script>
+																	<?php echo $PublishUtils->getShippingServiceCost("reserveprice") ?>
+																</script>
 												</td>
 												<td></td>
 											</tr>
@@ -230,8 +230,8 @@
 										</span> <span class="upview" style=""> <span>0</span> CNY
 										</span>
 									</div> <script language="javascript">
-	<?php echo $PublishUtils->getShippingServiceCost("buyitnowprice") ?>
-</script>
+													<?php echo $PublishUtils->getShippingServiceCost("buyitnowprice") ?>
+												</script>
 								</td>
 							</tr>
 							<tr class="auction_only" style="">
@@ -253,13 +253,10 @@
 											<tr>
 												<td><span class="lableebayfee">($)</span><font
 													color="red">使用多张图片会产生额外的费用</font></td>
-												<td align="right"><input type="button"
-													value="上传图片(iBay服务器)"
-													onclick="window.open('/index.php/goods/imgupload','上传图片','height=200, width=500, top=250, left=300, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no')"/>
-														<input type="button" value="上传图片(eBay服务器)"
+												<td align="right">
+													<input type="button" value="上传图片(Smart服务器)"
 														onclick="window.open('/index.php/muban/uploadpicture','上传图片','width=450,height=200,menubar=no,scrollbars=yes','true')"/>
-															<input type="button" value="再添加一个图片"
-															onclick="javascript:Addimgurl_input();return false;"/></td>
+													<input type="button" value="再添加一个图片" onclick="javascript:Addimgurl_input();return false;"/></td>
 											</tr>
 										</tbody>
 									</table>
@@ -268,10 +265,6 @@
 											<img id="img1" src="" width="50" height="50"/> <input
 												id="img" type="text" name="imgurl[0]" size="80"
 												onblur="javascript:imgurl_input_blur(this)" value="http://"/>
-													<input type="checkbox"
-													onclick="if(!$(this).attr('checked')){$('#img').val($('#bindproductpicture_val').val());$('#divbindconstantpicture').hide();}else{if(!confirm('确认使用变量吗？')){$(this).attr('checked',''); return true;}$('#img').val('{-BINDPRODUCTPICTURE-}');$('#divbindconstantpicture').show();}$('#img').trigger('blur');"
-													id="isusevarimg"/>使用关联商品变量 <a class="helplink"
-														href="javascript:showVariables()"></a>
 														<div id="divbindconstantpicture" class="divbindconstan"></div>
 										</div>
 									</div> <font color="red">ebay要求使用多图片功能,必须使用ebay的图片服务器.所以,请务必确认图片属性或通过'上传图片至ebay'功能来获取ebay服务器图片的url</font><br>
@@ -281,27 +274,23 @@
 								<td colspan="3">
 								
 									<script> 
-            KE.show({
-                id : 'itemdescription',
-                allowPreviewEmoticons : false,
-                shadowMode : true,
-                
-                allowUpload : false,
-                items : [
-                'source', '|','title','fontname', 'fontsize', '|', 'textcolor', 'bgcolor', 'bold', 'italic', 'underline','strikethrough', '|',
-                'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist','insertunorderedlist','indent', 'outdent', 'hr','removeformat', '|',
-                'link','unlink','image','advtable','fullscreen' ]
-            });
-        </script>
+							            KE.show({
+							                id : 'itemdescription',
+							                allowPreviewEmoticons : false,
+							                shadowMode : true,
+							                
+							                allowUpload : false,
+							                items : [
+							                'source', '|','title','fontname', 'fontsize', '|', 'textcolor', 'bgcolor', 'bold', 'italic', 'underline','strikethrough', '|',
+							                'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist','insertunorderedlist','indent', 'outdent', 'hr','removeformat', '|',
+							                'link','unlink','image','advtable','fullscreen' ]
+							            });
+							        </script>
 									
 									<textarea id="itemdescription" name="itemdescription"
 										style="height: 450px; width: 950px; display: none;"><?php echo $template['ITEMDESCRIPTION']?></textarea>
 									<input type="button" classs="anniu" value="预览刊登效果"
-									onclick="previewItem()">&nbsp;&nbsp;&nbsp;&nbsp;<input
-										type="checkbox"
-										onclick="if(!$(this).attr('checked')){$('#itemdescription').val($('#bindproductdescription_val').val());}else{if(!confirm('确认使用变量吗？')){$(this).attr('checked',''); return true;}$('#itemdescription').val('{-BINDPRODUCTDESCRIPTION-}');}KE.html('itemdescription',$('#itemdescription').val());"
-										id="isusevaritemdesc">使用关联商品变量 <a class="helplink"
-											href="javascript:showVariables()"></a></td>
+									onclick="previewItem()"></td>
 							</tr>
 						</tbody>
 					</table>
@@ -856,25 +845,25 @@
 													class="">日本</label></span> &nbsp; &nbsp; </td>
 								</tr>
 								<script type="text/javascript">
-     //境外运输国家选择Worldwide时的操作
-     $(':checkbox[id^=shippingdetails[InternationalShippingServiceOption]][value=Worldwide]').each(function (){
-    	 if($(this).attr('checked'))
-         {
-             $(this).parent().parent().children().children(':checkbox[value!=Worldwide]').attr('disabled','disabled').attr('checked','');
-         }
-    	 $(this).parent().parent().prepend('<br/>').prepend($(this).parent());
-     });
-     $(':checkbox[id^=shippingdetails[InternationalShippingServiceOption]][value=Worldwide]').click(function (){
-         if($(this).attr('checked'))
-         {
-             $(this).parent().parent().children().children(':checkbox[value!=Worldwide]').attr('disabled','disabled').attr('checked','');
-         }
-         else
-         {
-        	 $(this).parent().parent().children().children(':checkbox[value!=Worldwide]').attr('disabled','').attr('checked','');
-         }
-      });
-     </script>
+								     //境外运输国家选择Worldwide时的操作
+								     $(':checkbox[id^=shippingdetails[InternationalShippingServiceOption]][value=Worldwide]').each(function (){
+								    	 if($(this).attr('checked'))
+								         {
+								             $(this).parent().parent().children().children(':checkbox[value!=Worldwide]').attr('disabled','disabled').attr('checked','');
+								         }
+								    	 $(this).parent().parent().prepend('<br/>').prepend($(this).parent());
+								     });
+								     $(':checkbox[id^=shippingdetails[InternationalShippingServiceOption]][value=Worldwide]').click(function (){
+								         if($(this).attr('checked'))
+								         {
+								             $(this).parent().parent().children().children(':checkbox[value!=Worldwide]').attr('disabled','disabled').attr('checked','');
+								         }
+								         else
+								         {
+								        	 $(this).parent().parent().children().children(':checkbox[value!=Worldwide]').attr('disabled','').attr('checked','');
+								         }
+								      });
+								     </script>
 								<tr>
 									<th class="lh">备货时间</th>
 									<td><select id="dispatchtime" name="dispatchtime" class="val_DISPATCHTIME">
@@ -1062,10 +1051,7 @@
 							</tr>
 							<tr>
 								<th>收款Paypal帐号</th>
-								<td><input size="60" name="paypal" value="">
-										&nbsp;(若留空，程序会自动填写<a target="_blank"
-										href="http://www.ibay365.com/index.php/toebay/ebayuserlist">eBay帐号设置</a>里面的Paypal地址)
-								</td>
+								<td><input size="60" name="paypal" value=""></td>
 							</tr>
 							<tr>
 								<th>立即付款</th>
@@ -1266,13 +1252,18 @@
 	</div>
 
 	<script type="text/javascript">
-
+		
+	
 		  function loadCondition(accountId,categoryId,selected){
+			var f1 = false ;
+			var f2 = false ;
+			  $.block() ;
 			  $.ajax({
-		          url:'<?php  echo $Utils->buildUrlByAccountId($accountId, "ebay/getCategoryFeathers") ; ?>/'+categoryId,
+		          url:'<?php  echo $Utils->buildUrlByAccountId($accountId, "eBay/getCategoryFeathers") ; ?>/'+categoryId,
 		          dataType:"jsonp",
 		          jsonp:"jsonpcallback",
 		          success:function(data){
+					 
 		             if( data && data != 'null' ){ //需要条件哦按
 							$("#itemCondition").html("<select id='conditionid' name='conditionid'></select>") ;
 							$(data).each(function(){
@@ -1283,6 +1274,70 @@
 			            }else{
 			            	$("#itemCondition").html("该分类不需要设置Condition！") ;
 				        }
+		             f1 = true ;
+		        	 
+		             if( f1 && f2 ){
+							$.unblock() ;
+						}
+		          }
+		     });
+			
+			  $.ajax({
+		          url:'<?php  echo $Utils->buildUrlByAccountId($accountId, "eBay/getCategorySpecials") ; ?>/'+categoryId,
+		          dataType:"jsonp",
+		          jsonp:"jsonpcallback",
+		          success:function(data){
+		        	  var itemSpecials = templateJson.ITEM_SPECIALS||"{}" ;
+		        	  itemSpecials  = $.parseJSON(itemSpecials) ;
+				      //  alert(itemSpecials);//{"Brand":"Alemite","Model":"123","MPN":"123","Country of Manufacture":"Albania"}
+						$("#speci").empty();
+						$( data.NameRecommendation ).each(function(){
+							var name = this.Name ;
+							var ValidationRules = this.ValidationRules ;
+							var ValueRecommendation = this.ValueRecommendation||[] ;
+							var MaxValues = ValidationRules.MaxValues ;
+							var MinValues  = ValidationRules.MinValues||0 ;
+							var VariationSpecifics =ValidationRules.VariationSpecifics ;
+
+							var required = MinValues>0?" data-validator='required' ":"" ;
+							
+							var tr  = $("<tr></tr>").appendTo("#speci") ;
+							var td = $("<td></td>").appendTo(tr) ;
+							
+							td.append(name) ;
+							var td = $("<td></td>").appendTo(tr) ;
+							$("<input type='checkbox' style='display:none;' checked name='itemspecials[]'>").appendTo(td).val(name) ;
+							td.append("") ;
+							if( ValueRecommendation.length >0  ){
+								var select = $("<select><option value=''></option></select>").appendTo(td) ;
+								select.attr("name","itemspecial_"+name) ;
+
+								var isSelectValue = false ;
+								$( ValueRecommendation ).each(function(index , item){
+										var val = this.Value ;
+										var selected = "" ;
+										if( itemSpecials[name] == this.Value ){
+											selected = "selected" ;
+											isSelectValue = true ;
+										}
+										select.append("<option value='"+this.Value+"'  "+selected+">"+this.Value+"</option>") ;
+								}) ;
+								if( VariationSpecifics != "Disabled" ){
+									var input = $("<input type='text'/>").appendTo(td) ;
+									input.attr("name","itemspecial_"+name+"_input") ;
+									if(!isSelectValue)input.val(   itemSpecials[name] ||"" ) ;
+								}
+							}else{
+								var input = $("<input type='text'/>").appendTo(td) ;
+								input.attr("name","itemspecial_"+name+"_input") ;
+								input.val(   itemSpecials[name] ||"" ) ;
+							}
+						}) ;
+						f2 = true ;
+						
+						if( f1 && f2 ){
+							$.unblock() ;
+						}
 		          }
 		     });
 	  }
@@ -1296,6 +1351,18 @@
 		//处理分类
 		if( templateJson.PRIMARYCATEGORY ){
 			loadCondition('<?php echo $accountId;?>' , templateJson.PRIMARYCATEGORY,templateJson.CONDITIONID) ;
+		}
+
+		//初始化图片
+		var url0 = templateJson.URL0 ;
+		var url1 = templateJson.URL1 ;
+		var url2 = templateJson.URL2 ;
+		var url3 = templateJson.URL3 ;
+		var url4 = templateJson.URL4 ;
+
+		if( url0 ){
+			$("[name='imgurl[0]']").val(url0) ;
+			$("[name='imgurl[0]']").prev().attr("src",url0) ;
 		}
 		
 	}

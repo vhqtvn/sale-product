@@ -522,7 +522,7 @@ jQuery.dataservice = function(commandName , params , callback , reqParams ){
 	reqParams 			= reqParams||{} ;
 	reqParams.data 		= params ;
 	reqParams.type		= 'post' ;
-	reqParams.noblock 	= false ;//reqParams.noblock === false?false:true ;
+	reqParams.noblock 	= reqParams.noblock === true?true:false ;
 	reqParams.url 		= Config.contextPath+"/index.php/form/dataService" ;
 	reqParams.dataType 	= commandName?'json':"text" ;
 	//alert(reqParams.url);

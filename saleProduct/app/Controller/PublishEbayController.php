@@ -140,7 +140,25 @@ class PublishEbayController extends AppController {
 			}
 		}
 		
-		debug($data) ;
+		
+		$itemSpecials = "" ;
+		if(isset($data['itemspecials'])){
+			$itemSpecials = $data['itemspecials'] ;
+			$vals = array() ;
+			foreach ( $itemSpecials as $name ){
+				$selectKey = "itemspecial_".str_replace(" ", "_", $name) ;
+				$inputKey  = "itemspecial_".str_replace(" ", "_", $name)."_input" ;
+				$val = "" ;
+				if( isset( $data[$inputKey] ) && !empty( $data[$inputKey] ) ){
+					$val = $data[$inputKey] ;
+				}else if( isset( $data[$selectKey] ) ){
+					$val = $data[$selectKey] ;
+				}
+				$vals[$name] = $val ;
+			}
+			$itemSpecials = json_encode($vals) ;
+		}
+		$data['itemspecials'] = $itemSpecials ;
 		
 		//format parymethod
 		$data['PAYMENTMETHODS1'] = $pms ;
@@ -187,6 +205,8 @@ class PublishEbayController extends AppController {
 		$data['SD_SALESTAXPERCENT'] = $data['shippingdetails']['SalesTax']['SalesTaxPercent'] ;
 		$data['SD_SHIPPINGTYPE'] = $data['shippingdetails']['ShippingType'] ;
 		
+		$data['itemdescription'] =  $data['itemdescription'] ;
+		
 		$index = 0 ;
 		foreach( $data['imgurl'] as $url ){
 			$data['URL'.$index] = $url ;
@@ -194,6 +214,9 @@ class PublishEbayController extends AppController {
 		}
 		
 		$data['guid'] = $this->create_guid() ;
+		
+		debug($data) ;
+		
 		//insert into db
 		if( empty($data['id']) ){
 			$this->Utils->exeSql("sql_ebay_template_insert", $data) ;
@@ -253,6 +276,7 @@ class PublishEbayController extends AppController {
 				</ShippingServiceOptions>" ;
 		}
 		
+
 		if( !empty($data['SD_SSO3_SHIPPINGSERVICE']) ){
 			$xml .= "
 					<ShippingServiceOptions>
@@ -318,6 +342,23 @@ class PublishEbayController extends AppController {
 			$xml .= "	   <SubTitle><![CDATA[".$data['SUBTITLE']."]]></SubTitle>";
 		}
 		
+		if( !empty($data['ITEM_SPECIALS']) ){
+			$xml .= "
+					<ItemSpecifics>" ;
+			$itemspecials = json_decode( $data['ITEM_SPECIALS'] ) ;
+			$objectVars = get_object_vars($itemspecials);
+			foreach( $objectVars as $key=>$value ){
+				if( !empty($value) ){
+					$xml .= "
+					<NameValueList>
+					<Name>$key</Name>
+					<Value>$value</Value>
+					</NameValueList>" ;
+				}
+				}
+				$xml .= "		</ItemSpecifics>" ;
+		}
+		
 		$xml .= "
 			  <DispatchTimeMax>".$data['DISPATCHTIME']."</DispatchTimeMax>
 			    <ReturnPolicy>
@@ -329,7 +370,7 @@ class PublishEbayController extends AppController {
 			    </ReturnPolicy>
 			</Item>
 		</".$tagName.">" ;
-			//echo 1111111;
+	
 		$params = http_build_query(  array("xml"=>$xml) ) ;
 			
 		$baseUrl = $this->Utils->buildUrlByAccountId($data['ACCOUNT_ID'], "ebay/doItem") ;

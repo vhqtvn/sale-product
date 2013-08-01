@@ -21,7 +21,7 @@ $(function(){
 				asyn : true, //异步
 				rootId  : 'root',
 				rootText : '产品分类',
-				CommandName : 'sqlId:sql_ebay_category_list',
+				CommandName : 'sqlId:sql_saleproduct_categorytree',
 				recordFormat:true,
 				params : {
 				}

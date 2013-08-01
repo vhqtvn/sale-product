@@ -257,13 +257,18 @@ class AppModel extends Model {
 		
 		public function exeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
+			
 			$sql = $this->getSql($sql,$query) ;
+			
+			//echo $sql ;
+			//return $sql ;
 		//	echo $sql ;
 			return $this->query($sql) ;
 		}
 		
 		public function getExeSql($sql , $query){
 			$sql = $this->getDbSql($sql) ;
+			
 			$sql = $this->getSql($sql,$query) ;
 			//echo $sql ;
 			return $sql ;
@@ -348,16 +353,16 @@ class AppModel extends Model {
 	    								$kValue = $query[$key] ;
 	    								//格式化$kValue,防止sql特殊字符
 	    								$kValue = str_replace("'","\'",$kValue);
-	    								if( $this->is_utf8($kValue) ){
+	    								//if( $this->is_utf8($kValue) ){
 	    									//
-	    								}else{
-	    									$kValue = utf8_encode($kValue) ;
-	    								}
+	    								//}else{
+	    								//	$kValue = utf8_encode($kValue) ;
+	    								//}
 	    								if(empty($kValue) && $kValue != '0'){
 	    									$kValue = $defaultValue ;
 	    								}
 
-	    								$clause .=  $kValue ;
+	    								$clause .=mysql_escape_string($kValue) ;
 	    								$isTrue = true ;
 	    							}else{
 	    								$isTrue = false ;
