@@ -243,7 +243,11 @@
 			<th style="text-algin:center;"><?php echo $title ;?></th>
 			<th style="text-algin:center;"><?php echo $pd['QUALIFIED_PRODUCTS_NUM'] ;?></th>
 			<th style="text-algin:center;"><?php echo $pd['BAD_PRODUCTS_NUM'] ;?></th>
-			<th style="text-algin:center;"><?php echo $pd['WAREHOUSE_TIME'] ;?></th>
+			<th style="text-algin:center;"><?php if( $pd['WAREHOUSE_TIME'] == "0000-00-00 00:00:00"){
+														echo "";
+													} else{
+														echo $pd['WAREHOUSE_TIME'];
+													};?></th>
 			<th style="text-algin:center;"><?php echo $pd['WARHOUSE_USERNAME'] ;?></th>
 		</tr>
 	<?php } ;?>

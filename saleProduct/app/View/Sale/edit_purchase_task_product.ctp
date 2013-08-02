@@ -369,7 +369,12 @@
 										<td><input id="warehouseTime" class="60-input input"  data-options="{'isShowWeek':'true','dateFmt':'yyyy-MM-dd HH:mm:ss'}"
 											  type="text"  data-widget="calendar"
 													<?php echo $status>=60?"data-validator='required'":"" ?>
-													value='<?php echo $taskProduct['WAREHOUSE_TIME'] ;?>' /></td>
+													value='<?php 
+													if( $taskProduct['WAREHOUSE_TIME'] == "0000-00-00 00:00:00"){
+														echo "";
+													} else{
+														echo $taskProduct['WAREHOUSE_TIME'];
+													};?>' /></td>
 									</tr>
 								</tbody>
 						</table>
