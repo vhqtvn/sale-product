@@ -66,6 +66,7 @@
 				<form action="<?php echo $contextPath;?>/publishEbay/saveTemplate" method="post" name="m" id="m" target="_self"   data-widget="validator">
 					<input type="hidden" id="currency" name="currency" value="USD" />
 					<input type="hidden" id="id" name="id" value="" class="val_ID" />
+					<input type="hidden" id="accountId" name="accountId" value="<?php echo $accountId;?>"  />
 					<table class="ebay_table" id="pos_site">
 						<caption>刊登平台与细节</caption>
 						<tbody>
