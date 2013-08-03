@@ -215,8 +215,6 @@ class PublishEbayController extends AppController {
 		
 		$data['guid'] = $this->create_guid() ;
 		
-		debug($data) ;
-		
 		//insert into db
 		if( empty($data['id']) ){
 			$this->Utils->exeSql("sql_ebay_template_insert", $data) ;
@@ -376,6 +374,19 @@ class PublishEbayController extends AppController {
 		$baseUrl = $this->Utils->buildUrlByAccountId($data['ACCOUNT_ID'], "ebay/doItem") ;
 		//debug( $xml ) ;
 		$return = $this->Post($baseUrl."/".$data['LISTINGTYPE'] , $params);
+		
+		//保存发布历史
+		$user =  $this->getCookUser() ;
+		$loginId = $user["LOGIN_ID"] ;
+		
+		$params = array() ;
+		$params['guid'] = $this->create_guid() ;
+		$params['result'] = $return ;
+		$params['detail'] = json_encode($data) ;
+		$params['loginId'] = $loginId ;
+		$params['templateId'] = $templateId ;
+		
+		$this->Utils->exeSql("sql_ebay_publish_history_insert", $params) ;
 	
 		$this->response->type("json") ;
 		$this->response->body($return)   ;

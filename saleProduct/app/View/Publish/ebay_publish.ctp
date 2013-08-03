@@ -223,7 +223,7 @@
 								</th>
 								<td>
 									<div id="buyitnowprice_ucurrencyinput">
-										<input type="text" class="pinput" name="buyitnowprice" class="val_BUYITNOWPRICE"
+										<input type="text" class="pinput val_BUYITNOWPRICE" name="buyitnowprice"
 											id="buyitnowprice" value="0.0" size="6"/> USD
 											&nbsp;&nbsp; <span class="upinput" style="display: none;">
 												<input type="text" value="0" size="6"/> CNY 
@@ -1051,7 +1051,7 @@
 							</tr>
 							<tr>
 								<th>收款Paypal帐号</th>
-								<td><input size="60" name="paypal" value=""></td>
+								<td><input size="60" name="paypal" value=""  class="val_PAYPAL"></td>
 							</tr>
 							<tr>
 								<th>立即付款</th>

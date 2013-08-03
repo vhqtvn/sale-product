@@ -6,11 +6,12 @@ $(function(){
 
 	$(".grid-content").llygrid({
 		columns:[
-			{align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
+			{align:"center",key:"ID",label:"操作", width:"15%",format:function(val,record){
 					var html = [] ;
 					html.push("<a href='#' class='action update' val='"+val+"'>修改</a>&nbsp;") ;
 					html.push("<a href='#' class='action del' val='"+val+"'>删除</a>&nbsp;") ;
-					html.push("<a href='#' class='action publish' val='"+val+"'>刊登</a>") ;
+					html.push("<a href='#' class='action publish' val='"+val+"'>刊登</a>&nbsp;") ;
+					html.push("<a href='#' class='action publish-history' val='"+val+"'>刊登历史</a>") ;
 
 					return html.join("") ;
 			}},
@@ -47,18 +48,24 @@ $(function(){
 			 }) ;
 			 
 			 $(".publish").click(function(){
-				 var record = $(this).closest("tr").data("record") ;
-				 $.request({
-					 url:contextPath+"/publishEbay/doPublish/"+record.ID,
-					 success:function(result){
-						 if(result.isSuccess==='true'){
-							 alert("刊登成功！") ;
-						 }else{
-							 alert("刊登失败："+result.message) ;
+				 if(window.confirm("确认刊登吗？")){
+					 var record = $(this).closest("tr").data("record") ;
+					 $.request({
+						 url:contextPath+"/publishEbay/doPublish/"+record.ID,
+						 success:function(result){
+							 if(result.isSuccess==='true'){
+								 alert("刊登成功！") ;
+							 }else{
+								 alert("刊登失败："+result.message) ;
+							 }
 						 }
-					 }
-				 }) ;
-				
+					 }) ;
+				 }
+			 }) ;
+			 
+			 $(".publish-history").click(function(){
+				 var record = $(this).closest("tr").data("record") ;
+				 openCenterWindow(contextPath+"/page/forward/Publish.ebay_publish_history/"+record.ID,800,650) ;
 			 }) ;
 		 }
 	}) ;

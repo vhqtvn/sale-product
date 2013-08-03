@@ -24,6 +24,33 @@
    		select * from sc_ebay_template where account_id = '{@#accountId#}'
    </entry>
    
+   <entry key="sql_ebay_publish_history_list">
+  	select t.*,
+  			(select su.name from sc_user su where su.login_id = t.publisher) as PUBLISHER_NAME
+  	 from sc_ebay_publish_history t
+  	where t.template_id = '{@#templateId#}'
+  	order by t.publish_time desc
+	</entry>
+   
+   <entry key="sql_ebay_publish_history_insert">
+   INSERT INTO sc_ebay_publish_history 
+		(ID, 
+		PUBLISH_TIME, 
+		PUBLISH_DETAIL, 
+		PUBLISH_RESULT, 
+		PUBLISHER,
+		TEMPLATE_ID
+		)
+		VALUES
+		('{@#guid#}', 
+		NOW(), 
+		'{@#detail#}', 
+		'{@#result#}', 
+		'{@#loginId#}',
+		'{@#templateId#}'
+		)
+	</entry>
+		   
    <entry key="sql_ebay_category_list">
    		select sec.category_id as id , sec.name as text,sec.fullname , sec.parent_id, 
    		(select 1 from sc_ebay_category s1 where s1.parent_id = sec.category_id limit 0,1 ) as hasChildren 
