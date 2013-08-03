@@ -255,6 +255,81 @@
 						) t , sc_tasking_type WHERE sc_tasking_type.code = t.task_type ORDER BY t.type , t.END_TIME DESC
     </entry>
     
+    <entry key="sql_account_insert">
+   			 INSERT INTO sc_amazon_account 
+						(
+						NAME, 
+						URL, 
+						CODE,
+						DOMAIN,  
+						CONTEXT,
+						CREATOR, 
+						CREATE_TIME, 
+						AWS_ACCESS_KEY_ID, 
+						AWS_SECRET_ACCESS_KEY, 
+						APPLICATION_NAME, 
+						APPLICATION_VERSION, 
+						PLATFORM_ID,
+						MERCHANT_ID, 
+						MARKETPLACE_ID, 
+						MERCHANT_IDENTIFIER,
+						EBAY_APP_MODE, 
+						EBAY_SITE_ID, 
+						EBAY_DEV_ID, 
+						EBAY_APP_ID, 
+						EBAY_CERT_ID, 
+						EBAY_TOKEN
+						)
+						VALUES
+						(
+						'{@#NAME#}', 
+						'{@#URL#}', 
+						'{@#CODE#}', 
+						'{@#DOMAIN#}', 
+						'{@#CONTEXT#}', 
+						'{@#loginId#}', 
+						NOW(), 
+						'{@#AWS_ACCESS_KEY_ID#}', 
+						'{@#AWS_SECRET_ACCESS_KEY#}', 
+						'{@#APPLICATION_NAME#}', 
+						'{@#APPLICATION_VERSION#}', 
+						'{@#PLATFORM_ID#}', 
+						'{@#MERCHANT_ID#}', 
+						'{@#MARKETPLACE_ID#}', 
+						'{@#MERCHANT_IDENTIFIER#}',
+							'{@#EBAY_APP_MODE#}', 
+							'{@#EBAY_SITE_ID#}', 
+							'{@#EBAY_DEV_ID#}', 
+							'{@#EBAY_APP_ID#}', 
+							'{@#EBAY_CERT_ID#}', 
+							'{@#EBAY_TOKEN#}'
+						);
+    </entry>
     
+    <entry key="sql_account_update">
+    UPDATE  sc_amazon_account 
+				SET
+				NAME = '{@#NAME#}' , 
+				URL = '{@#URL#}' , 
+				CODE = '{@#CODE#}' ,
+				DOMAIN = '{@#DOMAIN#}' ,  
+				CONTEXT = '{@#CONTEXT#}' ,  
+				AWS_ACCESS_KEY_ID = '{@#AWS_ACCESS_KEY_ID#}' , 
+				AWS_SECRET_ACCESS_KEY = '{@#AWS_SECRET_ACCESS_KEY#}' , 
+				APPLICATION_NAME = '{@#APPLICATION_NAME#}' , 
+				APPLICATION_VERSION = '{@#APPLICATION_VERSION#}' , 
+				PLATFORM_ID = '{@#PLATFORM_ID#}' , 
+				MERCHANT_ID = '{@#MERCHANT_ID#}' , 
+				MERCHANT_IDENTIFIER = '{@#MERCHANT_IDENTIFIER#}' , 
+				MARKETPLACE_ID = '{@#MARKETPLACE_ID#}',
+				EBAY_APP_MODE = '{@#EBAY_APP_MODE#}' , 
+				EBAY_SITE_ID = '{@#EBAY_SITE_ID#}' , 
+				EBAY_DEV_ID = '{@#EBAY_DEV_ID#}' , 
+				EBAY_APP_ID = '{@#EBAY_APP_ID#}' , 
+				EBAY_CERT_ID = '{@#EBAY_CERT_ID#}' , 
+				EBAY_TOKEN = '{@#EBAY_TOKEN#}'
+				WHERE
+				ID = '{@#ID#}'
+   </entry>
     
 </properties>

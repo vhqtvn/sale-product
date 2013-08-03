@@ -183,46 +183,9 @@ class Amazonaccount extends AppModel {
 	public function saveAccount($data,$user){
 		
 		$loginId = $user["LOGIN_ID"] ;
+		$data['loginId'] = $loginId ;
 		if( empty($data["ID"]) ){
-			$sql = "
-					INSERT INTO sc_amazon_account 
-						(
-						NAME, 
-						URL, 
-						CODE,
-						DOMAIN,  
-						CONTEXT,
-						CREATOR, 
-						CREATE_TIME, 
-						AWS_ACCESS_KEY_ID, 
-						AWS_SECRET_ACCESS_KEY, 
-						APPLICATION_NAME, 
-						APPLICATION_VERSION, 
-						PLATFORM_ID,
-						MERCHANT_ID, 
-						MARKETPLACE_ID, 
-						MERCHANT_IDENTIFIER
-						)
-						VALUES
-						(
-						'".$data['NAME']."', 
-						'".$data['URL']."', 
-						'".$data['CODE']."', 
-						'".$data['DOMAIN']."', 
-						'".$data['CONTEXT']."', 
-						'".$loginId."', 
-						NOW(), 
-						'".$data['AWS_ACCESS_KEY_ID']."', 
-						'".$data['AWS_SECRET_ACCESS_KEY']."', 
-						'".$data['APPLICATION_NAME']."', 
-						'".$data['APPLICATION_VERSION']."', 
-						'".$data['PLATFORM_ID']."', 
-						'".$data['MERCHANT_ID']."', 
-						'".$data['MARKETPLACE_ID']."', 
-						'".$data['MERCHANT_IDENTIFIER']."'
-						);
-					" ;
-			$this->query($sql) ;
+			$this->exeSql("sql_account_insert", $data) ;
 		}else{
 			$sql = "UPDATE  sc_amazon_account 
 				SET

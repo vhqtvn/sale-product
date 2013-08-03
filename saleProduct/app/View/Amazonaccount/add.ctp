@@ -41,6 +41,10 @@
 		.table th, .table td{
 			padding:5px 8px;
 		}
+		
+		.amazon-tbody ,.ebay-tbody{
+			display:none;
+		}
    </style>
 
    <script>
@@ -49,6 +53,7 @@
 			$("button").click(function(){
 				
 				if( !$.validation.validate('#personForm').errorInfo ) {
+					$.block() ;
 					var json = $("#personForm").toJson() ;
 					json.CODE = json.CODE||json.MERCHANT_ID ;
 					$.ajax({
@@ -58,13 +63,26 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							//window.opener.location.reload() ;
-							//window.close() ;
+							$.unblock() ;
+							$.dialogReturnValue(true) ;
+							window.close() ;
 						}
 					}); 
 				};
-			})
-		})
+			});
+
+			$("#PLATFORM_ID").change(function(){
+				var text = $(this).find("option:selected").text() ;
+				var _t = text.toLowerCase() ;
+				if( _t.indexOf("ebay") >=0  ){
+					$(".amazon-tbody").hide() ;
+					$(".ebay-tbody").show() ;
+				}else{
+					$(".ebay-tbody").hide() ;
+					$(".amazon-tbody").show() ;
+				}
+			}).trigger("change") ;
+		}) ;
    </script>
 
 </head>
@@ -89,12 +107,23 @@
 						<table class="form-table " >
 							<tbody>										   
 								<tr>
-									<th style="width:170px;">账户名称：</th><td colspan="3"><input data-validator="required" type="text" id="NAME" value="<?php echo $account[0]['sc_amazon_account']['NAME'];?>"/></td>
+									<th style="width:170px;">账户名称：</th>
+									<td colspan="3"><input data-validator="required" type="text" id="NAME" value="<?php echo $account[0]['sc_amazon_account']['NAME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>操作主机：</th><td><input type="text"  id="DOMAIN" value="<?php echo $domain;?>"/></td>
+									<th>定时任务上下文：</th><td><input type="text"  id="CONTEXT" value="<?php echo $account[0]['sc_amazon_account']['CONTEXT'];?>"/></td>
 								</tr>
 								<tr>
 									<th>所属平台：</th>
 									<td colspan="3">
-									<select id="PLATFORM_ID"    style="width:97%;" class="input 10-input" >
+									<select id="PLATFORM_ID"    style="width:97%;" class="input " 
+										<?php 
+										if( !empty($account[0]['sc_amazon_account']['ID']) ){
+											echo "disabled";
+										}
+										?>
+									>
 										<option value="">--选择平台--</option>
 										<?php 
 											$SqlUtils  = ClassRegistry::init("SqlUtils") ;
@@ -111,12 +140,11 @@
 										</select>
 									</td>
 								</tr>
+							</tbody>
+							<tbody class="amazon-tbody">
 								<tr>
-									<th>操作主机：</th><td><input type="text"  id="DOMAIN" value="<?php echo $domain;?>"/></td>
-									<th>定时任务上下文：</th><td><input type="text"  id="CONTEXT" value="<?php echo $account[0]['sc_amazon_account']['CONTEXT'];?>"/></td>
-								</tr>
-								<tr>
-									<th>APPLICATION_NAME：</th><td colspan="3"><input type="text" id="APPLICATION_NAME" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_NAME'];?>"/></td>
+									<th>APPLICATION_NAME：</th>
+									<td colspan="3"><input type="text" id="APPLICATION_NAME" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_NAME'];?>"/></td>
 								</tr>
 								<tr>
 									<th>AWS_ACCESS_KEY_ID：</th><td colspan="3"><input type="text" id="AWS_ACCESS_KEY_ID" value="<?php echo $account[0]['sc_amazon_account']['AWS_ACCESS_KEY_ID'];?>"/></td>
@@ -132,6 +160,49 @@
 								<tr>
 									<th>MARKETPLACE_ID：</th><td><input type="text" id="MARKETPLACE_ID" value="<?php echo $account[0]['sc_amazon_account']['MARKETPLACE_ID'];?>"/></td>							
 									<th>MERCHANT_IDENTIFIER：</th><td><input type="text" id="MERCHANT_IDENTIFIER" value="<?php echo $account[0]['sc_amazon_account']['MERCHANT_IDENTIFIER'];?>"/></td>
+								</tr>
+							</tbody>
+							<tbody class="ebay-tbody">
+								<tr>
+									<th>EBAY_APP_MODE：</th>
+									<td colspan=3>
+									<select  id="EBAY_APP_MODE" >
+										<option value="1"  <?php echo $account[0]['sc_amazon_account']['EBAY_APP_MODE']==1?"selected":"";?>>测试环境（Sandbox）</option>
+										<option value="0" <?php echo $account[0]['sc_amazon_account']['EBAY_APP_MODE']==0?"selected":"";?>>正式环境（Product）</option>
+									</select>
+									</td>
+								</tr>
+								<tr>
+									<th>EBAY_SITE_ID：</th>
+									<td colspan=3>
+									<select  id="EBAY_SITE_ID" >
+										<option value="0" selected>美国</option>
+									</select>
+									</td>
+								</tr>
+								<tr>
+									<th>EBAY_DEV_ID：</th>
+									<td colspan=3>
+									<input type="text" id="EBAY_DEV_ID" value="<?php echo $account[0]['sc_amazon_account']['EBAY_DEV_ID'];?>"/>
+									</td>
+								</tr>
+								<tr>
+									<th>EBAY_APP_ID：</th>
+									<td colspan=3>
+									<input type="text" id="EBAY_APP_ID" value="<?php echo $account[0]['sc_amazon_account']['EBAY_APP_ID'];?>"/>
+									</td>
+								</tr>
+								<tr>
+									<th>EBAY_CERT_ID：</th>
+									<td colspan=3>
+									<input type="text" id="EBAY_CERT_ID" value="<?php echo $account[0]['sc_amazon_account']['EBAY_CERT_ID'];?>"/>
+									</td>
+								</tr>
+								<tr>
+									<th>EBAY_TOKEN：</th>
+									<td colspan=3>
+									<input type="text" id="EBAY_TOKEN" value="<?php echo $account[0]['sc_amazon_account']['EBAY_TOKEN'];?>"/>
+									</td>
 								</tr>
 							</tbody>
 						</table>

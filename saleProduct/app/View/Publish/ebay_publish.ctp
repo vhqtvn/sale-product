@@ -1342,7 +1342,7 @@
 		     });
 	  }
 	
-	var templateJson = <?php echo $templateJson;?> ;
+	var templateJson = <?php echo $templateJson;?>||{}  ;
 
 	if( templateJson ){
 		for(var o in templateJson ){

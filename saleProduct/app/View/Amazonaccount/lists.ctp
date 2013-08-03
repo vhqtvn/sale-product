@@ -53,12 +53,20 @@
 			
 
 			$(".register").click(function(){
-				openCenterWindow(contextPath+"/amazonaccount/add",750,530) ;
+				openCenterWindow(contextPath+"/amazonaccount/add",750,530,function(win,re){
+					if(re){
+						$(".grid-content").llygrid("reload") ;
+					}
+				}) ;
 			}) ;
 			
 			$(".edit-account").live("click",function(){
 				var val = $(this).attr("val") ;
-				openCenterWindow(contextPath+"/amazonaccount/add/"+val,750,530) ;
+				openCenterWindow(contextPath+"/amazonaccount/add/"+val,750,530,function(win,re){
+					if(re){
+						$(".grid-content").llygrid("reload",{},true) ;
+					}
+				}) ;
 			}) ;
 		
    	 });
