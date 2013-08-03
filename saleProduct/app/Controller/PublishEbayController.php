@@ -371,7 +371,7 @@ class PublishEbayController extends AppController {
 	
 		$params = http_build_query(  array("xml"=>$xml) ) ;
 			
-		$baseUrl = $this->Utils->buildUrlByAccountId($data['ACCOUNT_ID'], "ebay/doItem") ;
+		$baseUrl = $this->Utils->buildUrlByAccountId($data['ACCOUNT_ID'], "eBay/doItem") ;
 		//debug( $xml ) ;
 		$return = $this->Post($baseUrl."/".$data['LISTINGTYPE'] , $params);
 		
