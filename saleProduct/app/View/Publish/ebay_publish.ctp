@@ -63,7 +63,7 @@
 
 		<div class="bottom694 span-24 last" style="width: 100%">
 			<div class="content">
-				<form action="<?php echo $contextPath;?>/publishEbay/saveTemplate" method="post" name="m" id="m" target="_self"   data-widget="validator">
+				<form action="<?php echo $contextPath;?>/publishEbay/saveTemplate" method="post" name="m" id="m" target="processFrame"   data-widget="validator">
 					<input type="hidden" id="currency" name="currency" value="USD" />
 					<input type="hidden" id="id" name="id" value="" class="val_ID" />
 					<input type="hidden" id="accountId" name="accountId" value="<?php echo $accountId;?>"  />
@@ -143,7 +143,7 @@
 													size="3" disabled="disabled" /></td>
 												<td width="50"><strong>LotSize：</strong></td>
 												<td width="400"><input type="text" name="lotsize" class="val_LOTSIZE"
-													value="0" size="3"/>(每数量1中所包含的小单位 ) </td>
+													value="0" size="3"/>(每数量1中所包含的小单位，整数 ) </td>
 											</tr>
 										</tbody>
 									</table>
@@ -187,7 +187,7 @@
 											<tr>
 												<td>
 													<div id="startprice_ucurrencyinput">
-														<input type="text" class="pinput" name="startprice" class="val_STARTPRICE"
+														<input type="text" class="pinput val_STARTPRICE" name="startprice"
 															id="startprice" value="0.0" size="6"/> USD
 															&nbsp;&nbsp; <span class="upinput" style="display: none;">
 																<input type="text" value="0" size="6"/> CNY 
@@ -202,7 +202,7 @@
 												</td>
 												<td width="230">
 													<div id="reserveprice_ucurrencyinput">
-														<input type="text" class="pinput" name="reserveprice" class="val_RESERVEPRICE"
+														<input type="text" class="pinput val_RESERVEPRICE" name="reserveprice" 
 															id="reserveprice" value="0.0" size="6"/> USD
 															&nbsp;&nbsp; <span class="upinput" style="display: none;">
 																<input type="text" value="0" size="6"/> CNY 
@@ -235,12 +235,14 @@
 												</script>
 								</td>
 							</tr>
+							<!-- 
 							<tr class="auction_only" style="">
 								<th>SecondOffer</th>
 								<td>&gt;=<input type="text" name="secondoffer" size="5" class="val_SECONDOFFER"
 									value="0.0"/>USD
 										(系统将自动在拍卖贴结束后,为拍卖者价格超过您设置价格的买家自动发送secondoffer)</td>
 							</tr>
+							 -->
 						</tbody>
 					</table>
 					<table class="ebay_table" id="pos_desc">
@@ -1001,50 +1003,50 @@
 							<tr>
 								<th class="lh">收款方式</th>
 								<td><span style="white-space: nowrap;"><input
-										type="checkbox" name="paymentmethods[]"
+										type="checkbox" name="paymentmethods[]"  class="paymentmethods"
 										id="paymentmethods_259" value="AmEx"> <label
 											id="paymentmethods_259_label" name="paymentmethods_259_label"
 											for="paymentmethods_259" class="">American Express</label></span>
 									&nbsp; &nbsp; <span style="white-space: nowrap;"><input
-										type="checkbox" name="paymentmethods[]"
+										type="checkbox" name="paymentmethods[]" class="paymentmethods"
 										id="paymentmethods_260" value="CashOnPickup"> <label
 											id="paymentmethods_260_label" name="paymentmethods_260_label"
 											for="paymentmethods_260" class="">Cash On Pickup
 												Accepted</label></span> &nbsp; &nbsp; <span style="white-space: nowrap;"><input
-										type="checkbox" name="paymentmethods[]"
+										type="checkbox" name="paymentmethods[]" class="paymentmethods"
 										id="paymentmethods_261" value="Discover"> <label
 											id="paymentmethods_261_label" name="paymentmethods_261_label"
 											for="paymentmethods_261" class="">Discover Card</label></span>
 									&nbsp; &nbsp; <span style="white-space: nowrap;"><input
-										type="checkbox" name="paymentmethods[]"
+										type="checkbox" name="paymentmethods[]" class="paymentmethods"
 										id="paymentmethods_262" value="IntegratedMerchantCreditCard">
 											<label id="paymentmethods_262_label"
 											name="paymentmethods_262_label" for="paymentmethods_262"
 											class="">Integrated Merchant Credit Card</label></span> &nbsp;
-									&nbsp; <span style="white-space: nowrap;"><input
+									&nbsp; <span style="white-space: nowrap;"><input class="paymentmethods"
 										type="checkbox" name="paymentmethods[]"
 										id="paymentmethods_263" value="MOCC"> <label
 											id="paymentmethods_263_label" name="paymentmethods_263_label"
 											for="paymentmethods_263" class="">Money order /
 												Cashier's check</label></span> &nbsp; &nbsp; <span
-									style="white-space: nowrap;"><input type="checkbox"
+									style="white-space: nowrap;"><input type="checkbox" class="paymentmethods"
 										name="paymentmethods[]" id="paymentmethods_264" value="PayPal"
 										checked="checked"> <label
 											id="paymentmethods_264_label" name="paymentmethods_264_label"
 											for="paymentmethods_264" class="">PayPal</label></span> &nbsp;
-									&nbsp; <span style="white-space: nowrap;"><input
+									&nbsp; <span style="white-space: nowrap;"><input class="paymentmethods"
 										type="checkbox" name="paymentmethods[]"
 										id="paymentmethods_265" value="PaymentSeeDescription">
 											<label id="paymentmethods_265_label"
 											name="paymentmethods_265_label" for="paymentmethods_265"
 											class="">Other - See item description</label></span> &nbsp; &nbsp; <span
-									style="white-space: nowrap;"><input type="checkbox"
+									style="white-space: nowrap;"><input type="checkbox" class="paymentmethods"
 										name="paymentmethods[]" id="paymentmethods_266"
 										value="PersonalCheck"> <label
 											id="paymentmethods_266_label" name="paymentmethods_266_label"
 											for="paymentmethods_266" class="">Personal check</label></span>
 									&nbsp; &nbsp; <span style="white-space: nowrap;"><input
-										type="checkbox" name="paymentmethods[]"
+										type="checkbox" name="paymentmethods[]" class="paymentmethods"
 										id="paymentmethods_267" value="VisaMC"> <label
 											id="paymentmethods_267_label" name="paymentmethods_267_label"
 											for="paymentmethods_267" class="">Visa or Master Card</label></span>
@@ -1066,30 +1068,6 @@
 					<table class="ebay_table" id="pos_other">
 						<caption>其他</caption>
 						<tbody>
-							<tr>
-								<th>橱窗展示(Gallery)图片 <span class="lableebayfee"
-									title="部分选项 需付费">($)</span></th>
-								<td><span style="white-space: nowrap;"><input
-										type="radio" name="gallery" id="gallery_1" value="0"
-										title="部分选项 需付费" checked="checked"> <label
-											id="gallery_1_label" name="gallery_1_label" for="gallery_1"
-											class="">不使用</label></span> &nbsp; &nbsp; <span
-									style="white-space: nowrap;"><input type="radio"
-										name="gallery" id="gallery_2" value="Featured"
-										title="部分选项 需付费"> <label id="gallery_2_label"
-											name="gallery_2_label" for="gallery_2" class="">Featured</label></span>
-									&nbsp; &nbsp; <span style="white-space: nowrap;"><input
-										type="radio" name="gallery" id="gallery_3" value="Gallery"
-										title="部分选项 需付费"> <label id="gallery_3_label"
-											name="gallery_3_label" for="gallery_3" class="">Gallery</label></span>
-									&nbsp; &nbsp; <span style="white-space: nowrap;"><input
-										type="radio" name="gallery" id="gallery_4" value="Plus"
-										title="部分选项 需付费"> <label id="gallery_4_label"
-											name="gallery_4_label" for="gallery_4" class="">Plus</label></span>
-									&nbsp; &nbsp; <a
-									href="http://www.ibay365.com/index.php/muban/editmuban#"
-									class="cebayfee">查看Ebay费用</a></td>
-							</tr>
 							<tr>
 								<th class="lh">计数器</th>
 								<td id="hitcounter"><span style="white-space: nowrap;"><input
@@ -1114,13 +1092,14 @@
 							<tr>
 								<th>样式<span class="lableebayfee">($)</span></th>
 								<td><span style="white-space: nowrap;"><input
-										type="checkbox" name="listingenhancement[]"
+										type="checkbox" name="listingenhancement[]"   class="listingenhancement"
 										id="listingenhancement_268" value="BoldTitle"> <label
 											id="listingenhancement_268_label"
 											name="listingenhancement_268_label"
 											for="listingenhancement_268" class="">BoldTitle</label></span>
 									&nbsp; &nbsp; <a
-									href="http://www.ibay365.com/index.php/muban/editmuban#"
+									href="http://pages.ebay.com/help/sell/fees.html"
+									target="_blank"
 									class="cebayfee">查看Ebay费用</a></td>
 							</tr>
 							<tr>
@@ -1138,16 +1117,7 @@
 							</tr>
 							<tr>
 								<th class="lh">SKU(Custom Lable)</th>
-								<td><input name="sku" id="sku" value=""> <input
-										type="checkbox"
-										onclick="if(!$(this).attr('checked')){$('#sku').val($('#bindproductsku_val').val());$('#divbindconstantsku').hide();}else{if(!confirm('确认使用变量吗？')){$(this).attr('checked',''); return true;}$('#sku').val('{-BINDPRODUCTSKU-}');$('#divbindconstantsku').show();}"
-										id="isusevarsku">使用关联商品变量 <a class="helplink"
-											href="javascript:showVariables()"></a> <span
-											id="divbindconstantsku" class="divbindconstan"></span></td>
-							</tr>
-							<tr>
-								<th class="lh">备注</th>
-								<td><input type="text" name="desc" size="30" value=""></td>
+								<td><input name="sku" id="sku" value=""  class="val_SKU"> </td>
 							</tr>
 						</tbody>
 					</table>
@@ -1157,9 +1127,9 @@
 						<tbody>
 							<tr>
 								<th>买家必须拥有paypal账户</th>
-								<td>是 <input type="radio" value="true"
+								<td>是 <input type="radio" value="true"   class="BRD_LPPA"
 									name="buyerrequirementdetails[LinkedPayPalAccount]"> 否
-										<input type="radio" value="false"
+										<input type="radio" value="false"   class="BRD_LPPA"
 										name="buyerrequirementdetails[LinkedPayPalAccount]"></td>
 							</tr>
 							<tr>
@@ -1365,9 +1335,41 @@
 			$("[name='imgurl[0]']").val(url0) ;
 			$("[name='imgurl[0]']").prev().attr("src",url0) ;
 		}
+
+		if( templateJson.BRD_LPPA ){
+			$(".BRD_LPPA[value='"+templateJson.BRD_LPPA+"']").attr("checked",true) ;
+		}
+
+		if( templateJson.HITCOUNTER ){
+			$("[name='hitcounter'][value='"+templateJson.HITCOUNTER+"']").attr("checked",true) ;
+		}
+
+		if( templateJson.PRIVATELISTING ){
+			$("[name='privatelisting'][value='"+templateJson.PRIVATELISTING+"']").attr("checked",true) ;
+		}
+
+		if( templateJson.PRIVATELISTING ){
+			$("[name='privatelisting'][value='"+templateJson.PRIVATELISTING+"']").attr("checked",true) ;
+		}
+
+		if(templateJson.LISTINGENHANCEMENT){
+			$( templateJson.LISTINGENHANCEMENT.split(",") ).each(function(){
+				$(".listingenhancement[value='"+this+"']").attr("checked",true) ;
+			}) ;
+		}
+
+		if(templateJson.PAYMENTMETHODS1){
+			$( templateJson.PAYMENTMETHODS1.split(",") ).each(function(){
+				$(".paymentmethods[value='"+this+"']").attr("checked",true) ;
+			}) ;
+		}
+
+		if( templateJson.AUTOPAY === 'true' ){
+			$("[name='autopay']").attr("checked",true) ;
+		}
+
 		
 	}
-	
 	
 	var categoryTreeSelect = {
 			title:'Ebay产品分类选择',
@@ -1398,5 +1400,7 @@
 <?php
 		echo $this->Html->script('../ebay_publish_files/page');
 	?>
+	
+	<iframe  src="" style="display: none" name="processFrame" id="processFrame"/>
 </body>
 </html>

@@ -125,6 +125,7 @@
 	RP_RETURNSWITHINOPTION, 
 	RP_SHIPPINGCOSTPAIDBYOPTION, 
 	RP_DESCRIPTION, 
+	BRD_LPPA,
 	BRD_MBPV_COUNT, 
 	BRD_MBPV_PERIOD, 
 	BRD_MUIS_COUNT, 
@@ -159,7 +160,11 @@
 	URL2, 
 	URL3, 
 	URL4, 
-	URL5
+	URL5,
+	LISTINGENHANCEMENT,
+	PRIVATELISTING,
+	SKU,
+	AUTOPAY
 	)
 	VALUES
 	('{@#guid#}', 
@@ -203,6 +208,7 @@
 	'{@#RP_RETURNSWITHINOPTION#}', 
 	'{@#RP_SHIPPINGCOSTPAIDBYOPTION#}', 
 	'{@#RP_DESCRIPTION#}', 
+	'{@#BRD_LPPA#}',
 	'{@#BRD_MBPV_COUNT#}', 
 	'{@#BRD_MBPV_PERIOD#}', 
 	'{@#BRD_MUIS_COUNT#}', 
@@ -237,7 +243,11 @@
 	'{@#URL2#}', 
 	'{@#URL3#}', 
 	'{@#URL4#}', 
-	'{@#URL5#}'
+	'{@#URL5#}',
+	'{@#LISTINGENHANCEMENT#}',
+	'{@#privatelisting#}',
+	'{@#sku#}',
+	'{@#autopay#}'
 	)
 	</entry>
 	
@@ -283,6 +293,7 @@
 			RP_RETURNSWITHINOPTION = '{@#RP_RETURNSWITHINOPTION#}' , 
 			RP_SHIPPINGCOSTPAIDBYOPTION = '{@#RP_SHIPPINGCOSTPAIDBYOPTION#}' , 
 			RP_DESCRIPTION = '{@#RP_DESCRIPTION#}' , 
+			BRD_LPPA='{@#BRD_LPPA#}',
 			BRD_MBPV_COUNT = '{@#BRD_MBPV_COUNT#}' , 
 			BRD_MBPV_PERIOD = '{@#BRD_MBPV_PERIOD#}' , 
 			BRD_MUIS_COUNT = '{@#BRD_MUIS_COUNT#}' , 
@@ -317,8 +328,11 @@
 			URL2 = '{@#URL2#}' , 
 			URL3 = '{@#URL3#}' , 
 			URL4 = '{@#URL4#}' , 
-			URL5 = '{@#URL5#}'
-			
+			URL5 = '{@#URL5#}',
+			LISTINGENHANCEMENT='{@#LISTINGENHANCEMENT#}',
+			PRIVATELISTING='{@#privatelisting#}',
+			SKU='{@#sku#}',
+			AUTOPAY='{@#autopay#}'
 			WHERE
 			ID = '{@#id#}' 
 	</entry>

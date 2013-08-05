@@ -16,11 +16,11 @@ $(function(){
 					return html.join("") ;
 			}},
            	//{align:"center",key:"ID",label:"ID", width:"5%" },
-			
+			{align:"center",key:"ITEMTITLE",label:"标题",width:"25%",forzen:false,align:"left"},
            	{align:"center",key:"NO",label:"模板编号",width:"5%",forzen:false,align:"left"},
            	//{align:"center",key:"ACCOUNT_NAME",label:"EBAY账号",width:"15%"},
            	{align:"center",key:"SITE",label:"发布国家",width:"10%",format:{type:"json",content:{'0':"美国"}}},
-           	{align:"left",key:"LSITINGTYPE",label:"刊登方式",width:"20%",format:function(val,record){
+           	{align:"left",key:"LISTINGTYPE",label:"刊登方式",width:"10%",format:function(val,record){
            		var days = record.LISTINGDURATION ;
            		days = days.replace("Days_","")+"天" ;
            		if( val == 'Chinese' ){

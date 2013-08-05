@@ -139,7 +139,19 @@ class PublishEbayController extends AppController {
 				$pms .= ",".$pm ;
 			}
 		}
+		//format parymethod
+		$data['PAYMENTMETHODS1'] = $pms ;
 		
+		$pms1 = "" ;
+		foreach( $data['listingenhancement'] as $pm){
+			if( $pms1 == "" ){
+				$pms1 = $pm ;
+			}else{
+				$pms1 .= ",".$pm ;
+			}
+		}
+		//format parymethod
+		$data['LISTINGENHANCEMENT'] = $pms1 ;
 		
 		$itemSpecials = "" ;
 		if(isset($data['itemspecials'])){
@@ -160,14 +172,20 @@ class PublishEbayController extends AppController {
 		}
 		$data['itemspecials'] = $itemSpecials ;
 		
-		//format parymethod
-		$data['PAYMENTMETHODS1'] = $pms ;
+		
 		
 		$data['RP_RETURNSACCEPTEDOPTION'] = $data['return_policy']['ReturnsAcceptedOption'] ;
 		$data['RP_REUNDOPTION'] = $data['return_policy']['RefundOption'] ;
 		$data['RP_RETURNSWITHINOPTION'] = $data['return_policy']['ReturnsWithinOption'] ;
 		$data['RP_SHIPPINGCOSTPAIDBYOPTION'] = $data['return_policy']['ShippingCostPaidByOption'] ;
 		$data['RP_DESCRIPTION'] = $data['return_policy']['Description'] ;
+		
+		$data['BRD_LPPA'] = "" ;
+		
+		if( isset( $data['buyerrequirementdetails']['LinkedPayPalAccount'] ) ){
+			$data['BRD_LPPA'] = $data['buyerrequirementdetails']['LinkedPayPalAccount'];
+			//LinkedPayPalAccount
+		}
 		
 		$data['BRD_MBPV_COUNT'] = $data['buyerrequirementdetails']['MaximumBuyerPolicyViolations']['Count'] ;
 		$data['BRD_MBPV_PERIOD'] =  $data['buyerrequirementdetails']['MaximumBuyerPolicyViolations']['Period'] ;
@@ -207,6 +225,11 @@ class PublishEbayController extends AppController {
 		
 		$data['itemdescription'] =  $data['itemdescription'] ;
 		
+		//debug($data) ;
+		//return ;
+		
+		debug($data) ;
+		
 		$index = 0 ;
 		foreach( $data['imgurl'] as $url ){
 			$data['URL'.$index] = $url ;
@@ -222,8 +245,8 @@ class PublishEbayController extends AppController {
 			$this->Utils->exeSql("sql_ebay_template_update", $data) ;
 		}
 		
-		$this->response->type("text") ;
-		$this->response->body("success")   ;
+		$this->response->type("text/javascript") ;
+		$this->response->body("<script>window.top.location.reload()</script>")   ;
 		
 		return $this->response ;
 	}
@@ -251,7 +274,6 @@ class PublishEbayController extends AppController {
 				<ListingDuration><![CDATA[".$data['LISTINGDURATION']."]]></ListingDuration>
 			    <ListingType>".$data['LISTINGTYPE']."</ListingType>
 			    <Location><![CDATA[".$data['LOCATION']."]]></Location>
-			    <PaymentMethods>".$data['PAYMENTMETHODS1']."</PaymentMethods>
 			    <PayPalEmailAddress><![CDATA[".$data['PAYPAL']."]]></PayPalEmailAddress>
 			    <PrimaryCategory>
 			    	<CategoryID><![CDATA[".$data['PRIMARYCATEGORY']."]]></CategoryID>
@@ -274,7 +296,6 @@ class PublishEbayController extends AppController {
 				</ShippingServiceOptions>" ;
 		}
 		
-
 		if( !empty($data['SD_SSO3_SHIPPINGSERVICE']) ){
 			$xml .= "
 					<ShippingServiceOptions>
@@ -319,21 +340,44 @@ class PublishEbayController extends AppController {
 		}
 		
 		
-		if( $listingType == 'Chinese' ){
+		if( $listingType == 'Chinese' ){//拍马
 			$xml .= "
 			    </ShippingDetails>
-			    <StartPrice><![CDATA[".$data['STARTPRICE']."]]></StartPrice>
-			    <BuyItNowPrice><![CDATA[".$data['BUYITNOWPRICE']."]]></BuyItNowPrice>
-			    <Title><![CDATA[".$data['ITEMTITLE']."]]></Title>";
+			    <StartPrice><![CDATA[".$data['STARTPRICE']."]]></StartPrice>";
+			if( !empty($data['BUYITNOWPRICE']) && $data['BUYITNOWPRICE'] !="0.0" ){
+				$xml .= "    <BuyItNowPrice><![CDATA[".$data['BUYITNOWPRICE']."]]></BuyItNowPrice>";
+			}
+			
+			if( !empty($data['RESERVEPRICE']) && $data['RESERVEPRICE'] !="0.0" ){
+				$xml .= "     <ReservePrice>".$data['RESERVEPRICE']."</ReservePrice>";
+			}
+			
+			if( !empty($data['LOTSIZE']) && $data['LOTSIZE'] !="0" ){
+				$xml .= "     <LotSize>".$data['LOTSIZE']."</LotSize>";
+			}
 		}else{
 			$xml .= "
 			    </ShippingDetails>
-			    <StartPrice><![CDATA[".$data['BUYITNOWPRICE']."]]></StartPrice>
-			    <Title><![CDATA[".$data['ITEMTITLE']."]]></Title>";
+			    <StartPrice><![CDATA[".$data['BUYITNOWPRICE']."]]></StartPrice>";
 		}
+		
+		$array = explode(",", $data['PAYMENTMETHODS1']) ;
+		foreach($array as $a) {
+			if( !empty($a) )
+			$xml .= "	   <PaymentMethods><![CDATA[".$a."]]></PaymentMethods>" ;
+		}
+		//<PaymentMethods><![CDATA[".$data['PAYMENTMETHODS1']."]]></PaymentMethods>
+		
+		
+		
+		$xml .= "<Title><![CDATA[".$data['ITEMTITLE']."]]></Title>";
 		
 		if( $data['CONDITIONID'] ){
 			$xml .= "	   <ConditionID><![CDATA[".$data['CONDITIONID']."]]></ConditionID>";
+		}
+		
+		if( $data['AUTOPAY'] ){
+			$xml .= "	   <AutoPay>".$data['AUTOPAY']."</AutoPay>";
 		}
 			
 		if( isset($data['SUBTITLE']) && !empty($data['SUBTITLE']) ){
@@ -349,12 +393,51 @@ class PublishEbayController extends AppController {
 				if( !empty($value) ){
 					$xml .= "
 					<NameValueList>
-					<Name>$key</Name>
-					<Value>$value</Value>
+					<Name><![CDATA[$key]]></Name>
+					<Value><![CDATA[$value]]></Value>
 					</NameValueList>" ;
 				}
 				}
 				$xml .= "		</ItemSpecifics>" ;
+		}
+		
+		if( !empty( $data['LISTINGENHANCEMENT'] ) ){
+			$xml .= "<ListingEnhancement><![CDATA[".$data['LISTINGENHANCEMENT']."]]></ListingEnhancement>" ;
+		}
+		
+		if( !empty( $data['PRIVATELISTING'] ) ){
+			$xml .= "<PrivateListing>".$data['PRIVATELISTING']."</PrivateListing>" ;
+		}
+		
+		$brd = "" ;
+		if( !empty( $data['BRD_LPPA'] ) ){
+			$brd .= "<LinkedPayPalAccount>".$data['BRD_LPPA']."</LinkedPayPalAccount>" ;
+		}
+		
+		if( !empty( $data['BRD_MBPV_COUNT'] ) &&  !empty( $data['BRD_MBPV_PERIOD'] ) ){
+			$brd .= "<MaximumBuyerPolicyViolations>
+				<Count>".$data['BRD_MBPV_COUNT']."</Count>
+				<Period>".$data['BRD_MBPV_PERIOD']."</Period>
+			</MaximumBuyerPolicyViolations>" ;
+		}
+		
+		if( !empty( $data['BRD_MUIS_COUNT'] ) &&  !empty( $data['BRD_MUIS_PERIOD'] ) ){
+			$brd .= "<MaximumUnpaidItemStrikesInfo>
+				<Count>".$data['BRD_MUIS_COUNT']."</Count>
+				<Period>".$data['BRD_MUIS_PERIOD']."</Period>
+			</MaximumUnpaidItemStrikesInfo>" ;
+		}
+		
+		if( !empty( $data['BRD_MIR_MIC'] )  ){
+			$brd .= "<MaximumItemRequirements>
+				<MaximumItemCount>".$data['BRD_MIR_MIC']."</MaximumItemCount>
+			</MaximumItemRequirements>" ;
+		}
+		
+		if( !empty($brd) ){
+			$xml .= "<BuyerRequirementDetails>
+				$brd
+				</BuyerRequirementDetails>" ;
 		}
 		
 		$xml .= "
@@ -368,11 +451,13 @@ class PublishEbayController extends AppController {
 			    </ReturnPolicy>
 			</Item>
 		</".$tagName.">" ;
-	
+		
 		$params = http_build_query(  array("xml"=>$xml) ) ;
-			
+
+		//echo $xml;
+		
 		$baseUrl = $this->Utils->buildUrlByAccountId($data['ACCOUNT_ID'], "eBay/doItem") ;
-		//debug( $xml ) ;
+		
 		$return = $this->Post($baseUrl."/".$data['LISTINGTYPE'] , $params);
 		
 		//保存发布历史

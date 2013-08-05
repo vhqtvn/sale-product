@@ -4,7 +4,7 @@ $(function(){
            	{align:"center",key:"PUBLISH_TIME",label:"刊登时间",width:"18%",forzen:false,align:"left"},
            	//{align:"center",key:"ACCOUNT_NAME",label:"EBAY账号",width:"15%"},
            	{align:"center",key:"PUBLISHER_NAME",label:"刊登用户",width:"10%"},
-        	{align:"left",key:"LSITINGTYPE",label:"刊登方式",width:"10%",format:function(val,record){
+        	{align:"left",key:"LISTINGTYPE",label:"刊登方式",width:"10%",format:function(val,record){
         		var record = $.parseJSON( record.PUBLISH_DETAIL ) ;
         		
            		var days = record.LISTINGDURATION ;

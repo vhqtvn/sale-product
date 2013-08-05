@@ -231,7 +231,7 @@ function doaktion(aktion,atta){
 	
 	//document.m.submit();
     $('input[name=aktion]').val(aktion);
-    $('#m').attr('target','_self');
+    //$('#m').attr('target','_self');
     if (typeof(KE.g['itemdescription'].iframeDoc) == 'object'){
         $('#itemdescription').val(KE.util.getData('itemdescription'));
     }
@@ -262,14 +262,8 @@ function doaktion(aktion,atta){
     if(aktion=='verify'){
         $('#m').attr('target','_blank');
     }
-    $('#m').submit();
-    if(aktion=='preview'){
-        document.m.target="_blank";
-        document.m.action="/index.php/muban/preview";
-        document.m.submit();
-        document.m.target="";
-        document.m.action="";
-    }
+    
+   $('#m').submit();
 }
 /**
  * 动态翻译代码
