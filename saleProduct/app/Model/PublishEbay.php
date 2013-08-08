@@ -102,5 +102,31 @@ class PublishEbay extends AppModel {
 		
 		return $data ;
 	}
-
+	
+	public function loadMessageCounts(){
+		return $this->exeSqlWithFormat("sql_ebay_message_getFalseCount", array()) ;
+	}
+	
+	/**
+	 * 修改消息本地zhuan
+	 * @param unknown $params
+	 */
+	public function tagMessageLocalStatus($params){
+		$messageIds = $params['messageIds'] ;
+		$messageIds = explode(",", $messageIds) ;
+		
+		$read = "" ;
+		if(isset( $params['read'])){
+			$read = $params['read'] ;
+		}
+		
+		$flagged = "" ;
+		if(isset( $params['flagged'])){
+			$flagged = $params['flagged'] ;
+		}
+		
+		foreach (  $messageIds as $messageId){
+			$this->exeSql("sql_ebay_message_update_localstatus", array('MessageID'=>$messageId,'read'=>$read,'flagged'=>$flagged) ) ;
+		}
+	}
 }

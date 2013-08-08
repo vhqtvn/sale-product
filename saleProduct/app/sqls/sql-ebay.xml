@@ -479,4 +479,108 @@
 	'{@#paypal#}'
 	)
 	</entry>
+	
+	
+	<entry key="sql_ebay_message_getMessageIdNoText">
+		select MessageID from sc_ebay_message where 
+		accountId = '{@#accountId#}' and ( text is null or text = '')
+		limit 0,10
+	</entry>
+	
+	<entry key="sql_ebay_message_list">
+		select * from sc_ebay_message where 
+		1=1
+		{@ and sread = '#sread#'}
+		{@ and flagged = '#flagged#'}
+		{@ and sread = '#f_sread#'  and ( local_sread is null or local_sread = ''  )}
+		{@ and flagged = '#f_flagged#'   and ( local_flagged is null or local_flagged = ''  ) }
+		{@ and local_sread = '#local_sread#' and sread='false'}
+		{@ and local_flagged = '#local_flagged#' and flagged='false' }
+		{@ and ResponseEnabled='true' and  Replied = '#replied#'}
+	</entry>
+	
+	<entry key="sql_ebay_message_getByMessageId">
+		select * from sc_ebay_message where messageid = '{@#MessageID#}'
+	</entry>
+	<entry key="sql_ebay_message_insert">
+				INSERT INTO  sc_ebay_message 
+					(ID, 
+					Sender, 
+					RecipientUserID, 
+					SendToName, 
+					SUBJECT, 
+					MessageID, 
+					TEXT, 
+					Flagged, 
+					SRead, 
+					ReceiveDate, 
+					ExpirationDate, 
+					ResponseEnabled, 
+					ResponseURL,
+					Replied, 
+					FolderID,
+					accountId,
+					ItemID
+					)
+					VALUES
+					('{@#guid#}', 
+					'{@#Sender#}', 
+					'{@#RecipientUserID#}', 
+					'{@#SendToName#}', 
+					'{@#Subject#}', 
+					'{@#MessageID#}', 
+					'{@#Text#}', 
+					'{@#Flagged#}', 
+					'{@#Read#}', 
+					'{@#ReceiveDate#}', 
+					'{@#ExpirationDate#}', 
+					'{@#ResponseEnabled#}', 
+					'{@#ResponseURL#}', 
+					'{@#Replied#}', 
+					'{@#FolderID#}', 
+					'{@#accountId#}', 
+					'{@#ItemID#}'
+					)
+	</entry>
+	
+	<entry key="sql_ebay_message_update">
+				UPDATE sc_ebay_message 
+					SET
+					SUBJECT = '{@#Subject#}' , 
+					{@TEXT = '#Text#' , }
+					Flagged = '{@#Flagged#}' , 
+					SRead = '{@#Read#}' , 
+					ReceiveDate = '{@#ReceiveDate#}' , 
+					ExpirationDate = '{@#ExpirationDate#}' , 
+					ResponseEnabled = '{@#ResponseEnabled#}' , 
+					Replied = '{@#Replied#}' , 
+					FolderID = '{@#FolderID#}',
+					accountId='{@#accountId#}'
+				WHERE
+					MessageID = '{@#MessageID#}'
+	</entry>
+	
+	<entry key="sql_ebay_message_getFalseCount">
+		SELECT 'flagged' AS TYPE , COUNT(1) AS C FROM sc_ebay_message t WHERE t.Flagged = 'false' and ( t.local_flagged is null or t.local_flagged = '' )
+		UNION ALL
+		SELECT 'read' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.SRead = 'false' and ( t.local_SRead is null or t.local_SRead = '' )
+		UNION ALL
+		SELECT 'reply' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.ResponseEnabled = 'true' AND t.Replied='false' and ( t.local_Replied is null or t.local_Replied = '' )
+		union all
+		SELECT 'local_flagged' AS TYPE , COUNT(1) AS C FROM sc_ebay_message t WHERE t.Flagged = 'false' and ( t.local_flagged='true' )
+		UNION ALL
+		SELECT 'local_read' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.SRead = 'false' and ( t.local_SRead = 'true' )
+		UNION ALL
+		SELECT 'local_reply' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.ResponseEnabled = 'true' AND t.Replied='false' and ( t.local_Replied ='true')
+		</entry>
+		
+		<entry key="sql_ebay_message_update_localstatus">
+				UPDATE sc_ebay_message 
+					SET
+					MessageID = '{@#MessageID#}'
+					{@ ,Local_Flagged = '#flagged#' }
+					{@ ,Local_SRead = '#read#'} 
+				WHERE
+					MessageID = '{@#MessageID#}'
+	</entry>
 </properties>

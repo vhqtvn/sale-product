@@ -2,127 +2,9 @@
 class PublishEbayController extends AppController {
     public $helpers = array( 'Html' , 'Form');
     var $uses = array('Utils');
-    /*
-     array(
-			'bindproductname_val' => '',
-			'bindproductdescription_val' => '',
-			'bindproductsku_val' => '',
-			'bindproductpicture_val' => '',
-			'site' => '0',
-			'listingtype' => 'Chinese',
-			'productid' => 'ISBN',
-			'productidval' => '',
-			'primarycategory' => '0',
-			'attribute' => '',
-			'secondarycategory' => '',
-			'attribute2' => '',
-			'itemtitle' => '',
-			'subtitle' => '',
-			'lotsize' => '0',
-			'listingduration' => 'Days_1',
-			'listingduration_fixedprice' => 'Days_3',
-			'listingduration_auction' => 'Days_1',
-			'startprice' => '0.0',
-			'reserveprice' => '0.0',
-			'buyitnowprice' => '0.0',
-			'secondoffer' => '0.0',
-			'template' => '',
-			'basicinfo' => '',
-			'imgurl' => array(
-				(int) 0 => 'http://'
-			),
-			'itemdescription' => '',
-			'detail_wuliu_profile' => '',
-			'shippingdetails' => array(
-				'ShippingServiceOptions' => array(
-					(int) 0 => array(
-						'ShippingService' => '',
-						'ShippingServiceCost' => '0.0',
-						'ShippingServiceAdditionalCost' => '0.0'
-					),
-					(int) 1 => array(
-						'ShippingService' => '',
-						'ShippingServiceCost' => '0.0',
-						'ShippingServiceAdditionalCost' => '0.0'
-					),
-					(int) 2 => array(
-						'ShippingService' => '',
-						'ShippingServiceCost' => '0.0',
-						'ShippingServiceAdditionalCost' => '0.0'
-					)
-				),
-				'InternationalShippingServiceOption' => array(
-					(int) 3 => array(
-						'ShippingService' => '',
-						'ShippingServiceCost' => '0.0',
-						'ShippingServiceAdditionalCost' => '0.0',
-						'ShipToLocation' => array(
-							(int) 0 => 'Worldwide'
-						)
-					),
-					(int) 4 => array(
-						'ShippingService' => '',
-						'ShippingServiceCost' => '0.0',
-						'ShippingServiceAdditionalCost' => '0.0',
-						'ShipToLocation' => array(
-							(int) 0 => 'Worldwide'
-						)
-					),
-					(int) 5 => array(
-						'ShippingService' => '',
-						'ShippingServiceCost' => '0.0',
-						'ShippingServiceAdditionalCost' => '0.0',
-						'ShipToLocation' => array(
-							(int) 0 => 'Worldwide'
-						)
-					)
-				),
-				'SalesTax' => array(
-					'SalesTaxState' => '',
-					'SalesTaxPercent' => ''
-				),
-				'ShippingType' => 'Flat'
-			),
-			'dispatchtime' => '2',
-			'detail_location_profile' => '',
-			'location' => 'Hong Kong',
-			'postalcode' => '',
-			'country' => 'HK',
-			'return_policy' => array(
-				'ReturnsAcceptedOption' => 'ReturnsAccepted',
-				'RefundOption' => 'MoneyBack',
-				'ReturnsWithinOption' => 'Days_14',
-				'ShippingCostPaidByOption' => 'Buyer',
-				'Description' => ''
-			),
-			'detail_return_profile' => '',
-			'paymentmethods' => array(
-				(int) 0 => 'PayPal'
-			),
-			'paypal' => '',
-			'gallery' => '0',
-			'hitcounter' => 'BasicStyle',
-			'privatelisting' => 'false',
-			'sku' => '',
-			'desc' => '',
-			'buyerrequirementdetails' => array(
-				'MaximumBuyerPolicyViolations' => array(
-					'Count' => '',
-					'Period' => ''
-				),
-				'MaximumUnpaidItemStrikesInfo' => array(
-					'Count' => '',
-					'Period' => ''
-				),
-				'MaximumItemRequirements' => array(
-					'MaximumItemCount' => ''
-				)
-			),
-			'aktion' => '',
-			'muban_id' => '',
-			'goods_id' => '0',
-			'languageid' => ''
-		) 
+  
+    /**
+     * 保存模板
      */
 	public function saveTemplate(){
 		$data =  $this->request->data ;
@@ -251,6 +133,10 @@ class PublishEbayController extends AppController {
 		return $this->response ;
 	}
 	
+	/**
+	 * 刊登产品
+	 * @param unknown $templateId
+	 */
 	public  function doPublish($templateId){
 		
 		$data = $this->Utils->getObject("select * from sc_ebay_template where id='{@#id#}'",array("id"=>$templateId))  ;
@@ -479,6 +365,7 @@ class PublishEbayController extends AppController {
 		return $this->response ;
 	}
 	
+
 	function formatLocation( $locations ){
 		if( empty( $locations ) ) return "" ;
 		$ls = "" ;
