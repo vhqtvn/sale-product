@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_ost_list">
+    	
+			 SELECT * FROM ost_kb_premade okp  WHERE 1=1 {@ AND okp.premade_id IN (
+			    SELECT opc.premade_id FROM ost_premade_category opc WHERE 
+			    opc.premade_id = okp.premade_id 
+			    AND  opc.category_id = '#categoryId#'
+			 )
+			 }
+			 {@ and ( okp.title like '%#searchKey#%'  or  okp.answer like '%#searchKey#%' or okp.description like '%#searchKey#%' ) }
+    </entry>
+ </properties>
