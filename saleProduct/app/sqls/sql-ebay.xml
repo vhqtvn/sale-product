@@ -492,11 +492,17 @@
 		1=1
 		{@ and sread = '#sread#'}
 		{@ and flagged = '#flagged#'}
+		{@ and ResponseEnabled='true'  and  Replied = '#replied#'}
+		
 		{@ and sread = '#f_sread#'  and ( local_sread is null or local_sread = ''  )}
 		{@ and flagged = '#f_flagged#'   and ( local_flagged is null or local_flagged = ''  ) }
+		{@ and ResponseEnabled='true'  and  Replied = '#f_replied#'   and ( local_replied is null or local_replied = ''  ) }
+		
 		{@ and local_sread = '#local_sread#' and sread='false'}
 		{@ and local_flagged = '#local_flagged#' and flagged='false' }
-		{@ and ResponseEnabled='true' and  Replied = '#replied#'}
+		{@ and local_Replied = '#local_replied#' and Replied='false'  and ResponseEnabled='true' }
+		
+		{@ and MessageID in ( #messageIds# )}
 	</entry>
 	
 	<entry key="sql_ebay_message_getByMessageId">
@@ -582,5 +588,16 @@
 					{@ ,Local_SRead = '#read#'} 
 				WHERE
 					MessageID = '{@#MessageID#}'
-	</entry>
+		</entry>
+		
+		<entry key="sql_ebay_message_update_localResponse">
+				UPDATE sc_ebay_message 
+					SET
+					MessageID = '{@#MessageID#}',
+					Local_Replied = 'true'
+					{@ ,LCOAL_Subject = '#subject#' }
+					{@ ,LOCAL_RESPONSE_BODY = '#body#'} 
+				WHERE
+					MessageID = '{@#MessageID#}'
+		</entry>
 </properties>

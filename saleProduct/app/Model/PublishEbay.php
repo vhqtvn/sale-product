@@ -107,6 +107,18 @@ class PublishEbay extends AppModel {
 		return $this->exeSqlWithFormat("sql_ebay_message_getFalseCount", array()) ;
 	}
 	
+	public function saveLocalResponse( $params ){
+		$messageIds = $params['messageIds'] ;
+		$messageIds = explode(",", $messageIds) ;
+		
+		$subject = $params['subject'] ;
+		$body = $params['body'] ;
+		
+		foreach (  $messageIds as $messageId){
+			$this->exeSql("sql_ebay_message_update_localResponse", array('MessageID'=>$messageId,'body'=>$body,'subject'=>$subject) ) ;
+		}
+	}
+	
 	/**
 	 * 修改消息本地zhuan
 	 * @param unknown $params

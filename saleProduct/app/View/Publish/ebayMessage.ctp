@@ -12,10 +12,10 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/layout/jquery.layout');
-		echo $this->Html->css('../js/tree/jquery.tree');
 		
 		echo $this->Html->css('default/style');
-
+		echo $this->Html->css('../js/tree/jquery.tree');
+		
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
@@ -38,6 +38,10 @@
 	 <style type="text/css">
 		img{
 			cursor:pointer;
+		}
+		
+		.bbit-tree-selected{
+			background:#DDFFAA;
 		}
 	</style>
 
@@ -65,10 +69,10 @@
 				<table>
 					<tr>
 						<td colspan="3">
-								<button class="btn btn-primary  tag-read" >设为已读(Read)</button>&nbsp;
-								<button class="btn btn-primary tag-flagged">设为已标记(Flagged)</button>&nbsp;
-								<button class="btn btn-primary tag-all">设为已读&标记</button>&nbsp;
-								<button class="btn btn-primary do-reply">回复</button>&nbsp;
+								<button class="btn b br btn-primary  tag-read" >设为已读(Read)</button>&nbsp;
+								<button class="btn b bf btn-primary tag-flagged">设为已标记(Flagged)</button>&nbsp;
+								<button class="btn b bf br btn-primary tag-all">设为已读&标记</button>&nbsp;
+								<button class="btn b bp btn-primary do-reply">回复</button>&nbsp;
 								<!-- 
 								<button class="btn btn-danger do-delete">删除</button>&nbsp;
 								 -->

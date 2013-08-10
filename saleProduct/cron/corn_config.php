@@ -13,16 +13,27 @@
 	mysql_query("set names 'GBK'");
 	
 	$accounts = array() ;
+	$ebayAccounts = array() ;
 	try{
-		$sql="select * from sc_amazon_account where status = 1";
+		$sql="select (
+				select code from  sc_platform sp where sp.id = saa.platform_id
+				)  as platformCode ,saa.*   
+				from sc_amazon_account saa where status = 1";
 		$result = mysql_query($sql)  or die("Invalid query: " . mysql_error());
 		while ($row=mysql_fetch_row($result))
 		{
-			$accountId = $row[0] ;
-			$domain = $row[4] ;
-			$context = $row[5] ;
-	
-			$accounts [] = array('accountId'=>$accountId,'domain'=>$domain,'context'=>$context) ;
+			$platform = $row[0] ;
+			$accountId = $row[1] ;
+			$domain = $row[5] ;
+			$context = $row[6] ;
+			//9 amazon 25 ebay
+			$platform = strtolower($platform) ;
+			echo $platform ;
+			if( strpos( $platform ,"amazon" ) === 0 ){
+				$accounts [] = array('accountId'=>$accountId,'domain'=>$domain,'context'=>$context) ;
+			}else if( strpos( $platform ,"ebay" ) === 0 ){
+				$ebayAccounts [] = array('accountId'=>$accountId,'domain'=>$domain,'context'=>$context) ;
+			}
 		}
 		mysql_close($conn) ;
 	}catch(Exception $e){
