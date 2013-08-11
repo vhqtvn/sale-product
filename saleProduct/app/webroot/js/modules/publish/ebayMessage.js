@@ -91,22 +91,24 @@ $(function(){
 	
 	
 	var treeData = [
-	          {id:"read",text:"是否已读",childNodes:[
-	                    {id:"read_true",text:"已读",type:"sread",val:"true"},
-	                    {id:"read_false",text:"未读(<span class=\"read_false\">0</span>)",type:"sread",val:"false"},
-	                    {id:"read_localtrue",text:"已读未上传(<span class=\"local_read_false\">0</span>)",type:"sread",val:"localtrue"}
-	          ]},
-	          {id:"flagged",text:"是否标记",childNodes:[
-	                  {id:"flagged_true",text:"已标记",type:"flagged",val:"true"},
-	                  {id:"flagged_false",text:"未标记(<span class=\"flagged_false\">0</span>)",type:"flagged",val:"false"},
-	                  {id:"flagged_localtrue",text:"已标记未上传(<span class=\"local_flagged_false\">0</span>)",type:"flagged",val:"localtrue"}
-	         ]},
-	         {id:"reply",text:"是否回复",childNodes:[
-	                  {id:"reply_true",text:"已回复",type:"replied",val:"true"},
-	                  {id:"reply_false",text:"未回复(<span class=\"replied_false\">0</span>)",type:"replied",val:"false"},
-	                  {id:"reply_localtrue",text:"已回复未上传(<span class=\"local_replied_false\">0</span>)",type:"replied",val:"localtrue"}
+	         {id:"inbox",text:"收件箱",folderID:'0',childNodes:[
+	                  {id:"read",text:"是否已读",folderID:'0',childNodes:[
+       		                    {id:"read_true",text:"已读",type:"sread",val:"true",folderID:'0'},
+       		                    {id:"read_false",text:"未读(<span class=\"read_false\">0</span>)",type:"sread",val:"false",folderID:'0'},
+       		                    {id:"read_localtrue",text:"已读未上传(<span class=\"local_read_false\">0</span>)",type:"sread",val:"localtrue",folderID:'0'}
+       		          ]},
+       		          {id:"flagged",text:"是否标记",folderID:'0',childNodes:[
+       		                  {id:"flagged_true",text:"已标记",type:"flagged",val:"true",folderID:'0'},
+       		                  {id:"flagged_false",text:"未标记(<span class=\"flagged_false\">0</span>)",type:"flagged",val:"false",folderID:'0'},
+       		                  {id:"flagged_localtrue",text:"已标记未上传(<span class=\"local_flagged_false\">0</span>)",type:"flagged",val:"localtrue",folderID:'0'}
+       		         ]},
+       		         {id:"reply",text:"是否回复",folderID:'0',childNodes:[
+       		                  {id:"reply_true",text:"已回复",type:"replied",val:"true",folderID:'0'},
+       		                  {id:"reply_false",text:"未回复(<span class=\"replied_false\">0</span>)",type:"replied",val:"false",folderID:'0'},
+       		                  {id:"reply_localtrue",text:"已回复未上传(<span class=\"local_replied_false\">0</span>)",type:"replied",val:"localtrue",folderID:'0'}
+       		        ]}                         
 	        ]},
-            
+	        {id:"send",text:"发件箱",folderID:'1',childNodes:[]}
 	 ] ;
 	//$(".b").attr("disabled","disabled") ;
 	$('#default-tree').tree({//tree为容器ID
@@ -138,6 +140,8 @@ $(function(){
 			}else{
 				params[record.type] = record.val ;
 			}
+			
+			params['folderID'] = record.folderID ;
 			
 			$(".grid-content").llygrid("reload",params) ;
 		}

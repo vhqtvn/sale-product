@@ -503,6 +503,11 @@
 		{@ and local_Replied = '#local_replied#' and Replied='false'  and ResponseEnabled='true' }
 		
 		{@ and MessageID in ( #messageIds# )}
+		{@ and FolderID = '#folderID#'}
+		{@ and ItemID = '#itemId#'}
+		{@ and ( sender = '#mailer#' or RecipientUserID = '#mailer#'    ) }
+		{@ and ( text like '%#searchKey#%' or subject  like '%#searchKey#%'    ) }
+		order by ReceiveDate desc
 	</entry>
 	
 	<entry key="sql_ebay_message_getByMessageId">

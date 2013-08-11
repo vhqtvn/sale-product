@@ -53,14 +53,25 @@
 	
 			<div class="toolbar toolbar-auto toolbar1">
 				<table>
-					<tr>
-						
+					<tr>								
+						<th>
+							名称
+						</th>
+						<td>
+							<input type="text" id="searchKey"  class="span3" placeHolder="输入邮件标题、内容查询"/>
+						</td>
+						<th>
+							发/收件人
+						</th>
+						<td>
+							<input type="text"  class="span2"  id="mailer"/>
+						</td>	
 						<th>
 							Item Id
 						</th>
 						<td>
-							<input type="text"  class="span2"/>
-						</td>										
+							<input type="text"  class="span2" id="itemId"/>
+						</td>	
 						<td class="toolbar-btns">
 							<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
 						</td>
