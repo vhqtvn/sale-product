@@ -683,14 +683,14 @@ html{-webkit-text-size-adjust: none;}
 					<tr>
 						<th style="width:15%;"></th>
 						<th>关键字</th>
-						<th style="width:6%;">渠道有效竞争数</th>
-						<th style="width:6%;">搜索量VOLUMN</th>
-						<th style="width:6%;">竞争COM</th>
-						<th style="width:6%;">竞价CPC</th>
+						<th style="width:9%;">渠道有效竞争数</th>
+						<th style="width:9%;">搜索量VOLUMN</th>
+						<th style="width:9%;">竞争COM</th>
+						<th style="width:9%;">竞价CPC</th>
 					</tr>
 					<tr>
 						<th>核心关键字：</th>
-						<td><input type="text" id="CORE_KEY"   class="input 10-input"   style="width:95%;" value="<?php echo $productDev['CORE_KEY']?>"/></td>
+						<td><input type="text" id="CORE_KEY"   placeHolder="不能超过50个字符"  maxlength="50"   class=" ae_key input 10-input"   style="width:85%;" value="<?php echo $productDev['CORE_KEY']?>"/></td>
 						<td>	<input type="text" id="CK_VALID_COMP"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_VALID_COMP']?>"/></td>
 						<td>	<input type="text" id="CK_SR_SEARCH"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_SEARCH']?>" /></td>
 						<td>	<input type="text" id="CK_SR_COM"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_COM']?>"/></td>
@@ -698,7 +698,7 @@ html{-webkit-text-size-adjust: none;}
 					</tr>
 					<tr>
 						<th>Amazon/Ebay关键字1：</th>
-						<td><input type="text" id="OP_KEY1"      class="input 10-input"  style="width:95%;"  value="<?php echo $productDev['OP_KEY1']?>"/></td>
+						<td><input type="text" id="OP_KEY1"  placeHolder="不能超过50个字符"  maxlength="50" class="ae_key input 10-input"  style="width:85%;"  value="<?php echo $productDev['OP_KEY1']?>"/></td>
 						<td>	<input type="text" id="OK_VALID_COMP1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP1']?>"/></td>
 						<td>	<input type="text" id="OK_SR_SEARCH1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH1']?>"/></td>
 						<td>	<input type="text" id="OK_SR_COM1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM1']?>"/></td>
@@ -706,7 +706,7 @@ html{-webkit-text-size-adjust: none;}
 					</tr>
 					<tr>
 						<th>Amazon/Ebay关键字2：</th>
-						<td><input type="text" id="OP_KEY2"      class="input 10-input"  style="width:95%;"  value="<?php echo $productDev['OP_KEY2']?>"/></td>
+						<td><input type="text" id="OP_KEY2"     placeHolder="不能超过50个字符"  maxlength="50"    class="ae_key input 10-input"  style="width:85%;"  value="<?php echo $productDev['OP_KEY2']?>"/></td>
 						<td>	<input type="text" id="OK_VALID_COMP2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP2']?>"/></td>
 						<td>	<input type="text" id="OK_SR_SEARCH2"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_SEARCH2']?>" /></td>
 						<td>	<input type="text" id="OK_SR_COM2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM2']?>"/></td>
@@ -714,7 +714,7 @@ html{-webkit-text-size-adjust: none;}
 					</tr>
 					<tr>
 						<th>Amazon/Ebay关键字3：</th>
-						<td><input type="text" id="OP_KEY3"      class="input 10-input"  style="width:95%;" value="<?php echo $productDev['OP_KEY3']?>" /></td>
+						<td><input type="text" id="OP_KEY3"     placeHolder="不能超过50个字符"  maxlength="50"    class="ae_key input 10-input"  style="width:85%;" value="<?php echo $productDev['OP_KEY3']?>" /></td>
 						<td>	<input type="text" id="OK_VALID_COMP3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP3']?>"/></td>
 						<td>	<input type="text" id="OK_SR_SEARCH3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH3']?>"/></td>
 						<td>	<input type="text" id="OK_SR_COM3"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_COM3']?>" /></td>
@@ -722,7 +722,7 @@ html{-webkit-text-size-adjust: none;}
 					</tr>
 					<tr>
 						<th>Amazon/Ebay关键字4：</th>
-						<td><input type="text" id="OP_KEY4"      class="input 10-input"  style="width:95%;"  value="<?php echo $productDev['OP_KEY4']?>"/></td>
+						<td><input type="text" id="OP_KEY4"    placeHolder="不能超过50个字符"  maxlength="50"     class="ae_key input 10-input"  style="width:85%;"  value="<?php echo $productDev['OP_KEY4']?>"/></td>
 						<td>	<input type="text" id="OK_VALID_COMP4"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OK_VALID_COMP4']?>" /></td>
 						<td>	<input type="text" id="OK_SR_SEARCH4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH4']?>"/></td>
 						<td>	<input type="text" id="OK_SR_COM4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM4']?>"/></td>
@@ -947,5 +947,16 @@ html{-webkit-text-size-adjust: none;}
 	</div>
 		</form>
 </body>
+
+<script type="text/javascript">
+	$(".ae_key").keyup(function(){
+		var val = $(this).val() ;
+		var len = val.length;
+		if(!$(this).parent().find("span").length){
+			$(this).parent().append("<span></span>") ;
+		}
+		$(this).parent().find("span").html("剩余"+(50-len)) ;
+	}).trigger("keyup") ;
+</script>
 
 </html>
