@@ -55,13 +55,32 @@ $(function(){
 		    	return "<a href='#' messageID='"+record.MessageID+"'>"+val+"</a>"
 		    }},
 			{align:"center",key:"Sender",label:"发送者",width:"15%",forzen:false,align:"left"},
-           	{align:"center",key:"SendToName",label:"接收者",width:"15%",forzen:false,align:"left"},
-           	{align:"center",key:"Flagged",label:"是否已标记",width:"7%",format:{type:"json",content:{'false':"否",'true':"是"}}},
-           	{align:"center",key:"SRead",label:"是否已读",width:"7%",format:{type:"json",content:{'false':"否",'true':"是"}}},
+           	{align:"center",key:"RecipientUserID",label:"接收者",width:"15%",forzen:false,align:"left"},
+           	{align:"center",key:"Flagged",label:"是否已标记",width:"7%",format:function(val,record){
+           		if(val == 'false'){
+           			if( record.LOCAL_FLAGGED == 'true' ){
+           				return "是(未上传)" ;
+           			}
+           			return "否" ;
+           		}
+           		return "是" ;
+           	}},
+           	{align:"center",key:"SRead",label:"是否已读",width:"7%",format:function(val,record){
+           		if(val == 'false'){
+           			if( record.LOCAL_SREAD == 'true' ){
+           				return "是(未上传)" ;
+           			}
+           			return "否" ;
+           		}
+           		return "是" ;
+           	}},
            	{align:"center",key:"ResponseEnabled",label:"是否回复",width:"7%",format:function(val,record){
            		if( val == 'false' ) return "-" ;
-           		var Replied = record.ResponseEnabled ;
-           		if( Replied == 'false'  ) return "否" ;
+           		var Replied = record.Replied ;
+           		if( Replied == 'false'  ){
+           			if( record.LOCAL_REPLIED == 'true' ) return "是(未上传)" ;
+           			else return "否" ;
+           		} 
            		return "是" ;
            	}},
            	{align:"center",key:"ReceiveDate",label:"接收时间",width:"15%"}

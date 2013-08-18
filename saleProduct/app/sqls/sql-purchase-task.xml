@@ -189,6 +189,8 @@
 		SELECT DISTINCT  
 			sppd.ID, 
 			sppd.ASIN, 
+			(SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = sppd.id
+	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
 			sppd.SKU, 
 			sppd.PLAN_NUM, 
 			sppd.REAl_PURCHASE_NUM, 

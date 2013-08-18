@@ -189,6 +189,10 @@ var currentId = '' ;
 					{align:"center",key:"FLOW_STATUS",label:"流程状态",width:"7%",sort:true,
 							format:{type:'json',content:{10:'产品分析',15:'废弃',20:'询价',25:'成本利润分析',30:'产品经理审批',40:'总监审批',50:'录入货品',
 								60:'制作Listing',70:'Listing审批',72:'采购试销',74:'库存到达',76:'营销展开',78:'开发总结',80:'处理完成'}}},
+					{align:"left",key:"MEMO",label:"开发备注",sort:true,width:"15%",format:function(val){
+						//http://localhost/saleProduct/index.php/sale/details1/F_1366985996/B003J39IKI#track-tab
+						return "<a href='#' class='memo-action'>"+(val||"")+"</a>";
+					}},
 					{align:"center",key:"DEV_STATUS",label:"开发状态",sort:true,width:"5%",format:function(val){
 						val = val||"" ;
 						var map = {1:'自有',2:'跟卖',3:'废弃',4:'自有兼跟卖'} ;
@@ -261,6 +265,20 @@ var currentId = '' ;
 								}
 							}) ;
 						}) ;
+					 	
+					 	$(".memo-action").bind("click",function(){
+							var row =  $(this).parents("tr:first").data("record") ;
+							var taskId = row.TASK_ID ;
+							var asin = row.ASIN ;
+							var devId = row.ID ;
+							openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin+"#track-tab",1000,650,function(win , rt){
+								if(rt){
+									$(".grid-content-details").llygrid("reload",{},true) ;
+								}
+							}) ;
+						}) ;
+					 	
+					 	
 					 	
 					 	$(".delete-tp-action").click(function(){
 					 		var row =  $(this).parents("tr:first").data("record") ;

@@ -38,7 +38,7 @@
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
 						<table class="form-table" >
-							<caption>主题：<?php echo $message['Subject']?> （MessageID:<?php echo $message['MessageID']?>）</caption>
+							<caption style="overflow:auto;height:auto;">主题：<?php echo $message['Subject']?> （MessageID:<?php echo $message['MessageID']?>）</caption>
 							<tbody>
 								<tr>
 									<th>发送方(Sender)：</th>

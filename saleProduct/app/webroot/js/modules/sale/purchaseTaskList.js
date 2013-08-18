@@ -241,6 +241,10 @@ $(function(){
 			{align:"left",key:"QTC",label:"QTC", width:"13%",format:{type:"href",href: contextPath+"/page/forward/Sale.qtc/{QTC}"}},
            	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
            	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
+           	{align:"left",key:"MEMO",label:"流程备注",sort:true,width:"15%",format:function(val){
+				//http://localhost/saleProduct/index.php/sale/details1/F_1366985996/B003J39IKI#track-tab
+				return "<a href='#' class='memo-action'>"+(val||"")+"</a>";
+			}},
         	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
         	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
         	{align:"center",key:"SUPPIERABLE_NUM",label:"可采购",group:'采购数量',width:"5%"},
@@ -277,6 +281,15 @@ $(function(){
 					$(this).attr("checked",true) ;
 				}
 			}) ;
+		 	
+		 	$(".memo-action").bind("click",function(){
+		 		 var record = $(this).parents("tr:first").data("record");
+		 		var val = $(this).attr("val") ;//采购计划ID
+		 		//openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,980,620,function(){
+		 		openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_task_product/"+record.ID+"/"+record.TASK_ID+"#tracks",980,620,function(win,rt){
+		 			if(rt)$(".grid-content-details").llygrid("reload",{},true) ;
+		 		}) ;
+			}) ;
 		 }
 	}) ;
 	
@@ -284,8 +297,8 @@ $(function(){
 		 var record = $(this).parents("tr:first").data("record");
 		var val = $(this).attr("val") ;//采购计划ID
 		//openCenterWindow(contextPath+"/sale/editPurchasePlanProduct/"+val,980,620,function(){
-		openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_task_product/"+val+"/"+record.TASK_ID,980,620,function(){
-			$(".grid-content-details").llygrid("reload",{},true) ;
+		openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_task_product/"+val+"/"+record.TASK_ID,980,620,function(win,rt){
+			if(rt)$(".grid-content-details").llygrid("reload",{},true) ;
 		}) ;
 	}) ;
 	

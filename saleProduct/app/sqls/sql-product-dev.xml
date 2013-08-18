@@ -411,6 +411,8 @@ UPDATE sc_product_dev
 SELECT sp.TITLE as P_TITLE, 
     spf.NAME  as FILTER_NAME,
     (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin  ) as ASIN_COUNT,
+    (SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
 	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
 	spfd.*,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
