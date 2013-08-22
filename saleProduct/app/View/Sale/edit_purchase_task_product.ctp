@@ -98,7 +98,6 @@
 		$area = $product["AREA"] ;
 		$status = $product['STATUS']; ;
 		*/
-		
 	?>
   
    <style>

@@ -499,7 +499,6 @@
 		//数据加载 ds:
 		var cacheDs = target.data("cacheDs") ;
 		loadMask(target,true) ;
-	
 		var handle = $.llygrid.dsHandle[ ds.type ] ;
 		
 		handle( ds , p , options , function(records , totalRecord){

@@ -28,14 +28,14 @@
 					real_providor = '{@#realProvidor#}' , 
 					area = '{@#area#}' , 
 					{@status = '#status#' , }
-					real_purchase_date = '{@#realPurchaseDate#}' , 
+					{@real_purchase_date = '#realPurchaseDate#' , }
 					qualified_products_num = '{@#qualifiedProductsNum#}' , 
 					bad_products_num = '{@#badProductsNum#}' , 
 					check_memo = '{@#checkMemo#}' , 
-					warehouse_time = '{@#warehouseTime#}' , 
+					{@warehouse_time = '#warehouseTime#' , }
 					warehouse_id = '{@#warehouseId#}' , 
-					pay_type = '{@#payType#}' , 
-					promise_delivery_date = '{@#promiseDeliveryDate#}'
+					pay_type = '{@#payType#}' 
+					{@, promise_delivery_date = '#promiseDeliveryDate#'}
 					where
 					task_id = '{@#taskId#}' 
 					and product_id = '{@#productId#}' 
