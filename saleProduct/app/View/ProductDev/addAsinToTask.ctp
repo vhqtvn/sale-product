@@ -73,9 +73,13 @@
 							if(result){
 								var items = [] ;
 								$(result).each(function(){
-									var asin = this.split("(")[0] ;
-									items.push("<a target='_blank' href='"+contextPath+"/sale/details1/<?php echo $taskId;?>/"+asin+"'>"+this+"</a>") ;
+									var taskId = this.split("||")[0] ;
+									var str = this.split("||")[1] ;
+									var asin = str.split("(")[0] ;
+									items.push("<a target='_blank' href='"+contextPath+"/sale/details1/"+taskId+"/"+asin+"'>"+str+"</a>") ;
 								}) ;
+
+								alert( items ) ;
 								
 								$.messageBox.info({message:"保存完成。<br/>以下产品为正在开发中的产品：<br/>"+items.join("&nbsp;&nbsp;&nbsp;&nbsp;"),callback:function(){
 									jQuery.dialogReturnValue(true) ;

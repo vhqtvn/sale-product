@@ -61,6 +61,10 @@
 			
 			if( _taskId && _taskId.length > 0 ){
 				if(window.confirm("确认迁移?")){
+					
+					alert(  $.json.encode( {taskId:taskId,asin:asin,toTaskId:_taskId[0]} ) ) ;
+					return ;
+					
 					$.dataservice("model:ProductDev.taskProductTransfer",{taskId:taskId,asin:asin,toTaskId:_taskId[0]},function(result){
 						window.close() ;
 					});

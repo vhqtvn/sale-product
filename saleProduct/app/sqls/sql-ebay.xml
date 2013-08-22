@@ -576,13 +576,13 @@
 		UNION ALL
 		SELECT 'read' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.SRead = 'false' and ( t.local_SRead is null or t.local_SRead = '' )
 		UNION ALL
-		SELECT 'reply' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.ResponseEnabled = 'true' AND t.Replied='false' and ( t.local_Replied is null or t.local_Replied = '' )
+		SELECT 'replied' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.ResponseEnabled = 'true' AND t.Replied='false' and ( t.local_Replied is null or t.local_Replied = '' )
 		union all
 		SELECT 'local_flagged' AS TYPE , COUNT(1) AS C FROM sc_ebay_message t WHERE t.Flagged = 'false' and ( t.local_flagged='true' )
 		UNION ALL
 		SELECT 'local_read' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.SRead = 'false' and ( t.local_SRead = 'true' )
 		UNION ALL
-		SELECT 'local_reply' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.ResponseEnabled = 'true' AND t.Replied='false' and ( t.local_Replied ='true')
+		SELECT 'local_replied' AS TYPE, COUNT(1) AS C FROM sc_ebay_message t WHERE t.ResponseEnabled = 'true' AND t.Replied='false' and ( t.local_Replied ='true')
 		</entry>
 		
 		<entry key="sql_ebay_message_update_localstatus">

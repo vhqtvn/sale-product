@@ -41,7 +41,7 @@ class ProductDev extends AppModel {
 				//判断ASIN是否正在开发中 结束标志：80（结束） 和 （15废弃）
 				$p = $this->getObject("sql_productIsDeving", array("asin"=>trim($asin) )) ;
 				if( !empty($p) ){
-					$return[] = $p['ASIN']."(任务名称：".$p['TASK_NAME'].")" ;
+					$return[] = $p['TASK_ID'].'||'.$p['ASIN']."(任务名称：".$p['TASK_NAME'].")" ;
 				}else{
 					$this->exeSql("sql_pdev_insert", $params) ;
 				}
