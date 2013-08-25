@@ -2,7 +2,206 @@
 <properties>
       <entry key="d_list_plan">
         <![CDATA[	
-			select * from sc_keyword_plan
+			select * from sc_keyword_plan  where 1=1
+			{@ and name = '#name#'}
+			order by create_date desc
 		]]>
     </entry>
+    
+    <entry key="d_sc_plan_getById">
+        <![CDATA[	
+			select * from sc_keyword_plan
+			where plan_id = '{@#id#}'
+		]]>
+    </entry>
+    
+    <entry key="d_niche_list">
+        <![CDATA[	
+			select * from sc_keyword
+			where is_niche = '1'
+			and task_id = '{@#taskId#}'
+		]]>
+    </entry>
+    
+    
+    
+    <entry key="d_sc_task_getById">
+        <![CDATA[	
+			select * from sc_keyword_task
+			where task_id = '{@#id#}'
+		]]>
+    </entry>
+    
+    <entry key="d_sc_keyword_getById">
+        <![CDATA[	
+			select * from sc_keyword
+			where keyword_id = '{@#id#}'
+		]]>
+    </entry>
+    
+    <entry key="sql_keyword_plan_insert">
+        <![CDATA[	
+			INSERT INTO sc_keyword_plan 
+					(plan_id, 
+					NAME, 
+					memo, 
+					creator, 
+					create_date
+					)
+					VALUES
+					('{@#guid#}', 
+					'{@#name#}', 
+					'{@#memo#}', 
+					'{@#loginId#}', 
+					NOW()
+					)
+		]]>
+    </entry>
+    
+    <entry key="sql_keyword_plan_update">
+        <![CDATA[	
+			UPDATE sc_keyword_plan 
+				SET
+				NAME = '{@#name#}' , 
+				memo = '{@#memo#}' 
+				WHERE
+				plan_id = '{@#id#}'
+		]]>
+    </entry>
+    
+    <entry key="d_list_task">
+        <![CDATA[	
+			select * from sc_keyword_task  where 1=1
+			{@ and name = '#name#'}
+			and plan_id = '{@#planId#}'
+		]]>
+    </entry>
+    
+    <entry key="sql_keyword_task_insert">
+        <![CDATA[	
+			INSERT INTO sc_keyword_task
+					(task_id, 
+					plan_id,
+					NAME, 
+					memo, 
+					creator, 
+					create_date
+					)
+					VALUES
+					('{@#guid#}', 
+					'{@#planId#}', 
+					'{@#name#}', 
+					'{@#memo#}', 
+					'{@#loginId#}', 
+					NOW()
+					)
+		]]>
+    </entry>
+    
+    <entry key="sql_keyword_task_update">
+        <![CDATA[	
+			UPDATE sc_keyword_task
+				SET
+				NAME = '{@#name#}' , 
+				memo = '{@#memo#}' 
+				WHERE
+				task_id = '{@#id#}'
+		]]>
+    </entry>
+    
+    <entry key="sql_keyword_insert">
+        <![CDATA[
+			INSERT INTO sc_keyword 
+				(keyword_id, 
+				task_id, 
+				keyword, 
+				is_main_keywork, 
+				parent_id, 
+				keyword_type, 
+				search_volume, 
+				cpc, 
+				competition, 
+				result_num, 
+				trends, 
+				STATUS, 
+				create_date, 
+				creator
+				)
+				VALUES
+				('{@#guid#}', 
+				'{@#taskId#}', 
+				'{@#keyword#}', 
+				'{@#is_main_keywork#}', 
+				'{@#parent_id#}', 
+				'{@#keyword_type#}', 
+				'{@#search_volume#}', 
+				'{@#cpc#}', 
+				'{@#competition#}', 
+				'{@#result_num#}', 
+				'{@#trends#}', 
+				'{@#status#}', 
+				NOW(), 
+				'{@#loginId#}'
+				)
+	]]>
+    </entry>
+    
+      <entry key="sql_keyword_update">
+       <![CDATA[ 
+		    UPDATE  sc_keyword 
+			SET
+			keyword_id = '{@#keyword_id#}'
+			{@,dev_use_to = '#dev_use_to#' }
+			{@,dev_search_result = '#dev_search_result#' }
+			{@,dev_competition = '#dev_competition#'  }
+			{@,dev_profile_scope = '#dev_profile_scope#'  }
+			{@,dev_price_scope = '#dev_price_scope#'  }
+			{@,dev_asin = '#dev_asin#'  }
+			{@,dev_rank = '#dev_rank#'  }
+			{@,dev_important = '#dev_important#'  }
+			{@,dev_audit_result = '#dev_audit_result#'  }
+			{@,dev_charger = '#dev_charger#'  }
+			{@,dev_charger_name = '#dev_charger_name#'  }
+			{@,STATUS = '#status#'}
+			
+			WHERE
+			keyword_id = '{@#keyword_id#}'
+    ]]>
+    </entry>
+    <entry key="sql_keyword_website_insert">
+    <![CDATA[
+		  INSERT INTO sc_keyword_website 
+			(keyword_id, 
+			domain, 
+			url
+			)
+			VALUES
+			('{@#mainGuid#}', 
+			'{@#domain1#}', 
+			'{@#url#}'
+			)
+    ]]>
+    </entry>
+    
+    <entry key="d_list_niche_keyword">
+    <![CDATA[
+		 select * from sc_keyword where 1=1 
+		 and is_niche = 1
+		 {@ and status = '#status#'}
+		 {@ and name like '%#name#%'}
+    ]]>
+    </entry>
+    
+    <entry key="d_list_my_niche_keyword">
+    <![CDATA[
+		 select * from sc_keyword where 1=1 
+		 and is_niche = 1
+		 and status = '2'
+		 and dev_charger = '{@#Evn.loginId#}'
+    ]]>
+    </entry>
+    
+    
+    
+    
 </properties>
