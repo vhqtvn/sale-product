@@ -69,6 +69,8 @@
 	.num-td{
 		width:20px;
 	}
+	
+	
 </style>
 
 <script>

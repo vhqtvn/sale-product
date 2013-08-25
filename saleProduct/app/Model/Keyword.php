@@ -49,6 +49,8 @@ class Keyword extends AppModel {
 	 * @param unknown_type $params
 	 */
 	public function fetchChildKeyWords($params){
+		$count = 0 ;
+		
 		$keywordId = null ;
 		if( isset($params['keywordId']) ){
 			$keywordId = $params['keywordId'] ;
@@ -99,7 +101,13 @@ class Keyword extends AppModel {
 				$record['result_num'] = $array[4] ;
 				$record['trends'] = $array[5] ;
 				$record['parent_id'] = $mainGuid ;
-				$this->exeSql("sql_keyword_insert", $record) ;
+				
+				//判断keyword是否存在，如果存在则不考虑
+				$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
+				if(empty($result)){
+					$count++ ;
+					$this->exeSql("sql_keyword_insert", $record) ;
+				}
 			}
 			$index++;
 		} 
@@ -125,7 +133,14 @@ class Keyword extends AppModel {
 				$record['result_num'] = $array[4] ;
 				$record['trends'] = $array[5] ;
 				$record['parent_id'] = $mainGuid ;
-				$this->exeSql("sql_keyword_insert", $record) ;
+				
+
+				//判断keyword是否存在，如果存在则不考虑
+				$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
+				if(empty($result)){
+					$count++ ;
+					$this->exeSql("sql_keyword_insert", $record) ;
+				}
 			}
 			$index++;
 		}
@@ -147,6 +162,8 @@ class Keyword extends AppModel {
 			}
 			$index++;
 		}
+		
+		return $count ;
 	}
 	
 	public function loadMainKeywords( $params ){
@@ -170,5 +187,15 @@ class Keyword extends AppModel {
 	public function setToNiche($params){
 		$sql = "update sc_keyword set is_niche = '1' where keyword_id = '".$params['keywordId']."'" ;
 		$this->exeSql($sql, array()) ;		
+	}
+	
+	public function getWebSite($params){
+		$keywordId = $params['keywordId'] ;
+		$sql = "SELECT DISTINCT * FROM sc_keyword_website 
+				WHERE keyword_id = '{@#keywordId#}'
+				OR keyword_id IN (
+				  SELECT parent_id FROM sc_keyword WHERE keyword_id = '{@#keywordId#}'
+				)" ;
+		return $this->exeSqlWithFormat($sql, $params) ;
 	}
 }

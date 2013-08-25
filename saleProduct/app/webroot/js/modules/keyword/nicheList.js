@@ -10,9 +10,10 @@ $(function(){
 				}},
 				{align:"left",key:"keyword",label:"关键字名称", width:"15%"},
 				{align:"left",key:"status",label:"状态", width:"8%",format:function(val , record){
+	
 					if( !val ) return "开发中" ;
 					if( val==10 ) return "开发中" ;
-					if( val==20 ) return "" ;
+					if( val==20 ) return "待审批" ;
 					if( val==30 ) return "待分配责任人" ;
 					if( val==40 ) return "关联开发产品" ;
 					if( val==50 ) return "结束" ;
@@ -35,7 +36,7 @@ $(function(){
 		 },
 		 title:"",
 		 indexColumn:false,
-		 querys:{_data :"d_list_niche_keyword",status:'1'},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 querys:{_data :"d_list_niche_keyword",status:'20'},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......"
 	}) ;
 	

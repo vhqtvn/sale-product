@@ -1,5 +1,5 @@
 $(function(){
-	$(".niche-grid").llygrid({
+	if( $(".niche-grid").length )$(".niche-grid").llygrid({
 		columns:[
            	
 			{align:"center",key:"keyword_id",label:"操作", width:"10%",format:function(val,record){
@@ -75,22 +75,36 @@ $(function(){
 		}
 	}) ;
 	
-	$(".label-td").live("dblclick",function(){
+	function  labelClick(){
 		var keywordId = $(this).parents("tr:first").attr("keyword-id") ;
 		var keywordText =  $(this).parents("tr:first").attr("keyword")  ;
 		var num = $(this).parents("tr:first").find(".num-td").text() ;
-		if(num <= 0) return ;
+		
+		if(num === 0) return ;
 		loadChildKeywords( keywordId,keywordText, $(this).parents(".dev-item:first") ) ;
+		$(this).parent().parent().find("tr").removeClass("alert") ;
 		$(this).parent().addClass("alert") ;
+	}
+	
+	$(".label-td").live("dblclick",function(){
+		labelClick.call(this) ;
 	}) ;
 	
 	$(".getSemrushKeyword").live("click",function(){
+		var me = $(this) ;
 		if(window.confirm("确认获取Semrush关键字？")){
 			var keywordId = $(this).parents("tr:first").attr("keyword-id") ;
 			var keywordText =  $(this).parents("tr:first").attr("keyword")  ;
+			
+			var devItem = $(this).parents(".dev-item:first") ;
+			$(this).parent().parent().find("tr").removeClass("alert") ;
+			$(this).parent().addClass("alert") ;
 		
 			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:keywordText,'keywordId':keywordId,taskId:taskId},function(result){
-				window.location.reload() ;
+				me.parents("tr:first").find(".num-td").text(result) ;
+				me.parents("tr:first").find(".getSemrushKeyword").remove() ;
+				
+				loadChildKeywords( keywordId,keywordText, devItem ) ;
 			});
 		}
 		
@@ -100,11 +114,30 @@ $(function(){
 		if(window.confirm("确认设置为Niche关键字？")){
 			var keywordId = $(this).parents("tr:first").attr("keyword-id") ;
 			var keywordText =  $(this).parents("tr:first").find("td:first").text() ;
-			
+			var me = this ;
+			var labelTd = $(me).parents("tr:first").find(".label-td") ;
+			var _kt = $(this).parents("tr:first").find("td:first").html() ;
 			$.dataservice("model:Keyword.setToNiche",{mainKeyword:keywordText,'keywordId':keywordId,taskId:taskId},function(result){
-				window.location.reload() ;
+				$(me).parents("tr:first").find(".setToNiche").remove() ;
+				labelTd.html("<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"+_kt ) ;
+				$(".niche-grid").llygrid("reload",{},true) ;
 			});
 		}
+	}) ;
+	
+	$(".getWebsite").live("click",function(){
+		var keywordId = $(this).parents("tr:first").attr("keyword-id") ;
+		var keywordText =  $(this).parents("tr:first").attr("keyword")  ;
+		openCenterWindow(contextPath+"/page/forward/Keyword.showWebsite/"+keywordId,500,350,function(win,ret){
+		},{keyword:keywordText}) ;
+		/*
+		$.dataservice("model:Keyword.getWebSite",{'keywordId':keywordId},function(result){
+			$(".website-container").show();
+			$(".website-container ul").empty().show() ;
+			$(result).each(function(){
+				$(".website-container ul").append("<li><a href='"+this.url+"' target='_blank'>"+this.domain+"</a></li>") ;
+			}) ;
+		});*/
 	}) ;
 	
 	function loadMainKeywords(){
@@ -128,6 +161,10 @@ $(function(){
 					img = img +
 					"<img class='getSemrushKeyword' title='获取semrush关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 				}
+				
+				//网址
+				img = img +
+				"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
 				
 				$("<tr  keyword-id='"+this.keyword_id+"' keyword='"+this.keyword+"'><td class='label-td'>"+kw+"</td><td class='num-td'>"+this.c+
 						"</td><td class='action-td'>"+img+"</td></tr>").appendTo( table ) ;
@@ -168,6 +205,10 @@ $(function(){
 				}
 
 				kw = kw+"<br/>"+this.keyword_type+"/"+this.search_volume+"/"+this.cpc+"/"+this.competition+"/"+this.result_num;
+
+				//网址
+				img = img +
+				"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
 				
 				$("<tr  keyword-id='"+this.keyword_id+"' keyword='"+this.keyword+"'><td class='label-td'>"+kw+"</td><td class='num-td'>"+this.c+
 						"</td><td class='action-td'>"+img+"</td></tr>").appendTo( table ) ;
