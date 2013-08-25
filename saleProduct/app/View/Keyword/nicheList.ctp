@@ -22,7 +22,7 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('layout/jquery.layout');
 		echo $this->Html->script('tree/jquery.tree');
-		echo $this->Html->script('modules/keyword/developer');
+		echo $this->Html->script('modules/keyword/nicheList');
 	?>
 	
    <style>
@@ -33,39 +33,30 @@
 
 </head>
 <body style="magin:0px;padding:0px;">
-		<div class="toolbar toolbar-auto plan-t">
-				<table>
-					<tr>
-						<th>计划名称：
-						</th>
-						<td>
-							<input type="text" name="name" class="input-medium"/>
-						</td>					
-						<td class="toolbar-btns" rowspan="3">
-							<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.plan-grid',qc:'.plan-t'}">查询</button>
-							&nbsp;&nbsp;&nbsp;
-							<button class="add-plan btn btn-primary">添加计划</button>
-						</td>
-					</tr>						
-				</table>
-		</div>
-		<div class="plan-grid" ></div>
+		
 		<div class="toolbar task-t toolbar-auto">
 				<table>
 					<tr>
-						<th>任务名称：
+						<th>关键字名称：
 						</th>
 						<td>
 							<input type="text" name="name" class="input-medium"/>
+						</td>	
+						<th>状态：</th>
+						<td>
+							<select id="status">
+								<option value="">全部</option>
+								<option value="1" selected="selected">待审批</option>
+								<option value="2">审批通过</option>
+								<option value="3">废弃</option>
+							</select>
 						</td>					
 						<td class="toolbar-btns" rowspan="3">
-							<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.task-grid',qc:'.task-t'}">查询</button>
-							&nbsp;&nbsp;&nbsp;
-							<button class="add-task btn btn-primary "  disabled="disabled">添加任务</button>
+							<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.niche-grid',qc:'.task-t'}">查询</button>
 						</td>
 					</tr>						
 				</table>
 		</div>
-		<div class="task-grid" ></div>
+		<div class="niche-grid" ></div>
 </body>
 </html>
