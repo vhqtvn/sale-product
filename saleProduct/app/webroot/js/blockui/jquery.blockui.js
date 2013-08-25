@@ -219,6 +219,7 @@
 	
 	function install(el, opts) {
 		var full = (el == window);
+		full = true ;
 		var msg = opts && opts.message !== undefined ? opts.message : undefined;
 
 		opts = $.extend({}, $.block.defaults, opts || {});
@@ -279,6 +280,7 @@
 		else {
 			s = '<div class="block blockMsg blockElement" style="z-index:'+z+';display:none;position:absolute"></div>';
 		}
+		
 		lyr3 = $(s);
 		
 		if(!opts.title) lyr3.find('.ui-dialog-titlebar').hide();
