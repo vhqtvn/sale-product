@@ -68,7 +68,7 @@ $(function(){
 	
 	$(".asyn-keyword").click(function(){
 		var mainKeyword = $("#mainKeyword").val() ;
-		if(window.confirm("确认获取Semrush关键字？")){
+		if(window.confirm("确认获取扩展关键字？")){
 			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:mainKeyword,'taskId':taskId},function(result){
 					window.location.reload() ;
 			});
@@ -92,7 +92,7 @@ $(function(){
 	
 	$(".getSemrushKeyword").live("click",function(){
 		var me = $(this) ;
-		if(window.confirm("确认获取Semrush关键字？")){
+		if(window.confirm("确认获取扩展关键字？")){
 			var keywordId = $(this).parents("tr:first").attr("keyword-id") ;
 			var keywordText =  $(this).parents("tr:first").attr("keyword")  ;
 			
@@ -159,7 +159,7 @@ $(function(){
 				
 				if(this.c <=0 && isDev ){
 					img = img +
-					"<img class='getSemrushKeyword' title='获取semrush关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
+					"<img class='getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 				}
 				
 				//网址
@@ -201,7 +201,7 @@ $(function(){
 				
 				if(this.c <=0 && isDev ){
 					img = img +
-					"<img class='getSemrushKeyword' title='获取semrush关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
+					"<img class='getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 				}
 
 				kw = kw+"<br/>"+this.keyword_type+"/"+this.search_volume+"/"+this.cpc+"/"+this.competition+"/"+this.result_num;
