@@ -29,6 +29,16 @@
 		//获取任务主关键字
 		
 		$taskId = $params['arg1'] ;
+		
+		$security  = ClassRegistry::init("Security") ;
+		$loginId = $user['LOGIN_ID'] ;
+		
+		$audit_niche 								= $security->hasPermission($loginId , 'audit_niche') ;
+		$assign_kw_charger                      = $security->hasPermission($loginId , 'assign_kw_charger') ;//回退
+		$kw_relation_product				= $security->hasPermission($loginId , 'kw_relation_product') ;
+		$add_kw_plan						= $security->hasPermission($loginId , 'add_kw_plan') ;
+		$add_kw_task							= $security->hasPermission($loginId , 'add_kw_task') ;
+		$niche_kw_dev							= $security->hasPermission($loginId , 'niche_kw_dev') ;
 	?>
   
 </head>
@@ -62,10 +72,12 @@
 </style>
 
 <script>
-		var taskId = '<?php echo $taskId;?>' ;
+		var taskId		= '<?php echo $taskId;?>' ;
+		var isDev		= <?php echo $niche_kw_dev?"true":"false"?> ;
 </script>
 
 <body class="container-popup">
+<?php if( $niche_kw_dev ){?>
 	<div class="toolbar toolbar-auto plan-t">
 				<table>
 					<tr>
@@ -79,6 +91,7 @@
 					</tr>
 				</table>
 		</div>
+<?php } ?>
 		<div class="dev-container">
 			<div class="dev-item main-keyword">
 			</div>

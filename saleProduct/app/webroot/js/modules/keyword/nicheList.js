@@ -10,10 +10,13 @@ $(function(){
 				}},
 				{align:"left",key:"keyword",label:"关键字名称", width:"15%"},
 				{align:"left",key:"status",label:"状态", width:"8%",format:function(val , record){
-				if( !val ) return "开发中" ;
-				if( val==1 ) return "等待审批" ;
-				if( val==2 ) return "审批通过" ;
-				if( val==3 ) return "废弃" ;
+					if( !val ) return "开发中" ;
+					if( val==10 ) return "开发中" ;
+					if( val==20 ) return "" ;
+					if( val==30 ) return "待分配责任人" ;
+					if( val==40 ) return "关联开发产品" ;
+					if( val==50 ) return "结束" ;
+					if( val==15 ) return "废弃" ;
 				}},
 				{align:"left",key:"dev_charger_name",label:"开发负责人", width:"15%"},
 				{align:"left",key:"keyword_type",label:"关键字类型", width:"10%"},
@@ -38,7 +41,7 @@ $(function(){
 	
 	$(".niche-update").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
-		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDevForAudit/"+record.keyword_id,800,550,function(win,ret){
+		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,800,550,function(win,ret){
 			if(ret)$(".niche-grid").llygrid("reload",{},true) ;
 		}) ;
 	}) ;

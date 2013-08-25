@@ -23,6 +23,7 @@
 		echo $this->Html->script('layout/jquery.layout');
 		echo $this->Html->script('tree/jquery.tree');
 		echo $this->Html->script('modules/keyword/nicheList');
+		
 	?>
 	
    <style>
@@ -46,10 +47,20 @@
 						<td>
 							<select id="status">
 								<option value="">全部</option>
-								<option value="1" selected="selected">待审批</option>
-								<option value="2">审批通过</option>
-								<option value="3">废弃</option>
+								<!-- 
+								<option value="10" selected="selected">开发中</option>
+								 -->
+								<option value="20"  selected="selected">待审批</option>
+								<option value="30">待分配责任人</option>
+								<option value="40">关联开发产品</option>
+								<option value="50">处理结束</option>
+								<option value="15">废弃</option>
 							</select>
+						</td>	
+						<th>开发责任人：
+						</th>
+						<td>
+							<input type="text" name="dev_charger_name" class="input-medium"/>
 						</td>					
 						<td class="toolbar-btns" rowspan="3">
 							<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.niche-grid',qc:'.task-t'}">查询</button>

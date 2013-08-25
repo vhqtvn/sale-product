@@ -3,6 +3,7 @@ $(function(){
 	$(".plan-grid").llygrid({
 		columns:[
 		     {align:"center",key:"plan_id",label:"", width:"5%",format:function(val,record){
+		    	 	if(!addKwPlan) return "";
 					var html = [] ;
 					var val = record["CODE"] ;
 					html.push("<a href='#' class='action plan-update' val='"+val+"'>修改</a>&nbsp;") ;
@@ -22,7 +23,7 @@ $(function(){
 		 indexColumn:false,
 		 querys:{_data :"d_list_plan"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......",
-		 rowDblClick:function(row , record){
+		 rowClick:function(row , record){
 			 currentPlan = record ;
 			 $(".add-task").removeAttr("disabled") ;
 			 $(".task-grid").llygrid("reload",{planId:record.plan_id}) ;
@@ -34,7 +35,7 @@ $(function(){
 		     {align:"center",key:"task_id",label:"", width:"10%",format:function(val,record){
 					var html = [] ;
 					var val = record["CODE"] ;
-					html.push("<a href='#' class='action task-update'>修改</a>&nbsp;") ;
+					if(addKwTask)html.push("<a href='#' class='action task-update'>修改</a>&nbsp;") ;
 					html.push("<a href='#' class='action keyword-dev'>关键字开发</a>&nbsp;") ;
 					return html.join("") ;
 			}},

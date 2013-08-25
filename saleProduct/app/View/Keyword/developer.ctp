@@ -23,6 +23,13 @@
 		echo $this->Html->script('layout/jquery.layout');
 		echo $this->Html->script('tree/jquery.tree');
 		echo $this->Html->script('modules/keyword/developer');
+		
+
+		$security  = ClassRegistry::init("Security") ;
+		$loginId = $user['LOGIN_ID'] ;
+		
+		$add_kw_plan						= $security->hasPermission($loginId , 'add_kw_plan') ;
+		$add_kw_task							= $security->hasPermission($loginId , 'add_kw_task') ;
 	?>
 	
    <style>
@@ -30,6 +37,11 @@
    			font:12px "微软雅黑";
    		}
    </style>
+   
+   <script type="text/javascript">
+		var addKwPlan = <?php echo $add_kw_plan?"true":"false" ;?>;
+		var addKwTask = <?php echo $add_kw_task?"true":"false" ;?>
+   </script>
 
 </head>
 <body style="magin:0px;padding:0px;">
@@ -44,7 +56,9 @@
 						<td class="toolbar-btns" rowspan="3">
 							<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.plan-grid',qc:'.plan-t'}">查询</button>
 							&nbsp;&nbsp;&nbsp;
+							<?php if($add_kw_plan){?>
 							<button class="add-plan btn btn-primary">添加计划</button>
+							<?php }?>
 						</td>
 					</tr>						
 				</table>
@@ -61,7 +75,9 @@
 						<td class="toolbar-btns" rowspan="3">
 							<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.task-grid',qc:'.task-t'}">查询</button>
 							&nbsp;&nbsp;&nbsp;
+							<?php if($add_kw_task){?>
 							<button class="add-task btn btn-primary "  disabled="disabled">添加任务</button>
+							<?php }?>
 						</td>
 					</tr>						
 				</table>

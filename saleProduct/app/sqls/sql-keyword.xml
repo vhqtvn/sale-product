@@ -139,7 +139,7 @@
 				'{@#competition#}', 
 				'{@#result_num#}', 
 				'{@#trends#}', 
-				'{@#status#}', 
+				'10', 
 				NOW(), 
 				'{@#loginId#}'
 				)

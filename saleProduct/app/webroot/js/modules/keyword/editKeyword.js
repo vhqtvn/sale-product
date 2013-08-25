@@ -11,9 +11,12 @@ $(function(){
 			{align:"left",key:"keyword",label:"关键字名称", width:"15%"},
 			{align:"left",key:"status",label:"状态", width:"8%",format:function(val , record){
 				if( !val ) return "开发中" ;
-				if( val==1 ) return "等待审批" ;
-				if( val==2 ) return "审批通过" ;
-				if( val==3 ) return "废弃" ;
+				if( val==10 ) return "开发中" ;
+				if( val==20 ) return "" ;
+				if( val==30 ) return "待分配责任人" ;
+				if( val==40 ) return "关联开发产品" ;
+				if( val==50 ) return "结束" ;
+				if( val==15 ) return "废弃" ;
 			}},
            	{align:"left",key:"keyword_type",label:"关键字类型", width:"10%"},
            	{align:"center",key:"search_volume",label:"搜索量", width:"5%"},
@@ -118,10 +121,10 @@ $(function(){
 				if(this.is_niche == 1){
 					kw = "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +kw ;
 				}else{
-					img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
+					if(isDev)img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
 				}
 				
-				if(this.c <=0 ){
+				if(this.c <=0 && isDev ){
 					img = img +
 					"<img class='getSemrushKeyword' title='获取semrush关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 				}
@@ -156,10 +159,10 @@ $(function(){
 				if(this.is_niche == 1){
 					kw = "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +kw ;
 				}else{
-					img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
+					if(isDev)img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
 				}
 				
-				if(this.c <=0 ){
+				if(this.c <=0 && isDev ){
 					img = img +
 					"<img class='getSemrushKeyword' title='获取semrush关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 				}

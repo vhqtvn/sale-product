@@ -4,6 +4,23 @@ class Keyword extends AppModel {
 	 
 	public function saveNiceDev($params){
 		$this->exeSql("sql_keyword_update", $params) ;
+		
+		if( isset( $params['memo'] ) ){
+			$this->exeSql("INSERT INTO sc_keyword_track 
+					(
+					keyword_id, 
+					description,
+					creator, 
+					create_date
+					)
+					VALUES
+					(
+					'{@#keyword_id#}', 
+					'{@#memo#}', 
+					'{@#loginId#}', 
+					NOW()
+					)", $params) ;
+		}
 	}
 	
 	public function savePlan( $params ){

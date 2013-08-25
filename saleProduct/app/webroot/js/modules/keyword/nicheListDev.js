@@ -38,7 +38,7 @@ $(function(){
 	
 	$(".niche-update").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
-		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDevForAudit/"+record.keyword_id,800,550,function(win,ret){
+		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,800,550,function(win,ret){
 			if(ret)$(".niche-grid").llygrid("reload",{},true) ;
 		}) ;
 	}) ;
