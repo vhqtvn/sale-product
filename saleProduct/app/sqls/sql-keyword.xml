@@ -162,6 +162,7 @@
 			{@,dev_audit_result = '#dev_audit_result#'  }
 			{@,dev_charger = '#dev_charger#'  }
 			{@,dev_charger_name = '#dev_charger_name#'  }
+			{@,dev_level = '#dev_level#'  }
 			{@,STATUS = '#status#'}
 			
 			WHERE

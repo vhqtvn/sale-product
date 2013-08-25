@@ -191,7 +191,7 @@ class Keyword extends AppModel {
 	
 	public function getWebSite($params){
 		$keywordId = $params['keywordId'] ;
-		$sql = "SELECT DISTINCT * FROM sc_keyword_website 
+		$sql = "SELECT DISTINCT domain,url FROM sc_keyword_website 
 				WHERE keyword_id = '{@#keywordId#}'
 				OR keyword_id IN (
 				  SELECT parent_id FROM sc_keyword WHERE keyword_id = '{@#keywordId#}'

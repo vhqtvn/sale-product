@@ -300,6 +300,17 @@
 									<?php echo $canWrite?"":"disabled" ;?> style="width:90%;height:40px;"><?php echo $kw['dev_asin'] ;?></textarea></td>
 								</tr>
 								<tr>
+									<th>开发重要级别：</th>
+									<td colspan="3">
+										<select id="dev_level">
+											<option value="">选择开发按级别</option>
+											<option value="1"  <?php echo $kw['dev_level']==1?"selected":"" ;?>>1</option>
+											<option value="2"  <?php echo $kw['dev_level']==2?"selected":"" ;?>>2</option>
+											<option value="3"  <?php echo $kw['dev_level']==3?"selected":"" ;?>>3</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
 									<th>开发重要性：</th>
 									<td colspan="3"><textarea id="dev_important"
 									<?php echo $canWrite?"":"disabled" ;?>
