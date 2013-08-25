@@ -87,7 +87,7 @@
 							<input type="text" id="mainKeyword" class="input-larger "  placeHolder="输入主关键字"/>
 						</td>					
 						<td class="toolbar-btns" rowspan="3">
-							<button class="query-btn btn btn-primary asyn-keyword"   >获取Semrush关键字</button>
+							<button class="query-btn btn btn-primary asyn-keyword"   >获取扩展关键字</button>
 							&nbsp;&nbsp;&nbsp;
 						</td>
 					</tr>
