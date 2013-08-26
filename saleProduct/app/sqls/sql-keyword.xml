@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+
+
+
+	<entry key="sql_filter_keywords_15">
+        <![CDATA[	
+			UPDATE sc_keyword SET STATUS = '15'
+				WHERE task_id = '{@#taskId#}'
+				{@ AND search_volume <  #search_volume# }
+				{@ AND cpc <  #cpc# }
+				{@ AND competition <  #competition# }
+				{@ AND result_num <  #result_num# }
+		]]>
+    </entry>
+
+	<entry key="d_list_keywordByMain">
+        <![CDATA[	
+			select t.* ,
+						(select count(1) from sc_keyword sk where sk.parent_id = t.keyword_id ) as c
+					from sc_keyword t
+					where t.parent_id='{@#parentId#}' 
+					and status <> 15
+					 order by t.search_volume desc
+		]]>
+    </entry>
+    
       <entry key="d_list_plan">
         <![CDATA[	
 			select * from sc_keyword_plan  where 1=1
@@ -20,6 +45,7 @@
 			select * from sc_keyword
 			where is_niche = '1'
 			and task_id = '{@#taskId#}'
+			and status <> 15
 		]]>
     </entry>
     

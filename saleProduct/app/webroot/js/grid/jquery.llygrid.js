@@ -227,8 +227,9 @@
 				
 				if(options.rowDblClick){
 					row.bind("dblclick",function(){
+						var _row = $(this) ;
 						var _record = $(this).data("record") ;
-						options.rowDblClick(null,_record) ;
+						options.rowDblClick(_row,_record) ;
 					})
 				}
 			}) ;
@@ -258,7 +259,7 @@
 			if(options.rowDblClick){
 				row.bind("dblclick",function(){
 					var _record = $(this).data("record") ;
-					options.rowDblClick(null,_record) ;
+					options.rowDblClick($(this),_record) ;
 				})
 			};
 		}) ;

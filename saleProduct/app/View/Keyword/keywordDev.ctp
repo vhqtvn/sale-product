@@ -49,17 +49,15 @@
 	}	
 	
 	.dev-item{
-		float:left;
-		width:345px;
-		height:300px;
+		height:250px;
 		margin:3px;
 		border:1px solid #CCC;
-		padding:3px;
+		padding:1px;
 		overflow:auto;
 	}
 	
 	.action-td{
-		width:40px;
+		width:60px;
 	}
 	
 	.action-td img{
@@ -67,7 +65,7 @@
 	}
 	
 	.num-td{
-		width:20px;
+		width:40px;
 	}
 	
 	
@@ -90,16 +88,30 @@
 							<button class="query-btn btn btn-primary asyn-keyword"   >获取扩展关键字</button>
 							&nbsp;&nbsp;&nbsp;
 						</td>
+						<td class="toolbar-filter" style="text-align: right;">
+							搜索量>=<input type="text"  name="search_volume" style="width:70px;"/>
+							CPC>=<input type="text" name="cpc"    style="width:70px;"/>
+							竞争>=<input type="text"   name="competition" style="width:70px;"/>
+							搜索结果>=<input type="text"  name="result_num"   style="width:70px;"/>
+							<button class="query-btn btn btn-primary  btn-filter"   >筛选</button>
+							&nbsp;&nbsp;&nbsp;
+						</td>
 					</tr>
 				</table>
 		</div>
 <?php } ?>
-		<div class="dev-container">
-			<div class="dev-item main-keyword">
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="dev-container" style="height:580px;overflow:auto;">
+					<div class="dev-item main-keyword" style="height:200px;">
+					</div>
+				</div>
 			</div>
-		</div>
-		<div class="dev-niche">
-			<div class="niche-grid"></div>
+			<div class="span6">
+				<div class="dev-niche">
+					<div class="niche-grid"></div>
+				</div>
+			</div>
 		</div>
 </body>
 </html>
