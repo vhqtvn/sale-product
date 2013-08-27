@@ -48,14 +48,7 @@
 		overflow:auto;
 	}	
 	
-	.dev-item{
-		height:250px;
-		margin:3px;
-		border:1px solid #CCC;
-		padding:1px;
-		overflow:auto;
-	}
-	
+
 	.action-td{
 		width:60px;
 	}
@@ -102,10 +95,10 @@
 <?php } ?>
 		<div class="row-fluid">
 			<div class="span6">
-				<div class="dev-container" style="height:580px;overflow:auto;">
-					<div class="dev-item main-keyword" style="height:200px;">
+					<div class="dev-item main-keyword" >
 					</div>
-				</div>
+					<div class="dev-item child-keyword" style="margin-top:10px;">
+					</div>
 			</div>
 			<div class="span6">
 				<div class="dev-niche">

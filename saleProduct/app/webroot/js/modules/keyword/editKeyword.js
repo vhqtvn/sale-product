@@ -22,15 +22,13 @@ $(function(){
            	{align:"center",key:"search_volume",label:"搜索量", width:"10%"},
 			
            	{align:"left",key:"cpc",label:"CPC",width:"10%",forzen:false,align:"left"},
-           	{align:"left",key:"competition",label:"竞争",width:"10%"},
-           	{align:"left",key:"result_num",label:"结果数",width:"15%"}//,
-            //{align:"left",key:"trends",label:"趋势",width:"25%"} 
+           	{align:"left",key:"competition",label:"竞争",width:"10%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-			 return $(window).height() - 150 ;
+			 return $(window).height() - 140 ;
 		 },
 		 title:"Niche关键字列表",
 		 indexColumn:false,
@@ -70,7 +68,7 @@ $(function(){
 		var mainKeyword = $("#mainKeyword").val() ;
 		if(window.confirm("确认获取扩展关键字？")){
 			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:mainKeyword,'taskId':taskId},function(result){
-					window.location.reload() ;
+				$(".main-keyword").llygrid("reload",{},true) ;
 			});
 		}
 	}) ;
@@ -97,22 +95,27 @@ $(function(){
 		}
 	}) ;
 	
-	function createGrid( container , keywordId , text ){
-		container.css("width","98%");
-		container.llygrid({
+	var isInit = false ;
+	function createGrid(  keywordId , text ){
+		if(isInit){
+			$(".child-keyword").llygrid("reload",{parentId:keywordId}) ;
+			return ;
+		}
+		isInit = true ;
+		
+		$(".child-keyword").llygrid({
 			columns:[
-				{align:"left",key:"keyword",label:"关键字名称", width:"170px",format:function(val,record){
+				{align:"left",key:"keyword",label:"关键字名称", width:"230px",format:function(val,record){
 					if( record.is_niche == 1 ){
 						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +val ;
 					}
 					return val ;
 				}},
+				{align:"left",key:"keyword_type",label:"类型", width:"10%"},
 				{align:"left",key:"search_volume",label:"搜索量", width:"10%"},
 				{align:"left",key:"cpc",label:"CPC", width:"10%"},
 				{align:"left",key:"competition",label:"竞争", width:"10%"},
-	            {align:"left",key:"result_num",label:"结果数",width:"15%"},
-	            {align:"left",key:"c",label:"扩展数",width:"10%"} ,
-	            {align:"center",key:"keyword_id",label:"操作",width:"10%",format:function(val,record){
+	            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
 	            	var img = "" ;
 					
 					if(record.is_niche != 1){
@@ -135,30 +138,12 @@ $(function(){
 			 limit:20,
 			 pageSizes:[10,20,30,40],
 			 height:function(){
-				 return 155 ;
+				 return 245 ;
 			 },
 			 title:text,
 			 indexColumn:false,
 			 querys:{_data:"d_list_keywordByMain",parentId:keywordId},
-			 loadMsg:"扩展关键字加载中，请稍候......",
-			 rowDblClick:function(row,record){
-				    if(record.c == 0) return ;
-			
-					var parentContainer = row.parents(".dev-item:first") ;
-					var container = parentContainer.next(".dev-item") ;
-					
-					while(parentContainer.next(".dev-item").length){
-						parentContainer.next(".dev-item").remove() ;
-					}
-					container = parentContainer.next(".dev-item") ;
-					if( container.length <=0 ){
-						container = $("<div class='dev-item'></div>").appendTo(parentContainer.parent()) ;
-					}
-					
-					container.empty() ;
-					
-					createGrid(container,record.keyword_id ,record.keyword ) ;
-			 }
+			 loadMsg:"扩展关键字加载中，请稍候......"
 		}) ;
 	}
 	
@@ -167,21 +152,7 @@ $(function(){
 		var keywordText =  $(this).parents("tr:first").attr("keyword")  ;
 		var num = $(this).parents("tr:first").find(".num-td").text() ;
 		
-		if(num === 0) return ;
-		var parentContainer = $(this).parents(".dev-item:first") ;
-		var container = parentContainer.next(".dev-item") ;
-		
-		while(parentContainer.next(".dev-item").length){
-			parentContainer.next(".dev-item").remove() ;
-		}
-		container = parentContainer.next(".dev-item") ;
-		if( container.length <=0 ){
-			container = $("<div class='dev-item'></div>").appendTo(parentContainer.parent()) ;
-		}
-		
-		container.empty() ;
-		
-		createGrid(container,keywordId,keywordText) ;
+		createGrid(keywordId,keywordText) ;
 	}
 	
 	$(".label-td").live("dblclick",function(){
@@ -200,20 +171,8 @@ $(function(){
 			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:keywordText,'keywordId':keywordId,taskId:taskId},function(result){
 				me.parents("tr:first").find("td[key='c']").find("span").text(result).attr("title",result) ;
 				me.parents("tr:first").find(".getSemrushKeyword").remove() ;
-				
-				var container = devItem.next(".dev-item") ;
-				
-				while(devItem.next(".dev-item").length){
-					devItem.next(".dev-item").remove() ;
-				}
-				container = devItem.next(".dev-item") ;
-				if( container.length <=0 ){
-					container = $("<div class='dev-item'></div>").appendTo(devItem.parent()) ;
-				}
-				
-				container.empty() ;
-				
-				createGrid(container,keywordId ,keywordText ) ;
+
+				$(".main-keyword").llygrid("reload",{},true) ;
 			});
 		}
 		
@@ -252,35 +211,52 @@ $(function(){
 	}) ;
 	
 	function loadMainKeywords(){
-		$.dataservice("model:Keyword.loadMainKeywords",{'taskId':taskId},function(result){
-			$(".main-keyword").empty() ;
-			var table = $("<table class='table'><caption>主关键字</caption></table>").appendTo(".main-keyword") ;
-			
-			
-			$(result).each(function(){
-				var kw = this.keyword ;
-				
-				var img = "" ;
-				
-				if(this.is_niche == 1){
-					kw = "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +kw ;
-				}else{
-					if(isDev)img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
-				}
-				
-				if(this.c <=0 && isDev ){
+		
+		$(".main-keyword").llygrid({
+			columns:[
+				{align:"left",key:"keyword",label:"关键字名称", width:"230px",format:function(val,record){
+					if( record.is_niche == 1 ){
+						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +val ;
+					}
+					return val ;
+				}},
+				{align:"left",key:"search_volume",label:"搜索量", width:"10%"},
+				{align:"left",key:"cpc",label:"CPC", width:"10%"},
+				{align:"left",key:"competition",label:"竞争", width:"10%"},
+	            {align:"left",key:"c",label:"扩展数",width:"10%"} ,
+	            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
+	            	var img = "" ;
+					
+					if(record.is_niche != 1){
+						if(isDev)img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
+					}
+					
+					if(record.c <=0 && isDev ){
+						img = img +
+						"<img class='getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
+					}
+					
+					//网址
 					img = img +
-					"<img class='getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
-				}
-				
-				//网址
-				img = img +
-				"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
-				
-				$("<tr  keyword-id='"+this.keyword_id+"' keyword='"+this.keyword+"'><td class='label-td'>"+kw+"</td><td class='num-td'>"+this.c+
-						"</td><td class='action-td'>"+img+"</td></tr>").appendTo( table ) ;
-			}) ;
-		});
+					"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
+					
+					return img ;
+	            }} 
+	         ],
+	         ds:{type:"url",content:contextPath+"/grid/query"},
+			 limit:20,
+			 pageSizes:[10,20,30,40],
+			 height:function(){
+				 return 175 ;
+			 },
+			 title:"主关键字",
+			 indexColumn:false,
+			 querys:{_data:"d_list_MainKeyword",taskId:taskId},
+			 loadMsg:"主关键字加载中，请稍候......",
+			 rowDblClick:function(row,record){
+					createGrid(record.keyword_id ,record.keyword ) ;
+			 }
+		}) ;
 	}
 	
 	

@@ -49,7 +49,7 @@ class Keyword extends AppModel {
 		}
 	}
 	
-	public function fetchSearchData($url , $limit , $offset ,$params ,$mainGuid , $count){
+	public function fetchSearchData($url , $limit , $offset ,$params ,$mainGuid , $count,$keywordType){
 		$_url = str_replace("{limit}", $limit, $url ) ;
 		$_url = str_replace("{offset}", $offset, $_url ) ;
 		
@@ -66,8 +66,8 @@ class Keyword extends AppModel {
 				$record['guid'] = $this->create_guid() ;
 				$record['taskId'] = $params['taskId'] ;
 				$record['loginId'] = $params['loginId'] ;
-				$record['is_main_keywork'] = '0' ;
-				$record['keyword_type'] ="Pharse";
+				$record['is_main_keyword'] = '0' ;
+				$record['keyword_type'] =$keywordType;
 		
 				$record['keyword'] = $array[0] ;
 				$record['search_volume'] = $array[1] ;
@@ -80,15 +80,18 @@ class Keyword extends AppModel {
 				//判断keyword是否存在，如果存在则不考虑
 				$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
 				if(empty($result)){
-					$count++ ;
-					$this->exeSql("sql_keyword_insert", $record) ;
+					try{
+						//debug($record) ;
+						$this->exeSql("sql_keyword_insert", $record) ;
+						$count++ ;
+					}catch(Exception $e){}
 				}
 			}
 			$index++;
 		}
 		
 		if( $index > 100 ){
-			$this->fetchSearchData($url , 100+$limit , $limit ,$params ,$mainGuid , $count) ;
+			$this->fetchSearchData($url , 100+$limit , $limit ,$params ,$mainGuid , $count,$keywordType) ;
 		}
 	}
 	
@@ -99,7 +102,7 @@ class Keyword extends AppModel {
 	 */
 	public function fetchChildKeyWords($params){
 		$count = 0 ;
-		
+		ob_start() ;
 		$keywordId = null ;
 		if( isset($params['keywordId']) ){
 			$keywordId = $params['keywordId'] ;
@@ -120,13 +123,13 @@ class Keyword extends AppModel {
 			$record['guid'] = $mainGuid ;
 			$record['taskId'] = $params['taskId'] ;
 			$record['loginId'] = $params['loginId'] ;
-			$record['is_main_keywork'] = '1' ;
+			$record['is_main_keyword'] = '1' ;
 			$record['keyword'] = $mainKeyword ;
 			$this->exeSql("INSERT INTO sc_keyword 
 				(keyword_id, 
 				task_id, 
 				keyword, 
-				is_main_keywork, 
+				is_main_keyword, 
 				parent_id, 
 				STATUS, 
 				create_date, 
@@ -136,7 +139,7 @@ class Keyword extends AppModel {
 				('{@#guid#}', 
 				'{@#taskId#}', 
 				'{@#keyword#}', 
-				'{@#is_main_keywork#}', 
+				'{@#is_main_keyword#}', 
 				'{@#parent_id#}', 
 				'10', 
 				NOW(), 
@@ -144,80 +147,14 @@ class Keyword extends AppModel {
 				)", $record) ;
 		}else{
 			$mainGuid = $keywordId ;
+			//更新设置当前关键字为主关键字
+			$this->exeSql("update sc_keyword set is_main_keyword = '1' where keyword_id = '{@#keywordId#}'", array('keywordId'=>$mainGuid));
 		}
 		
-		
-		
-		$this->fetchSearchData($parseMatchUrl , 100 , 0 ,$params ,$mainGuid , $count) ;
+		$this->fetchSearchData($parseMatchUrl , 100 , 0 ,$params ,$mainGuid , $count , "Pharse") ;
 		//保存词组匹配
-		/*$content1 = file_get_contents($parseMatchUrl) ;
-		
-		$content1 = split("\n", $content1) ;
-		$index =0 ;
-		//display_limit
-		//display_offset
-		foreach($content1 as $c){
-			if($index > 0){
-				$array = split(";",$c ) ;
-				$record = array() ;
-				$record['guid'] = $this->create_guid() ;
-				$record['taskId'] = $params['taskId'] ;
-				$record['loginId'] = $params['loginId'] ;
-				$record['is_main_keywork'] = '0' ;
-				$record['keyword_type'] ="Pharse";
-				
-				$record['keyword'] = $array[0] ;
-				$record['search_volume'] = $array[1] ;
-				$record['cpc'] = $array[2] ;
-				$record['competition'] = $array[3] ;
-				$record['result_num'] = $array[4] ;
-				$record['trends'] = $array[5] ;
-				$record['parent_id'] = $mainGuid ;
-				
-				//判断keyword是否存在，如果存在则不考虑
-				$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
-				if(empty($result)){
-					$count++ ;
-					$this->exeSql("sql_keyword_insert", $record) ;
-				}
-			}
-			$index++;
-		} */
-		
-		$this->fetchSearchData($relationUrl , 100 , 0 ,$params ,$mainGuid , $count) ;
-		//保存关联关键字
-		/*$content2 = file_get_contents($relationUrl) ;
-		$content2 = split("\n", $content2) ;
-		$index =0 ;
-		foreach($content2 as $c){
-			if($index > 0){
-				$array = split(";",$c ) ;
-				$record = array() ;
-				$record['guid'] = $this->create_guid() ;
-				$record['taskId'] = $params['taskId'] ;
-				$record['loginId'] = $params['loginId'] ;
-				$record['is_main_keywork'] = '0' ;
-				$record['keyword_type'] ="Related";
-				
-				$record['keyword'] = $array[0] ;
-				$record['search_volume'] = $array[1] ;
-				$record['cpc'] = $array[2] ;
-				$record['competition'] = $array[3] ;
-				$record['result_num'] = $array[4] ;
-				$record['trends'] = $array[5] ;
-				$record['parent_id'] = $mainGuid ;
-				
-
-				//判断keyword是否存在，如果存在则不考虑
-				$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
-				if(empty($result)){
-					$count++ ;
-					$this->exeSql("sql_keyword_insert", $record) ;
-				}
-			}
-			$index++;
-		}*/
-		
+		$this->fetchSearchData($relationUrl , 100 , 0 ,$params ,$mainGuid , $count , "Relation" ) ;
+	
 		//保存关联网站，关联到主关键字
 		$content3 = file_get_contents($orgUrl) ;
 		$content3 = split("\n", $content3) ;
@@ -235,7 +172,7 @@ class Keyword extends AppModel {
 			}
 			$index++;
 		}
-		
+		ob_clean() ;
 		return $count ;
 	}
 	
@@ -243,7 +180,7 @@ class Keyword extends AppModel {
 		$sql = "select t.* ,
 						(select count(1) from sc_keyword sk where sk.parent_id = t.keyword_id ) as c
 					from sc_keyword t 
-					where t.task_id='{@#taskId#}' and t.is_main_keywork = 1 order by t.keyword_no" ;
+					where t.task_id='{@#taskId#}' and t.is_main_keyword = 1 order by t.keyword_no" ;
 		
 		return $this->exeSqlWithFormat( $sql , array('taskId'=>$params['taskId'])) ;
 	}
