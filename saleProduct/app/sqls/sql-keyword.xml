@@ -11,15 +11,20 @@
 				{@ AND cpc <  #cpc# }
 				{@ AND competition <  #competition# }
 				{@ AND result_num <  #result_num# }
+				{@ AND parent_id='#parentId#' }
+				and is_main_keyword <>  1
 		]]>
     </entry>
 
 	<entry key="d_list_keywordByMain">
         <![CDATA[	
-			select t.* ,
-						(select count(1) from sc_keyword sk where sk.parent_id = t.keyword_id ) as c
+			select t.* 
 					from sc_keyword t
 					where t.parent_id='{@#parentId#}' 
+					{@ AND search_volume >=  #search_volume# }
+					{@ AND cpc >=  #cpc# }
+					{@ AND competition >=  #competition# }
+					{@ AND result_num >=  #result_num# }
 					and t.is_main_keyword <>  1
 					and status <> 15
 					 order by t.search_volume desc
@@ -29,7 +34,9 @@
     <entry key="d_list_MainKeyword">
         <![CDATA[	
 			select t.* ,
-						(select count(1) from sc_keyword sk where sk.parent_id = t.keyword_id and sk.is_main_keyword <>  1 ) as c
+						(select count(1) from sc_keyword sk where sk.parent_id = t.keyword_id 
+						and sk.status <> 15
+						and sk.is_main_keyword <>  1 ) as c
 					from sc_keyword t
 					where  status <> 15
 					and t.is_main_keyword = 1
