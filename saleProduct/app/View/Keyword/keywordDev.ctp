@@ -86,7 +86,8 @@
 							CPC>=<input type="text" name="cpc"    style="width:70px;"/>
 							竞争>=<input type="text"   name="competition" style="width:70px;"/>
 							搜索结果>=<input type="text"  name="result_num"   style="width:70px;"/>
-							<button class="query-btn btn btn-primary  btn-filter"   >筛选</button>
+							<button class="query-btn btn  btn-query" >查询</button>
+							<button class="query-btn btn btn-primary  btn-filter" >筛选</button>
 							&nbsp;&nbsp;&nbsp;
 						</td>
 					</tr>
