@@ -18,11 +18,14 @@
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('bootstrap/bootstrap-tooltip');
 
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('modules/keyword/editKeyword');
+		
+		
 		
 		$keyword  = ClassRegistry::init("Keyword") ;
 		
@@ -67,6 +70,10 @@
 <script>
 		var taskId		= '<?php echo $taskId;?>' ;
 		var isDev		= <?php echo $niche_kw_dev?"true":"false"?> ;
+
+		$(function(){
+			$("[name='search_content']").attr("title","输入示例<br><nobr>同时包括多个关键字(And):XXX1,XXX2</nobr><br>多个关键字之一(Or):XXX1|XXX2").tooltip({placement:'bottom'}) ;
+		}) ;
 </script>
 
 <body class="container-popup">
@@ -75,20 +82,34 @@
 				<table>
 					<tr>
 						<td>
-							<input type="text" id="mainKeyword" class="input-larger "  placeHolder="输入主关键字"/>
+							<input type="text" id="mainKeyword" style="width:160px;" placeHolder="输入主关键字"/>
+						</td>
+						<td>
+							<select  id="site" style="width:110px;">
+								<option value="us">Google.com</option>
+								<option value="uk">Google.co.uk</option>
+								<option value="ca">Google.ca</option>
+								<option value="ru">Google.ru</option>
+								<option value="de">Google.de</option>
+								<option value="fr">Google.fr</option>
+								<option value="es">Google.es</option>
+								<option value="it">Google.it</option>
+								<option value="br">Google.br</option>
+								<option value="au">Google.com.au</option>
+								<option value="us.bing">Bing.com</option>
+							</select>
 						</td>					
 						<td class="toolbar-btns" rowspan="3">
 							<button class="query-btn btn btn-primary asyn-keyword"   >获取扩展关键字</button>
 							&nbsp;&nbsp;&nbsp;
 						</td>
 						<td class="toolbar-filter" style="text-align: right;">
-							搜索量>=<input type="text"  name="search_volume" style="width:70px;"/>
-							CPC>=<input type="text" name="cpc"    style="width:70px;"/>
-							竞争>=<input type="text"   name="competition" style="width:70px;"/>
-							搜索结果>=<input type="text"  name="result_num"   style="width:70px;"/>
+							包含<input    type="text"  name="search_content" style="width:140px;"/>
+							搜索量>=<input type="text"  name="search_volume" style="width:60px;"/>
+							CPC>=<input type="text" name="cpc"    style="width:60px;"/>
+							竞争>=<input type="text"   name="competition" style="width:60px;"/>
 							<button class="query-btn btn  btn-query" >查询</button>
 							<button class="query-btn btn btn-primary  btn-filter" >筛选</button>
-							&nbsp;&nbsp;&nbsp;
 						</td>
 					</tr>
 				</table>

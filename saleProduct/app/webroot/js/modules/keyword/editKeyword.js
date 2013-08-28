@@ -19,10 +19,9 @@ $(function(){
 				if( val==15 ) return "废弃" ;
 			}},
            	{align:"left",key:"keyword_type",label:"关键字类型", width:"10%"},
-           	{align:"center",key:"search_volume",label:"搜索量", width:"10%"},
-			
            	{align:"left",key:"cpc",label:"CPC",width:"10%",forzen:false,align:"left"},
-           	{align:"left",key:"competition",label:"竞争",width:"10%"}
+           	{align:"left",key:"competition",label:"竞争",width:"10%"},
+           	{align:"center",key:"site",label:"国家", width:"10%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:20,
@@ -39,7 +38,7 @@ $(function(){
 	$(".niche-update").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
 		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,800,550,function(win,ret){
-			if(ret)$(".niche-grid").llygrid("reload",{},true) ;
+			$(".niche-grid").llygrid("reload",{},true) ;
 		}) ;
 	}) ;
 	
@@ -64,16 +63,30 @@ $(function(){
 		}
 	}) ;
 	
+	var currentSite = null ;
+	
 	$(".asyn-keyword").click(function(){
 		var mainKeyword = $("#mainKeyword").val() ;
+		
 		if(window.confirm("确认获取扩展关键字？")){
-			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:mainKeyword,'taskId':taskId},function(result){
+			var site  = $("#site").val() ;
+			currentSite = site ;
+			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:mainKeyword,site:site,'taskId':taskId},function(result){
 				$(".main-keyword").llygrid("reload",{},true) ;
 			});
 		}
 	}) ;
 	
+	$(".btn-query").click(function(){
+			if( !currentMainKeyword )alert("先选择主关键字") ;
+			var json = $(".toolbar-filter").toJson() ;
+			json.taskId = taskId ;
+			json.parentId = currentMainKeyword.keyword_id ;
+			$(".child-keyword").llygrid("reload",json) ;
+	}) ;
+	
 	$(".btn-filter").click(function(){
+		if( !currentMainKeyword )alert("先选择主关键字") ;
 		if( window.confirm("确认筛选吗，不符合条件的关键字将直接废弃？") ){
 			var json = $(".toolbar-filter").toJson() ;
 			
@@ -89,8 +102,9 @@ $(function(){
 			}
 			
 			json.taskId = taskId ;
+			json.parentId = currentMainKeyword.keyword_id ;
 			$.dataservice("model:Keyword.filterKeyword",json,function(result){
-				window.location.reload() ;
+				$(".child-keyword").llygrid("reload",{parentId: currentMainKeyword.keyword_id }) ;
 			});
 		}
 	}) ;
@@ -105,7 +119,7 @@ $(function(){
 		
 		$(".child-keyword").llygrid({
 			columns:[
-				{align:"left",key:"keyword",label:"关键字名称", width:"230px",format:function(val,record){
+				{align:"left",key:"keyword",label:"关键字名称", width:"180px",format:function(val,record){
 					if( record.is_niche == 1 ){
 						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +val ;
 					}
@@ -115,6 +129,7 @@ $(function(){
 				{align:"left",key:"search_volume",label:"搜索量", width:"10%"},
 				{align:"left",key:"cpc",label:"CPC", width:"10%"},
 				{align:"left",key:"competition",label:"竞争", width:"10%"},
+				{align:"center",key:"site",label:"国家", width:"10%"},
 	            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
 	            	var img = "" ;
 					
@@ -122,7 +137,7 @@ $(function(){
 						if(isDev)img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
 					}
 					
-					if(record.c <=0 && isDev ){
+					if( isDev ){
 						img = img +
 						"<img class='getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 					}
@@ -168,7 +183,7 @@ $(function(){
 			
 			var devItem = $(this).parents(".dev-item:first") ;
 		
-			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:keywordText,'keywordId':keywordId,taskId:taskId},function(result){
+			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:keywordText,site:currentSite,'keywordId':keywordId,taskId:taskId},function(result){
 				me.parents("tr:first").find("td[key='c']").find("span").text(result).attr("title",result) ;
 				me.parents("tr:first").find(".getSemrushKeyword").remove() ;
 
@@ -200,21 +215,14 @@ $(function(){
 		var keywordText 	= record.keyword ;
 		openCenterWindow(contextPath+"/page/forward/Keyword.showWebsite/"+keywordId,660,450,function(win,ret){
 		},{keyword:keywordText}) ;
-		/*
-		$.dataservice("model:Keyword.getWebSite",{'keywordId':keywordId},function(result){
-			$(".website-container").show();
-			$(".website-container ul").empty().show() ;
-			$(result).each(function(){
-				$(".website-container ul").append("<li><a href='"+this.url+"' target='_blank'>"+this.domain+"</a></li>") ;
-			}) ;
-		});*/
 	}) ;
 	
+	var currentMainKeyword = null ;
 	function loadMainKeywords(){
 		
 		$(".main-keyword").llygrid({
 			columns:[
-				{align:"left",key:"keyword",label:"关键字名称", width:"230px",format:function(val,record){
+				{align:"left",key:"keyword",label:"关键字名称", width:"180px",format:function(val,record){
 					if( record.is_niche == 1 ){
 						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +val ;
 					}
@@ -224,6 +232,7 @@ $(function(){
 				{align:"left",key:"cpc",label:"CPC", width:"10%"},
 				{align:"left",key:"competition",label:"竞争", width:"10%"},
 	            {align:"left",key:"c",label:"扩展数",width:"10%"} ,
+	            {align:"center",key:"site",label:"国家", width:"10%"},
 	            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
 	            	var img = "" ;
 					
@@ -254,6 +263,7 @@ $(function(){
 			 querys:{_data:"d_list_MainKeyword",taskId:taskId},
 			 loadMsg:"主关键字加载中，请稍候......",
 			 rowDblClick:function(row,record){
+				 	currentMainKeyword = record ;
 					createGrid(record.keyword_id ,record.keyword ) ;
 			 }
 		}) ;

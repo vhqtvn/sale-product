@@ -1,54 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>llygrid demo</title>
+    <title>废弃产品列表</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
    include_once ('config/config.php');
+
    
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('../grid/redmond/ui');
-		echo $this->Html->css('../kissu/widgets/core/layout/layout');
-		echo $this->Html->css('../kissu/widgets/core/tree/ui.tree');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/tree/jquery.tree');
+		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
-		echo $this->Html->script('../kissu/scripts/jquery.utils');
+		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('../grid/grid');
-		echo $this->Html->script('../kissu/widgets/core/layout/jquery.layout');
-		echo $this->Html->script('../kissu/widgets/core/tree/jquery.tree');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('grid/query');
+		echo $this->Html->script('tree/jquery.tree');
 	?>
 	
    <script type="text/javascript">
-   //result.records , result.totalRecord
- 	function formatGridData(data){
- 		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-   }
-
+ 
 	$(function(){
 			setTimeout(function(){
 				$(".grid-content").llygrid({
@@ -126,19 +102,28 @@
 
 </head>
 <body style="magin:0px;padding:0px;">
-	<div class="widget-class" widget="layout" style="width:100%;height:90%;">
-		<div region="center" split="true" border="true" title="废弃产品列表" style="height:60px;background:#efefef;">
-			<div class="query-bar">
-				<label>ASIN:</label><input type="text" name="asin"/>
-				<label>TITLE:</label><input type="text" name="title"/>
-				
-				<button class="query-btn">查询</button>
+			<div class="toolbar toolbar-auto">
+				<table style="width:100%;" class="query-table">	
+					<tr>
+						<th>ASIN:</th>
+						<td>
+							<input type="text" name="asin"/>
+						</td>
+						<th>TITLE:</th>
+						<td>
+							<input type="text" name="title"/>
+						</td>
+						<th></th>
+						<td>
+							<button class="btn btn-primary query query-btn" >查询</button>
+						</td>
+					</tr>						
+				</table>
 			</div>
+			
 			<div class="grid-content" style="width:98%;">
 			
 			</div>
-		</div>
-   </div>
 	
 </body>
 </html>

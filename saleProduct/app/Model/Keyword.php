@@ -76,16 +76,17 @@ class Keyword extends AppModel {
 				$record['result_num'] = $array[4] ;
 				$record['trends'] = $array[5] ;
 				$record['parent_id'] = $mainGuid ;
+				$record['site'] = $params['site'] ;
 		
 				//判断keyword是否存在，如果存在则不考虑
-				$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
-				if(empty($result)){
+				//$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
+				//if(empty($result)){
 					try{
 						//debug($record) ;
 						$this->exeSql("sql_keyword_insert", $record) ;
 						$count++ ;
 					}catch(Exception $e){}
-				}
+				//}
 			}
 			$index++;
 		}
@@ -108,11 +109,13 @@ class Keyword extends AppModel {
 			$keywordId = $params['keywordId'] ;
 		}
 		
+		$site = $params['site'] ;
+		
 		$mainKeyword = $params['mainKeyword'] ;
 		$mainKeyword = urlencode($mainKeyword) ;
-		$parseMatchUrl = "http://us.fullsearch-api.semrush.com/?action=report&type=phrase_fullsearch&phrase=$mainKeyword&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td" ;
-		$relationUrl = "http://us.api.semrush.com/?action=report&type=phrase_related&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase=$mainKeyword" ;
-		$orgUrl = "http://us.api.semrush.com/?action=report&type=phrase_organic&key=240ada68082b9ad767ef984a0cfde07c&display_limit=100&export=api&export_columns=Dn,Ur&phrase=$mainKeyword" ;
+		$parseMatchUrl = "http://$site.fullsearch-api.semrush.com/?action=report&type=phrase_fullsearch&phrase=$mainKeyword&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td" ;
+		$relationUrl = "http://$site.api.semrush.com/?action=report&type=phrase_related&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase=$mainKeyword" ;
+		$orgUrl = "http://$site.api.semrush.com/?action=report&type=phrase_organic&key=240ada68082b9ad767ef984a0cfde07c&display_limit=100&export=api&export_columns=Dn,Ur&phrase=$mainKeyword" ;
 		
 		//保存主关键字
 		$mainGuid = null ;
@@ -125,6 +128,8 @@ class Keyword extends AppModel {
 			$record['loginId'] = $params['loginId'] ;
 			$record['is_main_keyword'] = '1' ;
 			$record['keyword'] = $mainKeyword ;
+			$record['site'] = $site ;
+			
 			$this->exeSql("INSERT INTO sc_keyword 
 				(keyword_id, 
 				task_id, 
@@ -133,7 +138,8 @@ class Keyword extends AppModel {
 				parent_id, 
 				STATUS, 
 				create_date, 
-				creator
+				creator,
+				site
 				)
 				VALUES
 				('{@#guid#}', 
@@ -143,7 +149,8 @@ class Keyword extends AppModel {
 				'{@#parent_id#}', 
 				'10', 
 				NOW(), 
-				'{@#loginId#}'
+				'{@#loginId#}',
+				'{@#site#}'
 				)", $record) ;
 		}else{
 			$mainGuid = $keywordId ;
@@ -197,6 +204,35 @@ class Keyword extends AppModel {
 	public function filterKeyword($params){
 		$taskId = $params['taskId'] ;
 		
+		$searchContent = $params['search_content'] ;//search_content
+		
+		$array = explode("|", $searchContent) ;
+		$qc = "" ;
+		if( count($array) > 1 ){
+			foreach($array as $a){
+				if( !empty($a) ){
+					$a = mysql_escape_string($a) ;
+					if( $qc == "" ){
+						$qc = " keyword not like '%$a%' " ;
+					}else{
+						$qc .= " and keyword not like '%$a%' " ;
+					}
+				}
+			}
+		}else{
+			$array = explode(",", $searchContent) ;
+			foreach($array as $a){
+				if( !empty($a) ){
+					$a = mysql_escape_string($a) ;
+					if( $qc == "" ){
+						$qc = " keyword not like '%$a%' " ;
+					}else{
+						$qc .= " or keyword not like '%$a%' " ;
+					}
+				}
+			}
+		}
+		
 		$isNull = true ;
 		if( !empty( $params['search_volume'] ) ){
 			$isNull = false ;
@@ -206,7 +242,11 @@ class Keyword extends AppModel {
 			$isNull = false ;
 		}else if( !empty( $params['result_num'] ) ){
 			$isNull = false ;
+		}else if( !empty( $qc ) ){
+			$isNull = false ;
 		}
+		
+		$params['searchContent'] = $qc ;
 		
 		if(!$isNull)$this->exeSql("sql_filter_keywords_15", $params) ;
 	}

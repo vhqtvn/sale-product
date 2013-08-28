@@ -12,6 +12,7 @@
 				{@ AND competition <  #competition# }
 				{@ AND result_num <  #result_num# }
 				{@ AND parent_id='#parentId#' }
+				{@ AND ( #searchContent|true# ) }
 				and is_main_keyword <>  1
 		]]>
     </entry>
@@ -119,7 +120,8 @@
         <![CDATA[	
 			select * from sc_keyword_task  where 1=1
 			{@ and name = '#name#'}
-			and plan_id = '{@#planId#}'
+			{@and plan_id = '#planId#'}
+			order by create_date desc
 		]]>
     </entry>
     
@@ -171,7 +173,8 @@
 				trends, 
 				STATUS, 
 				create_date, 
-				creator
+				creator,
+				site
 				)
 				VALUES
 				('{@#guid#}', 
@@ -187,7 +190,8 @@
 				'{@#trends#}', 
 				'10', 
 				NOW(), 
-				'{@#loginId#}'
+				'{@#loginId#}',
+				'{@#site#}'
 				)
 	]]>
     </entry>

@@ -318,11 +318,16 @@ class AppModel extends Model {
 
 	    							$key = $keyarray[0] ;
 	    							
-	    							
 	    							if( count($keyarray) >=2 ){
 	    								$defaultValue = $keyarray[1] ;
 	    							}
 	    							
+	    							$ka = explode('|',$key) ;
+	    							$key = $ka[0] ;
+	    							$noescape = false ;
+	    							if( count($ka) >=2 ){
+	    								$noescape = $ka[1] ;
+	    							}
 	    							
 	    							if( strpos($key, '$') === 0 ){//权限环境变量
 	    							//	echo 111111111111;
@@ -352,7 +357,7 @@ class AppModel extends Model {
 	    								
 	    								$kValue = $query[$key] ;
 	    								//格式化$kValue,防止sql特殊字符
-	    								$kValue = str_replace("'","\'",$kValue);
+	    								//$kValue = str_replace("'","\'",$kValue);
 	    								//if( $this->is_utf8($kValue) ){
 	    									//
 	    								//}else{
@@ -361,8 +366,13 @@ class AppModel extends Model {
 	    								if(empty($kValue) && $kValue != '0'){
 	    									$kValue = $defaultValue ;
 	    								}
-
-	    								$clause .=mysql_escape_string($kValue) ;
+										if($noescape == 'true'){
+											$clause .= $kValue ;
+										}else{
+											$clause .=mysql_escape_string($kValue) ;
+										}
+	    								
+										
 	    								$isTrue = true ;
 	    							}else{
 	    								$isTrue = false ;

@@ -307,15 +307,15 @@ function WarehouseInAction(status , statusLabel){
 		
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
-				//$.dataservice("model:Sale.warehouseIn",json,function(result){
+				$.dataservice("model:Sale.warehouseIn",json,function(result){
 					//alert( $.json.encode( result ));
 					//执行状态更新
-				$.dataservice("model:Sale.savePurchaseTaskProduct",json,function(){
+				//$.dataservice("model:Sale.savePurchaseTaskProduct",json,function(){
 					$.dataservice("model:Sale.doTaskProductStatus",json1,function(result){
 						window.location.reload();
 					});
-				}) ;
 				//}) ;
+				}) ;
 			}
 	}
 }

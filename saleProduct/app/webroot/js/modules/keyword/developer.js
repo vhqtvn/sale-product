@@ -51,7 +51,7 @@ $(function(){
 		 },
 		 title:"",
 		 indexColumn:false,
-		 querys:{_data :"d_list_task",planId:'--'},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 querys:{_data :"d_list_task",planId:''},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......"
 	}) ;
 	
