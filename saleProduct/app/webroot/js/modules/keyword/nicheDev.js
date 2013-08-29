@@ -1,53 +1,48 @@
 $(function(){
-	$(".save-niche").click(function(){
-		if( !$.validation.validate('#personForm').errorInfo ) {
-			var json = $("#personForm").toJson() ;
-			$.dataservice("model:Keyword.saveNiceDev",json,function(result){
-					$(document.body).dialogReturnValue(true) ;
-					window.close();
-			});
-		}
+	var tabs = [{label:'基本信息',content:"base-info"}] ;
+		tabs.push( {label:'search terms',content:"searchTerm"} ) ;
+		tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
+
+	//widget init
+	var tab = $('#details_tab').tabs( {
+		tabs:tabs 
+	} ) ;
+	
+	$(".grid-track").llygrid({
+		columns:[
+		    {align:"left",key:"description",label:"内容", width:"51%"},
+           	{align:"center",key:"create_date",label:"操作时间",width:"24%" },
+            {align:"left",key:"username",label:"操作人",width:"10%" },
+         ],
+         ds:{type:"url",content:contextPath+"/grid/query"},
+		 limit:30,
+		 pageSizes:[10,20,30,40],
+		 height:function(){
+		 	return $(window).height() - 370 ;
+		 },
+		 title:"",
+		 indexColumn:false,
+		 querys:{_data:"d_keyword_tracks",keywordId:keywordId},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 loadMsg:"数据加载中，请稍候......"
 	}) ;
 	
-	$(".commit-niche").click(function(){
-		if( !$.validation.validate('#personForm').errorInfo ) {
-			var json = $("#personForm").toJson() ;
-			json.status = 1 ;
-			if(window.confirm("确认提交审批？")){
-				$.dataservice("model:Keyword.saveNiceDev",json,function(result){
-					$(document.body).dialogReturnValue(true) ;
-					window.close();
-				});
-			}
-		}
+	$(".grid-term").llygrid({
+		columns:[
+		    {align:"left",key:"search_term",label:"内容", width:"51%"},
+		    {align:"center",key:"platform",label:"平台",width:"14%" },
+           	{align:"center",key:"create_date",label:"更新时间",width:"24%" }
+         ],
+         ds:{type:"url",content:contextPath+"/grid/query"},
+		 limit:30,
+		 pageSizes:[10,20,30,40],
+		 height:function(){
+		 	return $(window).height() - 270 ;
+		 },
+		 title:"",
+		 indexColumn:true,
+		 querys:{_data:"d_keyword_terms",keywordId:keywordId},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 loadMsg:"数据加载中，请稍候......"
 	}) ;
-	
-	$(".pass-niche").click(function(){
-		if( !$.validation.validate('#personForm').errorInfo ) {
-			var json = $("#personForm").toJson() ;
-			json.status = 2 ;
-			if(window.confirm("确认通过审批？")){
-				$.dataservice("model:Keyword.saveNiceDev",json,function(result){
-						$(document.body).dialogReturnValue(true) ;
-						window.close();
-				});
-			}
-		}
-	}) ;
-	
-	$(".discart-niche").click(function(){
-		if( !$.validation.validate('#personForm').errorInfo ) {
-			var json = $("#personForm").toJson() ;
-			json.status = 3 ;
-			if(window.confirm("确认废弃？")){
-				$.dataservice("model:Keyword.saveNiceDev",json,function(result){
-						$(document.body).dialogReturnValue(true) ;
-						window.close();
-				});
-			}
-		}
-	}) ;
-	
 	
 	var chargeGridSelect = {
 			title:'用户选择页面',
@@ -80,4 +75,12 @@ $(function(){
 		return false;
 	}) ;
 	
+	$(".getSearchTerm").click(function(){
+		var json = {} ;
+		json.key = keyword ;
+		json.keywordId = keywordId ;
+		$.dataservice("model:Keyword.getSearchTerm",json,function(result){
+			$(".grid-term").llygrid("reload",{},true) ;
+		});
+	}) ;
 }) ;

@@ -7,6 +7,86 @@ ini_set("post_max_size", "24M");
 
 class Keyword extends AppModel {
 	var $useTable = "sc_keyword_plan" ;
+	
+	public function getSearchTerm($params){
+		$key = $params['key'] ;
+		$key = urlencode( $key ) ;
+		
+		//amazon
+		$url = "http://completion.amazon.com/search/complete?method=completion&q=$key&search-alias=aps&client=amazon-search-ui&mkt=1" ;
+		$content = file_get_contents( $url ) ;
+		
+	 	$amazon = json_decode($content) ;
+	 	$terms = $amazon[1] ;
+	 	
+	 	$this->exeSql("delete from sc_keyword_searchterm where keyword_id = '{@#keywordId#}'", $params) ;
+	 	
+		foreach ( $terms as $trem ){
+			$query = array() ;
+			$query['guid'] = $this->create_guid() ;
+			$query['keywordId'] = $params['keywordId'] ;
+			$query['keyword'] = $params['key'] ;
+			$query['search_term'] = $trem ;
+			try{
+						$this->exeSql("INSERT INTO  sc_keyword_searchterm 
+										(
+											term_id, 
+											keyword_id, 
+											keyword, 
+											search_term, 
+											platform,
+											create_date
+										)
+										VALUES
+										(
+											'{@#guid#}', 
+											'{@#keywordId#}', 
+											'{@#keyword#}', 
+											'{@#search_term#}', 
+											'amazon.com',
+											NOW()
+										)", $query);
+			 }catch(Exception $e){}
+		}
+		//ebay
+		$url = "http://autosug.ebaystatic.com/autosug?kwd=$key" ;
+		
+		$content = file_get_contents($url) ;
+		
+		$content = str_replace("vjo.darwin.domain.finding.autofill.AutoFill._do(", "", $content) ;
+		$content = $content.'^^^^' ;
+		$content = str_replace(")^^^^", "", $content) ;
+		$content = json_decode($content) ;
+		$terms = $content->res->sug ;
+		
+		foreach ( $terms as $trem ){
+			$query = array() ;
+			$query['guid'] = $this->create_guid() ;
+			$query['keywordId'] = $params['keywordId'] ;
+			$query['keyword'] = $params['key'] ;
+			$query['search_term'] = $trem ;
+			try{
+						$this->exeSql("INSERT INTO  sc_keyword_searchterm 
+										(
+											term_id, 
+											keyword_id, 
+											keyword, 
+											search_term, 
+											platform,
+											create_date
+										)
+										VALUES
+										(
+											'{@#guid#}', 
+											'{@#keywordId#}', 
+											'{@#keyword#}', 
+											'{@#search_term#}', 
+											'ebay.com',
+											NOW()
+										)", $query);
+			}catch(Exception $e){}
+		}
+	}
 	 
 	public function saveNiceDev($params){
 		$this->exeSql("sql_keyword_update", $params) ;
@@ -50,6 +130,8 @@ class Keyword extends AppModel {
 	}
 	
 	public function fetchSearchData($url , $limit , $offset ,$params ,$mainGuid , $count,$keywordType){
+		$total = $params['total'] ;
+		
 		$_url = str_replace("{limit}", $limit, $url ) ;
 		$_url = str_replace("{offset}", $offset, $_url ) ;
 		
@@ -92,7 +174,13 @@ class Keyword extends AppModel {
 		}
 		
 		if( $index > 100 ){
-			$this->fetchSearchData($url , 100+$limit , $limit ,$params ,$mainGuid , $count,$keywordType) ;
+			
+			$l = 100+$limit  ;
+			if( 100 + $limit > $total ){
+				$l = $total ;
+			}
+			
+			$this->fetchSearchData($url , $l , $limit , $params , $mainGuid , $count , $keywordType ) ;
 		}
 	}
 	
@@ -109,7 +197,8 @@ class Keyword extends AppModel {
 			$keywordId = $params['keywordId'] ;
 		}
 		
-		$site = $params['site'] ;
+		$site 	= $params['site'] ;
+		$total 	= $params['total'] ;
 		
 		$mainKeyword = $params['mainKeyword'] ;
 		$mainKeyword = urlencode($mainKeyword) ;

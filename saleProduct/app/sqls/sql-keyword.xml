@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 
+	<entry key="d_keyword_terms">
+        <![CDATA[	
+			select * from sc_keyword_searchterm
+			where keyword_id = '{@#keywordId#}'
+			order by platform,term_no
+		]]>
+    </entry>
 
-
+	<entry key="d_keyword_tracks">
+        <![CDATA[	
+			select sc_keyword_track.*,
+				(select name from sc_user where sc_user.login_id = sc_keyword_track.creator ) as username
+			 from sc_keyword_track
+			where keyword_id = '{@#keywordId#}'
+			order by create_date desc
+		]]>
+    </entry>
+    
 	<entry key="sql_filter_keywords_15">
         <![CDATA[	
 			UPDATE sc_keyword SET STATUS = '15'
@@ -26,6 +42,7 @@
 					{@ AND cpc >=  #cpc# }
 					{@ AND competition >=  #competition# }
 					{@ AND result_num >=  #result_num# }
+					{@ AND  (#pc|true#) }
 					and t.is_main_keyword <>  1
 					and status <> 15
 					 order by t.search_volume desc

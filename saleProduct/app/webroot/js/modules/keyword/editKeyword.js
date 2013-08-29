@@ -37,7 +37,7 @@ $(function(){
 	
 	$(".niche-update").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
-		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,800,550,function(win,ret){
+		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,900,680,function(win,ret){
 			$(".niche-grid").llygrid("reload",{},true) ;
 		}) ;
 	}) ;
@@ -71,7 +71,14 @@ $(function(){
 		if(window.confirm("确认获取扩展关键字？")){
 			var site  = $("#site").val() ;
 			currentSite = site ;
-			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:mainKeyword,site:site,'taskId':taskId},function(result){
+			
+			var params = {} ;
+			params.mainKeyword = mainKeyword ;
+			params.site = site ;
+			params.taskId = taskId ;
+			params.total  = $("#total").val() ;
+			
+			$.dataservice("model:Keyword.fetchChildKeyWords",params ,function(result){
 				$(".main-keyword").llygrid("reload",{},true) ;
 			});
 		}
@@ -82,6 +89,27 @@ $(function(){
 			var json = $(".toolbar-filter").toJson() ;
 			json.taskId = taskId ;
 			json.parentId = currentMainKeyword.keyword_id ;
+			
+			var content = json.search_content||"" ;
+			var array = content.split("|") ;
+			var pc = [] ;
+			if( array.length <=1){
+				array = content.split(",") ;
+				$(array).each(function(index,item){
+					if(!item) return ;
+					pc.push("keyword like '%"+item+"%'") ;
+				}) ;
+				pc = pc.join(" and ") ;
+			}else{//or
+				$(array).each(function(index,item){
+					if(!item) return ;
+					pc.push("keyword like '%"+item+"%'") ;
+				}) ;
+				pc = pc.join(" or ") ;
+			}
+			
+			json.pc = pc ;
+			
 			$(".child-keyword").llygrid("reload",json) ;
 	}) ;
 	
@@ -182,8 +210,15 @@ $(function(){
 			var keywordText 	= record.keyword ;
 			
 			var devItem = $(this).parents(".dev-item:first") ;
+			
+			var params = {} ;
+			params.total  = $("#total").val() ;
+			params.mainKeyword = keywordText ;
+			params.site = currentSite ;
+			params.keywordId = keywordId ;
+			params.taskId = taskId ;
 		
-			$.dataservice("model:Keyword.fetchChildKeyWords",{mainKeyword:keywordText,site:currentSite,'keywordId':keywordId,taskId:taskId},function(result){
+			$.dataservice("model:Keyword.fetchChildKeyWords", params ,function(result){
 				me.parents("tr:first").find("td[key='c']").find("span").text(result).attr("title",result) ;
 				me.parents("tr:first").find(".getSemrushKeyword").remove() ;
 

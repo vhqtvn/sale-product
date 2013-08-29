@@ -901,6 +901,16 @@ jQuery.uiwidget.register("ajaxlink",function(selector){
 	}) ;
 }) ;
 
+jQuery.uiwidget.register("tooltip",function(selector){
+	$(selector).each(function(index,item){
+		var options = jQuery(item).attr( jQuery.uiwidget.options )||"{}";
+		eval(" var jsonOptions = "+options) ;
+		var title = jsonOptions.title || $(item).attr("title") ;
+
+		$(item).tooltip(jsonOptions) ;
+	});
+}) ;
+
 
 /*IE6下浏览器执行resize时死掉问题*/
 jQuery.execResize = function(flag , func ){//执行resize

@@ -72,7 +72,7 @@
 		var isDev		= <?php echo $niche_kw_dev?"true":"false"?> ;
 
 		$(function(){
-			$("[name='search_content']").attr("title","输入示例<br><nobr>同时包括多个关键字(And):XXX1,XXX2</nobr><br>多个关键字之一(Or):XXX1|XXX2").tooltip({placement:'bottom'}) ;
+		//	$("[name='search_content']").attr("title","输入示例<br><nobr>同时包括多个关键字(And):XXX1,XXX2</nobr><br>多个关键字之一(Or):XXX1|XXX2").tooltip({placement:'bottom'}) ;
 		}) ;
 </script>
 
@@ -98,13 +98,23 @@
 								<option value="au">Google.com.au</option>
 								<option value="us.bing">Bing.com</option>
 							</select>
+						</td>
+						<td>
+							<select  id="total" style="width:70px;"   data-widget="tooltip" data-options="{placement:'bottom',title:'每次扩展最多扩展关键字数量！'}">
+								<option value="100">100</option>
+								<option value="200">200</option>
+								<option value="500">500</option>
+								<option value="1000">1000</option>
+								<option value="2000">2000</option>
+								<option value="5000">5000</option>
+							</select>
 						</td>					
 						<td class="toolbar-btns" rowspan="3">
-							<button class="query-btn btn btn-primary asyn-keyword"   >获取扩展关键字</button>
+							<button class="query-btn btn btn-primary asyn-keyword"   >获取</button>
 							&nbsp;&nbsp;&nbsp;
 						</td>
 						<td class="toolbar-filter" style="text-align: right;">
-							包含<input    type="text"  name="search_content" style="width:140px;"/>
+							包含<input    type="text"  name="search_content" style="width:140px;"  data-widget="tooltip" data-options="{placement:'bottom',title:'包括多个关键字(And):XXX1,XXX2;多个关键字之一(Or):XXX1|XXX2'}"/>
 							搜索量>=<input type="text"  name="search_volume" style="width:60px;"/>
 							CPC>=<input type="text" name="cpc"    style="width:60px;"/>
 							竞争>=<input type="text"   name="competition" style="width:60px;"/>

@@ -13,11 +13,17 @@
    		echo $this->Html->meta('icon');
    		echo $this->Html->css('../js/validator/jquery.validation');
    		echo $this->Html->css('default/style');
+   		echo $this->Html->css('../js/grid/jquery.llygrid');
+   		echo $this->Html->css('../js/tab/jquery.ui.tabs');
    		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
    		
    		echo $this->Html->script('jquery');
-   		echo $this->Html->script('common');
-   		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery-ui');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('grid/query');
+		echo $this->Html->script('tab/jquery.ui.tabs');
    		echo $this->Html->script('validator/jquery.validation');
    		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
    		echo $this->Html->script('dialog/jquery.dialog');
@@ -40,9 +46,7 @@
 		$add_kw_task							= $security->hasPermission($loginId , 'add_kw_task') ;
 		$niche_kw_dev							= $security->hasPermission($loginId , 'niche_kw_dev') ;
 	?>
-  
 </head>
-
 
    <style type="text/css">
 		.flow-node{
@@ -134,6 +138,7 @@
 
 <script>
 	var keywordId = "<?php echo $keywordId;?>" ;
+	var keyword   = "<?php echo $kw['keyword'];?>" ;
 
 
 	function AuditAction(status , statusLabel){
@@ -225,7 +230,8 @@
 	<div class="apply-page">
 		<!-- 页面标题 -->
 		<div class="container-fluid">
-
+			<div id="details_tab"></div>
+			<div id="base-info">
 	        <form id="personForm" action="#" data-widget="validator,ajaxform" class="form-horizontal" >
 	        	<input type="hidden" id="keyword_id" value="<?php echo $kw['keyword_id'] ;?>"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
@@ -280,9 +286,18 @@
 								
 								<tr>
 									<th>最佳销量排名：</th>
-									<td colspan="3">
+									<td colspan="1">
 									<input id="dev_rank"
 									<?php echo $canWrite?"":"disabled" ;?>  type="text"  style="width:90%;"  value="<?php echo $kw['dev_rank'] ;?>"></td>
+									<th>开发重要级别：</th>
+									<td colspan="1">
+										<select id="dev_level">
+											<option value="">选择开发按级别</option>
+											<option value="1"  <?php echo $kw['dev_level']==1?"selected":"" ;?>>1</option>
+											<option value="2"  <?php echo $kw['dev_level']==2?"selected":"" ;?>>2</option>
+											<option value="3"  <?php echo $kw['dev_level']==3?"selected":"" ;?>>3</option>
+										</select>
+									</td>
 								</tr>
 								<tr>
 									<th>搜索结果：</th>
@@ -300,17 +315,6 @@
 									<?php echo $canWrite?"":"disabled" ;?> style="width:90%;height:40px;"><?php echo $kw['dev_asin'] ;?></textarea></td>
 								</tr>
 								<tr>
-									<th>开发重要级别：</th>
-									<td colspan="3">
-										<select id="dev_level">
-											<option value="">选择开发按级别</option>
-											<option value="1"  <?php echo $kw['dev_level']==1?"selected":"" ;?>>1</option>
-											<option value="2"  <?php echo $kw['dev_level']==2?"selected":"" ;?>>2</option>
-											<option value="3"  <?php echo $kw['dev_level']==3?"selected":"" ;?>>3</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
 									<th>开发重要性：</th>
 									<td colspan="3"><textarea id="dev_important"
 									<?php echo $canWrite?"":"disabled" ;?>
@@ -321,6 +325,23 @@
 					</div>
 				</div>
 			</form>
+			</div>
+			<div id="tracks">
+				<div class="grid-track" style="width:880px;"></div>
+			</div>
+			<div id="searchTerm">
+					
+					<div class="toolbar toolbar-auto">
+						<table style="width:100%;" class="query-table">	
+							<tr>
+								<td>
+									<button class="btn btn-primary  getSearchTerm"> 更新Search Term</button>
+								</td>
+							</tr>						
+						</table>
+					</div>
+					<div class="grid-term" style="width:880px;"></div>
+			</div>
 		</div>
 	</div>
 </body>
