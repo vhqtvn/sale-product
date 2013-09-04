@@ -257,6 +257,7 @@ $(function(){
 		var keywordId 		= record.keyword_id ;
 		var keywordText 	= record.keyword ;
 		openCenterWindow(contextPath+"/page/forward/Keyword.upload/"+keywordId+"/"+record.task_id+"/"+record.site,660,450,function(win,ret){
+			$(".main-keyword").llygrid("reload",{},true) ;
 		},{keyword:keywordText}) ;
 	}) ;
 	
