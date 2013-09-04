@@ -129,6 +129,31 @@ class Keyword extends AppModel {
 		}
 	}
 	
+	public function parseKeywordRow( $row , $params , $mainGuid , $keywordType ,$count ){
+		$array = split(";",$row ) ;
+		$record = array() ;
+		$record['guid'] = $this->create_guid() ;
+		$record['taskId'] = $params['taskId'] ;
+		$record['loginId'] = $params['loginId'] ;
+		$record['is_main_keyword'] = '0' ;
+		$record['keyword_type'] =$keywordType ;
+		
+		$record['keyword'] = $array[0] ;
+		$record['search_volume'] = $array[1] ;
+		$record['cpc'] = $array[2] ;
+		$record['competition'] = $array[3] ;
+		$record['result_num'] = $array[4] ;
+		$record['trends'] = $array[5] ;
+		$record['parent_id'] = $mainGuid ;
+		$record['site'] = $params['site'] ;
+		
+		//判断keyword是否存在，如果存在则不考虑
+		try{
+			$this->exeSql("sql_keyword_insert", $record) ;
+			$count++ ;
+		}catch(Exception $e){}
+	}
+	
 	public function fetchSearchData($url , $limit , $offset ,$params ,$mainGuid , $count,$keywordType){
 		$total = $params['total'] ;
 		
@@ -143,32 +168,7 @@ class Keyword extends AppModel {
 		//display_offset
 		foreach($content as $c){
 			if($index > 0){
-				$array = split(";",$c ) ;
-				$record = array() ;
-				$record['guid'] = $this->create_guid() ;
-				$record['taskId'] = $params['taskId'] ;
-				$record['loginId'] = $params['loginId'] ;
-				$record['is_main_keyword'] = '0' ;
-				$record['keyword_type'] =$keywordType;
-		
-				$record['keyword'] = $array[0] ;
-				$record['search_volume'] = $array[1] ;
-				$record['cpc'] = $array[2] ;
-				$record['competition'] = $array[3] ;
-				$record['result_num'] = $array[4] ;
-				$record['trends'] = $array[5] ;
-				$record['parent_id'] = $mainGuid ;
-				$record['site'] = $params['site'] ;
-		
-				//判断keyword是否存在，如果存在则不考虑
-				//$result = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword = '{@#keyword#}' ", $record) ;
-				//if(empty($result)){
-					try{
-						//debug($record) ;
-						$this->exeSql("sql_keyword_insert", $record) ;
-						$count++ ;
-					}catch(Exception $e){}
-				//}
+				$this->parseKeywordRow($c, $params, $mainGuid, $keywordType, $count) ;
 			}
 			$index++;
 		}
@@ -202,10 +202,10 @@ class Keyword extends AppModel {
 		
 		$mainKeyword = $params['mainKeyword'] ;
 		$mainKeyword = urlencode($mainKeyword) ;
-		$parseMatchUrl = "http://$site.fullsearch-api.semrush.com/?action=report&type=phrase_fullsearch&phrase=$mainKeyword&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td" ;
-		$relationUrl = "http://$site.api.semrush.com/?action=report&type=phrase_related&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase=$mainKeyword" ;
+		$parseMatchUrl = "http://$site.fullsearch-api.semrush.com/?action=report&type=phrase_fullsearch&display_sort=nq_desc&phrase=$mainKeyword&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td" ;
+		$relationUrl = "http://$site.api.semrush.com/?action=report&type=phrase_related&display_sort=nq_desc&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase=$mainKeyword" ;
 		$orgUrl = "http://$site.api.semrush.com/?action=report&type=phrase_organic&key=240ada68082b9ad767ef984a0cfde07c&display_limit=100&export=api&export_columns=Dn,Ur&phrase=$mainKeyword" ;
-		
+	
 		//保存主关键字
 		$mainGuid = null ;
 		if( empty($keywordId) ){
@@ -248,6 +248,7 @@ class Keyword extends AppModel {
 		}
 		
 		$this->fetchSearchData($parseMatchUrl , 100 , 0 ,$params ,$mainGuid , $count , "Pharse") ;
+
 		//保存词组匹配
 		$this->fetchSearchData($relationUrl , 100 , 0 ,$params ,$mainGuid , $count , "Relation" ) ;
 	
@@ -269,6 +270,7 @@ class Keyword extends AppModel {
 			$index++;
 		}
 		ob_clean() ;
+		
 		return $count ;
 	}
 	

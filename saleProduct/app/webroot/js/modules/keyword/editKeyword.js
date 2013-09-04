@@ -214,7 +214,7 @@ $(function(){
 			var params = {} ;
 			params.total  = $("#total").val() ;
 			params.mainKeyword = keywordText ;
-			params.site = currentSite ;
+			params.site = currentSite|| $("#site").val()  ;
 			params.keywordId = keywordId ;
 			params.taskId = taskId ;
 		
@@ -252,6 +252,14 @@ $(function(){
 		},{keyword:keywordText}) ;
 	}) ;
 	
+	$(".uploadKeyword").live("click",function(){
+		var record = $.llygrid.getRecord(this) ;
+		var keywordId 		= record.keyword_id ;
+		var keywordText 	= record.keyword ;
+		openCenterWindow(contextPath+"/page/forward/Keyword.upload/"+keywordId+"/"+record.task_id+"/"+record.site,660,450,function(win,ret){
+		},{keyword:keywordText}) ;
+	}) ;
+	
 	var currentMainKeyword = null ;
 	function loadMainKeywords(){
 		
@@ -272,17 +280,21 @@ $(function(){
 	            	var img = "" ;
 					
 					if(record.is_niche != 1){
-						if(isDev)img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
+						if(isDev)img = "<img class='img-action setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
 					}
 					
 					if(record.c <=0 && isDev ){
 						img = img +
-						"<img class='getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
+						"<img class='img-action getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 					}
 					
 					//网址
 					img = img +
-					"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
+					"<img class='img-action getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
+					
+					//网址
+					img = img +
+					"<img class='img-action uploadKeyword' title='上传关键字列表' src='/"+fileContextPath+"/app/webroot/img/send-now.gif'>" ;
 					
 					return img ;
 	            }} 
