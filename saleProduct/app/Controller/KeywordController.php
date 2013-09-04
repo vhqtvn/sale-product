@@ -14,7 +14,7 @@ class KeywordController extends AppController {
 	
 	var $uses = array('Keyword', "Utils","Log");
 	
-	public function doUpload($accountId){
+	public function doUpload(){
 		
     	$params = $this->request->data  ;
     	$keywordId = $params['keywordId'] ;
