@@ -85,7 +85,7 @@
 		<!-- 页面标题 -->
 		<div class="container-fluid">
 
-	        <form action="<?php echo $contextPath;?>/gatherUpload/uploadAsins" method="post" 
+	        <form action="<?php echo $contextPath;?>/keyword/doUpload" method="post" 
 	  		data-widget="validator"
 	  		target="form-target" enctype="multipart/form-data">
 	        	<input type="hidden" id="keywordId" name="keywordId" value="<?php echo $keywordId;?>"/>
@@ -123,7 +123,7 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
 						<div class="form-actions">
-							<input type="submit" class="btn btn-primary" value="上传产品">
+							<input type="submit" class="btn btn-primary" value="上传关键字">
 						</div>
 					</div>
 				</div>
