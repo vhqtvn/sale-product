@@ -67,8 +67,7 @@
 			$(val).each(function(){
 				$("#result").append("<li><a target='_blank' href='http://www.ebay.com/sch/i.html?&_nkw="+this+"'>"+this+"</a></li>") ;
 			}) ;
-	  }
-		
+	  };
 })
   </script>
    
