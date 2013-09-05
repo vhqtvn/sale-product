@@ -161,8 +161,10 @@ class Keyword extends AppModel {
 		$_url = str_replace("{offset}", $offset, $_url ) ;
 		echo $_url ;
 		$content = $this->httpcopy($_url) ;// file_get_contents($_url) ;
-		
+		echo $content;
 		$content = split("\n", $content) ;
+		
+		
 		$index =0 ;
 		//display_limit
 		//display_offset
@@ -180,7 +182,7 @@ class Keyword extends AppModel {
 				$l = $total ;
 			}
 			
-			$this->fetchSearchData($url , $l , $limit , $params , $mainGuid , $count , $keywordType ) ;
+			//$this->fetchSearchData($url , $l , $limit , $params , $mainGuid , $count , $keywordType ) ;
 		}
 	}
 	
@@ -205,8 +207,8 @@ class Keyword extends AppModel {
 		$parseMatchUrl = "http://$site.fullsearch-api.semrush.com/?action=report&rnd_m=13782981021&export_hash=b9f86033069d331ec903c42ea1c045e41&type=phrase_fullsearch&display_sort=nq_desc&phrase=$mainKeyword&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td" ;
 		$relationUrl = "http://$site.api.semrush.com/?action=report&rnd_m=13782981021&export_hash=b9f86033069d331ec903c42ea1c045e41&type=phrase_related&display_sort=nq_desc&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase=$mainKeyword" ;
 		
-		//$parseMatchUrl = "http://$site.fullsearch.semrush.com/?action=report&database=$site&rnd_m=1378298102&key=240ada68082b9ad767ef984a0cfde07c&type=phrase_fullsearch&phrase=$mainKeyword&export_hash=b9f86033069d331ec903c42ea1c045e4&export_columns=Ph,Nq,Cp,Co,Nr,Td&export=stdcsv" ;
-		//$relationUrl = "http://$site.backend.semrush.com/?action=report&database=$site&rnd_m=1378298102&key=240ada68082b9ad767ef984a0cfde07c&type=phrase_related&phrase=$mainKeyword&export_hash=88c7dd4b17c20df0a2d1524e3f9d3840&export_columns=Ph,Nq,Cp,Co,Nr,Td&export=stdcsv" ;
+		$parseMatchUrl = "http://$site.fullsearch.semrush.com/?action=report&database=$site&rnd_m=1378298102&key=240ada68082b9ad767ef984a0cfde07c&type=phrase_fullsearch&phrase=$mainKeyword&export_hash=b9f86033069d331ec903c42ea1c045e4&export_columns=Ph,Nq,Cp,Co,Nr,Td&export=stdcsv&gclid=CP3iudq_h7kCFcOh4Aod4zYAFQ" ;
+		$relationUrl = "http://$site.backend.semrush.com/?action=report&database=$site&rnd_m=1378298102&key=240ada68082b9ad767ef984a0cfde07c&type=phrase_related&phrase=$mainKeyword&export_hash=88c7dd4b17c20df0a2d1524e3f9d3840&export_columns=Ph,Nq,Cp,Co,Nr,Td&export=stdcsv&gclid=CP3iudq_h7kCFcOh4Aod4zYAFQ" ;
 		
 		
 		$orgUrl = "http://$site.api.semrush.com/?action=report&rnd_m=13782981021&export_hash=b9f86033069d331ec903c42ea1c045e41&type=phrase_organic&key=240ada68082b9ad767ef984a0cfde07c&display_limit=100&export=api&export_columns=Dn,Ur&phrase=$mainKeyword" ;
@@ -254,6 +256,7 @@ class Keyword extends AppModel {
 		
 		$this->fetchSearchData($parseMatchUrl , 100 , 0 ,$params ,$mainGuid , $count , "Pharse") ;
 
+		return 123;
 		//保存词组匹配
 		$this->fetchSearchData($relationUrl , 100 , 0 ,$params ,$mainGuid , $count , "Relation" ) ;
 	

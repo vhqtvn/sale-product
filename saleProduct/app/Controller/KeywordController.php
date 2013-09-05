@@ -53,7 +53,7 @@ class KeywordController extends AppController {
 			fclose($file_handle);
     		
     		$this->response->type("html");
-			$this->response->body("<script type='text/javascript'>window.close();</script>");
+			$this->response->body("<script type='text/javascript'>window.parent.close();</script>");
     	}
 				
 		

@@ -74,6 +74,12 @@
 		$(function(){
 		//	$("[name='search_content']").attr("title","输入示例<br><nobr>同时包括多个关键字(And):XXX1,XXX2</nobr><br>多个关键字之一(Or):XXX1|XXX2").tooltip({placement:'bottom'}) ;
 		}) ;
+		/*
+us  www.amazon.com
+uk  www.amzon.co.uk
+ca www.amazon.ca
+ru
+		*/
 </script>
 
 <body class="container-popup">

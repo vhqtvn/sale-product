@@ -1,4 +1,18 @@
 $(function(){
+	var  amazonSiteMap = {
+			us:"www.amazon.com",
+			uk:"www.amazon.co.uk",
+			ca:"www.amazon.ca",
+			ru:"www.amazon.ru",
+			de:"www.amazon.de",
+			fr:"www.amazon.fr",
+			es:"www.amazon.es",
+			it:"www.amazon.it",
+			br:"www.amazon.br",
+			au:"www.amazon.com.au",
+			"us.bing":"www.amazon.com"
+	}
+	
 	if( $(".niche-grid").length )$(".niche-grid").llygrid({
 		columns:[
            	
@@ -8,11 +22,15 @@ $(function(){
 
 					return html.join("") ;
 			}},
-			{align:"left",key:"keyword",label:"关键字名称", width:"20%"},
+			{align:"left",key:"keyword",label:"关键字名称", width:"20%",format:function(val,record){
+				var site = record.site||"us" ;
+				var amazonUrl = amazonSiteMap[site] ;
+				return "<a href='http://"+amazonUrl+"/s/ref=nb_sb_noss?field-keywords="+val+"' target='_blank'>"+val+"</a>" ;
+			}},
 			{align:"left",key:"status",label:"状态", width:"8%",format:function(val , record){
 				if( !val ) return "开发中" ;
 				if( val==10 ) return "开发中" ;
-				if( val==20 ) return "" ;
+				if( val==20 ) return "待审批" ;
 				if( val==30 ) return "待分配责任人" ;
 				if( val==40 ) return "关联开发产品" ;
 				if( val==50 ) return "结束" ;
@@ -148,8 +166,13 @@ $(function(){
 		$(".child-keyword").llygrid({
 			columns:[
 				{align:"left",key:"keyword",label:"关键字名称", width:"180px",format:function(val,record){
+					
+					var site = record.site||"us" ;
+					var amazonUrl = amazonSiteMap[site] ;
+					val = "<a href='http://"+amazonUrl+"/s/ref=nb_sb_noss?field-keywords="+val+"' target='_blank'>"+val+"</a>" ;
+					
 					if( record.is_niche == 1 ){
-						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +val ;
+						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"+val  ;
 					}
 					return val ;
 				}},
@@ -267,8 +290,12 @@ $(function(){
 		$(".main-keyword").llygrid({
 			columns:[
 				{align:"left",key:"keyword",label:"关键字名称", width:"180px",format:function(val,record){
+					var site = record.site||"us" ;
+					var amazonUrl = amazonSiteMap[site] ;
+					val = "<a href='http://"+amazonUrl+"/s/ref=nb_sb_noss?field-keywords="+val+"' target='_blank'>"+val+"</a>" ;
+					
 					if( record.is_niche == 1 ){
-						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>" +val ;
+						return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"+val  ;
 					}
 					return val ;
 				}},

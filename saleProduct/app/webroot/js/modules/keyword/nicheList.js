@@ -1,5 +1,18 @@
 $(function(){
-
+	var  amazonSiteMap = {
+			us:"www.amazon.com",
+			uk:"www.amazon.co.uk",
+			ca:"www.amazon.ca",
+			ru:"www.amazon.ru",
+			de:"www.amazon.de",
+			fr:"www.amazon.fr",
+			es:"www.amazon.es",
+			it:"www.amazon.it",
+			br:"www.amazon.br",
+			au:"www.amazon.com.au",
+			"us.bing":"www.amazon.com"
+	};
+	
 	$(".niche-grid").llygrid({
 		columns:[
 				{align:"center",key:"keyword_id",label:"操作", width:"10%",format:function(val,record){
@@ -8,7 +21,11 @@ $(function(){
 				
 					return html.join("") ;
 				}},
-				{align:"left",key:"keyword",label:"关键字名称", width:"15%"},
+				{align:"left",key:"keyword",label:"关键字名称", width:"20%",format:function(val,record){
+					var site = record.site||"us" ;
+					var amazonUrl = amazonSiteMap[site] ;
+					return "<a href='http://"+amazonUrl+"/s/ref=nb_sb_noss?field-keywords="+val+"' target='_blank'>"+val+"</a>" ;
+				}},
 				{align:"left",key:"status",label:"状态", width:"8%",format:function(val , record){
 	
 					if( !val ) return "开发中" ;
@@ -25,8 +42,7 @@ $(function(){
 				
 				{align:"left",key:"cpc",label:"CPC",width:"5%",forzen:false,align:"left"},
 				{align:"left",key:"competition",label:"竞争",width:"5%"},
-				{align:"left",key:"result_num",label:"结果数",width:"8%"},
-				{align:"left",key:"trends",label:"趋势",width:"25%"} 
+				{align:"left",key:"site",label:"国家",width:"5%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:30,
