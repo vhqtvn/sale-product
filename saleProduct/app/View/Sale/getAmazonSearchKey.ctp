@@ -57,7 +57,7 @@
 				var val  = $content[1] ;
 				$("#key").val(key) ;
 				$(val).each(function(){
-					$("#result").append("<li>"+this+"</li>") ;
+					$("#result").append("<li><a target='_blank' href='http://www.amazon.com/s/ref=nb_sb_noss?field-keywords="+this+"'>"+this+"</a></li>") ;
 				}) ;
 			}
 	  }else{
@@ -65,7 +65,7 @@
 			$("#key").val(key) ;
 			var val  = $content.res.sug ;
 			$(val).each(function(){
-				$("#result").append("<li>"+this+"</li>") ;
+				$("#result").append("<li><a target='_blank' href='http://www.ebay.com/sch/i.html?&_nkw="+this+"'>"+this+"</a></li>") ;
 			}) ;
 	  }
 		
