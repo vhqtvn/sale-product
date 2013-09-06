@@ -14,6 +14,7 @@
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('default/style');
+		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
@@ -24,6 +25,8 @@
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('modules/keyword/editKeyword');
+
+		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		
 		
 		

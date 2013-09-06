@@ -355,6 +355,21 @@ class Keyword extends AppModel {
 		$this->exeSql($sql, array()) ;		
 	}
 	
+	/**
+	 * taskId  keywordId
+	 * @param unknown_type $params
+	 */
+	public function transferKeyword($params){
+		//debug($params) ;
+		$keywordId = $params['keywordId'] ;
+		$taskId = $params['taskId'] ;
+		//更改主关键字任务
+		$this->exeSql("update sc_keyword set task_id = '{@#taskId#}' where keyword_id='{@#keywordId#}'", $params) ;
+		
+		//更改从关键字任务
+		$this->exeSql("update sc_keyword set task_id = '{@#taskId#}' where parent_id='{@#keywordId#}' and is_main_keyword='0'", $params) ;
+	}
+	
 	public function getWebSite($params){
 		$keywordId = $params['keywordId'] ;
 		$sql = "SELECT DISTINCT domain,url FROM sc_keyword_website 

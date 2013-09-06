@@ -284,6 +284,46 @@ $(function(){
 		},{keyword:keywordText}) ;
 	}) ;
 	
+	$(".transferKeyword").live("click",function(){
+		var record = $.llygrid.getRecord(this) ;
+		var keywordId 		= record.keyword_id ;
+		var keywordText 	= record.keyword ;
+	
+		var productGridSelect = {
+				title:'关键字任务选择',
+				defaults:[],//默认值
+				key:{value:'task_id',label:'name'},//对应value和label的key
+				multi:false ,
+				width:700,
+				height:600,
+				grid:{
+					title:"关键字任务选择",
+					params:{
+						sqlId:"d_list_task"
+					},
+					ds:{type:"url",content:contextPath+"/grid/query"},
+					pagesize:10,
+					columns:[//显示列
+						{align:"center",key:"name",label:"任务名称",sort:true,width:"30%",query:true},
+						{align:"center",key:"create_date",label:"创建时间",sort:true,width:"30%"}
+					]
+				}
+		   } ;
+		   
+		$.listselectdialog( productGridSelect,function(){
+			var args = jQuery.dialogReturnValue() ;
+			var value = args.value||[] ;
+			var label = args.label ;
+			var selectReocrds = args.selectReocrds ;
+			
+			$.dataservice("model:Keyword.transferKeyword",{'keywordId':keywordId,taskId:value.join(",")},function(result){
+				$(".main-keyword").llygrid("reload",{},true) ;
+			});
+			
+			return false;
+		}) ;
+	}) ;
+	
 	var currentMainKeyword = null ;
 	function loadMainKeywords(){
 		
@@ -304,7 +344,7 @@ $(function(){
 				{align:"left",key:"competition",label:"竞争", width:"10%"},
 	            {align:"left",key:"c",label:"扩展数",width:"10%"} ,
 	            {align:"center",key:"site",label:"国家", width:"10%"},
-	            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
+	            {align:"center",key:"keyword_id",label:"操作",width:"16%",format:function(val,record){
 	            	var img = "" ;
 					
 					if(record.is_niche != 1){
@@ -323,6 +363,10 @@ $(function(){
 					//网址
 					img = img +
 					"<img class='img-action uploadKeyword' title='上传关键字列表' src='/"+fileContextPath+"/app/webroot/img/send-now.gif'>" ;
+
+					//网址
+					img = img +
+					"<img class='img-action transferKeyword' title='转移主关键字' src='/"+fileContextPath+"/app/webroot/img/retry.png'>" ;
 					
 					return img ;
 	            }} 
