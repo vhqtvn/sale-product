@@ -24,8 +24,8 @@
 			UPDATE sc_keyword SET STATUS = '15'
 				WHERE task_id = '{@#taskId#}'
 				{@ AND search_volume <  #search_volume# }
-				{@ AND cpc <  #cpc# }
-				{@ AND competition <  #competition# }
+				{@ AND cpc >  #cpc# }
+				{@ AND competition >  #competition# }
 				{@ AND result_num <  #result_num# }
 				{@ AND parent_id='#parentId#' }
 				{@ AND ( #searchContent|true# ) }
@@ -39,8 +39,8 @@
 					from sc_keyword t
 					where t.parent_id='{@#parentId#}' 
 					{@ AND search_volume >=  #search_volume# }
-					{@ AND cpc >=  #cpc# }
-					{@ AND competition >=  #competition# }
+					{@ AND cpc <=  #cpc# }
+					{@ AND competition <=  #competition# }
 					{@ AND result_num >=  #result_num# }
 					{@ AND  (#pc|true#) }
 					and t.is_main_keyword <>  1
