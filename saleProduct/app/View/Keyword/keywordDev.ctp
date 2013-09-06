@@ -122,8 +122,8 @@ ru
 						<td class="toolbar-filter" style="text-align: right;">
 							包含<input    type="text"  name="search_content" style="width:140px;"  data-widget="tooltip" data-options="{placement:'bottom',title:'包括多个关键字(And):XXX1,XXX2;多个关键字之一(Or):XXX1|XXX2'}"/>
 							搜索量>=<input type="text"  name="search_volume" style="width:60px;"/>
-							CPC>=<input type="text" name="cpc"    style="width:60px;"/>
-							竞争>=<input type="text"   name="competition" style="width:60px;"/>
+							CPC<=<input type="text" name="cpc"    style="width:60px;"/>
+							竞争<=<input type="text"   name="competition" style="width:60px;"/>
 							<button class="query-btn btn  btn-query" >查询</button>
 							<button class="query-btn btn btn-primary  btn-filter" >筛选</button>
 						</td>
