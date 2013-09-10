@@ -11,7 +11,7 @@ $(function(){
 			}},
 		    {align:"left",key:"name",label:"计划名称", width:"31%"},
 		    {align:"left",key:"memo",label:"备注", width:"31%"},
-           	{align:"center",key:"create_time",label:"创建时间",width:"24%" }
+           	{align:"center",key:"create_date",label:"创建时间",width:"24%" }
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:30,
@@ -41,7 +41,7 @@ $(function(){
 			}},
 		    {align:"left",key:"name",label:"任务名称", width:"31%"},
 		    {align:"left",key:"memo",label:"任务备注", width:"31%"},
-           	{align:"center",key:"create_time",label:"创建时间",width:"24%" }
+           	{align:"center",key:"create_date",label:"创建时间",width:"24%" }
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:30,

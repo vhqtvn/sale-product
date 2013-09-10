@@ -269,7 +269,30 @@
     ]]>
     </entry>
     
+     <entry key="d_getAsinDetailsByASIN">
+    <![CDATA[
+    SELECT 
+       saa.NAME AS ACCOUNT_NAME,
+       srp.IMAGE_URL,
+       srp.REAL_SKU,
+       saap.*
+ FROM 
+      sc_amazon_account saa,
+      sc_amazon_account_product saap
+  LEFT JOIN
+      sc_real_product_rel srpr
+  ON srpr.ACCOUNT_ID = saap.ACCOUNT_ID
+	AND srpr.SKU = saap.SKU
+   LEFT JOIN sc_real_product srp
+   ON srpr.REAL_ID = srp.ID
+WHERE saap.asin = '{@#asin#}'
+AND saap.status != 'deleted'
+AND saap.ACCOUNT_ID = saa.ID
+
+    ]]>
+    </entry>
     
     
+   
     
 </properties>

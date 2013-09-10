@@ -380,6 +380,26 @@ class Keyword extends AppModel {
 		return $this->exeSqlWithFormat($sql, $params) ;
 	}
 	
+	public function saveAsin($params){
+		$keywordId = $params['keywordId'] ;
+		$asins = $params['asins'] ;
+		$asins = explode(",", $asins) ;
+		foreach( $asins as $asin  ){
+			$params['asin'] = $asin ;
+			$this->exeSql("INSERT INTO sc_keyword_asin 
+								(keyword_id,  ASIN,  creator,  create_date )
+								VALUES ('{@#keywordId#}',  '{@#asin#}',  '{@#loginId#}',  NOW() )", $params) ;
+		}
+	}
+	
+	public function deleteAsin($params){
+		$keywordId = $params['keywordId'] ;
+		$asin = $params['asin'] ;
+		
+		$this->exeSql("delete from sc_keyword_asin where keyword_id = '{@#keywordId#}' and asin = '{@#asin#}' ", $params) ;
+		
+	}
+	
 	
 	function httpcopy($url, $file="", $timeout=60) {
 		$file = empty($file) ? pathinfo($url,PATHINFO_BASENAME) : $file;

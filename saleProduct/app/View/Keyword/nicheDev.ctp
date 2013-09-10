@@ -45,6 +45,25 @@
 		$add_kw_plan						= $security->hasPermission($loginId , 'add_kw_plan') ;
 		$add_kw_task							= $security->hasPermission($loginId , 'add_kw_task') ;
 		$niche_kw_dev							= $security->hasPermission($loginId , 'niche_kw_dev') ;
+		
+		//获取所有的关联ASIN $keywordId
+		$asins = $keyword->exeSqlWithFormat("select * from sc_keyword_asin where keyword_id = '{@#keywordId#}'" , array("keywordId"=>$keywordId)) ;
+		
+		$siteMap = array( 
+	"us"=>"www.amazon.com",
+	"uk"=>"www.amazon.co.uk",
+	"ca"=>"www.amazon.ca",
+	"ru"=>"www.amazon.ru",
+	"de"=>"www.amazon.de",
+	"fr"=>"www.amazon.fr",
+	"es"=>"www.amazon.es",
+	"it"=>"www.amazon.it",
+	"br"=>"www.amazon.br",
+	"au"=>"www.amazon.com.au",
+	"us.bing"=>"www.amazon.com" ) ;
+	
+	$siteUrl = $siteMap[ $kw['site'] ] ;		
+
 	?>
 </head>
 
@@ -134,11 +153,38 @@
 			margin:2px 5px;
 		 	padding:2px;
 		}
+		
+		.asin-ul{
+			list-style: none;
+			margin:0px;
+		}
+		.asin-ul li{
+			float:left;
+			margin:2px 3px;
+			padding:2px 5px;
+		}
+		
+		.asin-ul li input{
+			width:110px;
+		}
+		
+		.asin-action-li{
+			display:none;
+		}
+		
+		.link-to-product{
+			cursor:pointer;
+		}
+		
+		.asin-span{
+			margin:0px!important;
+		}
 	</style>
 
 <script>
 	var keywordId = "<?php echo $keywordId;?>" ;
 	var keyword   = "<?php echo $kw['keyword'];?>" ;
+	var site =  "<?php echo $kw['site'];?>" ;
 
 
 	function AuditAction(status , statusLabel){
@@ -310,9 +356,54 @@
 									<?php echo $canWrite?"":"disabled" ;?> style="width:90%;height:40px;"><?php echo $kw['dev_competition'] ;?></textarea></td>
 								</tr>
 								<tr>
-									<th>参考ASIN：</th>
-									<td colspan="3"><textarea id="dev_asin"
-									<?php echo $canWrite?"":"disabled" ;?> style="width:90%;height:40px;"><?php echo $kw['dev_asin'] ;?></textarea></td>
+									<th>参考ASIN&nbsp;<?php if( $canWrite ){ ?><a href="#" class="add-asin no-disabled">添加</a><?php } ?>：</th>
+									<td colspan="3">
+										<ul  class="asin-ul">
+												<?php if( $canWrite ){?>
+												<li class="asin-action-li"><button class="btn save-sain">保存</button></li>
+												<?php 
+													}
+													$isDisabled = $canWrite?"":"disabled" ; 
+													$img = $canWrite?"<img class='delete-asin' src='/".$fileContextPath."/app/webroot/img/delete.gif'/>":"" ;
+													if( $kw['status'] == 40 ){ //关联开发产品
+														//$img .= "<img class='link-to-product' src='/".$fileContextPath."/app/webroot/img/config.gif'/>" ;
+													}
+													
+													
+													foreach( $asins as $asin ){
+														$_asin = $asin['asin'] ;
+														//获取是否已经关联账号产品
+														$obj = $keyword->getObject("d_getAsinDetailsByASIN",array("asin"=>$_asin)) ;
+														
+														if( empty($obj) ){ 
+															echo  "<li><span class='asin-span alert'>
+																<a target='_blank' href='http://$siteUrl/gp/product/".$_asin."'>".$_asin."</a>$img" ;
+															echo "未关联开发产品！" ;
+															echo "</span></li>" ;
+														}else{
+															
+															echo  "<li><span class='asin-span alert alert-success'>
+																<a target='_blank' href='http://$siteUrl/gp/product/".$_asin."'>".$_asin."(".$obj['SKU'].")</a>$img" ;
+															
+															if( $obj['REAL_SKU'] ){
+																echo '<a data-widget="dialog" data-options="{width:1000,height:650}" href="/'.$fileContextPath.'/index.php/saleProduct/details/'.$obj['REAL_SKU'].'/sku">' ;
+																if( $obj['IMAGE_URL'] ){
+																	echo "&nbsp;<img src='/".$fileContextPath."/".$obj['IMAGE_URL'] ."' style='width:20px;height:16px;'>" ;
+																}
+																echo $obj['REAL_SKU'] ;
+																echo "</a>" ;
+															}else{
+																echo "暂未关联到货品" ;
+															}
+															
+															echo "</span></li>" ;
+														}
+														
+													}
+												?>
+												
+										</ul>
+									</td>
 								</tr>
 								<tr>
 									<th>开发重要性：</th>

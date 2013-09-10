@@ -1,4 +1,5 @@
 $(function(){
+
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
 		tabs.push( {label:'search terms',content:"searchTerm"} ) ;
 		tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
@@ -82,5 +83,53 @@ $(function(){
 		$.dataservice("model:Keyword.getSearchTerm",json,function(result){
 			$(".grid-term").llygrid("reload",{},true) ;
 		});
+	}) ;
+	
+	$(".add-asin").click(function(){
+		$("<li><input type='input' placeHolder='输入ASIN'></li>").appendTo($(".asin-ul")) ;
+		$(".asin-action-li").show();
+		return false ;
+	}) ;
+	
+	$(".save-sain").live('click',function(){
+		var asins = [] ;
+		$(".asin-ul").find("input").each(function(){
+			var asin = $.trim( $(this).val()||"" ) ;
+			if(asin) asins.push(asin) ;
+		}) ;
+		
+		var json = {} ;
+		json.keywordId = keywordId ;
+		json.asins = asins.join(",") ;
+		if(window.confirm("确认添加参考ASIN吗？")){
+			$.dataservice("model:Keyword.saveAsin",json,function(result){
+				window.location.reload();
+			});
+		}
+		
+		return false ;
+	}) ;
+	
+	$(".delete-asin").click(function(){
+		var asin = $.trim( $(this).parent().text() ) ;
+		var json = {} ;
+		json.keywordId = keywordId ;
+		json.asin = asin ;
+		
+		if(window.confirm("确认删除吗？")){
+			$.dataservice("model:Keyword.deleteAsin",json,function(result){
+				window.location.reload();
+			});
+		}
+		return false ;
+	}) ;
+	
+	$(".link-to-product").click(function(){
+		var asin = $.trim( $(this).parent().text() ) ;
+		var json = {} ;
+		json.keywordId = keywordId ;
+		json.asin = asin ;
+		//弹出窗口选择货品
+		
 	}) ;
 }) ;
