@@ -7,24 +7,12 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+  		include_once ('config/config.php');
+  		include_once ('config/header.php');
+  		echo $this->Html->script('modules/saleproduct/edit_product');
    
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('default/style');
-		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('validator/jquery.validation');
-		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
-		echo $this->Html->script('modules/saleproduct/edit_product');
-
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-		
 		$security  = ClassRegistry::init("Security") ;
-		
 		$groups = $SqlUtils->exeSql("sql_package_group_list",array() ) ;
 		
 	?>
@@ -66,7 +54,7 @@
 	         enctype="multipart/form-data" class="form-horizontal" >
 	        	<input type="hidden" id="id" name="id" value="<?php echo $item['ID']?>"/>
 				<!-- panel 头部内容  此场景下是隐藏的-->
-				<div class="panel apply-panel">
+				<div class="panel apply-panel" style="margin-bottom:50px;">
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
@@ -75,11 +63,13 @@
 							<tbody>
 								<tr>
 									<td colspan="2"  rowspan="4">
+										<div class="image-container"  localUrl= '<?php echo $item['IMAGE_URL'] ;?>'   entityType="realProduct" entityId="<?php echo $item['ID']?>"></div>
+										<?php  /*
 										<input type="file" name="imageUrl" class="span3"/>
 										<?php
 										if( $item['IMAGE_URL'] ){
 											echo "<img src='/".$fileContextPath."/".$item['IMAGE_URL']."' style='width:140px;height:140px;'>" ;
-										}?>
+										}?>*/ ?>
 									</td>
 										<th>类型：</th>
 										<td>
@@ -215,7 +205,7 @@
 					</div>
 					
 					<!-- panel脚部内容-->
-                    <div class="panel-foot">
+                    <div class="panel-foot" style="background-color:#FFF;">
 						<div class="form-actions">
 							<button type="submit" class="btn btn-primary btn-submit">提&nbsp;交</button>
 						</div>

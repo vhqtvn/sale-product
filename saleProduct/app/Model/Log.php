@@ -2,6 +2,10 @@
 class Log extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	public function helloworld(){
+		echo ">>>>>>>>>>>helloworld";
+	}
+	
 	public function formatException( $e ){
 		$line = $e->getLine() ;
 		$file = $e->getFile() ;
