@@ -46,7 +46,7 @@
             <div class="col-lg-7">
                 <span class="btn btn-success fileinput-button">
                     <i class="glyphicon glyphicon-plus"></i>
-                    <span>添加文件</span>
+                    <span>添加图片</span>
                     <input type="file" name="files[]" multiple>
                 </span>
                 <button type="submit" class="btn btn-primary start">

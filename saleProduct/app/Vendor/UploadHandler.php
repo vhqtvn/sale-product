@@ -1035,6 +1035,7 @@ class UploadHandler
         */
         $utils = ClassRegistry::init("Utils") ;
         //写入到数据库
+        $firstImgUrl = "" ;
         foreach( $files as $file ){
         	$utils->exeSql("INSERT INTO sc_utils_image 
 							(ID, 
@@ -1061,7 +1062,19 @@ class UploadHandler
 									"thumbnailUrl"=>$file->thumbnailUrl ,
 									"fileName"=>$file->name
 									)) ;
+        	if( $firstImgUrl == "" ) $firstImgUrl = $file->url ;
         } ;
+        
+        if( $firstImgUrl!="" ){
+        	if( $entityType == "realProduct" ){
+        		$utils->exeSql("update sc_real_product set image_url = '{@#imageUrl#}' where id = '{@#id#}'", 
+        				array(
+        						"id"=>$entityId,
+        						"imageUrl"=>$firstImgUrl
+        					)
+        			) ;
+        	}
+        }
         
         
         return $this->generate_response(

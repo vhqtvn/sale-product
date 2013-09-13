@@ -52,7 +52,7 @@
 				
 						return html.join("") ;
 					}},
-				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
+				 	{align:"center",key:"IMG_URL",label:"图片",width:"5%",format:{type:'img'}},
 				 	{align:"center",key:"IS_ONSALE",label:"销售状态",width:"5%",format:function(val,record){
 				 		if(val == 1){
 				 			return   getImage('checked.gif','在售中','onsale-status ');

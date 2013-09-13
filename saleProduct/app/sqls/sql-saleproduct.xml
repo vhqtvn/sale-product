@@ -93,7 +93,10 @@
 		         )  as COMMON_QUANTITY,
 		         ( select sum(quantity) from sc_goods_inventory sgi where sgi.goods_id = sc_real_product.id  and type = '2'
 		            {@ and warehouse_id = '#warehouseId#' }
-		          )  as FBA_QUANTITY
+		          )  as FBA_QUANTITY,
+		          ( CASE WHEN ( sc_real_product.IMAGE_URL  IS NULL or sc_real_product.IMAGE_URL  = '' ) THEN (
+		               ( select image_url from sc_utils_image where entity_type='realProduct' and entity_id =sc_real_product.id limit 0,1 ) 
+		          ) ELSE  sc_real_product.IMAGE_URL END ) as IMG_URL
 		         from sc_real_product where 1=1
 		     {@ and is_onsale='#isOnsale#'}
  			{@ and type='#type#'}
