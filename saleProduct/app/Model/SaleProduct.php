@@ -45,11 +45,11 @@ class SaleProduct extends AppModel {
 		return $result ;
 	}
 	
-	function saveProduct($data , $user){
+	function saveProduct($data , $user=null){
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
-		$data['loginId'] = $user['LOGIN_ID'] ;
+		//$data['loginId'] = $user['LOGIN_ID'] ;
 		
 		$sku = $data['sku'] ;
 		$id =  $data['id'] ;
@@ -60,7 +60,6 @@ class SaleProduct extends AppModel {
 			$sql = $this->getSql($sql,$data) ;
 			$this->query($sql) ;
 			
-			
 			//更新引用表
 			$sql = "update sc_real_product_rel set real_sku = '$sku' where real_id = '$id'" ;
 			$this->query($sql) ;
@@ -70,11 +69,17 @@ class SaleProduct extends AppModel {
 			
 			$sql = "update sc_real_product_composition set REF_SKU = '$sku' where REF_ID = '$id'" ;
 			$this->query($sql) ;
-
+			return "" ;
 		}else{
+			$guid = $this->create_guid() ;
+			$data['guid'] = $guid ;
 			$sql = $this->getDbSql("sql_saleproduct_insert") ;
 			$sql = $this->getSql($sql,$data) ;
 			$this->query($sql) ;
+			//通过guid获取ID
+			$realProduct = $this->getObject("select * from sc_real_product where guid = '{@#guid#}'", $data) ;
+			$id = $realProduct["ID"] ;
+			return $id ;
 		}
 	}
 	

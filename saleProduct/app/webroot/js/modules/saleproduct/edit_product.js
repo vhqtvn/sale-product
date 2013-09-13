@@ -133,6 +133,19 @@ $(function(){
 			keys.push( $.trim(_keys) ) ;
 		}) ;
 		$("[name='keys']").val(keys.join("||")) ;
+		
+		if( !$.validation.validate('#personForm').errorInfo ) {
+			var json = $("#personForm").toJson() ;
+			
+			$.dataservice("model:SaleProduct.saveProduct",json,function(result){
+				if(result){
+					window.resizeTo(980,720) ;
+					window.location.href = contextPath+"/saleProduct/details/"+result ;
+				}else{
+					window.lociton.reload() ;
+				}
+			});
+		}
 	}) ;
 	
 });

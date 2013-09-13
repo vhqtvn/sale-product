@@ -124,6 +124,7 @@
 		NAME, 
 		MEMO, 
 		URL,
+		GUID,
 		PACKAGE_TYPE,
 		WARNING_QUANTITY,
 		SECURITY_QUANTITY,
@@ -139,7 +140,8 @@
 		POSTAGE_SERVICE_ID,
 		S_KEYS,
 		DECLARATION_NAME,
-		DECLARATION_PRICE
+		DECLARATION_PRICE,
+		PROPERTIES
 		)
 		VALUES
 		('{@#sku#}', 
@@ -149,6 +151,7 @@
 		'{@#name#}', 
 		'{@#memo#}', 
 		'{@#url#}',
+		'{@#guid#}',
 		'{@#packageType#}',
 		'{@#warningQuantity#}',
 		'{@#securityQuantity#}',
@@ -164,7 +167,8 @@
 		'{@#postageServiceId#}',
 		'{@#keys#}',
 		'{@#declarationName#}',
-		'{@#declarationPrice#}'
+		'{@#declarationPrice#}',
+		'{@#properties#}'
 		)
    </entry>
    

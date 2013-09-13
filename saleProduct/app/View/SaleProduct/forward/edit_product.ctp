@@ -15,6 +15,13 @@
 		$security  = ClassRegistry::init("Security") ;
 		$groups = $SqlUtils->exeSql("sql_package_group_list",array() ) ;
 		
+		$entityId = $item['ID'] ;
+		$fixEntityId = "" ;
+		if( empty( $entityId ) ){
+			$fixEntityId = $SqlUtils->create_guid() ;
+			$entityId = $fixEntityId ;
+		}
+		
 	?>
 	
 	<style type="text/css">
@@ -63,7 +70,13 @@
 							<tbody>
 								<tr>
 									<td colspan="2"  rowspan="4">
-										<div class="image-container"  localUrl= '<?php echo $item['IMAGE_URL'] ;?>'   entityType="realProduct" entityId="<?php echo $item['ID']?>"></div>
+										<?php if( empty($item['ID']) ){
+											echo "<center><b>保存后再上传图片！</b></center>" ;
+										}else{?>
+											
+										<div class="image-container"  localUrl= '<?php echo $item['IMAGE_URL'] ;?>'   entityType="realProduct"  entityId="<?php echo $entityId?>"></div>
+										
+									 <?php	}?>
 										<?php  /*
 										<input type="file" name="imageUrl" class="span3"/>
 										<?php
@@ -207,7 +220,9 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot" style="background-color:#FFF;">
 						<div class="form-actions">
-							<button type="submit" class="btn btn-primary btn-submit">提&nbsp;交</button>
+							<button   class="btn btn-primary btn-submit">提&nbsp;交</button>
+							
+							<button onclick="window.close();return false;" class="btn">关&nbsp;闭</button>
 						</div>
 					</div>
 				</div>
