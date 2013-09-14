@@ -185,7 +185,12 @@ $(function(){
 	            	var img = "" ;
 					
 					if(record.is_niche != 1){
-						if(isDev)img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
+						if(isDev){
+							img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
+							img = img +
+							"<img class='removeKeyword' title='删除关键字' src='/"+fileContextPath+"/app/webroot/img/delete.gif'>" ;
+						}
+						
 					}
 					
 					if( isDev ){
@@ -223,6 +228,20 @@ $(function(){
 	
 	$(".label-td").live("dblclick",function(){
 		labelClick.call(this) ;
+	}) ;
+	
+	
+	
+	$(".removeKeyword").live("click",function(){
+		var record = $.llygrid.getRecord(this) ;
+		var me = $(this) ;
+		if(window.confirm("确认删除该关键字？")){
+			var keywordId 		= record.keyword_id ;
+			$.dataservice("model:Keyword.deleteKeyword", {keywordId:keywordId} ,function(result){
+				$(".child-keyword").llygrid("reloadP",{},true) ;
+			});
+		}
+		
 	}) ;
 	
 	$(".getSemrushKeyword").live("click",function(){
