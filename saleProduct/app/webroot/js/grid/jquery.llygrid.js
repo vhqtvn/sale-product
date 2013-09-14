@@ -621,6 +621,10 @@
 					params.curPage = 1 ;
 					reload($(this),params,_options) ;
 					break ;
+				case "reloadP":
+					params = params||{} ;
+					reload($(this),params,_options) ;
+					break ;
 				case "addEvent":
 					addEvent(me,params.eventName , params.func ) ;
 			}
