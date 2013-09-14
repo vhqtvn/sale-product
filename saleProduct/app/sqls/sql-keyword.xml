@@ -19,6 +19,24 @@
 		]]>
     </entry>
     
+    <!-- 
+    UPDATE sc_keyword SET STATUS = '15'
+				WHERE task_id = '{@#taskId#}'
+				{@ AND search_volume <  #search_volume# }
+				{@
+				   and (
+				   			cpc >  #cpc# 
+				   			or competition >  #competition#
+				   			or search_volume <  #search_volume#
+				   )
+				}
+				{@ AND cpc >  #cpc# }
+				{@ AND competition >  #competition# }
+				{@ AND result_num <  #result_num# }
+				{@ AND parent_id='#parentId#' }
+				{@ AND ( #searchContent|true# ) }
+				and is_main_keyword <>  1
+     -->
 	<entry key="sql_filter_keywords_15">
         <![CDATA[	
 			UPDATE sc_keyword SET STATUS = '15'
@@ -33,14 +51,37 @@
 		]]>
     </entry>
 
+	<!-- 
+	select t.* 
+					from sc_keyword t
+					where t.parent_id='{@#parentId#}' 
+					{@
+					   and (
+					   			cpc >  #cpc# 
+					   			or competition >  #competition#
+					   			or search_volume <  #search_volume#
+					   )
+					}
+					{@ AND search_volume >=  #search_volume# }
+					{@ AND cpc <=  #cpc# }
+					{@ AND competition <=  #competition# }
+					{@ AND result_num >=  #result_num# }
+					{@ AND  (#pc|true#) }
+					and t.is_main_keyword <>  1
+					and status <> 15
+					 order by t.search_volume desc -->
 	<entry key="d_list_keywordByMain">
         <![CDATA[	
 			select t.* 
 					from sc_keyword t
 					where t.parent_id='{@#parentId#}' 
-					{@ AND search_volume >=  #search_volume# }
-					{@ AND cpc <=  #cpc# }
-					{@ AND competition <=  #competition# }
+					{@
+					   and (
+					   			cpc <=  #cpc:0# 
+					   			or competition <=  #competition:0#
+					   			or search_volume >=  #search_volume:100000000000000000000000000#
+					   )
+					}
 					{@ AND result_num >=  #result_num# }
 					{@ AND  (#pc|true#) }
 					and t.is_main_keyword <>  1
