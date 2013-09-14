@@ -618,7 +618,7 @@
 				case "reload":
 					params = params||{} ;
 					//params.curPage = 1 ;//重新定位到第一页
-					//params.curPage = 1 ;
+					params.curPage = 1 ;
 					reload($(this),params,_options) ;
 					break ;
 				case "addEvent":
@@ -692,7 +692,7 @@
 			'img':{
 				body:function(val,record,col){
 					if(val){
-	           			val = val.replace(/%/g,'%25') ;
+	           			//val = val.replace(/%/g,'%25') ;
 	           			return "<img src='/"+fileContextPath+"/"+val+"' style='width:25px;height:25px;'>" ;
 	           		}
 	           		return "" ;

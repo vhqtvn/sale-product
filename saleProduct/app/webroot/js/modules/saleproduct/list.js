@@ -102,8 +102,8 @@
 					},permission:function(){ return $product_giveup ; }}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
-				 limit:3,
-				 pageSizes:[3,10,20,30,40],
+				 limit:20,
+				 pageSizes:[20,10,20,30,40],
 				 height:function(){
 				 	return $(window).height() - 200 ;
 				 },
