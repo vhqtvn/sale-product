@@ -12,10 +12,9 @@ $(function(){
 			au:"www.amazon.com.au",
 			"us.bing":"www.amazon.com"
 	}
-	
+	var currentNichKeyword = null ;
 	if( $(".niche-grid").length )$(".niche-grid").llygrid({
 		columns:[
-           	
 			{align:"center",key:"keyword_id",label:"操作", width:"8%",format:function(val,record){
 					var html = [] ;
 					html.push("<a href='#' class='action niche-update' val='"+val+"'>设置</a>&nbsp;") ;
@@ -37,6 +36,7 @@ $(function(){
 				if( val==15 ) return "废弃" ;
 			}},
            	{align:"left",key:"keyword_type",label:"关键字类型", width:"10%"},
+           	{align:"left",key:"search_volume",label:"搜索量", width:"10%"},
            	{align:"left",key:"cpc",label:"CPC",width:"10%",forzen:false,align:"left"},
            	{align:"left",key:"competition",label:"竞争",width:"10%"},
            	{align:"center",key:"site",label:"国家", width:"10%"}
@@ -45,12 +45,68 @@ $(function(){
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-			 return $(window).height() - 140 ;
+			 return 175 ;
 		 },
 		 title:"Niche关键字列表",
 		 indexColumn:false,
 		 querys:{_data:"d_niche_list",taskId:taskId},
-		 loadMsg:"Niche关键字加载中，请稍候......"
+		 loadMsg:"Niche关键字加载中，请稍候......",
+		 rowDblClick:function(row,record){
+			 currentNichKeyword = record ;
+			 $(".niche-grid-group").llygrid("reload",{groupId:record.keyword_id}) ;
+		 },
+		 loadAfter:function(){
+			 currentNichKeyword =null ;
+		 }
+	}) ;
+	
+	
+	if( $(".niche-grid-group").length )$(".niche-grid-group").llygrid({
+		columns:[
+			{align:"left",key:"keyword",label:"关键字名称", width:"180px",format:function(val,record){
+				
+				var site = record.site||"us" ;
+				var amazonUrl = amazonSiteMap[site] ;
+				val = "<a href='http://"+amazonUrl+"/s/ref=nb_sb_noss?field-keywords="+val+"' target='_blank'>"+val+"</a>" ;
+				
+				if( record.is_niche == 1 ){
+					return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"+val  ;
+				}
+				return val ;
+			}},
+			{align:"left",key:"keyword_type",label:"类型", width:"10%"},
+			{align:"left",key:"search_volume",label:"搜索量", width:"10%"},
+			{align:"left",key:"cpc",label:"CPC", width:"10%"},
+			{align:"left",key:"competition",label:"竞争", width:"10%"},
+			{align:"center",key:"site",label:"国家", width:"10%"},
+            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
+            	var img = "" ;
+				
+				if(record.is_niche != 1){
+					if(isDev){
+						img = img +
+						"<img class='removeKeyword' title='删除关键字' src='/"+fileContextPath+"/app/webroot/img/delete.gif'>" ;
+					}
+					
+				}
+				
+				//网址
+				img = img +
+				"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
+				
+				return img ;
+            }} 
+         ],
+         ds:{type:"url",content:contextPath+"/grid/query"},
+		 limit:20,
+		 pageSizes:[10,20,30,40],
+		 height:function(){
+			 return 245 ;
+		 },
+		 title:'Niche分组关键字',
+		 indexColumn:false,
+		 querys:{_data:"d_list_keywordByGroup",groupId:"--"},//,parentId:keywordId
+		 loadMsg:"扩展关键字加载中，请稍候......"
 	}) ;
 	
 	$(".niche-update").live("click",function(){
@@ -181,7 +237,7 @@ $(function(){
 				{align:"left",key:"cpc",label:"CPC", width:"10%"},
 				{align:"left",key:"competition",label:"竞争", width:"10%"},
 				{align:"center",key:"site",label:"国家", width:"10%"},
-	            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
+	            {align:"center",key:"keyword_id",label:"操作",width:"16%",format:function(val,record){
 	            	var img = "" ;
 					
 					if(record.is_niche != 1){
@@ -189,6 +245,9 @@ $(function(){
 							img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
 							img = img +
 							"<img class='removeKeyword' title='删除关键字' src='/"+fileContextPath+"/app/webroot/img/delete.gif'>" ;
+							if( !record.group_id){
+								img = img + "<img class='groupKeyword' title='分组关键字' src='/"+fileContextPath+"/app/webroot/img/config.gif'>" ;
+							}
 						}
 						
 					}
@@ -231,6 +290,24 @@ $(function(){
 	}) ;
 	
 	
+	
+	$(".groupKeyword").live("click",function(){
+		if(!currentNichKeyword){
+			alert("未选中Niche关键字？") ;
+			return ;
+		}
+		var record = $.llygrid.getRecord(this) ;
+		var me = $(this) ;
+		if(window.confirm("确认将改关键字添加到Niche关键字【"+currentNichKeyword.keyword+"】分组中？")){
+			var keywordId 		= record.keyword_id ;
+			var groupId         = currentNichKeyword.keyword_id;
+			$.dataservice("model:Keyword.groupKeyword", {keywordId:keywordId,groupId:groupId} ,function(result){
+				$(".child-keyword").llygrid("reloadP",{},true) ;
+				$(".niche-grid-group").llygrid("reload",{groupId:currentNichKeyword.keyword_id}) ;
+			});
+		}
+		
+	}) ;
 	
 	$(".removeKeyword").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;

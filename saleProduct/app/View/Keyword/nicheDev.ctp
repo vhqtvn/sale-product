@@ -417,6 +417,9 @@
 				</div>
 			</form>
 			</div>
+			<div id="groupKeyword">
+				<div class="niche-grid-group" style="width:880px;"></div>
+			</div>
 			<div id="tracks">
 				<div class="grid-track" style="width:880px;"></div>
 			</div>

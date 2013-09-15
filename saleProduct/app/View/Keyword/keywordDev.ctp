@@ -144,6 +144,8 @@ ru
 			<div class="span6">
 				<div class="dev-niche">
 					<div class="niche-grid"></div>
+					
+					<div class="niche-grid-group" style="margin-top:10px;"></div>
 				</div>
 			</div>
 		</div>

@@ -90,6 +90,15 @@
 		]]>
     </entry>
     
+    <entry key="d_list_keywordByGroup">
+        <![CDATA[	
+			select t.* 
+					from sc_keyword t
+					where t.group_id= '{@#groupId#}'
+					 order by t.search_volume desc
+		]]>
+    </entry>
+    
     <entry key="d_list_MainKeyword">
         <![CDATA[	
 			select t.* ,

@@ -8,6 +8,10 @@ ini_set("post_max_size", "24M");
 class Keyword extends AppModel {
 	var $useTable = "sc_keyword_plan" ;
 	
+	public function groupKeyword($params){
+		$this->exeSql("update sc_keyword set group_id = '{@#groupId#}' where keyword_id = '{@#keywordId#}'", $params) ;
+	}
+	
 	public function deleteKeyword($params){
 		$this->exeSql("update sc_keyword set STATUS = 15 where keyword_id = '{@#keywordId#}'", $params) ;
 	}

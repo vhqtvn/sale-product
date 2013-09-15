@@ -1,7 +1,20 @@
 $(function(){
-
+	var  amazonSiteMap = {
+			us:"www.amazon.com",
+			uk:"www.amazon.co.uk",
+			ca:"www.amazon.ca",
+			ru:"www.amazon.ru",
+			de:"www.amazon.de",
+			fr:"www.amazon.fr",
+			es:"www.amazon.es",
+			it:"www.amazon.it",
+			br:"www.amazon.br",
+			au:"www.amazon.com.au",
+			"us.bing":"www.amazon.com"
+	}
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
-		tabs.push( {label:'search terms',content:"searchTerm"} ) ;
+		tabs.push( {label:'分组关键字',content:"groupKeyword"} ) ;
+		tabs.push( {label:'Amazon&Ebay Search Terms',content:"searchTerm"} ) ;
 		tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
 
 	//widget init
@@ -26,6 +39,55 @@ $(function(){
 		 querys:{_data:"d_keyword_tracks",keywordId:keywordId},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......"
 	}) ;
+	
+	$(".niche-grid-group").llygrid({
+		columns:[
+			{align:"left",key:"keyword",label:"关键字名称", width:"180px",format:function(val,record){
+				
+				var site = record.site||"us" ;
+				var amazonUrl = amazonSiteMap[site] ;
+				val = "<a href='http://"+amazonUrl+"/s/ref=nb_sb_noss?field-keywords="+val+"' target='_blank'>"+val+"</a>" ;
+				
+				if( record.is_niche == 1 ){
+					return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"+val  ;
+				}
+				return val ;
+			}},
+			{align:"left",key:"keyword_type",label:"类型", width:"10%"},
+			{align:"left",key:"search_volume",label:"搜索量", width:"10%"},
+			{align:"left",key:"cpc",label:"CPC", width:"10%"},
+			{align:"left",key:"competition",label:"竞争", width:"10%"},
+			{align:"center",key:"site",label:"国家", width:"10%"},
+            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
+            	var img = "" ;
+				
+				//网址
+				img = img +
+				"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
+				
+				return img ;
+            }} 
+         ],
+         ds:{type:"url",content:contextPath+"/grid/query"},
+		 limit:20,
+		 pageSizes:[10,20,30,40],
+		 height:function(){
+			 return 245 ;
+		 },
+		 title:'Niche分组关键字',
+		 indexColumn:false,
+		 querys:{_data:"d_list_keywordByGroup",groupId:keywordId},//,parentId:keywordId
+		 loadMsg:"扩展关键字加载中，请稍候......"
+	}) ;
+	
+	$(".getWebsite").live("click",function(){
+		var record = $.llygrid.getRecord(this) ;
+		var keywordId 		= record.keyword_id ;
+		var keywordText 	= record.keyword ;
+		openCenterWindow(contextPath+"/page/forward/Keyword.showWebsite/"+keywordId,660,450,function(win,ret){
+		},{keyword:keywordText}) ;
+	}) ;
+	
 	
 	$(".grid-term").llygrid({
 		columns:[
