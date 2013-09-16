@@ -146,7 +146,10 @@ class Keyword extends AppModel {
 		$record['is_main_keyword'] = '0' ;
 		$record['keyword_type'] =$keywordType ;
 		
-		$record['keyword'] = $array[0] ;
+		//替换关键字+为空格
+		
+		
+		$record['keyword'] = str_replace("+"," ", $array[0]) ;
 		$record['search_volume'] = $array[1] ;
 		$record['cpc'] = $array[2] ;
 		$record['competition'] = $array[3] ;
@@ -182,7 +185,7 @@ class Keyword extends AppModel {
 			}
 			$index++;
 		}
-		
+		/*
 		if( $index > 100 ){
 			
 			$l = 100+$limit  ;
@@ -190,8 +193,8 @@ class Keyword extends AppModel {
 				$l = $total ;
 			}
 			
-			//$this->fetchSearchData($url , $l , $limit , $params , $mainGuid , $count , $keywordType ) ;
-		}
+			$this->fetchSearchData($url , $l , $limit , $params , $mainGuid , $count , $keywordType ) ;
+		}*/
 	}
 	
 	/**
@@ -242,6 +245,7 @@ class Keyword extends AppModel {
 				parent_id, 
 				STATUS, 
 				create_date, 
+				updated_time,
 				creator,
 				site
 				)
@@ -253,18 +257,18 @@ class Keyword extends AppModel {
 				'{@#parent_id#}', 
 				'10', 
 				NOW(), 
+				NOW(), 
 				'{@#loginId#}',
 				'{@#site#}'
 				)", $record) ;
 		}else{
 			$mainGuid = $keywordId ;
 			//更新设置当前关键字为主关键字
-			$this->exeSql("update sc_keyword set is_main_keyword = '1' where keyword_id = '{@#keywordId#}'", array('keywordId'=>$mainGuid));
+			$this->exeSql("update sc_keyword set is_main_keyword = '1' , updated_time = NOW() where keyword_id = '{@#keywordId#}'", array('keywordId'=>$mainGuid));
 		}
 		
 		$this->fetchSearchData($parseMatchUrl , 100 , 0 ,$params ,$mainGuid , $count , "Pharse") ;
 
-		return 123;
 		//保存词组匹配
 		$this->fetchSearchData($relationUrl , 100 , 0 ,$params ,$mainGuid , $count , "Relation" ) ;
 	

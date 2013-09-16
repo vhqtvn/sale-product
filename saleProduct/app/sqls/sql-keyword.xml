@@ -109,7 +109,7 @@
 					where  status <> 15
 					and t.is_main_keyword = 1
 					and t.task_id = '{@#taskId#}'
-					 order by t.search_volume desc
+					 order by t.updated_time desc
 		]]>
     </entry>
     
@@ -306,7 +306,7 @@
 		 select * from sc_keyword where 1=1 
 		 and is_niche = 1
 		 {@ and status = '#status#'}
-		 {@ and name like '%#name#%'}
+		 {@ and keyword like '%#name#%'}
     ]]>
     </entry>
     
