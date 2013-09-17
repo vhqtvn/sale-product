@@ -64,24 +64,32 @@
 				</table>
 		</div>
 		<div class="plan-grid" ></div>
-		<div class="toolbar task-t toolbar-auto">
-				<table>
-					<tr>
-						<th>任务名称：
-						</th>
-						<td>
-							<input type="text" name="name" class="input-medium"/>
-						</td>					
-						<td class="toolbar-btns" rowspan="3">
-							<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.task-grid',qc:'.task-t'}">查询</button>
-							&nbsp;&nbsp;&nbsp;
-							<?php if($add_kw_task){?>
-							<button class="add-task btn btn-primary "  disabled="disabled">添加任务</button>
-							<?php }?>
-						</td>
-					</tr>						
-				</table>
+		<div class="row-fluid">
+			<div class="span6 first">
+				<div class="toolbar task-t toolbar-auto">
+						<table>
+							<tr>
+								<th>任务名称：
+								</th>
+								<td>
+									<input type="text" name="name" class="input-medium"/>
+								</td>					
+								<td class="toolbar-btns" rowspan="3">
+									<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.task-grid',qc:'.task-t'}">查询</button>
+									&nbsp;&nbsp;&nbsp;
+									<?php if($add_kw_task){?>
+									<button class="add-task btn btn-primary "  disabled="disabled">添加任务</button>
+									<?php }?>
+								</td>
+							</tr>						
+						</table>
+				</div>
+				<div class="task-grid" ></div>
+			</div>
+			<div class="span6">
+				<div class="niche-grid"  style="width:99%;"></div>
+			</div>
 		</div>
-		<div class="task-grid" ></div>
+				
 </body>
 </html>
