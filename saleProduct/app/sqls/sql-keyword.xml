@@ -185,10 +185,13 @@
     
     <entry key="d_list_task">
         <![CDATA[	
-			select * from sc_keyword_task  where 1=1
-			{@ and name = '#name#'}
-			{@and plan_id = '#planId#'}
-			order by create_date desc
+			select t.*,
+			(select name from sc_user su where su.login_id = t.creator ) as create_name
+			 from sc_keyword_task t  where 1=1
+			{@ and t.name = '#name#'}
+			{@and t.plan_id = '#planId#'}
+			{@ #$VIEW_KEYWORD_TASK# }
+			order by t.create_date desc
 		]]>
     </entry>
     
@@ -303,10 +306,14 @@
     
     <entry key="d_list_niche_keyword">
     <![CDATA[
-		 select * from sc_keyword where 1=1 
-		 and is_niche = 1
-		 {@ and status = '#status#'}
-		 {@ and keyword like '%#name#%'}
+		 select sk.* from sc_keyword sk ,
+		 sc_keyword_task t
+		 where 1=1 
+		 and sk.is_niche = 1
+		 and sk.task_id = t.task_id
+		 {@ #$VIEW_KEYWORD_TASK# }
+		 {@ and sk.status = '#status#'}
+		 {@ and sk.keyword like '%#name#%'}
     ]]>
     </entry>
     

@@ -17,8 +17,9 @@ $(function(){
 		columns:[
 			{align:"center",key:"keyword_id",label:"操作", width:"8%",format:function(val,record){
 					var html = [] ;
-					html.push("<a href='#' class='action niche-update' val='"+val+"'>设置</a>&nbsp;") ;
-
+					//html.push("<a href='#' class='action niche-update' val='"+val+"'>设置</a>&nbsp;") ;
+					html.push("<img class='action niche-update' title='设置' val='"+val+"' src='/"+fileContextPath+"/app/webroot/img/config.gif'>") ;
+					html.push("<img class='action niche-delete' title='删除关键字' val='"+val+"' src='/"+fileContextPath+"/app/webroot/img/delete.gif'>") ;
 					return html.join("") ;
 			}},
 			{align:"left",key:"keyword",label:"关键字名称", width:"20%",format:function(val,record){
@@ -114,6 +115,17 @@ $(function(){
 		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,900,680,function(win,ret){
 			$(".niche-grid").llygrid("reload",{},true) ;
 		}) ;
+	}) ;
+	
+	$(".niche-delete").live("click",function(){
+		if(window.confirm("确认删除该niche关键字吗？")){
+			var record = $.llygrid.getRecord(this) ;
+			
+			$.dataservice("model:Keyword.deleteNiche",{nicheId:record.keyword_id},function(result){
+				$(".niche-grid").llygrid("reload",{},true) ;
+			});
+		}
+		
 	}) ;
 	
 	$(".save-plan").click(function(){

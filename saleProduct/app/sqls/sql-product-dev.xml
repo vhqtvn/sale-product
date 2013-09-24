@@ -403,7 +403,7 @@ UPDATE sc_product_dev
 	    and plan_id = spdp.id
 	  	and plan_id is not null
 	  	{@ and  ( sc_product_filter.name like '%#taskSearchkey#%'  or sc_product_filter.CODE like '%#taskSearchkey#%' ) }
-	  	 {@ #$VIEW_PRODUCT_FILTER# }
+	  	{@ #$VIEW_PRODUCT_FILTER# }
 	  ORDER BY sc_product_filter.create_time desc
    </entry>
 

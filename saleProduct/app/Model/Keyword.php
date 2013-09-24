@@ -8,6 +8,12 @@ ini_set("post_max_size", "24M");
 class Keyword extends AppModel {
 	var $useTable = "sc_keyword_plan" ;
 	
+	public function deleteNiche($params){
+		$nicheId = $params['nicheId'] ;
+		$sql = "update sc_keyword set is_niche = '0' where keyword_id = '".$nicheId."'" ;
+		$this->exeSql($sql, array()) ;
+	}
+	
 	public function groupKeyword($params){
 		$this->exeSql("update sc_keyword set group_id = '{@#groupId#}' where keyword_id = '{@#keywordId#}'", $params) ;
 	}

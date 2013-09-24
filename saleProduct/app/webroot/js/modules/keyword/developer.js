@@ -51,13 +51,14 @@ $(function(){
 					var val = record["CODE"] ;
 					
 					if( addKwTask ) html.push("<img class='action task-update' title='修改' src='/"+fileContextPath+"/app/webroot/img/edit.png'>") ;
-					html.push("<img class='action keyword-dev' title='关键字开发' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>") ;
+					html.push("<a href='"+contextPath+"/page/forward/Keyword.keywordDev/"+record.task_id+"' target='_blank'><img class='action' title='关键字开发' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'></a>") ;
 					//if(addKwTask)html.push("<a href='#' class='action task-update'>修改</a>&nbsp;") ;
 					//html.push("<a href='#' class='action keyword-dev'>关键字开发</a>&nbsp;") ;
 					return html.join("") ;
 			}},
 		    {align:"left",key:"name",label:"任务名称", width:"31%"},
 		    {align:"left",key:"memo",label:"任务备注", width:"31%"},
+		    {align:"left",key:"create_name",label:"创建人", width:"10%"},
            	{align:"center",key:"create_date",label:"创建时间",width:"24%" }
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
