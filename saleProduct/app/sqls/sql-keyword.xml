@@ -74,12 +74,14 @@
         <![CDATA[	
 			select t.* 
 					from sc_keyword t
-					where t.parent_id='{@#parentId#}' 
+					where 
+					t.task_id = '{@#taskId#}' 
+					{@ and t.parent_id='#parentId#' }
 					{@
 					   and (
-					   			cpc <=  #cpc:0# 
-					   			or competition <=  #competition:0#
-					   			or search_volume >=  #search_volume:100000000000000000000000000#
+					   			cpc <=  #cpc:1000# 
+					   			or competition <=  #competition:1000#
+					   			or search_volume >=  #search_volume:0#
 					   )
 					}
 					{@ AND result_num >=  #result_num# }
