@@ -171,10 +171,10 @@ $(function(){
 	}) ;
 	
 	$(".btn-query").click(function(){
-			if( !currentMainKeyword )alert("先选择主关键字") ;
+			//if( !currentMainKeyword )alert("先选择主关键字") ;
 			var json = $(".toolbar-filter").toJson() ;
 			json.taskId = taskId ;
-			json.parentId = currentMainKeyword.keyword_id ;
+			json.parentId =currentMainKeyword? currentMainKeyword.keyword_id:"" ;
 			
 			var content = json.search_content||"" ;
 			var array = content.split("|") ;
@@ -195,12 +195,11 @@ $(function(){
 			}
 			
 			json.pc = pc ;
-			
 			$(".child-keyword").llygrid("reload",json) ;
 	}) ;
 	
 	$(".btn-filter").click(function(){
-		if( !currentMainKeyword )alert("先选择主关键字") ;
+		//if( !currentMainKeyword )alert("先选择主关键字") ;
 		if( window.confirm("确认筛选吗，不符合条件的关键字将直接废弃？") ){
 			var json = $(".toolbar-filter").toJson() ;
 			
@@ -216,9 +215,10 @@ $(function(){
 			}
 			
 			json.taskId = taskId ;
-			json.parentId = currentMainKeyword.keyword_id ;
+			var kId = currentMainKeyword?currentMainKeyword.keyword_id :"";
+			json.parentId =kId;
 			$.dataservice("model:Keyword.filterKeyword",json,function(result){
-				$(".child-keyword").llygrid("reload",{parentId: currentMainKeyword.keyword_id }) ;
+				$(".child-keyword").llygrid("reload",{parentId: kId ,taskId:taskId}) ;
 			});
 		}
 	}) ;
@@ -226,7 +226,7 @@ $(function(){
 	var isInit = false ;
 	function createGrid(  keywordId , text ){
 		if(isInit){
-			$(".child-keyword").llygrid("reload",{parentId:keywordId}) ;
+			$(".child-keyword").llygrid("reload",{parentId:keywordId,taskId:taskId}) ;
 			return ;
 		}
 		isInit = true ;
@@ -284,10 +284,12 @@ $(function(){
 			 },
 			 title:text,
 			 indexColumn:false,
-			 querys:{_data:"d_list_keywordByMain",parentId:keywordId},
+			 querys:{_data:"d_list_keywordByMain",parentId:keywordId,taskId:taskId},
 			 loadMsg:"扩展关键字加载中，请稍候......"
 		}) ;
 	}
+	
+	createGrid("","") ;
 	
 	function  labelClick(){
 		var keywordId = $(this).parents("tr:first").attr("keyword-id") ;
