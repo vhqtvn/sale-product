@@ -45,6 +45,7 @@
 		$add_kw_plan						= $security->hasPermission($loginId , 'add_kw_plan') ;
 		$add_kw_task							= $security->hasPermission($loginId , 'add_kw_task') ;
 		$niche_kw_dev							= $security->hasPermission($loginId , 'niche_kw_dev') ;
+		$niche_kw_dev_filter							= $security->hasPermission($loginId , 'niche_kw_dev_filter') ;
 	?>
   
 </head>
@@ -128,7 +129,9 @@ ru
 							CPC<=<input type="text" name="cpc"    style="width:60px;"/>
 							竞争<=<input type="text"   name="competition" style="width:60px;"/>
 							<button class="query-btn btn  btn-query" >查询</button>
+							<?php if($niche_kw_dev_filter){ ?>
 							<button class="query-btn btn btn-primary  btn-filter" >筛选</button>
+							<?php }?>
 						</td>
 					</tr>
 				</table>
