@@ -69,7 +69,11 @@
 					{@ AND  (#pc|true#) }
 					and t.is_main_keyword <>  1
 					and status <> 15
-					 order by t.search_volume desc -->
+					 order by t.search_volume desc
+					 
+					 zubehör
+					 
+					  -->
 	<entry key="d_list_keywordByMain">
         <![CDATA[	
 			select t.* 
@@ -88,7 +92,7 @@
 					{@ AND  (#pc|true#) }
 					and t.is_main_keyword <>  1
 					and status <> 15
-					 order by t.search_volume desc
+					order by t.search_volume desc
 		]]>
     </entry>
     
