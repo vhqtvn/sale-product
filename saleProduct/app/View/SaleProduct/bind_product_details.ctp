@@ -150,8 +150,18 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							alert("保存成功!");
-							window.location.reload();
+							var rels = $.parseJSON(result) ;
+							
+							if( rels.length > 0 ){
+								var msgs = [] ;
+								msgs.push("输入SKU存在如下关联：") ;
+								$(rels).each(function(){
+									msgs.push("SKU["+this.SKU+"]已经关联到货品SKU["+this.REAL_SKU+"]") ;
+								}) ;
+								alert( msgs.join("\n\r") ) ;
+							}else{
+								window.location.reload() ;
+							}
 						}
 					});
 				}

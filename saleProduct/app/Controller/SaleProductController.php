@@ -147,20 +147,20 @@ class SaleProductController extends AppController {
     
     function saveSkuToRealProduct(){
     	$user =  $this->getCookUser() ;
-    	$this->SaleProduct->saveSkuToRealProduct($this->request->data , $user) ;
+    	$exists = $this->SaleProduct->saveSkuToRealProduct($this->request->data , $user) ;
 
 		$this->response->type("json") ;
-		$this->response->body( "Save Success" )   ;
+		$this->response->body( json_encode($exists) )   ;
 
 		return $this->response ;
     }
     
      public function saveSelectedProducts(){
     	$user =  $this->getCookUser() ;
-    	$this->SaleProduct->saveSelectedProducts($this->request->data , $user) ;
+    	$exists = $this->SaleProduct->saveSelectedProducts($this->request->data , $user) ;
 
 		$this->response->type("json") ;
-		$this->response->body( "Save Success" )   ;
+		$this->response->body( json_encode($exists) )   ;
 
 		return $this->response ;
     }

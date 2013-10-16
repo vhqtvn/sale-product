@@ -102,22 +102,34 @@ class SaleProduct extends AppModel {
 		$realSku = $product[0]['sc_real_product']['REAL_SKU'] ;
 		
 		$skus = explode(",",$skus) ;
+		
+		$exists = array() ;
 		foreach( $skus as $sku ){
 			$sku = trim($sku) ;
-			$sql = " INSERT INTO sc_real_product_rel 
-				(REAL_ID,REAL_SKU, 
-				SKU, 
+			
+			//判断SKU是否已经存在
+			$rel = $this->getObject("select * from sc_real_product_rel 
+					where sku='{@#sku#}' and account_id ='{@#accountId#}' ", array("sku"=>$sku,"accountId"=>$accountId)) ;
+			
+			if( empty($rel) ){
+				$sql = " INSERT INTO sc_real_product_rel
+				(REAL_ID,REAL_SKU,
+				SKU,
 				ACCOUNT_ID
 				)
 				VALUES
-				('$realId','$realSku', 
-				'$sku', 
+				('$realId','$realSku',
+				'$sku',
 				'$accountId'
 				)" ;
-			try{
+				try{
 				$this->query($sql) ;
-			}catch(Exception $e){}	
+				}catch(Exception $e){}
+			}else{
+				if($realSku != $rel['REAL_SKU'])$exists[] = $rel ;
+			}
 		}
+		return $exists ;
 	}
 	
 	function saveSelectedProducts($params,$user){
@@ -129,40 +141,52 @@ class SaleProduct extends AppModel {
 		$realSku = $product[0]['sc_real_product']['REAL_SKU'] ;
 		
 		$items = explode(",",$items) ;
+		$exists = array() ;
 		foreach( $items as $item ){
 			$item = explode("|",$item) ;
 			$accountId = $item[0] ;
 			$sku = $item[1] ;
 			
-			$sql = " INSERT INTO sc_real_product_rel 
-				(REAL_ID,REAL_SKU, 
-				SKU, 
-				ACCOUNT_ID
-				)
-				VALUES
-				('$realId',
-				'$realSku', 
-				'$sku', 
-				'$accountId'
-				)" ;
-			try{
-				$this->query($sql) ;
-			}catch(Exception $e){}
-			
+			//判断SKU是否已经存在
+			$rel = $this->getObject("select * from sc_real_product_rel
+					where sku='{@#sku#}' and account_id ='{@#accountId#}' ", array("sku"=>$sku,"accountId"=>$accountId)) ;
+				
+			if( empty($rel) ){
+				$sql = " INSERT INTO sc_real_product_rel 
+					(REAL_ID,REAL_SKU, 
+					SKU, 
+					ACCOUNT_ID
+					)
+					VALUES
+					('$realId',
+					'$realSku', 
+					'$sku', 
+					'$accountId'
+					)" ;
+				try{
+					$this->query($sql) ;
+				}catch(Exception $e){}
+			}else{
+				if($realSku != $rel['REAL_SKU'])$exists[] = $rel ;
+			}
 		}
-		
-		$unitems = explode(",",$unitems) ;
-		foreach( $unitems as $item ){
-			$item = explode("|",$item) ;
-			$accountId = $item[0] ;
-			$sku = $item[1] ;
-			$sql = "DELETE FROM sc_real_product_rel 
+		if(!empty($unitems)){
+			$unitems = explode(",",$unitems) ;
+			foreach( $unitems as $item ){
+				$item = explode("|",$item) ;
+				$accountId = $item[0] ;
+				$sku = $item[1] ;
+				$sql = "DELETE FROM sc_real_product_rel
 				WHERE
 				REAL_SKU = '$realSku' AND SKU = '$sku' AND ACCOUNT_ID = '$accountId' " ;
-			try{
-			$this->query($sql) ;
-		   }catch(Exception $e){}
+				try{
+				$this->query($sql) ;
+				}catch(Exception $e){}
+			}
 		}
+		
+		return $exists;
+		
 	}
 	
 	public function deleteRelProduct($params ,$user){

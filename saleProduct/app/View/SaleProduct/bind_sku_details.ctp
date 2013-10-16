@@ -29,28 +29,7 @@
 	var currentAccountId = accountId ;
 	var currentCategoryId = "" ;
 	var currentCategoryText = "" ;
-	function formatGridData(data){
- 		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-   }
+
 	$(function(){
 		$(".btn").click(function(){
 			if(window.confirm("确认添加SKU吗？")){
@@ -61,7 +40,19 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							window.location.reload() ;
+							var rels = $.parseJSON(result) ;
+							
+							if( rels.length > 0 ){
+								var msgs = [] ;
+								msgs.push("输入SKU存在如下关联：") ;
+								$(rels).each(function(){
+									
+									msgs.push("SKU["+this.SKU+"]已经关联到货品SKU["+this.REAL_SKU+"]") ;
+								}) ;
+								alert( msgs.join("\n\r") ) ;
+							}else{
+								window.location.reload() ;
+							}
 						}
 				});
 			}
