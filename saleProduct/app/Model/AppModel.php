@@ -260,8 +260,7 @@ class AppModel extends Model {
 			
 			$sql = $this->getSql($sql,$query) ;
 			
-			//echo $sql ;
-			//return $sql ;
+		//	echo $sql ;
 		//	echo $sql ;
 			return $this->query($sql) ;
 		}
@@ -392,7 +391,6 @@ class AppModel extends Model {
 	    		}
 	    		$index++ ;
 	    	} 
-	    //	echo $parseSql;
 	    	return $parseSql ;
 		}
 		
