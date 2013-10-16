@@ -790,6 +790,7 @@ html{-webkit-text-size-adjust: none;}
 								<option value="FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBM'?"selected":"" ?>>FBM</option>
 								<option value="FBA"  <?php echo $productDev['LOGI_STRATEGY']=='FBA'?"selected":"" ?>>FBA</option>
 								<option value="FBA_FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBA_FBM'?"selected":"" ?>>FBM和FMA</option>
+								<option value="FROM_CHINA"  <?php echo $productDev['LOGI_STRATEGY']=='FROM_CHINA'?"selected":"" ?>>中国发货</option>
 							</select>
 							<textarea id="LOGI_STRATEGY_MEMO"  class="input 10-input" 
 								style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['LOGI_STRATEGY_MEMO']?></textarea>

@@ -153,11 +153,11 @@
 						$.dataservice("model:Sale.savePrintTime",{'printTime':'<?php echo $printTime;?>',taskId:'<?php echo $taskId;?>'}, function(){
 							$(".print").hide() ;
 							window.print() ;
-							});
+							},{noblock:true});
 					}
 				}) ;
 
-			$(".print-batch").click(function(){
+			$(".print-batch").change(function(){
 				var wpt = $(this).val() ;
 				window.location.href = contextPath+"/page/forward/Sale.purchaseInPrint/<?php echo $taskId;?>?printTime="+wpt ;
 			}) ;
