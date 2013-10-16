@@ -166,9 +166,18 @@ class Keyword extends AppModel {
 		
 		//判断keyword是否存在，如果存在则不考虑
 		try{
-			$this->exeSql("sql_keyword_insert", $record) ;
-			$count++ ;
-		}catch(Exception $e){}
+			//判断Keyword是否存在
+			$item = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword='{@#keyword#}' and site = '{@#site#}' and cpc='{@#cpc#}'", $record) ;
+			
+			//debug($item) ;
+			
+			if( empty($item) ){
+				$this->exeSql("sql_keyword_insert", $record) ;
+				$count++ ;
+			}
+		}catch(Exception $e){
+			//debug( $e ) ;
+		}
 	}
 	
 	public function fetchSearchData($url , $limit , $offset ,$params ,$mainGuid , $count,$keywordType){
@@ -220,7 +229,7 @@ class Keyword extends AppModel {
 		$total 	= $params['total'] ;
 		
 		$mainKeyword = $params['mainKeyword'] ;
-		$mainKeyword = urlencode($mainKeyword) ;
+		//$mainKeyword =  $mainKeyword ;
 		$parseMatchUrl = "http://$site.fullsearch-api.semrush.com/?action=report&rnd_m=13782981021&export_hash=b9f86033069d331ec903c42ea1c045e41&type=phrase_fullsearch&display_sort=nq_desc&phrase=$mainKeyword&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td" ;
 		$relationUrl = "http://$site.api.semrush.com/?action=report&rnd_m=13782981021&export_hash=b9f86033069d331ec903c42ea1c045e41&type=phrase_related&display_sort=nq_desc&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase=$mainKeyword" ;
 		
@@ -242,6 +251,8 @@ class Keyword extends AppModel {
 			$record['is_main_keyword'] = '1' ;
 			$record['keyword'] = $mainKeyword ;
 			$record['site'] = $site ;
+			
+			//debug($record) ;
 			
 			$this->exeSql("INSERT INTO sc_keyword 
 				(keyword_id, 
