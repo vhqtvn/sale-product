@@ -46,6 +46,7 @@ class KeywordController extends AppController {
 			   			$isFirst = false ;
 			   		}else{
 			   			$line = trim($line) ;
+			   			//echo $line;
 			   			$this->Keyword->parseKeywordRow($line,  $ps , $keywordId , $keywordType ,$count) ;
 			   		}
 			   }
