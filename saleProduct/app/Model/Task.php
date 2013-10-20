@@ -23,6 +23,9 @@ class Task extends AppModel {
 	}
 	
 	function saveFlowDetails($id ,$lineData,$loginId,$Days){
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$db->_queryCache = array() ;
+		
 		//解析列
 		//选择对应的ASIN插入到历史表
 		//保存到历史表
@@ -40,22 +43,53 @@ class Task extends AppModel {
 		
 		$dayUnitOrdered = round( $lineData["UNITS_ORDERED"]/$Days ) ;
 		
+		$lineData['DAY_PAGEVIEWS'] = $dayPageViews ;
+		$lineData['DAY_UNITS_ORDERED'] = $pageviews ;
+		$lineData['TASK_ID'] = $id ;
+		
 		$sql = " INSERT INTO  sc_product_flow_details 
-				(TASK_ID, 
-				ASIN, 
-				TITLE, 
-				PAGEVIEWS, 
-				PAGEVIEWS_PERCENT, 
-				BUY_BOX_PERCENT, 
-				UNITS_ORDERED, 
-				ORDERED_PRODUCT_SALES, 
-				ORDERS_PLACED, 
-				CREATOR, 
-				CREATTIME,
-				DAY_PAGEVIEWS,
-                DAY_UNITS_ORDERED
-				)
-				VALUES
+					( 
+					TASK_ID, 
+					PARENT_ASIN, 
+					TITLE, 
+					PAGEVIEWS, 
+					PAGEVIEWS_PERCENT, 
+					BUY_BOX_PERCENT, 
+					UNITS_ORDERED, 
+					ORDERED_PRODUCT_SALES, 
+					ORDERS_PLACED, 
+					CREATOR, 
+					CREATTIME, 
+					DAY_PAGEVIEWS, 
+					DAY_UNITS_ORDERED, 
+					SESSIONS, 
+					SESSION_PERCENTAGE, 
+					UNIT_SESSION_PERCENTAGE, 
+					ASIN, 
+					SKU
+					)
+				VALUES(
+					'{@#TASK_ID#}', 
+					'{@#PARENT_ASIN#}', 
+					'{@#TITLE#}', 
+					'{@#PAGEVIEWS#}', 
+					'{@#PAGEVIEWS_PERCENT#}', 
+					'{@#BUY_BOX_PERCENT#}', 
+					'{@#UNITS_ORDERED#}', 
+					'{@#ORDERED_PRODUCT_SALES#}', 
+					'{@#ORDERS_PLACED#}', 
+					'$loginId', 
+					NOW(),
+					'{@#DAY_PAGEVIEWS#}', 
+					'{@#DAY_UNITS_ORDERED#}', 
+					'{@#SESSIONS#}', 
+					'{@#SESSION_PERCENTAGE#}', 
+					'{@#UNIT_SESSION_PERCENTAGE#}', 
+					'{@#ASIN#}', 
+					'{@#SKU#}'
+				) " ;
+		$this->exeSql($sql, $lineData) ;
+			/*
 				(
 				'$id', 
 				'".$lineData["ASIN"]."', 
@@ -70,8 +104,8 @@ class Task extends AppModel {
 				NOW(),
 				$dayPageViews,
 				$dayUnitOrdered
-				) " ;
-		$this->query($sql) ;
+				)*/
+		//$this->query($sql) ;
 	}
 }
 

@@ -359,6 +359,7 @@
 					{label:'竞争信息',content:"competetion-tab"},
 					//{label:'供应商(询价)',content:"supplier-tab",iframe:true},
 					{label:'产品分类',url:contextPath+"/product/assignCategory/<?php echo $asin?>",iframe:true},
+					{label:'产品流量',url:contextPath+"/page/forward/Flow.flowAsin/<?php echo $asin?>",iframe:true},
 					<?php  if( isset($sku) && !empty($sku) ){ ?>
 					{label:'营销产品分类',url:contextPath+"/amazonaccount/assignCategory/<?php echo $asin;?>/<?php echo $accountId;?>/<?php echo $sku;?>",iframe:true}
 					<?php } ?>

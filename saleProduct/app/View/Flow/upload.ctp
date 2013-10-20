@@ -21,29 +21,6 @@
 	?>
   
    <script type="text/javascript">
-   //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
 
 	$(function(){
 		$(".message,.loading").hide() ;
@@ -134,12 +111,22 @@
 		   <table border=0 cellPadding=3 cellSpacing=4 >
 		    <tr>
 		     <td>流量文件：</td>
-		     <td><input name="flowFile" type="file"/></td>
+		     <td><input name="flowFile" type="file" class="span3"/></td>
+		     <!-- 
+		     <td>类型：</td>
+		     <td>
+		     	<select  name="type" class="span2">
+		     		<option value="1">带SKU</option>
+		     		<option value="2">子ASIN</option>
+		     		<option value="3">父ASIN</option>
+		     	</select>
+		     </td>
+		      -->
 		     <td>开始时间：</td>
-		     <td><input name="startTime" type="text"  readonly="readonly"  data-widget="calendar"/></td>
+		     <td><input name="startTime" type="text" class="span2"  readonly="readonly"  data-widget="calendar"/></td>
 		     <td>结束时间：</td>
-		     <td><input name="endTime" type="text"  readonly="readonly"  data-widget="calendar"/></td> 
-		     <td colSpan=2 align=center><input type="submit" value="上传流量文件"></td> 
+		     <td><input name="endTime" type="text" class="span2"   readonly="readonly"  data-widget="calendar"/></td> 
+		     <td colSpan=2 align=center><input type="submit" class="btn btn-primary" value="上传流量文件"></td> 
 		    </tr>
 		   </table>
 	   </form>

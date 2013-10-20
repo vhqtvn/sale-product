@@ -52,11 +52,29 @@ class TaskUploadController extends AppController {
 				ORDERS_PLACED, 
 				CREATOR, 
 				CREATTIME*/
-		$flowHeaderDBColMap = array('(Parent) ASIN'=>'ASIN',"Title"=>"TITLE",
-								'Page Views'=>"PAGEVIEWS",'Page Views Percentage'=>"PAGEVIEWS_PERCENT",
-								'Buy Box Percentage'=>"BUY_BOX_PERCENT",'Units Ordered'=>"UNITS_ORDERED",
-								'Ordered Product Sales'=>"ORDERED_PRODUCT_SALES",'Orders Placed'=>"ORDERS_PLACED"
-								) ;
+		//"(Parent) ASIN","Title","Sessions","Page Views","Page Views Percentage","Buy Box Percentage","Units Ordered","Gross Product Sales","Orders Placed"
+		
+		//"(Parent) ASIN","(Child) ASIN","Title","SKU","Sessions","Session Percentage","Page Views","Page Views Percentage",
+		//"Buy Box Percentage","Units Ordered","Unit Session Percentage","Gross Product Sales","Orders Placed"
+		
+		//"(Parent) ASIN","(Child) ASIN","Title","Sessions","Session Percentage","Page Views","Page Views Percentage",
+		//"Buy Box Percentage","Units Ordered","Unit Session Percentage","Gross Product Sales","Orders Placed"
+		//Parent ASIN
+		$flowHeaderDBColMap = array(
+				'Parent ASIN'=>'PARENT_ASIN',
+				'Child ASIN'=>'ASIN',
+				"Title"=>"TITLE",
+				'SKU'=>'SKU',
+				'Sessions'=>'SESSIONS',
+				'Session Percentage'=>'SESSION_PERCENTAGE',
+				'Page Views'=>"PAGEVIEWS",
+				'Page Views Percentage'=>"PAGEVIEWS_PERCENT",
+				'Buy Box Percentage'=>"BUY_BOX_PERCENT",
+				'Units Ordered'=>"UNITS_ORDERED",
+				'Unit Session Percentage'=>"UNIT_SESSION_PERCENTAGE",
+				'Gross Product Sales'=>"ORDERED_PRODUCT_SALES",
+				'Orders Placed'=>"ORDERS_PLACED"
+		) ;
 		$lineCols = array() ;
 		$isFirst = true ;
 		while (!feof($file_handle)) {
@@ -64,16 +82,29 @@ class TaskUploadController extends AppController {
 		   if( !empty($line) ){
 		   		if( $isFirst ){
 		   			$array = explode('","',$line) ;
-		   			print_r($array) ;
 		   			foreach( $array as $a ){
 		   				$a = trim(str_replace('"',"",$a)) ;
-		   				if( $this->endsWith($a ,'ASIN' )){//
+		   				$a = trim(str_replace('(',"",$a)) ;
+		   				$a = trim(str_replace(')',"",$a)) ;
+		   				echo $a.'>>>' ;
+		   				//debug($flowHeaderDBColMap) ;
+		   				if( $this->endsWith($a ,'Parent ASIN' )){//
+		   					$lineCols[] = "PARENT_ASIN" ;
+		   				}else if( $this->endsWith($a ,'Child ASIN' )){//
 		   					$lineCols[] = "ASIN" ;
 		   				}else{
-		   					$column = $flowHeaderDBColMap[$a] ;
-		   					$lineCols[] = $column ;
+			   				$test = $flowHeaderDBColMap[$a] ;
+			   				echo $test.'-----' ;
+			   				if( isset( $flowHeaderDBColMap[$a] ) ){
+			   					$column = $flowHeaderDBColMap[$a] ;
+			   					$lineCols[] = $column ;
+			   				}else{
+			   					$lineCols[] = '-' ;
+			   				}
 		   				}
 		   			} ;
+					echo 111111;
+		   			print_r($lineCols) ;
 		   		}else{
 		   			$lineData = array() ;
 		   			$array = explode('","',$line) ;

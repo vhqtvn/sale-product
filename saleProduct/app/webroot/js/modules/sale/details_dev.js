@@ -18,8 +18,6 @@
 			 }) ;
 	   }) ;
 
- 		
- 		
  		var taskSelect = {
 				title:'开发任务选择界面',
 				defaults:[],//默认值
@@ -199,7 +197,8 @@
 					 {label:'基本信息',content:"baseinfo-tab"},
 					 {label:'竞争信息',content:"competetion-tab"},
 					 {label:'产品分类',url:contextPath+"/product/assignCategory/"+asin,iframe:true},
-					 {label:'开发轨迹',content:"track-tab"}
+					 {label:'开发轨迹',content:"track-tab"},
+					 {label:'产品流量',content:"flow-tab",iframe:true,url:contextPath+"/page/forward/Flow.flowAsin/"+asin}
 				] ,
 				height:function(){
 					return $(window).height() - 100 ;

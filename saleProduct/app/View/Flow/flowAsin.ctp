@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+  	 include_once ('config/config.php');
    
 			echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
@@ -21,8 +21,6 @@
 	?>
   
    <script type="text/javascript">
-     var taskId = "<?php echo $taskId;?>"
-
 	$(function(){
 		$(".message,.loading").hide() ;
 			$(".grid-content").llygrid({
@@ -45,6 +43,7 @@
 		        	{align:"right",key:"DAY_PAGEVIEWS",label:"每日流量", width:"10%"},
 		        	{align:"center",key:"START_TIME",label:"开始时间", width:"10%"},
 		        	{align:"center",key:"END_TIME",label:"结束时间", width:"10%"},
+		        	{align:"center",key:"CREATTIME",label:"上传时间", width:"10%"},
 		           	{align:"center",key:"PAGEVIEWS_PERCENT",label:"PAGEVIEWS_PERCENT", width:"10%"},
 		           	{align:"center",key:"BUY_BOX_PERCENT",label:"BUY_BOX_PERCENT", width:"10%"},
 		           	{align:"center",key:"UNITS_ORDERED",label:"UNITS_ORDERED", width:"10%"},
@@ -53,19 +52,58 @@
 		           	{align:"center",key:"CREATE_TIME",label:"CREATE_TIME", width:"10%"},
 		           	{align:"center",key:"CREATOR",label:"CREATOR", width:"10%"}
 		         ],
-		         ds:{type:"url",content:contextPath+"/grid/query/"+taskId},
+		         ds:{type:"url",content:contextPath+"/grid/query/"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					return $(window).height() - 150 ;
+					return  100 ;
 				 },
-				 title:"流量信息列表",
+				 title:"最新流量",
 				 indexColumn:true,
-				 querys:{sqlId:"sql_flow_details_list",taskId:taskId},
+				 querys:{sqlId:"sql_flow_details_ByAsin",asin:'<?php echo $params['arg1'];?>'},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 
-			
+			$(".grid-history-content").llygrid({
+				columns:[
+		           	{align:"center",key:"PARENT_ASIN",label:"父ASIN", width:"90",format:function(val,record){
+		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"ASIN",label:"子ASIN", width:"90",format:function(val,record){
+		           		val = val||"" ;
+		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"TITLE",label:"TITLE",width:"20%",forzen:false,align:"left",format:function(val,record){
+		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"SKU",label:"SKU", width:"90",format:function(val,record){
+			           	val = val||"" ;
+		           		return "<a href='#' class='product-detail' asin='"+val+"'>"+val+"</a>" ;
+		           	}},
+		           	{align:"right",key:"PAGEVIEWS",label:"总流量", width:"10%"},
+		        	{align:"right",key:"DAY_PAGEVIEWS",label:"每日流量", width:"10%"},
+		        	{align:"center",key:"START_TIME",label:"开始时间", width:"10%"},
+		        	{align:"center",key:"END_TIME",label:"结束时间", width:"10%"},
+		        	{align:"center",key:"CREATTIME",label:"上传时间", width:"10%"},
+		           	{align:"center",key:"PAGEVIEWS_PERCENT",label:"PAGEVIEWS_PERCENT", width:"10%"},
+		           	{align:"center",key:"BUY_BOX_PERCENT",label:"BUY_BOX_PERCENT", width:"10%"},
+		           	{align:"center",key:"UNITS_ORDERED",label:"UNITS_ORDERED", width:"10%"},
+		           	{align:"center",key:"ORDERED_PRODUCT_SALES",label:"ORDERED_PRODUCT_SALES", width:"10%"},
+		           	{align:"center",key:"ORDERS_PLACED",label:"ORDERS_PLACED", width:"10%"},
+		           	{align:"center",key:"CREATE_TIME",label:"CREATE_TIME", width:"10%"},
+		           	{align:"center",key:"CREATOR",label:"CREATOR", width:"10%"}
+		         ],
+		         ds:{type:"url",content:contextPath+"/grid/query/"},
+				 limit:20,
+				 pageSizes:[10,20,30,40],
+				 height:function(){
+					return $(window).height() - 300 ;
+				 },
+				 title:"历史流量",
+				 indexColumn:true,
+				 querys:{sqlId:"sql_flow_details_ByAsinHistory",asin:'<?php echo $params['arg1'];?>'},
+				 loadMsg:"数据加载中，请稍候......"
+			}) ;
    	 });
    	 
    </script>
@@ -99,22 +137,9 @@
 </head>
 <body>
 <div class="toolbar toolbar-auto toolbar1 query-container">
-		<table>
-			<tr>
-				<th>
-				ASIN:
-				</th>
-				<td>
-					<input type="text" id="asin" placeHolder="输入ASIN" style="width:400px;"/>
-				</td>								
-				<td class="toolbar-btns">
-					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
-				</td>
-			</tr>						
-		</table>
 	</div>	
-	<div class="grid-content">
+	<div class="grid-content"></div>
 	
-	</div>
+	<div class="grid-history-content"></div>
 </body>
 </html>
