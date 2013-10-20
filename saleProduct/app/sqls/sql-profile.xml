@@ -163,7 +163,24 @@
        		  sc_product_flow spf
        		   WHERE spfd.task_id = spf.id and task_id = '#taskId#' }
 		) t
-		where 1=1  {@ and t.asin = '#asin#'}
+		where 1=1 
+		 {@ and ( t.asin = '#asin#'  or t.parent_asin = '#asin#') }
+    </entry>
+    
+    <entry key="sql_flow_details_ByAsin">
+       		 SELECT spfd.*,spf.START_TIME,spf.END_TIME FROM sc_product_flow_details spfd,
+       		  sc_product_flow spf
+       		  WHERE 1=1 and spfd.task_id = spf.id
+			  {@ and ( spfd.asin = '#asin#'  or spfd.parent_asin = '#asin#' )}
+			   order by spfd.CREATTIME desc
+    </entry>
+    
+    <entry key="sql_flow_details_ByAsinHistory">
+       		 SELECT spfd.*,spf.START_TIME,spf.END_TIME FROM sc_product_flow_details_history spfd,
+       		  sc_product_flow spf
+       		  WHERE 1=1 and spfd.task_id = spf.id
+			  {@ and ( spfd.asin = '#asin#'  or spfd.parent_asin = '#asin#')}
+			  order by spfd.CREATTIME desc
     </entry>
     
     <!--帅选规则管理-->
