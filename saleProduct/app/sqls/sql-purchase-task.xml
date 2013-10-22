@@ -33,6 +33,8 @@
 					bad_products_num = '{@#badProductsNum#}' , 
 					check_memo = '{@#checkMemo#}' , 
 					{@warehouse_time = '#warehouseTime#' , }
+					{@ship_fee_type = '#shipFeeType#' , }
+					{@real_ship_fee_type = '#realShipFeeType#' , }
 					warehouse_id = '{@#warehouseId#}' , 
 					pay_type = '{@#payType#}' 
 					{@, promise_delivery_date = '#promiseDeliveryDate#'}

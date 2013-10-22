@@ -44,11 +44,11 @@
 				FROM sc_purchase_task_products sppd 
 					WHERE sppd.REAL_PROVIDOR = sc_supplier.ID
 				         AND (	sppd.REAL_QUOTE_PRICE IS NOT NULL  and sppd.REAL_QUOTE_PRICE!='' )
-					 ORDER BY sppd.TASK_ID DESC LIMIT 0,1) AS REAL_QUOTE_PRICE,
+					 ORDER BY sppd.REAL_PURCHASE_DATE DESC LIMIT 0,1) AS REAL_QUOTE_PRICE,
 				(SELECT sppd.REAL_PURCHASE_DATE FROM sc_purchase_task_products sppd 
 					WHERE sppd.REAL_PROVIDOR = sc_supplier.ID
 						AND (	sppd.REAL_QUOTE_PRICE IS NOT NULL  and sppd.REAL_QUOTE_PRICE!='' )
-					 ORDER BY sppd.TASK_ID DESC  LIMIT 0,1) AS REAL_PURCHASE_DATE
+					 ORDER BY sppd.REAL_PURCHASE_DATE DESC  LIMIT 0,1) AS REAL_PURCHASE_DATE
 			FROM sc_supplier
 			 where 1=1
                 {@  and name like '%#name#%'}
