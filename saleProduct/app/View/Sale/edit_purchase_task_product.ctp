@@ -385,7 +385,7 @@
 									
 									<tr class="real-purchase-tr">
 										<th>计划供应商：</th>
-										<td >
+										<td colspan="3" >
 										<select id="providor"   class="45-input   input" 
 											<?php echo $status>=45?"data-validator='required'":"" ?>
 										>
@@ -404,10 +404,20 @@
 										</select> 
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 45-input  input">编辑</button>
 										</td>
+									</tr>
+									<tr class="real-purchase-tr">
 										<th>供应商报价：</th>
 										<td><input id="quotePrice"   class="45-input input"   type="text" 
-													 <?php echo $status>=45?"data-validator='required'":"" ?>
+													data-validator="double<?php echo $status>=45?",required":"" ?>"
 													 value='<?php echo $taskProduct['QUOTE_PRICE'] ;?>' /></td>
+										</td>
+										<th>运费承担方式：</th>
+										<td>
+											<select id="shipFeeType"  class="45-input input"   <?php echo $status>=45?"data-validator='required'":"" ?> >
+												<option value="">选择</option>
+												<option value="by" <?php if( $taskProduct['SHIP_FEE_TYPE'] == 'by' ) echo 'selected' ;?>>卖家包运费</option>
+												<option value="hdfk" <?php if($taskProduct['SHIP_FEE_TYPE']  == 'hdfk' ) echo 'selected' ;?> >运费到付</option>
+											</select>
 										</td>
 									</tr>
 									<tr>
@@ -437,7 +447,7 @@
 									</tr>
 									<tr>
 										<th>实际供应商：</th>
-										<td colspan=3>
+										<td>
 										<select id="realProvidor"   class=" 70-input  input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 										>
@@ -455,19 +465,26 @@
 										</select> 
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier  70-input  input">编辑</button>
 										</td>
-										
-									</tr>
-									<tr class="check-purchase-tr">	
 										<th>实际采购时间：</th>
 										<td><input id="realPurchaseDate"  data-widget="calendar" 
 											data-options="{'isShowWeek':'true','dateFmt':'yyyy-MM-dd HH:mm:ss'}"
 											 type="text"   class="70-input input" 
 											<?php echo $status>=70?"data-validator='required'":"" ?>
 											value='<?php echo $taskProduct['REAL_PURCHASE_DATE'] ;?>' /></td>
+									</tr>
+									<tr class="check-purchase-tr">
 										<th>实际采购价：</th>
 										<td><input id="realQuotePrice"   type="text"   class="70-input input" 
-											<?php echo $status>=70?"data-validator='required'":"" ?>
+													data-validator="double<?php echo $status>=70?",required":"" ?>"
 											value='<?php echo $taskProduct['REAL_QUOTE_PRICE'] ;?>' /></td>
+										<th>实际运费承担方式：</th>
+										<td>
+											<select id="realShipFeeType"  class="70-input input"   <?php echo $status>=70?"data-validator='required'":"" ?> >
+												<option value="">选择</option>
+												<option value="by" <?php if( $taskProduct['REAL_SHIP_FEE_TYPE'] == 'by' ) echo 'selected' ;?>>卖家包运费</option>
+												<option value="hdfk" <?php if($taskProduct['REAL_SHIP_FEE_TYPE']  == 'hdfk' ) echo 'selected' ;?> >运费到付</option>
+											</select>
+										</td>
 									</tr>
 									<tr class="check-purchase-tr">
 										<th>合格数量：</th>
