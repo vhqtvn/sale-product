@@ -35,6 +35,8 @@
 					{@warehouse_time = '#warehouseTime#' , }
 					{@ship_fee_type = '#shipFeeType#' , }
 					{@real_ship_fee_type = '#realShipFeeType#' , }
+					{@ship_fee = #shipFee# , }
+					{@real_ship_fee = #realShipFee#, }
 					warehouse_id = '{@#warehouseId#}' , 
 					pay_type = '{@#payType#}' 
 					{@, promise_delivery_date = '#promiseDeliveryDate#'}

@@ -204,10 +204,8 @@
 							case '40':  message = "分配执行人";break;
 						}
 						
-						if("" == message){
-							if( record.PLAN_NUM - (record.REAL_PURCHASE_NUM||0) > 0  ) message = "采购进行中" ;
-							else message = "采购已完成" ;
-						}
+						if(record.IS_FINISH == 0)  message = "采购已完成" ;
+						else  message = "采购进行中" ;
 						
 						return message ;
 					} },

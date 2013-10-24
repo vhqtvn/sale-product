@@ -226,6 +226,15 @@ $(function(){
 		return false;
 	}) ;
 	
+	$(".ship-fee").change(function(){
+		if( $(this).attr("disabled")=='disabled') return ;
+		var val = $(this).val() ;
+		if(val == 'hdfk' || val == 'mjds'){
+			$(this).closest("tr").find("input").removeAttr("disabled") ;
+		}else{
+			$(this).closest("tr").find("input").attr("disabled","disabled") ;
+		}
+	}).trigger("change") ;
 }) ;
 
 $(function(){
