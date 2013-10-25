@@ -252,7 +252,6 @@
         	if(typeof data == 'string'){
         		eval( 'ret = '+data ) ;
         	}
-        	
         	return dfop.dataFormat(ret) ;
         }
    

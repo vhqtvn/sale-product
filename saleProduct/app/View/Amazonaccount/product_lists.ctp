@@ -6,21 +6,8 @@
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
     <?php
-    include_once ('config/config.php');
-    
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../js/grid/jquery.llygrid');
-		echo $this->Html->css('../js/layout/jquery.layout');
-		echo $this->Html->css('../js/tree/jquery.tree');
-		
-		echo $this->Html->css('default/style');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('layout/jquery.layout');
-		echo $this->Html->script('tree/jquery.tree');
+   		include_once ('config/config.php');
+  		include_once ('config/header.php');
 		echo $this->Html->script('modules/account/product_lists');
 		
 		$user = $this->Session->read("product.sale.user") ;
@@ -190,7 +177,9 @@
 			
 		</div>
 		<div region="west" icon="icon-edit" split="true" border="true" title="营销产品分类" style="width:200px;">
-			<div id="default-tree" class="tree" style="padding: 5px; "></div>
+			<div id="tree-wrap">
+			<div id="default-tree_0" class="tree" style="padding: 5px; "></div>
+			</div>
 		</div>
    </div>
 	

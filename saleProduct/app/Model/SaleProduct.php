@@ -6,6 +6,33 @@ class SaleProduct extends AppModel {
 		$this->exeSql("sql_saleproduct_saveLimitPrice", $params) ;
 	}
 	
+	/**
+	 * 保存账户产品分类
+	 * 
+	 * @param unknown_type $params
+	 */
+	function saveAccountProductCateogory($params){
+			//删除已经关联的关联
+			$sql = "delete from sc_amazon_product_category_rel where account_id='{@#accountId#}' and sku='{@#sku#}'" ;
+			$this->exeSql($sql, $params) ;
+	
+			//添加
+			$sql = "INSERT INTO  sc_amazon_product_category_rel
+					(
+					CATEGORY_ID,
+					SKU,
+					ACCOUNT_ID
+					)
+					VALUES
+					(
+					'{@#categoryId#}',
+					'{@#sku#}',
+					'{@#accountId#}'
+					)" ;
+			$this->exeSql($sql, $params) ;
+	
+	}
+	
 	function getChartForSku($params){
 		$sku = $params['sku'] ;
 		$records = $this->exeSqlWithFormat("sql_chart_realSku_quantity", array('sku'=>$sku)) ;

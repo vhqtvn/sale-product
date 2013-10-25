@@ -203,9 +203,10 @@
 							case '30':  message = "限价确认";break;
 							case '40':  message = "分配执行人";break;
 						}
-						
-						if(record.IS_FINISH == 0)  message = "采购已完成" ;
-						else  message = "采购进行中" ;
+						if(message == ""){
+							if(record.IS_FINISH == 0 && record.TASK_COUNT >=1)  message = "采购已完成" ;
+							else  message = "采购进行中" ;
+						}
 						
 						return message ;
 					} },

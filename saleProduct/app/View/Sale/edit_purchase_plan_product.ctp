@@ -254,7 +254,7 @@
 	        		{status:41,label:"采购进行中",memo:false,format:function(node){
 
 	        			var text = "采购进行中" ;
-						<?php if( $product['IS_FINISH']==0  ){
+						<?php if( $product['IS_FINISH']==0 &&  $product['TASK_COUNT'] > 0  ){
 							echo "text = '采购已完成' ;" ;
 						} ?>
 									if( currentStatus> 40 ){
@@ -266,7 +266,7 @@
 							}
 	        			<?php
 
-	        			if( ($product['IS_FINISH']>=1)&& $ppp_assign_executor ) { ?>
+	        			if( ($product['IS_FINISH']>=1 )&& $ppp_assign_executor ) { ?>
 	        			,actions:[
 		      	        			{label:"保存",action:function(){ ForceAuditAction(currentStatus,"保存") }}
     					]

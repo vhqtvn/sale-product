@@ -3,23 +3,48 @@
 	var currentCategoryId = "" ;
 	var currentCategoryText = "" ;
 	$(function(){
-			$('#default-tree').tree({//tree为容器ID
-				source:'array',
-				data:treeData ,
-				onNodeClick:function(id,text,record){
-					if( id == 'root' ){
-						currentCategoryId = "" ;
-						currentCategoryText = "" ;
-						$(".grid-content").llygrid("reload",getQueryCondition(),
-							{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
-					}else{
-						currentCategoryId = id ;
-						currentCategoryText = text ;
-						$(".grid-content").llygrid("reload",getQueryCondition(),
-							{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
+			var index = 0 ;
+			//id:'uncategory',text:'未分类产品',memo:'',isExpand:true
+			function loadTree(selector){
+				selector.tree({//tree为容器ID
+					//source:'array',
+					rootId  : 'root',
+					rootText : '产品分类',
+					expandLevel:2,
+					asyn:false,
+					CommandName : 'sqlId:sql_saleproduct_account_categorytree',
+					recordFormat:true,
+					dataFormat:function(data){
+						data.push({id:'uncategory',text:'未分类产品',memo:'',isExpand:true});
+						return data;
+					},
+					nodeFormat:function(record){
+						if(record.id=='root' ||record.id == 'uncategory') return record ;
+						record.text = record.text+"("+record.TOTAL+")"
+						return record ;
+					},
+					params : {
+						accountId: accountId
+					},
+					//data:treeData ,
+					onNodeClick:function(id,text,record){
+						if( id == 'root' ){
+							currentCategoryId = "" ;
+							currentCategoryText = "" ;
+							$(".grid-content").llygrid("reload",getQueryCondition(),
+								{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
+						}else{
+							currentCategoryId = id ;
+							currentCategoryText = text ;
+							$(".grid-content").llygrid("reload",getQueryCondition(),
+								{ds:{type:"url",content:contextPath+"/grid/query/"+accountId}}) ;	
+						}
 					}
-				}
-	       }) ;
+		       }) ;
+			};
+		
+			loadTree(  $('#default-tree_0') ) ;
+			
 	       
 	       var gridConfig = {
 					columns:[
@@ -44,6 +69,7 @@
 							var status = record.STATUS ;
 							var html = [] ;
 							html.push('<a href="#" class="sale-strategy" val="'+val+'">'+getImage("example.gif","价格调整")+'</a>&nbsp;') ;
+							html.push('<a href="#" class="category-set" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
 							return html.join("") ;
 						}},
 						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
@@ -123,6 +149,55 @@
 			$(".sale-strategy").live("click",function(){
 				var record = $(this).parents("tr:first").data("record");
 				openCenterWindow(contextPath+"/page/forward/Sale.strategy.strategyConfigForListing/"+record.ACCOUNT_ID+"/"+record.SKU+"/"+record.ID ,1100,650) ;
+			}) ;
+			
+			$(".category-set").live("click",function(){
+				var record = $(this).parents("tr:first").data("record");
+				var categoryTreeSelect = {
+						title:'产品分类选择页面',
+						//valueField:"#categoryId",
+						//labelField:"#categoryName",
+						key:{value:'ID',label:'NAME'},//对应value和label的key
+						multi:false ,
+						tree:{
+							title:"产品分类选择页面",
+							method : 'post',
+							nodeFormat:function(node){
+								node.complete = false ;
+							},
+							asyn : true, //异步
+							rootId  : 'root',
+							rootText : '产品分类',
+							CommandName : 'sqlId:sql_saleproduct_account_categorytree',
+							recordFormat:true,
+							params : {
+								accountId: accountId
+							}
+						}
+				   } ;
+				$.listselectdialog( categoryTreeSelect,function(win,ret){
+					if( ret && ret.value ){
+						var categoryId = ret.value[0] ;
+						//保存产品分类
+						var productId = record.ID ;
+						//accountId
+						var SKU = record.SKU ;
+						
+						json = {
+								categoryId:categoryId,
+								sku:SKU,
+								accountId:accountId
+						} ;
+						$.dataservice("model:SaleProduct.saveAccountProductCateogory",json,function(result){
+							//刷新树
+							$('#default-tree_'+(index)).remove() ;
+							index++ ;
+							$("#tree-wrap").append('<div id="default-tree_'+index+'" class="tree" style="padding: 5px; "></div>') ;
+							loadTree( $('#default-tree_'+index) ) ;
+							//alert(222) ;
+						});
+					}
+				}) ;
 			}) ;
 			
 			$(".query-btn").click(function(){

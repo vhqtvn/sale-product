@@ -274,6 +274,7 @@
 		 FROM sc_real_product_rel
 		 LEFT JOIN sc_amazon_account_product 
 		 ON sc_real_product_rel.sku = sc_amazon_account_product.sku
+		 AND sc_amazon_account_product.ACCOUNT_ID = sc_real_product_rel.ACCOUNT_ID
 		 LEFT JOIN sc_product sp
 		ON sp.ASIN = sc_amazon_account_product.ASIN
 					WHERE  sc_real_product_rel.real_id = '{@#id#}'
@@ -397,6 +398,20 @@
         		sc_product_category.name as TEXT,
               (select count(*) from sc_real_product where sc_real_product.category_id = sc_product_category.id ) as TOTAL
               from sc_product_category
+   
+	]]>	      
+    </entry>
+    
+    <entry key="sql_saleproduct_account_categorytree">
+    <![CDATA[
+         SELECT sc_amazon_product_category.*,
+        		sc_amazon_product_category.name AS TEXT,
+              (SELECT COUNT(*) FROM sc_amazon_product_category_rel WHERE
+               sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
+               AND  sc_amazon_product_category_rel.ACCOUNT_ID = sc_amazon_product_category.ACCOUNT_ID
+                ) AS TOTAL
+              FROM sc_amazon_product_category
+              WHERE account_id= '{@#accountId#}'
    
 	]]>	      
     </entry>
