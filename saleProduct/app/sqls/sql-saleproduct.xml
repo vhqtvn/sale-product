@@ -272,9 +272,10 @@
 			 where sc.seller_sku = sc_amazon_account_product.sku
 			and    sc.order_id = so.order_id and so.order_status in ('Unshipped','PartiallyShipped') and so.FULFILLMENT_CHANNEL = 'MFN' ) as UNSHIPPED_NUM
 		 FROM sc_real_product_rel
-		 LEFT JOIN sc_amazon_account_product 
+		 INNER  JOIN sc_amazon_account_product 
 		 ON sc_real_product_rel.sku = sc_amazon_account_product.sku
 		 AND sc_amazon_account_product.ACCOUNT_ID = sc_real_product_rel.ACCOUNT_ID
+		 and sc_amazon_account_product.status <> 'deleted'
 		 LEFT JOIN sc_product sp
 		ON sp.ASIN = sc_amazon_account_product.ASIN
 					WHERE  sc_real_product_rel.real_id = '{@#id#}'

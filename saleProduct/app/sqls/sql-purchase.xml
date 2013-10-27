@@ -89,6 +89,7 @@
 		WHERE 1=1 
 		     {@ #$VIEW_PP:and 1=0# }
 			{@AND sppd.plan_id = '#planId#'}
+			{@AND sppd.sku = '#sku#'}
 			{@AND sppd.id = '#id#'}
 		   {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
 			{@  and sppd.status = '#status#' }

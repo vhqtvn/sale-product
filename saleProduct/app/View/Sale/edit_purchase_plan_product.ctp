@@ -353,8 +353,12 @@
 							$products = $SqlUtils->exeSqlWithFormat("SELECT sptp.*,
 													      (SELECT NAME FROM sc_purchase_task spt WHERE spt.id = sptp.TASK_ID) AS TASK_NAME,
 															 (SELECT NAME FROM sc_supplier spt WHERE spt.id = sptp.REAL_PROVIDOR) AS REAL_PROVIDOR_NAME
-													 FROM sc_purchase_task_products sptp where sptp.product_id = '{@#productId#}' ",
-									array('productId'=>$product['ID'] )) ;
+													 FROM sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+													where sptp.product_id = sppd.id and sppd.sku = '{@#sku#}'
+													order by sppd.create_time desc
+													  ", array('sku'=>$product['SKU'] )) ; 
+//where sptp.product_id = '{@#productId#}'
+				//					array('productId'=>$product['ID'] )) ;  $product['SKU']
 							
 						
 							

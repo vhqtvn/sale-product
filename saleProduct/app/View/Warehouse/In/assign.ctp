@@ -24,9 +24,24 @@
 		
 		
 		$realProductId = $params['arg1'] ;
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$product = $SqlUtils->getObject("sql_saleproduct_getByIdForStorage",array('realProductId'=>$realProductId )) ;
+		
+		$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
+		
+		//	$ProductDev  = ClassRegistry::init("ProductDev") ;
+		//	$dev = $ProductDev->getLowestLimitPrice($realProductId) ;
+		/*
+		 'SALE_LOWEST_PRICE_FBA' => '123',
+		'SALE_LOWEST_PRICE_FBM' => '22',
+		'SALE_SUGGEST_PRICE_FBA' => '11',
+		'SALE_SUGGEST_PRICE_FBM' => '33'
+		*/
+		
 	?>
   	<script>
   		var realProductId = '<?php echo $realProductId;?>' ;
+  		var reslSku = '<?php echo $product['REAL_SKU'] ?>' ;
   	</script>
   	
   	<style type="text/css">
@@ -113,22 +128,6 @@
 	</style>
 </head>
 <body>
-	<?php
-		$realProductId = $params['arg1'] ;
-		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-		$product = $SqlUtils->getObject("sql_saleproduct_getByIdForStorage",array('realProductId'=>$realProductId )) ;
-		
-		$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
-		
-	//	$ProductDev  = ClassRegistry::init("ProductDev") ;
-	//	$dev = $ProductDev->getLowestLimitPrice($realProductId) ;
-		/*
-		'SALE_LOWEST_PRICE_FBA' => '123',
-		'SALE_LOWEST_PRICE_FBM' => '22',
-		'SALE_SUGGEST_PRICE_FBA' => '11',
-		'SALE_SUGGEST_PRICE_FBM' => '33'
-		*/
-	?>
 	<div class="box row-fluid">
 			<div class="box-content span8" style="width:96%;">
 				<table class="table" style="table-layout:fixed;">
@@ -139,6 +138,48 @@
 						<td style="width:40%;">
 								<div class="product-title"><?php echo $product['NAME'] ?></div>
 								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><?php echo $product['REAL_SKU'] ?></div></div>
+								<div>
+								<?php 
+									$array= $SqlUtils->exeSqlWithFormat("sql_purchase_plan_details_listForSKU",array('sku'=>$product['REAL_SKU'])) ;
+									$exists = false ;
+									$purchasing = null ;
+									foreach( $array as $a ){
+										//TASK_COUNT  IS_FINISH
+										$taskCount = $a['TASK_COUNT'] ;
+										$isFinish     = $a['IS_FINISH'] ;
+										if( $isFinish == 0 && $taskCount >0 ){ //结束
+											
+										}else{
+											$purchasing = $a ;
+											$exists = true ;//采购中
+										}
+									}
+									if( $exists ){
+								?>
+									<div class="alert" style="margin-top:20px;display:block;width:auto;padding:5px;width:150px;">
+										采购进行中
+										<a herf="#"  class="purchase-detail"  purchaseProductId="<?php echo $purchasing['ID']; ?>">详细</a>	
+									</div>
+								<?php	 }else{ ?>
+								<!--判断时候在采购中-->
+								<hr/>
+								<select  class="purchase-plan">
+									<option value="">选择采购计划</option>
+									<?php //exeSqlWithFormat
+										$plans = $SqlUtils->exeSqlWithFormat("SELECT * FROM sc_purchase_plan
+														ORDER BY create_time DESC
+														LIMIT 0,20",array()) ;
+
+									foreach( $plans as $plan ){
+										echo "<option value='".$plan['ID']."'>".$plan['NAME']."</option>" ;
+									}
+									?>
+								</select>
+								<button class="btn btn-primary  add-purchase">添加采购</button>
+								<?php		
+									}
+								?>
+								</div>
 						</td>
 						<td><?php echo $product['MEMO'] ?></td>
 					</tr>

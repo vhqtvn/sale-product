@@ -15,9 +15,9 @@ $(function(){
 	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 	           	}},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
-	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
+	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'产品列表')+"</a>" ;
 	           	}},
-	           	{align:"center",key:"DAY_PAGEVIEWS",label:"流量",width:"7%"},
+	           	{align:"center",key:"DAY_PAGEVIEWS",label:"销售报告",width:"7%"},
 	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",group:"库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
 	           		return record.QUANTITY||0 ;
 	           	}},render:function(record){
@@ -129,6 +129,27 @@ $(function(){
 	$(".sale-strategy").live("click",function(){
 		var record = $(this).parents("tr:first").data("record");
 		openCenterWindow(contextPath+"/page/forward/Sale.strategy.strategyConfigForListing/"+record.ACCOUNT_ID+"/"+record.SKU+"/"+record.ID ,1100,650) ;
+	}) ;
+	
+	$(".add-purchase").click(function(){
+		var planId = $(".purchase-plan").val() ;
+		if(!planId){
+			alert("请选择采购计划！") ;
+			return ;
+		}
+		if(window.confirm("确认添加到采购计划？")){
+			$.dataservice("model:Sale.saveSelectedProduct",{ sku:reslSku , planId:planId },function(){
+				window.location.reload();
+			});
+		}
+		
+	}) ;
+	
+	$(".purchase-detail").live("click",function(){
+		var purchaseProductId = $(this).attr("purchaseProductId") ;
+		openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_plan_product/"+purchaseProductId,980,620,function(win,ret){
+			
+		}) ;
 	}) ;
 	
 	function calcPrice(){
