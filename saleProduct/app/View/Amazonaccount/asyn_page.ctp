@@ -67,8 +67,9 @@
 			$(".grid-content").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"编号", width:"5%"},
-					{align:"left",key:"CREATE_TIME",label:"同步时间",width:"30%",forzen:false},
-		           	{align:"left",key:"USERNAME",label:"操作用户",width:"30%",forzen:false},
+					{align:"left",key:"CREATE_TIME",label:"开始时间",width:"20%",forzen:false},
+					{align:"left",key:"END_TIME",label:"结束时间",width:"20%",forzen:false},
+		           	{align:"left",key:"USERNAME",label:"操作用户",width:"20%",forzen:false},
 		           	{align:"left",key:"REPORT_ID",label:"REPORT_ID",width:"15%"}
 		          //{align:"center",key:"TYPE",label:"类型",width:"10%"}
 					
