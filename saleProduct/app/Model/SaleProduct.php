@@ -16,8 +16,13 @@ class SaleProduct extends AppModel {
 			$sql = "delete from sc_amazon_product_category_rel where account_id='{@#accountId#}' and sku='{@#sku#}'" ;
 			$this->exeSql($sql, $params) ;
 	
-			//添加
-			$sql = "INSERT INTO  sc_amazon_product_category_rel
+			$categoryId = $params['categoryId'] ;
+			$categoryId = explode(",",$categoryId) ;
+			foreach( $categoryId as $cId  ){
+				if( empty($cId) ) continue ;
+				$params['categoryId'] = $cId ;
+				//添加
+				$sql = "INSERT INTO  sc_amazon_product_category_rel
 					(
 					CATEGORY_ID,
 					SKU,
@@ -29,7 +34,10 @@ class SaleProduct extends AppModel {
 					'{@#sku#}',
 					'{@#accountId#}'
 					)" ;
-			$this->exeSql($sql, $params) ;
+				$this->exeSql($sql, $params) ;
+			}
+			
+			
 	
 	}
 	

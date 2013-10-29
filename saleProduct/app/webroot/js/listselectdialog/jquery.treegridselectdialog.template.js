@@ -168,6 +168,12 @@
 		treeConfig.method = treeConfig.method||'post' ;
 		treeConfig.asyn   = typeof(treeConfig.asyn)=='undefined'?true:treeConfig.asyn ;
 		treeConfig.rootId = treeConfig.rootId||'root' ;
+		
+		treeConfig.nodeFormat = function(record){
+			if(record.checkstate == 1){
+				
+			}
+		}
 	
 		if( gridConfig ){//grid 选择
 			treeConfig.onNodeClick = function(id, text, record,node){
@@ -207,6 +213,7 @@
 			}
 		}
 		
+		var isLoadAfter = false ;
 		if(defaults){
 			treeConfig.nodeFormat = function(data){//checkstate = 1 ;
 				var dataId = data.id || data.ID ;
@@ -218,7 +225,24 @@
 				}) ;
 				return data ;
 			} ;
+		}else{
+			isLoadAfter = true ;
+			defaults = [] ;
+			treeConfig.nodeFormat = function(data){//checkstate = 1 ;
+				if( data.checkstate == 1){
+					defaults.push(data) ;
+				} ;
+				return data ;
+			} ;
+			
+			treeConfig.loadAfter = function(){
+				$('.tree-container').tree().expandAll() ;
+				$(defaults).each(function(index,record){
+					addSelectedItem(record) ;
+				}) ;
+			}
 		}
+
 		setTimeout(function(){
 			$('.tree-container').tree(treeConfig) ;
 		},200) ;

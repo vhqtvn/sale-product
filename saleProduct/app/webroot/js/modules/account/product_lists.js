@@ -158,7 +158,7 @@
 						//valueField:"#categoryId",
 						//labelField:"#categoryName",
 						key:{value:'ID',label:'NAME'},//对应value和label的key
-						multi:false ,
+						multi:true ,
 						tree:{
 							title:"产品分类选择页面",
 							method : 'post',
@@ -167,22 +167,23 @@
 							},
 							asyn : true, //异步
 							rootId  : 'root',
+							expandLevel:3,
 							rootText : '产品分类',
 							CommandName : 'sqlId:sql_saleproduct_account_categorytree',
 							recordFormat:true,
 							params : {
-								accountId: accountId
+								accountId: accountId,
+								sku:record.SKU
 							}
 						}
 				   } ;
 				$.listselectdialog( categoryTreeSelect,function(win,ret){
 					if( ret && ret.value ){
-						var categoryId = ret.value[0] ;
+						var categoryId = ret.value.join(",") ;
 						//保存产品分类
 						var productId = record.ID ;
 						//accountId
 						var SKU = record.SKU ;
-						
 						json = {
 								categoryId:categoryId,
 								sku:SKU,

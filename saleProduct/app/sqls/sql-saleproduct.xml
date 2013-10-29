@@ -407,6 +407,11 @@
     <![CDATA[
          SELECT sc_amazon_product_category.*,
         		sc_amazon_product_category.name AS TEXT,
+        	  {@  (  select count(1) from sc_amazon_product_category_rel s 
+        	  		where s.account_id = sc_amazon_product_category.account_id
+        	  		and s.sku = '#sku#'
+        	  		and category_id =sc_amazon_product_category.id ) as checkstate,
+        	    }
               (SELECT COUNT(*) FROM sc_amazon_product_category_rel WHERE
                sc_amazon_product_category_rel.category_id = sc_amazon_product_category.id
                AND  sc_amazon_product_category_rel.ACCOUNT_ID = sc_amazon_product_category.ACCOUNT_ID

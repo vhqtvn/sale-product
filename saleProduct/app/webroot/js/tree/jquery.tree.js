@@ -328,7 +328,6 @@
                     nd.checkstate = _no_check;
                 }
 				var disableClz = (nd.disabled===true||nd.disabled===1)?' ui-state-disabled':'' ;
-				
 				ht.push("<div  id='", id, "_", nid, "_cb' class='bbit-tree-node-cb",disableClz," ",dfop.checkIcons[nd.checkstate],"'></div>");
               
               }
