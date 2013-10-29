@@ -575,7 +575,7 @@
 				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
 				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
 			 ) AS ORDER_PRODUCTS ,
-			  (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id and so.order_id and soi.rma_reship is not null group by soi.order_id)
+			  (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id = so.order_id and soi.rma_reship is not null group by soi.order_id)
 			   as RMA_RESHIP
 		  from sc_order so , 
 		  sc_amazon_order_status saos 
@@ -619,7 +619,7 @@
 				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
 				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
 			 ) AS ORDER_PRODUCTS ,
-			 (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id and so.order_id and soi.rma_reship is not null group by soi.order_id)
+			 (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id = so.order_id and soi.rma_reship is not null group by soi.order_id)
 			   as RMA_RESHIP
 		  from sc_order so , sc_amazon_order_status saos 
 		  where 
@@ -660,7 +660,7 @@
 				 			LEFT JOIN sc_real_product s4 ON  s4.id = s3.real_id AND s4.real_sku = s3.real_sku
 				WHERE so.order_id = soi.order_id GROUP BY soi.order_id	 
 			 ) AS ORDER_PRODUCTS ,
-			  (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id and so.order_id and soi.rma_reship is not null group by soi.order_id)
+			  (select sum(soi.rma_reship) from sc_order_item soi where soi.order_id = so.order_id and soi.rma_reship is not null group by soi.order_id)
 			   as RMA_RESHIP
 		  from sc_order so , sc_amazon_order_status saos 
 		  where 

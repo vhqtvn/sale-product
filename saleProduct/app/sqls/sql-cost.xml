@@ -136,8 +136,9 @@
  					 ( select sp.TITLE from sc_product sp where  sc_product_cost.asin = sp.asin limit 0,1) as PRODUCT_TITLE,
  					 ( select sp.NAME from sc_real_product sp where  sc_product_cost.sku = sp.real_sku limit 0,1) as REAL_PRODUCT_TITLE
  				 from sc_product_cost
-                where 1=1 and
-                ( 	1=1
+                where 1=1 
+                {@ and type = '#type#'}
+              and   ( 	1=1
 					{@ and ( 
 							sc_product_cost.sku = '#realSku#'
 							or 

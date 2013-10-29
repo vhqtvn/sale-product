@@ -225,7 +225,7 @@
 				( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account_asyn.creator ) as USERNAME
 				FROM sc_amazon_account_asyn where 1=1 {@ and account_id = '#accountId#' }
 				and report_type = '_GET_FLAT_FILE_OPEN_LISTINGS_DATA_'
-				and status = 'complete' order by create_time desc
+				 order by create_time desc
     </entry>
     
      <entry key="sql_product_active_asyn_history">
@@ -233,7 +233,7 @@
 				( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account_asyn.creator ) as USERNAME
 				FROM sc_amazon_account_asyn where  1=1 {@ and account_id = '#accountId#' }
 				and report_type = '_GET_MERCHANT_LISTINGS_DATA_'
-				and status = 'complete' order by create_time desc  
+				 order by create_time desc  
     </entry>
     
     <entry key="sql_product_fba_asyn_history">
@@ -241,7 +241,7 @@
 				( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account_asyn.creator ) as USERNAME
 				FROM sc_amazon_account_asyn where  1=1 {@ and account_id = '#accountId#' }
 				and report_type = '_GET_AFN_INVENTORY_DATA_'
-				and status = 'complete' order by create_time desc  
+				 order by create_time desc  
     </entry>
     
     <entry key="sql_gather_category_task">

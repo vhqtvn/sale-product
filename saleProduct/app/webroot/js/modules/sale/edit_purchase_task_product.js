@@ -14,6 +14,7 @@ $(function(){
 	 $("#personForm   :input").attr("disabled",'disabled') ;
 	 $("."+currentStatus+"-input").removeAttr("disabled") ;
 	 $(".btn.input[disabled]").hide();
+	 $(".no-disabled").removeAttr("disabled") ;
 
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
 	if( $("#ref-asins").length ){
@@ -39,6 +40,40 @@ $(function(){
 	if( $ppp_assign_executor && ( currentStatus>=40 && currentStatus <= 48) ){
 		$(".btn-charger").removeAttr("disabled").show() ;
 	}
+	
+
+	$(".change_plan").click(function(){
+		//加载计划
+		var json = {limit:20} ;//最近二十次计划
+		$.dataservice("model:Sale.getLastestPlan",json,function(result){
+			$(".plan-container").empty().show() ;
+			var select = $("<select><option value=''>选择计划</option></select>").appendTo(".plan-container") ;
+			$(result||[]).each(function(){
+					var selected = this.ID == planId?"selected":"" ;
+				select.append("<option value='"+this.ID+"' "+selected+">"+this.NAME+"</option>") ;
+			}) ;
+			select.change(function(){
+				var val = $(this).val() ;
+				var text = $(this).find("option:selected").text() ;
+				if( val != planId ){
+					if(window.confirm("确认更改计划吗？")){
+						$.dataservice("model:Sale.updatePlanForPlanProduct",{id:id,planId:val},function(result){
+							if(!result){
+								planId = val ;
+								$(".plan-name").html(text) ;
+								$(".plan-container") .hide() ;
+							}
+						}) ;
+						return true ;
+					}{
+						$(this).val(planId) ;
+					}
+					return false ;
+				}
+			}) ;
+		}) ;
+		return false ;
+	}) ;
 	
 	//widget init
 	var tab = $('#details_tab').tabs( {

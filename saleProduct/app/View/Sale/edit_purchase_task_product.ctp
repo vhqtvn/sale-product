@@ -321,8 +321,15 @@
 										</td>
 									</tr>
 									<tr>
-										<th>货品：</th><td colspan=3><a class="product-realsku"  sku="<?php echo $product['SKU'] ;?>"  href="#">
+										<th>货品：</th><td><a class="product-realsku"  sku="<?php echo $product['SKU'] ;?>"  href="#">
 										<?php echo  $product['SKU']  ;?></a>（<?php echo  $product['TITLE']  ;?>）</td>
+										<th>
+										<button class="btn change_plan no-disabled">更改</button>
+										采购计划：</th><td>
+											<span class="plan-name"><?php echo $plan['NAME'] ;?> </span>
+											<span  class="plan-container">
+											</span>
+										</td>
 									</tr>
 									<tr>
 										<th>标签：</th>

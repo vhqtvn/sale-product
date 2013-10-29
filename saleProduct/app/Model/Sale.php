@@ -60,6 +60,26 @@ class Sale extends AppModel {
 		$array = $this->query($sql);
 		return $array ;
 	}
+	
+	function getLastestPlan($params){
+		$limit = $params['limit'] ;
+		$sql = "SELECT sc_purchase_plan.*
+		,( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME
+		,( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.executor ) as EXECUTOR_NAME
+		from sc_purchase_plan 
+				order by create_time desc
+				limit  $limit
+				";
+		$array = $this->exeSqlWithFormat($sql, array()) ;
+		return $array ;
+	}
+	
+	function updatePlanForPlanProduct($params){
+		//$id = $params['id'] ;
+		//$planId = $params['planId'] ;
+		$sql = "update sc_purchase_plan_details set plan_id = '{@#planId#}' where id='{@#id#}'" ;
+		$this->exeSql($sql, $params) ;
+	}
 
 	function getPurchasePlanDetails($id){
 		return $this->exeSql("sql_purchase_plan_details_listForSKU", array('planId'=>$id) ) ;
