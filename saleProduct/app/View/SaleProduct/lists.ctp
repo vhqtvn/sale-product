@@ -83,13 +83,39 @@
 		
 		$(function(){
 			$('#default-tree').tree({//tree为容器ID
-				source:'array',
-				data:treeData ,
+				//source:'array',
+				//data:treeData ,
+				rootId  : 'root',
+				rootText : '产品分类',
+				expandLevel:2,
+				asyn:false,
+				CommandName : 'sqlId:sql_saleproduct_categorytree',
+				recordFormat:true,
+				dataFormat:function(data){
+					data.push({id:'uncategory',text:'未分类产品',memo:'',isExpand:true});
+					return data;
+				},
+				nodeFormat:function(record){
+					if(record.id=='root' ||record.id == 'uncategory') return record ;
+					record.text = record.text+"("+record.TOTAL+")"
+					return record ;
+				},
+				params : {
+					//accountId: accountId
+				},
 				onNodeClick:function(id,text,record){
-					if( id == 'root' ){
-						$(".grid-content").llygrid("reload",{categoryId:""}) ;
+					var uncategory = "" ;
+					if(id == 'uncategory'){
+						id="" ;
+						uncategory = 1 ;
 					}else{
-						$(".grid-content").llygrid("reload",{categoryId:id}) ;
+						uncategory = "" ;
+					}
+					
+					if( id == 'root' ){
+						$(".grid-content").llygrid("reload",{categoryId:"",uncategory:uncategory}) ;
+					}else{
+						$(".grid-content").llygrid("reload",{categoryId:id,uncategory:uncategory}) ;
 					}
 				}
 	       }) ;

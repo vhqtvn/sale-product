@@ -97,7 +97,8 @@
 		          ( CASE WHEN ( sc_real_product.IMAGE_URL  IS NULL or sc_real_product.IMAGE_URL  = '' ) THEN (
 		               ( select image_url from sc_utils_image where entity_type='realProduct' and entity_id =sc_real_product.id limit 0,1 ) 
 		          ) ELSE  sc_real_product.IMAGE_URL END ) as IMG_URL
-		         from sc_real_product where 1=1
+		         from sc_real_product
+		          where 1=1
 		     {@ and is_onsale='#isOnsale#'}
  			{@ and type='#type#'}
  			{@ and status='#status#'}
@@ -115,7 +116,17 @@
  			    and sp.asin = '#asin#'
  			)}
  			{@ and real_sku='#REAL_SKU#'}
- 			{@ and category_id='#categoryId#'}
+ 			{@ 
+ 			and id  in (
+ 			  select product_id  from sc_real_product_category srpc where srpc.product_id = sc_real_product.id
+ 			  and srpc.category_id = '#categoryId#'
+ 			)
+ 			}
+ 			{@ and id not in (
+							select product_id  from sc_real_product_category srpc where srpc.product_id = sc_real_product.id
+						and 1= #uncategory#
+			)
+			}
    </entry>
    
    <entry key="sql_saleproduct_insert">
@@ -397,7 +408,7 @@
     <![CDATA[
         select sc_product_category.*,
         		sc_product_category.name as TEXT,
-              (select count(*) from sc_real_product where sc_real_product.category_id = sc_product_category.id ) as TOTAL
+              (select count(*) from sc_real_product_category where sc_real_product_category.category_id = sc_product_category.id ) as TOTAL
               from sc_product_category
    
 	]]>	      

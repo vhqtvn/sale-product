@@ -17,10 +17,20 @@
 		
 		$entityId = $item['ID'] ;
 		$fixEntityId = "" ;
+		$category = null ;
 		if( empty( $entityId ) ){
 			$fixEntityId = $SqlUtils->create_guid() ;
 			$entityId = $fixEntityId ;
+		}else{
+			$sql = "SELECT GROUP_CONCAT(  spc.NAME SEPARATOR ',' ) AS CATEGORY_NAME,
+					       GROUP_CONCAT(  spc.ID SEPARATOR ',' ) AS CATEGORY_ID
+						                    	FROM sc_product_category spc, sc_real_product_category srpc 
+						                    	WHERE spc.ID = srpc.CATEGORY_ID
+						                    	AND srpc.PRODUCT_ID = '$entityId'" ;
+			$category = $SqlUtils->getObject($sql,array()) ;
 		}
+		
+		//获取分类名称
 		
 	?>
 	
@@ -97,8 +107,8 @@
 								<tr>
 									<th>选择产品分类：</th>
 									<td>
-										<input type="hidden"  id="categoryId" name="categoryId" value="<?php echo $item['CATEGORY_ID']?>"/>
-										<input type="text" id="categoryName" name="categoryName" value="<?php echo $item['CATEGORY_NAME']?>"/>
+										<input type="hidden"  id="categoryId" name="categoryId" value="<?php echo $category['CATEGORY_ID']?>"/>
+										<input type="text" id="categoryName" name="categoryName" value="<?php echo $category['CATEGORY_NAME']?>"/>
 										<button class="btn select-category">选择</button>
 									</td>
 								</tr>

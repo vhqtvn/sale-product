@@ -80,6 +80,24 @@ class SaleProduct extends AppModel {
 		return $result ;
 	}
 	
+	function saveProductCategory($productId , $categoryId){
+		if(empty($categoryId)) return ;
+		//删除现有分类
+		$this->exeSql("delete from sc_real_product_category where product_id = '{@#productId#}'", array('productId'=>$productId)) ;
+		//保存新分类
+		$categoryIds = explode(",", $categoryId) ;
+		foreach($categoryIds as $cId  ){
+			$this->exeSql("			
+			INSERT INTO  sc_real_product_category 
+				(PRODUCT_ID, 
+				CATEGORY_ID
+				)
+				VALUES
+				( '{@#productId#}',  '{@#categoryId#}'
+				) ", array('productId'=>$productId,"categoryId"=>$cId)) ;
+		} ;
+	}
+	
 	function saveProduct($data , $user=null){
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
@@ -104,6 +122,8 @@ class SaleProduct extends AppModel {
 			
 			$sql = "update sc_real_product_composition set REF_SKU = '$sku' where REF_ID = '$id'" ;
 			$this->query($sql) ;
+		
+			$this->saveProductCategory($id, $data['categoryId']) ;
 			return "" ;
 		}else{
 			$guid = $this->create_guid() ;
@@ -114,6 +134,8 @@ class SaleProduct extends AppModel {
 			//通过guid获取ID
 			$realProduct = $this->getObject("select * from sc_real_product where guid = '{@#guid#}'", $data) ;
 			$id = $realProduct["ID"] ;
+			
+			$this->saveProductCategory($id, $data['categoryId']) ;
 			return $id ;
 		}
 	}

@@ -15,25 +15,7 @@
 	?>
 	
     <script type="text/javascript">
-	
-	var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
-    var treeMap  = {} ;
 
-    <?php
-    $Utils  = ClassRegistry::init("Utils") ;
-    
-    $Utils->echoTreeScript( $categorys ,null, function( $sfs, $index ,$ss ){
-    	$id   = $sfs['ID'] ;
-			$name = $sfs['NAME']."(".$sfs['TOTAL'].")" ;
-			$pid  = $sfs['PARENT_ID'] ;
-    	echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true} ;\n" ;
-    } ) ;
-    
-    echo " treeMap['id_uncategory'] = {id:'uncategory',text:'未分类产品',memo:'',isExpand:true} ;\n" ;
-    echo " treeData.childNodes.push( treeMap['id_uncategory']  ) ;\n" ;
-    
-	?>
-   
    var accountId = '<?php echo $accountId ;?>' ;
    var currentAccountId = accountId ;
    </script>

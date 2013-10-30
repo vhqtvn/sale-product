@@ -6,12 +6,13 @@ $(function(){
 		$("[type='button'],button,[type='file']").hide();
 	}
 
+	
 	var categoryTreeSelect = {
 			title:'产品分类选择页面',
 			valueField:"#categoryId",
 			labelField:"#categoryName",
 			key:{value:'ID',label:'NAME'},//对应value和label的key
-			multi:false ,
+			multi:true ,
 			tree:{
 				title:"产品分类选择页面",
 				method : 'post',
@@ -29,6 +30,8 @@ $(function(){
 	   } ;
 	   
 	$(".select-category").listselectdialog( categoryTreeSelect) ;
+	
+	
 	
 	var postageTreeGridSelect = {
 			title:'物流服务选择页面',
