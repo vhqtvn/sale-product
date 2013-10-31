@@ -16,7 +16,9 @@ $(function(){
 	        	{align:"right",key:"BAD_IN_QUANTITY",label:"残品数量",width:"60"},
 	           	{align:"center",key:"CREATOR_NAME",label:"操作用户", width:"60"},
 	           	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"100"},
-	           	{align:"center",key:"IN_NUMBER",label:"计划入库单号",width:"100"},
+	           	{align:"center",key:"IN_NUMBER",label:"计划入库单号",width:"100",format:function(val,record){
+	           		return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/page/model/Warehouse.In.editTab/"+record.IN_ID+"'>"+(val||"")+"</a>"
+	           	}},
 	           	{align:"center",key:"DISK_NO",label:"盘点单号",width:"100"}
 	            
 	         ],
@@ -29,7 +31,10 @@ $(function(){
 			 title:"",
 			 //autoWidth:true,
 			 querys:{sqlId:"sql_warehouse_storage_detailsByProduct",realProductId:realProductId},
-			 loadMsg:"数据加载中，请稍候......"
+			 loadMsg:"数据加载中，请稍候......",
+			 loadAfter:function(){
+				 $(".grid-content").uiwidget();
+			 }
 		}) ;
 		
 		var orderGridConfig = {
