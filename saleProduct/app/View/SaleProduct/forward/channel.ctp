@@ -56,7 +56,7 @@
 			           	}},
 			           	{align:"center",key:"P_LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
 			           	{align:"center",key:"P_TITLE",label:"名称",width:"10%",forzen:false,align:"left",format:function(val,record){
-			           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'')+"</a>" ;
+			           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'产品信息页')+"</a>" ;
 			           	}},
 			           	
 			           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
