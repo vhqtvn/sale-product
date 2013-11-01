@@ -118,7 +118,7 @@
 										value="<?php echo $task['END_TIME'];?>"/></td>
 								</tr>
 								<tr>
-									<th>备注：</th><td colspan="3"><textarea id="memo" style="width:300px;height:100px;" data-validator="required"
+									<th>备注：</th><td colspan="3"><textarea id="memo" style="width:300px;height:100px;" 
 										><?php echo $task['MEMO']?></textarea></td>
 								</tr>
 							</table>
