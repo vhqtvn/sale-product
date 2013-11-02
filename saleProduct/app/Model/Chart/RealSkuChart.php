@@ -14,4 +14,11 @@ class RealSkuChart extends AppModel {
 		
 		return array( "categories"=>'','records'=>$records ) ;
 	}
+	
+	public function loadDay( $params ){
+		$sku = $params['sku'] ;
+		$records = $this->exeSqlWithFormat("sql_chart_realSku_quantity_byDay", array('sku'=>$sku)) ;
+	
+		return array( "categories"=>'','records'=>$records ) ;
+	}
 }

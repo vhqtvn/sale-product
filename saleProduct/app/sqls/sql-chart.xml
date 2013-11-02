@@ -36,5 +36,27 @@
 				GROUP BY DATE_FORMAT( so.purchase_date, "%Y-%m" ) , srpr.SKU,saap.ASIN
    </entry>
    
+   <entry key="sql_chart_realSku_quantity_byDay">
+    <![CDATA[
+   		SELECT DAY( so.purchase_date  )   AS P_DATE, srpr.REAL_SKU , SUM(soi.Quantity_Ordered)  AS QUANTITY, 'TOTAL' AS TYPE,'' AS ASIN
+				FROM sc_order_item soi , sc_order so ,sc_real_product_rel srpr
+				WHERE soi.Order_ID = so.ORDER_ID
+				AND srpr.SKU = soi.Seller_SKU
+				AND srpr.REAL_SKU = '{@#sku#}'
+				AND YEAR(so.purchase_date) = '{@#year#}'
+				AND MONTH(so.PURCHASE_DATE) ='{@#month#}'
+				GROUP BY DAY( so.purchase_date  )  , srpr.REAL_SKU
+				UNION		ALL	
+				SELECT DAY( so.purchase_date  )  AS P_DATE, srpr.SKU AS REAL_SKU , SUM(soi.Quantity_Ordered)  AS QUANTITY , 'ITEM' AS TYPE,saap.ASIN
+				FROM sc_order_item soi , sc_order so ,sc_real_product_rel srpr ,sc_amazon_account_product saap
+				WHERE soi.Order_ID = so.ORDER_ID
+				AND srpr.SKU = soi.Seller_SKU
+				AND soi.seller_sku = saap.sku
+				AND srpr.REAL_SKU = '{@#sku#}'
+				AND YEAR(so.purchase_date) = '{@#year#}'
+				AND MONTH(so.PURCHASE_DATE) = '{@#month#}'
+				GROUP BY DAY( so.purchase_date  )  , srpr.SKU,saap.ASIN
+   ]]>	      
+    </entry>
    
 </properties>

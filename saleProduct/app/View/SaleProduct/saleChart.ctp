@@ -17,131 +17,45 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('highcharts/highcharts');
+		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('highcharts/modules/exporting.src');
+		echo $this->Html->script('modules/chart/salechart');
 		
 		$sku = $params['arg1'] ;
+		
+		
 	?>
 		<script type="text/javascript">
-$(function () {
-	var asins = {} ;
-	
-	$.dataservice("model:Chart.RealSkuChart.load",{sku:'<?php echo $sku;?>'},function(result){
-		asins= {} ;
-		//alert(11111111111);
-		//console.log( result ) ;
-		result = result.records ;
-		
-		var categories = [] ;
-		//init category
-		$(result).each(function(){
-			if( this.TYPE == 'TOTAL' ){
-				categories.push(this.P_DATE) ;
-			} 
-		}) ;
-
-		//init series type
-		var seriresName = {} ;
-		$(result).each(function(){
-			if(this.ASIN){
-				asins[this.ASIN] = this.REAL_SKU ;
-				seriresName[this.ASIN+"_"+this.REAL_SKU] = [] ;
-			}else{
-				seriresName[this.REAL_SKU] = [] ;
-			}
-		}) ;
-
-		//init series
-		var seriesData = {} ;
-		for(var realSku in seriresName){
-			var rs =  realSku  ;
-				$(categories).each(function(index , pDate){
-						var hasData = false ;
-						$(result).each(function(){
-							if( this.TYPE == 'TOTAL' ){
-								if( this.REAL_SKU == realSku && this.P_DATE == pDate ){
-									hasData = true ;
-									seriresName[rs].push( parseInt(this.QUANTITY) ) ;
-								}
-							}else{
-								if( this.ASIN+"_"+this.REAL_SKU == realSku && this.P_DATE == pDate ){
-									hasData = true ;
-									seriresName[rs].push( parseInt(this.QUANTITY) ) ;
-								}
-							}
-						}) ;
-						if(!hasData){
-							seriresName[rs].push( 0) ;
-					   }
-						
-					}) ;
-		}
-
-		//format series
-		var series = [] ;
-		for(var o in seriresName){
-			series.push({name:o,data:seriresName[o]}) ;
-			}
-
-		$('#container').highcharts({
-            chart: {
-                type: 'line'
-                	//type: 'column'
-            },
-            title: {
-                text: '<?php echo $sku;?>-销量统计图'
-            },
-            subtitle: {
-                text: ''
-            },
-            credits: {
-           	 	enabled: false
-            },
-            xAxis: {
-                categories: categories
-            },
-            yAxis: {
-                min:0,
-                title: {
-                    text: '销量（Sales）'
-                }
-            },
-            tooltip: {
-                enabled: false,
-                formatter: function() {
-                    return '<b>'+ this.series.name +'</b><br/>'+
-                        this.x +': '+ this.y +'°C';
-                }
-            },
-            plotOptions: {
-                line: {
-                    dataLabels: {
-                        enabled: true
-                    },
-                    enableMouseTracking: false
-                }
-            },
-            series:series
-        });
-
-        //渲染竞争信息链接
-		//[offer-listing]
-		for(var asin in asins){
-			$(".offer-container").append("<li style='float:left;margin:2px 5px;' class='alert alert-info'><a offer-listing='"+asin+"'>"+asins[asin]+"("+asin+")"+"</a></li>") ;
-		}
-	}) ;
-    });
-    
-
+			var sku = '<?php echo $sku;?>' ;
 		</script>
 	</head>
 	<body>
+			<div>
+				<input type="radio"  value="1"  name="type" checked/>日销量统计图
+				<input type="radio"  value="2"  name="type"  />月销量统计图
+			</div>
 
-
-			<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
-			<ul class="offer-container" style="list-style: none;text-align:right;">
+			<div  class="day-container">
+				<div class="toolbar toolbar-auto query-bar">
+					<table style="width:100%;" class="query-table">	
+						<tr>
+							<th>选择月份:</th>
+							<td>
+								<input  type="text" class="Wdate  daychart-month"  value="<?php echo $showtime=date("Y-m");?>" onclick="WdatePicker({dateFmt:'yyyy-MM',minDate:'2000-1',maxDate:'<?php echo $showtime=date("Y-m");?>'})" readonly="readonly" />
+							</td>
+							<td>
+								<button class="btn  reload-daychart">确定</button>
+							</td>
+						</tr>						
+					</table>
+				</div>
+				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
+			</div>
 			
-			</ul>
-			<div style="clear:both;"></div>
-			
+			<div  class="month-container">
+				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
+			</div>
 	</body>
 </html>
