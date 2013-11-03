@@ -67,7 +67,10 @@
 								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
 								and sku is not null and account_id = '#accountId#'
 					)}
-					
+					{@ and sc_amazon_account_product.asin  in (
+							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'listingTag'
+						and ste.tag_id = '#tagId#'
+					)
 		            order by cast(sc_amazon_account_product.DAY_PAGEVIEWS as signed) desc
 	]]>	      
     </entry>

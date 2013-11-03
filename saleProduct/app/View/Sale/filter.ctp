@@ -18,6 +18,10 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('modules/sale/filter');
+		
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
+		
 		$security  = ClassRegistry::init("Security") ;
 		
 		$user = $this->Session->read("product.sale.user") ;
@@ -35,6 +39,12 @@
 	var $PDT_UPDATE = <?php echo $PDT_UPDATE?'true':'false' ;?> ;
 	var $COST_VIEW_PROFIT  = <?php echo $COST_VIEW_PROFIT?'true':'false' ;?> ;
 	var $loginId = '<?php echo $loginId;?>' ;
+
+	   $(function(){
+		   DynTag.listByType("productDevTag",function(entityType,tagId){
+		    	 $(".grid-content-details").llygrid("reload",{tagId:tagId},true) ;
+			}) ;
+		}) ;
    </script>
 
 

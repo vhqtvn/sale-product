@@ -9,6 +9,9 @@
    		include_once ('config/config.php');
   		include_once ('config/header.php');
 		echo $this->Html->script('modules/account/product_lists');
+
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
 		
 		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
@@ -18,6 +21,11 @@
 
    var accountId = '<?php echo $accountId ;?>' ;
    var currentAccountId = accountId ;
+   $(function(){
+	   DynTag.listByType("listingTag",function(entityType,tagId){
+	    	 $(".grid-content").llygrid("reload",{tagId:tagId},true) ;
+		}) ;
+	}) ;
    </script>
    
    <style style="text/css">

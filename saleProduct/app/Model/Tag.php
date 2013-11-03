@@ -3,28 +3,29 @@
 class Tag extends AppModel {
 	var $useTable = "sc_election_rule" ;
 	
+	function addTagDetails($params){
+		$id = $this->create_guid() ;
+		$params['id'] = $id ;
+		
+		$this->exeSql("sql_insert_tag_details", $params) ;
+		
+		$tagEntity = $this->getObject("select ste.*  FROM   sc_tag_entity ste
+				WHERE  ste.id = '{@#tagEntityId#}'", $params) ;
+		
+		$params['tagId'] = $tagEntity['TAG_ID'] ;
+		$params['entityType'] = $tagEntity['ENTITY_TYPE'] ;
+		$params['entityId'] = $tagEntity['ENTITY_ID'] ;
+		$params['creator'] = $tagEntity['CREATOR'] ;
+		$params['createDate'] = $tagEntity['CREATE_DATE'] ;
+		$params['action'] = "备注" ;
+		
+		$this->tagActionLog($params) ;
+	}
+	
 	function addTag($params){
 		$id = $this->create_guid() ;
-		$sql = "
-					INSERT INTO sc_tag_entity 
-						(ID, 
-						TAG_ID, 
-						ENTITY_TYPE, 
-						ENTITY_ID, 
-						CREATOR, 
-						CREATE_DATE, 
-						MEMO
-						)
-						VALUES
-						('$id', 
-						'{@#tagId#}', 
-						'{@#entityType#}', 
-						'{@#entityId#}', 
-						'{@#loginId#}', 
-						NOW(), 
-						'{@#memo#}'
-						)" ;
-		$this->exeSql($sql, $params) ;
+		$params['id'] = $id ;
+		$this->exeSql("sql_insert_tag", $params) ;
 		$params['action'] = "添加" ;
 		$params['creator'] = $params['loginId'] ;
 		$params['createDate'] =date("Y-m-d H:i:s") ;
@@ -85,20 +86,17 @@ class Tag extends AppModel {
 	}
 	
 	function listByEntity($params){
-		return $this->exeSqlWithFormat("select st.*,
-				(select memo from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
-                    and ste.entity_id =  '{@#entityId#}' 
-				) as MEMO,
-				(select id from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
-                    and ste.entity_id =  '{@#entityId#}' 
-				) as TAG_ENTITY_ID,
-				(select count(*) from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
-                    and ste.entity_id =  '{@#entityId#}' 
-				) as COUNT
-				from sc_tag st,sc_tag_type stt
-				where st.type_id = stt.id and  stt.code = '{@#entityType#}'", $params) ;
-
-	
+		$entitys = $this->exeSqlWithFormat("sql_tag_listbyEntity", $params) ;
+		$result = array() ;
+		foreach( $entitys as $entity ){ //获取访问日志
+			$tagEntityId = $entity['TAG_ENTITY_ID'] ;
+			if( !empty($tagEntityId) ){
+				$memos = $this->exeSqlWithFormat("sql_tag_listMemosbyEntity", array('tagEntityId'=>$tagEntityId)) ;
+				$entity['MEMOS'] = $memos ;
+			}
+			$result[] = $entity ;
+		}
+		return $result ;
 	}
 
 

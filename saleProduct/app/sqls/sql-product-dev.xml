@@ -475,6 +475,11 @@ WHERE  spfd.task_id = spf.id
                             and ( spc.purchase_charger is null or spc.purchase_charger = '' )
      	)
      }
+     {@ and concat(spfd.task_id,'$$',spfd.asin)  in (
+							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
+						and ste.tag_id = '#tagId#'
+			)
+	  }
    </entry>
    
    <entry key="sql_pdev_discard_list">

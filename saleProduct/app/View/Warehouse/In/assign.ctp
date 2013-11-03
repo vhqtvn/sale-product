@@ -21,6 +21,9 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('modules/warehouse/in/assign');
+
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
 		
 		
 		$realProductId = $params['arg1'] ;
@@ -139,6 +142,11 @@
 		}
 	</style>
 </head>
+<script>
+	$(function(){
+		DynTag.listByEntity("productTag",'<?php echo $realProductId;?>') ;
+	}) ;
+</script>
 <body>
 	<div class="box row-fluid">
 			<div class="box-content span8" style="width:96%;">

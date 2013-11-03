@@ -43,11 +43,18 @@ var DynTag = {
 		loadListByEntity :function(entityType,entityId){
 			$(".tag-list-container ul").empty() ;
 			$.dataservice("model:Tag.listByEntity",{entityType:entityType,entityId:entityId},function(result){
+				//alert( $.json.encode(result) ) ;
 				$(result).each(function(){
 					var tag = $("<li  tagId='"+this.ID+"'  tagEntityId='"+this.TAG_ENTITY_ID+"'>"+this.NAME +"</li>").appendTo(".tag-list-container ul") ;
 					if(parseInt(this.COUNT)){
-						tag.append("<a class='delete'>删除</a>") ;//<a>备注</a>
-						tag.append("<div>"+this.MEMO+"</div>") ;
+						var memos = ["<div  class='memo-item'>"+this.MEMO+"<span>"+this.CREATOR_NAME+"|"+this.CREATE_DATE+"</span></div>"] ;
+						$(this.MEMOS||[]).each(function(){
+							memos.push("<div class='memo-item'>"+this.MEMO+"<span>"+this.CREATOR_NAME+"|"+this.CREATE_DATE+"</span></div>") ;
+						}) ;
+						
+						tag.append("<a class='delete'>删除</a><a class='add'>备注</a>") ;//<a>备注</a>
+						tag.append("<div class='memo-c'>"+memos.join("")+"</div>") ;
+						tag.append("<div class='add-container' style='display:none;'><textarea style='width:90%;height:50px;'></textarea><button class='btn save-memo'>保存</button></div>") ;
 					}else{
 						tag.append("<a  class='add'>添加</a>") ;
 						tag.append("<div class='add-container' style='display:none;'><textarea style='width:90%;height:50px;'></textarea><button class='btn save'>保存</button></div>") ;
@@ -66,6 +73,14 @@ var DynTag = {
 					var tagId = $(this).closest("li").attr("tagId") ;
 					var memo = $(this).prev().val() ;
 					$.dataservice("model:Tag.addTag",{entityType:entityType,tagId:tagId,entityId:entityId,memo:memo},function(result){
+						DynTag.loadListByEntity(entityType,entityId) ;
+					});
+				}) ;
+				
+				$(".tag-list-container ul li .save-memo").click(function(){
+					var tagEntityId = $(this).closest("li").attr("tagEntityId") ;
+					var memo = $(this).prev().val() ;
+					$.dataservice("model:Tag.addTagDetails",{tagEntityId:tagEntityId,memo:memo},function(result){
 						DynTag.loadListByEntity(entityType,entityId) ;
 					});
 				}) ;

@@ -16,4 +16,73 @@
     	order by stl.no desc
     </entry>
     
+    <entry key="sql_insert_tag">
+    	INSERT INTO sc_tag_entity 
+						(ID, 
+						TAG_ID, 
+						ENTITY_TYPE, 
+						ENTITY_ID, 
+						CREATOR, 
+						CREATE_DATE, 
+						MEMO
+						)
+						VALUES
+						('{@#id#}', 
+						'{@#tagId#}', 
+						'{@#entityType#}', 
+						'{@#entityId#}', 
+						'{@#loginId#}', 
+						NOW(), 
+						'{@#memo#}'
+						)
+    </entry>
+    
+    <entry key="sql_insert_tag_details">
+		INSERT INTO  sc_tag_entity_details 
+			(ID, 
+			TAG_ENTITY_ID, 
+			MEMO, 
+			CREATOR, 
+			CREATE_DATE
+			)
+			VALUES
+			('{@#id#}', 
+			'{@#tagEntityId#}', 
+			'{@#memo#}', 
+			'{@#loginId#}', 
+			NOW()
+			)
+    </entry>
+    
+     <entry key="sql_tag_listbyEntity">
+    select st.*,
+				(select memo from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+                    and ste.entity_id =  '{@#entityId#}' 
+				) as MEMO,
+				(select id from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+                    and ste.entity_id =  '{@#entityId#}' 
+				) as TAG_ENTITY_ID,
+				(select count(*) from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+                    and ste.entity_id =  '{@#entityId#}' 
+				) as COUNT,
+				(select CREATE_DATE from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+                    and ste.entity_id =  '{@#entityId#}' 
+				) as CREATE_DATE,
+				 (select s.name from sc_tag_entity ste , sc_user s where
+				 s.login_id = ste.creator and
+				  ste.entity_type = stt.code and ste.tag_id = st.id
+                    and ste.entity_id =  '{@#entityId#}' 
+				) as CREATOR_NAME
+				from sc_tag st,sc_tag_type stt
+				where st.type_id = stt.id and  stt.code = '{@#entityType#}'
+    </entry>
+    
+    <entry key="sql_tag_listMemosbyEntity">
+    select s.*,
+    (select name from sc_user where login_id = s.creator) as CREATOR_NAME
+     from sc_tag_entity_details s
+    where s.tag_entity_id = '{@#tagEntityId#}'
+    </entry>
+    
+    
 </properties>

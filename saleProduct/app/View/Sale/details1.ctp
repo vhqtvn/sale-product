@@ -26,6 +26,10 @@
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('grid/jquery.llygrid');
 		
+
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
+		
 		//$this->set('details', $details);
 		//$this->set('images', $images);
 		//$this->set('competitions', $competitions);
@@ -194,6 +198,12 @@ html{-webkit-text-size-adjust: none;}
    			margin:0px 5px;
    		}
  </style>
+ 
+ <script>
+	$(function(){
+		DynTag.listByEntity("productDevTag",'<?php echo $taskId.'$$'.$asin;?>') ;
+	}) ;
+</script>
  
  <script>
  var costColumns = [] ;
