@@ -19,6 +19,11 @@
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('modules/sale/strategyConfigForListing');
 		
+
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
+		
+		
 		//sql_account_product_list
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$accountProduct = $SqlUtils->getObject("sql_account_product_list",array("accountId"=>$params['arg1'],"sku"=>$params['arg2'])) ;
@@ -33,6 +38,12 @@
 	var sku = '<?php echo $params['arg2'] ;?>' ;
 	var configs = <?php echo $result ;?> ;
 	</script>
+	
+	<script>
+	$(function(){
+		DynTag.listByEntity("listingTag",accountId+"$$"+sku+"$$"+'<?php echo $accountProduct['ASIN']?>','<?php echo $accountProduct['REAL_ID']?>' ) ;
+	}) ;
+</script>
 	
 	<style type="text/css">
 

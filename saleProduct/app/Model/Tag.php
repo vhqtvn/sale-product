@@ -79,13 +79,24 @@ class Tag extends AppModel {
 	}
 	
 	function listByType($params){
+		$ss = "stt.code " ;
+		if( isset($params['subEntityType']) ){
+			$ss = "=concat(stt.code,'".$params['subEntityType']."') " ; ;
+		}else{
+			$ss = " like concat(stt.code,'%')" ;
+		}
+		
 		return $this->exeSqlWithFormat("select st.*,
-				(select count(*) from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id ) as COUNT
+				(select count(*) from sc_tag_entity ste where ste.entity_type  $ss   and ste.tag_id = st.id ) as COUNT
 				from sc_tag st,sc_tag_type stt
 				where st.type_id = stt.id and  stt.code = '{@#entityType#}'", $params) ;
 	}
 	
 	function listByEntity($params){
+		if(!isset($params['subEntityType'])){
+			$params['subEntityType'] = "" ;
+		}
+		
 		$entitys = $this->exeSqlWithFormat("sql_tag_listbyEntity", $params) ;
 		$result = array() ;
 		foreach( $entitys as $entity ){ //获取访问日志

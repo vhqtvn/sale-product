@@ -1,5 +1,10 @@
 var DynTag = {
 		listByType : function(entityType,callback){
+			var params = {entityType:entityType} ;
+			if( typeof entityType != 'string' ){
+				params = entityType ;
+			}
+			
 			var img =   getImage('tabs.gif','标签','tag-list ') ;
 			$(document.body).append("<div class='tag-list-container'>"+img+"<ul></ul></div>") ;
 			
@@ -16,13 +21,13 @@ var DynTag = {
 				callback&& callback(entityType,tagId) ;
 			}) ;
 			
-			$.dataservice("model:Tag.listByType",{entityType:entityType},function(result){
+			$.dataservice("model:Tag.listByType",params,function(result){
 				$(result).each(function(){
 					$(".tag-list-container ul").append("<li  tagId='"+this.ID+"'>"+this.NAME+"("+this.COUNT+")</li>") ;
 				}) ;
 			});
 		},
-		listByEntity : function(entityType , entityId){
+		listByEntity : function(entityType , entityId,subEntityType){
 			var img =   getImage('tabs.gif','标签','tag-list ') ;
 			$(document.body).append("<div class='tag-list-container'>"+img+"<ul></ul><div class='log'></div>") ;
 			$(".tag-list-container>img").toggle(function(){
@@ -38,11 +43,11 @@ var DynTag = {
 				//callback&& callback(entityType,tagId) ;
 			}) ;
 			
-			DynTag.loadListByEntity(entityType,entityId) ;
+			DynTag.loadListByEntity(entityType,entityId,subEntityType) ;
 		},
-		loadListByEntity :function(entityType,entityId){
+		loadListByEntity :function(entityType,entityId,subEntityType){
 			$(".tag-list-container ul").empty() ;
-			$.dataservice("model:Tag.listByEntity",{entityType:entityType,entityId:entityId},function(result){
+			$.dataservice("model:Tag.listByEntity",{entityType:entityType,entityId:entityId,subEntityType:subEntityType||""},function(result){
 				//alert( $.json.encode(result) ) ;
 				$(result).each(function(){
 					var tag = $("<li  tagId='"+this.ID+"'  tagEntityId='"+this.TAG_ENTITY_ID+"'>"+this.NAME +"</li>").appendTo(".tag-list-container ul") ;
@@ -52,7 +57,7 @@ var DynTag = {
 							memos.push("<div class='memo-item'>"+this.MEMO+"<span>"+this.CREATOR_NAME+"|"+this.CREATE_DATE+"</span></div>") ;
 						}) ;
 						
-						tag.append("<a class='delete'>删除</a><a class='add'>备注</a>") ;//<a>备注</a>
+						tag.append("<a class='delete1'>删除</a><a class='add'>备注</a>") ;//<a>备注</a>
 						tag.append("<div class='memo-c'>"+memos.join("")+"</div>") ;
 						tag.append("<div class='add-container' style='display:none;'><textarea style='width:90%;height:50px;'></textarea><button class='btn save-memo'>保存</button></div>") ;
 					}else{
@@ -72,8 +77,8 @@ var DynTag = {
 				$(".tag-list-container ul li .save").click(function(){
 					var tagId = $(this).closest("li").attr("tagId") ;
 					var memo = $(this).prev().val() ;
-					$.dataservice("model:Tag.addTag",{entityType:entityType,tagId:tagId,entityId:entityId,memo:memo},function(result){
-						DynTag.loadListByEntity(entityType,entityId) ;
+					$.dataservice("model:Tag.addTag",{entityType:entityType,tagId:tagId,subEntityType:subEntityType,entityId:entityId,memo:memo},function(result){
+						DynTag.loadListByEntity(entityType,entityId,subEntityType) ;
 					});
 				}) ;
 				
@@ -81,16 +86,16 @@ var DynTag = {
 					var tagEntityId = $(this).closest("li").attr("tagEntityId") ;
 					var memo = $(this).prev().val() ;
 					$.dataservice("model:Tag.addTagDetails",{tagEntityId:tagEntityId,memo:memo},function(result){
-						DynTag.loadListByEntity(entityType,entityId) ;
+						DynTag.loadListByEntity(entityType,entityId,subEntityType) ;
 					});
 				}) ;
 				
-				$(".tag-list-container ul li .delete").click(function(){
+				$(".tag-list-container ul li .delete1").click(function(){
 					var tagEntityId = $(this).closest("li").attr("tagEntityId") ;
 					if(window.confirm("确认删除？")){
 						//var memo = $(this).prev().val() ;
 						$.dataservice("model:Tag.deleteTag",{tagEntityId:tagEntityId},function(result){
-							DynTag.loadListByEntity(entityType,entityId) ;
+							DynTag.loadListByEntity(entityType,entityId,subEntityType) ;
 						});
 					}
 				}) ;

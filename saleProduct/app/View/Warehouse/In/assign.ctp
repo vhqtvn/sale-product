@@ -144,7 +144,11 @@
 </head>
 <script>
 	$(function(){
-		DynTag.listByEntity("productTag",'<?php echo $realProductId;?>') ;
+		//DynTag.listByEntity("productTag",'<?php echo $realProductId;?>') ;
+
+		DynTag.listByType({entityType:'listingTag',subEntityType:'<?php echo $realProductId;?>'},function(entityType,tagId){
+	    	 $(".grid-content").llygrid("reload",{tagId:tagId},true) ;
+		}) ;
 	}) ;
 </script>
 <body>

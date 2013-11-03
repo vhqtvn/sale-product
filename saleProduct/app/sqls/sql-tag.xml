@@ -29,7 +29,7 @@
 						VALUES
 						('{@#id#}', 
 						'{@#tagId#}', 
-						'{@#entityType#}', 
+						'{@#entityType##subEntityType#}', 
 						'{@#entityId#}', 
 						'{@#loginId#}', 
 						NOW(), 
@@ -55,22 +55,22 @@
     </entry>
     
      <entry key="sql_tag_listbyEntity">
-    select st.*,
-				(select memo from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+    		select st.*,
+				(select memo from sc_tag_entity ste where ste.entity_type = concat( stt.code,'{@#subEntityType#}') and ste.tag_id = st.id
                     and ste.entity_id =  '{@#entityId#}' 
 				) as MEMO,
-				(select id from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+				(select id from sc_tag_entity ste where ste.entity_type =  concat( stt.code,'{@#subEntityType#}') and ste.tag_id = st.id
                     and ste.entity_id =  '{@#entityId#}' 
 				) as TAG_ENTITY_ID,
-				(select count(*) from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+				(select count(*) from sc_tag_entity ste where ste.entity_type =  concat( stt.code,'{@#subEntityType#}') and ste.tag_id = st.id
                     and ste.entity_id =  '{@#entityId#}' 
 				) as COUNT,
-				(select CREATE_DATE from sc_tag_entity ste where ste.entity_type = stt.code and ste.tag_id = st.id
+				(select CREATE_DATE from sc_tag_entity ste where ste.entity_type =  concat( stt.code,'{@#subEntityType#}') and ste.tag_id = st.id
                     and ste.entity_id =  '{@#entityId#}' 
 				) as CREATE_DATE,
 				 (select s.name from sc_tag_entity ste , sc_user s where
 				 s.login_id = ste.creator and
-				  ste.entity_type = stt.code and ste.tag_id = st.id
+				  ste.entity_type = concat( stt.code,'{@#subEntityType#}')  and ste.tag_id = st.id
                     and ste.entity_id =  '{@#entityId#}' 
 				) as CREATOR_NAME
 				from sc_tag st,sc_tag_type stt

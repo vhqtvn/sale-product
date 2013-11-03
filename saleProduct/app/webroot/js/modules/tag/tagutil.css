@@ -50,6 +50,10 @@ html,body{-webkit-text-size-adjust:none;}
 	padding-left:5px;
 }
 
+.tag-list-container >ul  li a.delete1{
+	position:relative;
+}
+
 .tag-list-container >ul li:hover{
 	background:#EEE;
 }

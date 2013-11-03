@@ -310,6 +310,11 @@
 					)}
 					and sc_real_product_rel.sku is not null
 					and sc_real_product_rel.sku != ''
+					{@ and   concat(sc_real_product_rel.account_id ,'$$', sc_amazon_account_product.sku ,'$$', sc_amazon_account_product.asin) in (
+										select ste.entity_id  from sc_tag_entity ste where ste.entity_type = concat('listingTag',sc_real_product_rel.real_id)
+									and ste.tag_id = '#tagId#'
+						)
+				 }
 					
 		) t  order by t.CHANNEL_NAME , t.ASIN
 	]]>	      
