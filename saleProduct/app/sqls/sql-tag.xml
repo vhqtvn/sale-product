@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_tag_list">
+    	select * from sc_tag where type_id = '{@#typeId#}'
+    </entry>
+    
+     <entry key="sql_tag_log">
+    	select stl.*,st.name as TAG_NAME,
+    	(select name from sc_user where login_id = stl.creator) as CREATOR_NAME,
+    	(select name from sc_user where login_id = stl.logor) as LOGOR_NAME
+    	 from sc_tag_log stl , sc_tag st
+    	where 
+    	st.id = stl.tag_id and
+    	stl.entity_id = '{@#entityId#}'
+    	and stl.entity_type = '{@#entityType#}'
+    	order by stl.no desc
+    </entry>
+    
+</properties>

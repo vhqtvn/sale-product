@@ -127,6 +127,11 @@
 						and 1= #uncategory#
 			)
 			}
+			{@ and id  in (
+							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productTag'
+						and ste.tag_id = '#tagId#'
+			)
+			}
    </entry>
    
    <entry key="sql_saleproduct_insert">

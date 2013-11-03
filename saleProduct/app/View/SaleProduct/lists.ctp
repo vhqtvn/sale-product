@@ -25,6 +25,8 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
 		echo $this->Html->script('modules/saleproduct/list');
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('layout/jquery.layout');
@@ -63,23 +65,7 @@
 		$view_giveup_product = <?php echo $view_giveup_product?'true':'false';?> ;
 		$product_stock_quanity_assign = <?php echo $product_stock_quanity_assign?'true':'false';?> ;
 		$product_onsale = <?php echo $product_onsale?'true':'false';?> ;
-	
-	    var treeData = {id:"root",text:"产品分类",isExpand:true,childNodes:[]} ;
-	    var treeMap  = {} ;
-	
-	    <?php
-	    $Utils  = ClassRegistry::init("Utils") ;
-	    
-	    $Utils->echoTreeScript( $categorys ,null, function( $sfs, $index ,$ss ){
-	    	$id   = $sfs['ID'] ;
-	    	$name = $sfs['NAME']."(".$sfs['TOTAL'].")" ;
-	    	$pid  = $sfs['PARENT_ID'] ;
-	    	echo " var item$index = {id:'$id',text:'$name',isExpand:true} ;" ;
-	    } ) ;
-	    
-	    $SqlUtils  = ClassRegistry::init("SqlUtils") ;
-	    
-		?>
+
 		
 		$(function(){
 			$('#default-tree').tree({//tree为容器ID
@@ -119,6 +105,10 @@
 					}
 				}
 	       }) ;
+
+		     DynTag.listByType("productTag",function(entityType,tagId){
+		    	 $(".grid-content").llygrid("reload",{tagId:tagId},true) ;
+			}) ;
 		});
    </script>
    

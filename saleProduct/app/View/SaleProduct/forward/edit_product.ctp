@@ -10,7 +10,10 @@
   		include_once ('config/config.php');
   		include_once ('config/header.php');
   		echo $this->Html->script('modules/saleproduct/edit_product');
-   
+
+  		echo $this->Html->css('../js/modules/tag/tagutil');
+  		echo $this->Html->script('modules/tag/tagutil');
+  		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		$groups = $SqlUtils->exeSql("sql_package_group_list",array() ) ;
@@ -59,6 +62,12 @@
 	</style>
 
 </head>
+
+<script>
+	$(function(){
+		DynTag.listByEntity("productTag",'<?php echo $entityId;?>') ;
+	}) ;
+</script>
 
 <body class="container-popup">
 	<!-- apply 主场景 -->

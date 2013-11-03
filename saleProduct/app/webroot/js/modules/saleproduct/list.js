@@ -3,9 +3,9 @@
 				var record = $(this).parents("tr:first").data("record")||{} ;
 				var id = record.ID;
 				if( $(this).hasClass("view") ){
-					openCenterWindow(contextPath+"/saleProduct/details/"+record.REAL_SKU+"/sku",900,650) ;
+					openCenterWindow(contextPath+"/saleProduct/details/"+record.REAL_SKU+"/sku",1000,650) ;
 				}else if( $(this).hasClass("update") ){
-					openCenterWindow(contextPath+"/saleProduct/details/"+id,900,650,function(){
+					openCenterWindow(contextPath+"/saleProduct/details/"+id,1000,650,function(){
 						$(".grid-content").llygrid("reload",{},true) ;
 					}) ;
 				}else if( $(this).hasClass("giveup") ){
