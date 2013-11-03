@@ -19,6 +19,10 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
+		
+		
 		$user = $this->Session->read("product.sale.user") ;
 		$group=  $user["GROUP_CODE"] ;
 		$username = $user["NAME"] ;
@@ -142,6 +146,12 @@
 		background:pink;
  	}
  </style>
+ 
+ <script>
+	$(function(){
+		DynTag.listByEntity("listingTag",'<?php echo $asin;?>') ;
+	}) ;
+</script>
  
  <script>
  	var asin = '<?php echo $asin;?>' ;
