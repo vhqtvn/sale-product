@@ -41,7 +41,7 @@
 	
 	<script>
 	$(function(){
-		DynTag.listByEntity("listingTag",accountId+"$$"+sku+"$$"+'<?php echo $accountProduct['ASIN']?>','<?php echo $accountProduct['REAL_ID']?>' ) ;
+		//DynTag.listByEntity("listingTag",accountId+"$$"+sku+"$$"+'<?php echo $accountProduct['ASIN']?>','<?php echo $accountProduct['REAL_ID']?>' ) ;
 	}) ;
 </script>
 	

@@ -65,11 +65,12 @@
 							return html.join("") ;
 						}},
 						
-						{align:"center",key:"ID",label:"操作",width:"6%",format:function(val,record){
+						{align:"center",key:"ID",label:"操作",width:"8%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
 							html.push('<a href="#" class="sale-strategy" val="'+val+'">'+getImage("example.gif","价格调整")+'</a>&nbsp;') ;
 							html.push('<a href="#" class="category-set" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
+							html.push('<a href="#" class="list-entity-tag" val="'+val+'">'+getImage("tabs.gif","显示标签")+'</a>&nbsp;') ;
 							return html.join("") ;
 						}},
 						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
@@ -150,6 +151,17 @@
 				var record = $(this).parents("tr:first").data("record");
 				openCenterWindow(contextPath+"/page/forward/Sale.strategy.strategyConfigForListing/"+record.ACCOUNT_ID+"/"+record.SKU+"/"+record.ID ,1100,650) ;
 			}) ;
+			
+			$(".list-entity-tag").live("click",function(){
+				var record = $(this).parents("tr:first").data("record");
+				var record = $(this).parents("tr:first").data("record");
+				var entityType = "listingTag" ;
+				var entityId = record.ACCOUNT_ID+"$$"+record.SKU+"$$"+record.ASIN ;
+				var subEntityType = record.REAL_ID ;
+				DynTag.openTagByEntity(entityType,entityId,subEntityType) ;
+			}) ;
+			
+			
 			
 			$(".category-set").live("click",function(){
 				var record = $(this).parents("tr:first").data("record");

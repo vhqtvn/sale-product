@@ -21,7 +21,9 @@
 		echo $this->Html->script('grid/query');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
-		
+
+		echo $this->Html->css('../js/modules/tag/tagutil');
+		echo $this->Html->script('modules/tag/tagutil');
 		$security  = ClassRegistry::init("Security") ;
 		$user = $this->Session->read("product.sale.user") ;
 		$loginId = $user["LOGIN_ID"] ;
@@ -61,6 +63,12 @@
 		} ) ;
   	})
   </script>
+  
+<script>
+	$(function(){
+		DynTag.listByEntity("productTag",'<?php echo $id;?>') ;
+	}) ;
+</script>
   
   <style type="text/css">
 .WdateDiv, .ui-corner-all {

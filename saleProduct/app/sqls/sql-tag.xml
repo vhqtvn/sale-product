@@ -29,7 +29,7 @@
 						VALUES
 						('{@#id#}', 
 						'{@#tagId#}', 
-						'{@#entityType##subEntityType#}', 
+						'{@#entityType#}{@#subEntityType#}', 
 						'{@#entityId#}', 
 						'{@#loginId#}', 
 						NOW(), 

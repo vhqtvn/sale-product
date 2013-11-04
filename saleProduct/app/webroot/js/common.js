@@ -1168,6 +1168,13 @@ $("td[key='ORDER_ID']").live("click",function(){
 	openCenterWindow(contextPath+"/page/forward/Norder.details/"+orderId,800,600) ;
 }) ;
 
+$(".link-open").live("click",function(){
+	var href = $(this).attr("href") ;
+	openCenterWindow(href,1100,670) ;
+	return false ;
+}) ;
+
+
 $(function(){
 	setTimeout(function(){
 			$(".query-container,.toolbar-auto").find(":input").keyup(function(e){

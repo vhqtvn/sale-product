@@ -20,10 +20,13 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('tab/jquery.ui.tabs');
-		echo $this->Html->script('modules/warehouse/in/assign');
+		
 
 		echo $this->Html->css('../js/modules/tag/tagutil');
 		echo $this->Html->script('modules/tag/tagutil');
+		
+		echo $this->Html->script('modules/warehouse/in/assign');
+
 		
 		
 		$realProductId = $params['arg1'] ;

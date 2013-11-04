@@ -105,5 +105,10 @@ var DynTag = {
 					}) ;
 				}) ;
 			});
+		},
+		openTagByEntity:function(entityType,entityId,subEntityType){
+			openCenterWindow(contextPath+"/page/forward/Tag.openTagEntity/"+entityType+"/"+entityId+"/"+subEntityType,400,600,function(){
+		});
 		}
+	
 }

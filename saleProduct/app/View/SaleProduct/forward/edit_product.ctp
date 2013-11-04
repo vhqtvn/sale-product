@@ -65,7 +65,7 @@
 
 <script>
 	$(function(){
-		DynTag.listByEntity("productTag",'<?php echo $entityId;?>') ;
+		//DynTag.listByEntity("productTag",'<?php echo $entityId;?>') ;
 	}) ;
 </script>
 

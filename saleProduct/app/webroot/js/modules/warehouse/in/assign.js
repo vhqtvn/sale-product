@@ -1,12 +1,23 @@
 var currentId = '' ;
 
 $(function(){
+	//DynTag.listByEntity("listingTag",accountId+"$$"+sku+"$$"+'<?php echo $accountProduct['ASIN']?>','<?php echo $accountProduct['REAL_ID']?>' ) ;
+	$(".listing-tag-list").live("click",function(){
+		var record = $(this).parents("tr:first").data("record");
+		var entityType = "listingTag" ;
+		var entityId = record.ACCOUNT_ID+"$$"+record.SKU+"$$"+record.ASIN ;
+		var subEntityType = realProductId ;
+		DynTag.openTagByEntity(entityType,entityId,subEntityType) ;
+	}) ;
+	
 	var gridConfig = {
 			columns:[
 				{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"10%"},
 				{align:"left",key:"SKU",label:"SKU",width:"15%",format:function(val,record){
 					var html = [] ;
+					var img =   getImage('tabs.gif','Listing标签','listing-tag-list ') ;
 					html.push('<a href="#" class="sale-strategy" val="'+val+'">'+val+'</a>&nbsp;') ;
+					html.push(img) ;
 					return html.join("") ;
 					//return val||record.REL_SKU ;
 				}},
@@ -15,7 +26,7 @@ $(function(){
 	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 	           	}},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
-	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'产品列表')+"</a>" ;
+	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' class='link-open'>"+(val||'产品列表')+"</a>" ;
 	           	}},
 	           	{align:"center",key:"DAY_PAGEVIEWS",label:"销售报告",width:"7%"},
 	        	{align:"center",key:"DYN_PROFILE",label:"动态利润",width:"8%",format:function(val,record){
