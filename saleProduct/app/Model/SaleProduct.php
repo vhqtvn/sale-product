@@ -277,5 +277,13 @@ class SaleProduct extends AppModel {
 		$this->query($sql) ;
 	}
 	
-	
+	/**
+	 * 获取产品流转状态
+	 */
+	public function getProductStatusBy($query){
+		$warehourceIn = $this->exeSqlWithFormat("sql_getProductWarehouseInStatus", $query) ;
+		$purchase       = $this->exeSqlWithFormat("sql_getProductPurchaseStatus", $query) ;
+		
+		return array("in"=>$warehourceIn ,"purchase"=>$purchase ) ;
+	}
 }

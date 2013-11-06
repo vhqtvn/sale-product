@@ -526,12 +526,12 @@
 					reload(target,{curPage:curPage,limit:limit },true) ;
 				}
 			}) ;
-			renderAfter() ;
+			renderAfter(records) ;
 			$(".lly-grid-2-body",target).scroll() ;
 			setTimeout(function(){loadMask(target,false)},200) ;
 		}
 		
-		function renderAfter(){
+		function renderAfter(records){
 			$(options.columns).each(function(index,col){
 				var _ = null ;
 				if( col.format && col.format.type &&(_ = $.llygrid.format[col.format.type] )&& _.bindEvent ){
@@ -545,7 +545,7 @@
 				}
 			}) ;
 			if(options.loadAfter){
-				options.loadAfter() ;
+				options.loadAfter(records) ;
 			}
 		}
 	}

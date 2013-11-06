@@ -501,5 +501,51 @@
 	       )
 	       and sc_real_product.status = 1
    </entry>
+   
+       <entry key="sql_getProductWarehouseInStatus">
+    <![CDATA[
+       SELECT 
+			  swi.IN_NUMBER,
+			  (SELECT NAME FROM sc_warehouse sw WHERE sw.id = swi.warehouse_id ) AS WAREHOUSE_NAME ,
+			  swbp.QUANTITY,
+			  swi.FLOW_TYPE,
+			  swi.STATUS,
+			  swbp.REAL_PRODUCT_ID as REAL_ID
+			FROM 
+			sc_warehouse_in swi,
+			sc_warehouse_box swb,
+			sc_warehouse_box_product swbp 
+			WHERE swi.status <> 70
+			AND swi.id = swb.in_id
+			AND swb.id = swbp.box_id
+			AND swbp.REAL_PRODUCT_ID in ( {@#realId#} )
+	]]>	      
+    </entry>
+    
+    <entry key="sql_getProductPurchaseStatus">
+    <![CDATA[
+      SELECT 
+			sppd.SKU,
+			sppd.PLAN_NUM,
+			sptp.REAL_NUM,
+			sppd.STATUS AS PLAN_STATUS,
+			sptp.STATUS AS TASK_STATUS,
+			(SELECT NAME FROM sc_purchase_plan spp WHERE spp.ID = sppd.plan_id) AS PLAN_NAME,
+			(SELECT NAME FROM sc_purchase_task spp WHERE spp.ID = sptp.task_id) AS TASK_NAME,
+			srp.ID as REAL_ID
+			FROM 
+			sc_purchase_plan_details sppd 
+			LEFT JOIN sc_real_product srp
+			ON srp.REAL_SKU = sppd.SKU
+			LEFT JOIN sc_purchase_task_products sptp
+			ON sptp.product_id = sppd.id
+			WHERE 
+			( sptp.status <> 80 OR sptp.status IS NULL )
+			AND sppd.status <> 25
+			AND srp.ID in ( {@#realId#} )
+			AND sppd.PLAN_NUM is not null
+			AND sppd.PLAN_NUM <> 0
+	]]>	      
+    </entry>
     
 </properties>

@@ -97,6 +97,9 @@
 				
 						return html.join("") ;
 					}},
+					{align:"center",key:"ID",label:"动态", width:"6%",format:function(val,record){
+						return "<span class='pi-status hide'  realId='"+val+"'  title=''>查看</span>" ;
+					}},
 				 	{align:"center",key:"IMG_URL",label:"图片",width:"5%",format:{type:'img'}},
 				 	{align:"center",key:"IS_ONSALE",label:"销售状态",width:"5%",format:function(val,record){
 				 		if(val == 1){
@@ -157,7 +160,7 @@
 				 indexColumn:false,
 				  querys:{sqlId:"sql_saleproduct_list",status:1,categoryId:''},
 				 loadMsg:"数据加载中，请稍候......",
-				 loadAfter:function(){
+				 loadAfter:function(records){
 					if( $product_onsale ){
 						 $(".onsale-status").css("cursor","pointer").click(function(){
 							 var row =  $(this).parents("tr:first").data("record") ;
@@ -177,7 +180,57 @@
 							 }
 						 }) ;
 					 }
-					}
+					
+					$realIds = [] ;
+					$(records).each(function(){
+						$realIds.push(this.ID) ;
+					}) ;
+					
+					$.dataservice("model:SaleProduct.getProductStatusBy",{realId: $realIds.join(",") },function(result){
+						//alert( $.json.encode(result) ) ;
+						var ins = result['in']||[] ;
+						var purchase = result.purchase||[] ;
+	
+						$(".pi-status").each(function(){
+							var realId = $(this).attr("realId") ;
+							var temp = [] ;
+							$(ins).each(function(){
+								if( this.REAL_ID == realId ){
+									temp.push(this) ;
+								}
+							}) ;
+							
+							$title = "" ;
+							if( temp.length >0 ){
+								$title = "物流信息：<br/>" ;
+							}
+							$(temp).each(function(){
+								$title += this.QUANTITY+"/"+this.WAREHOUSE_NAME+"/"+this.STATUS+"<br/>" ;
+							}) ;
+							
+							temp = [] ;
+							$(purchase).each(function(){
+								if( this.REAL_ID == realId ){
+									temp.push(this) ;
+								}
+							}) ;
+							
+							if( temp.length >0 ){
+								$title = "采购信息：<br/>" ;
+							}
+							
+							$(temp).each(function(){
+								$title += this.PLAN_NUM+"("+this.REAL_NUM+")"+"/"+this.TASK_NAME+"/"+this.TASK_STATUS+"<br/>" ;
+							}) ;
+							
+							if( $title ){
+								$(this).show().popover({title: $title,delay:{hide:500}}) ; 
+							}else{
+								$(this).hide() ;
+							}
+						}) ;
+					});
+				}
 					
 			}) ;
    	 });
