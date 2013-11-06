@@ -9,28 +9,12 @@
 		var deleteHtml = "" ;
 	</script>
    <?php
-  		 include_once ('config/config.php');
-   
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../js/grid/jquery.llygrid');
-		echo $this->Html->css('default/style');
-		echo $this->Html->css('../js/tab/jquery.ui.tabs');
-		echo $this->Html->css('../js/layout/jquery.layout');
-		echo $this->Html->css('../js/tree/jquery.tree');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('jquery-ui');
-		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('grid/query');
+		include_once ('config/config.php');
+  		include_once ('config/header.php');
+  		
 		echo $this->Html->script('modules/saleproduct/list');
 		echo $this->Html->css('../js/modules/tag/tagutil');
 		echo $this->Html->script('modules/tag/tagutil');
-		echo $this->Html->script('calendar/WdatePicker');
-		echo $this->Html->script('tab/jquery.ui.tabs');
-		echo $this->Html->script('layout/jquery.layout');
-		echo $this->Html->script('tree/jquery.tree');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$categorys = $SqlUtils->exeSql("sql_saleproduct_categorytree",array() ) ;
@@ -66,8 +50,8 @@
 		$product_stock_quanity_assign = <?php echo $product_stock_quanity_assign?'true':'false';?> ;
 		$product_onsale = <?php echo $product_onsale?'true':'false';?> ;
 
-		
-		$(function(){
+
+		function loadTree(){
 			$('#default-tree').tree({//tree为容器ID
 				//source:'array',
 				//data:treeData ,
@@ -105,6 +89,9 @@
 					}
 				}
 	       }) ;
+		}
+		$(function(){
+			loadTree() ;
 
 		     DynTag.listByType("productTag",function(entityType,tagId){
 		    	 $(".grid-content").llygrid("reload",{tagId:tagId},true) ;
@@ -177,7 +164,9 @@
 			<div class="grid-content" id="tab-content"></div>
 		</div>
 		<div region="west"  split="true" border="true" title="货品分类" style="width:180px;">
+			<div id="tree-wrap">
 			<div id="default-tree" class="tree" style="padding: 5px; "></div>
+			</div>
 		</div>
    </div>	
 </body>

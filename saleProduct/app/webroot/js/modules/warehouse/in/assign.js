@@ -18,6 +18,7 @@ $(function(){
 					var img =   getImage('tabs.gif','Listing标签','listing-tag-list ') ;
 					html.push('<a href="#" class="sale-strategy" val="'+val+'">'+val+'</a>&nbsp;') ;
 					html.push(img) ;
+					html.push('<a href="#" class="category-set" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
 					return html.join("") ;
 					//return val||record.REL_SKU ;
 				}},
@@ -28,7 +29,6 @@ $(function(){
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
 	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' class='link-open'>"+(val||'产品列表')+"</a>" ;
 	           	}},
-	           	{align:"center",key:"DAY_PAGEVIEWS",label:"销售报告",width:"7%"},
 	        	{align:"center",key:"DYN_PROFILE",label:"动态利润",width:"8%",format:function(val,record){
 	        		var fc = record.FULFILLMENT_CHANNEL ;
 	        		var salePrice = parseFloat(record.PRICE) + parseFloat(record.SHIPPING_PRICE||0) ;
@@ -148,6 +148,51 @@ $(function(){
 			 }
 		} ;
 	$(".grid-content").llygrid(gridConfig) ;
+	
+	$(".category-set").live("click",function(){
+		var record = $(this).parents("tr:first").data("record");
+		var categoryTreeSelect = {
+				title:'产品分类选择页面',
+				//valueField:"#categoryId",
+				//labelField:"#categoryName",
+				key:{value:'ID',label:'NAME'},//对应value和label的key
+				multi:true ,
+				tree:{
+					title:"产品分类选择页面",
+					method : 'post',
+					nodeFormat:function(node){
+						node.complete = false ;
+					},
+					asyn : true, //异步
+					rootId  : 'root',
+					expandLevel:3,
+					rootText : '产品分类',
+					CommandName : 'sqlId:sql_saleproduct_account_categorytree',
+					recordFormat:true,
+					params : {
+						accountId: record.ACCOUNT_ID,
+						sku:record.SKU
+					}
+				}
+		   } ;
+		$.listselectdialog( categoryTreeSelect,function(win,ret){
+
+			if( ret && ret.value ){
+				var categoryId = ret.value.join(",") ;
+				//accountId
+				var SKU = record.SKU ;
+				json = {
+						categoryId:categoryId,
+						sku:SKU,
+						accountId:record.ACCOUNT_ID
+				} ;
+				$.dataservice("model:SaleProduct.saveAccountProductCateogory",json,function(result){
+					
+					//alert(222) ;
+				});
+			}
+		}) ;
+	}) ;
 	
 	$(".sale-strategy").live("click",function(){
 		var record = $(this).parents("tr:first").data("record");

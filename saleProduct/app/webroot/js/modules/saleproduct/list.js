@@ -40,12 +40,57 @@
 				var json = $(".query-table").toJson() ;
 				$(".grid-content").llygrid("reload",json,true) ;
 			}) ;
+			
+			$(".category-set").live("click",function(){
+				var record = $(this).parents("tr:first").data("record");
+				var categoryTreeSelect = {
+						title:'产品分类选择页面',
+						//valueField:"#categoryId",
+						//labelField:"#categoryName",
+						key:{value:'ID',label:'NAME'},//对应value和label的key
+						multi:true ,
+						tree:{
+							title:"产品分类选择页面",
+							method : 'post',
+							nodeFormat:function(node){
+								node.complete = false ;
+							},
+							asyn : true, //异步
+							rootId  : 'root',
+							expandLevel:3,
+							rootText : '产品分类',
+							CommandName : 'sqlId:sql_saleproduct_categorytree',/*sql_saleproduct_account_categorytree*/
+							recordFormat:true,
+							params : {
+								productId:record.ID
+							}
+						}
+				   } ;
+				$.listselectdialog( categoryTreeSelect,function(win,ret){
+					if( ret && ret.value ){
+						var categoryId = ret.value.join(",") ;
+						//保存产品分类
+						var productId = record.ID ;
+						json = {
+								categoryId:categoryId,
+								productId:productId
+						} ;
+						$.dataservice("model:SaleProduct.saveProductCategoryByObj",json,function(result){
+							//刷新树
+							$('#default-tree').remove() ;
+							$("#tree-wrap").append('<div id="default-tree" class="tree" style="padding: 5px; "></div>') ;
+							loadTree( ) ;
+						});
+					}
+				}) ;
+			}) ;
 
 			$(".grid-content").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"操作", width:"6%",format:function(val,record){
+					{align:"center",key:"ID",label:"操作", width:"8%",format:function(val,record){
 						var html = [] ;
 						html.push(  getImage('icon-grid.gif','查看','action view ') +"&nbsp;") ;
+						html.push('<a href="#" class="category-set" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
 							if( $product_edit ){
 								html.push(  getImage('edit.png','编辑','action update ') +"&nbsp;") ;
 							}

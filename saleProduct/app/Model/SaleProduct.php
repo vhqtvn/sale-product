@@ -80,6 +80,12 @@ class SaleProduct extends AppModel {
 		return $result ;
 	}
 	
+	function saveProductCategoryByObj($params){
+		$productId = $params['productId'] ;
+		$categoryId = $params['categoryId'] ;
+		$this->saveProductCategory($productId, $categoryId) ;
+	}
+	
 	function saveProductCategory($productId , $categoryId){
 		if(empty($categoryId)) return ;
 		//删除现有分类
