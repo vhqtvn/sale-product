@@ -50,6 +50,15 @@
 		  and s1.id = '{@#id#}'
    </entry>
    
+   <entry key="sql_warehouse_in_getByInNumber">
+  		SELECT s1.* ,
+		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
+		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME
+		  FROM sc_warehouse_in s1
+		  where 1=1 
+		  and s1.IN_NUMBER = '{@#inNumber#}'
+   </entry>
+   
    <entry key="sql_warehouse_in_update">
 	    UPDATE  sc_warehouse_in 
 		SET 

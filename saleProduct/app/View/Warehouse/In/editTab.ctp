@@ -26,9 +26,15 @@
 		$security  = ClassRegistry::init("Security") ;
 		$loginId   = $user['LOGIN_ID'] ;
 		$inId = $params['arg1'];
+		$type  = $params['arg2'] ;
 		
-		//获取
-		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
+		if( $type == 'inno' ){
+			$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getByInNumber",array("inNumber"=>$inId)) ;
+			$inId = $warehoseIn['ID'] ;
+		}else{
+			//获取
+			$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
+		}
 	?>
 	
 	<script type="text/javascript">

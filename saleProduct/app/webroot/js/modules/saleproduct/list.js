@@ -190,7 +190,7 @@
 						//alert( $.json.encode(result) ) ;
 						var ins = result['in']||[] ;
 						var purchase = result.purchase||[] ;
-	
+
 						$(".pi-status").each(function(){
 							var realId = $(this).attr("realId") ;
 							var temp = [] ;
@@ -202,10 +202,12 @@
 							
 							$title = "" ;
 							if( temp.length >0 ){
-								$title = "物流信息：<br/>" ;
+								$title += "<h4 style='font-size:12px;'>物流信息[数量/仓库/状态]：</h4>" ;
 							}
 							$(temp).each(function(){
-								$title += this.QUANTITY+"/"+this.WAREHOUSE_NAME+"/"+this.STATUS+"<br/>" ;
+								var inNumber = this.IN_NUMBER ;
+								$title += "<div>"+ this.QUANTITY+"&nbsp;/&nbsp;"+(this.WAREHOUSE_NAME||'-')+"&nbsp;/&nbsp;"+(this.STATUS||'-')+
+									"&nbsp;&nbsp;<a href='"+contextPath+"/page/model/Warehouse.In.editTab/"+inNumber+"/inno' target='_blank'>详细</a></div>" ;
 							}) ;
 							
 							temp = [] ;
@@ -216,15 +218,41 @@
 							}) ;
 							
 							if( temp.length >0 ){
-								$title = "采购信息：<br/>" ;
+								$title += "<h4 style='font-size:12px;'>采购信息[计划采购(实际采购)/任务名称/任务状态]：</h4>" ;
 							}
 							
 							$(temp).each(function(){
-								$title += this.PLAN_NUM+"("+this.REAL_NUM+")"+"/"+this.TASK_NAME+"/"+this.TASK_STATUS+"<br/>" ;
+								var taskId = this.TASK_ID ;
+								var productId = this.PRODUCT_ID ;
+								
+								var url = "" ;
+								if(taskId){
+									url = contextPath+"/page/forward/Sale.edit_purchase_task_product/"+productId+"/"+taskId ;
+								}else{
+									url = contextPath+"/page/forward/Sale.edit_purchase_plan_product/"+productId ;
+								}
+								
+								$title +="<div>"+ this.PLAN_NUM+"("+(this.REAL_NUM||'-')+")"+"&nbsp;/&nbsp;"+(this.TASK_NAME||'-')+"&nbsp;/&nbsp;"+(this.TASK_STATUS||'-')+
+								"&nbsp;&nbsp;<a href='"+url+"' target='_blank'>详细</a></div>" ;
 							}) ;
 							
 							if( $title ){
-								$(this).show().popover({title: $title,delay:{hide:500}}) ; 
+								$(this).show().popover({trigger:'click',content: $title,delay:{hide:50},width:500}) ; 
+								/*$(this).toggle(function(){
+									$(".pi-status").popover("hide") ;
+									$(this).popover("show") ;
+								},function(){
+									$(this).popover("hide") ;
+								}) ;*/
+								$(this).mouseenter(function(){
+									var me = $(this) ;
+									$(".pi-status").popover("hide") ;
+									$(this).popover("show") ;
+									$(".popover-inner").mouseleave(function(){
+										me.popover("hide") ;
+									}) ;
+								}) ;
+								//$(this).show().popover({trigger:'click',content: $title,delay:{hide:50},width:500}) ; 
 							}else{
 								$(this).hide() ;
 							}

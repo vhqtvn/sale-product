@@ -530,6 +530,8 @@
 			sptp.REAL_NUM,
 			sppd.STATUS AS PLAN_STATUS,
 			sptp.STATUS AS TASK_STATUS,
+			sppd.ID as PRODUCT_ID,
+			sptp.TASK_ID,
 			(SELECT NAME FROM sc_purchase_plan spp WHERE spp.ID = sppd.plan_id) AS PLAN_NAME,
 			(SELECT NAME FROM sc_purchase_task spp WHERE spp.ID = sptp.task_id) AS TASK_NAME,
 			srp.ID as REAL_ID
