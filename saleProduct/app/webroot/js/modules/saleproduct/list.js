@@ -204,9 +204,15 @@
 							if( temp.length >0 ){
 								$title += "<h4 style='font-size:12px;'>物流信息[数量/仓库/状态]：</h4>" ;
 							}
+							
+							/*
+						
+							 * */
+							
 							$(temp).each(function(){
 								var inNumber = this.IN_NUMBER ;
-								$title += "<div>"+ this.QUANTITY+"&nbsp;/&nbsp;"+(this.WAREHOUSE_NAME||'-')+"&nbsp;/&nbsp;"+(this.STATUS||'-')+
+								var statusText = $.llygrid.format.toWarehouseStatus.body(this.STATUS) ;
+								$title += "<div>"+ this.QUANTITY+"&nbsp;/&nbsp;"+(this.WAREHOUSE_NAME||'-')+"&nbsp;/&nbsp;"+statusText+
 									"&nbsp;&nbsp;<a href='"+contextPath+"/page/model/Warehouse.In.editTab/"+inNumber+"/inno' target='_blank'>详细</a></div>" ;
 							}) ;
 							
@@ -225,14 +231,18 @@
 								var taskId = this.TASK_ID ;
 								var productId = this.PRODUCT_ID ;
 								
+								var statusText = "" ;
+								
 								var url = "" ;
 								if(taskId){
+									statusText = $.llygrid.format.purchaseProductStatus.body(this.TASK_STATUS) ;
 									url = contextPath+"/page/forward/Sale.edit_purchase_task_product/"+productId+"/"+taskId ;
 								}else{
+									statusText = $.llygrid.format.purchasePlanProductStatus.body(this.TASK_STATUS) ;
 									url = contextPath+"/page/forward/Sale.edit_purchase_plan_product/"+productId ;
 								}
 								
-								$title +="<div>"+ this.PLAN_NUM+"("+(this.REAL_NUM||'-')+")"+"&nbsp;/&nbsp;"+(this.TASK_NAME||'-')+"&nbsp;/&nbsp;"+(this.TASK_STATUS||'-')+
+								$title +="<div>"+ this.PLAN_NUM+"("+(this.REAL_NUM||'-')+")"+"&nbsp;/&nbsp;"+(this.TASK_NAME||'-')+"&nbsp;/&nbsp;"+(statusText||'-')+
 								"&nbsp;&nbsp;<a href='"+url+"' target='_blank'>详细</a></div>" ;
 							}) ;
 							
