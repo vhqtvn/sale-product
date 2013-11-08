@@ -1,6 +1,7 @@
 <?php
 include_once ('corn_config.php');
 
+/*
 foreach( $accounts as $ac ) {
 	$accountId 	= $ac['accountId'] ;
 	$domain 		= $ac['domain'] ;
@@ -9,4 +10,7 @@ foreach( $accounts as $ac ) {
 	$random = date("U") ;
 	$url = "http://".$domain."/".$context."/index.php/accountStrategy/adjustPrice?".$random ;
 	sock_get($url) ;
-}
+}*/
+$random = date("U") ;
+$url = "http://www.smarteseller.com/saleProduct/index.php/accountStrategy/adjustPrice?".$random ;
+sock_get($url) ;
