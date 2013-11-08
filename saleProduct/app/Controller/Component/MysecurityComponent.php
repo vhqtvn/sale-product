@@ -43,6 +43,7 @@ class MysecurityComponent extends Component {
 			|| $url == "users/loginPhone" 
 			|| $this->startsWith($url,"error") 
 			|| $url == 'users/logout' 
+			|| $this->startsWith($url,"cronTask") 
 			|| $this->startsWith($url,"gatherLevel") 
 			|| $this->startsWith($url,"taskAsynAmazon") 
 			|| $this->startsWith($url,"gatherCategory")

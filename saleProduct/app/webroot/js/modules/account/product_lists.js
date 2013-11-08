@@ -64,7 +64,10 @@
 							}
 							return html.join("") ;
 						}},
-						
+						{align:"center",key:"REAL_ID",label:"动态", width:"6%",format:function(val,record){
+							if(!val) return "" ;
+							return "<span class='pi-status hide'  realId='"+(val||"")+"'  title=''>查看</span>" ;
+						}},
 						{align:"center",key:"ID",label:"操作",width:"8%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
@@ -126,8 +129,33 @@
 					 indexColumn:false,
 					 querys:{accountId:accountId,sqlId:"sql_account_product_list"},
 					 loadMsg:"数据加载中，请稍候......",
-					 loadAfter:function(){
+					 loadAfter:function(records){
 						 $(".grid-content").uiwidget();
+						 
+						 $realIds = [] ;
+							$(records).each(function(){
+								this.REAL_ID && $realIds.push(this.REAL_ID) ;
+							}) ;
+							
+							Business.getProductStatus($realIds.join(",") , function( map ){
+								$(".pi-status").each(function(){
+									var realId = $(this).attr("realId") ;
+									var $title = map[realId] ;
+									if( $title ){
+										$(this).show().popover({trigger:'click',content: $title,delay:{hide:50},width:500}) ; 
+										$(this).mouseenter(function(){
+											var me = $(this) ;
+											$(".pi-status").popover("hide") ;
+											$(this).popover("show") ;
+											$(".popover-inner").mouseleave(function(){
+												me.popover("hide") ;
+											}) ;
+										}) ;
+									}else{
+										$(this).hide() ;
+									}
+								});
+							}) ;
 					 }
 				} ;
 	       

@@ -560,78 +560,7 @@ String.prototype.getQueryString = function(name){ //name 是URL的参数名字
 	if (r=this.match(reg)) return (unescape(r[2])||"").split("#")[0]; return null; 
 }; 
 
-if (typeof Poly9 == 'undefined')
-{
-    var Poly9 = {};
-}
   
-/**
- * Creates an URLParser instance
- *
- * @classDescription    Creates an URLParser instance
- * @return {Object} return an URLParser object
- * @param {String} url  The url to parse
- * @constructor
- * @exception {String}  Throws an exception if the specified url is invalid
- */
-Poly9.URLParser = function(url) {
-  
-    this._fields = {
-        'Username' : 4, 
-        'Password' : 5, 
-        'Port' : 7, 
-        'Protocol' : 2, 
-        'Host' : 6, 
-        'Pathname' : 8, 
-        'URL' : 0, 
-        'Querystring' : 9, 
-        'Fragment' : 10
-    };
-  
-    this._values = {};
-    this._regex = null;
-    this.version = 0.1;
-    this._regex = /^((\w+):\/\/)?((\w+):?(\w+)?@)?([^\/\?:]+):?(\d+)?(\/?[^\?#]+)?\??([^#]+)?#?(\w*)/;
-  
-    for(var f in this._fields)
-    {
-        this['get' + f] = this._makeGetter(f);
-    }
-  
-    if (typeof url != 'undefined')
-    {
-        this._parse(url);
-    }
-}
-
-Poly9.URLParser.prototype.setURL = function(url) {
-    this._parse(url);
-}
-  
-Poly9.URLParser.prototype._initValues = function() {
-    for(var f in this._fields)
-    {
-        this._values[f] = '';
-    }
-}
-  
-Poly9.URLParser.prototype._parse = function(url) {
-    this._initValues();
-    var r = this._regex.exec(url);
-    if (!r) throw "DPURLParser::_parse -> Invalid URL";
-  
-    for(var f in this._fields) if (typeof r[this._fields[f]] != 'undefined')
-    {
-        this._values[f] = r[this._fields[f]];
-    }
-}
-  
-Poly9.URLParser.prototype._makeGetter = function(field) {
-    return function() {
-        return this._values[field];
-    }
-}
-
 
 /* fix 表单点击回车提交问题 */
 jQuery(function(){
@@ -1190,3 +1119,69 @@ $(function(){
 	},500) ;
 	
 }) ;
+
+///////////////////////business common//////////////////////////////////////
+var Business = {
+		getProductStatus :function(productIds , callback){
+			$.dataservice("model:SaleProduct.getProductStatusBy",{realId: productIds },function(result){
+				//alert( $.json.encode(result) ) ;
+				var ins = result['in']||[] ;
+				var purchase = result.purchase||[] ;
+				
+				var map = {} ;
+				$( productIds.split(",") ).each(function(index,realId){
+					var temp = [] ;
+					$(ins).each(function(){
+						if( this.REAL_ID == realId ){
+							temp.push(this) ;
+						}
+					}) ;
+					
+					$title = "" ;
+					if( temp.length >0 ){
+						$title += "<h4 style='font-size:12px;'>物流信息[数量/仓库/状态]：</h4>" ;
+					}
+					$(temp).each(function(){
+						var inNumber = this.IN_NUMBER ;
+						var statusText = $.llygrid.format.toWarehouseStatus.body(this.STATUS) ;
+						$title += "<div>"+ this.QUANTITY+"&nbsp;/&nbsp;"+(this.WAREHOUSE_NAME||'-')+"&nbsp;/&nbsp;"+statusText+
+							"&nbsp;&nbsp;<a href='"+contextPath+"/page/model/Warehouse.In.editTab/"+inNumber+"/inno' target='_blank'  data-widget='dialog' data-options='{width:1000,height:650}'>详细</a></div>" ;
+					}) ;
+					
+					temp = [] ;
+					$(purchase).each(function(){
+						if( this.REAL_ID == realId ){
+							temp.push(this) ;
+						}
+					}) ;
+					
+					if( temp.length >0 ){
+						$title += "<h4 style='font-size:12px;'>采购信息[计划采购(实际采购)/任务名称/任务状态]：</h4>" ;
+					}
+					
+					$(temp).each(function(){
+						var taskId = this.TASK_ID ;
+						var productId = this.PRODUCT_ID ;
+						
+						var statusText = "" ;
+						
+						var url = "" ;
+						if(taskId){
+							statusText = $.llygrid.format.purchaseProductStatus.body(this.TASK_STATUS) ;
+							url = contextPath+"/page/forward/Sale.edit_purchase_task_product/"+productId+"/"+taskId ;
+						}else{
+							statusText = $.llygrid.format.purchasePlanProductStatus.body(this.PLAN_STATUS) ;
+							url = contextPath+"/page/forward/Sale.edit_purchase_plan_product/"+productId ;
+						}
+						
+						$title +="<div>"+ this.PLAN_NUM+"("+(this.REAL_NUM||'-')+")"+"&nbsp;/&nbsp;"+(this.TASK_NAME||'-')+"&nbsp;/&nbsp;"+(statusText||'-')+
+						"&nbsp;&nbsp;<a href='"+url+"' target='_blank'  data-widget='dialog' data-options='{width:1000,height:650}'>详细</a></div>" ;
+					}) ;
+					
+					map[realId] = $title ;
+				}) ;
+
+				callback&& callback(map) ;
+			});
+		}
+}

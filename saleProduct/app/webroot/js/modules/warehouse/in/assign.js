@@ -149,6 +149,16 @@ $(function(){
 		} ;
 	$(".grid-content").llygrid(gridConfig) ;
 	
+	Business.getProductStatus(realProductId, function( map ){
+			var realId = realProductId ;
+			var $title = map[realId] ;
+			if( $title ){
+				$(".dyn-status").html($title).uiwidget() ;
+			}else{
+				$(".dyn-status").hide() ;
+			}
+	}) ;
+	
 	$(".category-set").live("click",function(){
 		var record = $(this).parents("tr:first").data("record");
 		var categoryTreeSelect = {

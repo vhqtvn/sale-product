@@ -171,10 +171,6 @@
 									}
 									if( $exists ){
 								?>
-									<div class="alert" style="margin-top:20px;display:block;width:auto;padding:5px;width:150px;">
-										采购进行中
-										<a herf="#"  class="purchase-detail"  purchaseProductId="<?php echo $purchasing['ID']; ?>">详细</a>	
-									</div>
 								<?php	 }else{ ?>
 								<!--判断时候在采购中-->
 								<hr/>
@@ -196,7 +192,8 @@
 								?>
 								</div>
 						</td>
-						<td><?php echo $product['MEMO'] ?></td>
+						<td  style="width:20%;"><?php echo $product['MEMO'] ?></td>
+						<td><div class="dyn-status"></div></td>
 					</tr>
 					<tr>
 						<td colspan=3>
@@ -230,7 +227,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan=3>
+						<td colspan=4>
 							<div class="qt">
 								<div class='qt-label'>FBA最低限价：</div>
 								<div class='qt-value SALE_LOWEST_PRICE_FBA' style="color:red;font-size:15px;"><?php echo $product['SALE_LOWEST_PRICE_FBA'] ?></div>

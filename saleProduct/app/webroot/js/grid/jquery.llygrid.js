@@ -1150,7 +1150,36 @@ $.llygrid.format.purchasePlanProductStatus = {
 				case '25':  message = "审批不通过";break;
 				case '30':  message = "限价确认";break;
 				case '40':  message = "分配执行人";break;
+				case '45':  message = "采购进行中";break;
 				default: message ="执行采购" ;
+			}
+			return message||val ;
+		}
+} ;
+/*
+ * 	 {label:'编辑中',content:"tab-content",custom:"0"},
+				{label:'待审批',content:"tab-content",custom:"10"},
+				{label:'转仓出库',content:"tab-content",custom:"15"},
+				{label:'待发货',content:"tab-content",custom:"20"},
+				{label:'已发货',content:"tab-content",custom:"30"},
+				{label:'到达海关',content:"tab-content",custom:"40"},
+				{label:'验货中',content:"tab-content",custom:"50"},
+				{label:'入库中',content:"tab-content",custom:"60"},
+				{label:'入库完成',content:"tab-content",custom:"70"}*/
+$.llygrid.format.toWarehouseStatus = {
+		body:function(val,record,col){
+			val = val ||'0' ;
+			var message = "" ;
+			switch(val){
+				case '0':  message = "待审批";break;
+				case '15':  message = "转仓出库";break;
+				case '20':  message = "待发货";break;
+				case '30':  message = "已发货";break;
+				case '40':  message = "到达海关";break;
+				case '50':  message = "验货中";break;
+				case '60':  message = "入库中";break;
+				case '70':  message = "入库完成";break;
+				default: message ="-" ;
 			}
 			return message||val ;
 		}
