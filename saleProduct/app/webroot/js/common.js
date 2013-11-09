@@ -1183,11 +1183,11 @@ var Business = {
 				}) ;
 
 				callback&& callback(map) ;
-			});
+			},{noblock:true});
 		},
 		getEntityTags :function(entityType,entityId){
 			$.dataservice("model:Tag.listByEntity",{entityType:"listingTag",entityId:entityId,subEntityType:subEntityType||""},function(result){
 				
-			});
+			},{noblock:true});
 		}
 }

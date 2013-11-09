@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<!-- 我的采购列表 -->
+    <entry key="sql_widget_tag_listing">
+       SELECT st.NAME , COUNT(*) AS C,stt.name AS TYPE_NAME   FROM sc_tag_entity ste,
+		sc_tag st,
+		sc_tag_type stt
+		WHERE  ste.entity_type like 'listingTag%'
+		AND ste.TAG_ID = st.ID
+		AND st.TYPE_ID = stt.ID
+		GROUP BY st.NAME ,stt.name
+    </entry>
+    
+    <entry key="sql_widget_tag_product">
+       SELECT st.NAME , COUNT(*) AS C,stt.name AS TYPE_NAME   FROM sc_tag_entity ste,
+		sc_tag st,
+		sc_tag_type stt
+		WHERE  ste.entity_type like 'productTag%'
+		AND ste.TAG_ID = st.ID
+		AND st.TYPE_ID = stt.ID
+		GROUP BY st.NAME ,stt.name
+    </entry>
+    
+    <entry key="sql_widget_tag_productDev">
+        SELECT st.NAME , COUNT(*) AS C,stt.name AS TYPE_NAME   FROM sc_tag_entity ste,
+		sc_tag st,
+		sc_tag_type stt
+		WHERE ste.entity_type LIKE 'productDevTag%'
+		AND ste.TAG_ID = st.ID
+		AND st.TYPE_ID = stt.ID
+		GROUP BY st.NAME ,stt.name
+    </entry>
+    <!--  
+    <entry key="sql_widget_tag_purchase">
+       SELECT st.NAME , COUNT(*) AS C , ste.ENTITY_TYPE  FROM sc_tag_entity ste,
+		sc_tag st
+		WHERE ste.entity_type = 'purchaseTag'
+		AND ste.TAG_ID = st.id
+		GROUP BY st.NAME,ste.ENTITY_TYPE
+    </entry>
+-->
+</properties>

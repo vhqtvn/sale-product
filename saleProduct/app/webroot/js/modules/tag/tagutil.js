@@ -104,7 +104,7 @@ var DynTag = {
 					openCenterWindow(contextPath+"/page/forward/Tag.showLog/"+entityType+"/"+entityId,700,450,function(){
 					}) ;
 				}) ;
-			});
+			},{noblock:true});
 		},
 		openTagByEntity:function(entityType,entityId,subEntityType){
 			openCenterWindow(contextPath+"/page/forward/Tag.openTagEntity/"+entityType+"/"+entityId+"/"+subEntityType,400,600,function(){

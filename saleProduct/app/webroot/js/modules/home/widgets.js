@@ -1,4 +1,5 @@
 $(function(){
+	Widget.tag() ;
 	Widget.product() ;
 
 	Widget.order() ;
@@ -8,7 +9,7 @@ $(function(){
 	
 	Widget.inplan() ;
 	
-	Widget.goods() ;
+	//Widget.goods() ;
 	
 	$(".widget-action").live("click",function(){
 		var url = $(this).attr("href") ;
@@ -19,6 +20,23 @@ $(function(){
 }) ;
 
 var Widget = {
+		tag: function(){
+			$.dataservice("model:Widget.TagWidget.load",{},function(result){
+				
+				for(var o in result){
+					var items = result[o] ;
+					var n = items.items[0].TYPE_NAME ;
+					 $(".tag-dyn").append("<h4>"+n+"</h4>") ;
+					
+					var ul = $("<ul></ul>").appendTo(".tag-dyn") ;
+					$(items.items||[]).each(function(){
+						var c = this.C?"("+this.C+")":"(0)" ;
+						ul.append("<li><a href='"+contextPath+items.url+"'  target='_blank'>"+this.NAME+c +"</a></li>") ;
+					}) ;
+				}
+			})
+		},
+		
 		puchase:function(){
 			$.dataservice("model:Widget.PurchaseWidget.load",{},function(result){
 				for(var o in result){
