@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    
+			SELECT DISTINCT  t.R_ASIN , t.DAY_PAGEVIEWS,t.START_TIME,t.END_TIME
+			 FROM (
+				SELECT ( CASE 
+			        WHEN (spfd.ASIN IS NULL OR spfd.ASIN = '')
+			        THEN spfd.PARENT_ASIN
+			        ELSE spfd.ASIN END) AS R_ASIN ,spfd.*,spf.START_TIME,spf.END_TIME FROM sc_product_flow  spf
+				   , sc_product_flow_details spfd
+				WHERE spf.id = spfd.TASK_ID  
+				AND spfd.SKU IS NULL OR spfd.SKU = ''
+				UNION
+				SELECT ( CASE 
+			        WHEN (spfd.ASIN IS NULL OR spfd.ASIN = '')
+			        THEN spfd.PARENT_ASIN
+			        ELSE spfd.ASIN END) AS  R_ASIN,spfd.* ,spf.START_TIME,spf.END_TIME FROM sc_product_flow  spf
+				   , sc_product_flow_details_history spfd
+				WHERE spf.id = spfd.TASK_ID 
+				AND spfd.SKU IS NULL OR spfd.SKU = ''
+			) t WHERE t.R_ASIN IN (
+				SELECT saap.ASIN FROM sc_real_product_rel srpr,sc_amazon_account_product saap
+				WHERE saap.SKU = srpr.SKU
+				    AND  srpr.REAL_ID = '{@#realId#}'
+			)
+			ORDER BY t.START_TIME, t.R_ASIN 
+   
+    
+    <entry key="sql_flow_listSkuChartByRealId">
+    SELECT DISTINCT  t.SKU , t.DAY_PAGEVIEWS,t.START_TIME,t.END_TIME
+	 FROM (
+		SELECT spfd.*,srpr.REAL_ID,spf.START_TIME,spf.END_TIME FROM sc_product_flow  spf
+		   , sc_product_flow_details spfd,sc_real_product_rel srpr
+		WHERE spf.id = spfd.TASK_ID  
+		AND spfd.SKU = srpr.SKU
+		UNION
+		SELECT spfd.*,srpr.REAL_ID ,spf.START_TIME,spf.END_TIME FROM sc_product_flow  spf
+		   , sc_product_flow_details_history spfd,sc_real_product_rel srpr
+		WHERE spf.id = spfd.TASK_ID  
+		AND spfd.SKU = srpr.SKU
+	) t WHERE t.REAL_ID = '{@#realId#}'
+	ORDER BY t.START_TIME, t.SKU 
+	 </entry>
+ </properties>

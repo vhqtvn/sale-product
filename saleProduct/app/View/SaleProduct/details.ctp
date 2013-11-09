@@ -58,6 +58,7 @@
 				,{label:'历史询价',url:contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/<?php echo $item['REAL_SKU'];?>",iframe:true}
 				,{label:'交易价格曲线',url:contextPath+"/page/forward/SaleProduct.priceChart/<?php echo $item['REAL_SKU'];?>",iframe:true}
 				,{label:'销量图',url:contextPath+"/page/forward/SaleProduct.saleChart/<?php echo $item['REAL_SKU'];?>",iframe:true}
+				,{label:'Business Report',url:contextPath+"/page/forward/SaleProduct.businessReport/<?php echo $item['ID'];?>",iframe:true}
 			] ,
 			height:'588x'
 		} ) ;
@@ -74,6 +75,9 @@
 .WdateDiv, .ui-corner-all {
 background: #fff;
 border: none;
+}
+.ui-tabs .ui-tabs-nav li a{
+	padding:0px 10px;
 }
   </style>
 
