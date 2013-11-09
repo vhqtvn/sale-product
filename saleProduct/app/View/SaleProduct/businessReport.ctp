@@ -7,17 +7,10 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-  		 include_once ('config/config.php');
-   
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('default/style');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('jquery.json');
+  		include_once ('config/config.php');
+  		include_once ('config/header.php');
+  		
 		echo $this->Html->script('highcharts/highcharts');
-		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('highcharts/modules/exporting.src');
 		echo $this->Html->script('modules/chart/businessReport');
 		
@@ -44,18 +37,20 @@
 			  		父ASIN/子ASIN/SKU
 				</label>
 			</div>
+			
+			<div class="grid-content"></div>
 
-			<div  class="type1-container tc">
+			<div  class="type1-container tc hide">
 				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
 			</div>
 			
-			<div  class="type2-container tc">
+			<div  class="type2-container tc hide">
 				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
 			</div>
 			
-			<div  class="type3-container tc">
+			<div  class="type3-container tc hide">
 				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
 			</div>

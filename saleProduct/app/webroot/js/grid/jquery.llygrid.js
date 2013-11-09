@@ -108,6 +108,7 @@
 		
 			$(columns).each(function(index,col){
 				this.sort = this.sort === false ?false :true ; 
+				if( this.format && this.format.type == 'checkbox' ) this.sort = false ;
 				var rowspan = options.headRowNum ;
 				var sort = this.sort?"lly-sort-col":"" ;
 				var styles = ['width:'+this.width+'px'] ;

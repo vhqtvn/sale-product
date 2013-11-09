@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_flow_listAllByRealId">
+			SELECT distinct t.*
+			 FROM (
+				SELECT spfd.PARENT_ASIN AS R_ASIN ,spfd.*,spf.START_TIME,spf.END_TIME FROM sc_product_flow  spf
+				   , sc_product_flow_details spfd
+				WHERE spf.id = spfd.TASK_ID  
+				{@
+					AND ( spfd.SKU IS NULL OR spfd.SKU = '' )
+					AND ( spfd.ASIN IS NULL OR spfd.ASIN = '' )
+					AND 1 = #parentAsin#
+				}
+				{@
+					AND ( spfd.SKU IS NULL OR spfd.SKU = '' )
+					AND 1 = #parentChildAsin#
+				}
+				UNION 
+				SELECT spfd.PARENT_ASIN AS  R_ASIN,spfd.* ,spf.START_TIME,spf.END_TIME FROM sc_product_flow  spf
+				   , sc_product_flow_details_history spfd
+				WHERE spf.id = spfd.TASK_ID 
+				{@
+					AND ( spfd.SKU IS NULL OR spfd.SKU = '' )
+					AND ( spfd.ASIN IS NULL OR spfd.ASIN = '' )
+					AND 1 = #parentAsin#
+				}
+				{@
+					AND ( spfd.SKU IS NULL OR spfd.SKU = '' )
+					AND 1 = #parentChildAsin#
+				}
+			) t WHERE
+			 t.{@#pkey#}  IN (
+				SELECT saap.{@#key#} FROM sc_real_product_rel srpr,sc_amazon_account_product saap
+				WHERE saap.SKU = srpr.SKU
+				    AND  srpr.REAL_ID = '{@#realId#}'
+			)
+			ORDER BY t.START_TIME, t.R_ASIN 
+   </entry>
+
 	<entry key="sql_flow_listParentAsinChartByRealId">
 			SELECT DISTINCT  t.R_ASIN as SERIRES_NAME , t.DAY_PAGEVIEWS,t.START_TIME,t.END_TIME
 			 FROM (

@@ -1,4 +1,3 @@
-
 $(function(){
 	
 	var sqlId = "sql_sc_order_list_picked_forselect" ;
@@ -53,7 +52,7 @@ $(function(){
 		$(checkedRecords).each(function(index,item){
 			orders.push(item.ORDER_ID+"|"+item.ORDER_ITEM_ID) ;
 		}) ;
-			
+		
 		if( orders.length <=0 ){
 			alert("未选中任意订单！");
 			return ;
@@ -70,6 +69,7 @@ $(function(){
 		var msg = msgs[action] ;
 		
 		if( window.confirm(msg) ){
+			 jQuery(document.body).block() ;
 			$.ajax({
 				type:"post",
 				url:contextPath+"/order/savePickedOrder/"+pickedId ,
@@ -77,8 +77,12 @@ $(function(){
 				cache:false,
 				dataType:"text",
 				success:function(result,status,xhr){
+					 jQuery(document.body).unblock() ;
 					alert("保存成功!");
 					window.location.reload();
+				},error:function(){
+					 jQuery(document.body).unblock() ;
+					alert("保存异常!");
 				}
 			});
 		}
