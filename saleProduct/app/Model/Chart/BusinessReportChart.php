@@ -10,14 +10,17 @@ class BusinessReportChart extends AppModel {
 	
 	public function load( $params ){
 		$realId = $params['realId'] ;
-		$records = $this->exeSqlWithFormat("sql_flow_listAsinChartByRealId", array('realId'=>$realId)) ;
+		$type  = $params['type'] ;
+		$records = array() ;
+		if( $type == 1 ){//父ASIN
+			$records = $this->exeSqlWithFormat("sql_flow_listParentAsinChartByRealId", array('realId'=>$realId)) ;
+		}else if( $type ==2 ){//父ASIN/子ASIN
+			$records = $this->exeSqlWithFormat("sql_flow_listParentAsinChildAsinChartByRealId", array('realId'=>$realId)) ;
+		}else if( $type ==3){//父ASIN/子ASIN/SKU
+			$records = $this->exeSqlWithFormat("sql_flow_listParentAsinChildAsinSkuChartByRealId", array('realId'=>$realId)) ;
+		}
 		
 		return array( "categories"=>'','records'=>$records ) ;
 	}
 	
-	public function loadSku( $params ){
-		$records = $this->exeSqlWithFormat("sql_flow_listSkuChartByRealId",$params) ;
-	
-		return array( "categories"=>'','records'=>$records ) ;
-	}
 }

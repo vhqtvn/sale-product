@@ -31,16 +31,31 @@
 	</head>
 	<body>
 			<div>
-				<input type="radio"  value="1"  name="type" checked/>ASIN Business Report
-				<input type="radio"  value="2"  name="type"  />SKU Business Report
+				<label class="radio inline">
+			  		<input type="radio" name="type"  value="1" checked>
+			  		父ASIN
+				</label>
+				<label class="radio inline">
+			  		<input type="radio" name="type"   value="2" >
+			  		父ASIN/子ASIN
+				</label>
+				<label class="radio inline">
+			  		<input type="radio" name="type" value="3" >
+			  		父ASIN/子ASIN/SKU
+				</label>
 			</div>
 
-			<div  class="day-container">
+			<div  class="type1-container tc">
 				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
 			</div>
 			
-			<div  class="month-container">
+			<div  class="type2-container tc">
+				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
+			</div>
+			
+			<div  class="type3-container tc">
 				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
 				<ul class="offer-container" style="list-style: none;text-align:right;"></ul>
 			</div>
