@@ -90,6 +90,10 @@
    			width:auto;
    			padding:0px;
    		}
+   		
+   		.popover-inner  .popover-title{
+			font-size:12px;
+   		}
    </style>
 
 </head>

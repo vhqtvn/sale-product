@@ -469,8 +469,10 @@ var Flow = function(){
 				}*/
 				
 				$(actions||[]).each(function(){
+					if(!this.label)return ;
+					var clazz = this.clazz||"btn-primary" ;
 					var me = this ;
-					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
+					$("<button class='btn "+clazz+" btn-flow' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
 						.appendTo(".btn-container").click(function(){
 							me.action() ;
 						}) ;  ;

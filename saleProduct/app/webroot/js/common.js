@@ -1033,6 +1033,7 @@ var Flow = function(){
 				
 				
 				$(actions||[]).each(function(){
+					if(!this.label) return ;
 					var me = this ;
 					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
 						.appendTo(".btn-container").click(function(){
@@ -1182,6 +1183,11 @@ var Business = {
 				}) ;
 
 				callback&& callback(map) ;
+			});
+		},
+		getEntityTags :function(entityType,entityId){
+			$.dataservice("model:Tag.listByEntity",{entityType:"listingTag",entityId:entityId,subEntityType:subEntityType||""},function(result){
+				
 			});
 		}
 }

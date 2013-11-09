@@ -277,6 +277,14 @@ class SaleProduct extends AppModel {
 		$this->query($sql) ;
 	}
 	
+	public function getListingCategory($params){
+		$sql = "SELECT sapc.* FROM sc_amazon_product_category_rel sapcr , sc_amazon_product_category sapc
+						WHERE sapcr.CATEGORY_ID = sapc.ID
+						AND sapcr.SKU = '{@#sku#}'
+						AND sapcr.ACCOUNT_ID = '{@#accountId#}'" ;
+		return $this->exeSqlWithFormat($sql, $params) ;
+	}
+	
 	/**
 	 * 获取产品流转状态
 	 */

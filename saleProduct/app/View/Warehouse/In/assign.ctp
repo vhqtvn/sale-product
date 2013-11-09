@@ -131,6 +131,10 @@
 			background:green;
 			color:#FFF!important;
 		}
+		
+	.popover-inner  .popover-title{
+			font-size:12px;
+   		}
 	</style>
 </head>
 <script>

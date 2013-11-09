@@ -15,10 +15,10 @@ $(function(){
 				{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"10%"},
 				{align:"left",key:"SKU",label:"SKU",width:"15%",format:function(val,record){
 					var html = [] ;
-					var img =   getImage('tabs.gif','Listing标签','listing-tag-list ') ;
-					html.push('<a href="#" class="sale-strategy" val="'+val+'">'+val+'</a>&nbsp;') ;
+					var img =   getImage('tabs.gif','','listing-tag-list   popover-pl ') ;
+					html.push('<a href="#" class="sale-strategy " val="'+val+'">'+val+'</a>&nbsp;') ;
 					html.push(img) ;
-					html.push('<a href="#" class="category-set" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
+					html.push('&nbsp;&nbsp;<a href="#" class="category-set  popover-pl " val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
 					return html.join("") ;
 					//return val||record.REL_SKU ;
 				}},
@@ -145,6 +145,86 @@ $(function(){
 					 //计算价格
 					 calcPrice();
 				 }) ;
+				 
+				 
+				 $(".listing-tag-list").each(function(){
+						var record = $(this).parents("tr:first").data("record");
+						$(this).popover({trigger:'click',title:"标签："+record.SKU+"/"+record.ASIN,content: "加载中......",delay:{hide:50},width:500}) ; 
+					}) ;
+					
+					
+					$(".listing-tag-list").mouseenter( function(){
+						var record = $(this).parents("tr:first").data("record");
+						var entityType = "listingTag" ;
+						var entityId = record.ACCOUNT_ID+"$$"+record.SKU+"$$"+record.ASIN ;
+						var subEntityType = realProductId ;
+						
+						//alert( $.json.encode(record) ) ;
+						$(".popover-pl").popover("hide") ;
+						//获取当前的tag
+						$(".popover-content").html("加载中......") ;
+						$(this).popover("show") ;
+						var me = $(this) ;
+						setTimeout(function(){
+							$.dataservice("model:Tag.listByEntity",{entityType:entityType,entityId:entityId,subEntityType:subEntityType||"null"},function(result){
+								var ul = $("<ul><ul>").appendTo( $(".popover-content").empty() ) ;
+								var isTag = false ;
+								$(result).each(function(){
+									if(parseInt(this.COUNT)){
+										isTag = true ;
+										var tag = $("<li  tagId='"+this.ID+"'  tagEntityId='"+this.TAG_ENTITY_ID+"'><h4>"+this.NAME +"</h4></li>").appendTo(ul) ;
+										var memos = ["<div  class='memo-item'>"+this.MEMO+"<span>"+this.CREATOR_NAME+"|"+this.CREATE_DATE+"</span></div>"] ;
+										$(this.MEMOS||[]).each(function(){
+											memos.push("<div class='memo-item'>"+this.MEMO+"<span>"+this.CREATOR_NAME+"|"+this.CREATE_DATE+"</span></div>") ;
+										}) ;
+										
+										tag.append("<div class='memo-c'>"+memos.join("")+"</div>") ;
+										tag.append("<div class='add-container' style='display:none;'><textarea style='width:90%;height:50px;'></textarea><button class='btn save-memo'>保存</button></div>") ;
+									}
+								}) ;
+								if(!isTag){
+									ul.append("<li>未添加标签</li>") ;
+								}
+								$(".popover-inner").mouseleave(function(){
+									me.popover("hide") ;
+								}) ;
+							},{noblock:true});
+						},100) ;
+						
+					}) ;
+					
+					$(".category-set").each(function(){
+						var record = $(this).parents("tr:first").data("record");
+						$(this).popover({trigger:'click',title:"分类:"+record.SKU+"/"+record.ASIN,content: "加载中......",delay:{hide:50},width:500,placement :"bottom"}) ; 
+					}) ;
+					
+					$(".category-set").mouseenter( function(){
+						var record = $(this).parents("tr:first").data("record");
+						var entityType = "listingTag" ;
+						var entityId = record.ACCOUNT_ID+"$$"+record.SKU+"$$"+record.ASIN ;
+						var subEntityType = realProductId ;
+						$(".popover-pl").popover("hide") ;
+						//获取当前的tag
+						$(".popover-content").html("加载中......") ;
+						$(this).popover("show") ;
+						var me = $(this) ;
+						setTimeout(function(){
+							$.dataservice("model:SaleProduct.getListingCategory",{sku:record.SKU,accountId:record.ACCOUNT_ID},function(result){
+								var ul = $("<ul><ul>").appendTo( $(".popover-content").empty() ) ;
+								var isTag = false ;
+								$(result).each(function(){
+									isTag = true ;
+									$("<li  tagId='"+this.ID+"'  tagEntityId='"+this.TAG_ENTITY_ID+"'><h4>"+this.NAME +"</h4></li>").appendTo(ul) ;
+								}) ;
+								if(!isTag){
+									ul.append("<li>未添加分类</li>") ;
+								}
+								$(".popover-inner").mouseleave(function(){
+									me.popover("hide") ;
+								}) ;
+							},{noblock:true});
+						},100) ;
+					}) ;
 			 }
 		} ;
 	$(".grid-content").llygrid(gridConfig) ;
