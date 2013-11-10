@@ -56,6 +56,10 @@
 				}else if( action == 10 ){//导出
 					openCenterWindow(contextPath+"/order/exportPicked/"+currentPickId+"/1",950,550) ;
 					return ;
+				}else if( action == 11 ){//下载Endicia订单数据
+					window.location.href= contextPath+"/excel/exportEndiciaOrder/" ;
+					//openCenterWindow(contextPath+"/excel/exportEndiciaOrder/",950,550) ;
+					return ;
 				}else if( action == 6 ){//确认发货
 					if( window.confirm("确认发货并更新TN到Amazon？") ){
 						$.ajax({
@@ -113,9 +117,10 @@
 			        		return val ;
 			        	//}
 			        	},render:function(record){
-							//if(record.RMA_STATUS==1 && record.RMA_VALUE==10){
-								$(this).find("td[key='RMA_RESHIP']").css("background","red") ;
-							//}
+			        		if( record.RMA_RESHIP >0 ){
+			        			$(this).find("td[key='RMA_RESHIP']").css("background","red") ;
+			        		}
+							
 						}},
 						{align:"center",key:"ORDER_ID",label:"Order Id", width:"15%"},
 				      	{align:"left",key:"ORDER_NUMBER",label:"内部订单号", width:"8%"},

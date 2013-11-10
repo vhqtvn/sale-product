@@ -114,6 +114,22 @@ class ExcelController extends AppController {
 		}
 	}
 	
+	public function exportEndiciaOrder(){
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$items = $SqlUtils->exeSqlWithFormat("select * from sc_view_endicia",array()) ;
+		
+		$inputFileName = 'app/template/endicia-order-template.xls';
+		
+		$params = array( 'p'=>$items) ;
+		
+		$this->ExcelUtils->export( $inputFileName , $params , 'endicia-orders' ,function($sheet , $row , $isNew){
+			if( $isNew ){
+				//$sheet->mergeCells("B$row:E$row") ;
+			}
+		}) ;
+		exit;
+	}
+	
 	public function box($id){
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$in = $SqlUtils->getObject("sql_warehouse_in_getById",array('id'=> $id)) ;
