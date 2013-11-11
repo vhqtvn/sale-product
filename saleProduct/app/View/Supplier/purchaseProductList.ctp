@@ -22,6 +22,13 @@
 		$group=  $user["GROUP_CODE"] ;
 		
 		$supplierId = $params['arg1'] ;
+		$productId = "" ;
+		$type = $params['arg2'] ;
+		if( $type == 'product' ){
+			$productId = $supplierId ;
+			$supplierId = "" ;
+		}
+		
 	?>
   
    <script type="text/javascript">
@@ -65,7 +72,7 @@
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{supplierId:'<?php echo $supplierId;?>',sqlId:"sql_purchase_product_listBySupplierId"},
+				 querys:{supplierId:'<?php echo $supplierId;?>',productId:'<?php echo $productId;?>',sqlId:"sql_purchase_product_listBySupplierId"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 

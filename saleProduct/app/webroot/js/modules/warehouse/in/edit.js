@@ -15,11 +15,13 @@
 			}) ;
 			
 			$("[name='inSourceType']:checked").click();
-			
+		
 			$(".btn-save").click(function(){
 				if( isSaved ) return ;
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
+					//alert($.json.encode(json)) ;
+					//return ;
 					json.status = '0' ;
 					//shipDate
 					//planArrivalDate
@@ -28,9 +30,9 @@
 					isSaved = true ;
 					$.dataservice("model:Warehouse.In.doSave",json,function(result){
 						if( $("#id").val() ){
-							window.location.reload() ;
+							//window.location.reload() ;
 						}else{
-							window.close() ;
+							//window.close() ;
 						}
 						
 					});
@@ -44,7 +46,7 @@
 			var flowConfigName = $("#flowType").val() ;
 			var flow = FlowFactory.get(flowConfigName,inSourceType) ;
 			if( flow.logistics ){ //物流
-				$(".logistics-tbody").show().html(logisticsCacheHtml) ;
+				$(".logistics-tbody").show().html(logisticsCacheHtml).uiwidget() ;
 			}else{
 				$(".logistics-tbody").empty();
 			}

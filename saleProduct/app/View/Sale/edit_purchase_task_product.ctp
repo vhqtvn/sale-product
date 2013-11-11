@@ -267,7 +267,7 @@
 									<?php if( $ppp_callback ){ ?>
 									,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }},
 									<?php }?>
-									{label:"保存",action:function(){ ForceAuditAction(50,"保存") }},
+									,{label:"保存",action:function(){ ForceAuditAction(50,"保存") }},
 		      	        			{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
 								<?php };?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
@@ -280,7 +280,7 @@
 									<?php if( $ppp_callback ){ ?>
 									,{label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
 									<?php }?>
-									{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
+									,{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
 		      	        			{label:"入库确认",action:function(){ WarehouseInAction(70,"入库确认") } }
 								<?php };?>
 								<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>

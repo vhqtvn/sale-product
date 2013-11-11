@@ -39,6 +39,7 @@
 			</div>
 			
 			<div class="grid-content"></div>
+			<div class="grid-history-content"></div>
 
 			<div  class="type1-container tc hide">
 				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>

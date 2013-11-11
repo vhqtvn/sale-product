@@ -21,9 +21,11 @@
 		echo $this->Html->script('grid/query');
 		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
+		echo $this->Html->script('calendar/WdatePicker');
+		
+
 		echo $this->Html->script('modules/warehouse/in/edit');
 		echo $this->Html->script('modules/warehouse/in-flow');
-		echo $this->Html->script('calendar/WdatePicker');
 	
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -182,12 +184,13 @@
 										value="<?php echo $result['ARRIVAL_PORT'];?>"/></td>
 								</tr>
 								<tr>
-									<th>发货时间：</th><td><input type="text" id="shipDate" 
-										data-widget="calendar"  
+									<th>发货时间：</th><td>
+									<input type="text" id="shipDate" 
+										data-widget="calendar"  data-options="{dateFmt:'yyyy-MM-dd HH:mm:ss'}"
 										<?php echo $isSended?"readonly":"" ;?>
 										value="<?php echo $result['SHIP_DATE'];?>"/></td>
 									<th>预计到达时间：</th><td><input type="text" id="planArrivalDate" data-widget="calendar" 
-										 
+									  data-options="{dateFmt:'yyyy-MM-dd HH:mm:ss'}"
 										<?php echo $isSended?"readonly":"" ;?>
 										value="<?php echo $result['PLAN_ARRIVAL_DATE'];?>"/></td>
 								</tr>

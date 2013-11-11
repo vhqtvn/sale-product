@@ -16,6 +16,8 @@
 				FROM sc_real_product srp ,
 				sc_goods_inventory sgi
 				WHERE srp.id = sgi.GOODS_ID
+				{@ and srp.REAL_SKU like '%#REAL_SKU#%'}
+			{@ and srp.NAME like '%#NAME#%'}
 				AND sgi.WAREHOUSE_ID = '{@#sourceWarehouseId#}'
 
 	</entry>
