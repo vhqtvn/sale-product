@@ -191,6 +191,7 @@
     var  $COST_VIEW_PROFIT = '<?php echo $COST_VIEW_PROFIT;?>' ;
     var sku = '<?php echo $product['SKU'];?>' ;
     var planId =  '<?php echo $product['PLAN_ID'];?>' ;
+    var realId = '<?php echo $product['REAL_ID'];?>'
    
     var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
 	var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;

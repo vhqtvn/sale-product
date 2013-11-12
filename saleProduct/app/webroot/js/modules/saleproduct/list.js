@@ -56,6 +56,7 @@
 								node.complete = false ;
 							},
 							asyn : true, //异步
+							cascadeCheck:false,
 							rootId  : 'root',
 							expandLevel:3,
 							rootText : '产品分类',

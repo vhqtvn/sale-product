@@ -26,15 +26,47 @@ class Task extends AppModel {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
+		//这里需要分三种不同情况判断
+		$sql = "" ;
+		if( empty($lineData['ASIN']) ){ //只存在父ASIN
+			$sql = "insert into sc_product_flow_details_history select * from sc_product_flow_details where parent_asin = '{@#PARENT_ASIN#}'
+					  and ( asin is null or asin = '' )
+					" ;
+		}else if( empty($lineData['SKU']) ){
+			$sql = "insert into sc_product_flow_details_history select * from sc_product_flow_details where asin = '{@#ASIN#}' and parent_asin = '{@#PARENT_ASIN#}'
+						and (SKU is null or SKU = '' )
+					" ;
+		}else{
+			$sql = "insert into sc_product_flow_details_history select * from sc_product_flow_details where  asin = '{@#ASIN#}' and parent_asin = '{@#PARENT_ASIN#}'
+					    and SKU = '{@#SKU#}'
+					" ;
+		}
+		
 		//解析列
 		//选择对应的ASIN插入到历史表
 		//保存到历史表
-	 	$sql = "insert into sc_product_flow_details_history select * from sc_product_flow_details where asin = '".$lineData["ASIN"]."'" ;
-	 	$this->query($sql) ;
+	 	//$sql = "insert into sc_product_flow_details_history select * from sc_product_flow_details where asin = '".$lineData["ASIN"]."'" ;
+	 	//$this->query($sql) ;
+	 	$this->exeSql($sql, $lineData) ;
 	 	
+	 	$sql = "" ;
+	 	if( empty($lineData['ASIN']) ){ //只存在父ASIN
+	 		$sql = "delete from sc_product_flow_details where parent_asin = '{@#PARENT_ASIN#}'
+					  and ( asin is null or asin = '' )
+					" ;
+	 	}else if( empty($lineData['SKU']) ){
+	 		$sql = "delete from sc_product_flow_details where asin = '{@#ASIN#}' and parent_asin = '{@#PARENT_ASIN#}'
+						and (SKU is null or SKU = '' )
+					" ;
+	 	}else{
+	 		$sql = "delete from sc_product_flow_details where  asin = '{@#ASIN#}' and parent_asin = '{@#PARENT_ASIN#}'
+					    and SKU = '{@#SKU#}'
+					" ;
+	 	}
+	 	$this->exeSql($sql, $lineData) ;
 	 	//删除实时表数据
-	 	$sql = "delete from sc_product_flow_details where asin = '".$lineData["ASIN"]."'" ;
-	 	$this->query($sql) ;
+	 	//$sql = "delete from sc_product_flow_details where asin = '".$lineData["ASIN"]."'" ;
+	 	//$this->query($sql) ;
 		
 		//插入最新记录
 		//计算每天情况

@@ -69,6 +69,7 @@
 		SELECT DISTINCT  
 		sppd.* ,
 			srp.name AS TITLE,
+			srp.ID as REAL_ID,
 			srp.IMAGE_URL,
 			srp.CATEGORY_ID,
 			spc.PURCHASE_CHARGER,

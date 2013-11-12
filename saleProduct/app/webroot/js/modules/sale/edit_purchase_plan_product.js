@@ -23,6 +23,7 @@ $(function(){
 		tabs.push( {label:'货品询价',iframe:true,url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+sku} ) ;
 	//}
 		tabs.push( {label:'供应商信息',iframe:true,url: contextPath+"/page/forward/Supplier.listsBySku/"+sku} ) ;
+		tabs.push( {label:'采购记录',iframe:true,url: contextPath+"/page/forward/Supplier.purchaseProductList/"+realId+"/product"} ) ;
 
 	var status = [10,20,25,30,40,45,46,47,48,50,60,70] ;
 	if( $reedit_pp_product ){//再编辑
