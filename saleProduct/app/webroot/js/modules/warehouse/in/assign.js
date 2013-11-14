@@ -7,7 +7,9 @@ $(function(){
 		var entityType = "listingTag" ;
 		var entityId = record.ACCOUNT_ID+"$$"+record.SKU+"$$"+record.ASIN ;
 		var subEntityType = realProductId ;
-		DynTag.openTagByEntity(entityType,entityId,subEntityType) ;
+		DynTag.openTagByEntity(entityType,entityId,subEntityType,function(){
+			var rv = $.dialogReturnValue() ;
+		}) ;
 	}) ;
 	
 	var gridConfig = {

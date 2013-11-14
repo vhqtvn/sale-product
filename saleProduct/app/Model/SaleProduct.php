@@ -87,7 +87,9 @@ class SaleProduct extends AppModel {
 	}
 	
 	function saveProductCategory($productId , $categoryId){
-		if(empty($categoryId)) return ;
+		if(empty($categoryId)) {
+			$categoryId = "" ;
+		}
 		//删除现有分类
 		$this->exeSql("delete from sc_real_product_category where product_id = '{@#productId#}'", array('productId'=>$productId)) ;
 		//保存新分类

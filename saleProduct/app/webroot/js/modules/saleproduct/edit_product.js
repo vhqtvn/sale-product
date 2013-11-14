@@ -19,8 +19,10 @@ $(function(){
 				nodeFormat:function(node){
 					node.complete = false ;
 				},
-				asyn : true, //异步
+				asyn : false, //异步
+				cascadeCheck:false,
 				rootId  : 'root',
+				expandLevel:2,
 				rootText : '产品分类',
 				CommandName : 'sqlId:sql_saleproduct_categorytree',
 				recordFormat:true,

@@ -80,6 +80,15 @@
 		}
 		
 		$isOwner = $loginId == $product['EXECUTOR'] ;
+		
+		$products = $SqlUtils->exeSqlWithFormat("SELECT sptp.*,
+													      (SELECT NAME FROM sc_purchase_task spt WHERE spt.id = sptp.TASK_ID) AS TASK_NAME,
+															 (SELECT NAME FROM sc_supplier spt WHERE spt.id = sptp.REAL_PROVIDOR) AS REAL_PROVIDOR_NAME
+													 FROM sc_purchase_task_products sptp , sc_purchase_plan_details sppd
+													where sptp.product_id = sppd.id and sppd.sku = '{@#sku#}'
+													and sptp.product_id = '{@#productId#}'
+													order by sppd.create_time desc
+													  ", array('sku'=>$product['SKU'],'productId'=>$product['ID'] )) ;
 	
 	?>
   
@@ -274,6 +283,23 @@
 	        			<?php };?>
 	        		}
 	        	] ;
+	 	<?php 
+	 		if( empty($products)  && $product['STATUS'] != 25 ){
+	 	?>
+	 	$(function(){
+	 		$("<button class='btn btn-primary btn-danger'  style='position:fixed;top:5px;right:20px;z-index:1000;'>删除</button>").appendTo(document.body).click(function(){
+	 			if(window.confirm("确认删除吗？")){
+					 $.dataservice("model:Sale.deletePurchasePlanProduct",{id:id},function(){
+						jQuery.dialogReturnValue(true) ;//需要刷新
+						 window.close() ;
+					 });
+				 }
+		 		}) ;
+		}) ;
+		
+	 	<?php 
+	 		}
+	 	?>
    </script>
 </head>
 
@@ -358,21 +384,7 @@
 									</tr>
 								</tbody>
 						</table>
-						<?php 
-							$products = $SqlUtils->exeSqlWithFormat("SELECT sptp.*,
-													      (SELECT NAME FROM sc_purchase_task spt WHERE spt.id = sptp.TASK_ID) AS TASK_NAME,
-															 (SELECT NAME FROM sc_supplier spt WHERE spt.id = sptp.REAL_PROVIDOR) AS REAL_PROVIDOR_NAME
-													 FROM sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-													where sptp.product_id = sppd.id and sppd.sku = '{@#sku#}'
-													and sptp.product_id = '{@#productId#}'
-													order by sppd.create_time desc
-													  ", array('sku'=>$product['SKU'],'productId'=>$product['ID'] )) ; 
-//where sptp.product_id = '{@#productId#}'
-				//					array('productId'=>$product['ID'] )) ;  $product['SKU']
-							
-						
-							
-						?>
+
 						<table class="form-table" >
 								<caption>采购任务</caption>
 								<thead>

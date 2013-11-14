@@ -269,7 +269,8 @@
 				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
 				or su.name like '%#searchKey#%'
 			)}
-			and sptp.REAL_PROVIDOR = '{@#supplierId#}'
+			{@ and sptp.REAL_PROVIDOR = '#supplierId#'}
+			{@ and srp.id = '#productId#' }
     </entry>
     
     <entry key="sql_purchase_task_product_selectable">

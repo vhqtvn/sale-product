@@ -54,6 +54,10 @@
 			$( "[name='endTime']" ).datepicker({dateFormat:"yy-mm-dd"});
 			
    	 });
+
+	 function uploadSuccess(id){
+		 $("[name='flowFile']").val("") ;
+	}
    	 
 		
 		function validateForm(){

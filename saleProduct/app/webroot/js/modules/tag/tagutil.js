@@ -106,8 +106,11 @@ var DynTag = {
 				}) ;
 			},{noblock:true});
 		},
-		openTagByEntity:function(entityType,entityId,subEntityType){
+		openTagByEntity:function(entityType,entityId,subEntityType,callback){
+			alert(3333);
 			openCenterWindow(contextPath+"/page/forward/Tag.openTagEntity/"+entityType+"/"+entityId+"/"+subEntityType,400,600,function(){
+				alert(2222);
+				callback&& callback() ;
 		});
 		}
 	
