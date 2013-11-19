@@ -46,7 +46,7 @@
 				    AND  srpr.REAL_ID = '{@#realId#}'
 			)
 			{@  and  ( t.PARENT_ASIN = '#asin#' or t.ASIN = '#asin#'  )}
-			ORDER BY t.START_TIME, t.R_ASIN 
+			ORDER BY t.START_TIME desc, t.R_ASIN 
    </entry>
 
 	<entry key="sql_flow_listAllByRealId">

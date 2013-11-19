@@ -54,6 +54,9 @@
 					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
 		        	{align:"center",key:"QUOTE_PRICE",label:"计划采购价",width:"10%"},
 		           	{align:"center",key:"REAL_QUOTE_PRICE",label:"实际采购价",width:"10%"},
+		        	{align:"center",key:"PROVIDOR_NAME",label:"采购供应商",width:"10%",format:function(val,record){
+									return "<a supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
+			        	}},
 					{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
