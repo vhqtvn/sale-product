@@ -235,7 +235,7 @@ var currentId = '' ;
 		           	{align:"center",key:"LOCAL_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"开发标题",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"P_TITLE",label:"产品标题",width:"20%",forzen:false,align:"left",format:function(val,record){
-		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||"")+"</a>" ;
+		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||"--Listing--")+"</a>" ;
 		           	}},
 		           	{align:"center",key:"PPC_STRATEGY_NAME",label:"竞价排名策略",width:"15%"},
 	           		{align:"center",key:"LOGI_STRATEGY",label:"物流策略",width:"10%"},

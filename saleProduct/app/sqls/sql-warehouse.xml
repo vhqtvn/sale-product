@@ -25,7 +25,8 @@ INSERT INTO sc_warehouse
 	ZIPCODE, 
 	MEMO, 
 	CREATOR, 
-	CREATE_TIME
+	CREATE_TIME,
+	WAREHOUSE_TYPE
 	)
 	VALUES
 	( 
@@ -35,7 +36,8 @@ INSERT INTO sc_warehouse
 	'{@#zipcode#}', 
 	'{@#memo#}', 
 	'{@#loginId#}', 
-	NOW()
+	NOW(),
+	 '{@#warehouseType#}'
 	)
    </entry>
    
@@ -46,7 +48,8 @@ INSERT INTO sc_warehouse
 		NAME = '{@#name#}' , 
 		ADDRESS = '{@#address#}' , 
 		ZIPCODE = '{@#zipcode#}' , 
-		MEMO = '{@#memo#}'
+		MEMO = '{@#memo#}',
+		WAREHOUSE_TYPE = '{@#warehouseType#}'
 		WHERE
 		ID = '{@#id#}'
    </entry>

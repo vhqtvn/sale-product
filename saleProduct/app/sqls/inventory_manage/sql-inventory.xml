@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<comment>库存管理Sql文件</comment>
+	
+	<entry key="sql_inventory_exists">
+		select * from 
+			sc_warehouse_inventory
+			where 
+			REAL_PRODUCT_ID =  '{@#realProductId#}' and
+			LISTING_SKU = '{@#listingSku#}' and
+			ACCOUNT_ID = '{@#accountId#}' and
+			WAREHOUSE_ID = '{@#warehouseId#}' and
+			INVENTORY_TYPE = '{@#inventoryType#}' and
+			INVENTORY_STATUS = '{@#inventoryStatus#}' and
+			INVENTORY_TO = '{@#inventoryTo#}'
+	</entry>
+    
+     <!-- 库存入库操作 -->
+     <entry key="sql_inventory_insert">
+		INSERT INTO sc_warehouse_inventory 
+			( 
+			INVENTORY_ID, 
+			REAL_PRODUCT_ID, 
+			LISTING_SKU, 
+			ACCOUNT_ID, 
+			WAREHOUSE_ID, 
+			INVENTORY_TYPE, 
+			QUANTITY, 
+			INVENTORY_STATUS, 
+			INVENTORY_TO, 
+			CREATED_TIME,
+			CREATOR,
+			LAST_UPDATED_TIME, 
+			LAST_UPDATOR
+			)
+			VALUES
+			('{@#guid#}', 
+			'{@#realProductId#}', 
+			'{@#listingSku#}', 
+			'{@#accountId#}', 
+			'{@#warehouseId#}', 
+			'{@#inventoryType#}', 
+			'{@#quantity:0#}', 
+			'{@#inventoryStatus#}', 
+			'{@#inventoryTo#}', 
+			NOW() , 
+			'{@#loginId#}',
+			NOW() , 
+			'{@#loginId#}'
+			)
+    </entry>
+    
+    <entry key="sql_inventory_update">
+		update sc_warehouse_inventory set 
+			quantity= {@#quantity#},
+			LAST_UPDATED_TIME = NOW(),
+			LAST_UPDATOR = '{@#loginId#}'
+		where 
+			inventory_id = '{@#inventoryId#}'
+    </entry>
+    
+    <entry key="sql_inventory_track_insert">
+		INSERT INTO sc_warehouse_inventory_track 
+				(TRACK_ID, 
+				REAL_PRODUCT_ID, 
+				WAREHOUSE_ID, 
+				LISTING_SKU, 
+				ACCOUNT_ID, 
+				ACTION_TYPE, 
+				ACTION, 
+				ACTION_ENTITY, 
+				INVENTORY_TYPE, 
+				QUANTITY, 
+				INVENTORY_STATUS, 
+				INVENTORY_TO, 
+				RESULT, 
+				ACTION_TIME, 
+				ACTIONOR,
+				INVENTORY_ID
+				)
+				VALUES
+				('{@#guid#}', 
+				'{@#realProductId#}', 
+				'{@#warehouseId#}', 
+				'{@#listingSku#}', 
+				'{@#accountId#}', 
+				'{@#actionType#}', 
+				'{@#action#}', 
+				'{@#actionEntity#}', 
+				'{@#inventoryType#}', 
+				'{@#quantity:0#}', 
+				'{@#inventoryStatus#}', 
+				'{@#inventoryTo#}', 
+				'{@#result#}', 
+				NOW() , 
+				'{@#loginId#}',
+				'{@#inventoryId#}'
+				)
+    </entry>
+</properties>

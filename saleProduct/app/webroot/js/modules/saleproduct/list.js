@@ -207,7 +207,6 @@
 						});
 					}) ;
 					
-					//$.dataservice("model:SaleProduct.getProductStatusBy",{realId: $realIds.join(",") },function(result){});
 				}
 					
 			}) ;

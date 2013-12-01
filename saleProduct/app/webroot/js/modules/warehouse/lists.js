@@ -17,8 +17,10 @@ $(function(){
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:10,
 		 pageSizes:[10,20,30,40],
-		 height:200,
-		 title:"商家列表",
+		 height:function(){
+			 return $(window).height() - 200 ;
+		 },
+		 title:"仓库列表",
 		 indexColumn:false,
 		 querys:{sqlId:"sql_warehouse_lists"},
 		 loadMsg:"数据加载中，请稍候......"
@@ -35,12 +37,12 @@ $(function(){
 	}) ;
 	
 	$(".add").click(function(){
-		openCenterWindow(contextPath+"/warehouse/addPage",650,530) ;
+		openCenterWindow(contextPath+"/warehouse/addPage",850,630) ;
 	}) ;
 	
 	$(".edit").live("click",function(){
 		var val = $(this).attr("val") ;
-		openCenterWindow(contextPath+"/warehouse/editPage/"+val,650,530) ;
+		openCenterWindow(contextPath+"/warehouse/editPage/"+val,850,630) ;
 		return false;
 	}) ;
 });

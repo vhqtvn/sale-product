@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -99,6 +99,13 @@
 								<tr>
 									<th>仓库名称：</th>
 									<td><input type="text" id="name" style="width:95%" data-validator="required" value="<?php echo $warehouse['NAME'];?>"/></td>
+								</tr>
+								<tr>
+									<th>仓库类型：</th>
+									<td>
+										普通仓库：<input type="radio"  name="warehouseType"  value="1"  <?php echo $warehouse['WAREHOUSE_TYPE']==1?"checked":"";?>/>
+										Amazon仓库：<input type="radio"  name="warehouseType"  value="2"  <?php echo $warehouse['WAREHOUSE_TYPE']==2?"checked":"";?>/>
+									</td>
 								</tr>
 								<tr>
 									<th>仓库位置：</th>
