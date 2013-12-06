@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_supplychain_recommendations_list">
+    	select * from sc_amazon_recommendations
+    	where 1=1
+    	{@ and account_id = '#accountId#'}
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_plan_list">
+    	select * from sc_fba_inbound_plan
+    	where 1=1
+    	{@ and account_id = '#accountId#'}
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_plan_details_list">
+    	select * from sc_fba_inbound_plan_items
+    	where 1=1
+    	{@ and account_id = '#accountId#'}
+    	{@ and shipment_id = '#shippmentId#'}
+    </entry>
+    
+    
+    <entry key="sql_supplychain_fbainventory_list">
+    	select * from sc_fba_supply_inventory
+    	where 1=1
+    	{@ and account_id = '#accountId#'}
+    </entry>
+    
+     <entry key="sql_supplychain_fbainventory_details_list">
+    	select * from sc_fba_supply_inventory_details
+    	where 1=1
+    	{@ and account_id = '#accountId#'}
+    	{@ and seller_sku = '#sellerSku#'}
+    </entry>
+ </properties>
