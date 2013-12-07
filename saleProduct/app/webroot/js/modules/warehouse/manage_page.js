@@ -49,16 +49,16 @@
 			$(".delete").live("click",function(){
 				var val = $(this).attr("val") ;
 				$.ajax({
-				type:"post",
-				url:contextPath+"/form/ajaxSave/" ,
-				data:{warehouseManageId:val,sqlId:"sql_warehouse_manage_delete"},
-				cache:false,
-				dataType:"text",
-				success:function(result,status,xhr){
-					alert("保存成功!");
-					$(".grid-content").llygrid("reload",{},true) ;
-				}
-			});
+					type:"post",
+					url:contextPath+"/form/ajaxSave/" ,
+					data:{warehouseManageId:val,sqlId:"sql_warehouse_manage_delete"},
+					cache:false,
+					dataType:"text",
+					success:function(result,status,xhr){
+						alert("保存成功!");
+						$(".grid-content").llygrid("reload",{},true) ;
+					}
+				});
 				return false;
 			}) ;
 		

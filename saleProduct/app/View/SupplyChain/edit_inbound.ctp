@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <?php echo $this->Html->charset(); ?>
+    <title>功能编辑</title>
+    <meta http-equiv="pragma" content="no-cache"/>
+	<meta http-equiv="cache-control" content="no-cache"/>
+
+  <?php
+ 		 include_once ('config/config.php');
+  
+		echo $this->Html->meta('icon');
+		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/validator/jquery.validation');
+		echo $this->Html->css('default/style');
+		
+		echo $this->Html->script('jquery');
+		echo $this->Html->script('common');
+		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('grid/query');
+		echo $this->Html->script('modules/supplychain/edit_inbound');
+		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$planId = $params['arg1'] ;
+		
+		$plan = $SqlUtils->getObject("sql_supplychain_inbound_local_plan_getByPlanId",array('planId'=>$planId)) ;
+		
+		
+	?>
+</head>
+<script>
+	var status = '<?php echo $plan['STATUS'];?>'
+	var planId = '<?php echo $planId;?>' ;
+</script>
+<body class="container-popup">
+	<div class="row-fluid">
+			<div class="span5">
+				<h4>Inbound计划创建</h4>
+				<div  style="padding:10px;text-align:right;">
+					<?php  if( $plan['STATUS'] !=1 ){ ?>
+					<button class="btn btn-primary  save-plan"  >保存计划</button>
+					<button class="btn btn-danger save-to-amazon"  >创建到Amazon</button>
+					<?php }?>
+				</div>
+				<form  id="planForm" action="">
+				<input type="hidden" name="planId" id="planId"  value="<?php echo $plan['PLAN_ID'];?>"/>
+				<table  class="table table-bordered">
+				    <caption>基本信息</caption>
+					<tr>
+						<th>账号：</th>
+						<td>
+							<select name="accountId" class="span2">
+				     		<option value="">--选择--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			$checked = $account['ID'] == $plan['ACCOUNT_ID']?"selected":"" ;
+					     			echo "<option value='".$account['ID']."'  $checked>".$account['NAME']."</option>" ;
+					     		} ;
+					     	?>
+							</select>
+						</td>
+				    </tr>
+				    <tr>
+						<th>Label Type：</th>
+						<td>
+							<select name="labelPrepType" class="span2">
+								<option value="">选择</option>
+								<option value="SELLER_LABEL"  <?php if($plan['LABEL_PREP_TYPE'] == 'SELLER_LABEL') echo 'selected'; ?>>SELLER_LABEL</option>
+								<option value="AMAZON_LABEL_ONLY" <?php if($plan['LABEL_PREP_TYPE'] == 'AMAZON_LABEL_ONLY') echo 'selected'; ?>>AMAZON_LABEL_ONLY</option>
+								<option value="AMAZON_LABEL_PREFERRED" <?php if($plan['LABEL_PREP_TYPE'] == 'AMAZON_LABEL_PREFERRED') echo 'selected'; ?>>AMAZON_LABEL_PREFERRED</option>
+							</select>
+						</td>
+				    </tr>					
+			</table>
+			<table  class="table table-bordered">
+				    <caption>发货地址信息</caption>
+					<tr>
+						<th>地址名称：</th>
+						<td>
+							<input type="text" name="name"  value="<?php echo $plan['NAME'];?>"/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>Address Line1：</th>
+						<td>
+							<input type="text" name="addressLine1"  value="<?php echo $plan['ADDRESS_LINE1'];?>"/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>Address Line2：</th>
+						<td>
+							<input type="text" name="addressLine2"  value="<?php echo $plan['ADDRESS_LINE2'];?>"/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>District/Country：</th>
+						<td>
+							<input type="text" name="districtOrCountry"  value="<?php echo $plan['DISTRICT_OR_COUNTRY'];?>"/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>City：</th>
+						<td>
+							<input type="text" name="city"  value="<?php echo $plan['CITY'];?>"/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>State/Province：</th>
+						<td>
+							<input type="text" name="stateOrProvinceCode"  value="<?php echo $plan['STATE_OR_PROVINCE_CODE'];?>"/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>Country Code：</th>
+						<td>
+							<input type="text" name="countryCode"  value="<?php echo $plan['COUNTRY_CODE'];?>"/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>Postal Code：</th>
+						<td>
+							<input type="text" name="postalCode"  value="<?php echo $plan['POSTAL_CODE'];?>"/>
+						</td>
+				    </tr>						
+			</table>
+			</form>
+			</div>
+			<div class="span7">
+				<h4>Inbound计划Listing</h4>
+				<div  style="padding:10px;text-align:right;">
+					<?php  if( $plan['STATUS'] !=1 ){ ?>
+					<button class="btn btn-primary add-sku"  >添加Listing SKU</button>
+					<?php } ?>
+				</div>
+				<div class="grid-content-detials"></div>
+			</div>
+	</div>
+</body>
+</html>

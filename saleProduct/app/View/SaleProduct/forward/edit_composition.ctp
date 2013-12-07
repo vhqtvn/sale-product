@@ -66,10 +66,16 @@
 			   
 			$(".select-p").listselectdialog( productGridSelect,function(){
 				var args = jQuery.dialogReturnValue() ;
-				var value = args.value ;
-				var label = args.label ;
-				var selectReocrds = args.selectReocrds ;
+				if(args){
+					var value = args.value  ;
+					var label = args.label ;
+					var selectReocrds = args.selectReocrds ;
+
+					setSelectedValue(  selectReocrds[ value[0] ] ) ;
+				}
 				
+				/*
+				alert( $.json.encode(args) ) ;
 				$("#REAL_PRODUCT_ID").val(value) ;
 			
 				if( !$.validation.validate('#personForm').errorInfo ) {
@@ -79,7 +85,7 @@
 						$.dataservice("model:ProductDev.doFlow",json,function(result){
 							window.location.reload() ;
 						});
-				} ;
+				} ;*/
 				
 				return false;
 			}) ;

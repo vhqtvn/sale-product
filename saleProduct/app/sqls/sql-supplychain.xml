@@ -19,6 +19,18 @@
     	{@ and shipment_id = '#shippmentId#'}
     </entry>
     
+    <entry key="sql_supplychain_inbound_local_plan_list">
+    	select * from sc_fba_inbound_local_plan
+    	where 1=1
+    	{@ and account_id = '#accountId#'}
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_plan_local_details_list">
+    	select * from sc_fba_inbound_local_plan_items
+    	where 1=1
+    	and plan_id = '{@#planId#}'
+    </entry>
+    
     
     <entry key="sql_supplychain_fbainventory_list">
     	select * from sc_fba_supply_inventory
@@ -31,5 +43,124 @@
     	where 1=1
     	{@ and account_id = '#accountId#'}
     	{@ and seller_sku = '#sellerSku#'}
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_local_plan_getByPlanId">
+    	select * from sc_fba_inbound_local_plan where plan_id = '{@#planId#}'
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_local_plan_insert">
+		 INSERT INTO sc_fba_inbound_local_plan 
+							(
+							PLAN_ID,
+							ACCOUNT_ID, 
+							LABEL_PREP_TYPE, 
+							NAME, 
+							ADDRESS_LINE1, 
+							ADDRESS_LINE2, 
+							DISTRICT_OR_COUNTRY, 
+							CITY, 
+							STATE_OR_PROVINCE_CODE, 
+							COUNTRY_CODE, 
+							POSTAL_CODE, 
+							CREATE_DATE,
+							CREATOR
+							)
+							VALUES
+							(
+							'{@#planId#}',
+							'{@#accountId#}', 
+							'{@#labelPrepType#}', 
+							'{@#name#}', 
+							'{@#addressLine1#}', 
+							'{@#addressLine2#}', 
+							'{@#districtOrCountry#}', 
+							'{@#city#}', 
+							'{@#stateOrProvinceCode#}', 
+							'{@#countryCode#}', 
+							'{@#postalCode#}', 
+							NOW(),
+							'{@#loginId#}'
+							)
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_local_plan_edit">
+		UPDATE sc_fba_inbound_local_plan 
+				SET 
+					ACCOUNT_ID = '{@#accountId#}' ,
+					LABEL_PREP_TYPE = '{@#labelPrepType#}' , 
+					NAME = '{@#name#}' , 
+					ADDRESS_LINE1 = '{@#addressLine1#}' , 
+					ADDRESS_LINE2 = '{@#addressLine2#}' , 
+					DISTRICT_OR_COUNTRY = '{@#districtOrCountry#}' , 
+					CITY = '{@#city#}' , 
+					STATE_OR_PROVINCE_CODE = '{@#stateOrProvinceCode#}' , 
+					COUNTRY_CODE = '{@#countryCode#}' , 
+					POSTAL_CODE = '{@#postalCode#}' 
+				WHERE
+				PLAN_ID = '{@#planId#}' 
+    </entry>
+    
+    
+    <entry key="sql_supplychain_inbound_local_plan_item_insert">
+			INSERT INTO sc_fba_inbound_local_plan_items 
+				(ITEM_ID, 
+				PLAN_ID, 
+				SKU, 
+				QUANTITY, 
+				CREATOR, 
+				CREATE_DATE, 
+				MEMO
+				)
+				VALUES
+				('{@#itemId#}', 
+				'{@#planId#}', 
+				'{@#sku#}', 
+				'{@#quantity#}', 
+				'{@#loginId#}', 
+				NOW(), 
+				'{@#memo#}'
+				)
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_local_plan_item_edit">
+		UPDATE sc_fba_inbound_local_plan_items 
+			SET
+			SKU = '{@#sku#}' , 
+			QUANTITY = '{@#quantity#}' , 
+			MEMO = '{@#memo#}'
+			WHERE
+			ITEM_ID = '{@#itemId#}'
+    </entry>
+    
+    <entry key="sql_supplychain_selelctproductForInbound_list">
+    <![CDATA[
+    select * from (	
+		SELECT  sc_amazon_account_product.*,
+				(SELECT COUNT(1) FROM sc_fba_inbound_local_plan sfilp,sc_fba_inbound_local_plan_items sflipi
+				 WHERE sfilp.plan_id ='{@#id#}'
+				 AND  sfilp.plan_id = sflipi.plan_id
+				 AND  sflipi.sku = sc_amazon_account_product.sku
+				 AND  sfilp.account_id = sc_amazon_account_product.account_id
+				 ) AS checked
+						 FROM sc_amazon_account_product 
+									WHERE STATUS = 'Y'
+									
+					{@ AND title LIKE '%#title#%' }
+					{@ AND ASIN = '#asin#' }
+					{@ AND sku = '#sku#' }
+					{@ AND account_id = '#accountId#' }
+					
+					{@ AND sku NOT IN (
+								SELECT sku FROM sc_amazon_product_category_rel WHERE sku IS NOT NULL AND account_id = '#accountId#')
+						AND 1= #uncategory#
+					}
+					{@ AND sku IN (
+								SELECT sku FROM sc_amazon_product_category_rel WHERE category_id = '#categoryId#'
+								AND sku IS NOT NULL AND account_id = '#accountId#'
+					)}
+					
+		) t order by t.checked desc
+	]]>	      
     </entry>
  </properties>
