@@ -14,7 +14,7 @@ $(function(){
            	{align:"center",key:"NAME",label:"名称",group:"发货地址",width:"20%"},
            	{align:"center",key:"ADDRESS_LINE1",label:"AddressLine1",group:"发货地址",width:"20%"},
            	{align:"center",key:"ADDRESS_LINE2",label:"AddressLine2",group:"发货地址",width:"20%"},
-           	{align:"center",key:"DISTRICT_OR_COUNTRY",label:"国家或地区",group:"发货地址",width:"20%"},
+           	{align:"center",key:"DISTRICT_OR_COUNTY",label:"国家或地区",group:"发货地址",width:"20%"},
            	{align:"center",key:"CITY",label:"城市",group:"发货地址",width:"20%"},
            	{align:"center",key:"STATE_OR_PROVINCE_CODE",label:"州或省代码",group:"发货地址",width:"20%"},
            	{align:"center",key:"COUNTRY_CODE",label:"国家代码",group:"发货地址",width:"20%"},

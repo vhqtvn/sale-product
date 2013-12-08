@@ -10,6 +10,7 @@
     	select * from sc_fba_inbound_plan
     	where 1=1
     	{@ and account_id = '#accountId#'}
+    	order by order_no desc
     </entry>
     
     <entry key="sql_supplychain_inbound_plan_details_list">
@@ -58,13 +59,16 @@
 							NAME, 
 							ADDRESS_LINE1, 
 							ADDRESS_LINE2, 
-							DISTRICT_OR_COUNTRY, 
+							DISTRICT_OR_COUNTY, 
 							CITY, 
 							STATE_OR_PROVINCE_CODE, 
 							COUNTRY_CODE, 
 							POSTAL_CODE, 
 							CREATE_DATE,
-							CREATOR
+							CREATOR,
+							SHIPMENT_TYPE,
+							IS_PARTNERED,
+							CARRIER_NAME
 							)
 							VALUES
 							(
@@ -74,13 +78,16 @@
 							'{@#name#}', 
 							'{@#addressLine1#}', 
 							'{@#addressLine2#}', 
-							'{@#districtOrCountry#}', 
+							'{@#districtOrCounty#}', 
 							'{@#city#}', 
 							'{@#stateOrProvinceCode#}', 
 							'{@#countryCode#}', 
 							'{@#postalCode#}', 
 							NOW(),
-							'{@#loginId#}'
+							'{@#loginId#}',
+							'{@#shipmentType#}',
+							'{@#isPartnered#}',
+							'{@#carrierName#}'
 							)
     </entry>
     
@@ -92,11 +99,14 @@
 					NAME = '{@#name#}' , 
 					ADDRESS_LINE1 = '{@#addressLine1#}' , 
 					ADDRESS_LINE2 = '{@#addressLine2#}' , 
-					DISTRICT_OR_COUNTRY = '{@#districtOrCountry#}' , 
+					DISTRICT_OR_COUNTY = '{@#districtOrCounty#}' , 
 					CITY = '{@#city#}' , 
 					STATE_OR_PROVINCE_CODE = '{@#stateOrProvinceCode#}' , 
 					COUNTRY_CODE = '{@#countryCode#}' , 
-					POSTAL_CODE = '{@#postalCode#}' 
+					POSTAL_CODE = '{@#postalCode#}' ,
+					SHIPMENT_TYPE='{@#shipmentType#}',
+					IS_PARTNERED='{@#isPartnered#}',
+					CARRIER_NAME='{@#carrierName#}'
 				WHERE
 				PLAN_ID = '{@#planId#}' 
     </entry>

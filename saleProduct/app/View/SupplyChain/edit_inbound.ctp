@@ -29,6 +29,11 @@
 		
 		
 	?>
+	<style type="text/css">
+	.span5 table td,.span5 table th{
+		padding:3px 5px!important;
+	}
+	</style>
 </head>
 <script>
 	var status = '<?php echo $plan['STATUS'];?>'
@@ -100,7 +105,7 @@
 				    <tr>
 						<th>District/Country：</th>
 						<td>
-							<input type="text" name="districtOrCountry"  value="<?php echo $plan['DISTRICT_OR_COUNTRY'];?>"/>
+							<input type="text" name="districtOrCounty"  value="<?php echo $plan['DISTRICT_OR_COUNTY'];?>"/>
 						</td>
 				    </tr>
 				    <tr>
@@ -127,6 +132,43 @@
 							<input type="text" name="postalCode"  value="<?php echo $plan['POSTAL_CODE'];?>"/>
 						</td>
 				    </tr>						
+			</table>
+			<table  class="table table-bordered">
+				    <caption>运输信息</caption>
+					<tr>
+						<th>IsPartnered：</th>
+						<td>
+							是：<input type="radio"  name="isPartnered" value="true"   <?php if($plan['IS_PARTNERED'] == 'true') echo 'checked'; ?>/>
+							否：<input type="radio"  name="isPartnered" value="false"  <?php if($plan['IS_PARTNERED'] != 'true') echo 'checked'; ?>/>
+						</td>
+				    </tr>
+				    <tr>
+						<th>Shipment Type：</th>
+						<td>
+							<select name="shipmentType" class="span2">
+								<option value="">选择</option>
+								<option value="SP" <?php if($plan['SHIPMENT_TYPE'] != 'LTL') echo 'selected'; ?>>SP</option>
+								<option value="LTL" <?php if($plan['SHIPMENT_TYPE'] == 'LTL') echo 'selected'; ?>>LTL</option>
+							</select>
+						</td>
+				    </tr>	
+				    <tr>
+						<th>Carrier Name ：</th>
+						<td>
+							<select name="carrierName" class="span2">
+								<option value="OTHER"  <?php if($plan['CARRIER_NAME'] == 'OTHER') echo 'selected'; ?>>OTHER</option>
+								<option value="BUSINESS_POST" <?php if($plan['CARRIER_NAME'] == 'BUSINESS_POST') echo 'selected'; ?>>BUSINESS_POST</option>
+								<option value="DHL_AIRWAYS_INC" <?php if($plan['CARRIER_NAME'] == 'DHL_AIRWAYS_INC') echo 'selected'; ?>>DHL_AIRWAYS_INC</option>
+								<option value="DHL_UK"  <?php if($plan['CARRIER_NAME'] == 'DHL_UK') echo 'selected'; ?>>DHL_UK</option>
+								<option value="PARCELFORCE"  <?php if($plan['CARRIER_NAME'] == 'PARCELFORCE') echo 'selected'; ?>>PARCELFORCE</option>
+								<option value="DPD"  <?php if($plan['CARRIER_NAME'] == 'DPD') echo 'selected'; ?>>DPD</option>
+								<option value="TNT_LOGISTICS_CORPORATION"  <?php if($plan['CARRIER_NAME'] == 'TNT_LOGISTICS_CORPORATION') echo 'selected'; ?>>TNT_LOGISTICS_CORPORATION</option>
+								<option value="TNT"  <?php if($plan['CARRIER_NAME'] == 'TNT') echo 'selected'; ?>>TNT</option>
+								<option value="YODEL"  <?php if($plan['CARRIER_NAME'] == 'YODEL') echo 'selected'; ?>>YODEL</option>
+								<option value="UNITED_PARCEL_SERVICE_INC"  <?php if($plan['CARRIER_NAME'] == 'UNITED_PARCEL_SERVICE_INC') echo 'selected'; ?>>UNITED_PARCEL_SERVICE_INC</option>
+							</select>
+						</td>
+				    </tr>		
 			</table>
 			</form>
 			</div>
