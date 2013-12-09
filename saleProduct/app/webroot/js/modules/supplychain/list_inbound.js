@@ -12,13 +12,13 @@ $(function(){
 		columns:[
 		    {align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
 		    	var html = [] ;
-		    	//if( record.FIX_SHIP_STATUS == '0' ){
+		    	if( record.FIX_SHIP_STATUS == '0' ){
 		    		html.push("<a href='#' class='action edit_skus' val='"+val+"'>编辑</a>&nbsp;") ;
 		    		html.push("<a href='#' class='action async' val='"+val+"'>同步</a>&nbsp;") ;
-		    	//}else  if( record.SHIPMENT_STATUS == 'WORKING' ){
-		    	//	html.push("<a href='#' class='action track' val='"+val+"'>跟踪</a>&nbsp;") ;
+		    	}else  if( record.SHIPMENT_STATUS == 'WORKING' ){
+		    		html.push("<a href='#' class='action track' val='"+val+"'>跟踪</a>&nbsp;") ;
 					html.push("<a href='#' class='action update' val='"+val+"'>更新</a>&nbsp;") ;
-		    	//}
+		    	}
 		    	return html.join("") ;
 		    }},
 			{align:"center",key:"SHIPMENT_ID",label:"ShipmentId",width:"10%",forzen:false,align:"left"},
