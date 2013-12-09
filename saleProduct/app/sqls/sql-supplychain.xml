@@ -111,6 +111,40 @@
 				PLAN_ID = '{@#planId#}' 
     </entry>
     
+    <entry key="sql_supplychain_inbound_plan_item_insert">
+			
+			INSERT INTO  sc_fba_inbound_plan_items 
+				(ACCOUNT_ID, 
+				SHIPMENT_ID, 
+				SELLER_SKU, 
+				QUANTITY
+				)
+				VALUES
+				('{@#accountId#}', 
+				'{@#shipmentId#}', 
+				'{@#sku#}', 
+				'{@#quantity#}'
+				)
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_plan_item_exists">
+		select * from  sc_fba_inbound_plan_items 
+			WHERE
+			ACCOUNT_ID = '{@#accountId#}' and 
+			SHIPMENT_ID = '{@#shipmentId#}'
+			and SELLER_SKU = '{@#sku#}'
+    </entry>
+    
+    <entry key="sql_supplychain_inbound_plan_item_edit">
+		UPDATE sc_fba_inbound_plan_items 
+			SET
+			QUANTITY = '{@#quantity#}' 
+			WHERE
+			ACCOUNT_ID = '{@#accountId#}' and 
+			SHIPMENT_ID = '{@#shipmentId#}'
+			and SELLER_SKU = '{@#sku#}'
+    </entry>
+    
     
     <entry key="sql_supplychain_inbound_local_plan_item_insert">
 			INSERT INTO sc_fba_inbound_local_plan_items 

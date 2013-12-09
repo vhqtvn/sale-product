@@ -2,6 +2,11 @@ $(function(){
 
 	$(".grid-content-detials").llygrid({
 		columns:[
+			{align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
+				var html = [] ;
+				html.push("<a href='#' class='action delete-items' val='"+val+"'>删除</a>&nbsp;") ;
+				return html.join("") ;
+			}},
 			{align:"center",key:"SKU",label:"Sku",width:"20%",forzen:false,align:"left"},
            	{align:"center",key:"QUANTITY",label:"Quantity",width:"20%",forzen:false,align:"left"},
            	{align:"center",key:"MEMO",label:"Memo",width:"40%"}
@@ -16,6 +21,15 @@ $(function(){
 		 indexColumn:false,
 		 querys:{sqlId:"sql_supplychain_inbound_plan_local_details_list",planId:planId},
 		 loadMsg:"数据加载中，请稍候......"
+	}) ;
+	
+	$(".delete-items").live('click',function(){
+		var record = $(this).closest("tr").data("record") ;
+		if(window.confirm("确认删除吗？")){
+			$.dataservice("model:SupplyChain.Inbound.deletePlanItem",{itemId: record.ITEM_ID },function(result){
+				$(".grid-content-detials").llygrid("reload",{},true) ;
+			});
+		}
 	}) ;
 	
 	$(".save-plan").click(function(){

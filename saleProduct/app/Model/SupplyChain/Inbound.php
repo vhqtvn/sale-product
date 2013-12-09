@@ -2,6 +2,59 @@
 class Inbound extends AppModel {
 	var $useTable = false;
 	
+	public function updateShipmentName($params){
+		$this->exeSql("
+						UPDATE sc_fba_inbound_plan
+							SET
+							SHIPMENT_NAME = '{@#shipmentName#}'
+							WHERE
+							ACCOUNT_ID = '{@#accountId#}' AND SHIPMENT_ID = '{@#shipmentId#}' ", $params) ;
+	}
+	
+	function deletePlanItem($params){
+		$this->exeSql("
+						delete from sc_fba_inbound_local_plan_items
+							WHERE
+							ITEM_ID = '{@#itemId#}'
+					", $params) ;
+	}
+	
+	function deletePlanShipmentItem($params){
+		$this->exeSql("
+						delete from sc_fba_inbound_plan_items
+							WHERE
+							ACCOUNT_ID = '{@#accountId#}'
+						    AND SHIPMENT_ID = '{@#shipmentId#}'
+                            AND  SELLER_SKU = '{@#sku#}'
+					", $params) ;
+	}
+	
+	public function updatePlanShipmentItem($params){
+		$shipmentId = $params['shipmentId'] ;
+		$accountId  = $params['accountId'] ;
+	
+		//更新订单明细库存
+		$items =  json_decode( $params['items'] )   ;
+		foreach($items as $item){
+			$array = get_object_vars($item);
+			$sku = $array['sku'] ;
+			$quantity = $array['quantity'] ;
+				
+			$params['sku'] = $sku ;
+			$params['quantity'] = $quantity ;
+				
+			$this->exeSql("
+						UPDATE sc_fba_inbound_plan_items
+							SET
+							QUANTITY = '{@#quantity#}'
+							WHERE
+							ACCOUNT_ID = '{@#accountId#}'
+						    AND SHIPMENT_ID = '{@#shipmentId#}'
+                            AND  SELLER_SKU = '{@#sku#}'
+					", $params) ;
+		}
+	}
+	
 	public function updatePlanItem($params){
 		$shipmentId = $params['shipmentId'] ;
 		$accountId  = $params['accountId'] ;
@@ -61,6 +114,18 @@ class Inbound extends AppModel {
 		}
 		
 		return $params['planId']  ;
+	}
+	
+	
+	public function savePlanShipmentSku($params){
+		//判断时候存在
+		$result = $this->getObject("sql_supplychain_inbound_plan_item_exists", $params) ;
+		
+		if( empty($result) ){
+			$this->exeSql("sql_supplychain_inbound_plan_item_insert", $params) ;
+		}else{
+			$this->exeSql("sql_supplychain_inbound_plan_item_edit", $params) ;
+		}
 	}
 	
 	public function savePlanSku($params){
