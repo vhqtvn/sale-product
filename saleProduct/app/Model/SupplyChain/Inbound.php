@@ -88,6 +88,21 @@ class Inbound extends AppModel {
 		}
 	}
 	
+	public function loadPlanByShipmentId($params){
+		$accountId = $params['accountId'] ;
+		
+		$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+		$account = $Amazonaccount->getAccountIngoreDomainById($accountId)  ;
+		$account = $account[0]['sc_amazon_account']  ;
+		
+		
+		$Utils  = ClassRegistry::init("Utils") ;
+		$url = $Utils->buildUrl($account,"taskAsynAmazon/loadByShipmentId") ;
+		$url = $url."/".$params['shipmentId'];
+		
+		$result = file_get_contents($url  );
+	}
+	
 	public function asyncPlanToAmazon($params){
 		
 		$accountId = $params['accountId'] ;
