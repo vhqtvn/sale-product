@@ -65,7 +65,7 @@
 									<td>
 										WORKING：<input type="radio"  name="shipmentStatus" value="WORKING"   <?php if($plan['SHIPMENT_STATUS'] == 'WORKING') echo 'checked'; ?>/>
 										&nbsp;
-										SHIPPED：<input type="radio"  name="shipmentStatus" value="SHIPPED"  <?php if($plan['SHIPMENT_STATUS'] == 'SHIPPED') echo 'checked'; ?>/>
+										SHIPPED：<input type="radio"  name="shipmentStatus"  disabled value="SHIPPED"  <?php if($plan['SHIPMENT_STATUS'] == 'SHIPPED') echo 'checked'; ?>/>
 										&nbsp;
 										CANCELLED：<input type="radio"  name="shipmentStatus" value="CANCELLED"  <?php if($plan['SHIPMENT_STATUS'] == 'CANCELLED') echo 'checked'; ?>/>
 									</td>
@@ -79,14 +79,21 @@
 									<th>货品名称</th>
 									<th>数量</th>
 								</tr>
-							<?php  	foreach ($skuMembers as $item){ ?>
+							<?php  	foreach ($skuMembers as $item){ 
+							
+								$quantity = $item['QUANTITY_SHIPPED'] ;
+								if( !empty( $item['QUANTITY'] ) ){
+									$quantity = $item['QUANTITY']  ;
+								}
+								
+								?>
 								<tr>
 									<td><?php echo $item['SELLER_SKU'] ;?></td>
 									<td><?php echo $item['ASIN'] ;?></td>
 									<td><?php echo $item['NAME'] ;?></td>
 									<td class="sellerSku" >
 										<input type="hidden" name="sellerSku" value="<?php echo $item['SELLER_SKU'];?>"/>
-										<input type="text" name="quantity" value="<?php echo $item['QUANTITY_SHIPPED'] ;?>"/>
+										<input type="text" name="quantity" value="<?php echo $quantity;?>"/>
 									</td>
 								</tr>
 							<?php 	} ?>
