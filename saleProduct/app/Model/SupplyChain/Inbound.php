@@ -79,13 +79,29 @@ class Inbound extends AppModel {
 			$this->exeSql("
 						UPDATE sc_fba_inbound_plan_items
 							SET
-							FIX_QUANTITY = '{@#quantity#}'
+							QUANTITY = '{@#quantity#}'
 							WHERE
 							ACCOUNT_ID = '{@#accountId#}' 
 						    AND SHIPMENT_ID = '{@#shipmentId#}'
                             AND  SELLER_SKU = '{@#sku#}'
 					", $params) ;
 		}
+	}
+	
+	public function asyncPlanToAmazon($params){
+		
+		$accountId = $params['accountId'] ;
+	
+		$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+		$account = $Amazonaccount->getAccountIngoreDomainById($accountId)  ;
+		$account = $account[0]['sc_amazon_account']  ;
+	
+	
+		$Utils  = ClassRegistry::init("Utils") ;
+		$url = $Utils->buildUrl($account,"taskAsynAmazon/createInboundShipment") ;
+		$url = $url."/".$params['shipmentId'];
+	
+		$result = file_get_contents($url  );
 	}
 	
 	public function updatePlanItemToAmazon($params){
@@ -100,7 +116,7 @@ class Inbound extends AppModel {
 		
 		$Utils  = ClassRegistry::init("Utils") ;
 		$url = $Utils->buildUrl($account,"taskAsynAmazon/updateInboundShipment") ;
-		$url = $url.'/'.$accountId."/".$params['shipmentId'];
+		$url = $url."/".$params['shipmentId'];
 		
 		$result = file_get_contents($url  );
 	}
@@ -170,7 +186,7 @@ class Inbound extends AppModel {
 		
 		$Utils  = ClassRegistry::init("Utils") ;
 		$url = $Utils->buildUrl($account,"taskAsynAmazon/putTransportContent") ;
-		$url = $url.'/'.$accountId."/".$params['shipmentId'];
+		$url = $url."/".$params['shipmentId'];
 		
 		$result = file_get_contents($url  );
 	}
