@@ -10,15 +10,17 @@ $(function(){
  * */
 	$(".grid-content").llygrid({
 		columns:[
-		    {align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
+		    {align:"center",key:"ID",label:"操作", width:"15%",format:function(val,record){
 		    	var html = [] ;
 		    	if( !record.SHIPMENT_STATUS ){
 		    		html.push("<a href='#' class='action edit_skus' val='"+val+"'>编辑</a>&nbsp;") ;
-		    		html.push("<a href='#' class='action async' val='"+val+"'>同步</a>&nbsp;") ;
+		    		html.push("<a href='#' class='action async' val='"+val+"'>提交</a>&nbsp;") ;
 		    	}else  if( record.SHIPMENT_STATUS == 'WORKING' ){
-		    		html.push("<a href='#' class='action track' val='"+val+"'>跟踪</a>&nbsp;") ;
+		    		html.push("<a href='#' class='action track' val='"+val+"'>物流</a>&nbsp;") ;
 					html.push("<a href='#' class='action update' val='"+val+"'>更新</a>&nbsp;") ;
+					
 		    	}
+		    	html.push("<a href='#' class='action loadfromAamzon' val='"+val+"'>同步</a>&nbsp;") ;
 		    	return html.join("") ;
 		    }},
 			{align:"center",key:"SHIPMENT_ID",label:"ShipmentId",width:"10%",forzen:false,align:"left"},
@@ -78,12 +80,24 @@ $(function(){
 				 }) ;
 			 }) ;
 			 
+			 $(".grid-content").find(".loadfromAamzon").click(function(){
+				 var record = $(this).closest("tr").data("record") ; 
+				 var accountId= record.ACCOUNT_ID ;
+				 var shipmentId = record.SHIPMENT_ID ;
+				 var json = {accountId:accountId,shipmentId:shipmentId} ;
+				 if(window.confirm("确认同步Amazon数据吗？")){
+					 $.dataservice("model:SupplyChain.Inbound.loadPlanByShipmentId",json,function(result){
+						 me.html(val) ;
+					  });
+				 }
+			 }) ;
+			 
 			 $(".grid-content").find(".async").click(function(){
 				 var record = $(this).closest("tr").data("record") ; 
 				 var accountId= record.ACCOUNT_ID ;
 				 var shipmentId = record.SHIPMENT_ID ;
 				 var json = {accountId:accountId,shipmentId:shipmentId} ;
-				 if(window.confirm("确认将创建的Inbound计划同步到Amazon吗？")){
+				 if(window.confirm("确认将创建的Inbound计划提交到Amazon吗？")){
 					 $.dataservice("model:SupplyChain.Inbound.asyncPlanToAmazon",json,function(result){
 						 me.html(val) ;
 					  });
