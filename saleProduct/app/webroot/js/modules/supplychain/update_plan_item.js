@@ -18,11 +18,14 @@ $(function(){
 	}) ;
 	
 	$(".to-amazon").click(function(){
+		
 		if( !$.validation.validate('#personForm').errorInfo ) {
-			var json = $("#personForm").toJson() ;
-			$.dataservice("model:SupplyChain.Inbound.updatePlanItemToAmazon",json,function(result){
-				window.location.reload() ;
-			});
+			if(window.confirm("确认提交到Amazon吗？")){
+				var json = $("#personForm").toJson() ;
+				$.dataservice("model:SupplyChain.Inbound.updatePlanItemToAmazon",json,function(result){
+					window.location.reload() ;
+				});
+			}
 		}
 	}) ;
 	

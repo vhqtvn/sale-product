@@ -12,7 +12,7 @@ $(function(){
 		columns:[
 		    {align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
 		    	var html = [] ;
-		    	if( record.FIX_SHIP_STATUS == '0' ){
+		    	if( !record.SHIPMENT_STATUS ){
 		    		html.push("<a href='#' class='action edit_skus' val='"+val+"'>编辑</a>&nbsp;") ;
 		    		html.push("<a href='#' class='action async' val='"+val+"'>同步</a>&nbsp;") ;
 		    	}else  if( record.SHIPMENT_STATUS == 'WORKING' ){
@@ -23,9 +23,9 @@ $(function(){
 		    }},
 			{align:"center",key:"SHIPMENT_ID",label:"ShipmentId",width:"10%",forzen:false,align:"left"},
            	{align:"center",key:"SHIPMENT_NAME",label:"ShipmentName",width:"20%",forzen:false,align:"left",format:function(val,record){
-           		//if( record.FIX_SHIP_STATUS == '0' ){
+           		if(  !record.SHIPMENT_STATUS ){
 		    		return  "<div title='双击编辑Shipment Name'  class='dbclick-edit'  val='"+val+"'>"+val+"</div>"
-		    	//}
+		    	}
            		return val ;
            	}},
            	{align:"center",key:"DESTINATION_FULFILLMENT_CENTER_ID",label:"Dest CenterId",width:"5%"},
@@ -78,6 +78,19 @@ $(function(){
 				 }) ;
 			 }) ;
 			 
+			 $(".grid-content").find(".async").click(function(){
+				 var record = $(this).closest("tr").data("record") ; 
+				 var accountId= record.ACCOUNT_ID ;
+				 var shipmentId = record.SHIPMENT_ID ;
+				 var json = {accountId:accountId,shipmentId:shipmentId} ;
+				 if(window.confirm("确认将创建的Inbound计划同步到Amazon吗？")){
+					 $.dataservice("model:SupplyChain.Inbound.asyncPlanToAmazon",json,function(result){
+						 me.html(val) ;
+					  });
+				 }
+				
+			 }) ;
+			 
 			 $(".grid-content").find(".edit_skus").click(function(){
 				 var record = $(this).closest("tr").data("record") ; 
 				 openCenterWindow(contextPath+"/page/forward/SupplyChain.add_plan_item/"+record.ACCOUNT_ID+"/"+record.SHIPMENT_ID,800,500,function(){
@@ -88,6 +101,7 @@ $(function(){
 			 $(".grid-content").find(".dbclick-edit").click(function(event){
 				 var me = $(this) ;
 				 var record = $(this).closest("tr").data("record") ;
+				 if( record.SHIPMENT_STATUS == 'WORKING' ) return false ;
 				 if( $(this).find("input").length <=0 ){
 					 me.html("<input type='text' value='"+record.SHIPMENT_NAME+"'>") ;
 					
