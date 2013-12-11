@@ -11,6 +11,7 @@ class Inbound extends AppModel {
 							ACCOUNT_ID = '{@#accountId#}' AND SHIPMENT_ID = '{@#shipmentId#}' ", $params) ;
 	}
 	
+	
 	function deletePlanItem($params){
 		$this->exeSql("
 						delete from sc_fba_inbound_local_plan_items
@@ -86,6 +87,22 @@ class Inbound extends AppModel {
                             AND  SELLER_SKU = '{@#sku#}'
 					", $params) ;
 		}
+	}
+	
+
+	public function getPackageLabels($params){
+		$accountId = $params['accountId'] ;
+		
+		$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+		$account = $Amazonaccount->getAccountIngoreDomainById($accountId)  ;
+		$account = $account[0]['sc_amazon_account']  ;
+		
+		
+		$Utils  = ClassRegistry::init("Utils") ;
+		$url = $Utils->buildUrl($account,"taskAsynAmazon/getPackageLabels") ;
+		$url = $url."/".$params['shipmentId']."/".$params['pageType']."/".$params['numberOfPackages'];
+		
+		$result = file_get_contents($url  );
 	}
 	
 	public function loadPlanByShipmentId($params){
@@ -217,7 +234,7 @@ class Inbound extends AppModel {
 		
 		
 		$Utils  = ClassRegistry::init("Utils") ;
-		$url = $Utils->buildUrl($account,"taskAsynAmazon/quantity") ;
+		$url = $Utils->buildUrl($account,"taskAsynAmazon/createInboundShipmentPlan") ;
 		$url = $url.'/'.$params['planId'] ;
 		
 		$result = file_get_contents($url  );

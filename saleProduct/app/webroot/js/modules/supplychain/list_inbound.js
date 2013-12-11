@@ -21,6 +21,7 @@ $(function(){
 					
 		    	}
 		    	html.push("<a href='#' class='action loadfromAamzon' val='"+val+"'>同步</a>&nbsp;") ;
+		    	html.push("<a href='#' class='action packageLabel' val='"+val+"'>Label</a>&nbsp;") ;
 		    	return html.join("") ;
 		    }},
 			{align:"center",key:"SHIPMENT_ID",label:"ShipmentId",width:"10%",forzen:false,align:"left"},
@@ -91,6 +92,15 @@ $(function(){
 					  });
 				 }
 			 }) ;
+			 
+			 $(".grid-content").find(".packageLabel").click(function(){
+				 var record = $(this).closest("tr").data("record") ; 
+				 openCenterWindow(contextPath+"/page/forward/SupplyChain.package_label/"+record.ACCOUNT_ID+"/"+record.SHIPMENT_ID,600,400,function(){
+						$(".grid-content").llygrid("reload",{},true) ;
+				 }) ;
+			 }) ;
+			 
+			 
 			 
 			 $(".grid-content").find(".async").click(function(){
 				 var record = $(this).closest("tr").data("record") ; 
