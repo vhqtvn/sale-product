@@ -497,6 +497,12 @@ class Amazonaccount extends AppModel {
 		return $array ;
 	}
 	
+	function getAllAccountsFormat(){
+		$sql = "SELECT * FROM sc_amazon_account";
+		$array = $this->exeSqlWithFormat($sql, array()) ;
+		return $array ;
+	}
+	
 	function getAccountProduct($id){
 		$sql = "SELECT sc_amazon_account_product.* , sc_product.TITLE,sc_product.ASIN
 			FROM sc_amazon_account_product , sc_product where sc_amazon_account_product.asin = sc_product.asin

@@ -4,6 +4,39 @@
     	UPDATE SC_PURCHASE_PLAN SET status = '2' where id = '{@#planId#}'
     </entry>
     
+    <entry key="sql_purchase_plan_insert_byGenId"> 
+			insert into sc_purchase_plan 
+				(
+				ID,
+				NAME, 
+				CODE,
+				PLAN_TIME, 
+				PLAN_END_TIME, 
+				CREATE_TIME, 
+				CREATOR, 
+				STATUS, 
+				MEMO, 
+				TYPE, 
+				EXECUTOR,
+				REQUIRE_SOURCE_ID
+				)
+				values
+				(
+				'{@#id#}', 
+				'{@#name#}', 
+				'{@#code#}', 
+				'{@#planTime#}', 
+				'{@#planEndTime#}', 
+				NOW(), 
+				'{@#loginId#}', 
+				1, 
+				'{@#memo#}', 
+				'{@#type#}', 
+				'{@#executorId#}',
+				'{@#requireSourceId#}'
+				)
+    </entry>
+    
     <entry key="sql_purchase_plan_insert"> 
 			insert into sc_purchase_plan 
 				(
@@ -16,7 +49,8 @@
 				STATUS, 
 				MEMO, 
 				TYPE, 
-				EXECUTOR
+				EXECUTOR,
+				REQUIRE_SOURCE_ID
 				)
 				values
 				(
@@ -29,7 +63,8 @@
 				1, 
 				'{@#memo#}', 
 				'{@#type#}', 
-				'{@#executorId#}'
+				'{@#executorId#}',
+				'{@#requireSourceId#}'
 				)
     </entry>
     
@@ -130,6 +165,29 @@
 				'{@#asin#}', 
 				'{@#sku#}', 
 				'{@#planId#}', 
+				'{@#loginId#}', 
+				10,
+				NOW()
+				)
+    </entry>
+    
+    <entry key="sql_insert_purchasePlanProductsWithPlanNum">
+    	INSERT INTO sc_purchase_plan_details 
+				(
+				ASIN, 
+				SKU, 
+				PLAN_ID, 
+				PLAN_NUM,
+				CREATOR, 
+				STATUS,
+				CREATE_TIME
+				)
+				VALUES
+				(
+				'{@#asin#}', 
+				'{@#sku#}', 
+				'{@#planId#}', 
+				'{@#planNum#}', 
 				'{@#loginId#}', 
 				10,
 				NOW()

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_supplychain_requirement_list">
+    	select * from sc_supplychain_requirement_plan
+    	order by create_date desc
+    </entry>
+
+     <entry key="sql_supplychain_requirement_cancreate_list">
+    	SELECT *  as C FROM sc_amazon_recommendations sar
+		WHERE NOT EXISTS(
+		   SELECT * FROM sc_supplychain_requirement_plan ssrp,
+		   sc_supplychain_requirement_item ssri
+		   WHERE ssrp.ID = ssri.PLAN_ID
+		   AND ssrp.status = 0
+		   AND ssri.ACCOUNT_ID = sar.ACCOUNT_ID
+		   AND ssri.LISTING_SKU = sar.SKU
+		)
+		ANd sar.RECOMMENDED_INBOUND_QUANTITY >0
+    </entry>
+    
+     <entry key="sql_supplychain_requirement_plan_insert">
+		    INSERT INTO sc_supplychain_requirement_plan 
+			(ID, 
+			NAME, 
+			CREATE_DATE, 
+			STATUS
+			)
+			VALUES
+			('{@#planId#}', 
+			'{@#name#}', 
+			NOW(), 
+			0
+			)
+	</entry>
+	
+	<entry key="sql_supplychain_requirement_item_insert">
+			INSERT INTO sc_supplychain_requirement_item 
+				(ACCOUNT_ID, 
+				PLAN_ID, 
+				LISTING_SKU, 
+				FULFILLMENT, 
+				QUANTITY, 
+				LAST14, 
+				LAST30, 
+				ID, 
+				CREATE_DATE
+				)
+				VALUES
+				('{@#accountId#}', 
+				'{@#planId#}', 
+				'{@#listingSku#}', 
+				'{@#fulfillment#}', 
+				'{@#quantity#}', 
+				'{@#last14#}', 
+				'{@#last30#}', 
+				'{@#id#}', 
+				NOW()
+				)
+		</entry>
+		
+		<entry key="sql_supplychain_requirement_item_formatRealSku">
+		SELECT srp.ID,
+		       ssri.PLAN_ID,
+		       srp.REAL_SKU,
+		       SUM(ssri.QUANTITY) AS QUANTITY
+		 FROM sc_supplychain_requirement_item ssri,
+		sc_real_product srp,
+		sc_real_product_rel srpr
+		WHERE 
+		ssri.ACCOUNT_ID = srpr.ACCOUNT_ID
+		AND ssri.LISTING_SKU = srpr.SKU
+		AND srpr.REAL_ID = srp.ID
+		AND ssri.PLAN_ID = '{@#planId#}'
+		GROUP BY srp.ID,ssri.PLAN_ID,srp.REAL_SKU
+	 </entry>
+ </properties>
