@@ -5,7 +5,7 @@ set_time_limit(0);
 include_once ('corn_config.php');
 
 $random = date("U") ;
-$url = "http://127.0.0.1/saleProduct/index.php/cronTask/createAmazonRequirement?".$random ;
-	//	file_get_contents( $url ) ;
+$url = "http://www.smarteseller.com/saleProduct/index.php/cronTask/createAmazonRequirement?".$random ;
+
 sock_get($url) ;
 	

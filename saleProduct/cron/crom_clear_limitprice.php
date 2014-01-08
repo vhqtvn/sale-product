@@ -4,7 +4,7 @@
 	 */
 
 $random = date("U") ;
-$url = "http://www.smarteseller.com/saleProduct/index.php/taskAsynAmazon/startAsynAmazonFba/".$accountId."?".$random ;
+$url = "http://www.smarteseller.com/saleProduct/index.php/cronTask/clearLimitPrice/" ;
 
 sock_get($url) ;
 
