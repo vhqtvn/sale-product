@@ -69,7 +69,8 @@
 		SELECT DISTINCT  
 		sppd.* ,
 			srp.name AS TITLE,
-			srp.ID as REAL_ID,
+			srp.ID as REAL_PRODUCT_ID,
+			srp.REAL_SKU as REAL_PRODUCT_SKU,
 			srp.IMAGE_URL,
 			srp.CATEGORY_ID,
 			spc.PURCHASE_CHARGER,
@@ -84,7 +85,7 @@
 		LEFT JOIN sc_user su
 		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
-		ON sppd.SKU = srp.real_sku
+		ON (sppd.REAL_ID = srp.ID  or sppd.SKU = srp.REAL_SKU)
 		LEFT JOIN sc_product_category spc
 		ON srp.CATEGORY_ID = spc.ID
 		WHERE 1=1 
@@ -167,6 +168,33 @@
 				{@ ,plan_start_time = '#planStartTime#'}
 				{@ ,plan_end_time = '#planEndTime#'}
 				WHERE id = '{@#id#}'
+   </entry>
+   
+   <entry key="sql_insert_sc_purchase_plan_details_">
+		INSERT INTO sc_purchase_plan_details 
+			(
+			REAL_ID, 
+			SKU, 
+			PLAN_NUM, 
+			PLAN_ID, 
+			CREATOR, 
+			CREATE_TIME, 
+			STATUS, 
+			MEMO, 
+			REQ_PLAN_ID
+			)
+			VALUES
+			(
+			'{@#realId#}', 
+			'{@#sku#}', 
+			'{@#planNum#}', 
+			'{@#planId#}', 
+			'{@#loginId#}', 
+			now() , 
+			'10', 
+			'{@#memo#}',  
+			'{@#reqPlanId#}'
+			)
    </entry>
    
    <entry key="sql_marketing_test_list">

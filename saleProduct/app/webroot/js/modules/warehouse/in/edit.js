@@ -6,7 +6,7 @@
 				if(val == 'out'){ //外部采购入库
 					$(".trans-wh").hide() ;
 					$(".trans-wh").find(":input").removeAttr("data-validator") ;
-					$(this).parent().attr("colspan",3) ;
+					//$(this).parent().attr("colspan",3) ;
 				}else{ //转仓
 					$(".trans-wh").show() ;
 					$(this).parent().attr("colspan",1) ;

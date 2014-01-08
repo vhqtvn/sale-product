@@ -40,10 +40,11 @@
 		$taskProduct =  $SqlUtils->getObject("select * from sc_purchase_task_products where task_id = '{@#taskId#}' and product_id = '{@#productId#}'",
 				array("taskId"=> $taskId,"productId"=>$planProductId)) ;
 		
-		
-		$sku = $product["SKU"]  ;
+		$reqPlanId = $product["REQ_PLAN_ID"]  ;
+		$realId =  $product["REAL_ID"]  ;
+		$sku = $product["REAL_PRODUCT_SKU"]  ;
 		$suppliers = $Supplier->getProductSuppliersBySku( $sku  ) ;
-		
+
 		$loginId = $user['LOGIN_ID'] ;
 		
 		//获取计划信息
@@ -74,7 +75,7 @@
 		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
 		
 		//获取货品供应商询价
-		$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$product["PLAN_ID"] ,'sku'=>$product["SKU"])) ;
+		$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$product["PLAN_ID"] ,'sku'=>$product["REAL_PRODUCT_SKU"])) ;
 		
 		$status = $taskProduct['STATUS'] ;
 		$executor = $product['EXECUTOR'] ;
@@ -209,9 +210,10 @@
    <script type="text/javascript">
     var $COST_VIEW_TOTAL = '<?php echo $COST_VIEW_TOTAL;?>' ;
     var  $COST_VIEW_PROFIT = '<?php echo $COST_VIEW_PROFIT;?>' ;
-    var sku = '<?php echo $product['SKU'];?>' ;
+    var sku = '<?php echo $product['REAL_PRODUCT_SKU'];?>' ;
     var planId =  '<?php echo $product['PLAN_ID'];?>' ;
     var realId =  '<?php echo $product['REAL_ID'];?>' ;
+    var reqPlanId =  '<?php echo $reqPlanId;?>' ;
    
     var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
 	var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;
@@ -339,8 +341,10 @@
 										</td>
 									</tr>
 									<tr>
-										<th>货品：</th><td><a class="product-realsku"  sku="<?php echo $product['SKU'] ;?>"  href="#">
-										<?php echo  $product['SKU']  ;?></a>（<?php echo  $product['TITLE']  ;?>）</td>
+										<th>货品：</th><td><a class="product-realsku"  sku="<?php echo $product['REAL_PRODUCT_SKU'] ;?>"  href="#">
+										<?php echo  $product['REAL_PRODUCT_SKU']  ;?></a>（<?php echo  $product['TITLE']  ;?>）
+										<input type="hidden"  name="sku" value="<?php echo  $product['REAL_PRODUCT_SKU']  ;?>"/>
+										</td>
 										<th>
 										<button class="btn change_plan no-disabled">更改</button>
 										采购计划：</th><td>

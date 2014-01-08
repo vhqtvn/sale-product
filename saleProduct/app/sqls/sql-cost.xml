@@ -3,6 +3,74 @@
     <entry key="sql_">
     </entry>
     
+    <entry  key="sql_cost_insert_new">
+		INSERT INTO sc_product_cost 
+			( ID, 
+			REAL_ID, 
+			CREATOR, 
+			CREATE_TIME
+			)
+			VALUES
+			('{@#ID#}', 
+			'{@#REAL_ID#}', 
+			'{@#loginId#}', 
+			NOW()
+			)
+    </entry>
+    
+     <entry  key="sql_cost_update_new">
+		    UPDATE sc_product_cost 
+			SET
+			{@LOGISTICS_COST = '#LOGISTICS_COST#' , }
+			{@PURCHASE_COST = '#PURCHASE_COST#' , }
+			{@OTHER_COST = '#OTHER_COST#' , }
+			{@TAG_COST = '#TAG_COST#' , }
+			{@LABOR_COST = '#LABOR_COST#' , }
+			{@FEE = '#FEE#' , }
+			LAST_UPDATOR = '{@#loginId#}' , 
+			LAST_UPDATE_TIME = NOW()
+			
+			WHERE
+			ID = '{@#ID#}'
+    </entry>
+    
+    
+    <entry  key="sql_cost_details_insert_new">
+			INSERT INTO sc_product_cost_details 
+				(ID, 
+				COST_ID, 
+				ACCOUNT_ID, 
+				LISTING_SKU, 
+				CREATOR, 
+				CREATE_DATE
+				)
+				VALUES
+				('{@#ID#}', 
+				'{@#COST_ID#}', 
+				'{@#ACCOUNT_ID#}', 
+				'{@#LISTING_SKU#}', 
+				'{@#loginId#}', 
+				NOW()
+				)
+	</entry>
+	
+	<entry  key="sql_cost_details_update_new">
+	
+			UPDATE sc_product_cost_details 
+				SET
+				COST_ID = '{@#COST_ID#}' , 
+				ACCOUNT_ID = '{@#ACCOUNT_ID#}' , 
+				LISTING_SKU = '{@#LISTING_SKU#}' , 
+				{@LOGISTICS_COST = '#LOGISTICS_COST#' ,} 
+				{@FEE = '#FEE#' , }
+				{@AMAZON_FEE = '#AMAZON_FEE#' , }
+				{@ORDER_COST = '#ORDER_COST#' , }
+				{@OTHER_COST = '#OTHER_COST#' , }
+				LAST_UPDATOR = '{@#loginId#}' , 
+				LAST_UPDATE_DATE =NOW()
+				WHERE
+				ID = '{@#ID#}'
+	</entry>
     <!--
     	TODO:
     	outAemricanArea: 1
@@ -20,6 +88,27 @@
     	
     	uncategory：1
     -->
+    
+    <entry key="sql_cost_product_insert_simple">
+   	 INSERT INTO sc_product_cost 
+			( 
+			TYPE, 
+			PURCHASE_COST, 
+			SKU, 
+			CREATOR,
+			CREATE_TIME,
+			LAST_UPDATE_TIME
+			)
+			VALUES
+			(
+			'{@#TYPE#}', 
+			'{@#PURCHASE_COST#}', 
+			'{@#SKU#}', 
+			'{@#loginId#}',
+			NOW(),
+			now()
+			) 
+   </entry>
    
    <entry key="sql_cost_product_insert">
    	 INSERT INTO sc_product_cost 

@@ -77,6 +77,15 @@
 							html.push('<a href="#" class="list-entity-tag popover-pl top" val="'+val+'">'+getImage("tabs.gif","显示标签")+'</a>&nbsp;') ;
 							return html.join("") ;
 						}},
+						{align:"center",key:"IS_ANALYSIS",label:"供应需求", width:"6%",format:function(val,record){
+							var html = [] ;
+							if(val == 1){
+								html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("success.gif","可计算供应需求")+'</a>&nbsp;') ;
+							}else{
+								html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("error.gif","不可计算供应需求")+'</a>&nbsp;') ;
+							}
+							return html.join("") ;
+						}},
 						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
 						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
 								return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/saleProduct/details/"+val+"/sku#ui-tabs-5'>"+(val||"")+"</a>"
@@ -207,6 +216,7 @@
 								$(this).popover({trigger:'click',title:"分类:"+record.SKU+"/"+record.ASIN,content: "加载中......",delay:{hide:50},width:500,placement :"bottom"}) ; 
 							}) ;
 							
+							
 							$(".category-set").mouseenter( function(){
 								var record = $(this).parents("tr:first").data("record");
 								var entityType = "listingTag" ;
@@ -261,6 +271,30 @@
 			$(".sale-strategy").live("click",function(){
 				var record = $(this).parents("tr:first").data("record");
 				openCenterWindow(contextPath+"/page/forward/Sale.strategy.strategyConfigForListing/"+record.ACCOUNT_ID+"/"+record.SKU+"/"+record.ID ,1100,650) ;
+			}) ;
+			
+			$(".analysis").live("click",function(){
+				var record = $(this).parents("tr:first").data("record");
+				var  isAnalysis = record.IS_ANALYSIS ;
+				var json = {} ;
+				json.id = record.ID ;
+				
+				if(isAnalysis == 1  ){
+					if(window.confirm("确认取消自动计算供应需求？")){
+						json.isAnalysis = 0 ;
+						$.dataservice("model:SaleProduct.isAnalysis",json,function(result){
+							$(".grid-content").llygrid("reload",{},true) ;
+						});
+					}
+				}else{
+					
+					if(window.confirm("确认自动计算供应需求？")){
+						json.isAnalysis = 1 ;
+						$.dataservice("model:SaleProduct.isAnalysis",json,function(result){
+							$(".grid-content").llygrid("reload",{},true) ;
+						});
+					}
+				}
 			}) ;
 			
 			$(".list-entity-tag").live("click",function(){

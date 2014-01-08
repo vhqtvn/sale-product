@@ -355,6 +355,11 @@ function WarehouseInAction(status , statusLabel){
 		
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
+				//入库
+				openCenterWindow(contextPath+"/page/forward/Inventory.in_purchase/"+taskId+"/"+id+"/"+realId+"/"+reqPlanId,800,600,function(){
+					window.location.reload();
+				}) ;
+				/*
 				$.dataservice("model:Sale.warehouseIn",json,function(result){
 					//alert( $.json.encode( result ));
 					//执行状态更新
@@ -364,17 +369,20 @@ function WarehouseInAction(status , statusLabel){
 					});
 				//}) ;
 				}) ;
+				*/
 			}
 	}
 }
 
 function AuditAction(status , statusLabel){
+	
 	if(window.confirm("确认【"+statusLabel+"】？")){
 		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
 		var json1 = {id:id,taskId:taskId,status:status,memo:memo} ;
 		
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
+				json1 = $.extend(json,json1) ;
 				$.dataservice("model:Sale.savePurchaseTaskProduct",json,function(){
 					//执行状态更新
 					$.dataservice("model:Sale.doTaskProductStatus",json1,function(result){

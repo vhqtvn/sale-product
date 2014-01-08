@@ -176,7 +176,7 @@
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
 					{align:"left",key:"ID",label:"操作",forzen:false,width:"4%",format:function(val,record){
-						var isSku = record.SKU?true:false ;
+						var isSku =( record.SKU||record.REAL_PRODUCT_SKU)?true:false ;
 						
 						var status = record.STATUS ;
 						var html = [] ;
@@ -215,7 +215,7 @@
 		           		var r1 = record.PLAN_END_TIME||"" ;
 		           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
 		           	}},
-					{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+					{align:"left",key:"REAL_PRODUCT_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 		           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},

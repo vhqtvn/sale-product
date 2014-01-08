@@ -50,6 +50,7 @@
 </head>
 <body>
 <div class="toolbar toolbar-auto toolbar1 query-container">
+<!-- 
 		<table>
 			<tr>
 				<th>账号：</th>
@@ -71,6 +72,7 @@
 				</td>
 			</tr>						
 		</table>
+ -->
 	</div>	
 	<div class="grid-content"></div>
 	

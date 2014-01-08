@@ -3,6 +3,7 @@
 	<entry key="sql_getProductCategoryByAsin">
 	select sc_product_category.* ,
 			(select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME,
+			(select name from sc_user where login_id =sc_product_category.supply_charger ) as SUPPLY_CHARGER_NAME,
 			(select count(*) from sc_product_category_rel where sc_product_category_rel.category_id = sc_product_category.id and 
 			sc_product_category_rel.asin = '{@#asin#}' ) as selected
 			 from sc_product_category 
@@ -10,7 +11,8 @@
 	
 	<entry key="sql_getSingleProductCategoryByAsin">
 			select sc_product_category.* ,
-					(select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME
+					(select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME,
+			(select name from sc_user where login_id =sc_product_category.supply_charger ) as SUPPLY_CHARGER_NAME
 					 from sc_product_category ,sc_product_category_rel
 					 where 
 					 	sc_product_category.id = sc_product_category_rel.category_id
@@ -20,6 +22,7 @@
 	<entry key="sql_getProductCategoryByDefault">
 	select sc_product_category.*,
 			 (select name from sc_user where login_id =sc_product_category.purchase_charger ) as PURCHASE_CHARGER_NAME,
+			(select name from sc_user where login_id =sc_product_category.supply_charger ) as SUPPLY_CHARGER_NAME,
               (select count(*) from sc_product_category_rel 
               	where sc_product_category_rel.category_id = sc_product_category.id
               			{@
@@ -39,7 +42,8 @@
 				MEMO, 
 				CREATOR, 
 				CREATE_TIME, 
-				PURCHASE_CHARGER
+				PURCHASE_CHARGER,
+				supply_charger
 				)
 				VALUES
 				( 
@@ -48,7 +52,8 @@
 				'{@#memo#}', 
 				'{@#loginId#}', 
 				NOW(), 
-				'{@#purchaseCharger#}'
+				'{@#purchaseCharger#}',
+				'{@#supplyCharger#}'
 				)
     </entry>
     
@@ -58,7 +63,8 @@
 				name = '{@#name#}' , 
 				parent_id = '{@#parentId#}' , 
 				memo = '{@#memo#}' , 
-				purchase_charger = '{@#purchaseCharger#}'
+				purchase_charger = '{@#purchaseCharger#}',
+				supply_charger = '{@#supplyCharger#}'
 				where
 				id = '{@#id#}'
     </entry>
@@ -295,7 +301,8 @@
 						EBAY_DEV_ID, 
 						EBAY_APP_ID, 
 						EBAY_CERT_ID, 
-						EBAY_TOKEN
+						EBAY_TOKEN,
+						FBM_WAREHOUSE
 						)
 						VALUES
 						(
@@ -319,7 +326,8 @@
 							'{@#EBAY_DEV_ID#}', 
 							'{@#EBAY_APP_ID#}', 
 							'{@#EBAY_CERT_ID#}', 
-							'{@#EBAY_TOKEN#}'
+							'{@#EBAY_TOKEN#}', 
+							'{@#FBM_WAREHOUSE#}'
 						);
     </entry>
     

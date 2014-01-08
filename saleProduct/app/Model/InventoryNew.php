@@ -26,6 +26,7 @@ class InventoryNew extends AppModel {
 	var $ACTOIN_IN_TRANSFORM  = 105;//库存转换入库
 	var $ACTOIN_IN_BORROW = 106  ;//借调入库
 	var $ACTOIN_IN_UNPURCHASE = 107  ;//非采购入库，如免费赠送等
+	var $ACTOIN_IN_FBM = 108 ; //FBM入库
 	
 	var $ACTOIN_OUT_TRANSFER = 201  ;//转仓出库
 	var $ACTOIN_OUT_ORDER    = 202 ;//订单出库
@@ -38,6 +39,7 @@ class InventoryNew extends AppModel {
 	var $INVENTORY_TYPE_FBM = 1 ;//FBM
 	var $INVENTORY_TYPE_FBA  = 2 ;//FBA
 	var $INVENTORY_TYPE_DAMAGED  = 3 ;//残品
+	var $INVENTORY_TYPE_FREE = 4 ;//自由库存
 	/**
 	 * 库存状态
 	 */
@@ -49,6 +51,248 @@ class InventoryNew extends AppModel {
 	var $INVENTORY_TO_SELF = 1 ;//自有库存
 	var $INVENTORY_TO_DELEGATION = 2 ;//托管库存
 	
+	public function transferIn($params){
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$db->_queryCache = array() ;
+		
+		$warehouseId = $params['warehouseId'] ;
+		$inId  = $params['inId'] ;
+		$details =  json_decode( $params['details'] ) ;
+		
+		$sql = "select * from sc_warehouse_inventory where inventory_status=2 and source_id = 'INID_{@#inId#}'" ;
+		$transferItems = $this->exeSqlWithFormat($sql, array('inId'=>$inId)) ;
+		
+		//分配有效库存到在途库存中，计算所有在途库存
+		$inventoryArray = array() ;
+		$freeArray = array() ;
+		$badArray = array() ;
+		foreach( $details as $item ){
+			$goodsId = $item->goodsId ;
+			$quantity = $item->quantity ;
+			$badQuantity = $item->badQuantity ;
+			
+			
+			foreach( $transferItems as $item ){
+					$realId = $item['REAL_PRODUCT_ID'] ;
+					$tQuantity = $item['QUANTITY'] ;
+					if( $goodsId == $realId ){
+						if( $quantity >= $tQuantity  ){
+							$item['REAL_QUANTITY'] = $tQuantity ;
+							$quantity = $quantity - $tQuantity ;
+						}else{
+							$item['REAL_QUANTITY'] = $quantity ;
+							$quantity = 0 ;
+						}
+						$inventoryArray[] = $item ;
+					}
+			}
+			
+			if( $quantity >0  ){
+				//入库到自由库存 $goodsId
+				$freeArray[] = array("realId"=>$goodsId , "quantity"=>$quantity) ;// $quantity ;
+			}
+			
+			if( $badQuantity >0 ){
+				$badArray[] = array("realId"=>$goodsId , "quantity"=>$badQuantity) ;// $quantity ;
+			}
+		}
+		
+		foreach( $inventoryArray as $item ){
+			$inventoryParams = array() ;
+			$inventoryParams['guid'] = $this->create_guid() ;
+			
+			$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ; //出库
+			$inventoryParams['action'] = $this->ACTOIN_IN_TRANSFER ;
+			$inventoryParams['realProductId'] = $item['REAL_PRODUCT_ID'] ;
+			$inventoryParams['warehouseId'] = $item['WAREHOUSE_ID'] ;
+			$inventoryParams['loginId'] = $params['loginId'] ;
+				
+			$inventoryParams['quantity'] = $item['REAL_QUANTITY'] ;
+			$inventoryParams['listingSku'] = $item['LISTING_SKU'] ;
+			$inventoryParams['accountId'] = $item['ACCOUNT_ID'] ;
+				
+			$inventoryParams['inventoryType']   =  $item['INVENTORY_TYPE'] ;
+			$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;//在途库存
+			$inventoryParams['inventoryTo']       = $item['INVENTORY_TO']  ;
+			$inventoryParams['sourceId'] = "" ;
+				
+			$this->doSave( $inventoryParams ) ;
+		} 
+		
+		foreach( $freeArray as $item ){
+			$inventoryParams = array() ;
+			$inventoryParams['guid'] = $this->create_guid() ;
+		
+			$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ; //出库
+			$inventoryParams['action'] = $this->ACTOIN_IN_TRANSFER ;
+			$inventoryParams['realProductId'] = $item['realId'] ;
+			$inventoryParams['warehouseId'] = $warehouseId ;
+			$inventoryParams['loginId'] = $params['loginId'] ;
+		
+			$inventoryParams['quantity'] = $item['quantity'] ;
+			$inventoryParams['listingSku'] = '' ;
+			$inventoryParams['accountId'] = '' ;
+		
+			$inventoryParams['inventoryType']   =  $this->INVENTORY_TYPE_FREE ;
+			$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;//在库库存
+			$inventoryParams['inventoryTo']       = $this->INVENTORY_TO_SELF ;
+			$inventoryParams['sourceId'] = "" ;
+		
+			$this->doSave( $inventoryParams ) ;
+		}
+		
+		foreach( $badArray as $item ){
+			$inventoryParams = array() ;
+			$inventoryParams['guid'] = $this->create_guid() ;
+		
+			$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ; //出库
+			$inventoryParams['action'] = $this->ACTOIN_IN_TRANSFER ;
+			$inventoryParams['realProductId'] = $item['realId'] ;
+			$inventoryParams['warehouseId'] = $warehouseId ;
+			$inventoryParams['loginId'] = $params['loginId'] ;
+		
+			$inventoryParams['quantity'] = $item['QUANTITY'] ;
+			$inventoryParams['listingSku'] = '' ;
+			$inventoryParams['accountId'] = '' ;
+		
+			$inventoryParams['inventoryType']   =  $this->INVENTORY_TYPE_DAMAGED ;
+			$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;//在库库存
+			$inventoryParams['inventoryTo']       = $this->INVENTORY_TO_SELF ;
+			$inventoryParams['sourceId'] = "" ;
+		
+			$this->doSave( $inventoryParams ) ;
+		}
+		
+		//清除在途库存
+		$this->exeSql("sql_supplychain_inventory_clearTransferForIn", array('inId'=>$inId)) ;
+		
+		//更新入库计划为已完成入库
+		$sql = "update sc_warehouse_in set UPDATE_TIME = NOW() where id = '{@#inId#}'" ;
+		$this->exeSql($sql, array('inId'=>$inId)) ;
+		
+		//更新需求为已完成
+		$this->exeSql("sql_supplychain_requirement_complete", array('inId'=>$inId)) ;
+	}
+	
+	public function purchaseIn($params){
+		//debug($params) ;
+		//$this->_doSave($params) ;
+		$inventoryItem = $params['inventoryItem'] ;
+		$inventoryItem = json_decode($inventoryItem) ;
+		//debug() ;
+		
+		//获取对应货品
+		$taskProduct =  $this->getObject("select s1.*,s2.REQ_PLAN_ID from sc_purchase_task_products s1,
+				sc_purchase_plan_details s2
+				 where s1.product_id = s2.id and s1.task_id = '{@#taskId#}' and s1.product_id = '{@#productId#}'",
+				array("taskId"=> $params['taskId'],"productId"=>$params['planProductId'])) ;
+		
+		//70 入库确认
+		if( $taskProduct['STATUS'] >= 70 ){//已经入库
+			return "已经入库，不能再进行操作入库！" ;
+		}
+		
+		//保存自由库存
+		$freeQuantity = $params['freeQuantity'] ;
+		if( $freeQuantity && $freeQuantity >0 ){
+			$inventoryParams = array() ;
+			$inventoryParams['guid'] = $this->create_guid() ;
+				
+			$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
+			$inventoryParams['action'] = $params['action'] ;
+			$inventoryParams['realProductId'] = $params['realId'] ;
+			$inventoryParams['warehouseId'] = $params['warehouseId'] ;
+			$inventoryParams['loginId'] = $params['loginId'] ;
+				
+			$inventoryParams['quantity'] = $freeQuantity ;
+			$inventoryParams['listingSku'] = '' ;
+			$inventoryParams['accountId'] = '' ;
+				
+			$inventoryParams['inventoryType'] = $this->INVENTORY_TYPE_FREE ;
+			$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
+			$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
+			$this->_doSave($inventoryParams) ;
+		}
+
+		//保存残品
+		$badProductsNum = $params['badProductsNum'] ;
+		if( $badProductsNum && $badProductsNum >0 ){
+			$inventoryParams = array() ;
+			$inventoryParams['guid'] = $this->create_guid() ;
+		
+			$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
+			$inventoryParams['action'] = $params['action'] ;
+			$inventoryParams['realProductId'] = $params['realId'] ;
+			$inventoryParams['warehouseId'] = $params['warehouseId'] ;
+			$inventoryParams['loginId'] = $params['loginId'] ;
+		
+			$inventoryParams['quantity'] = $badProductsNum ;
+			$inventoryParams['listingSku'] = '' ;
+			$inventoryParams['accountId'] = '' ;
+		
+			$inventoryParams['inventoryType'] = $this->INVENTORY_TYPE_DAMAGED ;
+			$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
+			$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
+			$this->_doSave($inventoryParams) ;
+		}
+		
+		//保存listing库存
+		foreach( $inventoryItem as $item ){
+			$item = get_object_vars($item) ;
+			
+			if( $item['purchaseQuantity'] && $item['purchaseQuantity'] > 0 ) {
+				$inventoryParams = array() ;
+				$inventoryParams['guid'] = $this->create_guid() ;
+					
+				$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
+				$inventoryParams['action'] = $params['action'] ;
+				$inventoryParams['realProductId'] = $params['realId'] ;
+				$inventoryParams['warehouseId'] = $params['warehouseId'] ;
+				$inventoryParams['loginId'] = $params['loginId'] ;
+					
+				$inventoryParams['quantity'] = $item['purchaseQuantity'] ;
+				$inventoryParams['listingSku'] = $item['listingSku'] ;
+				$inventoryParams['accountId'] = $item['accountId'] ;
+					
+				$inventoryParams['inventoryType'] = $this->getInventoryType(  $item['channel'] ) ;
+				$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
+				$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
+					
+				$this->_doSave($inventoryParams) ;
+			}else{
+				$item['purchaseQuantity'] = 0 ;
+			}
+			//更新需求实际采购数量
+			$sql = "update sc_supplychain_requirement_item set real_purchase_quantity = '{@#quantity#}' 
+								where account_id='{@#accountId#}' and listing_sku='{@#listingSku#}' and plan_id = '{@#planId#}'" ;
+			$this->exeSql($sql, array("quantity"=> $item['purchaseQuantity'],
+						'accountId'=>$item['accountId'],
+						'listingSku'=>$item['listingSku'] ,
+						"planId"=>$item['planId'])) ;
+			
+		}
+		
+		//更新状态为已入库
+		$this->exeSql("update sc_purchase_task_products set status=70,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
+				 where task_id = '{@#taskId#}' and product_id = '{@#productId#}'",
+				array("taskId"=> $params['taskId'],
+						'warehouseId'=>$params['warehouseId'],
+						'warehouseTime'=>$params['warehouseTime'],
+						"productId"=>$params['planProductId'])) ;
+		
+		//更新需求为已采购
+		if( !empty($taskProduct['REQ_PLAN_ID']) ){
+			$sql = "update sc_supplychain_requirement_plan_product set status = 4 where plan_id='{@#planId#}' and real_id='{@#realId#}'" ;
+			$this->exeSql($sql, array('planId'=>$taskProduct['REQ_PLAN_ID'],'realId'=>$params['realId'] )) ;
+		}
+	}
+	
+	private function getInventoryType( $channel ){
+		if( strpos($channel, "AMAZON") >= 0){
+			return $this->INVENTORY_TYPE_FBA ;
+		}
+		return $this->INVENTORY_TYPE_FBM;
+	}
 	
 	/**
 	 * 库存操作入口方法
@@ -58,6 +302,10 @@ class InventoryNew extends AppModel {
 	public function doInventory($actionType, $action , $params ){
 		$params['action']  = $action ;
 		$params['actionType'] = $this->ACTION_TYPE_IN ;
+		$this->_doSave($params) ;
+	}
+	
+	public function doSave($params){
 		$this->_doSave($params) ;
 	}
 	

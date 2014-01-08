@@ -286,6 +286,13 @@ class Sale extends AppModel {
 		$this->exeSql("sql_purchase_task_product_updateStatus", $data) ;
 		//添加轨迹
 		$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
+		
+		//更新采购价格到货品成本区域 "realQuotePrice":"90","realShipFee":"10"
+		/*$sku = $data['sku'] ;
+		$realQuotePrice = $data['realQuotePrice'] ;
+		$realShipFee = $data['realShipFee'] ;*/
+		$cost  = ClassRegistry::init("Cost") ;
+		$cost->saveCostWithPurchase($data) ;
 	}
 	
 	public function doStatus($data){

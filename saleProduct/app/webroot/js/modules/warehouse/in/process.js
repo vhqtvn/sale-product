@@ -17,7 +17,6 @@ $(function(){
 
 			$.dataservice("model:Warehouse.In.doIn",{warehouseId:warehouseId,inId:inId,details:records},function(result){//确认收货
 				//window.location.reload();
-				window.location.reload();
 			});
 		} ;
 	}) ;

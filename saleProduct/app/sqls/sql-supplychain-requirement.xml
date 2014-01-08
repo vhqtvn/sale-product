@@ -1,21 +1,206 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <entry key="sql_supplychain_requirement_list">
-    	select * from sc_supplychain_requirement_plan
-    	order by create_date desc
+	
+
+
+	<entry key="sql_supplychain_requirement_plan_product_list">
+	 SELECT  srp.*,
+	         ssrpp.STATUS as P_STATUS,
+	         SUM(ssri.FIX_QUANTITY) AS FIX_QUANTITY
+		 FROM 
+		    sc_supplychain_requirement_plan_product ssrpp,
+		     sc_supplychain_requirement_item ssri,
+			 sc_real_product srp,
+			 sc_real_product_rel srpr,
+			 sc_amazon_account saa,
+			 sc_amazon_account_product saap
+		WHERE ssrpp.plan_id = '{@#planId#}'
+		AND ssrpp.REAL_ID = srp.ID
+		AND ssri.ACCOUNT_ID = srpr.ACCOUNT_ID
+		AND saa.ID = ssri.account_id
+		AND saap.account_id = ssri.account_id
+		AND saap.sku = ssri.listing_sku
+		AND ssri.LISTING_SKU = srpr.SKU
+		AND srpr.REAL_ID = srp.ID
+		{@ 
+ 			and srp.id  in (
+ 			  select product_id  from sc_real_product_category srpc where srpc.product_id = srp.id
+ 			  and srpc.category_id = '#categoryId#'
+ 			)
+ 			}
+ 			{@ and  srp.id not in (
+							select product_id  from sc_real_product_category srpc where srpc.product_id = srp.id
+						and 1= #uncategory#
+			)
+			}
+		GROUP BY srp.ID
+
+    </entry>
+    
+    <entry key="sql_supplychain_requirement_plan_product_details_list">
+    	  SELECT ssri.*,
+	    	  saa.name as ACCOUNT_NAME,
+	    	  saap.FULFILLMENT_CHANNEL,
+	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
+	    	  srp.IMAGE_URL,
+	    	  ( select count(1) from sc_supplychain_reqitem_in where req_item_id =ssri.id ) as IN_FLAG
+		 FROM sc_supplychain_requirement_item ssri,
+			 sc_real_product srp,
+			 sc_real_product_rel srpr,
+			 sc_amazon_account saa,
+			 sc_amazon_account_product saap
+		WHERE 
+		ssri.ACCOUNT_ID = srpr.ACCOUNT_ID
+		and saa.ID = ssri.account_id
+		and saap.account_id = ssri.account_id
+		and saap.sku = ssri.listing_sku
+		AND ssri.LISTING_SKU = srpr.SKU
+		AND srpr.REAL_ID = srp.ID
+		AND ssri.PLAN_ID = '{@#planId#}'
+		AND srp.ID = '{@#realId#}'
     </entry>
 
-     <entry key="sql_supplychain_requirement_cancreate_list">
-    	SELECT *  as C FROM sc_amazon_recommendations sar
+	<entry key="sql_supplychain_requirement_category">
+    	  select sc_product_category.*,
+        		sc_product_category.name as TEXT,
+        		 {@  (  select count(1) from sc_real_product_category s 
+        	  		where s.category_id = sc_product_category.id
+        	  		and s.product_id = '#productId#'
+					 ) as checkstate,
+        	    }
+              (select count(*) from sc_real_product_category where sc_real_product_category.category_id = sc_product_category.id
+              and  sc_real_product_category.product_id in (
+                   select s.real_id from sc_supplychain_requirement_plan_product s where s.plan_id = '{@#planId#}'
+              )
+               ) as TOTAL
+              from sc_product_category
+    </entry>
+    
+    <entry key="sql_supplychain_requirement_getFormatPlanItem2Product">
+    	  SELECT * FROM sc_real_product srp WHERE srp.ID IN (
+		   SELECT srpr.REAL_ID FROM sc_supplychain_requirement_item s1,
+		   sc_real_product_rel srpr
+		   WHERE srpr.SKU = s1.LISTING_SKU
+		   AND srpr.ACCOUNT_ID = s1.ACCOUNT_ID
+		   AND s1.plan_id = '{@#planId#}'
+		)
+    </entry>
+    
+    <!-- 获取仓库对应的需求列表 -->
+    <entry key="sql_supplychain_requirement_listProductFBMByWarehouseId">
+	  SELECT  srp.* ,
+	      SUM(s1.FIX_QUANTITY) AS REQ_QUANTITY
+	 FROM sc_real_product srp,
+	      sc_supplychain_requirement_item s1,
+	      sc_real_product_rel srpr,
+	      sc_amazon_account saa,
+		  sc_amazon_account_product saap
+	  WHERE srpr.SKU = s1.LISTING_SKU
+		AND srpr.ACCOUNT_ID = s1.ACCOUNT_ID
+		AND s1.ACCOUNT_ID = saa.ID 
+		and saap.FULFILLMENT_CHANNEL not like '%AMAZON%'
+		AND saa.FBM_WAREHOUSE = '{@#warehouseId#}'
+		AND srp.ID = srpr.REAL_ID
+		and saap.account_id = s1.account_id
+		and saap.sku = s1.listing_sku
+		AND s1.ID not in (
+		  select req_item_id from sc_supplychain_reqitem_in
+		)
+		GROUP BY srp.ID
+	</entry>
+	
+	<entry key="sql_supplychain_requirement_listFBMItemByWarehouseId">
+	 SELECT  s1.* ,
+	    	  saa.name as ACCOUNT_NAME,
+	    	  saap.FULFILLMENT_CHANNEL,
+	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
+	    	  (select name from sc_supplychain_requirement_plan where id = s1.plan_id ) as REQ_NAME
+	 FROM 
+	      sc_supplychain_requirement_item s1,
+	      sc_real_product_rel srpr,
+	      sc_amazon_account saa,
+		  sc_amazon_account_product saap,
+		  sc_warehouse sw
+	  WHERE srpr.SKU = s1.LISTING_SKU
+		AND srpr.ACCOUNT_ID = s1.ACCOUNT_ID
+		AND s1.ACCOUNT_ID = saa.ID 
+		AND saa.FBM_WAREHOUSE = '{@#warehouseId#}'
+		and saa.FBM_WAREHOUSE= sw.id
+		and saap.FULFILLMENT_CHANNEL not like '%AMAZON%'
+		AND srpr.real_id = '{@#realId#}'
+		and saap.account_id = s1.account_id
+		and exists (
+			select * from sc_supplychain_requirement_plan_product s2
+			where s2.plan_id = s1.plan_id
+					and s2.status != 0
+					and s2.status !=2
+		)
+		and saap.sku = s1.listing_sku
+		AND s1.ID not in (
+		  select req_item_id from sc_supplychain_reqitem_in
+		)
+	</entry>
+	
+    <entry key="sql_supplychain_requirement_product_insert">
+    	 INSERT INTO sc_supplychain_requirement_plan_product 
+				(PLAN_ID, 
+				REAL_ID, 
+				CREATOR, 
+				CREATE_DATE, 
+				LAST_UPDATOR, 
+				LAST_UPDATE_DATE, 
+				STATUS
+				)
+				VALUES
+				('{@#PLAN_ID#}', 
+				'{@#REAL_ID#}', 
+				'{@#loginId#}', 
+				NOW(), 
+				'{@#loginId#}', 
+				NOW(), 
+				0
+				)
+    </entry>
+
+    <entry key="sql_supplychain_requirement_list">
+    	SELECT ssrp.* ,
+		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=4) AS STATUS4,
+		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=3) AS STATUS3,
+		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=2) AS STATUS2,
+		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=1) AS STATUS1,
+		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND (STATUS=0 OR STATUS IS NULL OR STATUS='')) AS STATUS0
+		  FROM sc_supplychain_requirement_plan ssrp
+		  ORDER BY ssrp.create_date desc
+    </entry>
+
+	 <!-- 获取能够创建需求计划的列表::: ANd sar.RECOMMENDED_INBOUND_QUANTITY >0
+	 SELECT sar.*  as C FROM sc_amazon_recommendations sar,
+    	sc_amazon_account_product saap
 		WHERE NOT EXISTS(
 		   SELECT * FROM sc_supplychain_requirement_plan ssrp,
 		   sc_supplychain_requirement_item ssri
 		   WHERE ssrp.ID = ssri.PLAN_ID
-		   AND ssrp.status = 0
+		   AND ssrp.status not in (2,6)
 		   AND ssri.ACCOUNT_ID = sar.ACCOUNT_ID
 		   AND ssri.LISTING_SKU = sar.SKU
 		)
-		ANd sar.RECOMMENDED_INBOUND_QUANTITY >0
+		and sar.ACCOUNT_ID = saap.ACCOUNT_ID
+		and sar.SKU = sapp.SKU
+		and saap.IS_ANALYSIS = 1
+	 
+	  -->
+     <entry key="sql_supplychain_requirement_cancreate_list">
+    	select saap.* from sc_amazon_account_product saap
+    	where saap.IS_ANALYSIS = 1
+    	and saap.status = 'Y'
+    	and not exists (
+    		SELECT * FROM sc_supplychain_requirement_plan ssrp,
+		   sc_supplychain_requirement_item ssri
+		   WHERE ssrp.ID = ssri.PLAN_ID
+		   AND ssrp.status not in (2,6)
+		   AND ssri.ACCOUNT_ID = saap.ACCOUNT_ID
+		   AND ssri.LISTING_SKU = saap.SKU
+    	)
     </entry>
     
      <entry key="sql_supplychain_requirement_plan_insert">
@@ -40,10 +225,10 @@
 				LISTING_SKU, 
 				FULFILLMENT, 
 				QUANTITY, 
-				LAST14, 
-				LAST30, 
 				ID, 
-				CREATE_DATE
+				CREATE_DATE,
+				URGENCY,
+				REQ_TYPE
 				)
 				VALUES
 				('{@#accountId#}', 
@@ -51,10 +236,10 @@
 				'{@#listingSku#}', 
 				'{@#fulfillment#}', 
 				'{@#quantity#}', 
-				'{@#last14#}', 
-				'{@#last30#}', 
 				'{@#id#}', 
-				NOW()
+				NOW(), 
+				'{@#urgency#}', 
+				'{@#reqType#}'
 				)
 		</entry>
 		
@@ -73,4 +258,111 @@
 		AND ssri.PLAN_ID = '{@#planId#}'
 		GROUP BY srp.ID,ssri.PLAN_ID,srp.REAL_SKU
 	 </entry>
+	 
+	 <entry key="sql_supplychain_requirement_getListingCost">
+					SELECT srp.REAL_SKU,spc.REAL_ID,
+					       spcd.ACCOUNT_ID,
+					       spcd.LISTING_SKU,
+					       saap.FULFILLMENT_CHANNEL,
+					      IFNULL(saap.PRICE,0)  as PRICE,
+					        IFNULL(saap.SHIPPING_PRICE,0) as SHIPPING_PRICE,
+					       (  IFNULL(saap.PRICE,0) + IFNULL(saap.SHIPPING_PRICE,0)  ) AS TOTAL_PRICE,
+					        IFNULL(spc.FEE,0) as FEE ,
+					        IFNULL(spc.LABOR_COST,0) as LABOR_COST  ,
+					        IFNULL( spc.LOGISTICS_COST,0) as LOGISTICS_COST,
+					        IFNULL(spc.OTHER_COST,0) as  OTHER_COST,
+					        IFNULL(spc.PURCHASE_COST,0) as PURCHASE_COST,
+					        IFNULL(spc.TAG_COST,0) as TAG_COST ,
+					        IFNULL(spcd.AMAZON_FEE,0) as AMAZON_FEE ,
+					        IFNULL(spcd.FEE,0)  AS D_FEE ,
+					        IFNULL(spcd.LOGISTICS_COST,0)  AS D_LOGISTICS_COST,
+					        IFNULL(spcd.ORDER_COST,0) as ORDER_COST  ,
+					        IFNULL(spcd.OTHER_COST,0)  AS D_OTHER_COST,
+					       (  IFNULL(spc.FEE,0)  +
+					        IFNULL(spc.LABOR_COST,0) +
+					        IFNULL( spc.LOGISTICS_COST,0)+
+					       IFNULL(spc.OTHER_COST,0)+
+					        IFNULL(spc.PURCHASE_COST,0)+
+					       IFNULL(spc.TAG_COST,0) +
+					        IFNULL(spcd.AMAZON_FEE,0) +
+					       IFNULL(spcd.FEE,0) +
+					       IFNULL(spcd.LOGISTICS_COST,0) +
+					      IFNULL(spcd.ORDER_COST,0)+
+					       IFNULL(spcd.OTHER_COST,0)  ) AS TOTAL_COST,
+					       saap.SUPPLY_CYCLE,
+					       saap.REQ_ADJUST
+					 FROM 
+					        sc_real_product srp,
+						sc_product_cost spc,
+						sc_product_cost_details spcd,
+						sc_amazon_account_product saap
+					WHERE spc.id = spcd.COST_ID
+					AND saap.ACCOUNT_ID = spcd.ACCOUNT_ID
+					AND saap.SKU = spcd.LISTING_SKU
+					AND srp.ID = spc.REAL_ID
+				AND spcd.ACCOUNT_ID = '{@#accountId#}'
+				AND spcd.LISTING_SKU = '{@#listingSku#}'
+		</entry>
+		
+		<entry key="sql_supplychain_requirement_getLastestSaleData">
+		  <![CDATA[	
+		SELECT 
+			DATE_FORMAT( sao.purchase_date, "%Y-%m-%d" ) AS D,
+			SUM(sao.QUANTITY_SHIPPED+sao.QUANTITY_TO_SHIP) AS C  
+		FROM sc_amazon_order sao 
+			WHERE TO_DAYS(NOW()) -TO_DAYS(sao.PURCHASE_DATE) <= 14
+			AND sao.ACCOUNT_ID =  '{@#accountId#}'
+			AND sao.SKU =  '{@#listingSku#}'
+			GROUP BY DATE_FORMAT( sao.purchase_date, "%Y-%m-%d" )
+			]]>
+		</entry>
+		
+		<entry key="sql_supplychain_requirement_getOrderOneWeek">
+		  <![CDATA[	
+		SELECT 
+			SUM(sao.QUANTITY_SHIPPED+sao.QUANTITY_TO_SHIP) AS C  
+		FROM sc_amazon_order sao 
+			WHERE TO_DAYS(NOW()) -TO_DAYS(sao.PURCHASE_DATE) <= 7
+			AND sao.ACCOUNT_ID =  '{@#accountId#}'
+			AND sao.SKU =  '{@#listingSku#}'
+			]]>
+		</entry>
+		
+		<entry key="sql_supplychain_requirement_getFlowOneWeek">
+		  <![CDATA[	
+		SELECT  COUNT(spfd.PAGEVIEWS) AS C  FROM  sc_product_flow_details spfd 
+				WHERE TO_DAYS(NOW()) -TO_DAYS( spfd.creattime) <= 7
+				AND spfd.SKU = '{@#listingSku#}'
+			]]>
+		</entry>
+		
+		<entry key="sql_supplychain_requirement_getLastestFlowData">
+		  <![CDATA[	
+		SELECT DATE_FORMAT( spfd.creattime, "%Y-%m-%d" ) AS D,COUNT(1) AS C  FROM  sc_product_flow_details spfd 
+				WHERE TO_DAYS(NOW()) -TO_DAYS( spfd.creattime) <= 14
+				AND spfd.SKU = '{@#listingSku#}'
+				GROUP BY DATE_FORMAT( spfd.creattime, "%Y-%m-%d" )
+			]]>
+	    </entry>
+	    
+	    <entry key="sql_supplychain_requirement_insertlog">
+		  <![CDATA[	
+	    INSERT INTO sc_supplychain_requirement_log 
+				(REQ_PLAN_ID, 
+				ACCOUNT_ID, 
+				SKU, 
+				MEMO, 
+				TYPE,
+				CREATE_DATE
+				)
+				VALUES
+				('{@#REQ_PLAN_ID#}', 
+				'{@#ACCOUNT_ID#}', 
+				'{@#SKU#}', 
+				'{@#MEMO#}', 
+				'{@#TYPE#}', 
+				NOW()
+				)
+				]]>
+	    </entry>
  </properties>

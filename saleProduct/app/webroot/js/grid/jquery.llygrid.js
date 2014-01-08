@@ -710,9 +710,12 @@
 			},
 			'realSku':{
 				body:function(val,record,col){
+					if(!val)  val = record.SKU ;
+
 					if( !val ){
 						return  ("<span><a href='#'  style='color:red' title='该ASIN未关联货品ＳＫＵ，请进行关联！' class='product-detail' asin='"+record.ASIN+"'>"+record.ASIN+"</a></span>") ;
 					}
+					
 					return "<a href='#' class='product-realsku' sku='"+val+"'>"+val+"</a>" ;
 				}
 			},

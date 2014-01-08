@@ -18,7 +18,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
 		
-		
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$domain =  $account[0]['sc_amazon_account']['DOMAIN'];
 	?>
 	
@@ -65,7 +65,7 @@
 						success:function(result,status,xhr){
 							$.unblock() ;
 							$.dialogReturnValue(true) ;
-							window.close() ;
+							//window.close() ;
 						}
 					}); 
 				};
@@ -142,6 +142,23 @@
 								</tr>
 							</tbody>
 							<tbody class="amazon-tbody">
+								<tr>
+									<th>FBM发货仓库：</th>
+									<td colspan="3">
+										<select  id="FBM_WAREHOUSE"  >
+										    	<option value="">--选择--</option>
+											   <?php 
+											     // sql_warehouse_lists
+											     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
+					                             foreach($warehouses as $w){
+					                             	  $w = $SqlUtils->formatObject( $w ) ;
+					                             	  $selected = $account[0]['sc_amazon_account']['FBM_WAREHOUSE'] == $w['ID'] ?"selected":"" ;
+					                             	  echo "<option $selected value='".$w['ID']."'>".$w['NAME']."</option>" ;
+					                             }
+											   ?>
+											</select>
+									</td>
+								</tr>
 								<tr>
 									<th>APPLICATION_NAME：</th>
 									<td colspan="3"><input type="text" id="APPLICATION_NAME" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_NAME'];?>"/></td>

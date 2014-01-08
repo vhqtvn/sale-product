@@ -312,23 +312,25 @@
    <entry key="sql_warehouse_box_product_insert">
 		INSERT INTO sc_warehouse_box_product 
 			(
-			BOX_ID, 
-			REAL_PRODUCT_ID, 
-			QUANTITY, 
-			DELIVERY_TIME, 
-			PRODUCT_TRACKCODE, 
-			INVENTORY_TYPE,
-			MEMO
+				ID,
+				BOX_ID, 
+				REAL_PRODUCT_ID, 
+				QUANTITY, 
+				DELIVERY_TIME, 
+				PRODUCT_TRACKCODE, 
+				INVENTORY_TYPE,
+				MEMO
 			)
 			VALUES
 			(
-			'{@#BOX_ID#}', 
-			'{@#REAL_PRODUCT_ID#}', 
-			'{@#QUANTITY#}', 
-			'{@#DELIVERY_TIME#}', 
-			'{@#PRODUCT_TRACKCODE#}', 
-			'{@#inventoryType#}', 
-			'{@#MEMO#}'
+				'{@#guid#}', 
+				'{@#BOX_ID#}', 
+				'{@#REAL_PRODUCT_ID#}', 
+				'{@#QUANTITY#}', 
+				'{@#DELIVERY_TIME#}', 
+				'{@#PRODUCT_TRACKCODE#}', 
+				'{@#inventoryType#}', 
+				'{@#MEMO#}'
 			)
    </entry>
    

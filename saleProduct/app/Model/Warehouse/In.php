@@ -17,6 +17,14 @@ class In extends AppModel {
 		$bpId = $params['bpId'] ;
 	
 		$this->exeSql("sql_warehouse_box_product_deleteById",array('bpId'=>$bpId)) ;
+		
+		//删除与需求发货关联
+		$sql = "delete from sc_supplychain_reqitem_in where box_product_id = '{@#bpId#}'" ;
+		$this->exeSql( $sql ,array('bpId'=>$bpId)) ;
+		
+		//删除锁定库存
+		$sql = "delete from sc_warehouse_inventory_lock where entity_type='boxProduct' and entity_id = '{@#bpId#}'" ;
+		$this->exeSql( $sql ,array('bpId'=>$bpId)) ;
 		return "" ;
 	}
 	
@@ -91,10 +99,81 @@ class In extends AppModel {
 	}
 	
 	public function doStatus($params){
-		$inId = $params['inId'] ;
-		$this->exeSql("sql_warehouse_in_update_status",$params) ;
 		
-		$this->doSaveTrack($params) ;
+		$dataSource = $this->getDataSource();
+		$dataSource->begin();
+		
+		try{
+			$inId = $params['inId'] ;
+			$status = $params['status'] ;
+			$this->exeSql("sql_warehouse_in_update_status",$params) ;
+			
+			$this->doSaveTrack($params) ;
+			
+			$InventoryNew  = ClassRegistry::init("InventoryNew") ;
+			
+			$warehouseIn = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+			
+			if( $status == 30 ){ //库存状态转换为在途库存
+				//获取该次入库所有锁定的库存
+				$locks = $this->exeSqlWithFormat("sql_supplychain_inventory_getLockForIn", array( "inId"=>$inId )) ;
+					
+				foreach( $locks as $lock  ){
+					
+					debug( $lock ) ;
+			
+					//将锁定库存添加到目标仓库的库存列表（状态为在途库存）
+					$inventoryParams = array() ;
+					$inventoryParams['guid'] = $this->create_guid() ;
+						
+					$inventoryParams['actionType'] = $InventoryNew->ACTION_TYPE_IN ; //出库
+					$inventoryParams['action'] = $InventoryNew->ACTOIN_IN_TRANSFER ;
+					$inventoryParams['realProductId'] = $lock['REAL_PRODUCT_ID'] ;
+					$inventoryParams['warehouseId'] = $warehouseIn['WAREHOUSE_ID'] ;
+					$inventoryParams['loginId'] = $params['loginId'] ;
+			
+					$inventoryParams['quantity'] = $lock['LOCK_QUANTITY'] ;
+					$inventoryParams['listingSku'] = $lock['LISTING_SKU'] ;
+					$inventoryParams['accountId'] = $lock['ACCOUNT_ID'] ;
+			
+					$inventoryParams['inventoryType']   =  $lock['INVENTORY_TYPE'] ;
+					$inventoryParams['inventoryStatus'] = $InventoryNew->INVENTORY_STATUS_TRANSIT ;//在途库存
+					$inventoryParams['inventoryTo']       = $lock['INVENTORY_TO']  ;
+					$inventoryParams['sourceId'] = "INID_".$inId ;
+			
+					$InventoryNew->doSave( $inventoryParams ) ;
+			
+					//目标仓库出库
+					$inventoryParams = array() ;
+					$inventoryParams['guid'] = $this->create_guid() ;
+						
+					$inventoryParams['actionType'] = $InventoryNew->ACTION_TYPE_OUT ; //出库
+					$inventoryParams['action'] = $InventoryNew->ACTOIN_IN_TRANSFER ;
+					$inventoryParams['realProductId'] = $lock['REAL_PRODUCT_ID'] ;
+					$inventoryParams['warehouseId'] = $lock['WAREHOUSE_ID'] ;
+					$inventoryParams['loginId'] = $params['loginId'] ;
+			
+					$inventoryParams['quantity'] = $lock['LOCK_QUANTITY'] ;
+					$inventoryParams['listingSku'] = $lock['LISTING_SKU'] ;
+					$inventoryParams['accountId'] = $lock['ACCOUNT_ID'] ;
+			
+					$inventoryParams['inventoryType']   =  $lock['INVENTORY_TYPE'] ;
+					$inventoryParams['inventoryStatus'] =  $lock['INVENTORY_STATUS'] ;
+					$inventoryParams['inventoryTo']       =  $lock['INVENTORY_TO'] ;
+					$inventoryParams['sourceId'] = "" ;
+					$InventoryNew->doSave( $inventoryParams ) ;
+				}
+					
+				//清除锁定
+				//$this->exeSql("sql_supplychain_inventory_clearLockForIn", array( "inId"=>$inId )) ;
+					
+			}
+			
+			$dataSource->commit() ;
+		}catch(Exception $e){
+			$dataSource->rollback() ;
+			print_r($e) ;
+		}
 	}
 
 	public function doSave4Quantity($params){
@@ -136,11 +215,86 @@ class In extends AppModel {
 		}
 	}
 	
+	public function lockInventory( $inventoryId,$entityType,$entityId,$quantity ){
+		$sql = "
+					INSERT INTO sc_warehouse_inventory_lock 
+						(INVENTORY_ID, 
+						ENTITY_TYPE, 
+						ENTITY_ID, 
+						LOCK_QUANTITY
+						)
+						VALUES
+						('{@#inventoryId#}', 
+						'{@#entityType#}', 
+						'{@#entityId#}', 
+						'{@#lockQuantity#}'
+						)" ;
+		$this->exeSql($sql, array('inventoryId'=>$inventoryId,'entityType'=>$entityType,
+										'entityId'=>$entityId,'lockQuantity'=>$quantity
+				));
+	}
+	
+	/**
+	 * '{@#BOX_ID#}', 
+				'{@#REAL_PRODUCT_ID#}', 
+				'{@#QUANTITY#}', 
+				'{@#DELIVERY_TIME#}', 
+				'{@#PRODUCT_TRACKCODE#}', 
+				'{@#inventoryType#}', 
+				'{@#MEMO#}'
+	 * @param unknown_type $params
+	 */
+	public function doSaveBoxProductForReq($params){
+		$items  = $params['items'] ;
+		$boxId  = $params['boxId'] ;
+		$inId  = $params['inId'] ;
+		$items = json_decode($items) ;
+		foreach($items as $item){
+			$item = get_object_vars($item) ;
+			
+			$array = array() ;
+			$array['BOX_ID'] = $boxId ;
+			$array['REAL_PRODUCT_ID'] = $item['realId'] ;
+			$array['QUANTITY'] = $item['quantity'] ;
+			$array['DELIVERY_TIME'] = $item['DELIVERY_TIME'] ;
+			$array['PRODUCT_TRACKCODE'] = $item['PRODUCT_TRACKCODE'] ;
+			$array['inventoryType'] = 1 ;//普通库存
+			$array['guid'] = $this->create_guid() ;
+			
+			$boxProductId= $this->doSaveBoxProduct($array) ;
+			
+			//保存需求记录
+			$reqItemIds = $item['reqItemIds'] ;
+			if( !empty($reqItemIds) ){
+				foreach( explode(",", $reqItemIds)  as $reqItemId ){
+					$sql = "INSERT INTO  sc_supplychain_reqitem_in 
+										(REQ_ITEM_ID, 
+										BOX_PRODUCT_ID
+										)
+										VALUES
+										('{@#REQ_ITEM_ID#}', 
+										'{@#BOX_PRODUCT_ID#}'
+										)" ;
+					$this->exeSql($sql, array('REQ_ITEM_ID'=>$reqItemId,'BOX_PRODUCT_ID'=>$array['guid'])) ;
+				}
+			}
+			
+			//锁定实际库存数量
+			$locks = $item['locks'] ; 
+			foreach($locks as $lock){
+				$lock = get_object_vars($lock) ;
+				$this->lockInventory($lock['inventoryId'], "boxProduct", $boxProductId , $lock['lockQuantity']) ;
+			} 
+		}
+	}
+	
 	public function doSaveBoxProduct($params){
 		if( empty( $params['id'] ) ){
 			$this->exeSql("sql_warehouse_box_product_insert",$params) ;
+			return $params['guid'] ;
 		}else{
 			$this->exeSql("sql_warehouse_box_product_update",$params) ;
+			return $params['id'] ;
 		}
 	}
 	/**
@@ -222,19 +376,30 @@ class In extends AppModel {
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
 		
-		$inId = $params['inId'] ;
-		//检查是否已经入库
+		$dataSource = $this->getDataSource();
+		$dataSource->begin();
 		
-		$in = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
-		if(!empty($in) && $in['STATUS'] == 70){ //已经入库
-			return "has storaged!" ;
+		try{
+			$inId = $params['inId'] ;
+			//检查是否已经入库
+			
+			$in = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+			if(!empty($in) && $in['STATUS'] == 70){ //已经入库
+				return "has storaged!" ;
+			}
+			
+			$inventoryNew  = ClassRegistry::init("InventoryNew") ;
+			$inventoryNew->transferIn( $params ) ;
+			
+			//更新计划单为已入库完成
+			//$this->doStatus( array('inId'=>$inId,'status'=>'70') ) ;
+			
+			$dataSource->commit() ;
+		}catch(Exception $e){
+			$dataSource->rollback() ;
+			print_r( $e->getMessage() ) ;
 		}
 		
-		$inventory  = ClassRegistry::init("Inventory") ;
-		$inventory->in( $params ) ;
-		
-		//更新计划单为已入库完成
-		$this->doStatus( array('inId'=>$inId,'status'=>'70') ) ;
 	}
 	
 	/**

@@ -107,15 +107,30 @@
 								</tr>
 								<tr>
 									<th>入库类型：</th>
-									<td colspan="3">
-										外部采购入库&nbsp;<input type="radio"  name="inSourceType"  value="out" <?php echo $isRead?"disabled":"" ;?>
+									<td  colspan="3">
+										采购入库&nbsp;<input type="radio"  name="inSourceType"  value="out" <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='out'?"checked":"";?>   
 											data-validator="required" style="vertical-align: top;"/>&nbsp;&nbsp;&nbsp; 
 										转仓&nbsp;<input type="radio"  name="inSourceType"  value="warehouse"  <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='warehouse'?"checked":"";?>   
 											data-validator="required"  style="vertical-align: top;"/>
+										FBA入库&nbsp;<input type="radio"  name="inSourceType"  value="fba"  <?php echo $isRead?"disabled":"" ;?>
+											<?php echo $result['IN_SOURCE_TYPE']=='fba'?"checked":"";?>   
+											data-validator="required"  style="vertical-align: top;"/>
 									</td>
-									<th class="trans-wh" style="display:none;">转仓仓库：</th>
+								</tr>
+								<tr>
+									<th>入库流程：</th>
+									<td colspan="3">
+										<select  data-validator="required"   id="flowType"  <?php echo $isRead?"disabled":"" ;?>>
+											<option value="">-选择入库流程-</option>
+											<option value="international"  <?php echo $result['FLOW_TYPE']=='international'?"selected":"";?>>国际物流流程</option>
+											<option value="internal" <?php echo $result['FLOW_TYPE']=='internal'?"selected":"";?>>国内物流流程</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th class="trans-wh" style="display:none;">出库仓库：</th>
 									<td class="trans-wh" style="display:none;">
 											<select  data-validator="required"   id="sourceWarehouseId"  <?php echo $isRead?"disabled":"" ;?>>
 										    	<option value="">--选择--</option>
@@ -130,9 +145,7 @@
 											   ?>
 											</select>
 									</td>
-								</tr>
-								<tr>
-									<th>目标仓库：</th>
+									<th>入库仓库：</th>
 									<td>
 										<select  data-validator="required"   id="warehouseId"  <?php echo $isRead?"disabled":"" ;?>>
 										    	<option value="">--选择--</option>
@@ -146,14 +159,6 @@
 					                             }
 											   ?>
 											</select>
-									</td>
-									<th>入库流程：</th>
-									<td>
-										<select  data-validator="required"   id="flowType"  <?php echo $isRead?"disabled":"" ;?>>
-											<option value="">-选择入库流程-</option>
-											<option value="chinaToAmerican"  <?php echo $result['FLOW_TYPE']=='chinaToAmerican'?"selected":"";?>>中国到美国仓库</option>
-											<option value="chinaLocal" <?php echo $result['FLOW_TYPE']=='chinaLocal'?"selected":"";?>>中国本地采购入库</option>
-										</select>
 									</td>
 								</tr>
 								<tr>

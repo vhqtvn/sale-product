@@ -6,6 +6,11 @@ class SaleProduct extends AppModel {
 		$this->exeSql("sql_saleproduct_saveLimitPrice", $params) ;
 	}
 	
+	function isAnalysis($params){
+		$sql= "update  sc_amazon_account_product set IS_ANALYSIS = {@#isAnalysis#} where id='{@#id#}'";
+		$this->exeSql($sql, $params) ;
+	}
+	
 	/**
 	 * 保存账户产品分类
 	 * 

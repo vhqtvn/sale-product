@@ -50,6 +50,7 @@
 				<td class="toolbar-btns">
 					<button class="add-box btn btn-primary">添加包装箱</button>
 					<button class="add-box-product btn btn-primary" disabled>添加包装箱产品</button>
+					<button class="add-box-product-req btn btn-primary" disabled>添加包装箱产品(需求)</button>
 				</td>
 				<?php } ?>
 			</tr>						

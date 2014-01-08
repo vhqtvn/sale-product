@@ -45,6 +45,8 @@
      function AuditAction(status , statusLabel ){
 		if(window.confirm("确认【"+statusLabel+"】？")){
 			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
+			//console.log(json) ;
+			//return ;
 			$.dataservice("model:Warehouse.In.doStatus",json,function(result){
 				window.location.reload();
 			});

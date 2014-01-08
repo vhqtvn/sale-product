@@ -8,7 +8,7 @@ ini_set("post_max_size", "24M");
 class CronTaskController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Utils','Amazonaccount','Requirement');
+    var $uses = array('Utils','Amazonaccount','ScRequirement');
     
     public function clearLimitPrice(){
     	$this->Utils->exeSql("delete from sc_sale_schedule",array()) ;
@@ -29,6 +29,6 @@ class CronTaskController extends AppController {
     	}
     	//2、检测是否需要创建需求；新增加的需求产品是否都包括在未完成的需求产品里面
     	//3、创建需求
-    	$this->Requirement->createRequirement() ;
+    	$this->ScRequirement->createRequirement() ;
     }
 }

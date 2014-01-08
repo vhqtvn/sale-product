@@ -201,7 +201,8 @@ class Amazonaccount extends AppModel {
 				PLATFORM_ID = '".$data['PLATFORM_ID']."' , 
 				MERCHANT_ID = '".$data['MERCHANT_ID']."' , 
 				MERCHANT_IDENTIFIER = '".$data['MERCHANT_IDENTIFIER']."' , 
-				MARKETPLACE_ID = '".$data['MARKETPLACE_ID']."'
+				MARKETPLACE_ID = '".$data['MARKETPLACE_ID']."', 
+				FBM_WAREHOUSE = '".$data['FBM_WAREHOUSE']."'
 				
 				WHERE
 				ID = '".$data['ID']."' " ;

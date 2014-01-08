@@ -40,24 +40,38 @@
 		
 		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE||$COST_EDIT_PROFIT ;
 	
-		$type = $params['arg1'] ;
-		$value = $params['arg2'] ;
-		$id = $params['arg3'] ;
+		$realId = $params['arg1'] ;
 
-		$asin = "" ;
-		$sku = "" ;
-		$suppliers = array() ;
-		if( $type =='asin' ){
-			$asin = $value ;
-		}else if($type == 'sku'){
-			$sku = $value ;
-		}
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		
-		$productCost = null ;
-		if( !empty($id) ){
-			$Cost  = ClassRegistry::init("Cost") ;
-			$productCost =  $Cost->getProductCost( $id  ) ;
-		}
+		$sql = "SELECT sc_product_cost.* FROM sc_product_cost where real_id = '$realId'";
+		$productCost = $SqlUtils->getObject($sql,array()) ;
+
+		
+		$sql = "SELECT saap.SKU AS SELLER_SKU, srp.*,
+				saap.ACCOUNT_ID,
+						saa.name as ACCOUNT_NAME,
+						saap.FULFILLMENT_CHANNEL,
+				        spcd.LOGISTICS_COST, 
+						spcd.FEE, 
+						spcd.AMAZON_FEE, 
+						spcd.ORDER_COST, 
+						spcd.OTHER_COST,
+						(select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME
+				 FROM sc_real_product srp,
+							sc_real_product_rel srpr,
+				            sc_amazon_account saa,
+							sc_amazon_account_product saap
+					        left join sc_product_cost_details spcd
+				           on spcd.account_id = saap.account_id
+				             and spcd.listing_sku = saap.sku
+							WHERE srp.ID = srpr.REAL_ID
+							AND srpr.SKU = saap.SKU
+				and saap.account_id = saa.id
+							and srp.id = '{@#realId#}'" ;
+		
+		$listing = $SqlUtils->exeSqlWithFormat($sql,array("realId"=>$realId)) ;
+		//debug($listing) ;
 	?>
    <style>
 
@@ -79,161 +93,124 @@
    		var groupCode = '<?php echo $loginId;?>' ;
 
    		$(function(){
-   					
+   				
    					$(".save-btn").click(function(){
    						if( !$.validation.validate('#personForm').errorInfo ) {
-   							var json = $("#personForm").toJson() ;
+   							var productCost = $(".product-cost").toJson() ;
+   							var listingCosts = [] ;
+   							$(".listing-cost .data-row").each(function(index,row){
+									var listingCost = $(this).toJson() ;
+									listingCosts.push(listingCost) ;
+   	   						});
+
    							
-   							$.dataservice("model:Cost.saveCost" , json , function(){
-   								window.close() ;
+   							$.dataservice("model:Cost.saveCostFix" , {productCost:productCost,listingCosts:listingCosts} , function(){
+   								window.location.reload();
    							})
 
    						};
    						return false ;
    					}) ;
-   					
-   					$(".cost,.sale-price").keyup(function(){
-   						calcTotalCost() ;
-   					}) ;
-   					$(".cost,.sale-price").blur(function(){
-   						calcTotalCost() ;
-   					}) ;
-   					
-   					calcTotalCost() ;
 
-   					//////////////////////
-   					$(".profit-confirm").click(function(){
-   						calcProfit() ;
-   						return false ;
-   					}) ;	
+   					addAlert();
    		}) ;
-   				
-   				function calcTotalCost(){
-   						var totalCost = 0 ;
-   						$(".cost").each(function(){
-   							totalCost = totalCost + parseFloat($(this).val()||0) ;
-   						}) ;
-   						$("#TOTAL_COST").val(totalCost.toFixed(2)) ;//成本
-   						
-   				}
 
-   		function calcProfit(){
-   			var totalCost = 0 ;
-   			$(".cost").each(function(){
-   				totalCost = totalCost + parseFloat($(this).val()||0) ;
-   			}) ;
-   			//销售价格
-   			var salePrice = $(".sale-price").val() ;
-   			//计算利润 profit-num  profit-margins
-   			var profitNum =  (salePrice - totalCost.toFixed(2)).toFixed(2)  ;
-   			var profitMargin = ((profitNum/totalCost.toFixed(2)).toFixed(4)*100).toFixed(2)+"%" ;
-   			$(".profit-num").val( salePrice - totalCost.toFixed(2) ) ;
-   			$(".profit-margins").val( profitMargin ) ;
-   		}
+   		function addAlert(){
+			$("._cost").each(function(){
+				if(!$(this).val() || $(this).val()== '0'){
+					$(this).addClass("alert-danger") ;	
+				}else{
+					$(this).removeClass("alert-danger") ;	
+				}
+			}) ;
+   	   	}
+   	
    </script>
 </head>
 
 
-<body class="container-popup">
+<body class="container-popup" >
 	<!-- apply 主场景 -->
-	<div class="apply-page">
+	<div class="apply-page" >
 		<!-- 页面标题 -->
-		<div class="page-title">
-			<h2>成本信息</h2>
-		</div>
 		<div class="container-fluid">
 	        <form id="personForm" action="#" data-widget="validator,ajaxform" class="form-horizontal" >
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
-					<div class="panel-content">
+					<div class="panel-content" style="margin-bottom:50px;">
 						<!-- 数据列表样式 -->
-						<input type="hidden" id="ID" value="<?php echo $id;?>"/>
-						<input type="hidden" id="SKU" value="<?php echo $sku;?>"/>
-						<input type="hidden" id="ASIN" value="<?php echo $asin;?>"/>
 						
-						<table class="form-table" >
+						<table  class="form-table  product-cost" style="<?php echo $COST_VIEW_PURCHASE?'':'display:none;'?>">
+							<caption>货品成本</caption>
 							<tr>
-								<th>成本类型：</th>
+								<th>采购成本：</th>
 								<td colspan="5">
-									<select id="TYPE" class=" span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?"":"disabled"?>>
-										<option value=""></option>
-										<option value="FBM" <?php if($productCost[0]["sc_product_cost"]["TYPE"] == 'FBM') echo 'selected';?> >FBM</option>
-										<option value="FBA" <?php if($productCost[0]["sc_product_cost"]["TYPE"] == 'FBA') echo 'selected';?>>FBA</option>
-									</select>
-								</td>
-							</tr>
-						</table>
-						
-						<table  class="form-table" style="<?php echo $COST_VIEW_PURCHASE?'':'display:none;'?>">
-							<caption>采购成本</caption>
-							<tr>
-								<th>采购费用：</th>
-								<td><input class="cost span2"  type="text" 
+								<input type="hidden" id="REAL_ID" value="<?php echo $realId;?>"/>
+								
+								<input class="cost span2"  type="text" 
 									data-validator="double"
 									<?php echo $COST_EDIT_PURCHASE?'':'disabled'?>
-									id="PURCHASE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["PURCHASE_COST"];?>"/></td>
+									<?php echo empty($productCost["PURCHASE_COST"])?'':'disabled'?>
+									id="PURCHASE_COST" value="<?php echo $productCost["PURCHASE_COST"];?>"/>
+									<span class="alert" style="padding:2px;">不能修改，由采购价格自动更新</span>
+								</td>
+								<th>采购物流费用 ：</th><td ><input class="_cost span2"      style="width:50px!important;"
+										data-validator="double"  type="text" id="LOGISTICS_COST" value="<?php echo $productCost["LOGISTICS_COST"];?>"/></td>
+							</tr>
+							<tr>
+									
+									<th>标签费用 ：</th><td ><input class="_cost span2"      style="width:50px!important;"
+										data-validator="double"  type="text" id="TAG_COST" value="<?php echo $productCost["TAG_COST"];?>"/></td>
+									<th>人工成本：</th><td><input  class="_cost "     style="width:50px!important;"
+										data-validator="double"  type="text" id="LABOR_COST" value="<?php echo $productCost["LABOR_COST"];?>"/></td>	
+									<th>国内税费：</th><td><input  class="_cost "     style="width:50px!important;"
+										data-validator="double"  type="text" id="FEE" value="<?php echo $productCost["FEE"];?>"/></td>
+									<th>其他成本：</th><td><input      style="width:50px!important;"
+										data-validator="double"  type="text" id="OTHER_COST" value="<?php echo $productCost["OTHER_COST"];?>"/></td>
 							</tr>
 						</table>
 						
-						<table  class="form-table" style="<?php echo $COST_VIEW_LOGISTIC?'':'display:none;'?>">
-							<caption>物流成本</caption>
+						<table  class="form-table table  listing-cost" >
+							<caption>Listing成本</caption>
 							<tr>
-								<th>入库前物流费用：</th><td><input class="cost span1"  <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?>  data-validator="double" type="text" id="BEFORE_LOGISTICS_COST" value="<?php echo $productCost[0]["sc_product_cost"]["BEFORE_LOGISTICS_COST"];?>"/></td>
-								<th>关税：</th><td><input class="cost span1" <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?> data-validator="double"   type="text" id="TARIFF" value="<?php echo $productCost[0]["sc_product_cost"]["TARIFF"];?>"/></td>
-								<th>仓储费用 ：</th><td><input class="cost span1" <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?> data-validator="double"   type="text" id="WAREHOURSE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["WAREHOURSE_COST"];?>"/></td>
-								<th>USPS邮费 ：</th><td><input  class="cost span1"  <?php echo $COST_EDIT_LOGISTIC?'':'disabled'?> data-validator="double"   type="text" id="USPS_COST" value="<?php echo $productCost[0]["sc_product_cost"]["USPS_COST"];?>"/></td>
+								<th>Listing SKU</th>
+								<th>账号</th>
+								<th>销售渠道</th>
+								<th>FBM发货仓库</th>
+								<th>物流成本</th>
+								<th>税费</th>
+								<th>渠道佣金</th>
+								<th>FBA费用/FBM订单发货成本</th>
+								<th>其他成本</th>
 							</tr>
+							<?php  	foreach( $listing as $item  ){ ?>
 							
+							<tr  class="data-row">
+								<td>
+									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>
+									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['SELLER_SKU'];?>" style="width:50px;"/>
+									<?php echo $item['SELLER_SKU'];?>
+								</td>
+								<td><?php echo $item['ACCOUNT_NAME'];?></td>
+								<td><?php echo $item['FULFILLMENT_CHANNEL'];?></td>
+								<td>
+									<?php echo $item['FULFILLMENT_CHANNEL']=='Merchant'?$item['FBM_WAREHOUSE_NAME']:"";?>
+								</td>
+								<td><input type="text" class="_cost"  name="LOGISTICS_COST" value="<?php echo $item['LOGISTICS_COST'];?>" style="width:50px;"/></td>
+								<td><input type="text" class="_cost"  name="FEE"  value="<?php echo $item['FEE'];?>" style="width:50px;"/></td>
+								<td><input type="text" class="_cost"  name="AMAZON_FEE"  value="<?php echo $item['AMAZON_FEE'];?>" style="width:50px;"/></td>
+								<td><input type="text"  name="ORDER_COST"  value="<?php echo $item['ORDER_COST'];?>" style="width:50px;"/>
+								</td>
+								<td><input type="text"  name="OTHER_COST"  value="<?php echo $item['OTHER_COST'];?>" style="width:50px;"/></td>
+							</tr>
+							<?php  	} ?>
 						</table>
 						
-						<table  class="form-table" style="<?php echo $COST_VIEW_PRODUCT_CHANNEL?'':'display:none;'?>">
-							<caption>产品成本</caption>
-							<tr>
-								<th>amazon佣金：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"  type="text" id="AMAZON_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["AMAZON_FEE"];?>"/></td>
-								<th>可变关闭费用：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"   type="text" id="VARIABLE_CLOSURE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["VARIABLE_CLOSURE_COST"];?>"/></td>
-								<th>标签费用 ：</th><td><input class="cost span2"   <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"  type="text" id="TAG_COST" value="<?php echo $productCost[0]["sc_product_cost"]["TAG_COST"];?>"/></td>
-							</tr>
-							<tr>
-								<th>打包费：</th><td><input class="cost span2"   <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"  type="text" id="PACKAGE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["PACKAGE_COST"];?>"/></td>
-								<th>订单处理费：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>  data-validator="double"   type="text" id="OORDER_PROCESSING_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["OORDER_PROCESSING_FEE"];?>"/></td>
-								<th>称重费 ：</th><td><input class="cost span2"  <?php echo $COST_EDIT_PRODUCT_CHANNEL?'':'disabled'?>   data-validator="double"  type="text" id="STABLE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["STABLE_COST"];?>"/></td>
-							</tr>
-						</table>
-						
-						<table  class="form-table" style="<?php echo $COST_VIEW_FEE?'':'display:none;'?>">
-							<caption>会计</caption>
-							<tr>
-								<th>当地税费  ：</th><td><input class="cost span2"  <?php echo $COST_EDIT_FEE?'':'disabled'?>  data-validator="double"  type="text" id="LOST_FEE" value="<?php echo $productCost[0]["sc_product_cost"]["LOST_FEE"];?>"/></td>
-								<th>人工成本：</th><td><input  class="cost span2"   <?php echo $COST_EDIT_FEE?'':'disabled'?>  data-validator="double"  type="text" id="LABOR_COST" value="<?php echo $productCost[0]["sc_product_cost"]["LABOR_COST"];?>"/></td>
-								<th> 服务成本  ：</th><td colspan="3"><input class="cost span2"   <?php echo $COST_EDIT_FEE?'':'disabled'?>   data-validator="double"  type="text" id="SERVICE_COST" value="<?php echo $productCost[0]["sc_product_cost"]["SERVICE_COST"];?>"/></td>
-							</tr>
-						</table>
-						
-						<table  class="form-table" style="<?php echo $COST_VIEW_OTHER?'':'display:none;'?>">
-							<tr>
-								<th>其他成本 ：</th><td><input <?php echo $COST_EDIT_OTHER?'':'disabled'?> class="cost span2"  data-validator="double"  type="text" id="OTHER_COST" value="<?php echo $productCost[0]["sc_product_cost"]["OTHER_COST"];?>"/></td>
-							</tr>
-						</table>
-						
-						<div class="alert alert-info area" style="width:50%;"  style="<?php echo $COST_VIEW_TOTAL?'':'display:none;'?>">
-						总成本:&nbsp;<input type="text" id="TOTAL_COST"  data-validator="double"  readonly="readonly"  value="<?php echo $productCost[0]["sc_product_cost"]["TOTAL_COST"];?>"/>
-						</div>
-						
-						<table  class="form-table">
-							<tr style="<?php echo $COST_VIEW_SALEPRICE?'':'display:none;'?>">
-								<th>销售价格  ：</th><td colspan="4"  ><input  <?php echo $COST_EDIT_SALEPRICE?'':'disabled'?> class="sale-price span2"  data-validator="double"  type="text" id="SALE_PRICE" value="<?php echo $productCost[0]["sc_product_cost"]["SALE_PRICE"];?>"/></td>
-							</tr>
-							<tr  style="<?php echo $COST_VIEW_PROFIT?'':'display:none;'?>">
-								<th>利润  ：</th><td><input class=" span2  profit-num"   disabled  type="text"  id="PROFIT_NUM"  value="<?php echo $productCost[0]["sc_product_cost"]["PROFIT_NUM"];?>"/></td>
-								<th>利润率：</th><td><input  class=" span2 profit-margins"  disabled type="text"    id="PROFIT_MARGINS"   value="<?php echo $productCost[0]["sc_product_cost"]["PROFIT_MARGINS"];?>"/></td>
-								<td><style="<?php echo $COST_EDIT_PROFIT?'':'display:none;'?>"  button class="btn btn-primary profit-confirm">利润确认</button></td>
-							</tr>
-						</table>
 					</div>
 					
 					<?php if($COST_EDIT){ ?>
 					<!-- panel脚部内容-->
-                    <div class="panel-foot">
+                    <div class="panel-foot"  style="background:#FFF;">
 						<div class="form-actions">
 							<button type="submit" class="btn btn-primary save-btn">保存</button>
 							<button type="button" class="btn" onclick="window.close()">关闭</button>

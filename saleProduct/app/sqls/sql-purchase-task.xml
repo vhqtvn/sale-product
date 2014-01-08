@@ -196,6 +196,7 @@
 			(SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = sppd.id
 	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
 			sppd.SKU, 
+			srp.REAL_SKU,
 			sppd.PLAN_NUM, 
 			sppd.REAl_PURCHASE_NUM, 
 			sppd.PLAN_ID,
@@ -217,7 +218,7 @@
 		LEFT JOIN sc_user su
 		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
-		ON sppd.SKU = srp.real_sku
+		ON ( sppd.SKU = srp.real_sku or srp.ID = sppd.REAL_ID)
 		WHERE 1=1 
 		    AND sptp.product_id = sppd.id
 		    {@ and sptp.task_id = '#taskId#'}
@@ -278,12 +279,13 @@
     	SELECT DISTINCT  
 			sppd.* ,
 			srp.name AS TITLE,
+			srp.REAL_SKU,
 			srp.IMAGE_URL,
 			(SELECT NAME FROM sc_user WHERE login_id = sppd.executor ) AS EXECUTOR_NAME,
 			( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) AS SUPPIERABLE_NUM
 		FROM sc_purchase_plan_details sppd 
 		LEFT JOIN sc_real_product srp
-		ON sppd.SKU = srp.real_sku
+		ON ( sppd.REAL_ID = srp.ID or srp.REAL_SKU = sppd.SKU )
 		WHERE 1=1 
 		  	and sppd.executor = '{@#Evn.loginId#}'
 		  AND not EXISTS(

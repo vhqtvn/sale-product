@@ -53,7 +53,10 @@
     			$pid  = $sfs['PARENT_ID'] ;
     			$charger = $sfs['PURCHASE_CHARGER'] ;
     			$chargerName = $sfs['PURCHASE_CHARGER_NAME'] ;
-    			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true,purchaseCharger:'$charger',purchaseChargerName:'$chargerName'} ;" ;
+    			$supply = $sfs['SUPPLY_CHARGER'] ;
+    			$supplyName = $sfs['SUPPLY_CHARGER_NAME'] ;
+    			echo " var item$index = {id:'$id',text:'$name',memo:'".$sfs['MEMO']."',isExpand:true,purchaseCharger:'$charger',purchaseChargerName:'$chargerName',
+				supplyCharger:'$supply',supplyChargerName:'$supplyName'} ;" ;
     			
     } ) ;
     
@@ -86,6 +89,8 @@
 					$("#up-category .memo").val(record.memo) ;
 					$("#up-category .purchaseChargerName").val(record.purchaseChargerName) ;
 					$("#up-category .purchaseCharger").val(record.purchaseCharger) ;
+					$("#up-category .supplyChargerName").val(record.supplyChargerName) ;
+					$("#up-category .supplyCharger").val(record.supplyCharger) ;
 				}
            }) ;
            
@@ -156,6 +161,24 @@
 			return false;
 		}) ;
 
+		$(".add-on11").listselectdialog( chargeGridSelect,function(){
+			var args = jQuery.dialogReturnValue() ;
+			var value = args.value ;
+			var label = args.label ;
+			$("#xj-category .supplyCharger").val(value) ;
+			$("#xj-category .supplyChargerName").val(label) ;
+			return false;
+		}) ;
+
+		$(".add-on22").listselectdialog( chargeGridSelect,function(){
+			var args = jQuery.dialogReturnValue() ;
+			var value = args.value ;
+			var label = args.label ;
+			$("#up-category .supplyCharger").val(value) ;
+			$("#up-category .supplyChargerName").val(label) ;
+			return false;
+		}) ;
+
 		var categoryTreeSelect = {
 				title:'产品分类选择页面',
 				valueField:"#up-category .parentId",
@@ -203,6 +226,11 @@
 				<input type="text" class="purchaseChargerName" id="purchaseChargerName" class="span4"/>
 				<button class="btn add-on add-on1">选择用户</button>
 				
+				<label>供应负责人:</label>
+				<input type="hidden" class="supplyCharger" id="supplyCharger" class="span4"/>
+				<input type="text" class="supplyChargerName" id="supplyChargerName" class="span4"/>
+				<button class="btn add-on add-on11">选择用户</button>
+				
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>
 				<br/><br/>
@@ -223,12 +251,17 @@
 				<label>上级分类:</label>
 				<input type="text" readOnly class="parentName" id="parentName"/>
 				<input type="hidden" class="parentId" id="parentId"/>
-				<button class="btn add-on add-on-category">选择上级分类</button>
+				<button class="btn add-on add-on-category">上级分类</button>
 				
 				<label>采购负责人:</label>
 				<input type="hidden" class="purchaseCharger" id="purchaseCharger" class="span4"/>
 				<input type="text" class="purchaseChargerName" id="purchaseChargerName" class="span4"/>
 				<button class="btn add-on add-on2">选择用户</button>
+				
+				<label>供应负责人:</label>
+				<input type="hidden" class="supplyCharger" id="supplyCharger" class="span4"/>
+				<input type="text" class="supplyChargerName" id="supplyChargerName" class="span4"/>
+				<button class="btn add-on add-on22">选择用户</button>
 				
 				<label>分类备注:</label>
 				<textarea id="memo" class="memo" style="height:50px;" class="span4"></textarea>

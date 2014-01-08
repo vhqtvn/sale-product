@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_supplychain_requirement_complete">
+		UPDATE sc_supplychain_requirement_plan_product s1 SET s1.status = 6
+			WHERE EXISTS (
+			    SELECT * FROM sc_supplychain_reqitem_in ssr1,
+			          sc_supplychain_requirement_item ssr2,
+			          sc_real_product_rel srpr,
+			          sc_warehouse_box_product s11,
+			           sc_warehouse_box s2   
+			          WHERE ssr1.REQ_ITEM_ID = ssr2.ID
+			          AND ssr2.PLAN_ID = s1.PLAN_ID
+			          AND srpr.ACCOUNT_ID = ssr2.ACCOUNT_ID
+			          AND srpr.SKU = ssr2.LISTING_SKU
+			          AND s1.REAL_ID = srpr.REAL_ID
+			          AND s11.BOX_ID = s2.ID
+			          AND ssr1.BOX_PRODUCT_ID = s11.ID
+			          AND s2.IN_ID = '{@#inId#}'
+			)
+	</entry>
+
+	<entry key="sql_supplychain_inventory_clearTransferForIn">
+		delete  FROM sc_warehouse_inventory 
+			     WHERE sc_warehouse_inventory.source_id = 'INID_{@#inId#}' 
+	</entry>
+
+	<entry key="sql_supplychain_inventory_clearLockForIn">
+		delete  FROM sc_warehouse_inventory_lock  
+			     WHERE sc_warehouse_inventory_lock.entity_type = 'boxProduct' AND sc_warehouse_inventory_lock.ENTITY_ID IN (
+			  SELECT swbp.id FROM sc_warehouse_box_product swbp,sc_warehouse_box swb
+			  WHERE swbp.BOX_ID = swb.ID
+			  AND swb.IN_ID = '{@#inId#}' 
+			)
+	</entry>
+
+	<entry key="sql_supplychain_inventory_getLockForIn">
+		SELECT 
+				ssil.LOCK_QUANTITY,
+			        swi.*,
+			        ssil.ENTITY_ID as LOCK_ID
+			   FROM sc_warehouse_inventory_lock ssil,
+			        sc_warehouse_inventory swi
+			     WHERE ssil.entity_type = 'boxProduct' AND ssil.ENTITY_ID IN (
+			  SELECT swbp.id FROM sc_warehouse_box_product swbp,sc_warehouse_box swb
+			  WHERE swbp.BOX_ID = swb.ID
+			  AND swb.IN_ID = '{@#inId#}' 
+			  AND swi.INVENTORY_ID = ssil.INVENTORY_ID
+			)
+	</entry>
+
+	<!-- 
+		列出能够从A仓库能够出库到目标仓库的库存
+	 -->
+	<entry key="sql_supplychain_inventory_canToWarehouse">
+			SELECT srp.* ,SUM(swi.QUANTITY) AS TOTAL_INVENTORY
+			FROM  sc_real_product srp,
+			      sc_real_product_rel srpr,
+			      sc_warehouse_inventory swi ,
+			      sc_amazon_account saa,
+			      sc_amazon_account_product saap
+			WHERE swi.warehouse_id = '{@#sourceWarehouseId#}'
+			    AND swi.ACCOUNT_ID = saa.ID
+			    AND swi.LISTING_SKU = saap.SKU
+			    AND saap.ACCOUNT_ID = saa.ID
+			    AND srp.ID = srpr.REAL_ID
+			    AND srpr.ACCOUNT_ID = saa.ID
+			    and saap.FULFILLMENT_CHANNEL not like '%AMAZON%'
+			    AND srpr.SKU = saap.SKU
+			    AND swi.INVENTORY_STATUS != 3
+			    GROUP BY srp.id
+    </entry>
+    
+    <entry key="sql_supplychain_inventoryItem_canToWarehouse">
+			SELECT swi.*  ,
+			saa.name as ACCOUNT_NAME,
+	    	  saap.FULFILLMENT_CHANNEL,
+	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
+	    	  (select sum(lock_quantity) from sc_warehouse_inventory_lock where inventory_id = swi.inventory_id ) as LOCK_QUANTITY
+			FROM 
+			      sc_real_product_rel srpr,
+			      sc_warehouse_inventory swi ,
+			      sc_amazon_account saa,
+			      sc_amazon_account_product saap
+			WHERE swi.warehouse_id = '{@#sourceWarehouseId#}'
+			    AND swi.ACCOUNT_ID = saa.ID
+			    AND swi.LISTING_SKU = saap.SKU
+			    AND saap.ACCOUNT_ID = saa.ID
+			    AND srpr.ACCOUNT_ID = saa.ID
+			    and saap.FULFILLMENT_CHANNEL not like '%AMAZON%'
+			    AND srpr.SKU = saap.SKU
+			    AND swi.INVENTORY_STATUS != 3
+			    AND  srpr.REAL_ID = '{@#realId#}'
+    </entry>
+    
+	<entry key="sql_supplychain_requirement_listFreeByWarehouseId">
+			select swi.*  ,
+			 (select sum(lock_quantity) from sc_warehouse_inventory_lock where inventory_id = swi.inventory_id ) as LOCK_QUANTITY
+			from sc_warehouse_inventory swi
+			where 
+				swi.warehouse_id =  '{@#sourceWarehouseId#}'  and real_product_id =  '{@#realId#}'
+				and ( listing_sku = '' or listing_sku is null )
+				AND swi.INVENTORY_STATUS != 3
+	</entry>
+    
+</properties>

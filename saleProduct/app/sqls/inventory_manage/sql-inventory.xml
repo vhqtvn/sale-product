@@ -12,7 +12,8 @@
 			WAREHOUSE_ID = '{@#warehouseId#}' and
 			INVENTORY_TYPE = '{@#inventoryType#}' and
 			INVENTORY_STATUS = '{@#inventoryStatus#}' and
-			INVENTORY_TO = '{@#inventoryTo#}'
+			INVENTORY_TO = '{@#inventoryTo#}' and
+			SOURCE_ID = '{@#sourceId#}'
 	</entry>
     
      <!-- 库存入库操作 -->
@@ -31,7 +32,8 @@
 			CREATED_TIME,
 			CREATOR,
 			LAST_UPDATED_TIME, 
-			LAST_UPDATOR
+			LAST_UPDATOR,
+			SOURCE_ID
 			)
 			VALUES
 			('{@#guid#}', 
@@ -46,7 +48,8 @@
 			NOW() , 
 			'{@#loginId#}',
 			NOW() , 
-			'{@#loginId#}'
+			'{@#loginId#}',
+			'{@#sourceId#}'
 			)
     </entry>
     

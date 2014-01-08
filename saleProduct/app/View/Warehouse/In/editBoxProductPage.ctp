@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-   include_once ('config/config.php');
+   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/validator/jquery.validation');
@@ -122,7 +122,7 @@
 					<!-- panel 中间内容-->
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
-						<table class="form-table col2" >
+						<table class="form-table " >
 							<tbody>	
 								<tr>
 									<th>货品SKU：</th>
@@ -174,7 +174,7 @@
 					
 					<!-- panel脚部内容-->
                     <div class="panel-foot">
-						<div class="form-actions col2">
+						<div class="form-actions">
 							<button type="button" class="btn btn-primary btn-save">提&nbsp;交</button>
 						</div>
 					</div>

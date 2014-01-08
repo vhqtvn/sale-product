@@ -163,7 +163,7 @@ $(function(){
 				 var productGridSelect = {
 							title:'货品选择页面',
 							defaults:[],//默认值
-							key:{value:'ID',label:'SKU'},//对应value和label的key
+							key:{value:'ID',label:'REAL_SKU'},//对应value和label的key
 							multi:true,
 							indexColumn:false,
 							grid:{
@@ -179,7 +179,7 @@ $(function(){
 									//{align:"left",key:"STATUS",label:"状态",forzen:false,width:"7%",format:{type:'purchaseProductStatus'}},
 									{align:"left",key:"PLAN_START_TIME",label:"开始时限",width:"13%"},
 						           	{align:"left",key:"PLAN_END_TIME",label:"结束时限",width:"13%"},
-									{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+									{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 						           	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
 						           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
 						        	{align:"center",key:"searchKey",label:"关键字",hidden:true,query:true,align:"left"},
@@ -221,7 +221,7 @@ $(function(){
 		columns:[
 			//{align:"center",key:"ID",label:"编号",width:"4%"},
 			{align:"left",key:"ID",label:"操作",forzen:false,width:"3%",format:function(val,record){
-				var isSku = record.SKU?true:false ;
+				var isSku = record.REAL_SKU?true:false ;
 				
 				var status = record.STATUS ;
 				var html = [] ;
@@ -237,7 +237,7 @@ $(function(){
            		var r1 = record.PLAN_END_TIME||"" ;
            		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
            	}},
-			{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+			{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 			{align:"left",key:"QTC",label:"QTC", width:"13%",format:{type:"href",href: contextPath+"/page/forward/Sale.qtc/{QTC}"}},
            	{align:"center",key:"IMAGE_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
            	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
