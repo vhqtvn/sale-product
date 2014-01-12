@@ -149,11 +149,17 @@ class ScRequirement extends AppModel {
 					
 					//供应周期
 					$supplyCycle = $cost['SUPPLY_CYCLE'] ;
+					if( empty($supplyCycle) || $supplyCycle==0 ){
+						$supplyCycle = $cost['A_SUPPLY_CYCLE'] ;
+					}
 					if(empty($supplyCycle)){
 						$supplyCycle = 14 ;
 					}
 					//需求调整系数
 					$reqAdjust = $cost['REQ_ADJUST'] ;
+					if( empty($reqAdjust) || $reqAdjust==0 ){
+						$reqAdjust = $cost['A_REQ_ADJUST'] ;
+					}
 					if( empty($reqAdjust) ){
 						//获取全局的配置
 						$reqAdjust = $this->getGlobalReqAdjust($item['ACCOUNT_ID']  , $item['SKU'] ) ;
@@ -274,7 +280,6 @@ class ScRequirement extends AppModel {
 		return $cost ;
 	}
 	
-	
 	public function getGlobalReqAdjust($accountId , $listingSku){
 		$sql = "select * from sc_amazon_config where name='REQ_ADJUST'" ;
 		$cost = $this->getObject($sql, array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
@@ -296,7 +301,7 @@ class ScRequirement extends AppModel {
 	//是否合适利润
 	public function getProfileLevel( $totalCost , $totalPrice ){
 		$bv = ($totalPrice - $totalCost )/$totalPrice ;
-		if( $bv < 0.1 ) return 2 ;
+		if( $bv < 0.1 ) return 1 ;
 		if( $bv < 0.15 ) return 2 ;
 		return 3 ;
 	}

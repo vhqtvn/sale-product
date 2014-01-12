@@ -40,8 +40,9 @@
 		$taskProduct =  $SqlUtils->getObject("select * from sc_purchase_task_products where task_id = '{@#taskId#}' and product_id = '{@#productId#}'",
 				array("taskId"=> $taskId,"productId"=>$planProductId)) ;
 		
+		
 		$reqPlanId = $product["REQ_PLAN_ID"]  ;
-		$realId =  $product["REAL_ID"]  ;
+		$realId =  $product["REAL_PRODUCT_ID"]  ;
 		$sku = $product["REAL_PRODUCT_SKU"]  ;
 		$suppliers = $Supplier->getProductSuppliersBySku( $sku  ) ;
 
@@ -212,7 +213,7 @@
     var  $COST_VIEW_PROFIT = '<?php echo $COST_VIEW_PROFIT;?>' ;
     var sku = '<?php echo $product['REAL_PRODUCT_SKU'];?>' ;
     var planId =  '<?php echo $product['PLAN_ID'];?>' ;
-    var realId =  '<?php echo $product['REAL_ID'];?>' ;
+    var realId =  '<?php echo $product['REAL_PRODUCT_ID'];?>' ;
     var reqPlanId =  '<?php echo $reqPlanId;?>' ;
    
     var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;

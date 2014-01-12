@@ -48,27 +48,7 @@
 		$productCost = $SqlUtils->getObject($sql,array()) ;
 
 		
-		$sql = "SELECT saap.SKU AS SELLER_SKU, srp.*,
-				saap.ACCOUNT_ID,
-						saa.name as ACCOUNT_NAME,
-						saap.FULFILLMENT_CHANNEL,
-				        spcd.LOGISTICS_COST, 
-						spcd.FEE, 
-						spcd.AMAZON_FEE, 
-						spcd.ORDER_COST, 
-						spcd.OTHER_COST,
-						(select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME
-				 FROM sc_real_product srp,
-							sc_real_product_rel srpr,
-				            sc_amazon_account saa,
-							sc_amazon_account_product saap
-					        left join sc_product_cost_details spcd
-				           on spcd.account_id = saap.account_id
-				             and spcd.listing_sku = saap.sku
-							WHERE srp.ID = srpr.REAL_ID
-							AND srpr.SKU = saap.SKU
-				and saap.account_id = saa.id
-							and srp.id = '{@#realId#}'" ;
+		$sql = "select * from sc_view_listing_cost where id = '{@#realId#}'" ;
 		
 		$listing = $SqlUtils->exeSqlWithFormat($sql,array("realId"=>$realId)) ;
 		//debug($listing) ;
@@ -93,6 +73,32 @@
    		var groupCode = '<?php echo $loginId;?>' ;
 
    		$(function(){
+					$(".asyn-amazon-fee").click(function(){
+						
+
+						var productCost = $(".product-cost").toJson() ;
+						var listingCosts = [] ;
+						$(".listing-cost .data-row").each(function(index,row){
+							var listingCost = $(this).toJson() ;
+							listingCosts.push(listingCost) ;
+   						});
+
+						$.dataservice("model:Cost.saveCostFix" , {productCost:productCost,listingCosts:listingCosts} , function(){
+							$.ajax({
+								type:"post",
+								url:contextPath+"/taskFetch/formatRealFee/<?php echo $realId;?>",
+								data:{},
+								cache:false,
+								dataType:"text",
+								success:function(result,status,xhr){
+									//window.location.reload() ;
+								},error:function(){
+									alert("操作出现异常！") ;
+								}
+							}); 
+						}) ;
+					}) ;
+   	   		
    				
    					$(".save-btn").click(function(){
    						if( !$.validation.validate('#personForm').errorInfo ) {
@@ -169,7 +175,17 @@
 										data-validator="double"  type="text" id="OTHER_COST" value="<?php echo $productCost["OTHER_COST"];?>"/></td>
 							</tr>
 						</table>
-						
+						<!--  spcd.LOGISTICS_COST, 
+						spcd.FEE, 
+						spcd.OTHER_COST,  
+						spcd.WEIGHT_HANDLING_FEE, 
+						spcd.ORDER_HANDLING_FEE, 
+						spcd.FBA_DELIVERRY_SERVICES_FEE, 
+						spcd.COMMISSION_FEE, 
+						spcd.PICK_AND_PACK_FEE, 
+						spcd.STORAGE_FEE, 
+						spcd.VARIABLE_CLOSING_FEE, 
+						spcd.COMMISSION_RATIO, -->
 						<table  class="form-table table  listing-cost" >
 							<caption>Listing成本</caption>
 							<tr>
@@ -177,10 +193,22 @@
 								<th>账号</th>
 								<th>销售渠道</th>
 								<th>FBM发货仓库</th>
+								<th>售价</th>
+								<th>总成本</th>
 								<th>物流成本</th>
 								<th>税费</th>
 								<th>渠道佣金</th>
-								<th>FBA费用/FBM订单发货成本</th>
+								<th>可变关闭费</th>
+								<th>FBA费用</th>
+								<!--
+								<th>称重费</th>
+								<th>订单处理费</th>
+								<th>FBA运输服务费</th>
+								<th>打包费</th>
+								<th>仓储费</th>
+								  -->
+								<th>库存集中费</th>
+								
 								<th>其他成本</th>
 							</tr>
 							<?php  	foreach( $listing as $item  ){ ?>
@@ -188,20 +216,29 @@
 							<tr  class="data-row">
 								<td>
 									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>
-									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['SELLER_SKU'];?>" style="width:50px;"/>
-									<?php echo $item['SELLER_SKU'];?>
+									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['LISTING_SKU'];?>" style="width:50px;"/>
+									<?php echo $item['LISTING_SKU'];?>
 								</td>
 								<td><?php echo $item['ACCOUNT_NAME'];?></td>
 								<td><?php echo $item['FULFILLMENT_CHANNEL'];?></td>
 								<td>
 									<?php echo $item['FULFILLMENT_CHANNEL']=='Merchant'?$item['FBM_WAREHOUSE_NAME']:"";?>
 								</td>
+								<td><?php echo round($item['TOTAL_PRICE'],3);?></td>
+								<td><?php echo round($item['TOTAL_COST'],3);?></td>
 								<td><input type="text" class="_cost"  name="LOGISTICS_COST" value="<?php echo $item['LOGISTICS_COST'];?>" style="width:50px;"/></td>
-								<td><input type="text" class="_cost"  name="FEE"  value="<?php echo $item['FEE'];?>" style="width:50px;"/></td>
-								<td><input type="text" class="_cost"  name="AMAZON_FEE"  value="<?php echo $item['AMAZON_FEE'];?>" style="width:50px;"/></td>
-								<td><input type="text"  name="ORDER_COST"  value="<?php echo $item['ORDER_COST'];?>" style="width:50px;"/>
+								<td>
+									<?php 
+										echo  round( $item['FEE'],3 ) ;
+									?>
 								</td>
-								<td><input type="text"  name="OTHER_COST"  value="<?php echo $item['OTHER_COST'];?>" style="width:50px;"/></td>
+								<td><?php echo round($item['COMMISSION_FEE'],3 ) ;?></td>
+								<td><?php echo round($item['VARIABLE_CLOSING_FEE'],3 ) ;?></td>
+								
+								<td><?php echo round($item['FBA_COST'],3 ) ; ?></td>
+								<td><?php echo round( $item['INVENTORY_CENTER_FEE'],3);?></td>
+								
+								<td><input type="text"  name="OTHER_COST"  value="<?php echo round($item['OTHER_COST'],2);?>" style="width:50px;"/></td>
 							</tr>
 							<?php  	} ?>
 						</table>
@@ -212,8 +249,8 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot"  style="background:#FFF;">
 						<div class="form-actions">
+							<button type="submit" class="btn btn-primary asyn-amazon-fee">同步Amazon费用</button>
 							<button type="submit" class="btn btn-primary save-btn">保存</button>
-							<button type="button" class="btn" onclick="window.close()">关闭</button>
 						</div>
 					</div>
 					<?php } ?>

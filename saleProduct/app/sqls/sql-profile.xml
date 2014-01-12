@@ -213,6 +213,8 @@
     <entry key="sql_account_config">
     SELECT * 
 		FROM sc_amazon_config
+		where 1=1
+		{@ and type = '#type#'}
     </entry>
     
      <entry key="sql_tasking_list">
@@ -302,7 +304,11 @@
 						EBAY_APP_ID, 
 						EBAY_CERT_ID, 
 						EBAY_TOKEN,
-						FBM_WAREHOUSE
+						FBM_WAREHOUSE,
+						INVENTORY_CENTER_FEE, 
+						FEE_RATIO,
+						SUPPLY_CYCLE,
+						REQ_ADJUST
 						)
 						VALUES
 						(
@@ -321,18 +327,22 @@
 						'{@#MERCHANT_ID#}', 
 						'{@#MARKETPLACE_ID#}', 
 						'{@#MERCHANT_IDENTIFIER#}',
-							'{@#EBAY_APP_MODE#}', 
-							'{@#EBAY_SITE_ID#}', 
-							'{@#EBAY_DEV_ID#}', 
-							'{@#EBAY_APP_ID#}', 
-							'{@#EBAY_CERT_ID#}', 
-							'{@#EBAY_TOKEN#}', 
-							'{@#FBM_WAREHOUSE#}'
+						'{@#EBAY_APP_MODE#}', 
+						'{@#EBAY_SITE_ID#}', 
+						'{@#EBAY_DEV_ID#}', 
+						'{@#EBAY_APP_ID#}', 
+						'{@#EBAY_CERT_ID#}', 
+						'{@#EBAY_TOKEN#}', 
+						'{@#FBM_WAREHOUSE#}', 
+						'{@#INVENTORY_CENTER_FEE#}', 
+						'{@#FEE_RATIO:0#}',
+						'{@#SUPPLY_CYCLE:14#}',
+						'{@#REQ_ADJUST:0#}'
 						);
     </entry>
     
     <entry key="sql_account_update">
-    UPDATE  sc_amazon_account 
+    		UPDATE  sc_amazon_account 
 				SET
 				NAME = '{@#NAME#}' , 
 				URL = '{@#URL#}' , 
@@ -353,6 +363,11 @@
 				EBAY_APP_ID = '{@#EBAY_APP_ID#}' , 
 				EBAY_CERT_ID = '{@#EBAY_CERT_ID#}' , 
 				EBAY_TOKEN = '{@#EBAY_TOKEN#}'
+				{@ ,FBM_WAREHOUSE = '##'}, 
+				{@ ,INVENTORY_CENTER_FEE='#INVENTORY_CENTER_FEE#'}, 
+				{@ ,FEE_RATIO='#FEE_RATIO#'}
+				{@ ,SUPPLY_CYCLE='#SUPPLY_CYCLE#'}
+				{@ ,REQ_ADJUST='#REQ_ADJUST#'}
 				WHERE
 				ID = '{@#ID#}'
    </entry>

@@ -260,48 +260,10 @@
 	 </entry>
 	 
 	 <entry key="sql_supplychain_requirement_getListingCost">
-					SELECT srp.REAL_SKU,spc.REAL_ID,
-					       spcd.ACCOUNT_ID,
-					       spcd.LISTING_SKU,
-					       saap.FULFILLMENT_CHANNEL,
-					      IFNULL(saap.PRICE,0)  as PRICE,
-					        IFNULL(saap.SHIPPING_PRICE,0) as SHIPPING_PRICE,
-					       (  IFNULL(saap.PRICE,0) + IFNULL(saap.SHIPPING_PRICE,0)  ) AS TOTAL_PRICE,
-					        IFNULL(spc.FEE,0) as FEE ,
-					        IFNULL(spc.LABOR_COST,0) as LABOR_COST  ,
-					        IFNULL( spc.LOGISTICS_COST,0) as LOGISTICS_COST,
-					        IFNULL(spc.OTHER_COST,0) as  OTHER_COST,
-					        IFNULL(spc.PURCHASE_COST,0) as PURCHASE_COST,
-					        IFNULL(spc.TAG_COST,0) as TAG_COST ,
-					        IFNULL(spcd.AMAZON_FEE,0) as AMAZON_FEE ,
-					        IFNULL(spcd.FEE,0)  AS D_FEE ,
-					        IFNULL(spcd.LOGISTICS_COST,0)  AS D_LOGISTICS_COST,
-					        IFNULL(spcd.ORDER_COST,0) as ORDER_COST  ,
-					        IFNULL(spcd.OTHER_COST,0)  AS D_OTHER_COST,
-					       (  IFNULL(spc.FEE,0)  +
-					        IFNULL(spc.LABOR_COST,0) +
-					        IFNULL( spc.LOGISTICS_COST,0)+
-					       IFNULL(spc.OTHER_COST,0)+
-					        IFNULL(spc.PURCHASE_COST,0)+
-					       IFNULL(spc.TAG_COST,0) +
-					        IFNULL(spcd.AMAZON_FEE,0) +
-					       IFNULL(spcd.FEE,0) +
-					       IFNULL(spcd.LOGISTICS_COST,0) +
-					      IFNULL(spcd.ORDER_COST,0)+
-					       IFNULL(spcd.OTHER_COST,0)  ) AS TOTAL_COST,
-					       saap.SUPPLY_CYCLE,
-					       saap.REQ_ADJUST
-					 FROM 
-					        sc_real_product srp,
-						sc_product_cost spc,
-						sc_product_cost_details spcd,
-						sc_amazon_account_product saap
-					WHERE spc.id = spcd.COST_ID
-					AND saap.ACCOUNT_ID = spcd.ACCOUNT_ID
-					AND saap.SKU = spcd.LISTING_SKU
-					AND srp.ID = spc.REAL_ID
-				AND spcd.ACCOUNT_ID = '{@#accountId#}'
-				AND spcd.LISTING_SKU = '{@#listingSku#}'
+	 			select * from 
+	 			sc_view_listing_cost 
+	 			where account_id= '{@#accountId#}'
+	 			and LISTING_SKU= '{@#listingSku#}'
 		</entry>
 		
 		<entry key="sql_supplychain_requirement_getLastestSaleData">

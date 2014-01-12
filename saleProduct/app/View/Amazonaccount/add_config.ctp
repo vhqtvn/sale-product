@@ -94,6 +94,7 @@
 					<option value=""></option>
 					<option value="strategy" <?php if($configItem[0]["sc_amazon_config"]["TYPE"] =='strategy' )echo 'selected' ; ?>>定价策略</option>
 					<option value="template" <?php if($configItem[0]["sc_amazon_config"]["TYPE"] =='template' )echo 'selected' ; ?>>模板</option>
+					<option value="config" <?php if($configItem[0]["sc_amazon_config"]["TYPE"] =='config' )echo 'selected' ; ?>>全局配置</option>
 				</select>
 			</td>
 		</tr>

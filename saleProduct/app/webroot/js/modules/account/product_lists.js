@@ -69,9 +69,10 @@
 							if(!val) return "" ;
 							return "<span class='pi-status hide popover-pl'  realId='"+(val||"")+"'  title=''>查看</span>" ;
 						}},
-						{align:"center",key:"ID",label:"操作",width:"8%",format:function(val,record){
+						{align:"center",key:"ID",label:"操作",width:"12%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
+							html.push('<a href="#" class="edit-listing" val="'+val+'">'+getImage("edit.png","编辑")+'</a>&nbsp;') ;
 							html.push('<a href="#" class="sale-strategy" val="'+val+'">'+getImage("example.gif","价格调整")+'</a>&nbsp;') ;
 							html.push('<a href="#" class="category-set popover-pl top" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
 							html.push('<a href="#" class="list-entity-tag popover-pl top" val="'+val+'">'+getImage("tabs.gif","显示标签")+'</a>&nbsp;') ;
@@ -128,7 +129,9 @@
 			           		if( record.IS_FM == 'NEW' ) return  record.FBM_N_PRICE ;
 			           		return "" ;
 			           	}},
-			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"}
+			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"},
+			        	{align:"center",key:"SUPPLY_CYCLE",label:"供应周期",width:"8%" },
+			        	{align:"center",key:"REQ_ADJUST",label:"需求调整系数",width:"8%" }
 			         ],
 			         //ds:{type:"url",content:contextPath+"/amazongrid/product/"+accountId},
 			         ds:{type:"url",content:contextPath+"/grid/query"},
@@ -255,6 +258,12 @@
 			setTimeout(function(){
 				$(".grid-content").llygrid(gridConfig) ;
 			},200) ;
+			
+			
+			$(".edit-listing").live("click",function(){
+				var record = $(this).closest("tr").data("record") ;
+				openCenterWindow(contextPath+"/page/forward/Amazonaccount.edit_listing/"+record.ID,600,480) ;
+			}) ;
 			
 			$(".edit-account-product").live("click",function(){
 				var val = $(this).attr("val") ;

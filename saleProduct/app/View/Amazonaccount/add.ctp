@@ -144,7 +144,7 @@
 							<tbody class="amazon-tbody">
 								<tr>
 									<th>FBM发货仓库：</th>
-									<td colspan="3">
+									<td colspan=3>
 										<select  id="FBM_WAREHOUSE"  >
 										    	<option value="">--选择--</option>
 											   <?php 
@@ -157,6 +157,27 @@
 					                             }
 											   ?>
 											</select>
+									</td>
+									
+								</tr>
+								<tr>
+									<th>FBA库存集中费：</th>
+									<td>
+										<input type="text" id="INVENTORY_CENTER_FEE" value="<?php echo $account[0]['sc_amazon_account']['INVENTORY_CENTER_FEE'];?>"/>
+									</td>
+									<th>地区税率：</th>
+									<td>
+									<input type="text" id="FEE_RATIO" value="<?php echo $account[0]['sc_amazon_account']['FEE_RATIO'];?>"/>
+									</td>
+								</tr>
+								<tr>
+									<th>供应周期（天）：</th>
+									<td>
+										<input type="text" id="SUPPLY_CYCLE" value="<?php echo $account[0]['sc_amazon_account']['SUPPLY_CYCLE'];?>"/>
+									</td>
+									<th>需求调整系数：</th>
+									<td>
+									<input type="text" id="REQ_ADJUST" value="<?php echo $account[0]['sc_amazon_account']['REQ_ADJUST'];?>"/>
 									</td>
 								</tr>
 								<tr>

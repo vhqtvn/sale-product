@@ -3,6 +3,41 @@
     <entry key="sql_">
     </entry>
     
+    <entry  key="sql_cost_getListCostByRealId">
+		SELECT saap.SKU AS SELLER_SKU, srp.*,
+						saap.ACCOUNT_ID,
+						saa.name as ACCOUNT_NAME,
+						saap.FULFILLMENT_CHANNEL,
+				        spcd.LOGISTICS_COST, 
+				        saap.PRICE+IFNULL(saap.SHIPPING_PRICE,0) as TOTAL_PRICE,
+						spcd.FEE, 
+						spcd.OTHER_COST,  
+						spcd.WEIGHT_HANDLING_FEE, 
+						spcd.ORDER_HANDLING_FEE, 
+						spcd.FBA_DELIVERRY_SERVICES_FEE, 
+						spcd.COMMISSION_FEE, 
+						spcd.PICK_AND_PACK_FEE, 
+						spcd.STORAGE_FEE, 
+						spcd.FBA_COST, 
+						spcd.VARIABLE_CLOSING_FEE, 
+						spcd.COMMISSION_RATIO,
+						( case saap.FULFILLMENT_CHANNEL when 'Merchant' then 0 else  saa.INVENTORY_CENTER_FEE end  ) as INVENTORY_CENTER_FEE,
+						saa.FEE_RATIO,
+						(select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME
+				 FROM sc_real_product srp,
+							sc_real_product_rel srpr,
+				            sc_amazon_account saa,
+							sc_amazon_account_product saap
+					        left join sc_product_cost_details spcd
+				           on spcd.account_id = saap.account_id
+				             and spcd.listing_sku = saap.sku
+							WHERE srp.ID = srpr.REAL_ID
+							AND srpr.SKU = saap.SKU
+							and saap.status = 'Y'
+							and saap.account_id = saa.id
+							and srp.id = '{@#realId#}'
+    </entry>
+    
     <entry  key="sql_cost_insert_new">
 		INSERT INTO sc_product_cost 
 			( ID, 
@@ -68,6 +103,44 @@
 				{@OTHER_COST = '#OTHER_COST#' , }
 				LAST_UPDATOR = '{@#loginId#}' , 
 				LAST_UPDATE_DATE =NOW()
+				WHERE
+				ID = '{@#ID#}'
+	</entry>
+	
+	<entry  key="sql_cost_details_insert_new_forfee">
+			INSERT INTO sc_product_cost_details 
+				(ID, 
+				COST_ID, 
+				ACCOUNT_ID, 
+				LISTING_SKU, 
+				CREATOR, 
+				CREATE_DATE
+				)
+				VALUES
+				('{@#ID#}', 
+				'{@#COST_ID#}', 
+				'{@#accountId#}', 
+				'{@#listingSku#}', 
+				'{@#loginId#}', 
+				NOW()
+				)
+	</entry>
+	
+	 <!-- 
+	 {"weightHandlingFee":"0.46","orderHandlingFee":0,"fbaDeliveryServicesFee":0,"commissionFee":"2.25","pickAndPackFee":"1","storageFee":"0.02","variableClosingFee":"1.35"}
+	  -->
+	<entry  key="sql_cost_details_update_new_forfee">
+				UPDATE sc_product_cost_details 
+				SET
+				ID = '{@#ID#}'   
+				{@ ,WEIGHT_HANDLING_FEE = '#weightHandlingFee#' }
+				{@ ,ORDER_HANDLING_FEE = '#orderHandlingFee#' }
+				{@ ,FBA_DELIVERRY_SERVICES_FEE = '#fbaDeliveryServicesFee#' }
+				{@ ,PICK_AND_PACK_FEE = '#pickAndPackFee#' }
+				{@ ,STORAGE_FEE = '#storageFee#' }
+				{@ ,VARIABLE_CLOSING_FEE = '#variableClosingFee#' }
+				{@ ,COMMISSION_RATIO = '#commissionRatio#' }
+				{@ ,FBA_COST = '#fbaCost#' }
 				WHERE
 				ID = '{@#ID#}'
 	</entry>

@@ -2,6 +2,16 @@
 class Amazonaccount extends AppModel {
 	var $useTable = "sc_election_rule" ;
 	
+	function getAmazonProductCostBySku($accountId , $listingSku){
+		$sql ="select *  from sc_view_listing_cost where account_id = '{@#accountId#}' and listing_sku='{@#listingSku#}'" ;
+		return $this->getObject($sql, array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
+	}
+	
+	function getAmazonAllAvalidProduct(){
+		$sql ="select *  from sc_view_listing_cost" ;
+		return $this->exeSqlWithFormat($sql, array()) ;
+	}
+	
 	function getAmazonProductCategoryBySKU($accountId,$sku ){
 			$sql = "select sc_amazon_product_category.* 
 			 from sc_amazon_product_category ,sc_amazon_product_category_rel
@@ -187,7 +197,8 @@ class Amazonaccount extends AppModel {
 		if( empty($data["ID"]) ){
 			$this->exeSql("sql_account_insert", $data) ;
 		}else{
-			$sql = "UPDATE  sc_amazon_account 
+			$this->exeSql("sql_account_update", $data) ;
+			/*$sql = "UPDATE  sc_amazon_account 
 				SET
 				NAME = '".$data['NAME']."' , 
 				URL = '".$data['URL']."' , 
@@ -206,7 +217,7 @@ class Amazonaccount extends AppModel {
 				
 				WHERE
 				ID = '".$data['ID']."' " ;
-				$this->query($sql) ;
+				$this->query($sql) ;*/
 		}
 	}
 	
@@ -501,6 +512,18 @@ class Amazonaccount extends AppModel {
 	function getAllAccountsFormat(){
 		$sql = "SELECT * FROM sc_amazon_account";
 		$array = $this->exeSqlWithFormat($sql, array()) ;
+		return $array ;
+	}
+	
+	function getAccountProductByRealId($id){
+		$sql = "SELECT saap.* 
+			FROM   sc_amazon_account_product saap , 
+					sc_real_product_rel srpr
+				  where saap.account_id= srpr.account_id
+				  and srpr.sku = saap.sku
+				  and saap.status = 'Y'
+				  and srpr.real_id= '{@#realId#}' ";
+		$array = $this->exeSqlWithFormat($sql, array("realId"=>$id)) ;
 		return $array ;
 	}
 	

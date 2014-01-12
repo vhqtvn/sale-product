@@ -21,29 +21,7 @@
 	?>
   
    <script type="text/javascript">
-   //result.records , result.totalRecord
-	 function formatGridData(data){
-		var records = data.record ;
- 		var count   = data.count ;
- 		
- 		count = count[0][0]["count(*)"] ;
- 		
-		var array = [] ;
-		$(records).each(function(){
-			var row = {} ;
-			for(var o in this){
-				var _ = this[o] ;
-				for(var o1 in _){
-					row[o1] = _[o1] ;
-				}
-			}
-			array.push(row) ;
-		}) ;
-	
-		var ret = {records: array,totalRecord:count } ;
-			
-		return ret ;
-	   }
+   
 
 	$(function(){
 			$(".grid-content").llygrid({
@@ -141,6 +119,7 @@
 					<option value="strategy">策略</option>
 					<option value="relation">关系</option>
 					<option value="field" >字段</option>
+					<option value="config" >全局配置</option>
 				</select>
 				</td>								
 				<td class="toolbar-btns">

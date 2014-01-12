@@ -113,90 +113,27 @@ $(function(){
 			columns:[
 			    {align:"center",key:"SKU",label:"Listing SKU",width:"14%",forzen:false,align:"left"},
 	           	{align:"left",key:"ASIN",label:"ASIN", width:"11%",format:{type:'asin'}},
-	           	{align:"center",key:"LOCAL_URL",label:"Image",width:"4%",forzen:false,align:"left",format:{type:'img'}},
-	            {align:"left",key:"TITLE",label:"TITLE",width:"10%",forzen:false,align:"left",format:{type:'titleListing'}},
+	           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
+	            {align:"left",key:"TITLE",label:"TITLE",width:"18%",forzen:false,align:"left",format:{type:'titleListing'}},
 	            {align:"center",key:"QUANTITY",label:"账号库存",width:"6%",forzen:false,align:"left"},
-	           {align:"center",key:"FBM_COST",label:"成本",group:"FBM",width:"6%",format:function(val,record){
-	           		return "<a href='' class='cost' type='FBM' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
-	           	},permission:function(){ return $COST_VIEW_TOTAL; } },
-	           	{align:"center",key:"FBM_PRICE",label:"最低价",group:"FBM",width:"6%",permission:function(){ return $purchase_cost_view; }},
-	           	{align:"center",key:"FBM_PRICE",label:"利润额",group:"FBM",width:"6%",format:function(val,record){
-	           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
-	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
-	           		
-	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
-	           			return "-" ;
-	           		}
-	           		
-	           		if( !record.FBM_PRICE || record.FBM_PRICE == '0'){
-	           			return "-" ;
-	           		}
-	           		
-	           		if( !record.FBM_COST || record.FBM_COST == '0'){
-	           			return "-" ;
-	           		}
-	           		
-	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
-	           			return "-" ;
-	           		}
-	           		lye = lye.toFixed(2) ;
-	           		if( lye < 0 ){
-	           			return "<font color='red'>"+lye+"</font>"
-	           		}else{
-	           			return lye ;
-	           		}
-	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
-	           	{align:"center",key:"FBM_PRICE",label:"利润率",group:"FBM",width:"6%",format:function(val,record){
-	           		var lye = parseFloat(formatMoney(record.FBM_PRICE)) 
-	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBM_COST||0)) ;
-	           		
-	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
-	           			return "-" ;
-	           		}
-	           		
-	           		if( !record.FBM_PRICE || record.FBM_PRICE == '0'){
-	           			return "-" ;
-	           		}
-	           		
-	           		
-	           		if( !record.FBM_COST || record.FBM_COST == '0'){
-	           			return "-" ;
-	           		}
-	           		
-	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) <= 0 ){
-	           			return "-" ;
-	           		}
-	           		
-	           		var lyl = (lye / ( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBM_COST||0)) ))*100 ;
-	           		lyl = lyl.toFixed(2) ;
-	           		if( lyl < 0 ){
-	           			return "<font color='red'>"+lyl+"%</font>"
-	           		}else{
-	           			return lyl+"%" ;
-	           		}
-	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
-	           	{align:"center",key:"FBA_COST",label:"成本",group:"FBA",width:"6%",format:function(val,record){
+	          
+	           	{align:"center",key:"TOTAL_COST",label:"成本",width:"6%",format:function(val,record){
 	           		return "<a href='' class='cost' type='FBA' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
 	           	},permission:function(){ return $COST_VIEW_TOTAL; }},
-	           	{align:"center",key:"FBA_PRICE",label:"最低价",group:"FBA",width:"6%",permission:function(){ return $purchase_cost_view; }},
-	           	{align:"center",key:"FBA_PRICE",label:"利润额",group:"FBA",width:"6%",format:function(val,record){
-	           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
-	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
+	           	{align:"center",key:"FBA_PRICE",label:"最低价",width:"6%",permission:function(){ return $purchase_cost_view; }},
+	           	{align:"center",key:"FBA_PRICE",label:"利润额",width:"6%",format:function(val,record){
+	           		var lye = parseFloat(formatMoney(record.TOTAL_PRICE))  -   parseFloat(formatMoney(record.TOTAL_COST||0)) ;
 	           		
-	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){
-	           			return "-" ;
-	           		}
-	           		
-	           		if( !record.FBA_PRICE || record.FBA_PRICE == '0'){
+	           		if( !record.TOTAL_PRICE || record.TOTAL_PRICE == '0'){
 	           			return "-" ;
 	           		}
 	           		
 	           		
-	           		if( !record.FBA_COST || record.FBA_COST == '0'){
+	           		if( !record.TOTAL_COST || record.TOTAL_COST == '0'){
 	           			return "-" ;
 	           		}
 	           		
-	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
+	           		if(    parseFloat(formatMoney(record.TOTAL_COST||0)) <= 0 ){
 	           			return "-" ;
 	           		}
 	           		lye = lye.toFixed(2) ;
@@ -206,20 +143,18 @@ $(function(){
 	           			return lye ;
 	           		}
 	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
-	           	{align:"center",key:"FBA_PRICE",label:"利润率",group:"FBA",width:"6%",format:function(val,record){
-	           		var lye = parseFloat(formatMoney(record.FBA_PRICE)) 
-	           					- parseFloat(formatMoney(record.QUOTE_PRICE||0)) -   parseFloat(formatMoney(record.FBA_COST||0)) ;
+	           	{align:"center",key:"TOTAL_PRICE",label:"利润率",width:"6%",format:function(val,record){
+	           		var lye = parseFloat(formatMoney(record.TOTAL_PRICE)) -   parseFloat(formatMoney(record.TOTAL_COST||0)) ;
 	           		
-	           		if( !record.QUOTE_PRICE  || record.QUOTE_PRICE == '0' ){ return "-" ; } 
-	           		if( !record.FBA_PRICE || record.FBA_PRICE == '0'){ return "-" ; } 
-	           		if( !record.FBA_COST || record.FBA_COST == '0'){ return "-" ; }
+	           		if( !record.TOTAL_PRICE || record.TOTAL_PRICE == '0'){ return "-" ; } 
+	           		if( !record.TOTAL_COST || record.TOTAL_COST == '0'){ return "-" ; }
 	           		
 	           		
-	           		if( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) <= 0 ){
+	           		if(    parseFloat(formatMoney(record.TOTAL_COST||0)) <= 0 ){
 	           			return "-" ;
 	           		}
 	           		
-	           		var lyl = (lye / ( parseFloat(formatMoney(record.QUOTE_PRICE||0)) +  parseFloat(formatMoney(record.FBA_COST||0)) ))*100 ;
+	           		var lyl = (lye / (    parseFloat(formatMoney(record.TOTAL_COST||0)) ))*100 ;
 	           		lyl = lyl.toFixed(2) ;
 	           		if( lyl < 0 ){
 	           			return "<font color='red'>"+lyl+"%</font>"
