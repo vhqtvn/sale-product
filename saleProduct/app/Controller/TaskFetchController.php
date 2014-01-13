@@ -20,7 +20,10 @@ class TaskFetchController extends AppController {
 	 public function  formatAllListingFee(){
 	 	$listings = $this->Amazonaccount->getAmazonAllAvalidProduct() ;
 	 	//ob_start() ;
+	 	$index=0;
 	 	foreach( $listings as $listing ){
+	 		$index=$index+1;
+	 		echo $index.'<br>' ;
 	 		//debug($listing);
 	 		//ob_flush() ;
 	 		$this->_processListingFee($listing) ;
@@ -80,33 +83,101 @@ class TaskFetchController extends AppController {
 	 			//debug( $item ) ;
 	 			$item["selected"] = true ;
 	 			$item["language"] = "en_US" ;
-	 			$item["price"] = $listing['TOTAL_PRICE'] ;
-	 			$item["revenueTotal"] = $listing['TOTAL_PRICE'] ;
+	 			$item["price"] = 2 ;
+	 			$item["revenueTotal"] = 2 ;
 	 			$item["undefined"] = 0 ;
 	 			$item["inbound-delivery"] = 0 ;
 	 			$item["prep-service"] = 0 ;
 	 			$item["fulfillmentTotal"] = 0 ;
 	 			try{
-	 				echo '<br>111<br>';
+	 				echo '<br>FBA<br>';
 	 				$feeResult = $this->send_post($afnUrl,array('method'=>'GET',
 	 						'model'=> json_encode($item)
 	 				)) ;
-	 				// debug($feeResult) ;
-	 				// echo '<br>111<br>';
-	 				// {"weightHandlingFee":"0.46","orderHandlingFee":0,"fbaDeliveryServicesFee":0,"commissionFee":"2.25","pickAndPackFee":"1","storageFee":"0.02","variableClosingFee":"1.35"}
-	 	
+	 				
 	 				$feeResult = json_decode(trim($feeResult)) ;
 	 				$feeResult = get_object_vars($feeResult) ;
 	 				$feeResult = $feeResult['data'] ;
 	 				$feeResult = get_object_vars($feeResult) ;
-	 				$feeResult['accountId'] = $listing['ACCOUNT_ID'] ;
-	 				$feeResult['listingSku'] = $listing['LISTING_SKU'] ;
-	 				$feeResult['realId'] = $listing['ID'] ;
-	 				$feeResult['loginId'] = $loginId ;
-	 				$feeResult['commissionRatio'] = round($feeResult['commissionFee']/$totalPrice,4) ;
-	 				$feeResult['fbaCost'] = $feeResult['weightHandlingFee']+$feeResult['orderHandlingFee']
-	 				+$feeResult['fbaDeliveryServicesFee']+$feeResult['pickAndPackFee']+$feeResult['storageFee'] ;
-	 				$this->Cost->saveCostByFee($feeResult) ;
+	 				
+	 				if( isset($feeResult['commissionFee']) ){//success
+	 					$feeResult['accountId'] = $listing['ACCOUNT_ID'] ;
+	 					$feeResult['listingSku'] = $listing['LISTING_SKU'] ;
+	 					$feeResult['realId'] = $listing['ID'] ;
+	 					$feeResult['loginId'] = $loginId ;
+	 					
+	 					$feeResult['fbaCost'] = $feeResult['weightHandlingFee']+$feeResult['orderHandlingFee']
+	 							+$feeResult['fbaDeliveryServicesFee']+$feeResult['pickAndPackFee']+$feeResult['storageFee'] ;
+	 					
+	 					if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
+	 						$feeResult['commissionLowlimit'] = 1 ;
+	 						//重新计算一次
+	 						$item["price"] = 100 ;
+	 						$item["revenueTotal"] = 100 ;
+	 						$feeResult_ = $this->send_post($afnUrl,array('method'=>'GET',
+	 								'model'=> json_encode($item)
+	 						)) ;
+	 						$feeResult_ = json_decode(trim($feeResult_)) ;
+	 						$feeResult_ = get_object_vars($feeResult_) ;
+	 						$feeResult_ = $feeResult_['data'] ;
+	 						$feeResult_ = get_object_vars($feeResult_) ;
+	 						
+	 						if( isset($feeResult_['commissionFee']) ){//success
+	 							$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 						}
+	 					}else{
+	 						$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
+	 					}
+	 					
+	 					$this->Cost->saveCostByFee($feeResult) ;
+	 				}else{//执行失败
+	 					echo 'ERROR:'. json_encode($item).'<br>';
+	 					echo 'Try ReGet :::<br>' ;
+	 					$feeResult = $this->send_post($mfnUrl,array('method'=>'GET',
+	 							'model'=> json_encode($item)
+	 					)) ;
+	 						
+	 					$feeResult = json_decode(trim($feeResult)) ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					$feeResult = $feeResult['data'] ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					
+	 					$feeResult['fbaCost'] = $feeResult['weightHandlingFee']+$feeResult['orderHandlingFee']
+	 						+$feeResult['fbaDeliveryServicesFee']+$feeResult['pickAndPackFee']+$feeResult['storageFee'] ;
+	 						
+	 					if( isset($feeResult['commissionFee']) ){//success
+	 						$feeResult['accountId'] = $listing['ACCOUNT_ID'] ;
+	 						$feeResult['listingSku'] = $listing['LISTING_SKU'] ;
+	 						$feeResult['realId'] = $listing['ID'] ;
+	 						$feeResult['loginId'] = $loginId ;
+	 						$feeResult['fbaCost'] = 0 ;
+	 							
+	 						if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
+	 							$feeResult['commissionLowlimit'] = 1 ;
+	 							//重新计算一次
+	 							$item["price"] = 100 ;
+	 							$item["revenueTotal"] = 100 ;
+	 							$feeResult_ = $this->send_post($afnUrl,array('method'=>'GET',
+	 									'model'=> json_encode($item)
+	 							)) ;
+	 							$feeResult_ = json_decode(trim($feeResult_)) ;
+	 							$feeResult_ = get_object_vars($feeResult_) ;
+	 							$feeResult_ = $feeResult_['data'] ;
+	 							$feeResult_ = get_object_vars($feeResult_) ;
+	 					
+	 							if( isset($feeResult_['commissionFee']) ){//success
+	 								$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 							}
+	 						}else{
+	 							$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
+	 						}
+	 							
+	 						$this->Cost->saveCostByFee($feeResult) ;
+	 						echo 'Try Success<br>';
+	 					}else{
+	 						echo 'Try ERROR......<br>';
+	 					}
+	 				}
 	 			}catch(Exception $e){
 	 			}
 	 		}
@@ -116,9 +187,9 @@ class TaskFetchController extends AppController {
 	 			//debug( $item ) ;
 	 			$item["selected"] = true ;
 	 			$item["language"] = "en_US" ;
-	 			$item["price"] = $listing['PRICE'] ;
-	 			$item["shipping"] = $listing['SHIPING_PRICE']  ;
-	 			$item["revenueTotal"] = $listing['TOTAL_PRICE'] ;
+	 			$item["price"] = 2 ;
+	 			$item["shipping"] = 0 ;
+	 			$item["revenueTotal"] = 2 ;
 	 			$item["order-handling"] = 0 ;
 	 			$item["pick-pack"] = 0 ;
 	 			$item["outbound-delivery"] = 0 ;
@@ -129,7 +200,8 @@ class TaskFetchController extends AppController {
 	 			$item["fulfillmentTotal"] = 0 ;
 	 	
 	 			try{
-	 				$feeResult = $this->send_post($afnUrl,array('method'=>'GET',
+	 				echo '<br>FBM<br>';
+	 				$feeResult = $this->send_post($mfnUrl,array('method'=>'GET',
 	 						'model'=> json_encode($item)
 	 				)) ;
 	 	
@@ -137,13 +209,79 @@ class TaskFetchController extends AppController {
 	 				$feeResult = get_object_vars($feeResult) ;
 	 				$feeResult = $feeResult['data'] ;
 	 				$feeResult = get_object_vars($feeResult) ;
-	 				$feeResult['accountId'] = $listing['ACCOUNT_ID'] ;
-	 				$feeResult['listingSku'] = $listing['LISTING_SKU'] ;
-	 				$feeResult['realId'] = $listing['ID'] ;
-	 				$feeResult['loginId'] = $loginId ;
-	 				$feeResult['commissionRatio'] = round($feeResult['commissionFee']/$totalPrice,4) ;
-	 				$feeResult['fbaCost'] = 0 ;
-	 				$this->Cost->saveCostByFee($feeResult) ;
+	 				
+	 				if( isset($feeResult['commissionFee']) ){//success
+	 					$feeResult['accountId'] = $listing['ACCOUNT_ID'] ;
+	 					$feeResult['listingSku'] = $listing['LISTING_SKU'] ;
+	 					$feeResult['realId'] = $listing['ID'] ;
+	 					$feeResult['loginId'] = $loginId ;
+	 					$feeResult['fbaCost'] = 0 ;
+	 					
+	 					if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
+	 						$feeResult['commissionLowlimit'] = 1 ;
+	 						//重新计算一次
+	 						$item["price"] = 100 ;
+	 						$item["revenueTotal"] = 100 ;
+	 						$feeResult_ = $this->send_post($afnUrl,array('method'=>'GET',
+	 								'model'=> json_encode($item)
+	 						)) ;
+	 						$feeResult_ = json_decode(trim($feeResult_)) ;
+	 						$feeResult_ = get_object_vars($feeResult_) ;
+	 						$feeResult_ = $feeResult_['data'] ;
+	 						$feeResult_ = get_object_vars($feeResult_) ;
+	 					
+	 						if( isset($feeResult_['commissionFee']) ){//success
+	 							$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 						}
+	 					}else{
+	 						$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
+	 					}
+	 					
+	 					$this->Cost->saveCostByFee($feeResult) ;
+	 				}else{//执行失败
+	 					echo 'ERROR:'. json_encode($item).'<br>';
+	 					echo 'Try ReGet :::<br>' ;
+	 					$feeResult = $this->send_post($mfnUrl,array('method'=>'GET',
+	 							'model'=> json_encode($item)
+	 					 )) ;
+	 					
+	 					$feeResult = json_decode(trim($feeResult)) ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					$feeResult = $feeResult['data'] ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					
+	 					if( isset($feeResult['commissionFee']) ){//success
+	 						$feeResult['accountId'] = $listing['ACCOUNT_ID'] ;
+	 						$feeResult['listingSku'] = $listing['LISTING_SKU'] ;
+	 						$feeResult['realId'] = $listing['ID'] ;
+	 						$feeResult['loginId'] = $loginId ;
+	 						$feeResult['fbaCost'] = 0 ;
+	 							
+	 						if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
+	 							$feeResult['commissionLowlimit'] = 1 ;
+	 							//重新计算一次
+	 							$item["price"] = 100 ;
+	 							$item["revenueTotal"] = 100 ;
+	 							$feeResult_ = $this->send_post($afnUrl,array('method'=>'GET',
+	 									'model'=> json_encode($item)
+	 							)) ;
+	 							$feeResult_ = json_decode(trim($feeResult_)) ;
+	 							$feeResult_ = get_object_vars($feeResult_) ;
+	 							$feeResult_ = $feeResult_['data'] ;
+	 							$feeResult_ = get_object_vars($feeResult_) ;
+	 								
+	 							if( isset($feeResult_['commissionFee']) ){//success
+	 								$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 							}
+	 						}else{
+	 							$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
+	 						}
+	 							
+	 						$this->Cost->saveCostByFee($feeResult) ;
+	 					}else{
+	 						echo 'Try ERROR......<br>';
+	 					}
+	 				}
 	 			}catch(Exception $e){
 	 			}
 	 		}

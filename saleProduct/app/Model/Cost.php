@@ -39,7 +39,7 @@ class Cost extends AppModel {
 		$params['ID'] = $costDetailId ;
 		$params['COST_ID'] = $costId ;
 		
-		debug($params) ;
+		//debug($params) ;
 		//插入
 		$this->exeSql("sql_cost_details_update_new_forfee", $params) ;
 		

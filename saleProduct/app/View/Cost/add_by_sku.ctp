@@ -19,6 +19,7 @@
 		echo $this->Html->script('validator/jquery.validation');
 		
 		$security  = ClassRegistry::init("Security") ;
+		$config  = ClassRegistry::init("Config") ;
 		$loginId   = $user['LOGIN_ID'] ;
 		
 		$COST_EDIT_PURCHASE  				= $security->hasPermission($loginId , 'COST_EDIT_PURCHASE') ;
@@ -42,7 +43,11 @@
 	
 		$realId = $params['arg1'] ;
 
-		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;//COST_TAG  COST_LABOR  COST_TAX_RATE
+		
+		$costTag = $config->getAmazonConfig("COST_TAG",0) ;
+		$costLabor = $config->getAmazonConfig("COST_LABOR",0) ;
+		$costTaxRate = $config->getAmazonConfig("COST_TAX_RATE",0.0) ;
 		
 		$sql = "SELECT sc_product_cost.* FROM sc_product_cost where real_id = '$realId'";
 		$productCost = $SqlUtils->getObject($sql,array()) ;
@@ -66,6 +71,9 @@
 		caption{
 			height:25px;
 			line-height:25px;
+		}
+		.listing-cost th{
+			text-align: center!important;
 		}
    </style>
 
@@ -165,12 +173,13 @@
 							</tr>
 							<tr>
 									
-									<th>标签费用 ：</th><td ><input class="_cost span2"      style="width:50px!important;"
-										data-validator="double"  type="text" id="TAG_COST" value="<?php echo $productCost["TAG_COST"];?>"/></td>
-									<th>人工成本：</th><td><input  class="_cost "     style="width:50px!important;"
-										data-validator="double"  type="text" id="LABOR_COST" value="<?php echo $productCost["LABOR_COST"];?>"/></td>	
-									<th>国内税费：</th><td><input  class="_cost "     style="width:50px!important;"
-										data-validator="double"  type="text" id="FEE" value="<?php echo $productCost["FEE"];?>"/></td>
+									<th>标签费用 ：</th><td >
+										<?php echo $costTag ; ?>
+									</td>
+									<th>人工成本：</th><td><?php echo $costLabor ; ?></td>	
+									<th>国内税费：</th><td>
+										<?php echo round( $productCost['PURCHASE_COST'] * $costTaxRate,2 )  ; ?>
+									</td>
 									<th>其他成本：</th><td><input      style="width:50px!important;"
 										data-validator="double"  type="text" id="OTHER_COST" value="<?php echo $productCost["OTHER_COST"];?>"/></td>
 							</tr>
@@ -195,6 +204,7 @@
 								<th>FBM发货仓库</th>
 								<th>售价</th>
 								<th>总成本</th>
+								<th>利润</th>
 								<th>物流成本</th>
 								<th>税费</th>
 								<th>渠道佣金</th>
@@ -226,13 +236,19 @@
 								</td>
 								<td><?php echo round($item['TOTAL_PRICE'],3);?></td>
 								<td><?php echo round($item['TOTAL_COST'],3);?></td>
+								<td><?php 
+											$totalProfile =round(  $item['TOTAL_PRICE'] - $item['TOTAL_COST'],2)   ;
+											$totalRate = round( ( $totalProfile/$item['TOTAL_COST'] ) *100 ,2).'%' ;
+											echo $totalProfile."($totalRate)" ;
+								?></td>
 								<td><input type="text" class="_cost"  name="LOGISTICS_COST" value="<?php echo $item['LOGISTICS_COST'];?>" style="width:50px;"/></td>
 								<td>
 									<?php 
 										echo  round( $item['FEE'],3 ) ;
 									?>
 								</td>
-								<td><?php echo round($item['COMMISSION_FEE'],3 ) ;?></td>
+								<td><?php echo round($item['COMMISSION_FEE'],3 ) ;?>(<?php 
+									echo round($item['COMMISSION_RATIO']*100,2)."%" ;   ?>)</td>
 								<td><?php echo round($item['VARIABLE_CLOSING_FEE'],3 ) ;?></td>
 								
 								<td><?php echo round($item['FBA_COST'],3 ) ; ?></td>

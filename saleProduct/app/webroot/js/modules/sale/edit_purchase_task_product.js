@@ -287,7 +287,7 @@ function WarehouseInAction(status , statusLabel){
 	if(window.confirm("确认【"+statusLabel+"】？")){
 		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
 		var json1 = {id:id,taskId:taskId,status:status,memo:memo} ;
-		
+	
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
 				//入库

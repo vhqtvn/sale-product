@@ -71,6 +71,7 @@ $(function(){
 					if(result){
 						alert(result) ;
 					}
+					window.close();
 				});
 			} ;
 		}

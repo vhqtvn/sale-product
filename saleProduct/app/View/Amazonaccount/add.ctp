@@ -65,7 +65,7 @@
 						success:function(result,status,xhr){
 							$.unblock() ;
 							$.dialogReturnValue(true) ;
-							//window.close() ;
+							window.close() ;
 						}
 					}); 
 				};

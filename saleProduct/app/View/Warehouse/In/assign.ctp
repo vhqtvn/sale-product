@@ -24,14 +24,15 @@
 		//获取成本
 		
 		$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
+		//sql_cost_getListCostByRealId
+		$costs = $SqlUtils->exeSqlWithFormat("sql_cost_getListCostByRealId" , array("realId"=>$realProductId)) ;
 		
 		//sql_cost_product_details_list
-		$fbaCost = $SqlUtils->getObject("sql_cost_product_details_list",array('realSku'=>$product['REAL_SKU'],'type'=>'FBA' )) ;
-		$fbmCost = $SqlUtils->getObject("sql_cost_product_details_list",array('realSku'=>$product['REAL_SKU'],'type'=>'FBM' )) ;
+		//$fbaCost = $SqlUtils->getObject("sql_cost_product_details_list",array('realSku'=>$product['REAL_SKU'],'type'=>'FBA' )) ;
+		//$fbmCost = $SqlUtils->getObject("sql_cost_product_details_list",array('realSku'=>$product['REAL_SKU'],'type'=>'FBM' )) ;
 		
-		
-		$fbaTotalCost = empty($fbaCost)?"-":$fbaCost['TOTAL_COST'] ;
-		$fbmTotalCost = empty($fbmCost)?"-":$fbmCost['TOTAL_COST'] ;
+		//$fbaTotalCost = empty($fbaCost)?"-":$fbaCost['TOTAL_COST'] ;
+		//$fbmTotalCost = empty($fbmCost)?"-":$fbmCost['TOTAL_COST'] ;
 
 		//	$ProductDev  = ClassRegistry::init("ProductDev") ;
 		//	$dev = $ProductDev->getLowestLimitPrice($realProductId) ;
@@ -46,8 +47,6 @@
   	<script>
   		var realProductId = '<?php echo $realProductId;?>' ;
   		var reslSku = '<?php echo $product['REAL_SKU'] ?>' ;
-  		var fbaCost = '<?php echo $fbaTotalCost;?>' ;
-  		var fbmCost = '<?php echo $fbmTotalCost;?>' ;
   	</script>
   	
   	<style type="text/css">

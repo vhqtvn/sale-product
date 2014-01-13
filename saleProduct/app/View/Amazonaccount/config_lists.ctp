@@ -74,7 +74,7 @@
 						cache:false,
 						dataType:"text",
 						success:function(result,status,xhr){
-							$(".grid-content").llygrid("reload") ;	
+							$(".grid-content").llygrid("reload",{},true) ;	
 						}
 					}); 
 				}
@@ -120,6 +120,7 @@
 					<option value="relation">关系</option>
 					<option value="field" >字段</option>
 					<option value="config" >全局配置</option>
+					<option value="cost" >价格配置</option>
 				</select>
 				</td>								
 				<td class="toolbar-btns">

@@ -10,12 +10,10 @@
 						saap.FULFILLMENT_CHANNEL,
 				        spcd.LOGISTICS_COST, 
 				        saap.PRICE+IFNULL(saap.SHIPPING_PRICE,0) as TOTAL_PRICE,
-						spcd.FEE, 
 						spcd.OTHER_COST,  
 						spcd.WEIGHT_HANDLING_FEE, 
 						spcd.ORDER_HANDLING_FEE, 
 						spcd.FBA_DELIVERRY_SERVICES_FEE, 
-						spcd.COMMISSION_FEE, 
 						spcd.PICK_AND_PACK_FEE, 
 						spcd.STORAGE_FEE, 
 						spcd.FBA_COST, 
@@ -140,6 +138,7 @@
 				{@ ,STORAGE_FEE = '#storageFee#' }
 				{@ ,VARIABLE_CLOSING_FEE = '#variableClosingFee#' }
 				{@ ,COMMISSION_RATIO = '#commissionRatio#' }
+				{@ ,COMMISSION_LOWLIMIT = '#commissionLowlimit#' }
 				{@ ,FBA_COST = '#fbaCost#' }
 				WHERE
 				ID = '{@#ID#}'

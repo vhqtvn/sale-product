@@ -4,6 +4,15 @@ class SqlUtils extends AppModel {
 	var $useTable = "sc_sql";
 	public $count = 0 ;
 	
+	public function getConfig( $code , $default = null ){
+		$sql = "select * from sc_amazon_config where name = '{@#code#}'" ;
+		$item = $this->getObject($sql, array("code"=>$code)) ;
+		if( empty($item) ){
+			return $default ;
+		}
+		return $item['VALUE'] ;
+	}
+	
 	/*public function getDbSql($key){
 	
 		$sql = "select * from sc_sql where id = '$key'" ;

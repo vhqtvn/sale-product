@@ -32,16 +32,13 @@ $(function(){
 	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' class='link-open'>"+(val||'产品列表')+"</a>" ;
 	           	}},
 	        	{align:"center",key:"DYN_PROFILE",label:"动态利润",width:"8%",format:function(val,record){
-	        		var fc = record.FULFILLMENT_CHANNEL ;
-	        		var salePrice = parseFloat(record.PRICE) + parseFloat(record.SHIPPING_PRICE||0) ;
-	        		var cost =  fc != 'Merchant' ? fbaCost:fbmCost ;
-	        	
-	        		if( cost && salePrice && cost != '-' ){
-	        			return ((( salePrice - cost  ) /cost)*100).toFixed(2)+"%" ;
-	        		}else{
-	        			return "<span title='未设定成本或同步价格异常！'>-</span>" ;
-	        		}
-	        	
+	        		//return ( record.TOTAL_PRICE - record.TOTAL_COST)
+	        		if( record.TOTAL_PRICE && record.TOTAL_COST  )
+	        			return ((( record.TOTAL_PRICE  - record.TOTAL_COST  ) /record.TOTAL_COST)*100).toFixed(2)+"%" ;
+	        		
+	        		return "-" ;
+	        		
+	        		
 	        	}},
 	           	{align:"left",key:"ASSIGN_QUANTITY",label:"分配库存",group:"库存",width:"8%",format:{type:"editor",fields:['ACCOUNT_ID','SKU'],valFormat:function(val,record){
 	           		return record.QUANTITY||0 ;
