@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+    
+		<entry key="data_exchange_list">
+				select * from sc_exchange_rate 
+		</entry>
+</properties>

@@ -144,8 +144,8 @@
 							<tbody class="amazon-tbody">
 								<tr>
 									<th>FBM发货仓库：</th>
-									<td colspan=3>
-										<select  id="FBM_WAREHOUSE"  >
+									<td>
+										<select  id="FBM_WAREHOUSE"  style="width:97%;">
 										    	<option value="">--选择--</option>
 											   <?php 
 											     // sql_warehouse_lists
@@ -158,6 +158,20 @@
 											   ?>
 											</select>
 									</td>
+									<th>币种：</th>
+									<td>
+										<select  id="EXCHANGE_ID"   style="width:97%;" >
+										    	<option value="">--选择--</option>
+											   <?php 
+											     // sql_warehouse_lists
+											     $warehouses = $SqlUtils->exeSqlWithFormat("select * from sc_exchange_rate",array()) ;
+					                             foreach($warehouses as $w){
+					                             	  $selected = $account[0]['sc_amazon_account']['EXCHANGE_ID'] == $w['ID'] ?"selected":"" ;
+					                             	  echo "<option $selected value='".$w['ID']."'>".$w['SOURCE_NAME']."</option>" ;
+					                             }
+											   ?>
+											</select>
+									</td>
 									
 								</tr>
 								<tr>
@@ -165,7 +179,7 @@
 									<td>
 										<input type="text" id="INVENTORY_CENTER_FEE" value="<?php echo $account[0]['sc_amazon_account']['INVENTORY_CENTER_FEE'];?>"/>
 									</td>
-									<th>地区税率：</th>
+									<th>账户地区税率：</th>
 									<td>
 									<input type="text" id="FEE_RATIO" value="<?php echo $account[0]['sc_amazon_account']['FEE_RATIO'];?>"/>
 									</td>

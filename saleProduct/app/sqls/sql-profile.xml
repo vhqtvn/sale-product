@@ -308,7 +308,8 @@
 						INVENTORY_CENTER_FEE, 
 						FEE_RATIO,
 						SUPPLY_CYCLE,
-						REQ_ADJUST
+						REQ_ADJUST,
+						EXCHANGE_ID
 						)
 						VALUES
 						(
@@ -337,7 +338,8 @@
 						'{@#INVENTORY_CENTER_FEE#}', 
 						'{@#FEE_RATIO:0#}',
 						'{@#SUPPLY_CYCLE:14#}',
-						'{@#REQ_ADJUST:0#}'
+						'{@#REQ_ADJUST:0#}',
+						'{@#EXCHANGE_ID#}'
 						);
     </entry>
     
@@ -362,7 +364,8 @@
 				EBAY_DEV_ID = '{@#EBAY_DEV_ID#}' , 
 				EBAY_APP_ID = '{@#EBAY_APP_ID#}' , 
 				EBAY_CERT_ID = '{@#EBAY_CERT_ID#}' , 
-				EBAY_TOKEN = '{@#EBAY_TOKEN#}'
+				EBAY_TOKEN = '{@#EBAY_TOKEN#}', 
+				EXCHANGE_ID = '{@#EXCHANGE_ID#}'
 				{@ ,FBM_WAREHOUSE = '#FBM_WAREHOUSE#'}
 				{@ ,INVENTORY_CENTER_FEE='#INVENTORY_CENTER_FEE#'}
 				{@ ,FEE_RATIO='#FEE_RATIO#'}

@@ -98,6 +98,22 @@ class TaskFetchController extends AppController {
 	 				$feeResult = json_decode(trim($feeResult)) ;
 	 				$feeResult = get_object_vars($feeResult) ;
 	 				$feeResult = $feeResult['data'] ;
+	 				
+	 				if( empty($feeResult) ){
+	 					echo 'FBA Error, Try It<br>';
+	 					$feeResult = $this->send_post($afnUrl,array('method'=>'GET',
+	 							'model'=> json_encode($item)
+	 					)) ;
+	 					
+	 					$feeResult = json_decode(trim($feeResult)) ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					$feeResult = $feeResult['data'] ;
+	 					if( empty($feeResult) ){
+	 						echo 'FBA Error, End<br>';
+	 						continue ;
+	 					}
+	 				}
+	 				
 	 				$feeResult = get_object_vars($feeResult) ;
 	 				
 	 				if( isset($feeResult['commissionFee']) ){//success
@@ -126,7 +142,7 @@ class TaskFetchController extends AppController {
 	 							$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
 	 						}
 	 					}else{
-	 						$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
+	 						$feeResult['commissionRatio'] = round($feeResult['commissionFee']/2,4) ;
 	 					}
 	 					
 	 					$this->Cost->saveCostByFee($feeResult) ;
@@ -208,6 +224,22 @@ class TaskFetchController extends AppController {
 	 				$feeResult = json_decode(trim($feeResult)) ;
 	 				$feeResult = get_object_vars($feeResult) ;
 	 				$feeResult = $feeResult['data'] ;
+	 				
+	 				if( empty($feeResult) ){
+	 					echo 'FBA Error, Try It<br>';
+	 					$feeResult = $this->send_post($afnUrl,array('method'=>'GET',
+	 							'model'=> json_encode($item)
+	 					)) ;
+	 						
+	 					$feeResult = json_decode(trim($feeResult)) ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					$feeResult = $feeResult['data'] ;
+	 					if( empty($feeResult) ){
+	 						echo 'FBA Error, End<br>';
+	 						continue ;
+	 					}
+	 				}
+	 				
 	 				$feeResult = get_object_vars($feeResult) ;
 	 				
 	 				if( isset($feeResult['commissionFee']) ){//success
@@ -228,13 +260,18 @@ class TaskFetchController extends AppController {
 	 						$feeResult_ = json_decode(trim($feeResult_)) ;
 	 						$feeResult_ = get_object_vars($feeResult_) ;
 	 						$feeResult_ = $feeResult_['data'] ;
-	 						$feeResult_ = get_object_vars($feeResult_) ;
-	 					
-	 						if( isset($feeResult_['commissionFee']) ){//success
-	 							$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 						if( !empty( $feeResult_ ) ){
+	 							$feeResult_ = get_object_vars($feeResult_) ;
+	 								
+	 							if( isset($feeResult_['commissionFee']) ){//success
+	 								$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 							}
+	 							echo 'ReCalc Success <br>';
+	 						}else{
+	 							echo 'ReCalc ERROR <br>';
 	 						}
 	 					}else{
-	 						$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
+	 						$feeResult['commissionRatio'] = round($feeResult['commissionFee']/2,4) ;
 	 					}
 	 					
 	 					$this->Cost->saveCostByFee($feeResult) ;
@@ -268,15 +305,21 @@ class TaskFetchController extends AppController {
 	 							$feeResult_ = json_decode(trim($feeResult_)) ;
 	 							$feeResult_ = get_object_vars($feeResult_) ;
 	 							$feeResult_ = $feeResult_['data'] ;
-	 							$feeResult_ = get_object_vars($feeResult_) ;
-	 								
-	 							if( isset($feeResult_['commissionFee']) ){//success
-	 								$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 							
+	 							if( !empty( $feeResult_ ) ){
+		 							$feeResult_ = get_object_vars($feeResult_) ;
+		 								
+		 							if( isset($feeResult_['commissionFee']) ){//success
+		 								$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+		 							}
+	 								echo 'ReCalc Success <br>';
+	 							}else{
+	 								echo 'ReCalc ERROR <br>';
 	 							}
 	 						}else{
 	 							$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
 	 						}
-	 							
+	 						
 	 						$this->Cost->saveCostByFee($feeResult) ;
 	 					}else{
 	 						echo 'Try ERROR......<br>';
