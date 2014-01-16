@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 	
-
-
 	<entry key="sql_supplychain_requirement_plan_product_list">
+		SELECT  srp.*,
+	         ssrpp.STATUS AS P_STATUS
+		 FROM 
+		     sc_supplychain_requirement_plan_product ssrpp,
+			 sc_real_product srp
+		WHERE ssrpp.plan_id = '{@#planId#}'
+		AND ssrpp.REAL_ID = srp.ID
+</entry>
+
+	<entry key="sql_supplychain_requirement_plan_product_list_tooslow">
 	 SELECT  srp.*,
 	         ssrpp.STATUS as P_STATUS,
 	         SUM(ssri.FIX_QUANTITY) AS FIX_QUANTITY
 		 FROM 
-		    sc_supplychain_requirement_plan_product ssrpp,
+		     sc_supplychain_requirement_plan_product ssrpp,
 		     sc_supplychain_requirement_item ssri,
 			 sc_real_product srp,
 			 sc_real_product_rel srpr,

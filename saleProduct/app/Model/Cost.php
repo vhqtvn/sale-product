@@ -171,4 +171,80 @@ class Cost extends AppModel {
 		$array = $this->query($sql);
 		return $array ;
 	}
+	
+	/**
+	 * 格式化当前的货品价格
+	 */
+	public function formatCurrentPrice(){
+		$sql= "select * from sc_real_product where status=1" ;
+		$realproducts = $this->exeSqlWithFormat($sql, array()) ;
+		foreach( $realproducts as $product ){
+			//获取当前货品最近的采购记录
+			$sql ="SELECT sptp.* FROM sc_purchase_task_products sptp
+						        ,sc_purchase_plan_details sppd
+						        WHERE sptp.PRODUCT_ID = sppd.ID
+						        AND ( sppd.REAL_ID ='{@#realId#}'  OR sppd.SKU = '{@#sku#}' )
+								AND sptp.WAREHOUSE_TIME is not null
+								AND sptp.REAL_QUOTE_PRICE is not null
+						     ORDER BY sptp.WAREHOUSE_TIME  desc
+						     LIMIT 0,1" ;
+			$item = $this->getObject($sql, array("realId"=>$product['ID'],"sku"=>$product['REAL_SKU'])) ;
+			
+			//debug($item) ;
+			//REAL_QUOTE_PRICE
+			//QUALIFIED_PRODUCTS_NUM
+			//REAL_SHIP_FEE
+			$realId = $product['ID'] ;
+			$realQuotePrice = $this->findNum( $item['REAL_QUOTE_PRICE'] ) ;
+			$qualfiedNum = $item['QUALIFIED_PRODUCTS_NUM'] ;
+			
+			if( empty($qualfiedNum) || $qualfiedNum == 0) continue ;
+			
+			$realShipFee = round( $item['REAL_SHIP_FEE']/$qualfiedNum , 2 ) ;
+			
+			$sql = "select * from sc_product_cost where real_id= '{@#realId#}'" ;
+			$cost = $this->getObject($sql,array("realId"=>$realId)) ;
+			if( empty($cost) ){
+					$id = $this->create_guid() ;
+					$sql = "
+					INSERT INTO  sc_product_cost
+					(ID,
+					PURCHASE_COST,
+					LOGISTICS_COST,
+					REAL_ID,
+					CREATE_TIME,
+					LAST_UPDATE_TIME
+					)
+					VALUES
+					('$id',
+					'$realQuotePrice',
+					'$realShipFee',
+					'$realId',
+					NOW(),
+					NOW()
+					);" ;
+					$this->exeSql($sql,array()) ;
+			}else{
+				$sql = "update sc_product_cost set PURCHASE_COST = '{@#purchaseCost:0#}',LOGISTICS_COST='{@#realShipFee#}' where real_id = '{@#realId#}'" ;
+				$this->exeSql($sql,array("realId"=>$realId,"purchaseCost"=>$realQuotePrice,"realShipFee"=>$realShipFee)) ;
+			}
+			
+		}
+	}
+	
+	function findNum($str=''){
+		$str=trim($str);
+		if(empty($str)){return '';}
+		$result='';
+		for($i=0;$i<strlen($str);$i++){
+			if(is_numeric($str[$i])){
+				$result.=$str[$i];
+			}else if( $str[$i] == '.' ){
+				$result.=$str[$i];
+			}else{
+				break ;
+			}
+		}
+		return $result;
+	}
 }

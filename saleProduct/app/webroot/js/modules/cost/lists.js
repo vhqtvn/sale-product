@@ -14,7 +14,7 @@
 				 },
 				 title:"",
 				 indexColumn:true,
-				 querys:{sqlId:"sql_cost_product_details_list"},
+				 querys:{sqlId:"sql_cost_product_details_list_new"},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 				 	$(".grid-checkbox").each(function(){
@@ -37,18 +37,11 @@
 			})
 			
 			$(".query-btn").click(function(){
-				var asin = $("[name='asin']").val() ;
-				var title = $("[name='title']").val() ;
+				var searchKey = $("[name='searchKey']").val() ;
 				var querys = {} ;
-				if(asin){
-					querys.asin = asin ;
-				}else{
-					querys.unAsin = 1 ;
+				if(searchKey){
+					querys.searchKey = searchKey ;
 				}
-				if(title){
-					querys.title = title ;
-				}
-				
 				$(".grid-content-details").llygrid("reload",querys) ;
 			}) ;
 			

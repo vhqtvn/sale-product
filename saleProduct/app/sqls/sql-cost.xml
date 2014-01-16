@@ -292,6 +292,23 @@
                 }
    </entry>
    
+   <entry key="sql_cost_product_details_list_new">
+ 				 SELECT  * from  sc_view_listing_cost
+ 				 where 1=1
+ 				 {@
+ 				 and (
+ 				 	listing_sku like '%#searchKey#%'
+ 				 	or
+ 				 	real_sku like '%#searchKey#%'
+ 				 	or 
+ 				 	asin = '#searchKey#'
+ 				 	or 
+ 				 	name like '%#searchKey#%'
+ 				 )
+ 				 
+ 				 }
+   </entry>
+   
     <entry key="sql_cost_product_details_list">
  				 SELECT sc_product_cost.* ,
  					 ( select sp.TITLE from sc_product sp where  sc_product_cost.asin = sp.asin limit 0,1) as PRODUCT_TITLE,
