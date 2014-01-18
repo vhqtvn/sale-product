@@ -39,6 +39,16 @@
 					 $(".current-product").html("#"+record.REAL_SKU+"#") ;
 				 },
 				 loadAfter:function(records){
+					 //重新点击行
+					 if(currentRealId){
+						 $(".grid-content").find(".lly-grid-row").each(function(){
+							 var _record = $(this).data("record") ;
+							 if(_record.ID == currentRealId){
+								 currentPlanProduct = _record ;
+								 $(this).click() ;
+							 }
+						 }) ;
+					 }
 					 
 					 $(".grid-content").find('.audit').click(function(){
 						 var record = $(this).closest("tr").data("record") ;
@@ -89,14 +99,14 @@
 		           	{align:"center",key:"QUANTITY",label:"需求数量",width:"10%",sort:true},
 		           	{align:"center",key:"FIX_QUANTITY",label:"需求数量（修正）",width:"15%",format:function(val,record){
 		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
-		           			return "<input type='text' class='edit-fix-quantity'  value='"+(val||"")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
+		           			return "<input type='text' class='edit-fix-quantity'  value='"+(val||record.QUANTITY||"0")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
 		           		}else{
 		           			return val ;
 		           		}
 		           	}},
 		           	{align:"center",key:"PURCHASE_QUANTITY",label:"待采购数量",width:"8%",format:function(val,record){
 		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
-		           			return "<input type='text' class='edit-purchase-quantity'  value='"+(val||"")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
+		           			return "<input type='text' class='edit-purchase-quantity'  value='"+(val||"0")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
 		           		}else{
 		           			return val ;
 		           		}
@@ -124,16 +134,18 @@
 				  querys:{sqlId:"sql_supplychain_requirement_plan_product_details_list",planId:planId,realId:'-'},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(records){ 
-					 
+					 //修正数量
+					 /*
+					 $(".grid-content-details").find(".lly-grid-row").each(function(){
+						 var _record = $(this).data("record") ;
+						 var quantity = _record.QUANTITY ;
+						 if( _record )
+					 }) ;*/
 					
 					 $(".grid-content-details").find('.edit-fix-quantity').blur(function(){
 						 var record = $(this).closest("tr").data("record") ;
 						 var fixQuatity = $(this).val() ;
 						 var id = record.ID ;
-						 //$.dataservice("model:ScRequirement.saveItemFixQuantity" , {fixQuantity:fixQuatity,id:id} , function(){
-
-
-						 //})
 					 }) ;
 				 }
 					
@@ -161,19 +173,23 @@
 			}) ;
 			
 			$(".save-pass").click(function(){
-				var data = getGridEditorData();
-				var memo = $(".audit-memo").val() ;
-				$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:1} , function(){
-					//
-				})
+				if( window.confirm("确认审批通过？") ){
+					var data = getGridEditorData();
+					var memo = $(".audit-memo").val() ;
+					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:1} , function(){
+						$(".grid-content").llygrid("reload",{},true) ;
+					});
+				}
 			}) ;
 			
 			$(".save-nopass").click(function(){
-				var data = getGridEditorData();
-				var memo = $(".audit-memo").val() ;
-				$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:2} , function(){
-					//
-				})
+					if( window.confirm("确认审批不通过？") ){
+					var data = getGridEditorData();
+					var memo = $(".audit-memo").val() ;
+					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:2} , function(){
+						$(".grid-content").llygrid("reload",{},true) ;
+					})
+				}
 			}) ;
 			
 			$(".add-purchaseplan").click(function(){
@@ -225,9 +241,16 @@
 			}
 			
 			function enableActionPanel(status){
+				$(".action-panel").find(".btn").hide() ;
+				$(".action-panel").find("textarea").hide() ;
+				$(".add-purchaseplan").hide();
+				$(".track-img").hide() ;
+				$(".track-list").hide();
+				
 				if(status == 0 ||  status <1){
 					$(".action-panel").find(".btn").removeAttr("disabled").show() ;
 					$(".action-panel").find("textarea").removeAttr("readonly").show() ;
+					$(".add-purchaseplan").hide();
 					$(".track-img").show() ;
 					$(".track-list").hide();
 				}else  if(status == 1){//审批通过

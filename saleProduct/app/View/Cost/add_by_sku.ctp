@@ -205,7 +205,8 @@
 								<th>售价</th>
 								<th>总成本</th>
 								<th>利润</th>
-								<th>物流成本</th>
+								<th>转仓物流成本</th>
+								<th>订单物流成本</th>
 								<th>税费</th>
 								<th>渠道佣金</th>
 								<th>可变关闭费</th>
@@ -221,7 +222,9 @@
 								
 								<th>其他成本</th>
 							</tr>
-							<?php  	foreach( $listing as $item  ){ ?>
+							<?php  	foreach( $listing as $item  ){ 
+							//debug($item) ;
+								?>
 							
 							<tr  class="data-row">
 								<td>
@@ -241,7 +244,14 @@
 											$totalRate = round( ( $totalProfile/$item['TOTAL_COST'] ) *100 ,2).'%' ;
 											echo $totalProfile."($totalRate)" ;
 								?></td>
-								<td><input type="text" class="_cost"  name="LOGISTICS_COST" value="<?php echo $item['LOGISTICS_COST'];?>" style="width:50px;"/></td>
+								<td>
+									<?php 
+										echo  round( $item['TRANSFER_COST'],3 ) ;
+									?>
+								</td>
+								<td>
+								<input type="text" class="_cost  <?php echo $item['FULFILLMENT_CHANNEL']=='Merchant'?"":"hide" ;?>"  
+									name="LOGISTICS_COST" value="<?php echo $item['LOGISTICS_COST'];?>" style="width:50px;"/></td>
 								<td>
 									<?php 
 										echo  round( $item['FEE'],3 ) ;

@@ -184,6 +184,7 @@
 									<th>重量：</th>
 									<td><input type="text" name="weight" style="width:50px;" value="<?php echo $item['WEIGHT']?>"/>
 									<select name="weightUnit" style="width:150px;">
+										<option value="lb" <?php if($item['WEIGHT_UNIT']=='kg')echo 'selected';?>  >KG</option>
 										<option value="lb" <?php if($item['WEIGHT_UNIT']=='lb')echo 'selected';?>  >pound</option>
 										<option value="oz" <?php if($item['WEIGHT_UNIT']=='oz')echo 'selected';?> >ounce</option>
 									</select>

@@ -133,7 +133,7 @@
 						<div class="grid-content-details"  ></div>
 					</div>
 					<div class="span3">
-						<div style="padding:20px 5px;position:relative;"  class="action-panel">
+						<div style="padding:5px 5px;position:relative;"  class="action-panel">
 							<div class="current-product" style="margin:5px;font-weight:bold;"></div>
 							<img  src="/<?php echo $fileContextPath;?>/app/webroot/img/tabs.gif"  style="position:absolute;right:0px;top:10px;" alt="查看操作日志"  class="track-img"/>
 							<br>

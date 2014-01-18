@@ -102,7 +102,7 @@
 				<!-- panel 头部内容  此场景下是隐藏的-->
 				<div class="panel apply-panel">
 					<!-- panel 中间内容-->
-					<div class="panel-content">
+					<div class="panel-content" style="margin-bottom:50px;">
 						<!-- 数据列表样式 -->
 						<table class="form-table " >
 							<tbody>										   
@@ -195,6 +195,12 @@
 									</td>
 								</tr>
 								<tr>
+									<th>转仓物流单价（$/KG）：</th>
+									<td colspan="3">
+										<input type="text" id="TRANSFER_WH_PRICE" value="<?php echo $account[0]['sc_amazon_account']['TRANSFER_WH_PRICE'];?>"/>
+									</td>
+								</tr>
+								<tr>
 									<th>APPLICATION_NAME：</th>
 									<td colspan="3"><input type="text" id="APPLICATION_NAME" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_NAME'];?>"/></td>
 								</tr>
@@ -261,7 +267,7 @@
 					</div>
 					
 					<!-- panel脚部内容-->
-                    <div class="panel-foot">
+                    <div class="panel-foot" style="background:#FFF;">
 						<div class="form-actions ">
 							<button type="button" class="btn btn-primary save-user">提&nbsp;交</button>
 						</div>

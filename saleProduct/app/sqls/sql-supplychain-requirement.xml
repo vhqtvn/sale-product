@@ -201,6 +201,8 @@
 
     <entry key="sql_supplychain_requirement_list">
     	SELECT ssrp.* ,
+    		(SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=6) AS STATUS6,
+    		(SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=5) AS STATUS5,
 		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=4) AS STATUS4,
 		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=3) AS STATUS3,
 		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=2) AS STATUS2,

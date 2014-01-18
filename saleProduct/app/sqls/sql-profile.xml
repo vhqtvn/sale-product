@@ -203,6 +203,7 @@
 				sc_amazon_account_product.account_id = sc_amazon_account.id ) as TOTAL
 	   ,( select sp.name from sc_platform sp where sp.id = sc_amazon_account.platform_id ) as PLATFORM_NAME
 		,( select sc_user.name from sc_user where sc_user.login_id = sc_amazon_account.creator ) as USERNAME
+		,( select s.source_name from sc_exchange_rate s where s.id = sc_amazon_account.exchange_id ) as EXCHANGTE_NAME
 		FROM sc_amazon_account where 1=1 
     </entry>
     
@@ -309,7 +310,8 @@
 						FEE_RATIO,
 						SUPPLY_CYCLE,
 						REQ_ADJUST,
-						EXCHANGE_ID
+						EXCHANGE_ID,
+						TRANSFER_WH_PRICE
 						)
 						VALUES
 						(
@@ -339,7 +341,8 @@
 						'{@#FEE_RATIO:0#}',
 						'{@#SUPPLY_CYCLE:14#}',
 						'{@#REQ_ADJUST:0#}',
-						'{@#EXCHANGE_ID#}'
+						'{@#EXCHANGE_ID#}',
+						'{@#TRANSFER_WH_PRICE:0#}'
 						);
     </entry>
     
@@ -371,6 +374,7 @@
 				{@ ,FEE_RATIO='#FEE_RATIO#'}
 				{@ ,SUPPLY_CYCLE='#SUPPLY_CYCLE#'}
 				{@ ,REQ_ADJUST='#REQ_ADJUST#'}
+				{@ ,TRANSFER_WH_PRICE='#TRANSFER_WH_PRICE#'}
 				WHERE
 				ID = '{@#ID#}'
    </entry>

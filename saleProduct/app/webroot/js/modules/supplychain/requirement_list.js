@@ -8,11 +8,13 @@ $(function(){
 		    	return html.join("") ;
 		    }},
 			{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS0",label:"未审批",group:"状态",width:"8%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS1",label:"审批通过",group:"状态",width:"8%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS2",label:"审批不通过",group:"状态",width:"8%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS3",label:"采购中",group:"状态",width:"8%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS4",label:"采购完成",group:"状态",width:"8%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS0",label:"未审批",group:"状态",width:"7%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS1",label:"审批通过",group:"状态",width:"7%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS2",label:"审批不通过",group:"状态",width:"7%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS3",label:"采购中",group:"状态",width:"7%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS4",label:"采购完成",group:"状态",width:"7%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS5",label:"入库中",group:"状态",width:"7%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS6",label:"需求完成",group:"状态",width:"7%",forzen:false,align:"left"},
            	{align:"center",key:"CREATE_DATE",label:"创建时间",width:"10%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
