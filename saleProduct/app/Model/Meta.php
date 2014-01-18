@@ -20,7 +20,7 @@ class Meta extends AppModel {
 	
 	function getAddressById($params){
 		$metaId = $params['metaId'] ;
-		$sql = "SELECT * from sc_meta_address ";
+		$sql = "SELECT * from sc_meta_address where meta_id = '{@#metaId#}' ";
 		$array = $this->getObject($sql, array("metaId"=>$metaId)) ;
 		return $array ;
 	}

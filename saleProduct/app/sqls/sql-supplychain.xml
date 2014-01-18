@@ -22,6 +22,7 @@
     
     <entry key="sql_supplychain_inbound_local_plan_list">
     	select sfilp.*,
+    	(select name from sc_amazon_account s where s.id = sfilp.ACCOUNT_ID) as ACCOUNT_NAME,
     		(select IN_NUMBER from sc_warehouse_in s where s.id = sfilp.in_id) as IN_NUMBER
     	 from sc_fba_inbound_local_plan sfilp
     	where 1=1

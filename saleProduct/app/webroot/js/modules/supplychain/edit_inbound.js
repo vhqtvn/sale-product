@@ -12,6 +12,7 @@ $(function(){
 	
 	$(".address-select").change(function(){
 		var metaId = $(this).val() ;
+		//alert(metaId);
 		$.dataservice("model:Meta.getAddressById",{metaId:metaId},function(result){
 			renderForm(result , ".address-table") ;
 		});

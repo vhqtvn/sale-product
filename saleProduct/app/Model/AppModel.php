@@ -256,6 +256,9 @@ class AppModel extends Model {
 		}
 		
 		public function exeSql($sql , $query){
+			$db =& ConnectionManager::getDataSource($this->useDbConfig);
+			$db->_queryCache = array() ;
+			
 			$sql = $this->getDbSql($sql) ;
 			
 			$sql = $this->getSql($sql,$query) ;

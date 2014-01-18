@@ -11,6 +11,7 @@ $(function(){
 				return val == 1?"已同步":"" ;
 			}},
 		 	{align:"center",key:"IN_NUMBER",label:"入库计划编号",width:"13%"},
+		 	{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"13%"},
            	{align:"center",key:"LABEL_PREP_TYPE",label:"Label类型",width:"10%"},
            	{align:"center",key:"NAME",label:"名称",group:"发货地址",width:"10%"},
            	{align:"center",key:"ADDRESS_LINE1",label:"AddressLine1",group:"发货地址",width:"20%"},
@@ -32,7 +33,7 @@ $(function(){
 		 querys:{sqlId:"sql_supplychain_inbound_local_plan_list"},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowDblClick:function(row,record){
-			 $(".grid-content-detials").llygrid("reload",{accountId:record.ACCOUNT_ID,planId:record.PLAN_ID},true) ;
+			 $(".grid-content-detials").llygrid("reload",{inId: record.IN_ID},true) ;
 		 },loadAfter:function(){
 			 $(".grid-content").find(".update").click(function(){
 				 var record = $(this).closest("tr").data("record") ;
@@ -47,20 +48,26 @@ $(function(){
 
 	$(".grid-content-detials").llygrid({
 		columns:[
-			{align:"center",key:"SKU",label:"Sku",width:"20%",forzen:false,align:"left"},
-           	{align:"center",key:"QUANTITY",label:"Quantity",width:"20%",forzen:false,align:"left"},
-           	{align:"center",key:"MEMO",label:"Memo",width:"40%"}
-         ],
-         ds:{type:"url",content:contextPath+"/grid/query"},
-		 limit:10,
-		 pageSizes:[10,20,30,40],
-		 height:function(){
-			 return $(window).height() - 380 ;
-		 },
-		 title:"FBA入库计划明细列表",
-		 indexColumn:false,
-		 querys:{sqlId:"sql_supplychain_inbound_plan_local_details_list",planId:''},
-		 loadMsg:"数据加载中，请稍候......"
+					{align:"center",key:"IMAGE_URL",label:"",width:"2%",format:{type:'img'}},
+		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
+	           		{align:"center",key:"SKU",label:"货品SKU",width:"5%",format:function(val,reocrd){
+	           			return "<a href='#' product-realsku='"+val+"'>"+val+"</a>" ;
+	           		}},
+	           		{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"5%"},
+	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%"},
+	           		{align:"center",key:"DELIVERY_TIME",label:"供货时间",width:"6%"},
+	           		{align:"center",key:"PRODUCT_TRACKCODE",label:"产品跟踪码",width:"6%"}
+		         ],
+		         ds:{type:"url",content:contextPath+"/grid/query"},
+				 limit:30,
+				 pageSizes:[10,20,30,40],
+				 height:function(){
+					 return $(window).height()-130;
+				 },
+				 title:"FBA入库Listing列表",
+				 autoWidth:true,
+				 querys:{sqlId:"sql_warehouse_box_products_byInId",inId:'-'},
+				 loadMsg:"数据加载中，请稍候......"
 	}) ;
 	
 	$(".create-plan").click(function(){
