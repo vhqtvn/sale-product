@@ -26,6 +26,7 @@
    select * from (
   		SELECT s1.* ,
 		(SELECT NAME FROM sc_warehouse s2 WHERE s2.id = s1.warehouse_id) AS WAREHOUSE_NAME,
+		(SELECT NAME FROM sc_amazon_account s2 WHERE s2.id = s1.account_id) AS ACCOUNT_NAME,
 		(SELECT NAME FROM sc_user s2 WHERE s2.id = s1.charger) AS CHARGER_NAME,
 		(select CREATE_TIME from sc_warehouse_in_track st where st.in_id = s1.id and st.status = 70 limit 0,1) as IN_TIME,
 		(SELECT COUNT(*)  FROM sc_warehouse_box_product s2 , sc_warehouse_box s3 
@@ -80,6 +81,7 @@
 			{@IN_SOURCE_TYPE = '#inSourceType#' , }
 			{@SOURCE_WAREHOUSE_ID = '#sourceWarehouseId#' , }
 			MEMO = '{@#memo#}' , 
+			{@ ACCOUNT_ID = '#accountId#' ,}
 			{@ TYPE = '#type#' ,}
 			UPDATOR = '{@#loginId#}' , 
 			UPDATE_TIME = NOW(),
@@ -107,6 +109,7 @@
 			IN_NUMBER, 
 			CHARGER, 
 			WAREHOUSE_ID, 
+			ACCOUNT_ID,
 			OUT_TARGET,
 			SHIP_COMPANY, 
 			SHIP_TYPE, 
@@ -142,6 +145,7 @@
 			'{@#inNumber#}', 
 			'{@#charger#}', 
 			'{@#warehouseId#}', 
+			'{@#accountId#}', 
 			'{@#outTarget#}',
 			'{@#shipCompany#}', 
 			'{@#shipType#}', 
@@ -209,6 +213,16 @@
    		 sc_real_product s2,
    		 sc_warehouse_box s3
    		 where s1.box_id = '{@#boxId#}'
+   		 and s3.id = s1.box_id
+   		 and s1.real_product_id = s2.id
+   </entry>
+   
+   <entry key="sql_warehouse_box_products_byInId">
+   		select s1.* , s2.NAME , s2.REAL_SKU as SKU , s3.BOX_NUMBER ,s2.IMAGE_URL,s2.MEMO as P_MEMO
+   		from sc_warehouse_box_product s1,
+   		 sc_real_product s2,
+   		 sc_warehouse_box s3
+   		 where s3.in_id = '{@#inId#}'
    		 and s3.id = s1.box_id
    		 and s1.real_product_id = s2.id
    </entry>
@@ -316,6 +330,8 @@
 				BOX_ID, 
 				REAL_PRODUCT_ID, 
 				QUANTITY, 
+				ACCOUNT_ID,
+				LISTING_SKU,
 				DELIVERY_TIME, 
 				PRODUCT_TRACKCODE, 
 				INVENTORY_TYPE,
@@ -327,6 +343,8 @@
 				'{@#BOX_ID#}', 
 				'{@#REAL_PRODUCT_ID#}', 
 				'{@#QUANTITY#}', 
+				'{@#ACCOUNT_ID#}', 
+				'{@#LISTING_SKU#}', 
 				'{@#DELIVERY_TIME#}', 
 				'{@#PRODUCT_TRACKCODE#}', 
 				'{@#inventoryType#}', 
@@ -339,6 +357,8 @@
 				set
 				REAL_PRODUCT_ID ='{@#REAL_PRODUCT_ID#}', 
 				QUANTITY = '{@#QUANTITY#}', 
+				{@ ACCOUNT_ID = '#ACCOUNT_ID#', }
+				{@LISTING_SKU = '#LISTING_SKU#', }
 				DELIVERY_TIME ='{@#DELIVERY_TIME#}', 
 				PRODUCT_TRACKCODE =	'{@#PRODUCT_TRACKCODE#}', 
 				MEMO = '{@#MEMO#}',

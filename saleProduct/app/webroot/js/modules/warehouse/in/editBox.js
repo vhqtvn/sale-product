@@ -79,9 +79,10 @@
 				    {align:"center",key:"BOX_NUMBER",label:"包装箱",width:"5%"},
 					{align:"center",key:"IMAGE_URL",label:"",width:"2%",format:{type:'img'}},
 		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
-	           		{align:"center",key:"SKU",label:"SKU",width:"5%",format:function(val,reocrd){
+	           		{align:"center",key:"SKU",label:"货品SKU",width:"5%",format:function(val,reocrd){
 	           			return "<a href='#' product-realsku='"+val+"'>"+val+"</a>" ;
 	           		}},
+	           		{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"5%"},
 	           		{align:"center",key:"INVENTORY_TYPE",label:"库存类型",width:"5%",format:{type:'json',content:{1:'普通库存',2:'FBA库存'}}}, 
 	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%"},
 	           		{align:"center",key:"DELIVERY_TIME",label:"供货时间",width:"6%"},
@@ -136,9 +137,16 @@
 			})
 			
 			$(".add-box-product-req").live("click",function(){
-				openCenterWindow(contextPath+"/page/forward/Warehouse.In.editBoxProductPageForReq/"+currentId+"/",800,550,function(){
-					$(".grid-content-details").llygrid("reload",{},true);
-				}) ;
+				if( warehouse.IN_SOURCE_TYPE == "fba" ){
+					openCenterWindow(contextPath+"/page/forward/Warehouse.In.editFBAListing/"+currentId+"/",800,550,function(){
+						$(".grid-content-details").llygrid("reload",{},true);
+					}) ;
+				}else{
+					openCenterWindow(contextPath+"/page/forward/Warehouse.In.editBoxProductPageForReq/"+currentId+"/",800,550,function(){
+						$(".grid-content-details").llygrid("reload",{},true);
+					}) ;
+				}
+				
 			})
 			
 			$(".edit-box-product").live("click",function(){

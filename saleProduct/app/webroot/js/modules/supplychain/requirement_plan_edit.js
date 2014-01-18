@@ -102,6 +102,7 @@
 		           		}
 		           	}},
 		           	{align:"center",key:"REAL_PURCHASE_QUANTITY",label:"实际入库",width:"8%"},
+		           	{align:"center",key:"REQ_TYPE",label:"生成类别",width:"8%"},
 		           	{align:"center",key:"URGENCY",label:"紧急程度",width:"8%",format:function(val,record){
 		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
 		           			return $.llygrid.format.editor.body(val,record,{align:"center",key:"URGENCY",label:"紧急程度",width:"10%",
@@ -225,8 +226,8 @@
 			
 			function enableActionPanel(status){
 				if(status == 0 ||  status <1){
-					$(".action-panel").find(".btn").removeAttr("disabled") ;
-					$(".action-panel").find("textarea").removeAttr("readonly") ;
+					$(".action-panel").find(".btn").removeAttr("disabled").show() ;
+					$(".action-panel").find("textarea").removeAttr("readonly").show() ;
 					$(".track-img").show() ;
 					$(".track-list").hide();
 				}else  if(status == 1){//审批通过

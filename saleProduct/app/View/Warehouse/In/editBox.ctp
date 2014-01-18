@@ -35,6 +35,7 @@
    <script type="text/javascript">
    	var inId = '<?php echo $params['arg1'] ;?>' ;
    	var $isRead = <?php echo $isRead?"true":"false" ; ?> ;	 
+   	var warehouse = <?php echo  json_encode($warehoseIn) ; ?> ;	
    </script>
 
 </head>

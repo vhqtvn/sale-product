@@ -130,9 +130,9 @@
 									</td>
 								</tr>
 								<tr>
-									<th class="trans-wh" style="display:none;">出库仓库：</th>
-									<td class="trans-wh" style="display:none;">
-											<select  data-validator="required"   id="sourceWarehouseId"  <?php echo $isRead?"disabled":"" ;?>>
+									<th class="trans_ trans-wh hide" style="display:none;">出库仓库：</th>
+									<td class="trans_ trans-wh hide" style="display:none;">
+											<select  id="sourceWarehouseId"  <?php echo $isRead?"disabled":"" ;?>>
 										    	<option value="">--选择--</option>
 											   <?php 
 											     // sql_warehouse_lists
@@ -145,9 +145,24 @@
 											   ?>
 											</select>
 									</td>
-									<th>入库仓库：</th>
-									<td>
-										<select  data-validator="required"   id="warehouseId"  <?php echo $isRead?"disabled":"" ;?>>
+									<th class="trans_ trans-rkaccount hide">入库账号：</th>
+									<td class="trans_ trans-rkaccount hide">
+										<select name="accountId" class="span2"  <?php echo $isRead?"disabled":"" ;?>>
+							     		<option value="">--选择--</option>
+								     	<?php
+								     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+							   				 $accounts = $amazonAccount->getAllAccounts(); 
+								     		foreach($accounts as $account ){
+								     			$account = $account['sc_amazon_account'] ;
+								     			$checked = $account['ID'] == $result['ACCOUNT_ID']?"selected":"" ;
+								     			echo "<option value='".$account['ID']."'  $checked>".$account['NAME']."</option>" ;
+								     		} ;
+								     	?>
+										</select>
+									</td>
+									<th class="trans_ trans-rk hide">入库仓库：</th>
+									<td class="trans_ trans-rk hide">
+										<select  id="warehouseId"  <?php echo $isRead?"disabled":"" ;?>>
 										    	<option value="">--选择--</option>
 											   <?php 
 											     // sql_warehouse_lists

@@ -2,15 +2,26 @@
 			var isSaved = false ;
 			
 			$("[name='inSourceType']").click(function(){
+				$(".trans_").hide() ;
+				$(".trans_").find(":input").removeAttr("data-validator") ;
 				var val = $(this).val() ;
 				if(val == 'out'){ //外部采购入库
-					$(".trans-wh").hide() ;
-					$(".trans-wh").find(":input").removeAttr("data-validator") ;
+					$(".trans-rk").show() ;
+					$(".trans-rk").find(":input").attr("data-validator","required") ;
 					//$(this).parent().attr("colspan",3) ;
-				}else{ //转仓
+				}else if(val=='warehouse'){ //转仓
 					$(".trans-wh").show() ;
-					$(this).parent().attr("colspan",1) ;
 					$(".trans-wh").find(":input").attr("data-validator","required") ;
+					
+					$(".trans-rk").show() ;
+					$(".trans-rk").find(":input").attr("data-validator","required") ;
+					
+				}else if(val=='fba'){ //转仓
+					$(".trans-wh").show() ;
+					$(".trans-wh").find(":input").attr("data-validator","required") ;
+					
+					$(".trans-rkaccount").show() ;
+					$(".trans-rkaccount").find(":input").attr("data-validator","required") ;
 				}
 			}) ;
 			

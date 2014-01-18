@@ -70,6 +70,26 @@
 			    GROUP BY srp.id
     </entry>
     
+    <entry key="sql_supplychain_inventory_canToWarehouseForFBA">
+			SELECT srp.* ,
+						saap.SKU as LISTING_SKU,
+						swi.QUANTITY  as REAL_QUANTITY
+			FROM  sc_real_product srp,
+			      sc_real_product_rel srpr,
+			      sc_warehouse_inventory swi ,
+			      sc_amazon_account saa,
+			      sc_amazon_account_product saap
+			WHERE swi.warehouse_id = '{@#sourceWarehouseId#}'
+			    AND swi.ACCOUNT_ID = saa.ID
+			    AND swi.LISTING_SKU = saap.SKU
+			    AND saap.ACCOUNT_ID = saa.ID
+			    AND srp.ID = srpr.REAL_ID
+			    AND srpr.ACCOUNT_ID = saa.ID
+			    and saap.FULFILLMENT_CHANNEL  like '%AMAZON%'
+			    AND srpr.SKU = saap.SKU
+			    AND swi.INVENTORY_STATUS != 3
+    </entry>
+    
     <entry key="sql_supplychain_inventoryItem_canToWarehouse">
 			SELECT swi.*  ,
 			saa.name as ACCOUNT_NAME,
@@ -90,6 +110,28 @@
 			    AND srpr.SKU = saap.SKU
 			    AND swi.INVENTORY_STATUS != 3
 			    AND  srpr.REAL_ID = '{@#realId#}'
+    </entry>
+    
+    <entry key="sql_supplychain_inventoryItem_canToWarehouseForFBA">
+			SELECT swi.*  ,
+			saa.name as ACCOUNT_NAME,
+	    	  saap.FULFILLMENT_CHANNEL,
+	    	  (select sum(lock_quantity) from sc_warehouse_inventory_lock where inventory_id = swi.inventory_id ) as LOCK_QUANTITY
+			FROM 
+			      sc_real_product_rel srpr,
+			      sc_warehouse_inventory swi ,
+			      sc_amazon_account saa,
+			      sc_amazon_account_product saap
+			WHERE swi.warehouse_id = '{@#sourceWarehouseId#}'
+			    AND swi.ACCOUNT_ID = saa.ID
+			    AND swi.LISTING_SKU = saap.SKU
+			    AND saap.ACCOUNT_ID = saa.ID
+			    AND srpr.ACCOUNT_ID = saa.ID
+			    and saap.FULFILLMENT_CHANNEL  like '%AMAZON%'
+			    AND srpr.SKU = saap.SKU
+			    AND swi.INVENTORY_STATUS != 3
+			    AND  srpr.SKU = '{@#listingSku#}'
+			    AND  srpr.ACCOUNT_ID = '{@#accountId#}'
     </entry>
     
 	<entry key="sql_supplychain_requirement_listFreeByWarehouseId">

@@ -26,7 +26,7 @@
 		$planId = $params['arg1'] ;
 		
 		$plan = $SqlUtils->getObject("sql_supplychain_inbound_local_plan_getByPlanId",array('planId'=>$planId)) ;
-		
+		$inId =$plan['IN_ID'] ; 
 		
 	?>
 	<style type="text/css">
@@ -38,17 +38,20 @@
 <script>
 	var status = '<?php echo $plan['STATUS'];?>'
 	var planId = '<?php echo $planId;?>' ;
+	var inId =  '<?php echo $inId;?>' ;
 </script>
 <body class="container-popup">
 	<div class="row-fluid">
 			<div class="span5">
-				<h4>Inbound计划创建</h4>
-				<div  style="padding:10px;text-align:right;">
-					<?php  if( $plan['STATUS'] !=1 ){ ?>
+				<div class="row-fluid" style="margin-bottom:5px;margin-top:5px;">
+					<div class="span4"><h4>Inbound计划</h4></div>
+					<div class="span8">
+						<?php  if( $plan['STATUS'] !=1 ){ ?>
 					<button class="btn btn-primary  save-plan"  >保存计划</button>
-					<button class="btn btn-danger save-to-amazon"  >创建到Amazon</button>
-					<?php }?>
+					<?php } ?>
+					</div>
 				</div>
+				
 				<form  id="planForm" action="">
 				<input type="hidden" name="planId" id="planId"  value="<?php echo $plan['PLAN_ID'];?>"/>
 				<table  class="table table-bordered">
@@ -56,7 +59,7 @@
 					<tr>
 						<th>账号：</th>
 						<td>
-							<select name="accountId" class="span2">
+							<select name="accountId" class="span2"  disabled>
 				     		<option value="">--选择--</option>
 					     	<?php
 					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
@@ -82,18 +85,33 @@
 						</td>
 				    </tr>					
 			</table>
-			<table  class="table table-bordered">
-				    <caption>发货地址信息</caption>
+			<table  class="table table-bordered  address-table" data-widget="validator,ajaxform">
+				    <caption>
+				    发货地址信息
+				    <select style="width:150px;padding:2px;"  class="address-select">
+				    	<option value="">选择发货地址</option>
+				    <?php 
+				    $Meta = ClassRegistry::init("Meta") ;
+				    $addresss = $Meta->listAddress() ;
+				    foreach( $addresss as $addr ){
+				    	echo '<option value="'.$addr['META_ID'].'">'.$addr['NAME'].'</option>' ;
+				    }
+				    ?>
+				    </select>
+				    <button class="btn btn-primary save-address">保存地址</button>
+				    <button class="btn btn-primary add-address" title="添加新地址">+</button>
+				    <input type="hidden" name="metaId"/>
+				    </caption>
 					<tr>
 						<th>地址名称：</th>
 						<td>
-							<input type="text" name="name"  value="<?php echo $plan['NAME'];?>"/>
+							<input type="text" name="name" data-validator="required"  value="<?php echo $plan['NAME'];?>"/>
 						</td>
 				    </tr>
 				    <tr>
 						<th>Address Line1：</th>
 						<td>
-							<input type="text" name="addressLine1"  value="<?php echo $plan['ADDRESS_LINE1'];?>"/>
+							<input type="text" name="addressLine1" data-validator="required"  value="<?php echo $plan['ADDRESS_LINE1'];?>"/>
 						</td>
 				    </tr>
 				    <tr>
@@ -105,31 +123,31 @@
 				    <tr>
 						<th>District/Country：</th>
 						<td>
-							<input type="text" name="districtOrCounty"  value="<?php echo $plan['DISTRICT_OR_COUNTY'];?>"/>
+							<input type="text" name="districtOrCounty" data-validator="required"  value="<?php echo $plan['DISTRICT_OR_COUNTY'];?>"/>
 						</td>
 				    </tr>
 				    <tr>
 						<th>City：</th>
 						<td>
-							<input type="text" name="city"  value="<?php echo $plan['CITY'];?>"/>
+							<input type="text" name="city" data-validator="required"  value="<?php echo $plan['CITY'];?>"/>
 						</td>
 				    </tr>
 				    <tr>
 						<th>State/Province：</th>
 						<td>
-							<input type="text" name="stateOrProvinceCode"  value="<?php echo $plan['STATE_OR_PROVINCE_CODE'];?>"/>
+							<input type="text" name="stateOrProvinceCode" data-validator="required"  value="<?php echo $plan['STATE_OR_PROVINCE_CODE'];?>"/>
 						</td>
 				    </tr>
 				    <tr>
 						<th>Country Code：</th>
 						<td>
-							<input type="text" name="countryCode"  value="<?php echo $plan['COUNTRY_CODE'];?>"/>
+							<input type="text" name="countryCode" data-validator="required"  value="<?php echo $plan['COUNTRY_CODE'];?>"/>
 						</td>
 				    </tr>
 				    <tr>
 						<th>Postal Code：</th>
 						<td>
-							<input type="text" name="postalCode"  value="<?php echo $plan['POSTAL_CODE'];?>"/>
+							<input type="text" name="postalCode" data-validator="required"  value="<?php echo $plan['POSTAL_CODE'];?>"/>
 						</td>
 				    </tr>						
 			</table>
@@ -173,13 +191,16 @@
 			</form>
 			</div>
 			<div class="span7">
-				<h4>Inbound计划Listing</h4>
-				<div  style="padding:10px;text-align:right;">
-					<?php  if( $plan['STATUS'] !=1 ){ ?>
-					<button class="btn btn-primary add-sku"  >添加Listing SKU</button>
+				
+				<div class="row-fluid" style="margin-bottom:5px;margin-top:5px;">
+					<div class="span4"><h4>Inbound计划Listing</h4></div>
+					<div class="span8">
+						<?php  if( $plan['STATUS'] !=1 ){ ?>
+					<button class="btn btn-danger save-to-amazon"  >创建到Amazon</button>
 					<?php } ?>
+					</div>
 				</div>
-				<div class="grid-content-detials"></div>
+				<div class="grid-content-detials" style="width:98%;"></div>
 			</div>
 	</div>
 </body>

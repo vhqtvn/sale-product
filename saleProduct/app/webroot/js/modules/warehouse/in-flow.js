@@ -3,6 +3,7 @@
  */
 var  FlowFactory = {
 		get: function( flag ,inSourceType ,permissions ){
+			//alert(flag +"   "+inSourceType) ;
 			inSourceType = inSourceType||"out" ;
 			var flowData =  flowConfig[flag] ||{} ;
 			flowData = flowData[inSourceType]||{} ;
@@ -350,6 +351,34 @@ var flowConfig = {
 							]
 						} 
 				]
+			},
+			fba: { //转仓
+				name:"中国到Amazon仓库",
+				logistics:true,
+				flow: [
+						{status:0,label:"编辑中",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(0,"保存") }},
+							          {label:"提交审批",action:function(){ AuditAction(10,"提交审批") }}]
+						},
+						{status:10,label:"待审批",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(10,"保存") }},
+							          {label:"审批通过，下一步进入FBA入库计划",action:function(){ AuditAction(16,"审批通过，下一步进入FBA入库计划") } },
+								{label:"审批不通过",action:function(){ AuditAction(0,"审批不通过") } }]
+						},
+						{status:16,label:"FBA入库计划",memo:true
+							,actions:[
+							]
+						},
+						{status:70,label:"入库完成"
+							,actions:[
+										{label:"导出装箱单",action:function(){ printBox();} },
+										{label:"导出发票",action:function(){ printInvoice();} },
+										{label:"查看入库货品",action:function(){ productInWarehouse();} } 
+							]
+						}
+					] 
 			}
 		};
 		/**
@@ -463,6 +492,34 @@ var flowConfig = {
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(60,"保存") }},
 							          {label:"货品入库",action:function(){ productInWarehouse() }   }
+							]
+						},
+						{status:70,label:"入库完成"
+							,actions:[
+										{label:"导出装箱单",action:function(){ printBox();} },
+										{label:"导出发票",action:function(){ printInvoice();} },
+										{label:"查看入库货品",action:function(){ productInWarehouse();} } 
+							]
+						}
+					] 
+			},
+			fba: { //转仓
+				name:"中国到Amazon仓库",
+				logistics:true,
+				flow: [
+						{status:0,label:"编辑中",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(0,"保存") }},
+							          {label:"提交审批",action:function(){ AuditAction(10,"提交审批") }}]
+						},
+						{status:10,label:"待审批",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(10,"保存") }},
+							          {label:"审批通过，下一步进入FBA入库计划",action:function(){ AuditAction(16,"审批通过，下一步进入FBA入库计划") } },
+								{label:"审批不通过",action:function(){ AuditAction(0,"审批不通过") } }]
+						},
+						{status:16,label:"FBA入库计划",memo:true
+							,actions:[
 							]
 						},
 						{status:70,label:"入库完成"

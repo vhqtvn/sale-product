@@ -122,7 +122,11 @@ class ScRequirement extends AppModel {
 					//获取销售价
 					$totalPrice = $cost['TOTAL_PRICE'] ;
 					
-					if( empty($cost) ){
+					echo ">>>>>>>>>>>>>".$item['SKU']."<br/>" ;
+					
+					echo 'Price>>>["'.$totalCost.'"]【"'.$totalPrice.'"】<br>' ;
+					
+					if( empty($cost) || empty($totalCost) || empty($totalPrice)){
 						$this->reqLog(array(
 									'REQ_PLAN_ID'=>$planId, 
 									'ACCOUNT_ID'=>$item['ACCOUNT_ID'], 
@@ -155,6 +159,9 @@ class ScRequirement extends AppModel {
 					if(empty($supplyCycle)){
 						$supplyCycle = 14 ;
 					}
+					
+					echo 'SupplyCycle>>>["'.$supplyCycle.'"]<br>' ;
+					
 					//需求调整系数
 					$reqAdjust = $cost['REQ_ADJUST'] ;
 					if( empty($reqAdjust) || $reqAdjust==0 ){
@@ -167,12 +174,16 @@ class ScRequirement extends AppModel {
 					if( empty($reqAdjust) ){
 						$reqAdjust = 1 ;
 					}
+					echo 'Req Adjust>>>["'.$reqAdjust.'"]<br>' ;
 					
 					//最近14天存在销售数量的天数
 					$saleData = $this->getLastestSaleData($item['ACCOUNT_ID']  , $item['SKU'] ) ;
 					$saleDays = count( $saleData  ) ;
 					
+					echo 'SayDays>>>["'.$saleDays.'"]<br>' ;
+					
 					if( $saleDays >= 7 ){//超过7天存在销售数据
+						
 						$count = 0 ;
 						foreach( $saleData as $i ){
 							$C = $i['C'] ;
@@ -199,6 +210,9 @@ class ScRequirement extends AppModel {
 					//获取最近14天的流量数据
 					$flowData = $this->getLastestFlowData($item['ACCOUNT_ID']  , $item['SKU'] ) ;
 					$flowDays =  count( $flowData  ) ;
+					
+					echo 'FlowDays >>>["'.$flowDays.'"]<br>' ;
+					
 					if( $flowDays>=3  ){
 						$ConversionRate = $this->getConversionRate($item['ACCOUNT_ID']  , $item['SKU'] ) ;
 						$count = 0 ;
@@ -241,6 +255,10 @@ class ScRequirement extends AppModel {
 			
 			//转换计划需求listing到产品
 			$this->transferPlanItem2Product($planId) ;
+			
+			//预处理需求
+			
+			
 			
 			$dataSource->commit() ;
 		}catch(Exception $e){
@@ -288,13 +306,13 @@ class ScRequirement extends AppModel {
 	
 	//获取销售数据
 	public function getLastestSaleData($accountId , $listingSku){
-		$cost = $this->getObject("sql_supplychain_requirement_getLastestSaleData", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
+		$cost = $this->exeSqlWithFormat("sql_supplychain_requirement_getLastestSaleData", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
 		return $cost ;
 	}
 	
 	//获取流量数据
 	public function getLastestFlowData($accountId , $listingSku){
-		$cost = $this->getObject("sql_supplychain_requirement_getLastestFlowData", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
+		$cost = $this->exeSqlWithFormat("sql_supplychain_requirement_getLastestFlowData", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
 		return $cost ;
 	}
 	

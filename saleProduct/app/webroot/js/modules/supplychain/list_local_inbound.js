@@ -2,7 +2,7 @@ $(function(){
 
 	$(".grid-content").llygrid({
 		columns:[
-		   {align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
+		   {align:"center",key:"ID",label:"操作", width:"5%",format:function(val,record){
 					var html = [] ;
 					html.push("<a href='#' class='action update' val='"+val+"'>编辑</a>&nbsp;") ;
 					return html.join("") ;
@@ -10,15 +10,16 @@ $(function(){
 			{align:"center",key:"STATUS",label:"状态",width:"5%",format:function(val,record){
 				return val == 1?"已同步":"" ;
 			}},
-           	{align:"center",key:"LABEL_PREP_TYPE",label:"Label类型",width:"20%"},
-           	{align:"center",key:"NAME",label:"名称",group:"发货地址",width:"20%"},
+		 	{align:"center",key:"IN_NUMBER",label:"入库计划编号",width:"13%"},
+           	{align:"center",key:"LABEL_PREP_TYPE",label:"Label类型",width:"10%"},
+           	{align:"center",key:"NAME",label:"名称",group:"发货地址",width:"10%"},
            	{align:"center",key:"ADDRESS_LINE1",label:"AddressLine1",group:"发货地址",width:"20%"},
-           	{align:"center",key:"ADDRESS_LINE2",label:"AddressLine2",group:"发货地址",width:"20%"},
-           	{align:"center",key:"DISTRICT_OR_COUNTY",label:"国家或地区",group:"发货地址",width:"20%"},
-           	{align:"center",key:"CITY",label:"城市",group:"发货地址",width:"20%"},
-           	{align:"center",key:"STATE_OR_PROVINCE_CODE",label:"州或省代码",group:"发货地址",width:"20%"},
-           	{align:"center",key:"COUNTRY_CODE",label:"国家代码",group:"发货地址",width:"20%"},
-           	{align:"center",key:"POSTAL_CODE",label:"邮编",group:"发货地址",width:"20%"}
+           	{align:"center",key:"ADDRESS_LINE2",label:"AddressLine2",group:"发货地址",width:"10%"},
+           	{align:"center",key:"DISTRICT_OR_COUNTY",label:"国家或地区",group:"发货地址",width:"8%"},
+           	{align:"center",key:"CITY",label:"城市",group:"发货地址",width:"8%"},
+           	{align:"center",key:"STATE_OR_PROVINCE_CODE",label:"州或省代码",group:"发货地址",width:"8%"},
+           	{align:"center",key:"COUNTRY_CODE",label:"国家代码",group:"发货地址",width:"8%"},
+           	{align:"center",key:"POSTAL_CODE",label:"邮编",group:"发货地址",width:"8%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:10,

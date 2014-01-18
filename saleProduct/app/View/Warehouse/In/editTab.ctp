@@ -41,10 +41,11 @@
      var inId = "<?php echo $inId;?>" ;
      var currentStatus = "<?php echo $warehoseIn['STATUS'];?>" ;
      var flowType = "<?php echo $warehoseIn['FLOW_TYPE'];?>" ;
+     var warehoseIn = <?php echo json_encode($warehoseIn) ; ?> ;
      
      function AuditAction(status , statusLabel ){
 		if(window.confirm("确认【"+statusLabel+"】？")){
-			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
+			var json = {inId:inId,status:status,memo:$(".memo").val(),inSourceType:warehoseIn.IN_SOURCE_TYPE} ;
 			//console.log(json) ;
 			//return ;
 			$.dataservice("model:Warehouse.In.doStatus",json,function(result){

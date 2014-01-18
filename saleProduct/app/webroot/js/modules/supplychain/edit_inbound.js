@@ -1,26 +1,71 @@
 $(function(){
+	$(".save-address").click(function(){
+		
+		if( !$.validation.validate('.address-table').errorInfo ) {
+			var json = $(".address-table").toJson() ;
+			$.dataservice("model:Meta.saveAddress",json ,function(result){
+				//$(".grid-content-detials").llygrid("reload",{},true) ;
+				window.location.reload() ;
+			});
+		}
+	}) ;
+	
+	$(".address-select").change(function(){
+		var metaId = $(this).val() ;
+		$.dataservice("model:Meta.getAddressById",{metaId:metaId},function(result){
+			renderForm(result , ".address-table") ;
+		});
+	}) ;
+	
+	$(".add-address").click(function(){
+		$(".address-table").find(":input").val("") ;
+	}) ;
+	
+	//初始化地址选择
+	var addressVal = $("#name,[name='name']",".address-table").val() ;
+	$(".address-select").find("option").each(function(){
+		if($(this).text() == addressVal){
+			$(".address-select").val( $(this).val() ) ;
+			$("#metaId,[name='metaId']",".address-table").val($(this).val()) ;
+		}
+	}) ;
+	
+	function renderForm( result , formSelector ){
+		for(var o in result){
+			var val = result[o] ;
+				o = o.toLowerCase().replace(/\_(\w)/g, function(all, letter){
+		          return letter.toUpperCase();
+		        });
+			result[o] = val ;
+		}
+		
+		for(var o in result){
+			$("#"+o+",[name='"+o+"']",formSelector).val(result[o]) ;
+		}
+	}
 
 	$(".grid-content-detials").llygrid({
 		columns:[
-			{align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
-				var html = [] ;
-				html.push("<a href='#' class='action delete-items' val='"+val+"'>删除</a>&nbsp;") ;
-				return html.join("") ;
-			}},
-			{align:"center",key:"SKU",label:"Sku",width:"20%",forzen:false,align:"left"},
-           	{align:"center",key:"QUANTITY",label:"Quantity",width:"20%",forzen:false,align:"left"},
-           	{align:"center",key:"MEMO",label:"Memo",width:"40%"}
-         ],
-         ds:{type:"url",content:contextPath+"/grid/query"},
-		 limit:10,
-		 pageSizes:[10,20,30,40],
-		 height:function(){
-			 return $(window).height() - 170 ;
-		 },
-		 title:"FBA入库计划明细列表",
-		 indexColumn:false,
-		 querys:{sqlId:"sql_supplychain_inbound_plan_local_details_list",planId:planId},
-		 loadMsg:"数据加载中，请稍候......"
+					{align:"center",key:"IMAGE_URL",label:"",width:"2%",format:{type:'img'}},
+		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
+	           		{align:"center",key:"SKU",label:"货品SKU",width:"5%",format:function(val,reocrd){
+	           			return "<a href='#' product-realsku='"+val+"'>"+val+"</a>" ;
+	           		}},
+	           		{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"5%"},
+	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%"},
+	           		{align:"center",key:"DELIVERY_TIME",label:"供货时间",width:"6%"},
+	           		{align:"center",key:"PRODUCT_TRACKCODE",label:"产品跟踪码",width:"6%"}
+		         ],
+		         ds:{type:"url",content:contextPath+"/grid/query"},
+				 limit:30,
+				 pageSizes:[10,20,30,40],
+				 height:function(){
+					 return $(window).height()-130;
+				 },
+				 title:"FBA入库Listing列表",
+				 autoWidth:true,
+				 querys:{sqlId:"sql_warehouse_box_products_byInId",inId:inId},
+				 loadMsg:"数据加载中，请稍候......"
 	}) ;
 	
 	$(".delete-items").live('click',function(){
@@ -55,6 +100,18 @@ $(function(){
 			});
 		}
 	}) ;
+	
+	
+	 $(".add-req-sku").click(function(){
+			var planId= $("#planId").val() ;
+			if(planId){
+				openCenterWindow(contextPath+"/page/forward/Warehouse.In.editFBAListing/"+planId,850,550,function(){
+					$(".grid-content-detials").llygrid("reload",{},true) ;
+				}) ;
+			}else{
+				alert("请先创建计划！") ;
+			}
+		}) ;
 	
 	$(".add-sku").click(function(){
 		var planId= $("#planId").val() ;

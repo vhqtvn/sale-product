@@ -68,7 +68,6 @@
 				</td>							
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
-					<button class="create-plan btn btn-primary">创建本地计划</button>
 				</td>
 			</tr>						
 		</table>

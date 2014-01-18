@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+        <entry key="sql_meta_address_insert">
+				INSERT INTO sc_meta_address 
+					(META_ID, 
+					NAME, 
+					ADDRESS_LINE1, 
+					ADDRESS_LINE2, 
+					DISTRICT_OR_COUNTY, 
+					CITY, 
+					STATE_OR_PROVINCE_CODE, 
+					COUNTRY_CODE, 
+					POSTAL_CODE
+					)
+					VALUES
+					('{@#metaId#}', 
+					'{@#name#}', 
+					'{@#addressLine1#}', 
+					'{@#addressLine2#}', 
+					'{@#districtOrCounty#}', 
+					'{@#city#}', 
+					'{@#stateOrProvinceCode#}', 
+					'{@#countryCode#}', 
+					'{@#postalCode#}'
+					)
+    	</entry>
+    	
+    	<entry key="sql_meta_address_update">
+    		UPDATE sc_meta_address 
+					SET
+					name = '{@#name#}' , 
+					address_line1 = '{@#addressLine1#}' , 
+					address_line2 = '{@#addressLine2#}' , 
+					DISTRICT_OR_COUNTY = '{@#districtOrCounty#}' , 
+					city = '{@#city#}' , 
+					STATE_OR_PROVINCE_CODE = '{@#stateOrProvinceCode#}' , 
+					country_code = '{@#countryCode#}' , 
+					postal_code = '{@#postalCode#}'
+					
+					where
+					meta_id = '{@#metaId#}'
+    	</entry>
+
+</properties>

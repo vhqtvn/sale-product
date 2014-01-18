@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 	
-	<entry key="sql_supplychain_requirement_plan_product_list">
+	<entry key="sql_supplychain_requirement_plan_product_list_slow">
 		SELECT  srp.*,
 	         ssrpp.STATUS AS P_STATUS
 		 FROM 
@@ -11,7 +11,7 @@
 		AND ssrpp.REAL_ID = srp.ID
 </entry>
 
-	<entry key="sql_supplychain_requirement_plan_product_list_tooslow">
+	<entry key="sql_supplychain_requirement_plan_product_list">
 	 SELECT  srp.*,
 	         ssrpp.STATUS as P_STATUS,
 	         SUM(ssri.FIX_QUANTITY) AS FIX_QUANTITY
@@ -115,6 +115,35 @@
 		  select req_item_id from sc_supplychain_reqitem_in
 		)
 		GROUP BY srp.ID
+	</entry>
+	
+	<entry key="sql_supplychain_requirement_listFBAItemByWarehouseId">
+	 SELECT  s1.* ,
+	    	  saa.name as ACCOUNT_NAME,
+	    	  saap.FULFILLMENT_CHANNEL,
+	    	  (select name from sc_supplychain_requirement_plan where id = s1.plan_id ) as REQ_NAME
+	 FROM 
+	      sc_supplychain_requirement_item s1,
+	      sc_real_product_rel srpr,
+	      sc_amazon_account saa,
+		  sc_amazon_account_product saap
+	  WHERE srpr.SKU = s1.LISTING_SKU
+		AND srpr.ACCOUNT_ID = s1.ACCOUNT_ID
+		AND s1.ACCOUNT_ID = saa.ID 
+		AND saap.FULFILLMENT_CHANNEL like '%AMAZON%'
+		AND srpr.sku = '{@#listingSku#}'
+		and saap.account_id = s1.account_id
+		and s1.account_id = '{@#accountId#}'
+		and exists (
+			select * from sc_supplychain_requirement_plan_product s2
+			where s2.plan_id = s1.plan_id
+					and s2.status != 0
+					and s2.status !=2
+		)
+		and saap.sku = s1.listing_sku
+		AND s1.ID not in (
+		  select req_item_id from sc_supplychain_reqitem_in
+		)
 	</entry>
 	
 	<entry key="sql_supplychain_requirement_listFBMItemByWarehouseId">
@@ -276,14 +305,15 @@
 		
 		<entry key="sql_supplychain_requirement_getLastestSaleData">
 		  <![CDATA[	
-		SELECT 
-			DATE_FORMAT( sao.purchase_date, "%Y-%m-%d" ) AS D,
-			SUM(sao.QUANTITY_SHIPPED+sao.QUANTITY_TO_SHIP) AS C  
-		FROM sc_amazon_order sao 
-			WHERE TO_DAYS(NOW()) -TO_DAYS(sao.PURCHASE_DATE) <= 14
-			AND sao.ACCOUNT_ID =  '{@#accountId#}'
-			AND sao.SKU =  '{@#listingSku#}'
-			GROUP BY DATE_FORMAT( sao.purchase_date, "%Y-%m-%d" )
+		SELECT DATE_FORMAT( so.PURCHASE_DATE, "%Y-%m-%d" ) AS D,
+			SUM(soi.quantity_ordered) AS C  
+		 FROM sc_order so,
+		sc_order_item soi
+		WHERE so.order_id = soi.order_id
+		AND TO_DAYS(NOW()) -TO_DAYS(so.PURCHASE_DATE) <= 14
+		AND so.account_id = '{@#accountId#}'
+		AND soi.seller_sku =  '{@#listingSku#}'
+		GROUP BY DATE_FORMAT( sao.purchase_date, "%Y-%m-%d" )
 			]]>
 		</entry>
 		

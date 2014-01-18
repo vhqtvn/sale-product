@@ -106,6 +106,7 @@ class In extends AppModel {
 		try{
 			$inId = $params['inId'] ;
 			$status = $params['status'] ;
+			$inSourceType = $params['inSourceType'] ;
 			$this->exeSql("sql_warehouse_in_update_status",$params) ;
 			
 			$this->doSaveTrack($params) ;
@@ -113,6 +114,15 @@ class In extends AppModel {
 			$InventoryNew  = ClassRegistry::init("InventoryNew") ;
 			
 			$warehouseIn = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+			
+			if( $status == 16 && $inSourceType == 'fba' ){//审批完成，并创建FBA本地入库计划
+				//sql_supplychain_inbound_local_plan_insert
+				$p = array() ;
+				$p['planId'] = $this->create_guid() ;
+				$p['accountId'] = $warehouseIn['ACCOUNT_ID'] ;
+				$p['inId'] = $inId ;
+				$this->exeSql("sql_supplychain_inbound_local_plan_insert", $p) ;
+			}
 			
 			if( $status == 30 ){ //库存状态转换为在途库存
 				//获取该次入库所有锁定的库存
@@ -285,6 +295,52 @@ class In extends AppModel {
 				$lock = get_object_vars($lock) ;
 				$this->lockInventory($lock['inventoryId'], "boxProduct", $boxProductId , $lock['lockQuantity']) ;
 			} 
+		}
+	}
+	
+	public function doSaveBoxProductForFBAReq($params){
+		$items  = $params['items'] ;
+		$boxId  = $params['boxId'] ;
+		$inId  = $params['inId'] ;
+		$items = json_decode($items) ;
+		foreach($items as $item){
+			$item = get_object_vars($item) ;
+				
+			$array = array() ;
+			$array['BOX_ID'] = $boxId ;
+			$array['REAL_PRODUCT_ID'] = $item['realId'] ;
+			$array['QUANTITY'] = $item['quantity'] ;
+			$array['ACCOUNT_ID'] = $item['accountId'] ;
+			$array['LISTING_SKU'] = $item['listingSku'] ;
+			$array['DELIVERY_TIME'] = $item['DELIVERY_TIME'] ;
+			$array['PRODUCT_TRACKCODE'] = $item['PRODUCT_TRACKCODE'] ;
+			$array['inventoryType'] = 2 ;//FBA库存
+			$array['guid'] = $this->create_guid() ;
+				
+			$boxProductId= $this->doSaveBoxProduct($array) ;
+				
+			//保存需求记录
+			$reqItemIds = $item['reqItemIds'] ;
+			if( !empty($reqItemIds) ){
+				foreach( explode(",", $reqItemIds)  as $reqItemId ){
+					$sql = "INSERT INTO  sc_supplychain_reqitem_in
+										(REQ_ITEM_ID,
+										BOX_PRODUCT_ID
+										)
+										VALUES
+										('{@#REQ_ITEM_ID#}',
+										'{@#BOX_PRODUCT_ID#}'
+										)" ;
+					$this->exeSql($sql, array('REQ_ITEM_ID'=>$reqItemId,'BOX_PRODUCT_ID'=>$array['guid'])) ;
+				}
+			}
+				
+			//锁定实际库存数量
+			$locks = $item['locks'] ;
+			foreach($locks as $lock){
+				$lock = get_object_vars($lock) ;
+				$this->lockInventory($lock['inventoryId'], "boxProduct", $boxProductId , $lock['lockQuantity']) ;
+			}
 		}
 	}
 	

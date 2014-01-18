@@ -22,7 +22,9 @@ $(function(){
 	           	{align:"center",key:"FLOW_TYPE",label:"入库流程",width:"9%",forzen:false,align:"left",format:function(val,record){
 	           		return FlowFactory.get(val,record.IN_SOURCE_TYPE).name||"" ;
 	           	}},
-	           	{align:"center",key:"WAREHOUSE_NAME",label:"目标仓库",width:"12%"},
+	           	{align:"center",key:"WAREHOUSE_NAME",label:"目标仓库/账号",width:"12%",format:function(val,record){
+	           		return record.WAREHOUSE_NAME || record.ACCOUNT_NAME ;
+	           	}},
 	           	{align:"center",key:"SHIP_COMPANY",label:"运输公司",width:"15%"},
 	           	{align:"center",key:"SHIP_TYPE",label:"运输方式",width:"10%"},
 	           	{align:"center",key:"SHIP_NO",label:"运单号",width:"10%"},
