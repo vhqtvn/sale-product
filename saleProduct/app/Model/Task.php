@@ -15,10 +15,10 @@ class Task extends AppModel {
 
 
 	
-	function saveFlowUpload($id ,$fileName , $user,$startTime ,$endTime ,$Days  ) {
+	function saveFlowUpload($id ,$fileName,$accountId , $user,$startTime ,$endTime ,$Days  ) {
 		$loginId = $user["LOGIN_ID"] ;
-		$sql = "insert into sc_product_flow(id , name,create_time,creator,start_time,end_time,days)
-                values('".$id."','".$fileName."',NOW(),'$loginId','$startTime','$endTime',$Days )" ;
+		$sql = "insert into sc_product_flow(id , name,account_id,create_time,creator,start_time,end_time,days)
+                values('".$id."','".$fileName."','".$accountId."',NOW(),'$loginId','$startTime','$endTime',$Days )" ;
 		$this->query($sql) ;
 	}
 	

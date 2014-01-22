@@ -112,6 +112,10 @@ class ScRequirement extends AppModel {
 				
 				//如果存在可创建Listing计划的列表
 				foreach($items as $item){
+					$accountId = $item['ACCOUNT_ID'] ;
+					$sql= "select * from sc_amazon_account where id = '{@#accountId#}'" ;
+					$account = $this->getObject($sql, array('accountId'=>$accountId)) ;
+					
 					//计算Listing是否需要创建需求计划
 					$cost = $this->getListingCost( $item['ACCOUNT_ID']  , $item['SKU'] ) ;
 					
@@ -214,7 +218,10 @@ class ScRequirement extends AppModel {
 					echo 'FlowDays >>>["'.$flowDays.'"]<br>' ;
 					
 					if( $flowDays>=3  ){
-						$ConversionRate = $this->getConversionRate($item['ACCOUNT_ID']  , $item['SKU'] ) ;
+						$ConversionRate = $account['CONVERSION_RATE'] ;//$this->getConversionRate($item['ACCOUNT_ID']  , $item['SKU'] ) ;//CONVERSION_RATE
+						if(empty($ConversionRate)){
+							$ConversionRate = 0.001 ;
+						}
 						$count = 0 ;
 						foreach( $flowData as $i ){
 							$C = $i['C'] ;

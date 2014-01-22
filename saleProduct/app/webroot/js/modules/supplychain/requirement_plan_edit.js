@@ -15,7 +15,7 @@
 				 	{align:"center",key:"IMG_URL",label:"图片",width:"5%",format:{type:'img'}},
 					{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-		        	{align:"center",key:"FIX_QUANTITY",label:"需求数量",width:"8%",forzen:false,align:"left"},
+		        	{align:"center",key:"FIX_QUANTITY",label:"周期需求量",width:"8%",forzen:false,align:"left"},
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
 		          
 		           	{align:"center",key:"MEMO",label:"备注",width:"25%"}
@@ -96,7 +96,7 @@
 				 	{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"10%"},
 		           	{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"20%",forzen:false,align:"left"},
 		        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"渠道",width:"10%",forzen:false,align:"left"},
-		           	{align:"center",key:"QUANTITY",label:"需求数量",width:"10%",sort:true},
+		           	{align:"center",key:"QUANTITY",label:"周期需求量",width:"10%",sort:true},
 		           	{align:"center",key:"FIX_QUANTITY",label:"需求数量（修正）",width:"15%",format:function(val,record){
 		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
 		           			return "<input type='text' class='edit-fix-quantity'  value='"+(val||record.QUANTITY||"0")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
@@ -112,7 +112,7 @@
 		           		}
 		           	}},
 		           	{align:"center",key:"REAL_PURCHASE_QUANTITY",label:"实际入库",width:"8%"},
-		           	{align:"center",key:"REQ_TYPE",label:"生成类别",width:"8%"},
+		           	{align:"center",key:"REQ_TYPE",label:"生成类别",width:"8%",format:{type:"json",content:{'A':"销量",'B':"流量",'C':"其他"}}},
 		           	{align:"center",key:"URGENCY",label:"紧急程度",width:"8%",format:function(val,record){
 		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
 		           			return $.llygrid.format.editor.body(val,record,{align:"center",key:"URGENCY",label:"紧急程度",width:"10%",

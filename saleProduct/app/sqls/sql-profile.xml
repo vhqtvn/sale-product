@@ -311,7 +311,8 @@
 						SUPPLY_CYCLE,
 						REQ_ADJUST,
 						EXCHANGE_ID,
-						TRANSFER_WH_PRICE
+						TRANSFER_WH_PRICE,
+						CONVERSION_RATE
 						)
 						VALUES
 						(
@@ -342,7 +343,8 @@
 						'{@#SUPPLY_CYCLE:14#}',
 						'{@#REQ_ADJUST:0#}',
 						'{@#EXCHANGE_ID#}',
-						'{@#TRANSFER_WH_PRICE:0#}'
+						'{@#TRANSFER_WH_PRICE:0#}',
+						'{@#CONVERSION_RATE:0#}'
 						);
     </entry>
     
@@ -375,6 +377,7 @@
 				{@ ,SUPPLY_CYCLE='#SUPPLY_CYCLE#'}
 				{@ ,REQ_ADJUST='#REQ_ADJUST#'}
 				{@ ,TRANSFER_WH_PRICE='#TRANSFER_WH_PRICE#'}
+				{@ ,CONVERSION_RATE='#CONVERSION_RATE#'}
 				WHERE
 				ID = '{@#ID#}'
    </entry>

@@ -65,11 +65,16 @@
 				alert("请选择上传文件！");
 				return false ;
 			}
-			
+
+			if( !$("[name='accountId']").val() ){
+				alert("请选择账号！");
+				return false ;
+			}
 			if( !$("[name='startTime']").val() ){
 				alert("请选择开始时间！");
 				return false ;
 			}
+
 			
 			if( !$("[name='endTime']").val() ){
 				alert("请选择结束时间！");
@@ -116,16 +121,21 @@
 		    <tr>
 		     <td>流量文件：</td>
 		     <td><input name="flowFile" type="file" class="span3"/></td>
-		     <!-- 
-		     <td>类型：</td>
+		     <td>账号：</td>
 		     <td>
-		     	<select  name="type" class="span2">
-		     		<option value="1">带SKU</option>
-		     		<option value="2">子ASIN</option>
-		     		<option value="3">父ASIN</option>
-		     	</select>
+		     	<select name="accountId" class="span2"   >
+							     		<option value="">--选择--</option>
+								     	<?php
+								     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+							   				 $accounts = $amazonAccount->getAllAccounts(); 
+								     		foreach($accounts as $account ){
+								     			$account = $account['sc_amazon_account'] ;
+								     			$checked = $account['ID'] == $result['ACCOUNT_ID']?"selected":"" ;
+								     			echo "<option value='".$account['ID']."'  $checked>".$account['NAME']."</option>" ;
+								     		} ;
+								     	?>
+					</select>
 		     </td>
-		      -->
 		     <td>开始时间：</td>
 		     <td><input name="startTime" type="text" class="span2"  readonly="readonly"  data-widget="calendar"/></td>
 		     <td>结束时间：</td>

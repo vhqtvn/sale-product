@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 	
-	<entry key="sql_supplychain_requirement_plan_product_list_slow">
+	<entry key="sql_supplychain_requirement_plan_product_list">
 		SELECT  srp.*,
-	         ssrpp.STATUS AS P_STATUS
+	         		ssrpp.STATUS AS P_STATUS,
+	         		( select SUM(ssri.QUANTITY) from  sc_supplychain_requirement_item ssri,
+	         		    sc_real_product_rel srpr
+	         		    where ssri.account_id = srpr.account_id
+	         		    and ssri.listing_sku = srpr.sku
+	         		    and srpr.real_id = srp.id
+	         		  ) as FIX_QUANTITY
 		 FROM 
 		     sc_supplychain_requirement_plan_product ssrpp,
 			 sc_real_product srp
@@ -11,7 +17,7 @@
 		AND ssrpp.REAL_ID = srp.ID
 </entry>
 
-	<entry key="sql_supplychain_requirement_plan_product_list">
+	<entry key="sql_supplychain_requirement_plan_product_list_slow">
 	 SELECT  srp.*,
 	         ssrpp.STATUS as P_STATUS,
 	         SUM(ssri.FIX_QUANTITY) AS FIX_QUANTITY
@@ -315,10 +321,11 @@
 		AND TO_DAYS(NOW()) -TO_DAYS(so.PURCHASE_DATE) <= 14
 		AND so.account_id = '{@#accountId#}'
 		AND soi.seller_sku =  '{@#listingSku#}'
-		GROUP BY DATE_FORMAT( sao.purchase_date, "%Y-%m-%d" )
+		GROUP BY DATE_FORMAT( so.purchase_date, "%Y-%m-%d" )
 			]]>
 		</entry>
 		
+		<!-- AND sao.SKU =  '{@#listingSku#}' -->
 		<entry key="sql_supplychain_requirement_getOrderOneWeek">
 		  <![CDATA[	
 		SELECT 
@@ -326,15 +333,18 @@
 		FROM sc_amazon_order sao 
 			WHERE TO_DAYS(NOW()) -TO_DAYS(sao.PURCHASE_DATE) <= 7
 			AND sao.ACCOUNT_ID =  '{@#accountId#}'
-			AND sao.SKU =  '{@#listingSku#}'
 			]]>
 		</entry>
 		
+		<!--  -->
 		<entry key="sql_supplychain_requirement_getFlowOneWeek">
 		  <![CDATA[	
 		SELECT  COUNT(spfd.PAGEVIEWS) AS C  FROM  sc_product_flow_details spfd 
 				WHERE TO_DAYS(NOW()) -TO_DAYS( spfd.creattime) <= 7
-				AND spfd.SKU = '{@#listingSku#}'
+				AND spfd.SKU in  (
+					select saap.sku from sc_amazon_account_product saap
+					where saap.account_id  =  '{@#accountId#}'
+				)
 			]]>
 		</entry>
 		

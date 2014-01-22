@@ -346,6 +346,9 @@ class In extends AppModel {
 	
 	public function doSaveBoxProduct($params){
 		if( empty( $params['id'] ) ){
+			if(!isset($params['guid']) ){
+				$params['guid'] =$this->create_guid() ;
+			}
 			$this->exeSql("sql_warehouse_box_product_insert",$params) ;
 			return $params['guid'] ;
 		}else{

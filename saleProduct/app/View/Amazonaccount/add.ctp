@@ -196,8 +196,12 @@
 								</tr>
 								<tr>
 									<th>转仓物流单价（$/KG）：</th>
-									<td colspan="3">
+									<td>
 										<input type="text" id="TRANSFER_WH_PRICE" value="<?php echo $account[0]['sc_amazon_account']['TRANSFER_WH_PRICE'];?>"/>
+									</td>
+									<th>账户平均转化率：</th>
+									<td>
+										<input type="text" id="CONVERSION_RATE" value="<?php echo $account[0]['sc_amazon_account']['CONVERSION_RATE'];?>"/>
 									</td>
 								</tr>
 								<tr>

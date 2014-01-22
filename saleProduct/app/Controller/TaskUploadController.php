@@ -24,6 +24,7 @@ class TaskUploadController extends AppController {
 		$data = $this->request->data ;
 		$startTime =strtotime($data['startTime']) ;
 		$endTime = strtotime($data['endTime']) ;
+		$accountId = $data['accountId'] ;
 		
 		$Days=round(( $endTime-$startTime )/3600/24);
 		
@@ -34,7 +35,7 @@ class TaskUploadController extends AppController {
 		$user =  $this->getCookUser() ;
 		$loginId = $user["LOGIN_ID"] ;
 		
-		$this->Task->saveFlowUpload($id, $fileName ,$user,$data['startTime'] ,$data['endTime'],$Days  ) ;
+		$this->Task->saveFlowUpload($id, $fileName,$accountId ,$user,$data['startTime'] ,$data['endTime'],$Days  ) ;
 		
 		$file_handle = fopen($myfile , "r");
 		
