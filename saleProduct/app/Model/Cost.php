@@ -45,6 +45,58 @@ class Cost extends AppModel {
 		
 	}
 	
+	public function saveCostAsin($data){
+		$productCost = get_object_vars( json_decode($data['productCost']) )   ;
+		$_listingCosts  = json_decode( $data['listingCosts'])   ;
+		$listingCosts = array() ;
+		foreach($_listingCosts as $listingCost){
+			$listingCosts[] = get_object_vars($listingCost);
+		}
+		//1、保存productCost
+		$sql = "select * from sc_product_cost where real_id = '{@#REAL_ID#}'" ;
+		$cost = $this->getObject($sql, $productCost) ;
+		$costId = null ;
+		if(empty($cost)){
+			$costId = $this->create_guid() ;
+			$productCost['ID'] = $costId ;
+			$productCost['loginId'] =$data['loginId'] ;
+			//插入
+			$this->exeSql("sql_cost_insert_new", $productCost) ;
+		}else{
+			//修改
+			$costId = $cost['ID'] ;
+		}
+		$productCost['ID'] = $costId ;
+		$productCost['loginId'] =$data['loginId'] ;
+		//插入
+		$this->exeSql("sql_cost_update_new", $productCost) ;
+	
+		//2、保存listingCost
+		foreach($listingCosts as $listingCost){
+			//sql_cost_details_insert_new
+			$sql = "select * from sc_product_cost_details where ASIN=  '{@#ASIN#}'" ;
+			$costDetail = $this->getObject($sql, $listingCost) ;
+			if(empty($costDetail)){
+				$costDetailId = $this->create_guid() ;
+				$listingCost['ID'] = $costDetailId ;
+				$listingCost['COST_ID'] = $costId ;
+				$listingCost['loginId'] =$data['loginId'] ;
+				$listingCost['ASIN'] =$productCost['ASIN'] ;
+				//插入
+				$this->exeSql("sql_cost_details_insert_new", $listingCost) ;
+			}else{
+				//修改
+				$costDetailId = $costDetail['ID'] ;
+			}
+				
+			$listingCost['ID'] = $costDetailId ;
+			$listingCost['COST_ID'] = $costId ;
+			$listingCost['loginId'] =$data['loginId'] ;
+			//插入
+			$this->exeSql("sql_cost_details_update_new", $listingCost) ;
+		}
+	}
+	
 	public function saveCostFix($data){
 		$productCost = get_object_vars( json_decode($data['productCost']) )   ;
 		$_listingCosts  = json_decode( $data['listingCosts'])   ;

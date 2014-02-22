@@ -40,12 +40,14 @@
 		INSERT INTO sc_product_cost 
 			( ID, 
 			REAL_ID, 
+			ASIN,
 			CREATOR, 
 			CREATE_TIME
 			)
 			VALUES
 			('{@#ID#}', 
 			'{@#REAL_ID#}', 
+			'{@#ASIN#}', 
 			'{@#loginId#}', 
 			NOW()
 			)
@@ -74,6 +76,7 @@
 				COST_ID, 
 				ACCOUNT_ID, 
 				LISTING_SKU, 
+				ASIN,
 				CREATOR, 
 				CREATE_DATE
 				)
@@ -82,6 +85,7 @@
 				'{@#COST_ID#}', 
 				'{@#ACCOUNT_ID#}', 
 				'{@#LISTING_SKU#}', 
+				'{@#ASIN#}', 
 				'{@#loginId#}', 
 				NOW()
 				)
@@ -97,6 +101,7 @@
 				{@LOGISTICS_COST = '#LOGISTICS_COST#' ,} 
 				{@FEE = '#FEE#' , }
 				{@AMAZON_FEE = '#AMAZON_FEE#' , }
+				{@_TRANSFER_COST = '#_TRANSFER_COST#' , }
 				{@ORDER_COST = '#ORDER_COST#' , }
 				{@OTHER_COST = '#OTHER_COST#' , }
 				LAST_UPDATOR = '{@#loginId#}' , 

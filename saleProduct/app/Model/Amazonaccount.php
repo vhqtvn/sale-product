@@ -285,7 +285,7 @@ class Amazonaccount extends AppModel {
 		if( isset($data['FBA_SELLABLE']) ){
 			$FBA_SELLABLE = $data['FBA_SELLABLE'] ;
 		}
-			
+		
 		if(empty($data['ASIN']))
 			return ;
 		

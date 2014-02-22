@@ -21,7 +21,7 @@ $(function(){
 		 limit:10,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-			 return $(window).height()-100 ;
+			 return $(window).height()-110 ;
 		 },
 		 title:"需求计划列表",
 		 indexColumn:false,

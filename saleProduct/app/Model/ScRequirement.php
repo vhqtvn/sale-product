@@ -94,7 +94,7 @@ class ScRequirement extends AppModel {
 	
 	public function createRequirement(){
 		$dataSource = $this->getDataSource();
-		$dataSource->begin();
+		//$dataSource->begin();
 		
 		try{
 		//2、检测是否需要创建需求；新增加的需求产品是否都包括在未完成的需求产品里面
@@ -111,6 +111,7 @@ class ScRequirement extends AppModel {
 				$this->exeSql("sql_supplychain_requirement_plan_insert", $params) ;
 				
 				//如果存在可创建Listing计划的列表
+				$itemCount = 0 ;
 				foreach($items as $item){
 					$accountId = $item['ACCOUNT_ID'] ;
 					$sql= "select * from sc_amazon_account where id = '{@#accountId#}'" ;
@@ -206,7 +207,7 @@ class ScRequirement extends AppModel {
 						$ps['quantity'] =  $reqNum ;
 						$ps['urgency'] =  "A" ;
 						$ps['reqType'] =  "A" ;
-						
+						$itemCount++ ;
 						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 						continue ;
 					}
@@ -240,7 +241,7 @@ class ScRequirement extends AppModel {
 						$ps['quantity'] =  $reqNum ;
 						$ps['urgency'] =  "B" ;
 						$ps['reqType'] =  "B" ;
-							
+						$itemCount++ ;
 						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 						continue ;
 					}
@@ -255,22 +256,40 @@ class ScRequirement extends AppModel {
 					$ps['quantity'] =  0 ;
 					$ps['urgency'] =  "C" ;
 					$ps['reqType'] =  "C" ;
-					
+					$itemCount++ ;
 					$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 				}
+				
+				
+				//预处理需求
+				$this->preProcess(array(
+							'planId'=>$planId,
+							'itemCount'=>$itemCount
+				)) ;
 			}
 			
-			//转换计划需求listing到产品
-			$this->transferPlanItem2Product($planId) ;
-			
-			//预处理需求
-			
-			
-			
-			$dataSource->commit() ;
+			//$dataSource->commit() ;
 		}catch(Exception $e){
-			$dataSource->rollback() ;
+			//$dataSource->rollback() ;
 			print_r($e->getMessage()) ;
+		}
+	}
+	
+	/**
+	 * 需求预处理
+	 */
+	public function preProcess( $params ){
+		$planId = $params['planId'] ;
+		$itemCount = $params['itemCount'] ;
+		
+		if( $itemCount <=0  ){
+			//不存在需求明细，删除该需求
+			$sql = "delete from sc_supplychain_requirement_plan where id = '{@#planId#}'" ;
+			$this->exeSql($sql, array("planId"=>$planId)) ;
+		}else{
+			//1、转换计划需求listing到产品
+			$this->transferPlanItem2Product($planId) ;
+			//2、库存预处理
 		}
 	}
 	
