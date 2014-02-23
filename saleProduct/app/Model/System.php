@@ -2,6 +2,14 @@
 class System extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	public function savePlatform( $platform ){
+		if( empty($platform['ID']) ){
+			$platform['ID'] = $this->create_guid() ;
+			$this->exeSql("sql_platform_insert", $platform) ;
+		}
+		$this->exeSql("sql_platform_update", $platform) ;
+	}
+	
 	public function getPlatform($platform){
 		return $this->getObject("select * from sc_platform where id = '{@#platformId#}'", array('platformId'=>$platform)) ;
 	}

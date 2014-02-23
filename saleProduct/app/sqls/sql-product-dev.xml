@@ -407,6 +407,15 @@ UPDATE sc_product_dev
 	  ORDER BY sc_product_filter.create_time desc
    </entry>
 
+<!-- ,
+	( SELECT COUNT(1) FROM sc_product_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_COUNT,
+	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',spc.PROFIT_MARGINS,'|',spc.PROFIT_NUM ) ) FROM sc_product_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_GROUP -->
    <entry key="sql_pdev_filter_details">
 SELECT sp.TITLE as P_TITLE, 
     spf.NAME  as FILTER_NAME,
@@ -420,15 +429,7 @@ SELECT sp.TITLE as P_TITLE,
 	( SELECT count(1) FROM sc_purchase_supplier_inquiry spsi 
 			WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) 
 			and spsi.asin = spfd.asin
-			) as INQUIRY_COUNT,
-	( SELECT COUNT(1) FROM sc_product_cost spc 
-			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
-			AND spc.asin = spfd.asin
-			) AS COST_COUNT,
-	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',spc.PROFIT_MARGINS,'|',spc.PROFIT_NUM ) ) FROM sc_product_cost spc 
-			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
-			AND spc.asin = spfd.asin
-			) AS COST_GROUP
+			) as INQUIRY_COUNT
 FROM  sc_product_filter spf, 
 			sc_product_dev spfd
 	LEFT JOIN sc_product sp 

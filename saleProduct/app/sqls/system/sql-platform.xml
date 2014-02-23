@@ -1,8 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_platform_insert">
+    <![CDATA[	
+		INSERT INTO sc_platform 
+			(ID, 
+			CODE, 
+			NAME, 
+			PROCCESS, 
+			EXCHANGE_ID
+			)
+			VALUES
+			('{@#ID#}', 
+			'{@#CODE#}', 
+			'{@#NAME#}', 
+			'{@#PROCCESS#}', 
+			'{@#EXCHANGE_ID#}'
+			)
+	]]>	      
+    </entry>
+    
+    <entry key="sql_platform_update">
+    <![CDATA[	
+		UPDATE sc_platform 
+			SET
+			PROCCESS = '{@#PROCCESS#}' , 
+			EXCHANGE_ID = '{@#EXCHANGE_ID#}' , 
+			{@INVENTORY_CENTER_FEE = '#INVENTORY_CENTER_FEE#' , }
+			{@FEE_RATIO = '#FEE_RATIO#' , }
+			{@SUPPLY_CYCLE = '#SUPPLY_CYCLE#' , }
+			{@REQ_ADJUST = '#REQ_ADJUST#' , }
+			{@TRANSFER_WH_PRICE = '#TRANSFER_WH_PRICE#' , }
+			{@CONVERSION_RATE = '#CONVERSION_RATE#',}
+			CODE = '{@#CODE#}' , 
+			NAME = '{@#NAME#}' 
+			
+			WHERE
+			ID = '{@#ID#}'
+	]]>	      
+    </entry>
+
     <entry key="sql_platform_list">
     <![CDATA[	
-		select * from sc_platform
+		select sp.* ,
+		ser.SOURCE_NAME as EXCHANGTE_NAME
+		from sc_platform sp
+		left join sc_exchange_rate ser
+		on sp.exchange_id=ser.id
 	]]>	      
     </entry>
     
