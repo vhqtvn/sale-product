@@ -77,6 +77,7 @@
 				ACCOUNT_ID, 
 				LISTING_SKU, 
 				ASIN,
+				TYPE,
 				CREATOR, 
 				CREATE_DATE
 				)
@@ -86,6 +87,7 @@
 				'{@#ACCOUNT_ID#}', 
 				'{@#LISTING_SKU#}', 
 				'{@#ASIN#}', 
+				'{@#TYPE#}', 
 				'{@#loginId#}', 
 				NOW()
 				)
@@ -95,15 +97,13 @@
 	
 			UPDATE sc_product_cost_details 
 				SET
-				COST_ID = '{@#COST_ID#}' , 
-				ACCOUNT_ID = '{@#ACCOUNT_ID#}' , 
-				LISTING_SKU = '{@#LISTING_SKU#}' , 
 				{@LOGISTICS_COST = '#LOGISTICS_COST#' ,} 
 				{@FEE = '#FEE#' , }
 				{@AMAZON_FEE = '#AMAZON_FEE#' , }
 				{@_TRANSFER_COST = '#_TRANSFER_COST#' , }
 				{@ORDER_COST = '#ORDER_COST#' , }
 				{@OTHER_COST = '#OTHER_COST#' , }
+				{@SELLER_COST = '#SELLER_COST#' , }
 				LAST_UPDATOR = '{@#loginId#}' , 
 				LAST_UPDATE_DATE =NOW()
 				WHERE
