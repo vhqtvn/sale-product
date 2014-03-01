@@ -434,7 +434,7 @@ SELECT sp.TITLE as P_TITLE,
 			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
 			AND spc.asin = spfd.asin
 			) AS COST_COUNT,
-	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',ROUND((spc.TOTAL_PRICE-spc.TOTAL_COST)/spc.TOTAL_COST ,2),'|',ROUND(spc.TOTAL_PRICE-spc.TOTAL_COST,2)) ) as COST_GROUP
+	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',ROUND((spc.TOTAL_PRICE-spc.TOTAL_COST)/spc.TOTAL_COST ,4),'|',ROUND(spc.TOTAL_PRICE-spc.TOTAL_COST,2)) ) as COST_GROUP
 	FROM sc_view_devproduct_cost spc 
 			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
 			AND spc.asin = spfd.asin
