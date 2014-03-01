@@ -89,6 +89,11 @@
 				{@offer4 = '#offer4#' , }
 				{@num5 = '#num5#' , }
 				{@offer5 = '#offer5#' , }
+				{@num1_ship_fee = '#num1ShipFee#' , }
+				{@num2_ship_fee = '#num2ShipFee#' , }
+				{@num3_ship_fee = '#num3ShipFee#' , }
+				{@num4_ship_fee = '#num4ShipFee#' , }
+				{@num5_ship_fee = '#num5ShipFee#' , }
 				status = '{@#status#}' , 
 				memo = '{@#memo#}' , 
 				PACKINGS_PECIFICATIONS='{@#packingSpecifications#}',
