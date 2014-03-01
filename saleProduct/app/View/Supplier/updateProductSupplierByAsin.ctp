@@ -248,24 +248,30 @@
 					<tr>
 						<th>报价方式(RMB)：</th><td>
 							<table class="table">
-								<tr><th style="text-align:center;">数量</th><th style="text-align:center;">报价</th></tr>
+								<tr><th style="text-align:center;">数量</th><th style="text-align:center;">报价(RMB)</th><th style="text-align:center;">运费(RMB)</th></tr>
 								<tr>
-									<td><input type="text" id="num1" name="num1"  data-validator="required,integer"
+									<td><input type="text" id="num1" name="num1"  data-validator="required,integer"  style="width:50px"
 							value="<?php echo $productSupplier['NUM1'];?>"/></td>
-									<td><input type="text" id="offer1" name="offer1"   data-validator="required,double"
+									<td><input type="text" id="offer1" name="offer1"   data-validator="required,double" style="width:50px"
 							value="<?php echo $productSupplier['OFFER1'];?>"/></td>
+									<td><input type="text" id="num1ShipFee" name="num1ShipFee"   data-validator="double" style="width:50px"
+							value="<?php echo $productSupplier['NUM1_SHIP_FEE'];?>"/></td>
 								</tr>
 								<tr>
-									<td><input type="text" id="num2" name="num2"  data-validator="integer"
+									<td><input type="text" id="num2" name="num2"  data-validator="integer" style="width:50px"
 							value="<?php echo $productSupplier['NUM2'];?>"/></td>
-									<td><input type="text" id="offer2" name="offer2"   data-validator="double"
+									<td><input type="text" id="offer2" name="offer2"   data-validator="double" style="width:50px"
 							value="<?php echo $productSupplier['OFFER2'];?>"/></td>
+									<td><input type="text" id="num2ShipFee" name="num2ShipFee"   data-validator="double" style="width:50px"
+							value="<?php echo $productSupplier['NUM1_SHIP_FEE'];?>"/></td>
 								</tr>
 								<tr>
-									<td><input type="text" id="num3" name="num3"   data-validator="integer"
+									<td><input type="text" id="num3" name="num3"   data-validator="integer" style="width:50px"
 							value="<?php echo $productSupplier['NUM3'];?>"/></td>
-									<td><input type="text" id="offer3" name="offer3"   data-validator="double"
+									<td><input type="text" id="offer3" name="offer3"   data-validator="double" style="width:50px"
 							value="<?php echo $productSupplier['OFFER3'];?>"/></td>
+									<td><input type="text" id="num3ShipFee" name="num3ShipFee"   data-validator="double" style="width:50px"
+							value="<?php echo $productSupplier['NUM3_SHIP_FEE'];?>"/></td>
 								</tr>
 							</table>
 						</td>
