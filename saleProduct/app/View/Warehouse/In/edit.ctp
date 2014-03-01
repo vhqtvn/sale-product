@@ -23,7 +23,6 @@
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('calendar/WdatePicker');
 		
-
 		echo $this->Html->script('modules/warehouse/in/edit');
 		echo $this->Html->script('modules/warehouse/in-flow');
 	
@@ -32,7 +31,6 @@
 		$loginId   = $user['LOGIN_ID'] ;
 		$inId = $params['arg1'];
 		
-
 		//获取
 		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
 		$status = $warehoseIn['STATUS'];
@@ -114,9 +112,11 @@
 										转仓&nbsp;<input type="radio"  name="inSourceType"  value="warehouse"  <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='warehouse'?"checked":"";?>   
 											data-validator="required"  style="vertical-align: top;"/>
+										<!-- 
 										FBA入库&nbsp;<input type="radio"  name="inSourceType"  value="fba"  <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='fba'?"checked":"";?>   
 											data-validator="required"  style="vertical-align: top;"/>
+										 -->
 									</td>
 								</tr>
 								<tr>
