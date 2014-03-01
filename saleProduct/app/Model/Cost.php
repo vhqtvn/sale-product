@@ -97,7 +97,16 @@ class Cost extends AppModel {
 		//1、保存productCost
 		$sql = "select * from sc_product_cost where asin = '{@#ASIN#}'" ;
 		$cost = $this->getObject($sql, $productCost) ;
-		$costId = $cost['ID'] ;
+		
+		if(empty($cost)){
+			$costId = $this->create_guid() ;
+			$params['ID'] = $costId ;
+			//插入
+			$this->exeSql("sql_cost_insert_new", $productCost) ;
+		}else{
+			//修改
+			$costId = $cost['ID'] ;
+		}
 		
 		$productCost['ID'] = $costId ;
 		$productCost['loginId'] =$data['loginId'] ;

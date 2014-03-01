@@ -263,7 +263,7 @@
 									<td><input type="text" id="offer2" name="offer2"   data-validator="double" style="width:50px"
 							value="<?php echo $productSupplier['OFFER2'];?>"/></td>
 									<td><input type="text" id="num2ShipFee" name="num2ShipFee"   data-validator="double" style="width:50px"
-							value="<?php echo $productSupplier['NUM1_SHIP_FEE'];?>"/></td>
+							value="<?php echo $productSupplier['NUM2_SHIP_FEE'];?>"/></td>
 								</tr>
 								<tr>
 									<td><input type="text" id="num3" name="num3"   data-validator="integer" style="width:50px"

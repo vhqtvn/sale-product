@@ -203,6 +203,65 @@ class Supplier extends AppModel {
 			$this->exeSql("sql_purchase_plan_product_inquiry_insert", $data) ;
 		}
 		$this->exeSql("sql_purchase_plan_product_inquiry_update", $data) ;
+		
+		//更新成本部分数据
+		if( isset( $data['asin'] ) ){//asin  产品开发成本
+			$asin = $data['asin']  ;
+			if( !empty($asin) ){
+				//sql_inquiry_cost_calc
+				$inquiryData = $this->exeSqlWithFormat("sql_inquiry_cost_calc", $data) ;
+				//计算最小成本
+				$minCost = 999999 ;
+				$PER_PRICE = 0 ;
+				$PER_SHIP_FEE = 0 ;
+				foreach($inquiryData as $indata){
+					$cost1 = $indata['COST1'] ;
+					$cost2 = $indata['COST2'] ;
+					$cost3 = $indata['COST3'] ;
+					
+					if( $cost1 !=0 ){
+						$minCost = min($minCost , $cost1 ) ;
+						if($minCost == $cost1  ){
+							$PER_PRICE = $indata['PER1_PRICE'] ;
+							$PER_SHIP_FEE = $indata['PER1_SHIP_FEE'] ;
+						}
+					}
+					
+					if( $cost2 !=0 ){
+						$minCost = min($minCost , $cost2 ) ;
+						if($minCost == $cost2  ){
+							$PER_PRICE = $indata['PER2_PRICE'] ;
+							$PER_SHIP_FEE = $indata['PER2_SHIP_FEE'] ;
+						}
+					}
+					
+					if( $cost3 !=0 ){
+						$minCost = min($minCost , $cost3 ) ;
+						if($minCost == $cost3  ){
+							$PER_PRICE = $indata['PER3_PRICE'] ;
+							$PER_SHIP_FEE = $indata['PER3_SHIP_FEE'] ;
+						}
+					}
+				}
+				
+				//保存询价成本到产品成本
+				if( $PER_PRICE >0  ){
+					$Cost  = ClassRegistry::init("Cost")  ;
+					
+					$params = array() ;
+					
+					$params['listingCosts'] = array() ; 
+					$params1['loginId'] = $user['LOGIN_ID'] ;
+					$params1['ASIN'] = $asin ;
+					$params1['LOGISTICS_COST'] = $PER_SHIP_FEE ;
+					$params1['PURCHASE_COST'] = $PER_PRICE ;
+					
+					$params['productCost'] = json_encode($params1) ;
+					
+					$Cost->saveCostAsin($params) ;
+				}
+			}
+		}
 	}
 	
 	
