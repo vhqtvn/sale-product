@@ -196,11 +196,13 @@ class Supplier extends AppModel {
 		$data['image'] = $image ;
 		$data['loginId'] = $user['LOGIN_ID'] ;
 
+		$id = $data['id']  ;
 		if( empty( $data['id'] ) ){
+			$id = $this->create_guid() ;
+			$data['id'] = $id ;
 			$this->exeSql("sql_purchase_plan_product_inquiry_insert", $data) ;
-		}else{
-			$this->exeSql("sql_purchase_plan_product_inquiry_update", $data) ;
 		}
+		$this->exeSql("sql_purchase_plan_product_inquiry_update", $data) ;
 	}
 	
 	

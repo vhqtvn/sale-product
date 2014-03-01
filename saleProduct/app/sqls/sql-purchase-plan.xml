@@ -29,27 +29,17 @@
     <entry key="sql_purchase_plan_product_inquiry_insert">
 	       INSERT INTO sc_purchase_supplier_inquiry 
 				(
+				ID,
 				SUPPLIER_ID, 
 				SKU, 
 				ASIN,
 				PLAN_ID, 
-				WEIGHT, 
 				CYCLE, 
 				PACKAGE, 
 				PAYMENT, 
 				NUMBER_OFFER, 
 				CREATOR, 
 				CREATE_TIME, 
-				NUM1, 
-				OFFER1, 
-				NUM2, 
-				OFFER2, 
-				NUM3, 
-				OFFER3, 
-				NUM4, 
-				OFFER4, 
-				NUM5, 
-				OFFER5, 
 				STATUS, 
 				MEMO, 
 				URL, 
@@ -60,27 +50,17 @@
 				)
 				VALUES
 				(
+				'{@#id#}', 
 				'{@#supplierId#}', 
 				'{@#sku#}', 
 				'{@#asin#}', 
 				'{@#planId#}', 
-				'{@#weight#}', 
 				'{@#cycle#}', 
 				'{@#package#}', 
 				'{@#payment#}', 
 				'{@#numberOffer#}', 
 				'{@#loginId#}', 
 				NOW(), 
-				'{@#num1#}', 
-				'{@#offer1#}', 
-				'{@#num2#}', 
-				'{@#offer2#}', 
-				'{@#num3#}', 
-				'{@#offer3#}', 
-				'{@#num4#}', 
-				'{@#offer4#}', 
-				'{@#num5#}', 
-				'{@#offer5#}', 
 				'{@#status#}', 
 				'{@#memo#}', 
 				'{@#url#}', 
@@ -94,26 +74,29 @@
     <entry key="sql_purchase_plan_product_inquiry_update">
 			UPDATE sc_purchase_supplier_inquiry 
 				SET
-				weight = '{@#weight#}' , 
 				{@ SUPPLIER_ID = '#supplierId#',}
 				cycle = '{@#cycle#}' , 
 				package = '{@#package#}' , 
 				payment = '{@#payment#}' , 
 				number_offer = '{@#numberOffer#}' , 
-				num1 = '{@#num1#}' , 
-				offer1 = '{@#offer1#}' , 
-				num2 = '{@#num2#}' , 
-				offer2 = '{@#offer2#}' , 
-				num3 = '{@#num3#}' , 
-				offer3 = '{@#offer3#}' , 
-				num4 = '{@#num4#}' , 
-				offer4 = '{@#offer4#}' , 
-				num5 = '{@#num5#}' , 
-				offer5 = '{@#offer5#}' , 
+				{@num1 = '#num1#' , }
+				{@offer1 = '#offer1#' ,} 
+				{@num2 = '#num2#' , }
+				{@offer2 = '#offer2#' , }
+				{@num3 = '#num3#' , }
+				{@offer3 = '#offer3#' , }
+				{@num4 = '#num4#' , }
+				{@offer4 = '#offer4#' , }
+				{@num5 = '#num5#' , }
+				{@offer5 = '#offer5#' , }
 				status = '{@#status#}' , 
 				memo = '{@#memo#}' , 
 				PACKINGS_PECIFICATIONS='{@#packingSpecifications#}',
 				url = '{@#url#}' , 
+				{@PRODUCT_LENGTH = '#productLength#' , }
+				{@PRODUCT_WIDTH = '#productWidth#' , }
+				{@PRODUCT_HEIGHT = '#productHeight#' , }
+				{@weight = '#weight#' , }
 				{@image = '#image#' , }
 				product_size = '{@#productSize#}' , 
 				package_size = '{@#packageSize#}'

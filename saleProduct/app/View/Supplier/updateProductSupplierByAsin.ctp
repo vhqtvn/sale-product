@@ -171,9 +171,20 @@
 					<?php }?>
 					
 					<tr>
-						<th>产品重量：</th><td><input type="text" id="weight"  name="weight" 
+						<th>产品重量(kg)：</th><td><input type="text" id="weight"  name="weight"   data-validator="double"
 							value="<?php echo $productSupplier['WEIGHT'];?>"/></td>
 					</tr>
+					<tr>
+						<th>包装尺寸(cm)：</th><td>
+							长<input type="text" id="productLength"  style="width:100px;" name="productLength"    data-validator="double"
+							value="<?php echo $productSupplier['PRODUCT_LENGTH'];?>"/>*
+							宽<input type="text" id="productWidth"  name="productWidth"   style="width:100px;"   data-validator="double"
+							value="<?php echo $productSupplier['PRODUCT_WIDTH'];?>"/>*
+							高<input type="text" id="productHeight"  name="productHeight"   style="width:100px;"   data-validator="double"
+							value="<?php echo $productSupplier['PRODUCT_HEIGHT'];?>"/>	
+						</td>
+					</tr>
+					<!--  
 					<tr>
 						<th>产品尺寸：</th><td><input type="text" id="productSize"  name="productSize" 
 							value="<?php echo $productSupplier['PRODUCT_SIZE'];?>"/></td>
@@ -182,6 +193,7 @@
 						<th>包装尺寸：</th><td><input type="text" id="packageSize"  name="packageSize" 
 							value="<?php echo $productSupplier['PACKAGE_SIZE'];?>"/></td>
 					</tr>
+					-->
 					<tr>
 						<th>生产周期：</th><td>
 							<select  id="cycle" name="cycle" >
@@ -234,25 +246,25 @@
 						<td><input name="supplierProductImage" type="file"/></td>
 					</tr>
 					<tr>
-						<th>报价方式：</th><td>
+						<th>报价方式(RMB)：</th><td>
 							<table class="table">
 								<tr><th style="text-align:center;">数量</th><th style="text-align:center;">报价</th></tr>
 								<tr>
-									<td><input type="text" id="num1" name="num1"  data-validator="required"
+									<td><input type="text" id="num1" name="num1"  data-validator="required,integer"
 							value="<?php echo $productSupplier['NUM1'];?>"/></td>
-									<td><input type="text" id="offer1" name="offer1"   data-validator="required"
+									<td><input type="text" id="offer1" name="offer1"   data-validator="required,double"
 							value="<?php echo $productSupplier['OFFER1'];?>"/></td>
 								</tr>
 								<tr>
-									<td><input type="text" id="num2" name="num2" 
+									<td><input type="text" id="num2" name="num2"  data-validator="integer"
 							value="<?php echo $productSupplier['NUM2'];?>"/></td>
-									<td><input type="text" id="offer2" name="offer2" 
+									<td><input type="text" id="offer2" name="offer2"   data-validator="double"
 							value="<?php echo $productSupplier['OFFER2'];?>"/></td>
 								</tr>
 								<tr>
-									<td><input type="text" id="num3" name="num3" 
+									<td><input type="text" id="num3" name="num3"   data-validator="integer"
 							value="<?php echo $productSupplier['NUM3'];?>"/></td>
-									<td><input type="text" id="offer3" name="offer3" 
+									<td><input type="text" id="offer3" name="offer3"   data-validator="double"
 							value="<?php echo $productSupplier['OFFER3'];?>"/></td>
 								</tr>
 							</table>

@@ -78,9 +78,14 @@
 									return "<a href='#' supplier-id='"+record.SUPPLIER_ID+"'>"+val+"<a>" ;
 						     }},
 						     {align:"left",key:"EVALUATE",label:"供应商评价",width:"10%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
+						     {align:"center",key:"WEIGHT",label:"产品重量(kg)",width:"6%",forzen:false,align:"left"},
+					           	{align:"center",key:"PRODUCT_SIZE",label:"产品尺寸(cm)",width:"10%",format:function(val,record){
+						           	if(!record.PRODUCT_LENGTH) return "-" ;
+										return record.PRODUCT_LENGTH+"*"+record.PRODUCT_WIDTH+"*"+record.PRODUCT_HEIGHT ;
+							 }},
 				           	{align:"center",key:"NUM1",label:"报价1",width:"6%",format:function(val,record){
 									return val+"/"+record.OFFER1 ;
-					          }},
+					        }},
 				           	{align:"center",key:"NUM2",label:"报价2",width:"6%",format:function(val,record){
 								return val+"/"+record.OFFER2 ;
 					          }},
@@ -90,12 +95,10 @@
 						     {align:"center",key:"URL",label:"产品网址",width:"10%",forzen:false,align:"left",format:function(val,record){
 									return "<a href='"+val+"' target='_blank'>"+val+"<a>" ;
 						     }},
-				           	{align:"center",key:"WEIGHT",label:"产品重量",width:"6%",forzen:false,align:"left"},
 				           	{align:"center",key:"CYCLE",label:"生产周期",width:"6%",format:{type:"cycle"}},
 				           	{align:"center",key:"PACKAGE",label:"包装方式",width:"6%",format:{type:"package"}},
-				           	{align:"center",key:"PAYMENT",label:"付款方式",width:"6%",format:{type:"payment"}},
-				           	{align:"center",key:"PRODUCT_SIZE",label:"产品尺寸",width:"6%"},
-				           	{align:"center",key:"PACKAGE_SIZE",label:"包装尺寸",width:"6%"},
+				           	
+				           //	{align:"center",key:"PACKAGE_SIZE",label:"包装尺寸",width:"6%"},
 				        	{align:"center",key:"PACKINGS_PECIFICATIONS",label:"装箱规格",width:"6%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
@@ -161,9 +164,10 @@
 			foreach ( explode(",", $websites) as $website ){
 				$website = explode("||", $website) ;
 				$name = $website[0] ;
-				$url = $website[1] ;
-				
-				echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
+				if( isset( $website[1] ) ){
+					$url = $website[1] ;
+					echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
+				}
 			}
 		?>
 	<div class="grid-content-details" style="margin-top:5px;">
