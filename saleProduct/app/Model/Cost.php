@@ -1,6 +1,46 @@
 <?php
 class Cost extends AppModel {
 	var $useTable = "sc_product_cost" ;
+	
+	
+	public function saveDevCostByFee( $params ){
+		debug($params) ;
+		//清楚数据库查询缓存
+		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+		$db->_queryCache = array() ;
+	
+		$sql = "select * from sc_product_cost where asin = '{@#asin#}'" ;
+		$cost = $this->getObject($sql, $params) ;
+		$costId = null ;
+		$params['ASIN'] = $params['asin'] ;
+		$params['TYPE'] = $params['type'] ;
+		//如果开发产品成本不存在，则添加
+		$costId = $cost['ID'] ;
+	
+		$sql = "select * from sc_product_cost_details where asin = '{@#asin#}' and type =  '{@#type#}'" ;
+		$costDetail = $this->getObject($sql, $params) ;
+		$costDetailId = null ;
+		if(empty($costDetail)){
+			$costDetailId = $this->create_guid() ;
+			$params['ID'] = $costDetailId ;
+			$params['COST_ID'] = $costId ;
+			//插入
+			$this->exeSql("sql_cost_details_insert_new_forfee", $params) ;
+		}else{
+			//修改
+			$costDetailId = $costDetail['ID'] ;
+		}
+			
+		$params['ID'] = $costDetailId ;
+		$params['COST_ID'] = $costId ;
+	
+		//debug($params) ;
+		//插入
+		$this->exeSql("sql_cost_details_update_new_forfee", $params) ;
+	
+	}
+	
+	
 	//commissionRatio   fbaCost
 	public function saveCostByFee( $params ){
 		//清楚数据库查询缓存
@@ -46,6 +86,8 @@ class Cost extends AppModel {
 	}
 	
 	public function saveCostAsin($data){
+		//debug( $data ) ;
+		//return ;
 		$productCost = get_object_vars( json_decode($data['productCost']) )   ;
 		$_listingCosts  = json_decode( $data['listingCosts'])   ;
 		$listingCosts = array() ;
@@ -53,28 +95,20 @@ class Cost extends AppModel {
 			$listingCosts[] = get_object_vars($listingCost);
 		}
 		//1、保存productCost
-		$sql = "select * from sc_product_cost where real_id = '{@#REAL_ID#}'" ;
+		$sql = "select * from sc_product_cost where asin = '{@#ASIN#}'" ;
 		$cost = $this->getObject($sql, $productCost) ;
-		$costId = null ;
-		if(empty($cost)){
-			$costId = $this->create_guid() ;
-			$productCost['ID'] = $costId ;
-			$productCost['loginId'] =$data['loginId'] ;
-			//插入
-			$this->exeSql("sql_cost_insert_new", $productCost) ;
-		}else{
-			//修改
-			$costId = $cost['ID'] ;
-		}
+		$costId = $cost['ID'] ;
+		
 		$productCost['ID'] = $costId ;
 		$productCost['loginId'] =$data['loginId'] ;
+		
 		//插入
 		$this->exeSql("sql_cost_update_new", $productCost) ;
 	
 		//2、保存listingCost
 		foreach($listingCosts as $listingCost){
 			//sql_cost_details_insert_new
-			$sql = "select * from sc_product_cost_details where ASIN=  '{@#ASIN#}'" ;
+			$sql = "select * from sc_product_cost_details where id=  '{@#ID#}'" ;
 			$costDetail = $this->getObject($sql, $listingCost) ;
 			if(empty($costDetail)){
 				$costDetailId = $this->create_guid() ;
