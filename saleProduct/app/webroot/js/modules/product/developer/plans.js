@@ -168,7 +168,7 @@ $(function(){
 					$(s).each(function(){
 						var ss = this.split("|") ;
 						var type = ss[0] ;
-						var profit = parseFloat(ss[1]||0)/100 ;
+						var profit = parseFloat(ss[1]||0) ;
 						maxProfit = Math.max(maxProfit,profit) ;
 					}) ;
 					if(maxProfit <=0 ) return "亏本" ;
@@ -177,13 +177,28 @@ $(function(){
 					
 				   }},
 				   {align:"center",key:"COST_GROUP",label:"利润值",width:"8%",sort:true,format:function(val,record){
-						var INQUIRY_COUNT = record.INQUIRY_COUNT ;
+					   var INQUIRY_COUNT = record.INQUIRY_COUNT ;
 						var COST_COUNT = record.COST_COUNT ;
-						if( INQUIRY_COUNT<=0 ) return "" ;
-						if( COST_COUNT<=0 ) return "" ;
-						if( !val ) return "" ;
 						
-						return val ||"";
+						if( val ){
+							var s = val.split(",") ;
+							var maxProfit = 0 ;
+							var maxType ;
+							var profitRatio = {} ;
+							$(s).each(function(){
+								var ss = this.split("|") ;
+								var type = ss[0] ;
+								var profit = parseFloat(ss[1]||0) ;
+								var cost = ss[2] ;
+								//alert(profit+"   "+cost);
+								profitRatio[type] = type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")" ;
+								//profitRatio.push( type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")") ;
+							}) ;
+							
+							return profitRatio["FBA"]+"||"+profitRatio["FBM"] ;
+						}else{
+							return "-" ;
+						}
 					   },permission:function(){
 						   return $COST_VIEW_PROFIT ;
 					   }},
