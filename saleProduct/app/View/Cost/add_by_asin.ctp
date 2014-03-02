@@ -44,13 +44,17 @@
 		$asin = $params['arg1'] ;
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;//COST_TAG  COST_LABOR  COST_TAX_RATE
+		$Cost  = ClassRegistry::init("Cost") ;
 		
 		$costTag = $config->getAmazonConfig("COST_TAG",0) ;
 		$costLabor = $config->getAmazonConfig("COST_LABOR",0) ;
 		$costTaxRate = $config->getAmazonConfig("COST_TAX_RATE",0.0) ;
 		
+		$Cost->initDevCost($asin,$user['LOGIN_ID']) ;
 		$sql = "SELECT sc_product_cost.* FROM sc_product_cost where asin = '$asin'";
 		$productCost = $SqlUtils->getObject($sql,array()) ;
+		
+		/*
 		
 		//判断是否有初始化成本数据，如果没有则初始化成本数据
 		if( empty( $productCost ) ){
@@ -74,7 +78,7 @@
 			$costId_ = $SqlUtils->create_guid() ;
 			$SqlUtils->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBM',"ID"=>$costId_,"loginId"=>$user['LOGIN_ID'])) ;
 		}
-		
+		*/
 		
 		$sql = "select * from sc_view_devproduct_cost where asin = '{@#realId#}'" ;
 		
@@ -280,12 +284,12 @@
 								?></td>
 								<td>
 									<input type="text" class="_cost " 
-										name="_TRANSFER_COST" value="<?php echo $item['TRANSFER_COST'];?>" style="width:50px!important;"/>
+										name="_TRANSFER_COST" value="<?php echo round($item['TRANSFER_COST'],2);?>" style="width:50px!important;"/>
 								</td>
 								<td>
 								<?php if( $item['TYPE'] == 'FBM' ){ ?>
 									<input type="text" class="_cost " 
-									name="LOGISTICS_COST" value="<?php echo $item['LOGISTICS_COST'];?>" style="width:50px!important;"/></td>
+									name="LOGISTICS_COST" value="<?php echo round($item['LOGISTICS_COST'],2); ?>" style="width:50px!important;"/></td>
 								<?php }else{
 									echo "-" ;
 								} ?>

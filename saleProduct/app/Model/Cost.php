@@ -2,6 +2,37 @@
 class Cost extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	/**
+	 * 初始化开发产品成本信息
+	 */
+	public function initDevCost($asin,$loginId){
+		$sql = "SELECT sc_product_cost.* FROM sc_product_cost where asin = '$asin'";
+		$productCost = $this->getObject($sql,array()) ;
+		
+		//判断是否有初始化成本数据，如果没有则初始化成本数据
+		if( empty( $productCost ) ){
+			$costId = $this->create_guid() ;
+			$this->exeSql("sql_cost_insert_new", array("ASIN"=>$asin,"ID"=>$costId,"loginId"=>$loginId)) ;
+		}else{
+			$costId = $productCost['ID'] ;
+		}
+		
+		//判断是否有成本明细
+		$sql = "SELECT * FROM sc_product_cost_details where asin = '$asin' and type='FBA'";
+		$productCostDetails = $this->getObject($sql,array()) ;
+		if( empty( $productCostDetails ) ){
+			$costId_ = $this->create_guid() ;
+			$this->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBA',"ID"=>$costId_,"loginId"=>$loginId)) ;
+		}
+		
+		$sql = "SELECT * FROM sc_product_cost_details where asin = '$asin' and type='FBM'";
+		$productCostDetails = $this->getObject($sql,array()) ;
+		if( empty( $productCostDetails ) ){
+			$costId_ = $this->create_guid() ;
+			$this->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBM',"ID"=>$costId_,"loginId"=>$loginId)) ;
+		}
+	}
+	
 	
 	public function saveDevCostByFee( $params ){
 		debug($params) ;

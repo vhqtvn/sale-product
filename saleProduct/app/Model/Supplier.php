@@ -214,6 +214,7 @@ class Supplier extends AppModel {
 				$minCost = 999999 ;
 				$PER_PRICE = 0 ;
 				$PER_SHIP_FEE = 0 ;
+				$CurrentData = null ;
 				foreach($inquiryData as $indata){
 					$cost1 = $indata['COST1'] ;
 					$cost2 = $indata['COST2'] ;
@@ -224,6 +225,7 @@ class Supplier extends AppModel {
 						if($minCost == $cost1  ){
 							$PER_PRICE = $indata['PER1_PRICE'] ;
 							$PER_SHIP_FEE = $indata['PER1_SHIP_FEE'] ;
+							$CurrentData = $indata ;
 						}
 					}
 					
@@ -232,6 +234,7 @@ class Supplier extends AppModel {
 						if($minCost == $cost2  ){
 							$PER_PRICE = $indata['PER2_PRICE'] ;
 							$PER_SHIP_FEE = $indata['PER2_SHIP_FEE'] ;
+							$CurrentData = $indata ;
 						}
 					}
 					
@@ -240,6 +243,7 @@ class Supplier extends AppModel {
 						if($minCost == $cost3  ){
 							$PER_PRICE = $indata['PER3_PRICE'] ;
 							$PER_SHIP_FEE = $indata['PER3_SHIP_FEE'] ;
+							$CurrentData = $indata ;
 						}
 					}
 				}
@@ -247,18 +251,37 @@ class Supplier extends AppModel {
 				//保存询价成本到产品成本
 				if( $PER_PRICE >0  ){
 					$Cost  = ClassRegistry::init("Cost")  ;
-					
-					$params = array() ;
-					
+					$Cost->initDevCost($asin,$user['LOGIN_ID'] ) ;
+					$params = array() ;	
 					$params['listingCosts'] = array() ; 
 					$params1['loginId'] = $user['LOGIN_ID'] ;
 					$params1['ASIN'] = $asin ;
 					$params1['LOGISTICS_COST'] = $PER_SHIP_FEE ;
-					$params1['PURCHASE_COST'] = $PER_PRICE ;
-					
-					$params['productCost'] = json_encode($params1) ;
-					
+					$params1['PURCHASE_COST'] = $PER_PRICE ;			
+					$params['productCost'] = json_encode($params1) ;			
 					$Cost->saveCostAsin($params) ;
+					
+					//计算转仓物流成本
+					$productLength = $CurrentData['PRODUCT_LENGTH'] ;
+					$productWidth = $CurrentData['PRODUCT_WIDTH'] ;
+					$productHeight = $CurrentData['PRODUCT_HEIGHT'] ;
+					$Weight  = $CurrentData['WEIGHT'] ;
+					//获取转仓成本单价
+					$sql = "SELECT sp.TRANSFER_WH_PRICE FROM sc_platform sp,sc_product spd
+											WHERE sp.id = spd.platform_id and asin= '{@#asin#}' " ;
+					$temp = $this->getObject($sql, array("asin"=>$asin) ) ;
+					if( !empty($temp) ){
+						$TRANSFER_WH_PRICE = $temp['TRANSFER_WH_PRICE'] ;
+						//转仓物流成本
+						$transferCost =round( ($Weight - ( $productLength*$productWidth*$productHeight / 5000 ))*$TRANSFER_WH_PRICE ,2) ;
+						
+						debug(">>>>>>>>>>>>>".$transferCost) ;
+						
+						$sql= "update sc_product_cost_details set _TRANSFER_COST = '{@#transferCost#}' where asin = '{@#asin#}' " ;
+						if(!empty($transferCost)){
+							$this->exeSql($sql, array("transferCost"=>$transferCost,"asin"=>$asin) ) ;
+						}
+					}
 				}
 			}
 		}
