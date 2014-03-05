@@ -272,6 +272,7 @@
 			)}
 			{@ and sptp.REAL_PROVIDOR = '#supplierId#'}
 			{@ and srp.id = '#productId#' }
+			order by sptp.real_purchase_date desc
     </entry>
     
     <entry key="sql_purchase_task_product_selectable">
