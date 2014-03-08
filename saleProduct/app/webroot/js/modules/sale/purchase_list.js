@@ -26,7 +26,7 @@
 					},permission:function(){
 						return $pp_edit || $ppp_add_product ||  $ppp_export;
 					}},
-					{align:"center",key:"CODE",label:"采购计划编号",width:"11%",forzen:false,align:"left"},
+					{align:"center",key:"CODE",label:"采购计划编号",width:"12%",forzen:false,align:"left"},
 		           	{align:"center",key:"NAME",label:"采购计划名称",width:"14%",forzen:false,align:"left"},
 		           	{align:"left",key:"PLAN_TIME",label:"计划采购时间",width:"15%",format:function(val,record){
 		           		var r = record.PLAN_TIME||"" ;
@@ -36,8 +36,10 @@
 		           	{align:"center",key:"TYPE",label:"采购用途",width:"6%",format:function(val,record){
 		           		if(val == 1){
 		           			return "产品试销" ;
-		           		}else{
+		           		}else if(val == 2){
 		           			return "正式采购" ;
+		           		}else if(val == 3){
+		           			return "开发采购" ;
 		           		}
 		           	}},	
 		           	{align:"center",key:"STATUS0",label:'全部',group:"状态",width:"4%",format:function(val,record){

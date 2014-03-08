@@ -303,6 +303,10 @@ html{-webkit-text-size-adjust: none;}
 			}
  	 }
 
+ 	//$.dataservice("model:PurchaseService.createPlanForProductDev",{},function(result){
+		
+	//});
+
  	function AuditAction(status , statusLabel,fixParams){
  		if( !$.validation.validate('#personForm').errorInfo ) {
  			ForceAuditAction(status , statusLabel,fixParams) ;
@@ -405,7 +409,7 @@ html{-webkit-text-size-adjust: none;}
 		actions:[ 
 					<?php if( $PD_LISTING_SP ){ ?>
 	           {label:"保存",action:function(){ ForceAuditAction('70',"保存") } },
-		       {label:"审批通过",action:function(){ AuditAction('72',"审批通过，进入下一步试销采购") } }
+		       {label:"审批通过",action:function(){ AuditAction('72',"审批通过，进入试销采购，采购单将自动生成！") } }
 	           <?php }?>
 	     ]}
      ) ;
@@ -413,21 +417,21 @@ html{-webkit-text-size-adjust: none;}
 	flowData.push( {status:72,label:"试销采购",memo:true ,
 		actions:[ 
 <?php if( $PD_SXCG ){ ?>
-		         {label:"保存",action:function(){ ForceAuditAction('72',"保存") } },
-			     {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
+		         {label:"保存",action:function(){ ForceAuditAction('72',"保存") } }
+			//  ,   {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
 		         <?php }?>
 	     ]}
      ) ;
-
+	<?php /*
 	flowData.push( {status:74,label:"库存到达",memo:true ,
 		actions:[ 
-<?php if( $PD_KCDW ){ ?>
-				{label:"保存",action:function(){ ForceAuditAction('74',"保存") } },
-				{label:"下一步",action:function(){ AuditAction('76',"库存到达，进入下一步") } }
+                <?php if( $PD_KCDW ){ ?>
+				{label:"保存",action:function(){ ForceAuditAction('74',"保存") } }
+				,{label:"下一步",action:function(){ AuditAction('80',"库存到达，进入下一步") } }
 				<?php }?>
 	     ]}
      ) ;
-
+	
 	flowData.push( {status:76,label:"营销展开",memo:true ,
 		actions:[ 
 <?php if( $PD_YXZK ){ ?>
@@ -436,7 +440,7 @@ html{-webkit-text-size-adjust: none;}
 			<?php }?>
 	     ]}
      ) ;
-
+  
 	flowData.push( {status:78,label:"开发总结",memo:true ,
 		actions:[ 
 <?php if( $PD_KFZJ ){ ?>
@@ -445,7 +449,7 @@ html{-webkit-text-size-adjust: none;}
 				<?php }?>
 	     ]}
      ) ;
-    
+	*/   ?>
 	flowData.push( {status:80,label:"结束"}) ;
 	<?php } ?>
 	$(function(){
@@ -563,10 +567,20 @@ html{-webkit-text-size-adjust: none;}
 						<th style="width:20%;">
 							试销采购量
 						</th>
-						<td colspan="3">
+						<td>
 							<input type="text"  id="TRY_PURCHASE_NUM" 
 								 class="input 10-input 30-input 40-input" 
 								style="width:80%;" placeHolder="试销采购量" value="<?php echo $productDev['TRY_PURCHASE_NUM']?>" />
+						</td>
+						<td colspan="2">
+							<?php 
+									$devId = $asin.'_'.$taskId ;
+									$existSql = "select * from sc_purchase_plan_details where dev_id = '{@#devId#}' " ;
+									$item = $SqlUtils->getObject($existSql, array('devId'=>$devId)) ;
+									if( !empty($item) ){
+										echo "<a href='/$fileContextPath/index.php/page/forward/Sale.edit_purchase_plan_product/".$item['ID']."' target='_blank'>查看采购计划单</a>" ;
+									}
+							?>
 						</td>
 					</tr>
 					<?php  if( ($pdStatus >=50) ||  !empty($productDev['REAL_PRODUCT_ID']) ){  ?>
@@ -581,9 +595,9 @@ html{-webkit-text-size-adjust: none;}
 							<?php 
 							if( !empty($productDev['REAL_PRODUCT_ID']) ){
 								$sp = $SqlUtils->getObject("sql_saleproduct_getById",array("realProductId"=>$productDev['REAL_PRODUCT_ID'])) ;
-								echo "<td colspan='4'  product-realsku='".$sp['REAL_SKU']."'>" ;
+								echo "<td colspan='4'>" ;
 								echo $sp['NAME'] ;
-								echo "<span>(".$sp['REAL_SKU'].")" ;
+								echo "<span   product-realsku='".$sp['REAL_SKU']."'>(".$sp['REAL_SKU'].")" ;
 								echo "<img style='width:30px;height:30px;' src='/$fileContextPath".$sp['IMAGE_URL']."'></span>" ;
 								echo "</td>" ;
 							}	

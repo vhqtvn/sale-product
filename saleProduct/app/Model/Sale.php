@@ -287,6 +287,14 @@ class Sale extends AppModel {
 		//添加轨迹
 		$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 		
+		if( $status == 80 ){ //采购结束
+			$sql = "UPDATE sc_product_dev spd SET spd.FLOW_STATUS = 80
+						WHERE CONCAT(spd.ASIN,'_',spd.TASK_ID) IN (
+							SELECT DEV_ID FROM sc_purchase_plan_details sppd  where id = '{@#productId#}'
+						) " ;
+			$this->exeSql($sql, $data) ;
+		}
+		
 		//更新采购价格到货品成本区域 "realQuotePrice":"90","realShipFee":"10"
 		/*$sku = $data['sku'] ;
 		$realQuotePrice = $data['realQuotePrice'] ;

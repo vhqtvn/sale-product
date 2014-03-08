@@ -76,14 +76,34 @@ class ProductDev extends AppModel {
 	}
 	
 	function doFlow( $params ){
-		$pd = $this->getObject("sql_pdev_findByAsinAndTaskId", $params) ;
-		if( empty($pd) ){
-			$this->exeSql("sql_pdev_insert", $params) ;
-		}else{
-			$this->exeSql("sql_pdev_update", $params) ;
+		$dataSource = $this->getDataSource();
+		$dataSource->begin();
+		try{
+			$pd = $this->getObject("sql_pdev_findByAsinAndTaskId", $params) ;
+			if( empty($pd) ){
+				$this->exeSql("sql_pdev_insert", $params) ;
+			}else{
+				$this->exeSql("sql_pdev_update", $params) ;
+			}
+			
+			if( $params['FLOW_STATUS'] == 72 ){ //审批通过，生成采购单
+				$PurchaseService  = ClassRegistry::init("PurchaseService") ;
+				
+				$p = array('realId'=>$params['REAL_PRODUCT_ID'],
+						'planNum'=>$params['TRY_PURCHASE_NUM'],
+						'loginId'=>$params['loginId'],
+						'devId'=>$params['ASIN'].'_'.$params['TASK_ID']
+				) ;
+				$PurchaseService->createItemForProductDev($p) ;
+			}
+			//保存轨迹
+			
+			$this->exeSql("sql_pdev_track_insert", $params) ;
+			$dataSource->commit() ;
+		}catch(Exception $e){
+			$dataSource->rollback() ;
+			print_r($e) ;
 		}
-		//保存轨迹
-		$this->exeSql("sql_pdev_track_insert", $params) ;
 	}
 	
 	function saveLimitPriceToGoods( $params ){
