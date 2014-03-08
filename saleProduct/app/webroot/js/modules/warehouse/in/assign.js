@@ -29,7 +29,7 @@ $(function(){
 	           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
 	           	}},
 	           	{align:"center",key:"TITLE",label:"TITLE",width:"21%",forzen:false,align:"left",format:function(val,record){
-	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' class='link-open'>"+(val||'产品列表')+"</a>" ;
+	           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' class='link-open'>"+(val||'竞价列表')+"</a>" ;
 	           	}},
 	        	{align:"center",key:"DYN_PROFILE",label:"动态利润",width:"8%",format:function(val,record){
 	        		//return ( record.TOTAL_PRICE - record.TOTAL_COST)
