@@ -54,7 +54,6 @@ class TaskFetchController extends AppController {
 	 	//ob_start() ;
 	 	//debug($listings) ;
 	 	foreach( $listings as $listing ){
-	 		debug($listing) ;
 	 			$this->_processDevProductFee($listing) ;
 	 	}
 	 }
@@ -130,14 +129,19 @@ class TaskFetchController extends AppController {
 	 				}
 	 
 	 				$feeResult = get_object_vars($feeResult) ;
-	 
+	 	
+	 				
 	 				if( isset($feeResult['commissionFee']) ){//success
 	 					$feeResult['asin'] = $listing['ASIN'] ;
 	 					$feeResult['type'] = $listing['TYPE'] ;
 	 					$feeResult['loginId'] = $loginId ;
 	 						
-	 					$feeResult['fbaCost'] = $feeResult['weightHandlingFee']+$feeResult['orderHandlingFee']
-	 					+$feeResult['fbaDeliveryServicesFee']+$feeResult['pickAndPackFee']+$feeResult['storageFee'] ;
+	 					$feeResult['fbaCost'] = 
+	 								(empty($feeResult['weightHandlingFee'])?0:$feeResult['weightHandlingFee'])
+	 							+ (empty($feeResult['orderHandlingFee'])?0:$feeResult['orderHandlingFee'])
+	 							+ (empty($feeResult['fbaDeliveryServicesFee'])?0:$feeResult['fbaDeliveryServicesFee'])
+	 					        + (empty($feeResult['pickAndPackFee'])?0:$feeResult['pickAndPackFee'])
+	 					        + (empty($feeResult['storageFee'])?0:$feeResult['storageFee']) ;
 	 						
 	 					if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
 	 						$feeResult['commissionLowlimit'] = 1 ;
@@ -170,9 +174,13 @@ class TaskFetchController extends AppController {
 	 					$feeResult = get_object_vars($feeResult) ;
 	 					$feeResult = $feeResult['data'] ;
 	 					$feeResult = get_object_vars($feeResult) ;
-	 						
-	 					$feeResult['fbaCost'] = $feeResult['weightHandlingFee']+$feeResult['orderHandlingFee']
-	 					+$feeResult['fbaDeliveryServicesFee']+$feeResult['pickAndPackFee']+$feeResult['storageFee'] ;
+	 						//weightHandlingFee
+	 					$feeResult['fbaCost'] =
+		 					(empty($feeResult['weightHandlingFee'])?0:$feeResult['weightHandlingFee'])
+		 					+ (empty($feeResult['orderHandlingFee'])?0:$feeResult['orderHandlingFee'])
+		 					+ (empty($feeResult['fbaDeliveryServicesFee'])?0:$feeResult['fbaDeliveryServicesFee'])
+		 					+ (empty($feeResult['pickAndPackFee'])?0:$feeResult['pickAndPackFee'])
+		 					+ (empty($feeResult['storageFee'])?0:$feeResult['storageFee']) ;
 	 
 	 					if( isset($feeResult['commissionFee']) ){//success
 	 						$feeResult['asin'] = $listing['ASIN'] ;
@@ -411,8 +419,13 @@ class TaskFetchController extends AppController {
 	 					$feeResult['realId'] = $listing['ID'] ;
 	 					$feeResult['loginId'] = $loginId ;
 	 					
-	 					$feeResult['fbaCost'] = $feeResult['weightHandlingFee']+$feeResult['orderHandlingFee']
-	 							+$feeResult['fbaDeliveryServicesFee']+$feeResult['pickAndPackFee']+$feeResult['storageFee'] ;
+	 					
+	 					$feeResult['fbaCost'] =
+		 					(empty($feeResult['weightHandlingFee'])?0:$feeResult['weightHandlingFee'])
+		 					+ (empty($feeResult['orderHandlingFee'])?0:$feeResult['orderHandlingFee'])
+		 					+ (empty($feeResult['fbaDeliveryServicesFee'])?0:$feeResult['fbaDeliveryServicesFee'])
+		 					+ (empty($feeResult['pickAndPackFee'])?0:$feeResult['pickAndPackFee'])
+		 					+ (empty($feeResult['storageFee'])?0:$feeResult['storageFee']) ;
 	 					
 	 					if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
 	 						$feeResult['commissionLowlimit'] = 1 ;
@@ -447,8 +460,12 @@ class TaskFetchController extends AppController {
 	 					$feeResult = $feeResult['data'] ;
 	 					$feeResult = get_object_vars($feeResult) ;
 	 					
-	 					$feeResult['fbaCost'] = $feeResult['weightHandlingFee']+$feeResult['orderHandlingFee']
-	 						+$feeResult['fbaDeliveryServicesFee']+$feeResult['pickAndPackFee']+$feeResult['storageFee'] ;
+	 					$feeResult['fbaCost'] =
+		 					(empty($feeResult['weightHandlingFee'])?0:$feeResult['weightHandlingFee'])
+		 					+ (empty($feeResult['orderHandlingFee'])?0:$feeResult['orderHandlingFee'])
+		 					+ (empty($feeResult['fbaDeliveryServicesFee'])?0:$feeResult['fbaDeliveryServicesFee'])
+		 					+ (empty($feeResult['pickAndPackFee'])?0:$feeResult['pickAndPackFee'])
+		 					+ (empty($feeResult['storageFee'])?0:$feeResult['storageFee']) ;
 	 						
 	 					if( isset($feeResult['commissionFee']) ){//success
 	 						$feeResult['accountId'] = $listing['ACCOUNT_ID'] ;
