@@ -167,9 +167,11 @@
 												foreach ( explode(",", $websites) as $website ){
 													$website = explode("||", $website) ;
 													$name = $website[0] ;
-													$url = $website[1] ;
+													if( isset($website[1]) ){
+														$url = $website[1] ;
+														echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
+													}
 													
-													echo "<a href='$url' target='_blank'>$name</a>&nbsp;&nbsp;&nbsp;" ;
 												}
 											?>
 									</td>
@@ -184,9 +186,11 @@
 									<th>重量：</th>
 									<td><input type="text" name="weight" style="width:50px;" value="<?php echo $item['WEIGHT']?>"/>
 									<select name="weightUnit" style="width:150px;">
-										<option value="lb" <?php if($item['WEIGHT_UNIT']=='kg')echo 'selected';?>  >KG</option>
+										<option value="kg" <?php if($item['WEIGHT_UNIT']=='kg')echo 'selected';?>  >KG</option>
+										<?php /*
 										<option value="lb" <?php if($item['WEIGHT_UNIT']=='lb')echo 'selected';?>  >pound</option>
-										<option value="oz" <?php if($item['WEIGHT_UNIT']=='oz')echo 'selected';?> >ounce</option>
+										<option value="oz" <?php if($item['WEIGHT_UNIT']=='oz')echo 'selected';?> >ounce</option> */
+										?> 
 									</select>
 									</td>
 									<th>长X宽X高(cm)：</th>

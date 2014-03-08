@@ -80,7 +80,7 @@
 		}
 		*/
 		
-		$sql = "select * from sc_view_devproduct_cost where asin = '{@#realId#}'" ;
+		$sql = "select * from sc_view_devproduct_cost where asin = '{@#realId#}'  order by type" ;
 		
 		$listing = $SqlUtils->exeSqlWithFormat($sql,array("realId"=>$asin)) ;
 		
@@ -133,7 +133,7 @@
 								dataType:"text",
 								success:function(result,status,xhr){
 									$.unblock() ;
-									window.location.reload(true) ;
+									//window.location.reload(true) ;
 								},error:function(){
 									alert("操作出现异常！") ;
 								}

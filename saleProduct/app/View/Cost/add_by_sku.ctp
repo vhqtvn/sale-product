@@ -79,6 +79,8 @@
 
    <script>
    		var groupCode = '<?php echo $loginId;?>' ;
+		var  $productCost = <?php echo  json_encode($productCost) ; ?>;
+		var  $listing = <?php echo  json_encode($listing) ; ?>;
 
    		$(function(){
 					$(".asyn-amazon-fee").click(function(){
@@ -138,7 +140,53 @@
 				}
 			}) ;
    	   	}
-   	
+
+   		/**
+   		   *实时计算
+   		   */
+   	   	function calcCostOntime(){
+      	 //"PURCHASE_COST":"8.8","OTHER_COST":"0","TAG_COST":"1","LABOR_COST":"0","FEE":"0","REAL_ID":"1","LOGISTICS_COST":"0"}
+        	 var purchaseCost = $("#PURCHASE_COST").val()||0  ;
+        	 var baseCost =parseFloat( purchaseCost )+ parseFloat($("#LOGISTICS_COST").val()||0 )+parseFloat($("#OTHER_COST").val()||0)
+        	 										 + parseFloat(<?php echo $costTag;?>)+parseFloat(<?php echo $costLabor;?>)  ;
+			 var $costTaxRate = parseFloat(<?php echo $costTaxRate ;?>) ;
+			 var purcharRate =parseFloat( (purchaseCost*$costTaxRate).toFixed(2)) ;
+			 $(".purchaseRate").html(purcharRate);
+			 baseCost = baseCost + purcharRate ;
+			
+			 $( $listing  ).each(function(index,item){
+				    var rowId = item.ACCOUNT_ID+"_"+item.LISTING_SKU ;
+				 	var channel = item.FULFILLMENT_CHANNEL ;
+					itemCost = parseFloat( item.TRANSFER_COST) ;
+					if( channel == 'Merchant' ){
+						itemCost += parseFloat( $("[name='LOGISTICS_COST']","#"+rowId).val()||0) ; 
+					}
+					itemCost += parseFloat( item.FEE) ;
+					itemCost += parseFloat( item.COMMISSION_FEE) ;
+					if( channel != 'Merchant' ) itemCost +=parseFloat(  item.FBA_COST );
+					if( channel != 'Merchant' ) itemCost +=parseFloat(  item.INVENTORY_CENTER_FEE) ;
+					itemCost +=parseFloat(  $("[name='OTHER_COST']","#"+rowId).val()||0) ; 
+
+					var totalPrice= item.TOTAL_PRICE ;//总售价
+					var totalItemCost =( itemCost+baseCost /parseFloat(  item.EXCHANGE_RATE) ).toFixed(3) ;
+					var totalProfile = (totalPrice - totalItemCost).toFixed(2);
+					var profileRate =( (totalProfile/totalItemCost)*100).toFixed(2) +"%" ;
+
+					$(".totalCost","#"+rowId).html( totalItemCost ) ;
+					$(".totalProfile","#"+rowId).html( totalProfile+"["+profileRate+"]" ) ;
+			 }) ;
+   	   	}
+
+   	   	$(function(){
+   	   	   	calcCostOntime() ;
+   	   	   	$("input[type='text']").keyup(function(){
+   	   	   	  calcCostOntime() ;
+   	   	   	});
+   	   	   	
+   	   	 	$("input[type='text']").blur(function(){
+   	   	   	  calcCostOntime() ;
+   	   	   	});
+   	   	}) ;
    </script>
 </head>
 
@@ -164,9 +212,7 @@
 								<input class="cost span2"  type="text" 
 									data-validator="double"
 									<?php echo $COST_EDIT_PURCHASE?'':'disabled'?>
-									<?php echo empty($productCost["PURCHASE_COST"])?'':'disabled'?>
 									id="PURCHASE_COST" value="<?php echo $productCost["PURCHASE_COST"];?>"/>
-									<span class="alert" style="padding:2px;">不能修改，由采购价格自动更新</span>
 								</td>
 								<th>采购物流费用 ：</th><td ><input class="_cost span2"      style="width:50px!important;"
 										data-validator="double"  type="text" id="LOGISTICS_COST" value="<?php echo $productCost["LOGISTICS_COST"];?>"/></td>
@@ -177,7 +223,7 @@
 										<?php echo $costTag ; ?>
 									</td>
 									<th>人工成本：</th><td><?php echo $costLabor ; ?></td>	
-									<th>国内税费：</th><td>
+									<th>国内税费：</th><td  class="purchaseRate">
 										<?php echo round( $productCost['PURCHASE_COST'] * $costTaxRate,2 )  ; ?>
 									</td>
 									<th>其他成本：</th><td><input      style="width:50px!important;"
@@ -226,7 +272,7 @@
 							//debug($item) ;
 								?>
 							
-							<tr  class="data-row">
+							<tr  class="data-row"  id="<?php echo $item['ACCOUNT_ID'];?>_<?php echo $item['LISTING_SKU'];?>">
 								<td>
 									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>
 									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['LISTING_SKU'];?>" style="width:50px;"/>
@@ -238,8 +284,8 @@
 									<?php echo $item['FULFILLMENT_CHANNEL']=='Merchant'?$item['FBM_WAREHOUSE_NAME']:"";?>
 								</td>
 								<td><?php echo round($item['TOTAL_PRICE'],3);?></td>
-								<td><?php echo round($item['TOTAL_COST'],3);?></td>
-								<td><?php 
+								<td  class="totalCost"><?php echo round($item['TOTAL_COST'],3);?></td>
+								<td  class="totalProfile"><?php 
 											$totalProfile =round(  $item['TOTAL_PRICE'] - $item['TOTAL_COST'],2)   ;
 											$totalRate = round( ( $totalProfile/$item['TOTAL_COST'] ) *100 ,2).'%' ;
 											echo $totalProfile."($totalRate)" ;
