@@ -73,7 +73,7 @@
 			srp.REAL_SKU as REAL_PRODUCT_SKU,
 			srp.IMAGE_URL,
 			srp.CATEGORY_ID,
-			spc.PURCHASE_CHARGER,,
+			spc.PURCHASE_CHARGER,
 			(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
 			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
 			

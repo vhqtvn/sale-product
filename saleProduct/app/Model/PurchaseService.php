@@ -8,6 +8,101 @@ class PurchaseService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
 	/**
+	 * 获取默认采购负责人
+	 */
+	public function getDefaultCharger($realId){
+		$charger = "" ;
+		$chargerName = "" ;
+		//获取分类采购负责人
+		$sql = "SELECT  spc.PURCHASE_CHARGER,
+				(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
+				srp.ID AS REAL_ID 
+			FROM sc_real_product srp
+			LEFT JOIN sc_product_category spc
+			 ON srp.CATEGORY_ID = spc.ID
+			where srp.id = '{@#realId#}'" ;
+		$item = $this->getObject($sql, array("realId"=>$realId)) ;
+		if( empty( $item['PURCHASE_CHARGER'] ) ){
+			//获取全局默认采购人
+			$sql = "SELECT sac.VALUE , su.NAME FROM sc_amazon_config sac , sc_user su
+								WHERE sac.value = su.LOGIN_ID
+								AND sac.name = 'DEFAULT_PURCHASE_CHARGER'" ;
+			$item = $this->getObject($sql,array()) ;
+			
+			$charger = $item['VALUE'] ;
+			$chargerName = $item['NAME'] ;
+		}else{
+			$charger = $item['PURCHASE_CHARGER'] ;
+			$chargerName = $item['PURCHASE_CHARGER_NAME'] ;
+		}
+		return array("charger"=>$charger,"chargerName"=>$chargerName) ;
+	}
+	
+	//获取最近采购记录
+	public function getDefaultLimitPrice($realId){
+		$limitPrice = 0 ;
+		//获取最近的实际采购价格
+		$sql = " SELECT sppd.REAL_ID,t.REAL_QUOTE_PRICE FROM sc_purchase_task_products t,
+						  sc_purchase_plan_details sppd
+						  WHERE t.REAL_QUOTE_PRICE > 0
+						  AND sppd.ID = t.PRODUCT_ID
+						  AND sppd.REAL_ID = '{@#realId#}'
+						  ORDER BY t.WAREHOUSE_TIME DESC
+						  LIMIT 0 ,1 " ;
+		$item = $this->getObject($sql, array("realId"=>$realId)) ;
+		if(!empty($item)){
+			$limitPrice = $item['REAL_QUOTE_PRICE'] ;
+		}
+		
+		//获取最近询价价格
+	   $sql = "sql_inquiry_cost_calc_all" ;
+	   $inquiryData = $this->exeSqlWithFormat($sql, array("realId"=>$realId)) ;
+	   
+	   $minCost = 999999 ;
+	   $PER_PRICE = 0 ;
+	   $PER_SHIP_FEE = 0 ;
+	   $CurrentData = null ;
+	   foreach($inquiryData as $indata){
+	   	$cost1 = $indata['COST1'] ;
+	   	$cost2 = $indata['COST2'] ;
+	   	$cost3 = $indata['COST3'] ;
+	   		
+	   	if( $cost1 !=0 ){
+	   		$minCost = min($minCost , $cost1 ) ;
+	   		if($minCost == $cost1  ){
+	   			$PER_PRICE = $indata['PER1_PRICE'] ;
+	   			$PER_SHIP_FEE = $indata['PER1_SHIP_FEE'] ;
+	   			$CurrentData = $indata ;
+	   		}
+	   	}
+	   		
+	   	if( $cost2 !=0 ){
+	   		$minCost = min($minCost , $cost2 ) ;
+	   		if($minCost == $cost2  ){
+	   			$PER_PRICE = $indata['PER2_PRICE'] ;
+	   			$PER_SHIP_FEE = $indata['PER2_SHIP_FEE'] ;
+	   			$CurrentData = $indata ;
+	   		}
+	   	}
+	   		
+	   	if( $cost3 !=0 ){
+	   		$minCost = min($minCost , $cost3 ) ;
+	   		if($minCost == $cost3  ){
+	   			$PER_PRICE = $indata['PER3_PRICE'] ;
+	   			$PER_SHIP_FEE = $indata['PER3_SHIP_FEE'] ;
+	   			$CurrentData = $indata ;
+	   		}
+	   	}
+	   }
+	   
+	   if( $PER_PRICE >0  ){
+	   	$limitPrice = min($PER_PRICE,$limitPrice) ;
+	   }
+	   return $limitPrice ;
+		
+	}
+	
+	/**
 	 * 自动为开发产品创建采购单
 	 * 
 	 * @param unknown_type $params
@@ -16,8 +111,13 @@ class PurchaseService extends AppModel {
 	public function createItemForProductDev($params){
 		//1、检查采购计划是不是存在，如果不存在，则创建开发采购计划
 		$planId = $this->createPlanForProductDev( $params['loginId'] ) ;
+		$realId = $params['realId'] ;
 		$params['planId'] = $planId ;
-		
+		$status = 41 ;
+		//限价
+		$params['limitPrice'] = $this->getDefaultLimitPrice($realId) ;
+		//执行人
+		$params['executor'] = $this->getDefaultCharger($realId) ;
 		//判断采购单是否存在
 		$existSql = "select * from sc_purchase_plan_details where dev_id = '{@#devId#}' " ;
 		$item = $this->getObject($existSql, $params) ;
@@ -29,6 +129,8 @@ class PurchaseService extends AppModel {
 						PLAN_ID,
 						CREATOR,
 						CREATE_TIME,
+						LIMIT_PRICE,
+						EXECUTOR,
 						STATUS,
 						DEV_ID
 						)
@@ -39,7 +141,9 @@ class PurchaseService extends AppModel {
 							'{@#planId#}',
 							'{@#loginId#}',
 							NOW() ,
-							10,
+							'{@#limitPrice#}',
+							'{@#executor#}',
+							$status,
 							'{@#devId#}'
 						)" ;
 			$this->exeSql($sql, $params) ;

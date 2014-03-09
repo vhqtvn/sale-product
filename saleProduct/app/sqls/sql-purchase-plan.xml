@@ -125,5 +125,46 @@
 					 FROM sc_purchase_supplier_inquiry spsi WHERE spsi.asin = '{@#asin#}'
 				 ) t
     	</entry>
+    	
+    	<entry key="sql_inquiry_cost_calc_all">
+    	<![CDATA[	
+    			SELECT t.*,
+				       ROUND((t.PER1_PRICE + t.PER1_SHIP_FEE),2) AS COST1,
+				       ROUND((t.PER2_PRICE + t.PER2_SHIP_FEE),2) AS COST2,
+				       ROUND((t.PER3_PRICE + t.PER3_SHIP_FEE),2) AS COST3
+				 FROM (
+					SELECT spsi.* , 
+					IFNULL(spsi.OFFER1/spsi.NUM1,0) AS PER1_PRICE,
+					IFNULL(spsi.NUM1_SHIP_FEE/spsi.NUM1,0) AS PER1_SHIP_FEE,
+					IFNULL(spsi.OFFER2/spsi.NUM2,0) AS PER2_PRICE,
+					IFNULL(spsi.NUM2_SHIP_FEE/spsi.NUM2,0) AS PER2_SHIP_FEE,
+					IFNULL(spsi.OFFER3/spsi.NUM3,0) AS PER3_PRICE,
+					IFNULL(spsi.NUM3_SHIP_FEE/spsi.NUM3,0) AS PER3_SHIP_FEE
+					 FROM sc_purchase_supplier_inquiry spsi 
+					 WHERE (
+							spsi.SKU IS NOT NULL
+							AND
+							EXISTS (
+									SELECT srp.REAL_SKU FROM sc_real_product srp WHERE srp.REAL_SKU = spsi.sku
+									AND srp.ID = '{@#realId#}'
+								)
+							)
+							OR (
+							spsi.ASIN IS NOT NULL AND
+							EXISTS (
+								SELECT * FROM sc_real_product srp,
+								sc_real_product_rel srpr,
+								sc_amazon_account_product saap
+								WHERE srp.ID = srpr.REAL_ID
+								AND srpr.SKU = saap.SKU
+								AND srpr.ACCOUNT_ID = saap.ACCOUNT_ID
+								AND saap.ASIN = spsi.ASIN
+								AND srp.ID = '{@#realId#}'
+							)
+							)
+							AND DATE_SUB( CURDATE(), INTERVAL 1 MONTH ) <=   spsi.create_time 
+				 ) t
+				 ]]>	
+    	</entry>
     
 </properties>

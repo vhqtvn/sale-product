@@ -34,6 +34,7 @@
 		$security  = ClassRegistry::init("Security") ;
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$Supplier  = ClassRegistry::init("Supplier") ;
+		$PurchaseService  = ClassRegistry::init("PurchaseService") ;
 		
 		$product = $Sale->getProductPlanProduct($planProductId) ;
 		
@@ -76,7 +77,10 @@
 		$executor = $product['EXECUTOR'] ;
 		$executorName = $product['EXECUTOR_NAME'] ;
 		if( empty($executor) ){
-			$executor = $product['PURCHASE_CHARGER'] ;
+			$execut = $PurchaseService->getDefaultCharger($product['REAL_PRODUCT_ID']) ;
+			$executor 			= $execut['charger'] ;
+			$executorName 	= $execut['chargerName'] ;
+			/*$executor = $product['PURCHASE_CHARGER'] ;
 			$executorName = $product['PURCHASE_CHARGER_NAME'] ;
 			if( empty($executor) ){
 				//获取默认配置
@@ -86,15 +90,16 @@
 				$item = $SqlUtils->getObject($sql,array()) ;
 				$executor = $item['VALUE'] ;
 				$executorName = $item['NAME'] ;
-			}
+			}*/
 		}
 		//获取默认限价
 		$limitPrice = $product['LIMIT_PRICE'];
 		if( empty($limitPrice) ){
-			$realId = $product['ID'] ;
+			$limitPrice = $PurchaseService->getDefaultLimitPrice($product['REAL_PRODUCT_ID']) ;
+			/*$realId = $product['ID'] ;
 			$sql = "SELECT LIMIT_PRICE FROM sc_purchase_plan_details WHERE real_id = '{@#REAL_PRODUCT_ID#}' AND limit_price IS NOT NULL ORDER BY create_time DESC LIMIT 0,1";
 			$item = $SqlUtils->getObject($sql,$product) ;
-			$limitPrice = $item['LIMIT_PRICE'] ;
+			$limitPrice = $item['LIMIT_PRICE'] ;*/
 		}
 		
 		$isOwner = $loginId == $product['EXECUTOR'] ;
