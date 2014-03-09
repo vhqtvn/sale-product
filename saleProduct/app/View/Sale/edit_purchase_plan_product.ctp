@@ -38,7 +38,7 @@
 		
 		$product = $Sale->getProductPlanProduct($planProductId) ;
 		
-		$sku = $product["SKU"]  ;
+		$sku = $product["REAL_PRODUCT_SKU"]  ;
 		//$suppliers = $Supplier->getProductSuppliersBySku( $sku  ) ;
 		
 		$loginId = $user['LOGIN_ID'] ;
@@ -111,7 +111,7 @@
 													where sptp.product_id = sppd.id and sppd.sku = '{@#sku#}'
 													and sptp.product_id = '{@#productId#}'
 													order by sppd.create_time desc
-													  ", array('sku'=>$product['SKU'],'productId'=>$product['ID'] )) ;
+													  ", array('sku'=>$product['REAL_PRODUCT_SKU'],'productId'=>$product['ID'] )) ;
 	
 	?>
   
@@ -221,7 +221,7 @@
    <script type="text/javascript">
     var $COST_VIEW_TOTAL = '<?php echo $COST_VIEW_TOTAL;?>' ;
     var  $COST_VIEW_PROFIT = '<?php echo $COST_VIEW_PROFIT;?>' ;
-    var sku = '<?php echo $product['SKU'];?>' ;
+    var sku = '<?php echo $product['REAL_PRODUCT_SKU'];?>' ;
     var planId =  '<?php echo $product['PLAN_ID'];?>' ;
     var realId = '<?php echo $product['REAL_ID'];?>'
    
@@ -368,8 +368,8 @@
 										</td>
 									</tr>
 									<tr>
-										<th>货品：</th><td><a class="product-realsku"  sku="<?php echo $product['SKU'] ;?>"  href="#">
-										<?php echo  $product['SKU']  ;?></a>（<?php echo  $product['TITLE']  ;?>）</td>
+										<th>货品：</th><td><a class="product-realsku"  sku="<?php echo $product['REAL_PRODUCT_SKU'] ;?>"  href="#">
+										<?php echo  $product['REAL_PRODUCT_SKU']  ;?></a>（<?php echo  $product['TITLE']  ;?>）</td>
 										<th>
 										<button class="btn change_plan  10-input  20-input 30-input  40-input 45-input input no-disabled">更改</button>
 										采购计划：</th><td>
