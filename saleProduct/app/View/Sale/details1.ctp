@@ -638,7 +638,6 @@ html{-webkit-text-size-adjust: none;}
 							<tr>
 								<th>询价负责人:</th>
 								<td>
-										
 										<input type="hidden"  id="INQUIRY_CHARGER"  value="<?php echo $charger;?>" />
 										<input type="text"  disabled  id="INQUIRY_CHARGER_NAME"  value="<?php echo $chargerName;?>" />
 								</td>

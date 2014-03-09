@@ -72,11 +72,29 @@
 		//$suppliers = $SqlUtils->exeSql("sql_purchase_plan_product_inquiry",array('planId'=>$product["PLAN_ID"] ,'sku'=>$product["SKU"])) ;
 		
 		$status = $product['STATUS'] ;
+		//获取采购执行人
 		$executor = $product['EXECUTOR'] ;
 		$executorName = $product['EXECUTOR_NAME'] ;
 		if( empty($executor) ){
 			$executor = $product['PURCHASE_CHARGER'] ;
 			$executorName = $product['PURCHASE_CHARGER_NAME'] ;
+			if( empty($executor) ){
+				//获取默认配置
+				$sql = "SELECT sac.VALUE , su.NAME FROM sc_amazon_config sac , sc_user su
+								WHERE sac.value = su.LOGIN_ID
+								AND sac.name = 'DEFAULT_PURCHASE_CHARGER'" ;
+				$item = $SqlUtils->getObject($sql,array()) ;
+				$executor = $item['VALUE'] ;
+				$executorName = $item['NAME'] ;
+			}
+		}
+		//获取默认限价
+		$limitPrice = $product['LIMIT_PRICE'];
+		if( empty($limitPrice) ){
+			$realId = $product['ID'] ;
+			$sql = "SELECT LIMIT_PRICE FROM sc_purchase_plan_details WHERE real_id = '{@#REAL_PRODUCT_ID#}' AND limit_price IS NOT NULL ORDER BY create_time DESC LIMIT 0,1";
+			$item = $SqlUtils->getObject($sql,$product) ;
+			$limitPrice = $item['LIMIT_PRICE'] ;
 		}
 		
 		$isOwner = $loginId == $product['EXECUTOR'] ;
@@ -233,12 +251,13 @@
 							   }
 						}
 	        			<?php if( $ppp_audit ) { ?>
-	        			,actions:[{label:"审批通过",action:function(){ AuditAction(30,"审批通过") } },
+	        				,actions:[{label:"审批通过",action:function(){ AuditAction( <?php if( $status == 30 || $status == 40 ){ echo 30 ;}else{ echo 41; } ?>,"审批通过") } },
 	        				{label:"审批不通过，继续编辑",action:function(){ ForceAuditAction(10,"审批不通过，继续编辑") } },
 	        				{label:"审批不通过，结束采购",action:function(){ ForceAuditAction(25,"审批不通过，结束采购") } }
         				]
 	        			<?php };?>
 	        		},
+	        		<?php if( $status == 30 || $status == 40 ){  ?>
 	        		{status:30,label:"限价确认",memo:true
 	        			<?php if( $ppp_setlimitprice) { ?>
 	        			,actions:[
@@ -261,6 +280,8 @@
         				]
 	        			<?php };?>
 	        		},
+	        		<?php  }  ?>
+	        		
 	        		{status:41,label:"采购进行中",memo:false,format:function(node){
 
 	        			var text = "采购进行中" ;
@@ -373,9 +394,9 @@
 										<th>计划采购数量：</th>
 										<td><input id="plan_num"   class="10-input input"  data-validator="required"    type="text" value='<?php echo  $product['PLAN_NUM']  ;?>' /></td>
 										<th>采购限价：</th>
-										<td><input id="limit_price"   class="30-input input"   type="text" 
+										<td><input id="limit_price"   class="10-input 20-input 30-input input"   type="text" 
 													 <?php echo $status>=30?"data-validator='required'":"" ?>
-													 value='<?php echo $product['LIMIT_PRICE'];?>' /></td>
+													 value='<?php echo $limitPrice ;?>' /></td>
 									</tr>
 									<tr>
 										<th>备注：</th><td colspan=3>
