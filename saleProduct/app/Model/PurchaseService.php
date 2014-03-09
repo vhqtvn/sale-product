@@ -118,6 +118,9 @@ class PurchaseService extends AppModel {
 		$params['limitPrice'] = $this->getDefaultLimitPrice($realId) ;
 		//执行人
 		$params['executor'] = $this->getDefaultCharger($realId) ;
+		
+		
+		
 		//判断采购单是否存在
 		$existSql = "select * from sc_purchase_plan_details where dev_id = '{@#devId#}' " ;
 		$item = $this->getObject($existSql, $params) ;
@@ -128,6 +131,8 @@ class PurchaseService extends AppModel {
 						PLAN_NUM,
 						PLAN_ID,
 						CREATOR,
+						PLAN_START_TIME,
+						PLAN_END_TIME,
 						CREATE_TIME,
 						LIMIT_PRICE,
 						EXECUTOR,
@@ -140,6 +145,8 @@ class PurchaseService extends AppModel {
 							'{@#planNum#}',
 							'{@#planId#}',
 							'{@#loginId#}',
+							NOW(),
+							DATE_ADD(NOW(),INTERVAL 3 DAY),
 							NOW() ,
 							'{@#limitPrice#}',
 							'{@#executor#}',
