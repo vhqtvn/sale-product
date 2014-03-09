@@ -66,6 +66,9 @@
 						and ( sptp.status = 48  ) ) as STATUS48,	
 			( select count(*) from sc_purchase_task_products sptp 
 						where sptp.task_id = spt.id   
+						and ( sptp.status = 49  ) ) as STATUS49,	
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
 						and ( sptp.status =  50 ) ) as STATUS50,			
 			( select count(*) from sc_purchase_task_products sptp 
 						where sptp.task_id = spt.id   
