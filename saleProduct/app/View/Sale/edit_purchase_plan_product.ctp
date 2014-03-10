@@ -112,6 +112,17 @@
 													and sptp.product_id = '{@#productId#}'
 													order by sppd.create_time desc
 													  ", array('sku'=>$product['REAL_PRODUCT_SKU'],'productId'=>$product['ID'] )) ;
+		
+		//获取缺省日期
+		$startTime = $product['PLAN_START_TIME'] ;
+		$endTime =$product['PLAN_END_TIME'] ; 
+		if( empty($product['PLAN_START_TIME']) ){
+			$sql = "SELECT DATE_FORMAT(NOW(),'%Y-%m-%d') AS START_DATE,DATE_FORMAT( DATE_ADD(NOW(),INTERVAL 3 DAY),'%Y-%m-%d') AS END_DATE" ;
+			$_item = $SqlUtils->getObject( $sql , array() ) ;
+			$startTime = $_item['START_DATE'] ;
+			$endTime = $_item['END_DATE'] ;
+		}
+		
 	
 	?>
   
@@ -391,9 +402,9 @@
 										<th>采购时限：</th>
 										<td colspan=3>
 										<input id="planStartTime" class="10-input input"  data-validator="required"  type="text"  
-											value="<?php echo $product['PLAN_START_TIME'];?>" data-widget="calendar"/>到
+											value="<?php echo $startTime;?>" data-widget="calendar"/>到
 										<input id="planEndTime"  class="10-input input"   data-validator="required"  type="text" 
-											value="<?php echo $product['PLAN_END_TIME'];?>" data-widget="calendar"/></td>
+											value="<?php echo $endTime;?>" data-widget="calendar"/></td>
 									</tr>
 									<tr>
 										<th>计划采购数量：</th>
