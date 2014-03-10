@@ -361,7 +361,8 @@ html{-webkit-text-size-adjust: none;}
 	          {label:"保存",action:function(){ ForceAuditAction('30',"保存") } },
 			  {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
 			  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
-			  {label:"通过审批",action:function(){ AuditAction('40',"审批通过 " ) } }
+			  {label:"提交总监审批",action:function(){ AuditAction('40',"提交总监审批 " ) } },
+			  {label:"审批通过",action:function(){ AuditAction('50',"审批通过，录入货品 " ) } }
 			  <?php }?>
 	     ]}
      ) ;
