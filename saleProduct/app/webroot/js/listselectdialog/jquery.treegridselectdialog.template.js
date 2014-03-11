@@ -134,6 +134,10 @@
 				$('<button class="btn btn-primary">'+this.label+'</button>') .appendTo("#select-searchform").click(function(){
 					eval("var action = "+me.action ) ;
 					action.call(window) ;
+					if( me.afterClose ){
+						$(".search-panel").dialogReturnValue(null) ;
+						$(".search-panel").dialogClose() ;
+					}
 				}) ;
 			}) ;
 		}

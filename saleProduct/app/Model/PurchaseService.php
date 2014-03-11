@@ -117,9 +117,8 @@ class PurchaseService extends AppModel {
 		//限价
 		$params['limitPrice'] = $this->getDefaultLimitPrice($realId) ;
 		//执行人
-		$params['executor'] = $this->getDefaultCharger($realId) ;
-		
-		
+		$charger = $this->getDefaultCharger($realId) ;//executor
+		$params['executor'] = $charger['charger'] ;
 		
 		//判断采购单是否存在
 		$existSql = "select * from sc_purchase_plan_details where dev_id = '{@#devId#}' " ;

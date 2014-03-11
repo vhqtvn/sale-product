@@ -40,6 +40,7 @@ jQuery.open = function(){//url,width,height,params,callback,fixParams
 	for(var i=argsLength+1 ;i<7;i++){
 		args[i-1] = null ;
 	}
+
 	url = args[0] ;
 	jQuery(args).each(function(index,arg){
 		if(index == 0 )return ;
@@ -63,7 +64,9 @@ jQuery.open = function(){//url,width,height,params,callback,fixParams
 	jQuery.dialogReturnValue("__init__");
 	params = params||{} ;
 	fixParams = fixParams||{} ;
-	params.showType = "open" ;
+
+	params.showType = params.showType||"open" ;
+
 	if( jQuery.dialog  && (params.showType == 'dialog' || !params.showType ) ){
 		var opts = {
 			width:width,

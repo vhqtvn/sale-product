@@ -117,7 +117,8 @@ class Supplier extends AppModel {
 		foreach( explode(',',$suppliers) as $supplier ){
 			try{
 				$this->exeSql("sql_realProduct_supplierInsert", array('sku'=>$sku,'supplierId'=>$supplier,'loginId'=>$data['loginId'] )) ;
-			}catch(Exception $e){}
+			}catch(Exception $e){
+			}
 		}
 		
 		 /*

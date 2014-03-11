@@ -12,6 +12,7 @@
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('../js/validator/jquery.validation');
+		echo $this->Html->css('../js/dialog/jquery.dialog');
 		echo $this->Html->css('default/style');
 		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
@@ -27,6 +28,7 @@
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('modules/sale/edit_purchase_plan_product');
 		echo $this->Html->script('calendar/WdatePicker');
+		echo $this->Html->script('dialog/jquery.dialog');
 		
 		$planProductId = $params['arg1'] ;
 		

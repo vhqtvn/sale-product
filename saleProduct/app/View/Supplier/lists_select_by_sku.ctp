@@ -11,6 +11,7 @@
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/dialog/jquery.dialog');
 		
 		echo $this->Html->css('default/style');
 
@@ -18,6 +19,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('dialog/jquery.dialog');
 		
 	?>
   
@@ -98,7 +100,8 @@
 					sku:sku,
 					suppliers:suppliers.join(",")
 				},function(){
-					window.close() ;
+					$(document.body).dialogReturnValue(true) ;
+					$(document.body).dialogClose() ;
 				}) ;
 			}) ;
    	 });
@@ -163,7 +166,7 @@
 							
 							<button class="save-product-supplier btn-primary btn">保存产品供应商</button>
 							
-							<button onclick="window.close();" class="btn">关&nbsp;闭</button>
+							<button onclick="$(this).dialogClose();" class="btn">关&nbsp;闭</button>
 						</div>
 					</div>
 </body>

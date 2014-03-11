@@ -144,7 +144,7 @@ class SupplierController extends AppController {
 		$this->Supplier->saveProductSupplierXJ($this->request->data,$user,$localUrl) ;
 		
 		$this->response->type("html");
-		$this->response->body("<script type='text/javascript'>window.close();</script>");
+		$this->response->body("<script type='text/javascript'>window.parent.xjSuccess() ;</script>");
 		return $this->response;
 	}
 	

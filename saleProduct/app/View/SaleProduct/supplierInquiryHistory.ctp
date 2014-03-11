@@ -45,9 +45,9 @@
    <?php
 			$url = "" ; 
 			if(empty($sku)){
-				$url = "/page/forward/Supplier.updateProductSupplierByAsin/asin/".$asin ;
+				$url = "/page/forward/Supplier.updateProductSupplierByAsinFrame/asin/".$asin ;//updateProductSupplierByAsinFrame
 			}else{
-				$url = "/page/forward/Supplier.updateProductSupplierByAsin/sku/".$sku ;
+				$url = "/page/forward/Supplier.updateProductSupplierByAsinFrame/sku/".$sku ;
 			}
 		?>
   
@@ -131,13 +131,39 @@
 				 }
 			}) ;
 
+			$(".save-xj").click(function(){
+				$("#supifr")[0].contentWindow.saveXj();
+			}) ;
+
 			$(".supplier-select").click(function(){
-				
+				if( $("#supifr").is(":visible") ){
+					 $("#supifr").hide() ;
+					 $(".save-xj").hide() ;
+					 $(this).html("添加询价") ;
+				}else{
+					$(this).html("收起询价") ;
+					 $("#supifr").show() ;
+					 $(".save-xj").show() ;
+				}
+				/*
 				openCenterWindow(contextPath+"<?php echo $url;?>",800,600,function(){
 					$(".grid-content-details").llygrid("reload",{},true);
 					}) ;
+				*/
 			}) ;
+
+			 $("#supifr").attr("src",contextPath+"<?php echo $url;?>") ;
    	 });
+
+	 function xjSuccess(){
+		 $("#supifr").hide() ;
+		 $("#supifr").attr("src",contextPath+"<?php echo $url;?>") ;
+		 $(".save-xj").hide() ;
+		 $(this).html("添加询价") ;
+		 $(".grid-content-details").llygrid("reload",{},true);
+	}
+
+	
    </script>
    
    <style>
@@ -148,18 +174,18 @@
 
 </head>
 <body>
-<?php if($PD_INQUIRY){ ?>
+
 	<div class="toolbar toolbar-auto">
 				<table style="width:100%;" class="query-table">	
 					<tr>
 						<td>
-							<button class="supplier-select btn">添加询价</button>
+						<?php if($PD_INQUIRY){ ?>
+							<button class="supplier-select no-disabled btn">添加询价</button>
+							<button class="save-xj btn btn-primary hide">保存询价</button>
+							<?php }?>
 						</td>
-					</tr>						
-				</table>	
-	 </div>
-	 <?php }?>
-		<?php 
+						<td>
+							<?php 
 			$Config  = ClassRegistry::init("Config") ;
 			$websites = $Config->getAmazonConfig("PRODUCT_SEARCH_WEBSITE") ;
 		
@@ -173,6 +199,15 @@
 				}
 			}
 		?>
+						</td>
+					</tr>						
+				</table>	
+	 </div>
+	 
+				<iframe id="supifr" src=""  frameborder="0"  style="width:100%;display:none;height:450px;">
+				
+				</iframe>
+		
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 

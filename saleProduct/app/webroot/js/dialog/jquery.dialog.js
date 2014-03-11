@@ -1,6 +1,18 @@
 (function($){
-	var zIndex = 900 ;
+	var zIndex = 99999 ;
 	var dialogArray = [] ;
+	
+	$.fn.getDialog = function(){
+		var dialog = $(this).parents(".ui-dialog-wrapper:first").data("dialog");
+		
+		if(!dialog){
+			if( window.parent.jQuery("iframe[name='"+window.name+"']").parents(".ui-dialog-wrapper:first")[0]){
+				return window.parent.jQuery("iframe[name='"+window.name+"']").getDialog();
+			}
+		}else{
+			return dialog ;
+		}
+	};
 	
 	$.fn.dialogResize = function(opts){
 		var dialog = $(this).parents(".ui-dialog-wrapper:first").data("dialog");
@@ -47,9 +59,9 @@
 	}
 	
 	$.fn.dialogClose = function(value){
-		/*var dialog = $(this).parents(".ui-dialog-wrapper:first").data("dialog");
+		var dialog = $(this).parents(".ui-dialog-wrapper:first").data("dialog");
 		if( typeof value != 'undefined' ){
-			$(dialog).dialogReturnValue(value) ;
+			$(this).dialogReturnValue(value) ;
 		}
 		if(!dialog){
 			if( window.parent.jQuery("iframe[name='"+window.name+"']").parents(".ui-dialog-wrapper:first")[0]){
@@ -59,7 +71,7 @@
 		}else{
 			close.call(dialog);
 			return true ;
-		}*/
+		}
 		window.close() ;
 	}
 	
@@ -290,7 +302,7 @@
 		    _height = this.settings.height || (this.settings.width*(6/19)) ;
 			resizeDialog.call(this,{width:this.settings.width,height:_height,iframe:true}) ;
 		}
-		block.call(this) ;
+		//block.call(this) ;
 		
 		if( this.settings.content ){//文本信息
 			unblock.call(this) ;

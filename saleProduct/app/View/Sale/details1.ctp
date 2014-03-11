@@ -14,6 +14,7 @@
 		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/tab/jquery.ui.tabs');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
+		echo $this->Html->css('../js/dialog/jquery.dialog');
 		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
 
 		echo $this->Html->script('jquery');
@@ -21,6 +22,7 @@
 		echo $this->Html->script('jquery-ui');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('tab/jquery.ui.tabs');
+		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('validator/jquery.validation');
 		echo $this->Html->script('modules/sale/details_dev');
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');

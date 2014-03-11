@@ -7,7 +7,7 @@
  *  TODO
  */
 ;(function($){
-	$.listselectdialog = function(params , callback){
+	$.listselectdialog = function(params , callback , dialogArgs){
 		
 		var _p = $.extend({},params) ;
 		
@@ -72,26 +72,29 @@
 			templateName = "select_template.php" ;
 		}
 		
+		var _params = {
+				 title:_p.title , 
+				 params: _p,
+				// isScroll:false,
+				 titleStyle:_p.titleStyle||""}  ;
+		
+		_params = $.extend(_params , dialogArgs) ;
 		$.open(
 			(Config.serverPath||Config.contextPath)+"/app/webroot/js/listselectdialog/"+templateName+"?random="+random , 
 			width , 
 			height , 
-			{
-			 title:_p.title , 
-			 params: _p,
-			// isScroll:false,
-			 titleStyle:_p.titleStyle||""} 
+			_params
 			, callback ) ;
 			
 	}
-	$.fn.listselectdialog = function( params , callback ){
+	$.fn.listselectdialog = function( params , callback , dialogArgs ){
 		$( this ).each(function(){
 			$(this).unbind("click.listselect").bind("click.listselect",function(){
 				var me = $(this) ;
 				var _callback = callback? function(){
 					callback(me) ;
 				} :window.undefined;
-				$.listselectdialog( params , _callback ) ;
+				$.listselectdialog( params , _callback , dialogArgs ) ;
 				return false;
 			})
 		});

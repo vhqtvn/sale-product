@@ -21,11 +21,10 @@
 					if( !$.validation.validate('#personForm').errorInfo ) {
 						var json = $("#personForm").toJson() ;
 						//var vals = $('#default-tree').tree().getSelectedIds()  ;
-						
 						json.products = "";//vals.join(",") ;
 
 						$.dataservice("model:Supplier.saveSupplier",json,function(result){
-							jQuery.dialogReturnValue(true) ;
+							jQuery.dialogReturnValue(result) ;
 							window.close();
 						}) ;
 					};

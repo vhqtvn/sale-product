@@ -90,7 +90,11 @@
 					</div>
 			</div>
 		</div>
-		
+		<script type="text/javascript">
+		$(function(){
+			window.dialog = $(".select-supplier").getDialog() ;
+		}); 
+		</script>
 	</div>
 </body>
 </html>
