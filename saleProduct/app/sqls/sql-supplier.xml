@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="list_supplier_4_autocomplete">
+			select id as VALUE ,name as TEXT from sc_supplier 
+			where  name like '{@%#INPUT_VALUE#%}' 
+			limit 0,10
+	</entry>
 	
 	<entry key="sql_supplier_eva_findBySupplieAndMeta">
 			select * from sc_supplier_evaluate where SUPPLIER_ID = '{@#supplierId#}' and meta_code = '{@#metaCode#}'

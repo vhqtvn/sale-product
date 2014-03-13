@@ -20,12 +20,11 @@
 				if(window.confirm("确认保存？")){
 					if( !$.validation.validate('#personForm').errorInfo ) {
 						var json = $("#personForm").toJson() ;
-						//var vals = $('#default-tree').tree().getSelectedIds()  ;
 						json.products = "";//vals.join(",") ;
 
 						$.dataservice("model:Supplier.saveSupplier",json,function(result){
 							jQuery.dialogReturnValue(result) ;
-							window.close();
+							$(document.body).dialogClose() ;
 						}) ;
 					};
 				}

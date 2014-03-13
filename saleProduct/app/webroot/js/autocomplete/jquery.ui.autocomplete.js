@@ -305,6 +305,9 @@
 					  	 service_param['format'] = 'false' ;
 					  	 $.dataservice(_opts.CommandName ,service_param , function(response){//json
 		                    	resp($.map(response, function(item) {
+		                    		if(item.t){
+		                    			item = item.t ;
+		                    		}
 		                    		var text = item.TEXT||item.text ;
 		                    		var value = item.VALUE||item.value||item.ID||item.id ;
 									return $.extend({
@@ -313,7 +316,7 @@
 										   value: text
 									}, item );
 								}));
-		                    },{url:url}   ) ;
+		                    },{url:url,noblock:true}   ) ;
 				};
 			} else {
 				this.source = this.options.source;
@@ -674,10 +677,40 @@
 			
 			var self = this;
 			var select = this.element.hide();
+			var  defaultOptions = [] ;
 			
 			var options = {
 					source : function(request, response) {
 						 var _opts = self.options ;
+						
+						 if( !request.term ){//加载默认
+							if( select.children("option").length >0 ) {
+								var values = select.children("option").map(function() {
+									var text = $(this).text()||'&nbsp;';
+									// 拼音首字母解析
+									if (!request.term || matcher.test(text)
+											|| $.pyCompare(request.term, text)){
+												var label ;
+												if(!$.trim(text) || text == '&nbsp;'){
+													label = "<div style='height:20'>&nbsp;</div> " ;
+													text = "" ;
+												}else label = text.replace(
+															new RegExp("(?![^&;]+;)(?!<[^<>]*)("
+															+ request.term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi,"\\$1")
+															+ ")(?![^<>]*>)(?![^&;]+;)","gi"),"<strong>$1</strong>") ;
+										
+										return {
+											id    : $(this).val(),
+											label : label,
+											value : text
+										};
+									}
+								}) ;
+								response(values, 'combobox');
+								return ;
+							}
+						 }
+						 
 						 if(_opts.CommandName){
 						 	 var service_param = {};
 							 service_param = $.extend({}, _opts.params);
@@ -689,6 +722,9 @@
 						  	 $.dataservice(_opts.CommandName,service_param,function(resp){//json
 						  	 		select.empty() ;
 			                    	response($.map(resp, function(item) {
+			                    		if(item.t){
+			                    			item = item.t ;
+			                    		}
 			                    		var text = item.TEXT||item.text ;
 			                    		var value = item.VALUE||item.value||item.ID||item.id ;
 			                    		if(!select.find("[value="+value+"]")[0]){
@@ -700,7 +736,7 @@
 										   value: text
 									   }, item );
 									}),'combobox');
-			                    },{url:url} ) ;
+			                    },{url:url,noblock:true} ) ;
 						 }else{
 							var matcher = new RegExp(request.term, "i");
 							response(select.children("option").map(function() {
@@ -945,6 +981,9 @@
 						  	 service_param['format'] = 'false' ;
 						  	 $.dataservice(json4Options.CommandName,service_param,function(response){//json
 			                    	resp($.map(response, function(item) {
+			                    		if(item.t){
+			                    			item = item.t ;
+			                    		}
 			                    		var text = item.TEXT||item.text ;
 			                    		var value = item.VALUE||item.value||item.ID||item.id ;
 										return {
@@ -953,7 +992,7 @@
 											value: text
 										}
 									}));
-			                    } ,{url:url}  ) ;
+			                    } ,{url:url,noblock:true}  ) ;
 			           }
 			 } ;
 		  	options = $.extend({},json4Options,options) ;

@@ -154,7 +154,7 @@ class Keyword extends AppModel {
 		
 		//替换关键字+为空格
 		
-		
+		//Keyword;Search Volume;CPC;Competition;Number of Results;Trends
 		$record['keyword'] = str_replace("+"," ", $array[0]) ;
 		$record['search_volume'] = $array[1] ;
 		$record['cpc'] = $array[2] ;

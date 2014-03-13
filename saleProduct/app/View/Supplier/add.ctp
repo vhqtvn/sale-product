@@ -8,6 +8,7 @@
 	
    <?php
    		include ('config/config.php');
+   		include_once ('config/header.php');
 		
 		$id = "" ;
 		$name = '' ;
@@ -59,23 +60,6 @@
 		}
 	?>
 	
-	
-	<link href="/<?php echo $fileContextPath?>/app/webroot/favicon.ico" type="image/x-icon" rel="icon" />
-	<link href="/<?php echo  $fileContextPath;?>/app/webroot/favicon.ico" type="image/x-icon" rel="shortcut icon" />
-	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/validator/jquery.validation.css" />
-	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/tree/jquery.tree.css" />
-	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/default/style.css" />
-	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/tab/jquery.ui.tabs.css" />
-	<link rel="stylesheet" type="text/css" href="/<?php echo  $fileContextPath;?>/app/webroot/css/../js/grid/jquery.llygrid.css" />
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/jquery.js"></script>
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/common.js"></script>
-	<script type="text/javascript" src="/<?php  echo $fileContextPath;?>/app/webroot/js/jquery-ui.js"></script>
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/../grid/query.js"></script>
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/jquery.json.js"></script>
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/grid/jquery.llygrid.js"></script>
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/validator/jquery.validation.js"></script>
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/tree/jquery.tree.js"></script>
-	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/tab/jquery.ui.tabs.js"></script>
 	<script type="text/javascript" src="/<?php echo  $fileContextPath;?>/app/webroot/js/modules/supplier/add.js"></script>
 	
    <style>
@@ -155,17 +139,15 @@
 				<caption>供应商信息</caption>
 				<tr>
 					<th>供应商名称：</th>
-					<td colspan="3">
+					<td>
 						<?php if($isView){
 							echo $name;
 						}else{ ?>
 							<input   data-validator="required" type="text" id="name" value="<?php echo $name;?>"/>
 						<?php }?>
 					</td>
-				</tr>
-				<tr>
 					<th>供应商编码：</th>
-					<td colspan="3">
+					<td>
 						<?php if($isView){
 							echo $defaultCode;
 						}else{ ?>
@@ -324,7 +306,7 @@
 						<div class="form-actions col2">
 							<button  type="submit" class="btn btn-primary commit">提&nbsp;交</button>
 							
-							<button onclick="window.close();" class="btn">关&nbsp;闭</button>
+							<button onclick="$(this).dialogClose();" class="btn">关&nbsp;闭</button>
 						</div>
 					</div>
 	<?php }?>

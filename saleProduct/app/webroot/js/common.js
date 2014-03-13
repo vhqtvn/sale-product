@@ -12,6 +12,10 @@ function getContextPath() {
     return result ;
 }
 
+window.onerror = function(){
+	
+}
+
 window.Config = window.Config || {
 	contextPath:getContextPath(),
 	serverPath:window.location.protocol+"//"+window.location.host+getContextPath()

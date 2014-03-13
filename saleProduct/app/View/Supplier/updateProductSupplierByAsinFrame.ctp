@@ -8,21 +8,8 @@
 
    <?php
   		include_once ('config/config.php');
+  		include_once ('config/header.php');
    
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../grid/grid');
-		echo $this->Html->css('../js/validator/jquery.validation');
-		echo $this->Html->css('../js/dialog/jquery.dialog');
-		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
-		echo $this->Html->css('default/style');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('../grid/query');
-		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
-		echo $this->Html->script('validator/jquery.validation');
-		echo $this->Html->script('dialog/jquery.dialog');
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		
@@ -72,7 +59,7 @@
 								]
 							}
 					   } ;
-					   
+					  /*
 					$(".select-supplier").listselectdialog( chargeGridSelect,function(){
 						var args = jQuery.dialogReturnValue() ;
 						if(!args) return ;
@@ -90,32 +77,43 @@
 								window.location.reload() ;
 							}
 						},{showType:"dialog"}) ;
-					}) ;
+					}) ;*/
+
+				   $(".add-supplier").click(function(){
+					   <?php  if( !empty($sku) ){ ?>
+					   addSupplierBySku() ;
+					   <?php }else{ ?>
+					   addSupplier() ;
+					   <?php }?>
+					 }) ;
 
 		});
 		var isAddSupplierBySku = false ;
 		function addSupplierBySku(){
 			isAddSupplierBySku = true ;
-			openCenterWindow(contextPath+"/supplier/add/sku/<?php echo $sku;?>", 800,600,function(){
-				var result = jQuery.dialogReturnValue() ;
-				var value = result.id ;
-				var label = result.name ;
-				$("select[name='supplierId']").append( "<option value='"+value+"' selected='selected'>"+label+"</option>" );
-				$("select[name='supplierId']").val(value) ;
-			}) ;
-			//this.close();
-		}
-		
-		function addSupplier(){
-			openCenterWindow(contextPath+"/supplier/add/asin/<?php echo $asin;?>", 800,600,function(){
+			openCenterWindow(contextPath+"/supplier/add/sku/<?php echo $sku;?>", 850,500,function(){
 				var result = jQuery.dialogReturnValue() ;
 				if(!result) return ;
 				var value = result.id ;
 				var label = result.name ;
-				$("#supplierId").val(value) ;
-				$("#supplierName").val(label) ;
+				$("select[name='supplierId']").append( "<option value='"+value+"' selected='selected'>"+label+"</option>" );
+				$("select[name='supplierId']").val(value) ;
+				$("#supplierId").comboBox().setValue(value);
+			},{showType:"dialog"}) ;
+			//this.close();
+		}
+		
+		function addSupplier(){
+			openCenterWindow(contextPath+"/supplier/add/asin/<?php echo $asin;?>", 850,500,function(){
+				var result = jQuery.dialogReturnValue() ;
+				if(!result) return ;
+				var value = result.id ;
+				var label = result.name ;
+				$("select[name='supplierId']").append( "<option value='"+value+"' selected='selected'>"+label+"</option>" );
+				$("select[name='supplierId']").val(value) ;
+				$("#supplierId").comboBox().setValue(value);
 				return false ;
-			}) ;
+			},{showType:"dialog"}) ;
 			//this.close();
 		}
 		
@@ -129,6 +127,17 @@
 		 function saveXj(){
 			 $('#personForm').submit() ;
 		 }
+
+		 $(function(){
+			    $("#supplierId").comboBox({
+					source : 'remote',
+				    CommandName : 'sqlId:list_supplier_4_autocomplete',
+				    variableName : 'INPUT_VALUE',
+				    params : {
+				    	catalogId : 'sale'
+				    }
+				});
+		 }) ;
    </script>
 
 </head>
@@ -163,7 +172,7 @@
 													}
 											?>
 						</select>
-						<button class="supplier-select btn">选择供应商</button>
+						<button class="add-supplier btn"  title="添加供应商">+</button>
 						</td>
 						<th>产品图片：</th>
 						<td><input name="supplierProductImage" type="file"/></td>
@@ -171,9 +180,15 @@
 					<?php }else{ ?>
 					<tr>
 						<th>供应商名称：</th><td>
-							<input id="supplierId" name="supplierId"  type="hidden" value="<?php echo $productSupplier['SUPPLIER_ID']; ?>"/>
-							<input id="supplierName" name="supplierName"  type="text" readonly value="<?php echo $productSupplier['SUPPLIER_NAME']; ?>"/>
-							<button class="btn select-supplier">选择供应商</button>
+							<?php /*
+							<input id="supplierId1" name="supplierId11"  type="hidden" value="<?php echo $productSupplier['SUPPLIER_ID']; ?>"/>
+							<input id="supplierName111" name="supplierName11"  type="text"  value="<?php echo $productSupplier['SUPPLIER_NAME']; ?>"/>
+							*/
+							 ?>
+							<select id="supplierId"  name="supplierId"  >
+								<option value="<?php echo $productSupplier['SUPPLIER_ID']; ?>" selected="selected"><?php echo $productSupplier['SUPPLIER_NAME']; ?></option>
+							</select>
+							<button class="btn add-supplier" title="添加供应商">+</button>
 						</td>
 						<th>产品图片：</th>
 						<td><input name="supplierProductImage" type="file"/></td>
@@ -246,20 +261,35 @@
 							value="<?php echo $productSupplier['NUM1'];?>"/>/
 									<input type="text" id="offer1" name="offer1"   data-validator="required,double" style="width:50px"  placeHolder="报价"
 							value="<?php echo $productSupplier['OFFER1'];?>"/>/
-									<input type="text" id="num1ShipFee" name="num1ShipFee"   data-validator="double" style="width:50px"  placeHolder="运费"
-							value="<?php echo $productSupplier['NUM1_SHIP_FEE'];?>"/></td>
+									<select id="num1ShipFee" name="num1ShipFee"  style="width:80px"  >
+										<option value="">-运费-</option>
+										<option value="1"  <?php echo $productSupplier['NUM1_SHIP_FEE']==1?"selected":"";?>>包邮</option>
+										<option value="2"  <?php echo $productSupplier['NUM1_SHIP_FEE']==2?"selected":"";?>>免邮</option>
+										<option value="3"  <?php echo $productSupplier['NUM1_SHIP_FEE']==3?"selected":"";?>>卖家支付</option>
+									</select>
+							</td>
 									<td><input type="text" id="num2" name="num2"  data-validator="integer" style="width:50px" placeHolder="数量"
 							value="<?php echo $productSupplier['NUM2'];?>"/>/
 								<input type="text" id="offer2" name="offer2"   data-validator="double" style="width:50px"  placeHolder="报价"
 							value="<?php echo $productSupplier['OFFER2'];?>"/>/
-							<input type="text" id="num2ShipFee" name="num2ShipFee"   data-validator="double" style="width:50px"
-							value="<?php echo $productSupplier['NUM2_SHIP_FEE'];?>"/></td>
+								<select id="num2ShipFee" name="num2ShipFee"  style="width:80px"  >
+										<option value="">-运费-</option>
+										<option value="1"  <?php echo $productSupplier['NUM2_SHIP_FEE']==1?"selected":"";?>>包邮</option>
+										<option value="2"  <?php echo $productSupplier['NUM2_SHIP_FEE']==2?"selected":"";?>>免邮</option>
+										<option value="3"  <?php echo $productSupplier['NUM2_SHIP_FEE']==3?"selected":"";?>>卖家支付</option>
+									</select>
+							</td>
 									<td><input type="text" id="num3" name="num3"   data-validator="integer" style="width:50px" placeHolder="数量"
-							value="<?php echo $productSupplier['NUM3'];?>"/>/
+												value="<?php echo $productSupplier['NUM3'];?>"/>/
 									<input type="text" id="offer3" name="offer3"   data-validator="double" style="width:50px"  placeHolder="报价"
-							value="<?php echo $productSupplier['OFFER3'];?>"/>
-									/<input type="text" id="num3ShipFee" name="num3ShipFee"   data-validator="double" style="width:50px"  placeHolder="运费"
-							value="<?php echo $productSupplier['NUM3_SHIP_FEE'];?>"/></td>
+												value="<?php echo $productSupplier['OFFER3'];?>"/>
+									/<select id="num3ShipFee" name="num3ShipFee"  style="width:80px"  >
+										<option value="">-运费-</option>
+										<option value="1"  <?php echo $productSupplier['NUM3_SHIP_FEE']==1?"selected":"";?>>包邮</option>
+										<option value="2"  <?php echo $productSupplier['NUM3_SHIP_FEE']==2?"selected":"";?>>免邮</option>
+										<option value="3"  <?php echo $productSupplier['NUM3_SHIP_FEE']==3?"selected":"";?>>卖家支付</option>
+									</select>
+							</td>
 								</tr>
 							</table>
 						</td>

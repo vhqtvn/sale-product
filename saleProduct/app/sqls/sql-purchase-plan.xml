@@ -117,11 +117,11 @@
 				 FROM (
 					SELECT spsi.* , 
 					IFNULL(spsi.OFFER1/spsi.NUM1,0) AS PER1_PRICE,
-					IFNULL(spsi.NUM1_SHIP_FEE/spsi.NUM1,0) AS PER1_SHIP_FEE,
+					0 AS PER1_SHIP_FEE,
 					IFNULL(spsi.OFFER2/spsi.NUM2,0) AS PER2_PRICE,
-					IFNULL(spsi.NUM2_SHIP_FEE/spsi.NUM2,0) AS PER2_SHIP_FEE,
+					0 AS PER2_SHIP_FEE,
 					IFNULL(spsi.OFFER3/spsi.NUM3,0) AS PER3_PRICE,
-					IFNULL(spsi.NUM3_SHIP_FEE/spsi.NUM3,0) AS PER3_SHIP_FEE
+					0 AS PER3_SHIP_FEE
 					 FROM sc_purchase_supplier_inquiry spsi WHERE spsi.asin = '{@#asin#}'
 				 ) t
     	</entry>
@@ -135,11 +135,11 @@
 				 FROM (
 					SELECT spsi.* , 
 					IFNULL(spsi.OFFER1/spsi.NUM1,0) AS PER1_PRICE,
-					IFNULL(spsi.NUM1_SHIP_FEE/spsi.NUM1,0) AS PER1_SHIP_FEE,
+					0 AS PER1_SHIP_FEE,
 					IFNULL(spsi.OFFER2/spsi.NUM2,0) AS PER2_PRICE,
-					IFNULL(spsi.NUM2_SHIP_FEE/spsi.NUM2,0) AS PER2_SHIP_FEE,
+					0 AS PER2_SHIP_FEE,
 					IFNULL(spsi.OFFER3/spsi.NUM3,0) AS PER3_PRICE,
-					IFNULL(spsi.NUM3_SHIP_FEE/spsi.NUM3,0) AS PER3_SHIP_FEE
+					0 AS PER3_SHIP_FEE
 					 FROM sc_purchase_supplier_inquiry spsi 
 					 WHERE (
 							spsi.SKU IS NOT NULL

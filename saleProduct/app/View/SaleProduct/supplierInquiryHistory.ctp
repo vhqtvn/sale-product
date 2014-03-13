@@ -59,6 +59,13 @@
 			}else{
 				querys['asin'] = '<?php echo $asin;?>' ;
 			}
+
+			function  getShipFeeType(val){
+				if(val == 1) return "包邮" ;
+				if(val == 2) return "免邮" ;
+				if(val == 3) return "卖家支付" ;
+				return "-" ;
+			}
 			
 			$(".grid-content-details").llygrid({
 				columns:[
@@ -83,17 +90,18 @@
 						           	if(!record.PRODUCT_LENGTH) return "-" ;
 										return record.PRODUCT_LENGTH+"*"+record.PRODUCT_WIDTH+"*"+record.PRODUCT_HEIGHT ;
 							 }},
-				           	{align:"center",key:"NUM1",label:"报价1",width:"6%",format:function(val,record){
+				           	{align:"center",key:"NUM1",label:"报价1",width:"10%",format:function(val,record){
 				           			if(!val) return "-" ;
-									return val+"/"+record.OFFER1+"/"+record.NUM1_SHIP_FEE ;
+				           			
+									return val+"/"+record.OFFER1+"/"+getShipFeeType(record.NUM1_SHIP_FEE) ;
 					        }},
-				           	{align:"center",key:"NUM2",label:"报价2",width:"6%",format:function(val,record){
+				           	{align:"center",key:"NUM2",label:"报价2",width:"10%",format:function(val,record){
 					           	if(!val) return "-" ;
-								return val+"/"+record.OFFER2+"/"+record.NUM2_SHIP_FEE ;
+								return val+"/"+record.OFFER2+"/"+getShipFeeType(record.NUM2_SHIP_FEE) ;
 					          }},
-				           	{align:"center",key:"NUM3",label:"报价2",width:"6%",format:function(val,record){
+				           	{align:"center",key:"NUM3",label:"报价3",width:"10%",format:function(val,record){
 				           		if(!val) return "-" ;
-								return val+"/"+record.OFFER3+"/"+record.NUM3_SHIP_FEE ;
+								return val+"/"+record.OFFER3+"/"+getShipFeeType(record.NUM3_SHIP_FEE) ;
 					          }},
 						     {align:"center",key:"URL",label:"产品网址",width:"10%",forzen:false,align:"left",format:function(val,record){
 									return "<a href='"+val+"' target='_blank'>"+val+"<a>" ;
