@@ -283,11 +283,15 @@
 											
 								?></td>
 								<td>
+								<?php if( $item['TYPE'] == 'FBM' ){ ?>
 									<input type="text" class="_cost " 
 										name="_TRANSFER_COST" value="<?php echo round($item['TRANSFER_COST'],2);?>" style="width:50px!important;"/>
+								<?php }else{
+									echo "-" ;
+								} ?>
 								</td>
 								<td>
-								<?php if( $item['TYPE'] == 'FBM' ){ ?>
+								<?php if( $item['TYPE'] != 'FBA' ){ ?>
 									<input type="text" class="_cost " 
 									name="LOGISTICS_COST" value="<?php echo round($item['LOGISTICS_COST'],2); ?>" style="width:50px!important;"/></td>
 								<?php }else{

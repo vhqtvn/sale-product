@@ -31,6 +31,13 @@ class Cost extends AppModel {
 			$costId_ = $this->create_guid() ;
 			$this->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBM',"ID"=>$costId_,"loginId"=>$loginId)) ;
 		}
+		
+		$sql = "SELECT * FROM sc_product_cost_details where asin = '$asin' and type='FBC'";
+		$productCostDetails = $this->getObject($sql,array()) ;
+		if( empty( $productCostDetails ) ){
+			$costId_ = $this->create_guid() ;
+			$this->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBC',"ID"=>$costId_,"loginId"=>$loginId)) ;
+		}
 	}
 	
 	

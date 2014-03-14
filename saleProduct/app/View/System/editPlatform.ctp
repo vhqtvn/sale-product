@@ -151,6 +151,16 @@
 										<input type="text" id="CONVERSION_RATE" value="<?php echo $platform['CONVERSION_RATE'];?>"/>
 									</td>
 								</tr>
+								<tr>
+									<th>FBM订单物流单价（$/KG）：</th>
+									<td>
+										<input type="text" id="FBM_ORDER_RATE" value="<?php echo $platform['FBM_ORDER_RATE'];?>"/>
+									</td>
+									<th>FBC订单订单物流单价（$/KG）：</th>
+									<td>
+										<input type="text" id="FBC_ORDER_RATE" value="<?php echo $platform['FBC_ORDER_RATE'];?>"/>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>

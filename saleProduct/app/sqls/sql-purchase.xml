@@ -65,6 +65,9 @@
          order by sc_purchase_plan.create_time desc
    </entry>
    
+   <!-- 
+			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id AND s.status !=80 ) AS IS_FINISH,
+    -->
    <entry key="sql_purchase_plan_details_listForSKU">
 		SELECT DISTINCT  
 		sppd.* ,
@@ -78,8 +81,7 @@
 			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
 			
 			su.NAME AS EXECUTOR_NAME,
-			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id AND s.status !=80 ) AS IS_FINISH,
-			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id   ) AS TASK_COUNT
+			(SELECT GROUP_CONCAT(s.STATUS) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id    ) AS TASK_STATUS
 		
 		FROM sc_purchase_plan_details sppd 
 		LEFT JOIN sc_user su

@@ -312,7 +312,9 @@
 						REQ_ADJUST,
 						EXCHANGE_ID,
 						TRANSFER_WH_PRICE,
-						CONVERSION_RATE
+						CONVERSION_RATE,
+						FBM_ORDER_RATE,
+						FBC_ORDER_RATE
 						)
 						VALUES
 						(
@@ -344,7 +346,9 @@
 						'{@#REQ_ADJUST:0#}',
 						'{@#EXCHANGE_ID#}',
 						'{@#TRANSFER_WH_PRICE:0#}',
-						'{@#CONVERSION_RATE:0#}'
+						'{@#CONVERSION_RATE:0#}',
+						'{@#FBM_ORDER_RATE:0#}',
+						'{@#FBC_ORDER_RATE:0#}'
 						);
     </entry>
     
@@ -378,6 +382,8 @@
 				{@ ,REQ_ADJUST='#REQ_ADJUST#'}
 				{@ ,TRANSFER_WH_PRICE='#TRANSFER_WH_PRICE#'}
 				{@ ,CONVERSION_RATE='#CONVERSION_RATE#'}
+				{@ ,FBM_ORDER_RATE='#FBM_ORDER_RATE#'}
+				{@ ,FBC_ORDER_RATE='#FBC_ORDER_RATE#'}
 				WHERE
 				ID = '{@#ID#}'
    </entry>
