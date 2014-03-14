@@ -112,7 +112,6 @@
 				$("select[name='supplierId']").append( "<option value='"+value+"' selected='selected'>"+label+"</option>" );
 				$("select[name='supplierId']").val(value) ;
 				$("#supplierId").comboBox().setValue(value);
-				return false ;
 			},{showType:"dialog"}) ;
 			//this.close();
 		}

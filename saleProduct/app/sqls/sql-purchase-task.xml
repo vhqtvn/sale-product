@@ -341,7 +341,7 @@
     -->
     <entry key="sql_purchase_task_productsForPrint">
 		SELECT DISTINCT  
-		    sppd.SKU,
+		    srp.REAL_SKU as SKU,
 		    sppd.TAGS,
 		    sppd.MEMO,
 			sptp.* ,
@@ -357,7 +357,7 @@
 		sc_purchase_task_products sptp,
 		sc_purchase_plan_details sppd 
 		left join sc_real_product srp
-		on sppd.SKU = srp.real_sku
+		on ( sppd.SKU = srp.real_sku  or srp.id = sppd.real_id)
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'
