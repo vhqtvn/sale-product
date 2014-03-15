@@ -262,9 +262,8 @@
 							value="<?php echo $productSupplier['OFFER1'];?>"/>/
 									<select id="num1ShipFee" name="num1ShipFee"  style="width:80px"  >
 										<option value="">-运费-</option>
-										<option value="1"  <?php echo $productSupplier['NUM1_SHIP_FEE']==1?"selected":"";?>>包邮</option>
 										<option value="2"  <?php echo $productSupplier['NUM1_SHIP_FEE']==2?"selected":"";?>>免邮</option>
-										<option value="3"  <?php echo $productSupplier['NUM1_SHIP_FEE']==3?"selected":"";?>>卖家支付</option>
+										<option value="3"  <?php echo $productSupplier['NUM1_SHIP_FEE']==3?"selected":"";?>>买家支付</option>
 									</select>
 							</td>
 									<td><input type="text" id="num2" name="num2"  data-validator="integer" style="width:50px" placeHolder="数量"
@@ -273,9 +272,8 @@
 							value="<?php echo $productSupplier['OFFER2'];?>"/>/
 								<select id="num2ShipFee" name="num2ShipFee"  style="width:80px"  >
 										<option value="">-运费-</option>
-										<option value="1"  <?php echo $productSupplier['NUM2_SHIP_FEE']==1?"selected":"";?>>包邮</option>
 										<option value="2"  <?php echo $productSupplier['NUM2_SHIP_FEE']==2?"selected":"";?>>免邮</option>
-										<option value="3"  <?php echo $productSupplier['NUM2_SHIP_FEE']==3?"selected":"";?>>卖家支付</option>
+										<option value="3"  <?php echo $productSupplier['NUM2_SHIP_FEE']==3?"selected":"";?>>买家支付</option>
 									</select>
 							</td>
 									<td><input type="text" id="num3" name="num3"   data-validator="integer" style="width:50px" placeHolder="数量"
@@ -284,9 +282,8 @@
 												value="<?php echo $productSupplier['OFFER3'];?>"/>
 									/<select id="num3ShipFee" name="num3ShipFee"  style="width:80px"  >
 										<option value="">-运费-</option>
-										<option value="1"  <?php echo $productSupplier['NUM3_SHIP_FEE']==1?"selected":"";?>>包邮</option>
 										<option value="2"  <?php echo $productSupplier['NUM3_SHIP_FEE']==2?"selected":"";?>>免邮</option>
-										<option value="3"  <?php echo $productSupplier['NUM3_SHIP_FEE']==3?"selected":"";?>>卖家支付</option>
+										<option value="3"  <?php echo $productSupplier['NUM3_SHIP_FEE']==3?"selected":"";?>>买家支付</option>
 									</select>
 							</td>
 								</tr>
@@ -297,7 +294,7 @@
 					<tr>
 						<th>备注：</th>
 						<td colspan="3">
-							<textarea id="memo" name="memo"  style="width:80%;height:50px;" placeHolder="供应商信息与其他"><?php echo $productSupplier['MEMO'];?></textarea></td>
+							<textarea id="memo" name="memo"  style="width:80%;height:50px;" placeHolder="其他产品信息"><?php echo $productSupplier['MEMO'];?></textarea></td>
 					</tr>
 				</table>
 				</div>

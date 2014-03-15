@@ -205,6 +205,16 @@
 									</td>
 								</tr>
 								<tr>
+									<th>FBM订单物流单价（$/KG）：</th>
+									<td>
+										<input type="text" id="FBM_ORDER_RATE" value="<?php echo $account[0]['sc_amazon_account']['FBM_ORDER_RATE'];?>"/>
+									</td>
+									<th>FBC订单订单物流单价（$/KG）：</th>
+									<td>
+										<input type="text" id="FBC_ORDER_RATE" value="<?php echo $account[0]['sc_amazon_account']['FBC_ORDER_RATE'];?>"/>
+									</td>
+								</tr>
+								<tr>
 									<th>APPLICATION_NAME：</th>
 									<td colspan="3"><input type="text" id="APPLICATION_NAME" value="<?php echo $account[0]['sc_amazon_account']['APPLICATION_NAME'];?>"/></td>
 								</tr>

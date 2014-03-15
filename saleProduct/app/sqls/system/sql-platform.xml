@@ -31,6 +31,8 @@
 			{@REQ_ADJUST = '#REQ_ADJUST#' , }
 			{@TRANSFER_WH_PRICE = '#TRANSFER_WH_PRICE#' , }
 			{@CONVERSION_RATE = '#CONVERSION_RATE#',}
+			{@ FBM_ORDER_RATE='#FBM_ORDER_RATE#',}
+				{@ FBC_ORDER_RATE='#FBC_ORDER_RATE#',}
 			CODE = '{@#CODE#}' , 
 			NAME = '{@#NAME#}' 
 			

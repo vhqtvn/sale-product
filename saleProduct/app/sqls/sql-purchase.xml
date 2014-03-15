@@ -66,7 +66,8 @@
    </entry>
    
    <!-- 
-			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id AND s.status !=80 ) AS IS_FINISH,
+   
+   
     -->
    <entry key="sql_purchase_plan_details_listForSKU">
 		SELECT DISTINCT  
@@ -81,7 +82,9 @@
 			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
 			
 			su.NAME AS EXECUTOR_NAME,
-			(SELECT GROUP_CONCAT(s.STATUS) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id    ) AS TASK_STATUS
+			(SELECT GROUP_CONCAT(s.STATUS) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id    ) AS TASK_STATUS,
+			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id AND s.status !=80 ) AS IS_FINISH,
+			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id limit 0,1   ) AS TASK_COUNT
 		
 		FROM sc_purchase_plan_details sppd 
 		LEFT JOIN sc_user su
