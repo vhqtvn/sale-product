@@ -253,7 +253,7 @@
 	        		*/?>
 	        		{status:47,label:"交易审批",memo:true
 	        			,actions:[{}
-									<?php if( $isOwner&& $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(46,"回退") }}<?php   } ?>
+									<?php if( $isOwner&& $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }}<?php   } ?>
 									<?php if( $isOwner || $ppp_assign_executor|| $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>
 									<?php if( $pptp_audit ) { ?>,{label:"审批通过",action:function(){ AuditAction(48,"审批通过") } }<?php   }   ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
@@ -280,7 +280,7 @@
 	        			,actions:[{}
 		      	        		<?php if( $ppp_qc) { ?>
 									<?php if( $ppp_callback ){ ?>
-									,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }},
+									,{label:"回退",action:function(){ ForceAuditAction(49,"回退") }},
 									<?php }?>
 									,{label:"保存",action:function(){ ForceAuditAction(50,"保存") }},
 		      	        			{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }

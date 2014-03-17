@@ -133,7 +133,7 @@
 								dataType:"text",
 								success:function(result,status,xhr){
 									$.unblock() ;
-									//window.location.reload(true) ;
+									window.location.reload(true) ;
 								},error:function(){
 									alert("操作出现异常！") ;
 								}
@@ -154,7 +154,7 @@
    							//alert(  $.json.encode({productCost:productCost,listingCosts:listingCosts}) ) ;
    							//return ;
    							$.dataservice("model:Cost.saveCostAsin" , {productCost:productCost,listingCosts:listingCosts} , function(){
-   								//window.location.reload();
+   								window.location.reload();
    							})
 
    						};

@@ -195,7 +195,13 @@
 						}
 						return html.join("") ;	
 					}},
-					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"8%",format: function(val ,record){
+					{align:"left",key:"TASK_STATUS",label:"状态",forzen:false,width:"8%",format: function(val ,record){
+						if(val){
+							return $.llygrid.format.purchaseProductStatus.body(val)  ;
+						}else{
+							return "待采购" ;
+						}
+						
 						val = val || 10 ;
 						var message = "" ;
 						switch(val){
@@ -204,6 +210,7 @@
 							case '25':  message = "审批不通过";break;
 							case '30':  message = "限价确认";break;
 							case '40':  message = "分配执行人";break;
+							case '41':  message = "--";break;
 						}
 						
 						
@@ -212,7 +219,7 @@
 							//if(record.IS_FINISH == 0 && record.TASK_COUNT >=1)  message = "采购已完成" ;
 							//else  message = "采购进行中" ;
 						}else{
-							message = "未开始采购" ;
+							message = "待采购" ;
 						}
 						
 						return message ;

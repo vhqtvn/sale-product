@@ -110,10 +110,10 @@
 													      (SELECT NAME FROM sc_purchase_task spt WHERE spt.id = sptp.TASK_ID) AS TASK_NAME,
 															 (SELECT NAME FROM sc_supplier spt WHERE spt.id = sptp.REAL_PROVIDOR) AS REAL_PROVIDOR_NAME
 													 FROM sc_purchase_task_products sptp , sc_purchase_plan_details sppd
-													where sptp.product_id = sppd.id and sppd.sku = '{@#sku#}'
+													where sptp.product_id = sppd.id and ( sppd.sku = '{@#sku#}'  or sppd.real_id = '{@#realId#}' )
 													and sptp.product_id = '{@#productId#}'
 													order by sppd.create_time desc
-													  ", array('sku'=>$product['REAL_PRODUCT_SKU'],'productId'=>$product['ID'] )) ;
+													  ", array('sku'=>$product['REAL_PRODUCT_SKU'],'productId'=>$product['ID'],'realId'=>$product['REAL_PRODUCT_ID'] )) ;
 		
 		//获取缺省日期
 		$startTime = $product['PLAN_START_TIME'] ;
@@ -442,9 +442,10 @@
 									$message = "" ;
 									switch ( $p['STATUS']  ){
 										case '45':  $message = "待询价";break;
-										case '46':  $message = "采购申请";break;
-										case '47':  $message = "待交易";break;
-										case '48':  $message = "待发货";break;
+										case '46':  $message = "交易申请";break;
+										case '47':  $message = "交易审批";break;
+										case '48':  $message = "待交易";break;
+										case '49':  $message = "待发货";break;
 										case '50':  $message = "QC验货";break;
 										case '60':  $message = "入库";break;
 										case '70':  $message = "采购审计";break;

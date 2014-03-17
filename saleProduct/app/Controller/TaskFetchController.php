@@ -87,7 +87,7 @@ class TaskFetchController extends AppController {
 	 	$result = get_object_vars($result) ;
 	 	 
 	 	$isFba = true ;
-	 	if($channel == 'FBM' ){
+	 	if($channel == 'FBM' || $channel =='FBC' ){
 	 		$isFba = false ;
 	 	}
 	 	 
@@ -236,7 +236,7 @@ class TaskFetchController extends AppController {
 	 			$item["fulfillmentTotal"] = 0 ;
 	 			 
 	 			try{
-	 				echo '<br>FBM<br>';
+	 				echo "<br>$channel<br>";
 	 				$feeResult = $this->send_post($mfnUrl,array('method'=>'GET',
 	 						'model'=> json_encode($item)
 	 				)) ;
@@ -246,7 +246,7 @@ class TaskFetchController extends AppController {
 	 				$feeResult = $feeResult['data'] ;
 	 
 	 				if( empty($feeResult) ){
-	 					echo 'FBA Error, Try It<br>';
+	 					echo 'FBMC Error, Try It<br>';
 	 					$feeResult = $this->send_post($afnUrl,array('method'=>'GET',
 	 							'model'=> json_encode($item)
 	 					)) ;

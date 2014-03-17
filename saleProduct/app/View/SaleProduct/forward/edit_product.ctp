@@ -201,6 +201,14 @@
 									</td>
 								</tr>
 								<tr>
+									<th>产品规格（个/箱，KG/箱）：</th>
+									<td colspan="3">
+										<input type="text" name="specificationUnit" style="width:100px;" value="<?php echo $item['SPECIFICATION_UNIT']?>" placeHolder="个/箱"/>个/箱
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<input type="text" name="specificationWeight" style="width:100px;" value="<?php echo $item['SPECIFICATION_WEIGHT']?>" placeHolder="KG/箱"/>KG/箱
+									</td>
+								</tr>
+								<tr>
 									<th>默认物流服务：</th>
 									<td>
 										<input type="hidden"  id="postageServiceId" name="postageServiceId" value="<?php echo $item['POSTAGE_SERVICE_ID']?>"/>

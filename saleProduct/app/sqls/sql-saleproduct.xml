@@ -160,7 +160,9 @@
 		S_KEYS,
 		DECLARATION_NAME,
 		DECLARATION_PRICE,
-		PROPERTIES
+		PROPERTIES.
+		SPECIFICATION_UNIT,
+		SPECIFICATION_WEIGHT
 		)
 		VALUES
 		('{@#sku#}', 
@@ -187,7 +189,9 @@
 		'{@#keys#}',
 		'{@#declarationName#}',
 		'{@#declarationPrice#}',
-		'{@#properties#}'
+		'{@#properties#}',
+		'{@#specificationUnit:0#}',
+		'{@#specificationWeight:0#}'
 		)
    </entry>
    
@@ -219,6 +223,8 @@
 		POSTAGE_SERVICE_ID = '{@#postageServiceId#}',
 		DECLARATION_NAME = '{@#declarationName#}',
 		DECLARATION_PRICE = '{@#declarationPrice#}',
+		{@SPECIFICATION_UNIT = '#specificationUnit#',}
+		{@SPECIFICATION_WEIGHT = '#specificationWeight#',}
 		S_KEYS = '{@#keys#}'
 	WHERE
 	 	ID = '{@#id#}'
