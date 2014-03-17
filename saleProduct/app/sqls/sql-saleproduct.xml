@@ -160,7 +160,7 @@
 		S_KEYS,
 		DECLARATION_NAME,
 		DECLARATION_PRICE,
-		PROPERTIES.
+		PROPERTIES,
 		SPECIFICATION_UNIT,
 		SPECIFICATION_WEIGHT
 		)
@@ -178,7 +178,7 @@
 		'{@#securityQuantity#}',
 		'{@#weight#}',
 		'{@#weightUnit#}',
-		'{@length#}',
+		'{@#length#}',
 		'{@#width#}',
 		'{@#height#}',
 		'{@#type#}',

@@ -194,7 +194,7 @@
 										<td class="10-inplan inplan">加载中...</td>
 									</tr>
 									<tr>
-										<th>待发货</th>
+										<th>待收货</th>
 										<td class="20-inplan inplan">加载中...</td>
 									</tr>
 									<tr>

@@ -149,6 +149,7 @@ class SaleProduct extends AppModel {
 			$id = $realProduct["ID"] ;
 			
 			$this->saveProductCategory($id, $data['categoryId']) ;
+			echo 44 ;
 			return $id ;
 		}
 	}

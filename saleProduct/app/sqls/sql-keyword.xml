@@ -138,7 +138,7 @@
         <![CDATA[	
 			select * from sc_keyword
 			where is_niche = '1'
-			and task_id = '{@#taskId#}'
+			{@and task_id = '#taskId#'}
 			and status <> 15
 		]]>
     </entry>

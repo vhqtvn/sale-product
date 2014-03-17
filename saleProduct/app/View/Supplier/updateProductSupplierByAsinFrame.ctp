@@ -21,6 +21,8 @@
 			$productSupplier = $SqlUtils->getObject("sql_getSupplierInquiryByInquiryId",array('id'=>$inquiryId)) ;
 		}
 
+		$pop = $params['arg4'] ;
+		
 		$asin = "" ;
 		$sku = "" ;
 		$suppliers = array() ;
@@ -127,6 +129,11 @@
 			 $('#personForm').submit() ;
 		 }
 
+
+		 function xjSuccess(){
+            window.close() ;
+		}
+		 
 		 $(function(){
 			    $("#supplierId").comboBox({
 					source : 'remote',
@@ -298,6 +305,13 @@
 					</tr>
 				</table>
 				</div>
+				<?php  if( $params['arg4'] == 'pop' ||$params['arg3'] == 'pop' ){ ?>
+				<div class="panel-foot" style="position:fixed;bottom:0px;right:0px;left:0px;z-index:1;background-color:#FFF;">
+					<div class="form-actions  ">
+						<input type="submit" class="btn btn-primary" value="保存"/>
+					</div>
+				</div>
+				<?php } ?>
 				</div>
 			</form>
 		</div>

@@ -132,7 +132,7 @@
 
 					$(".process-action").click(function(){
 						var record = $(this).parents("tr:first").data("record");
-						openCenterWindow(contextPath+"<?php echo $url;?>/"+record.ID,800,600,function(){
+						openCenterWindow(contextPath+"<?php echo $url;?>/"+record.ID+"/pop",800,600,function(){
 							$(".grid-content-details").llygrid("reload",{},true);
 							}) ;
 					}) ;
