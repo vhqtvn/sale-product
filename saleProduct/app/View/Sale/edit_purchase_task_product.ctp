@@ -28,6 +28,7 @@
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
 		echo $this->Html->script('modules/sale/edit_purchase_task_product');
 		echo $this->Html->script('dialog/jquery.dialog');
+		echo $this->Html->script('calendar/WdatePicker');
 		
 		$planProductId = $params['arg1'] ;
 		$taskId = $params['arg2'] ;
@@ -253,7 +254,7 @@
 	        		*/?>
 	        		{status:47,label:"交易审批",memo:true
 	        			,actions:[{}
-									<?php if( $isOwner&& $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }}<?php   } ?>
+									<?php if( $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }}<?php   } ?>
 									<?php if( $isOwner || $ppp_assign_executor|| $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>
 									<?php if( $pptp_audit ) { ?>,{label:"审批通过",action:function(){ AuditAction(48,"审批通过") } }<?php   }   ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
@@ -261,18 +262,18 @@
 	        		},
 	        		{status:48,label:"交易",memo:true
 	        			,actions:[{}
-									<?php if( $isOwner&& $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(47,"回退") }}<?php   } ?>
+									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(47,"回退") }}<?php   } ?>
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(48,"保存") }}<?php  } ?>
 									<?php if( $isOwner ) { ?>,{label:"已交易",action:function(){ AuditAction(49,"已交易") } }<?php   }   ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        		},
-	        		{status:49,label:"发货",memo:true //48->49
+	        		{status:49,label:"已到货",memo:true //48->49
 	        			,actions:[
 	        			          {}
-									<?php if( $isOwner&& $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(48,"回退") }}<?php  }?>
+									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(48,"回退") }}<?php  }?>
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(49,"保存") }}<?php  } ?>
-									<?php if( $isOwner ) { ?>,{label:"已发货",action:function(){ AuditAction(50,"已发货") } }<?php } ?>
+									<?php if( $isOwner ) { ?>,{label:"已到货",action:function(){ AuditAction(50,"已到货") } }<?php } ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        			

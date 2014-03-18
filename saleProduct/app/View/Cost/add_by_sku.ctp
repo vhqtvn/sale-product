@@ -145,6 +145,7 @@
    		   *实时计算
    		   */
    	   	function calcCostOntime(){
+   	   	
       	 //"PURCHASE_COST":"8.8","OTHER_COST":"0","TAG_COST":"1","LABOR_COST":"0","FEE":"0","REAL_ID":"1","LOGISTICS_COST":"0"}
         	 var purchaseCost = $("#PURCHASE_COST").val()||0  ;
         	 var baseCost =parseFloat( purchaseCost )+ parseFloat($("#LOGISTICS_COST").val()||0 )+parseFloat($("#OTHER_COST").val()||0)
@@ -167,7 +168,7 @@
 					if( channel != 'Merchant' ) itemCost +=parseFloat(  item.INVENTORY_CENTER_FEE) ;
 					itemCost +=parseFloat(  $("[name='OTHER_COST']","#"+rowId).val()||0) ; 
 
-					var totalPrice= item.TOTAL_PRICE ;//总售价
+					var totalPrice=$("[name='TOTAL_PRICE']","#"+rowId).val() || item.TOTAL_PRICE ;//总售价
 					var totalItemCost =( itemCost+baseCost /parseFloat(  item.EXCHANGE_RATE) ).toFixed(3) ;
 					var totalProfile = (totalPrice - totalItemCost).toFixed(2);
 					var profileRate =( (totalProfile/totalItemCost)*100).toFixed(2) +"%" ;
@@ -283,7 +284,10 @@
 								<td>
 									<?php echo $item['FULFILLMENT_CHANNEL']=='Merchant'?$item['FBM_WAREHOUSE_NAME']:"";?>
 								</td>
-								<td><?php echo round($item['TOTAL_PRICE'],3);?></td>
+								<td>
+									<input type="text"  
+										name="TOTAL_PRICE"  value="<?php echo round($item['TOTAL_PRICE'],3);?>" style="width:50px;"/>
+								</td>
 								<td  class="totalCost"><?php echo round($item['TOTAL_COST'],3);?></td>
 								<td  class="totalProfile"><?php 
 											$totalProfile =round(  $item['TOTAL_PRICE'] - $item['TOTAL_COST'],2)   ;

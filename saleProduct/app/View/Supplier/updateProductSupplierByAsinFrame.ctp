@@ -17,6 +17,7 @@
 		$type = $params['arg1'] ;
 		$value = $params['arg2'] ;
 		$inquiryId = $params['arg3'] ;
+		$taskId = $params['arg4'] ;
 		if( !empty($inquiryId) ){
 			$productSupplier = $SqlUtils->getObject("sql_getSupplierInquiryByInquiryId",array('id'=>$inquiryId)) ;
 		}
@@ -131,7 +132,7 @@
 
 
 		 function xjSuccess(){
-            window.close() ;
+           // window.close() ;
 		}
 		 
 		 $(function(){
@@ -155,6 +156,7 @@
 			<form action="<?php echo $contextPath;?>/supplier/saveProductSupplierXJ" id="personForm" data-widget="validator"
 				method="post"  enctype="multipart/form-data"  class="form-horizontal" >
 				<input type="hidden" id="asin" name="asin" value="<?php echo $asin;?>"/>	 
+				<input type="hidden" id="taskId" name="taskId" value="<?php echo $taskId;?>"/>	 
 				<input type="hidden" id="sku" name="sku" value="<?php echo $sku;?>"/>	   
 				<input type="hidden" id="id" name="id" value="<?php echo $productSupplier['ID'];?>"/>
 				<div class="panel apply-panel">

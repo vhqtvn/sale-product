@@ -190,6 +190,7 @@ class Supplier extends AppModel {
 	}
 	
 	public function saveProductSupplierXJ($data,$user,$localUrl){
+		debug($data) ;
 		$image = "" ;
 		if(!empty($localUrl)){
 			$image =  $localUrl ;
@@ -267,18 +268,19 @@ class Supplier extends AppModel {
 					$productWidth = $CurrentData['PRODUCT_WIDTH'] ;
 					$productHeight = $CurrentData['PRODUCT_HEIGHT'] ;
 					$Weight  = $CurrentData['WEIGHT'] ;
-					//获取转仓成本单价
-					$sql = "SELECT sp.TRANSFER_WH_PRICE FROM sc_platform sp,sc_product spd
-											WHERE sp.id = spd.platform_id and asin= '{@#asin#}' " ;
-					$temp = $this->getObject($sql, array("asin"=>$asin) ) ;
+
+					$taskid = $data['taskId'] ;
+					//获取转仓成本单价 SELECT * FROM sc_product_filter WHERE id = 'F_1367845164'
+					$sql = "SELECT sp.TRANSFER_WH_PRICE FROM sc_platform sp,sc_product_filter spd
+											WHERE sp.id = spd.platform_id and spd.id= '{@#taskId#}' " ;
+					$temp = $this->getObject($sql, array("taskId"=>$taskid) ) ;
+					
 					if( !empty($temp) ){
 						$TRANSFER_WH_PRICE = $temp['TRANSFER_WH_PRICE'] ;
 						//转仓物流成本
 						$transferCost =round( ($Weight - ( $productLength*$productWidth*$productHeight / 5000 ))*$TRANSFER_WH_PRICE ,2) ;
 						
-						debug(">>>>>>>>>>>>>".$transferCost) ;
-						
-						$sql= "update sc_product_cost_details set _TRANSFER_COST = '{@#transferCost#}' where asin = '{@#asin#}' " ;
+						$sql= "update sc_product_cost_details set _TRANSFER_COST = '{@#transferCost#}' where asin = '{@#asin#}'  and type = 'FBM' " ;
 						if(!empty($transferCost)){
 							$this->exeSql($sql, array("transferCost"=>$transferCost,"asin"=>$asin) ) ;
 						}

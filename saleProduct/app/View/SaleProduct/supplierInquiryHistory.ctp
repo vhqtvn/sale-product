@@ -20,6 +20,7 @@
 		
 		$sku = $params['arg1'] ;
 		$type = $params['arg2'] ;
+		$taskId = $params['arg3'] ;
 		$asin = "" ;
 		if( $type == 'asin' ){
 			$asin = $sku ;
@@ -40,14 +41,14 @@
   
    <script type="text/javascript">
    
-   var taskId = '' ;
+   var taskId = '<?php echo $taskId;?>' ;
 
    <?php
 			$url = "" ; 
 			if(empty($sku)){
-				$url = "/page/forward/Supplier.updateProductSupplierByAsinFrame/asin/".$asin ;//updateProductSupplierByAsinFrame
+				$url = "/page/forward/Supplier.updateProductSupplierByAsinFrame/asin/".$asin."" ;//updateProductSupplierByAsinFrame -/$taskId
 			}else{
-				$url = "/page/forward/Supplier.updateProductSupplierByAsinFrame/sku/".$sku ;
+				$url = "/page/forward/Supplier.updateProductSupplierByAsinFrame/sku/".$sku."" ;
 			}
 		?>
   
@@ -132,8 +133,10 @@
 
 					$(".process-action").click(function(){
 						var record = $(this).parents("tr:first").data("record");
-						openCenterWindow(contextPath+"<?php echo $url;?>/"+record.ID+"/pop",800,600,function(){
-							$(".grid-content-details").llygrid("reload",{},true);
+						openCenterWindow(contextPath+"<?php echo $url;?>/"+record.ID+"/"+taskId+"/pop",850,600,function(){
+							setTimeout(function(){
+								$(".grid-content-details").llygrid("reload",{},true);
+							},300) ;
 							}) ;
 					}) ;
 				 }

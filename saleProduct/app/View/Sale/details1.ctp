@@ -7,7 +7,7 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-  		 include_once ('config/config.php');
+  		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
 		echo $this->Html->css('default/style');
@@ -202,6 +202,8 @@ html{-webkit-text-size-adjust: none;}
  </style>
  
  <script>
+	var taskId = '<?php echo $task['ID'] ;?>';
+	
 	$(function(){
 		DynTag.listByEntity("productDevTag",'<?php echo $taskId.'$$'.$asin;?>') ;
 	}) ;

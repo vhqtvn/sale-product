@@ -198,11 +198,9 @@
 					{align:"left",key:"TASK_STATUS",label:"状态",forzen:false,width:"8%",format: function(val ,record){
 						if(val){
 							return $.llygrid.format.purchaseProductStatus.body(val)  ;
-						}else{
-							return "待采购" ;
 						}
 						
-						val = val || 10 ;
+						val = record.STATUS || 10 ;
 						var message = "" ;
 						switch(val){
 							case '10':  message = "编辑中";break;
@@ -212,15 +210,7 @@
 							case '40':  message = "分配执行人";break;
 							case '41':  message = "--";break;
 						}
-						
-						
-						if(message == ""){
-							message =  $.llygrid.format.purchaseProductStatus.body(record.TASK_STATUS)  ;
-							//if(record.IS_FINISH == 0 && record.TASK_COUNT >=1)  message = "采购已完成" ;
-							//else  message = "采购进行中" ;
-						}else{
-							message = "待采购" ;
-						}
+						if(val>25)message = "待采购" ;
 						
 						return message ;
 					} },
