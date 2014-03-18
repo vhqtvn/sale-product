@@ -188,7 +188,7 @@
 			var tab = $('#details_tab').tabs( {
 				tabs:[
 				     {label:'产品开发',content:"dev-tab"},
-				     {label:'产品询价',url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+asin+"/asin",iframe:true},
+				     {label:'产品询价',url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+asin+"/asin/"+taskId  , iframe:true},
 				     {label:'成本利润',url: contextPath+"/page/forward/Cost.add_by_asin/"+asin,iframe:true},
 				    // {label:'成本利润',content:"supplier-tab",iframe:true},
 					 {label:'基本信息',content:"baseinfo-tab"},
