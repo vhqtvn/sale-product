@@ -96,8 +96,9 @@
 		}
 		//获取默认限价
 		$limitPrice = $product['LIMIT_PRICE'];
-		if( empty($limitPrice) ){
+		if( empty($limitPrice) || $limitPrice == 0 ){
 			$limitPrice = $PurchaseService->getDefaultLimitPrice($product['REAL_PRODUCT_ID']) ;
+			
 			/*$realId = $product['ID'] ;
 			$sql = "SELECT LIMIT_PRICE FROM sc_purchase_plan_details WHERE real_id = '{@#REAL_PRODUCT_ID#}' AND limit_price IS NOT NULL ORDER BY create_time DESC LIMIT 0,1";
 			$item = $SqlUtils->getObject($sql,$product) ;

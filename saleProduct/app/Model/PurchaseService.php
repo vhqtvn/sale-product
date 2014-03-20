@@ -43,13 +43,15 @@ class PurchaseService extends AppModel {
 		$limitPrice = 0 ;
 		//获取最近的实际采购价格
 		$sql = " SELECT sppd.REAL_ID,t.REAL_QUOTE_PRICE FROM sc_purchase_task_products t,
-						  sc_purchase_plan_details sppd
-						  WHERE t.REAL_QUOTE_PRICE > 0
-						  AND sppd.ID = t.PRODUCT_ID
-						  AND sppd.REAL_ID = '{@#realId#}'
+						  sc_purchase_plan_details sppd,
+						  sc_real_product srp
+						  WHERE sppd.ID = t.PRODUCT_ID
+						  AND (srp.id = sppd.real_id OR srp.real_sku = sppd.sku)
+						  AND srp.ID = '{@#realId#}'
 						  ORDER BY t.WAREHOUSE_TIME DESC
 						  LIMIT 0 ,1 " ;
 		$item = $this->getObject($sql, array("realId"=>$realId)) ;
+	
 		if(!empty($item)){
 			$limitPrice = $item['REAL_QUOTE_PRICE'] ;
 		}
@@ -94,9 +96,10 @@ class PurchaseService extends AppModel {
 	   		}
 	   	}
 	   }
-	   
+	
 	   if( $PER_PRICE >0  ){
 	   	$limitPrice = min($PER_PRICE,$limitPrice) ;
+	   	
 	   }
 	   return $limitPrice ;
 		

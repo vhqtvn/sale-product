@@ -60,6 +60,10 @@
 		$ppp_export							= $security->hasPermission($loginId , 'ppp_export') ;
 		$ppp_audit							= $security->hasPermission($loginId , 'ppp_audit') ;
 		$pptp_audit							= $security->hasPermission($loginId , 'pptp_audit') ;//采购产品任务审批
+		
+		$ppp_deal								= $security->hasPermission($loginId , 'pptp_deal') ;//采购产品任务审批
+		$ppp_receviced					= $security->hasPermission($loginId , 'pptp_receviced') ;//采购产品任务审批
+		
 		$ppp_setlimitprice				= $security->hasPermission($loginId , 'ppp_setlimitprice') ;
 		$ppp_assign_executor			= $loginId == $plan['EXECUTOR'] || $security->hasPermission($loginId , 'ppp_assign_executor') ;//分配执行人，计划负责人等于当前用户
 		$ppp_qc								= $security->hasPermission($loginId , 'ppp_qc') ;
@@ -223,6 +227,7 @@
 	var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;
 	var $ppp_export= <?php echo $ppp_export?"true":"false" ;?> ;
 	var $ppp_audit = <?php echo $ppp_audit?"true":"false" ;?> ;
+	var $ppp_deal = <?php echo $ppp_deal?"true":"false" ;?> ;
 	var $ppp_setlimitprice = <?php echo $ppp_setlimitprice?"true":"false" ;?> ;
 	var $ppp_assign_executor = <?php echo $ppp_assign_executor?"true":"false" ;?> ;
 	var $ppp_qc = <?php echo $ppp_qc?"true":"false" ;?> ;
@@ -255,7 +260,7 @@
 	        		{status:47,label:"交易审批",memo:true
 	        			,actions:[{}
 									<?php if( $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }}<?php   } ?>
-									<?php if( $isOwner || $ppp_assign_executor|| $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>
+									<?php if( $isOwner  || $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>
 									<?php if( $pptp_audit ) { ?>,{label:"审批通过",action:function(){ AuditAction(48,"审批通过") } }<?php   }   ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
@@ -263,8 +268,8 @@
 	        		{status:48,label:"交易",memo:true
 	        			,actions:[{}
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(47,"回退") }}<?php   } ?>
-									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(48,"保存") }}<?php  } ?>
-									<?php if( $isOwner ) { ?>,{label:"已交易",action:function(){ AuditAction(49,"已交易") } }<?php   }   ?>
+									<?php if( $isOwner || $ppp_deal) { ?>,{label:"保存",action:function(){ ForceAuditAction(48,"保存") }}<?php  } ?>
+									<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"已交易",action:function(){ AuditAction(49,"已交易") } }<?php   }   ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        		},
@@ -273,7 +278,7 @@
 	        			          {}
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(48,"回退") }}<?php  }?>
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(49,"保存") }}<?php  } ?>
-									<?php if( $isOwner ) { ?>,{label:"已到货",action:function(){ AuditAction(50,"已到货") } }<?php } ?>
+									<?php if( $isOwner || $ppp_receviced) { ?>,{label:"已到货",action:function(){ AuditAction(50,"已到货") } }<?php } ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        			

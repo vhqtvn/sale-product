@@ -296,6 +296,7 @@
 		    SELECT sptp.product_id FROM sc_purchase_task_products sptp
 			WHERE sptp.product_id = sppd.ID AND sptp.STATUS < 80
 		  )
+		  and sppd.STATUS > 25
 			and sppd.id not in (
 				select product_id from sc_purchase_task_products where task_id = '{@#taskId#}'
 			)
@@ -307,7 +308,7 @@
     <!-- 获取入库完成的 -->
     <entry key="sql_purchase_task_productInedForPrint">
 			SELECT DISTINCT  
-			sppd.SKU ,
+			srp.REAL_SKU as SKU ,
 			sppd.TAGS,
 			sptp.*,
 			srp.name AS TITLE,
@@ -325,7 +326,7 @@
 			sc_purchase_task_products sptp,
 			sc_purchase_plan_details sppd
 			LEFT JOIN sc_real_product srp
-			ON sppd.SKU = srp.real_sku
+			ON ( sppd.SKU = srp.real_sku or sppd.REAL_ID = srp.ID)
 		WHERE 1=1 
 		    AND sptp.product_id = sppd.id
 		      and sptp.task_id = '{@#taskId#}'
