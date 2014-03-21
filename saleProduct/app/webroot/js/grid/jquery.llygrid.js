@@ -1192,24 +1192,31 @@ $.llygrid.format.toWarehouseStatus = {
 $.llygrid.format.purchaseProductStatus = {
 		body:function(val,record,col){
 			val = val ||'10' ;
-			var message = "" ;
-			switch(val){
-				case '10':  message = "编辑中";break;
-				case '20':  message = "等待审批";break;
-				case '25':  message = "审批不通过";break;
-				case '30':  message = "限价确认";break;
-				case '40':  message = "分配执行人";break;
-				case '45':  message = "待询价";break;
-				case '46':  message = "交易申请";break;
-				case '47':  message = "交易审批";break;
-				case '48':  message = "待交易";break;
-				case '49':  message = "待收货";break;
-				case '50':  message = "QC验货";break;
-				case '60':  message = "入库";break;
-				case '70':  message = "采购审计";break;
-				case '80':  message = "结束";break;
-			}
-			return message||val ;
+			var temp = [] ;
+			
+			$(val.split(",")).each(function(index,_val){
+				if(!_val) return ;
+				var message = "" ;
+				switch(_val){
+					case '10':  message = "编辑中";break;
+					case '20':  message = "等待审批";break;
+					case '25':  message = "审批不通过";break;
+					case '30':  message = "限价确认";break;
+					case '40':  message = "分配执行人";break;
+					case '45':  message = "待询价";break;
+					case '46':  message = "再询价";break;
+					case '47':  message = "交易审批";break;
+					case '48':  message = "待交易";break;
+					case '49':  message = "待收货";break;
+					case '50':  message = "QC验货";break;
+					case '60':  message = "入库";break;
+					case '70':  message = "采购审计";break;
+					case '80':  message = "结束";break;
+				}
+				temp.push(message) ;
+			}) ;
+			
+			return temp.join(",") ;
 		}
 } ;
 
