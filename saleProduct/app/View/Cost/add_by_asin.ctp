@@ -42,6 +42,7 @@
 		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE||$COST_EDIT_PROFIT ;
 	
 		$asin = $params['arg1'] ;
+		$taskId = $params['arg2'] ;
 
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;//COST_TAG  COST_LABOR  COST_TAX_RATE
 		$Cost  = ClassRegistry::init("Cost") ;
@@ -113,9 +114,14 @@
    		var groupCode = '<?php echo $loginId;?>' ;
 
    		$(function(){
+					$(".re-calc-fee").click(function(){
+						//重新计算成本
+						$.dataservice("model:Supplier.calcCost" , {asin:'<?php echo $asin;?>',taskId:'<?php echo $taskId;?>'} , function(){
+							//window.location.reload();
+						})
+					}) ;
+   	   		
 					$(".asyn-amazon-fee").click(function(){
-						
-
 						var productCost = $(".product-cost").toJson() ;
 						var listingCosts = [] ;
 						$(".listing-cost .data-row").each(function(index,row){
@@ -195,6 +201,8 @@
 								<th>采购成本：</th>
 								<td colspan="5">
 								<input type="hidden" id="ASIN" value="<?php echo $asin;?>"/>
+								<input type="hidden" id="taskId" value="<?php echo $taskId;?>"/>
+								
 								
 								<input class="cost span2"  type="text" 
 									data-validator="double"
@@ -326,6 +334,7 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot"  style="background:#FFF;">
 						<div class="form-actions">
+							<button type="submit" class="btn btn-primary re-calc-fee">重新计算成本</button>
 							
 							<button type="submit" class="btn btn-primary asyn-amazon-fee">同步Amazon费用</button>
 							

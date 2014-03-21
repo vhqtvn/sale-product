@@ -259,7 +259,7 @@
 					</div>
 				</div>
 			</form>
-			 <iframe style="width:0; height:0; border:0;display:none;" name="form-target"></iframe>
+			 <iframe style="width:0; height:0; border:0;display:none;" name="form-target"  id="form-target"></iframe>
 		</div>
 	</div>
 </body>
