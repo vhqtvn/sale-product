@@ -243,7 +243,7 @@ class AppModel extends Model {
 		public function exeSqlWithFormat($sql , $query){
 			$sql = $this->getDbSql($sql) ;
 			$sql = $this->getSql($sql,$query) ;
-			//	echo $sql ;
+			
 			$records = $this->query($sql) ;
 			$items = array() ;
 			if(!empty($records)){

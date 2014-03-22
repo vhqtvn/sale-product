@@ -416,6 +416,50 @@ UPDATE sc_product_dev
 			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
 			AND spc.asin = spfd.asin
 			) AS COST_GROUP -->
+   <entry key="sql_pdev_filter_details_inquirylist">
+SELECT sp.TITLE as P_TITLE, 
+    spf.NAME  as FILTER_NAME,
+    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin  ) as ASIN_COUNT,
+    (SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
+	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
+	spfd.*,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
+	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME,
+	( SELECT count(1) FROM sc_purchase_supplier_inquiry spsi 
+			WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 12 MONTH)) 
+			and spsi.asin = spfd.asin
+			) as INQUIRY_COUNT,
+	( SELECT COUNT(1) FROM sc_view_devproduct_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_COUNT,
+	( SELECT GROUP_CONCAT( CONCAT(spc.TYPE,'|',ROUND((spc.TOTAL_PRICE-spc.TOTAL_COST)/spc.TOTAL_COST ,4),'|',ROUND(spc.TOTAL_PRICE-spc.TOTAL_COST,2)) ) as COST_GROUP
+	FROM sc_view_devproduct_cost spc 
+			WHERE (spc.last_update_time IS NULL OR  spc.last_update_time > (DATE_SUB(CURDATE(), INTERVAL 1 MONTH))  )
+			AND spc.asin = spfd.asin
+			) AS COST_GROUP
+FROM  sc_product_filter spf, 
+			sc_product_dev spfd
+	LEFT JOIN sc_product sp 
+	on sp.asin = spfd.asin
+	LEFT JOIN sc_sale_competition ssc  ON ssc.asin = sp.asin
+	LEFT JOIN sc_sale_fba  ssf ON ssf.asin = sp.asin
+	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
+        LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
+WHERE  spfd.task_id = spf.id
+	 and spfd.dev_status = 20
+	 and spfd.INQUIRY_CHARGER = '{@#Evn.loginId#}'
+     {@  and sp.title like '%#title#%'}
+     {@  and sp.asin = '#asin#'}
+     {@  and spfd.flow_status in ( #status#) }
+     {@  and spfd.dev_status in ( #devStatus#) }
+     {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
+     {@  and spfd.task_id = '#taskId#' }
+     {@  and spf.plan_id = '#planId#'}
+     {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%'  or spfd.title like '%#searchKey#%')}
+   </entry>
+   
    <entry key="sql_pdev_filter_details">
 SELECT sp.TITLE as P_TITLE, 
     spf.NAME  as FILTER_NAME,

@@ -291,7 +291,7 @@
 		LEFT JOIN sc_real_product srp
 		ON ( sppd.REAL_ID = srp.ID or srp.REAL_SKU = sppd.SKU )
 		WHERE 1=1 
-		  	and sppd.executor = '{@#Evn.loginId#}'
+		  	and sppd.executor = '{@#loginId#}'
 		  AND not EXISTS(
 		    SELECT sptp.product_id FROM sc_purchase_task_products sptp
 			WHERE sptp.product_id = sppd.ID AND sptp.STATUS < 80
