@@ -83,6 +83,8 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
+		$PurchaseService  = ClassRegistry::init("PurchaseService") ;
+		
 		
 		$task = $SqlUtils->getObject("sql_pdev_task_getById",array("id"=>$taskId)) ;
 		
@@ -98,14 +100,17 @@
 		//debug($product) ;
 		
 		//询价负责人
-		$category = $SqlUtils->getObject("sql_getSingleProductCategoryByAsin" , array("asin"=>$asin)) ;
 		$charger = $productDev['INQUIRY_CHARGER'] ;
 		$chargerName = $productDev['INQUIRY_CHARGER_NAME'] ;
-		if(  !empty($category) ){
-			$charger = $category['PURCHASE_CHARGER'] ;
-			$chargerName= $category['PURCHASE_CHARGER_NAME'] ;
+		$isGlobal = "" ;
+		if( empty($charger)  ){
+			//获取默认询价负责人
+			$cg = $PurchaseService->getDefaultInquiryCharger($asin) ;
+			$charger = $cg['charger'] ;
+			$chargerName= $cg['chargerName'] ;
+			$isGlobal = $cg['isGlobal'] ;
 		}
-		
+
 		$loginId 						= $user['LOGIN_ID'] ;
 		$PD_FLAG 					= $security->hasPermission($loginId , 'PD_FLAG') ;
 		$PD_ANAYS 				= $security->hasPermission($loginId , 'PD_ANAYS') ;
@@ -516,6 +521,7 @@ html{-webkit-text-size-adjust: none;}
 	<div class="hide "  id="dev-tab">
 		
 		<input type="hidden"  id="TASK_ID" value="<?php echo $taskId;?>"/>
+		<input type="hidden"  id="isGlobal" value="<?php echo $isGlobal;?>"/>
 		<div style="padding:4px 10px;margin-top:5px;margin-bottom:5px;" class="alert">
 		<?php 
 			echo '<b>相关网址：</b>' ;

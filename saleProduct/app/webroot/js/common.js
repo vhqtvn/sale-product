@@ -1075,7 +1075,7 @@ $("[product-detail]").live("click",function(){
 
 $("[supplier-id]").live("click",function(){
 	var supplierId = $(this).attr("supplier-id") ;
-	openCenterWindow(contextPath+"/supplier/view/"+supplierId,800,580) ;
+	openCenterWindow(contextPath+"/supplier/view/"+supplierId,900,580) ;
 	return false ;
 })
 

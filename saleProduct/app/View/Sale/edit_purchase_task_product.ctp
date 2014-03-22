@@ -522,6 +522,9 @@
 											}
 										?>
 										</select> 
+										<?php if( !empty($taskProduct['REAL_PROVIDOR']) ){ ?>
+										<a href="#" supplier-id="<?php echo $taskProduct['REAL_PROVIDOR'] ;?>">查看</a>
+										<?php } ?>
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier  70-input  input">编辑</button>
 										</td>
 										

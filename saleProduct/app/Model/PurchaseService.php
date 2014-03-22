@@ -7,6 +7,55 @@
 class PurchaseService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	public function getDefaultInquiryCharger($asin){
+		$charger = "" ;
+		$chargerName = "" ;
+		$isGlobal = "" ;
+		$category = $this->getObject("sql_getSingleProductCategoryByAsin" , array("asin"=>$asin)) ;//
+		if(   !empty($category) ){
+			//获取分类询价负责人
+			$charger = $category['INQUIRY_CHARGER'] ;
+			$chargerName= $category['INQUIRY_CHARGER_NAME'] ;
+		}
+		if( empty( $charger ) ){
+			//获取默认全局询价专员
+			$sql = "SELECT sac.* FROM sc_amazon_config sac  WHERE sac.name = 'DEFAULT_INQUIRY_CHARGER'" ;
+			$item = $this->getObject($sql,array()) ;
+			if( !empty($item) ){
+				$val = $item['VALUE'] ;
+				$currentValue = $item['CURRENT_VALUE'] ;
+				$vals = split(",", $val) ;
+				if( empty($currentValue) ){
+					$charger = $vals[0] ;
+				}else{
+					$index = 1 ;
+					foreach( $vals as $val ){
+							if( $currentValue == $val ){
+								break ;
+							}
+							$index++ ;
+					}
+					if( count($vals) <= $index   ){
+						$charger = $vals[0] ;
+					}else{
+						$charger = $vals[$index] ;
+					}
+					
+				}
+				//获取chargerName
+				$sql = "select * from sc_user where login_id = '{@#loginId#}'" ;
+				$user = $this->getObject($sql, array("loginId"=>$charger)) ;
+				if(empty($user)){
+					$charger = "" ;
+				}else{
+					$chargerName = $user['NAME'] ;
+				}
+				$isGlobal = "1" ;
+			}
+		}
+		return array("charger"=>$charger,"chargerName"=>$chargerName,"isGlobal"=>$isGlobal) ;
+	}
+	
 	/**
 	 * 获取默认采购负责人
 	 */

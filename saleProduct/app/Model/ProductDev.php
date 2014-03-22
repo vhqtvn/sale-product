@@ -76,8 +76,17 @@ class ProductDev extends AppModel {
 	}
 	
 	function doFlow( $params ){
+		
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
+		
+		$isGlobal = $params['isGlobal'] ;
+		if( !empty($isGlobal) && $isGlobal == 1){
+			
+			$sql = "update sc_amazon_config set current_value = '{@#currentValue#}'  WHERE  name = 'DEFAULT_INQUIRY_CHARGER'" ;
+			$this->exeSql($sql, array("currentValue"=>$params['INQUIRY_CHARGER'])) ;
+		}
+		//return ;
 		try{
 			$pd = $this->getObject("sql_pdev_findByAsinAndTaskId", $params) ;
 			if( empty($pd) ){

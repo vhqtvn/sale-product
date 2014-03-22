@@ -440,6 +440,7 @@
 								</thead>
 								<tbody>
 								<?php  foreach ( $products as $p ){ 
+									//debug($p) ;
 									$message = "" ;
 									switch ( $p['STATUS']  ){
 										case '45':  $message = "待询价";break;
@@ -456,7 +457,7 @@
 									<tr  class="running-task">
 										<td><a target="_blank" href="<?php echo $contextPath;?>/page/forward/Sale.edit_purchase_task_product/<?php echo $p['PRODUCT_ID'];?>/<?php echo $p['TASK_ID'];?>"><?php echo  $p['TASK_NAME'] ;?></a></td>
 										<td><?php echo  $message ;?></td>
-										<td><?php echo  $p['REAL_PROVIDOR_NAME'] ;?></td>
+										<td><a href="#"  supplier-id="<?php echo $p['REAL_PROVIDOR'];?>"><?php echo  $p['REAL_PROVIDOR_NAME'] ;?></a></td>
 										<td><?php echo  $p['REAL_QUOTE_PRICE'] ;?></td>
 										<td><?php echo  $p['REAL_PURCHASE_DATE'] ;?></td>
 										<td><?php echo  $p['QUALIFIED_PRODUCTS_NUM'] ;?></td>
