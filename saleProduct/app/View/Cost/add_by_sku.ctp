@@ -147,6 +147,7 @@
    	   	function calcCostOntime(){
    	   	
       	 //"PURCHASE_COST":"8.8","OTHER_COST":"0","TAG_COST":"1","LABOR_COST":"0","FEE":"0","REAL_ID":"1","LOGISTICS_COST":"0"}
+        	 //渠道佣金 $item['COMMISSION_RATIO']
         	 var purchaseCost = $("#PURCHASE_COST").val()||0  ;
         	 var baseCost =parseFloat( purchaseCost )+ parseFloat($("#LOGISTICS_COST").val()||0 )+parseFloat($("#OTHER_COST").val()||0)
         	 										 + parseFloat(<?php echo $costTag;?>)+parseFloat(<?php echo $costLabor;?>)  ;
@@ -163,12 +164,21 @@
 						itemCost += parseFloat( $("[name='LOGISTICS_COST']","#"+rowId).val()||0) ; 
 					}
 					itemCost += parseFloat( item.FEE) ;
-					itemCost += parseFloat( item.COMMISSION_FEE) ;
+					
+					
 					if( channel != 'Merchant' ) itemCost +=parseFloat(  item.FBA_COST );
 					if( channel != 'Merchant' ) itemCost +=parseFloat(  item.INVENTORY_CENTER_FEE) ;
 					itemCost +=parseFloat(  $("[name='OTHER_COST']","#"+rowId).val()||0) ; 
 
 					var totalPrice=$("[name='TOTAL_PRICE']","#"+rowId).val() || item.TOTAL_PRICE ;//总售价
+
+					//itemCost += parseFloat( item.COMMISSION_FEE) ;
+					var COMMISSION_RATIO = parseFloat(  $("[name='COMMISSION_RATIO']","#"+rowId).val()||0) ; 
+					var COMMISSION_FEE = COMMISSION_RATIO*totalPrice  ;
+					itemCost += COMMISSION_FEE  ;
+					//计算渠道佣金
+					$(".COMMISSION_FEE","#"+rowId).html( COMMISSION_FEE.toFixed(2) +"("+(COMMISSION_RATIO.toFixed(2)*100)+"%)") ;
+					
 					var totalItemCost =( itemCost+baseCost /parseFloat(  item.EXCHANGE_RATE) ).toFixed(3) ;
 					var totalProfile = (totalPrice - totalItemCost).toFixed(2);
 					var profileRate =( (totalProfile/totalItemCost)*100).toFixed(2) +"%" ;
@@ -277,6 +287,7 @@
 								<td>
 									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>
 									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['LISTING_SKU'];?>" style="width:50px;"/>
+									<input type="hidden" name="COMMISSION_RATIO"   value="<?php echo $item['COMMISSION_RATIO'];?>" style="width:50px;"/>
 									<?php echo $item['LISTING_SKU'];?>
 								</td>
 								<td><?php echo $item['ACCOUNT_NAME'];?></td>
@@ -307,7 +318,7 @@
 										echo  round( $item['FEE'],3 ) ;
 									?>
 								</td>
-								<td><?php echo round($item['COMMISSION_FEE'],3 ) ;?>(<?php 
+								<td  class="COMMISSION_FEE"><?php echo round($item['COMMISSION_FEE'],3 ) ;?>(<?php 
 									echo round($item['COMMISSION_RATIO']*100,2)."%" ;   ?>)</td>
 								<td><?php echo round($item['VARIABLE_CLOSING_FEE'],3 ) ;?></td>
 								

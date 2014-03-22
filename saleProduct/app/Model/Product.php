@@ -26,6 +26,37 @@ class Product extends AppModel {
 		}
 	}
 	
+	function  delCategory($params){
+		$id = $params['id'] ;
+		$force = '' ;
+		if( isset($params['force']) ){
+			$force = $params['force'];
+		}
+		
+		if(  $force !=1){
+			//查找是否有子分类
+			$sql = "select * from sc_product_category where parent_id = '{@#id#}'" ;
+			$result = $this->exeSqlWithFormat($sql, $params) ;
+			if( count($result) >0 ){
+				return '{"type":1}' ;
+			}
+			//检查是否存在引用
+			$sql = "select s.* from sc_real_product_category s,sc_real_product srp where s.category_id = '{@#id#}' and srp.id = s.product_id  and srp.status =1" ;
+			$result = $this->exeSqlWithFormat($sql, $params) ;
+			if( count($result) >0 ){
+				return '{"type":2}' ;
+			}
+		}
+		//执行删除
+		$sql = "delete from sc_real_product_category where category_id = '{@#id#}'  " ;
+		$this->exeSql($sql, $params) ;
+		
+		$sql = "delete from sc_product_category where id = '{@#id#}'  " ;
+		$this->exeSql($sql, $params) ;
+		
+		return "" ;
+	}
+	
 	function saveCategory($category){
 		$memo = $category['memo'] ;
 		$name = $category['name'] ;

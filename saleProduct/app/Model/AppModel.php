@@ -74,7 +74,7 @@ class AppModel extends Model {
 				}
 			}
 			$user = $this->getUser() ;
-			$defaultCode = "$code-".strtoupper($user['LOGIN_ID']) ."-".date("ymd").'-'.$index ;
+			$defaultCode = "$code-".$index ."-".date("ymd").'-'.strtoupper($user['LOGIN_ID']);
 			return $defaultCode ;
 		}
 		

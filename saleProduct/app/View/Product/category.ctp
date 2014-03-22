@@ -179,6 +179,33 @@
 			return false;
 		}) ;
 
+		$(".del-category").click(function(){
+			var id = $("#up-category").find("#id").val() ;
+			if(!id) {
+				alert("未选择分类") ;
+				return ;
+			}
+				if(window.confirm("确认删除该分类吗?")){
+					$.dataservice("model:Product.delCategory",{id:id},function(result){
+						if(result){
+							result = $.parseJSON(result) ;
+							if(result.type == 1){
+									alert("该分类存在子分类，请先删除子分类") ;
+									return ;
+								}else if(result.type == 2){
+										if( window.confirm("改分类存在货品关联，确认删除？") ){
+											$.dataservice("model:Product.delCategory",{id:id,force:1},function(result){
+												window.location.reload() ;
+											});
+										}
+									}
+						}else{
+								window.location.reload() ;
+						}
+		            }) ;
+				}
+		}) ;
+
 		var categoryTreeSelect = {
 				title:'产品分类选择页面',
 				valueField:"#up-category .parentId",
@@ -242,7 +269,7 @@
 		</div>
 		<div class="span4">
 			<fieldset id="up-category">
-				<legend>修改当前分类</legend>
+				<legend>修改当前分类 <button class="btn btn-danger  del-category">刪除</button></legend>
 				<input type="hidden" class="id" id="id"/>
 			
 				<label>分类名称:</label>
