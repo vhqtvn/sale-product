@@ -17,6 +17,37 @@
 		 		$(".grid-cost").llygrid("reload",{},true) ;
 			 }) ;
 	   }) ;
+ 		
+ 		var chargeGridSelect = {
+				title:'用户选择页面',
+				defaults:[],//默认值
+				key:{value:'LOGIN_ID',label:'NAME'},//对应value和label的key
+				multi:false,
+				width:600,
+				height:560,
+				grid:{
+					title:"用户选择",
+					params:{
+						sqlId:"sql_user_list_forwarehouse"
+					},
+					ds:{type:"url",content:contextPath+"/grid/query"},
+					pagesize:10,
+					columns:[//显示列
+						{align:"center",key:"ID",label:"编号",width:"20%"},
+						{align:"center",key:"LOGIN_ID",label:"登录ID",sort:true,width:"30%"},
+						{align:"center",key:"NAME",label:"用户姓名",sort:true,width:"36%"}
+					]
+				}
+		   } ;
+		   
+		$(".add-on1").listselectdialog( chargeGridSelect,function(){
+			var args = jQuery.dialogReturnValue() ;
+			var value = args.value ;
+			var label = args.label ;
+			$("#INQUIRY_CHARGER").val(value) ;
+			$("#INQUIRY_CHARGER_NAME").val(label) ;
+			return false;
+		}) ;
 
  		var taskSelect = {
 				title:'开发任务选择界面',

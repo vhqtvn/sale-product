@@ -651,6 +651,7 @@ html{-webkit-text-size-adjust: none;}
 								<td>
 										<input type="hidden"  id="INQUIRY_CHARGER"  value="<?php echo $charger;?>" />
 										<input type="text"  disabled  id="INQUIRY_CHARGER_NAME"  value="<?php echo $chargerName;?>" />
+										<button class="btn add-on add-on1 input 10-input">选择用户</button>
 								</td>
 							</tr>
 						</table>
