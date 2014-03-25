@@ -369,22 +369,15 @@ UPDATE sc_product_dev
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status =10 ) AS STATUS10,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 15 ) AS  STATUS15,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 20) AS  STATUS20,
-			(SELECT COUNT(*) FROM sc_product_dev scfd
-							,sc_product_category_rel spcr ,sc_product_category spc
-						WHERE scfd.task_id = sc_product_filter.id 
-						     AND scfd.flow_status = 20
-						     AND spcr.asin = scfd.asin
-						     AND spcr.category_id = spc.id
-                             AND spc.purchase_charger = '{@#Evn.loginId#}'
+			(SELECT COUNT(*) FROM sc_product_dev 	scfd
+						WHERE   scfd.flow_status = 20
+							and scfd.task_id = sc_product_filter.id
+                             AND  scfd.INQUIRY_CHARGER = '{@#Evn.loginId#}'
 					) AS  STATUS20_MY,
 			(SELECT COUNT(*) FROM sc_product_dev scfd
 						WHERE scfd.task_id = sc_product_filter.id 
 						     AND scfd.flow_status = 20
-						     AND scfd.asin not in (
-						     	select asin from sc_product_category_rel spcr ,sc_product_category spc
-						     	where spcr.category_id = spc.id
-						     	and ( spc.purchase_charger is null or spc.purchase_charger = '' )
-						     )
+						     AND ( scfd.INQUIRY_CHARGER = '' or scfd.INQUIRY_CHARGER is null )
 					) AS  STATUS20_UNASIGN,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 25) AS  STATUS25,
 			(SELECT COUNT(*) FROM sc_product_dev	 scfd WHERE scfd.task_id = sc_product_filter.id  AND scfd.flow_status = 30 ) AS  STATUS30,
@@ -448,7 +441,7 @@ FROM  sc_product_filter spf,
 	LEFT JOIN sc_sale_potential ssp  ON ssp.asin = sp.asin
         LEFT JOIN sc_product_flow_details spfd1  ON spfd1.asin = sp.asin
 WHERE  spfd.task_id = spf.id
-	 and spfd.dev_status = 20
+	 and spfd.flow_status = 20
 	 and spfd.INQUIRY_CHARGER = '{@#Evn.loginId#}'
      {@  and sp.title like '%#title#%'}
      {@  and sp.asin = '#asin#'}

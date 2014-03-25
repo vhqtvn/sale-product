@@ -5,7 +5,7 @@ $(function(){
 		if( $(this).hasClass("update") ){
 			
 			var record = $.llygrid.getRecord(this) ;
-			openCenterWindow(contextPath+"/users/editUser/"+id,600,430) ;
+			openCenterWindow(contextPath+"/users/editUser/"+id,800,550) ;
 			
 		}else if( $(this).hasClass("del") ){
 			
@@ -16,7 +16,7 @@ $(function(){
 				});
 			}
 		}else if( $(this).hasClass("add") ){
-			openCenterWindow(contextPath+"/users/editUser",600,430) ;
+			openCenterWindow(contextPath+"/users/editUser",800,550) ;
 		} 
 		return false ;
 	})

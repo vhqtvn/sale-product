@@ -173,7 +173,8 @@ $(function(){
 								title:"货品选择",
 								params:{
 									sqlId:"sql_purchase_task_product_selectable",
-									taskId:taskId
+									taskId:taskId,
+									loginId:loginId
 								},
 								ds:{type:"url",content:contextPath+"/grid/query"},
 								pagesize:10,

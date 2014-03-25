@@ -20,12 +20,54 @@
     	
     	uncategory：1
     -->
+    <entry key="sql_security_getFunctionByUserId">
+    <![CDATA[	
+SELECT ssf.*,
+     ( SELECT COUNT(1) FROM sc_security_group_function ssgf,
+	sc_security_user_group ssug ,
+	sc_security_groups ssg
+         	WHERE ssgf.GROUP_CODE = ssg.CODE
+	AND ssug.GROUP_ID = ssg.ID
+	AND ssug.USER_ID = '{@#userId#}'
+	AND ssf.code = ssgf.FUNCTION_CODE
+	 ) AS selected
+ FROM sc_security_function ssf
+WHERE  ( parent_id <> 'account' || parent_id IS NULL) ORDER BY  parent_id
+]]>
+   </entry>
+   
+   <entry key="sql_security_getFunctionByGroupCode">
+    <![CDATA[	
+SELECT sc_security_function.*,
+     ( SELECT COUNT(1) FROM sc_security_group_function ssgf
+         	WHERE   sc_security_function.code = ssgf.FUNCTION_CODE
+         	and ssgf.GROUP_CODE = '{@#groupCode#}'
+	 ) AS selected
+ FROM sc_security_function 
+WHERE  ( parent_id <> 'account' || parent_id IS NULL) ORDER BY  parent_id
+]]>
+   </entry>
+   
    
    <entry key="sql_user_list">
   SELECT sc_user.* , (select name from sc_security_groups where sc_security_groups.code = sc_user.group_code ) as GROUP_NAME
 			FROM sc_user 
 			where status = '1'
 			{@ and name = '#name#'}
+   </entry>
+   
+   <entry key="sql_user_group_list">
+ SELECT ssug.*,
+   (SELECT NAME FROM sc_user su WHERE su.id = ssug.USER_ID ) AS  USER_NAME,
+   (SELECT NAME FROM sc_security_groups ssg WHERE ssg .id = ssug.group_id ) AS  GROUP_NAME
+ FROM sc_security_user_group ssug WHERE ssug.USER_ID = '{@#userId#}'
+   </entry>
+   
+   <entry key="sql_security_group_listForUserSelect">
+ SELECT ssug.*
+ FROM sc_security_groups ssug WHERE ssug.id not in (
+       select group_id from sc_security_user_group s where s.user_id =  '{@#userId#}'
+ )
    </entry>
    
    <entry key="sql_security_group_insert">
@@ -161,24 +203,42 @@
    </entry> 
    
    <entry key="sql_security_haspermissionByCode">
-		SELECT COUNT(*) as C FROM sc_security_group_function s1,sc_user s2
-
+		SELECT COUNT(*) as C FROM 
+			sc_security_group_function s1,
+			sc_security_user_group ssug,
+       		sc_security_groups ssg,
+			sc_user s2
+		 WHERE s1.group_code = ssg.code
+		 AND s2.login_id = '{@#loginId#}'
+		 AND s1.function_code = '{@#code#}'
+		 and ssg.id = ssug.group_id
+		 and ssug.user_id = s2.id
+   </entry> 
+   <!-- 
+   <entry key="sql_security_haspermissionByCode">
+		SELECT COUNT(*) as C FROM 
+			sc_security_group_function s1,
+			sc_security_user_group ssug,
+       		sc_security_groups ssg
+			sc_user s2
 		 WHERE s1.group_code = s2.group_code
 		 AND s2.login_id = '{@#loginId#}'
 		 AND s1.function_code = '{@#code#}'
    </entry> 
-   
+    -->
    <!-- 数据权限查询，通过用户ID和function Code -->
    <entry key="sql_security_find_dataSecurity">
 		SELECT ssf.* FROM sc_security_function ssf,
 			sc_security_group_function ssgf,
 			sc_security_groups ssg,
+			sc_security_user_group ssug,
 			sc_user su
 			 WHERE ssf.type = 'DATA'
 			 AND ssf.CODE = ssgf.FUNCTION_CODE
 			 AND ssf.OPERATION_CODE = '{@#code#}'
 			 AND ssgf.GROUP_CODE = ssg.CODE
-			 AND su.GROUP_CODE = ssg.CODE
+			 AND su.id = ssug.user_id
+			 and ssg.id = ssug.group_id
 			 AND su.LOGIN_ID = '{@#loginId#}'
    </entry>
    
@@ -190,6 +250,26 @@
    	SELECT s.* , concat(s.name,'[',s.id,']') AS TEXT FROM sc_security_function s  
    </entry>
    
+   <entry key="sql_security_getFunctionRelGroupsFrontByUserId">
+   	<![CDATA[	
+   	SELECT 
+		  sc_security_function.* 
+		 FROM sc_security_function where ( parent_id <> 'account' || parent_id IS NULL)
+		 and type = 'MENU'
+		 and code in (
+       		SELECT sc_security_group_function.function_code 
+       		FROM sc_security_group_function ,
+       		         sc_security_user_group ssug,
+       		         sc_security_groups ssg
+       		WHERE 
+       		ssg.id = ssug.group_id
+       		and ssg.code = sc_security_group_function.group_code
+       		and ssug.user_id = '{@#userId#}'
+		)
+		order by  display_order
+	]]>
+	</entry>
+   
    <entry key="sql_security_getFunctionRelGroupsFrontByGroupCode">
    	<![CDATA[	
    	SELECT 
@@ -198,7 +278,7 @@
 		 and type = 'MENU'
 		 and code in (
        		SELECT sc_security_group_function.function_code FROM sc_security_group_function WHERE sc_security_group_function.FUNCTION_CODE
-		   = sc_security_function.code AND sc_security_group_function.GROUP_CODE = '{@#code#}'
+		   = sc_security_function.code AND sc_security_group_function.GROUP_CODE in ( '{@#code#}' )
 		)
 		order by  display_order
 	]]>

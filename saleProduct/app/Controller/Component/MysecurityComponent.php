@@ -56,19 +56,18 @@ class MysecurityComponent extends Component {
 	}
 	
 	public function isAllow( $url , $user ) {
-		$groupCode = $user['GROUP_CODE'] ;
+		$userId = $user['ID'] ;
 		
 		//未分配组
-		if( empty($groupCode) ) return false ;
+		if( empty($userId) ) return false ;
 		
 		$this->User = ClassRegistry::init('User')  ;
 		
-		$Functions = $this->User->getFunctionRelGroups($groupCode) ;
+		$Functions = $this->User->getFunctionByUserId($userId) ;
 		
 		foreach( $Functions as $Record ){
-			$sfs = $Record['sc_security_function']  ;
-			$selected =  $Record[0]['selected'] ;
-			$url1   = $sfs['URL'] ;
+			$selected =  $Record['selected'] ;
+			$url1   = $Record['URL'] ;
 			
 			if( !empty($selected) && (trim($url1) == trim($url))){//分配了权限的
 				return true ;

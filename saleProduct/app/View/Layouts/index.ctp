@@ -14,7 +14,7 @@
 		echo $this->Html->script('../ligerUI/lib/ligerUI/js/ligerui.min');
 		
 		$userModel  = ClassRegistry::init("User") ;
-		$funs = $userModel->getSecurityFunctions( $User["GROUP_CODE"] ); 
+		$funs = $userModel->getSecurityFunctionsByUserId( $User["ID"] ); 
 		//print_r($funs) ;
 		
 		$amazonAccount  = ClassRegistry::init("Amazonaccount") ;
