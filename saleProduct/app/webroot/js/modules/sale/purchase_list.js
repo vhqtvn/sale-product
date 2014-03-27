@@ -165,7 +165,7 @@
 			} ;
 
 			$(".plan-query").click(function(){
-				$(".grid-content").llygrid("reload",{name:$("#name").val(),type:$("#type").val()}) ;
+				$(".grid-content").llygrid("reload",{name:$("#name").val(),code:$("#code").val()}) ;
 			}) ;
 			
 			$(".create-plan").click(function(){

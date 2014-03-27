@@ -109,7 +109,8 @@
 		
 		$products = $SqlUtils->exeSqlWithFormat("SELECT sptp.*,
 													      (SELECT NAME FROM sc_purchase_task spt WHERE spt.id = sptp.TASK_ID) AS TASK_NAME,
-															 (SELECT NAME FROM sc_supplier spt WHERE spt.id = sptp.REAL_PROVIDOR) AS REAL_PROVIDOR_NAME
+															 (SELECT NAME FROM sc_supplier spt WHERE spt.id = sptp.REAL_PROVIDOR) AS REAL_PROVIDOR_NAME,
+															 (SELECT NAME FROM sc_supplier spt WHERE spt.id = sptp.PROVIDOR) AS PROVIDOR_NAME
 													 FROM sc_purchase_task_products sptp , sc_purchase_plan_details sppd
 													where sptp.product_id = sppd.id and ( sppd.sku = '{@#sku#}'  or sppd.real_id = '{@#realId#}' )
 													and sptp.product_id = '{@#productId#}'
@@ -431,6 +432,7 @@
 									<tr>
 									<th>任务名称</th>
 									<th>任务状态</th>
+									<th>计划供应商</th>
 									<th>实际供应商</th>
 									<th>采购价格</th>
 									<th>采购时间</th>
@@ -457,6 +459,7 @@
 									<tr  class="running-task">
 										<td><a target="_blank" href="<?php echo $contextPath;?>/page/forward/Sale.edit_purchase_task_product/<?php echo $p['PRODUCT_ID'];?>/<?php echo $p['TASK_ID'];?>"><?php echo  $p['TASK_NAME'] ;?></a></td>
 										<td><?php echo  $message ;?></td>
+										<td><a href="#"  supplier-id="<?php echo $p['PROVIDOR'];?>"><?php echo  $p['PROVIDOR_NAME'] ;?></a></td>
 										<td><a href="#"  supplier-id="<?php echo $p['REAL_PROVIDOR'];?>"><?php echo  $p['REAL_PROVIDOR_NAME'] ;?></a></td>
 										<td><?php echo  $p['REAL_QUOTE_PRICE'] ;?></td>
 										<td><?php echo  $p['REAL_PURCHASE_DATE'] ;?></td>

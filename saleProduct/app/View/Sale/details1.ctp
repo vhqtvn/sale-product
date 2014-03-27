@@ -500,6 +500,9 @@ html{-webkit-text-size-adjust: none;}
 				?>
 			</select>
 		</td>
+		<td  style="text-align:center;padding-left:20px;">
+		<center style="font-weight:bold; padding:0px 20px;margin:0px;font-size:15px;"  class="alert"><?php echo $productDev['TITLE'];?></center>
+		</td>
 		</tr>
 	</table>
 	

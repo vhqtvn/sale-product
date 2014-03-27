@@ -454,6 +454,9 @@
 											}
 										?>
 										</select> 
+										<?php if( !empty($taskProduct['PROVIDOR']) ){ ?>
+										<a href="#" supplier-id="<?php echo $taskProduct['PROVIDOR'] ;?>">查看</a>
+										<?php } ?>
 										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 45-input  input">编辑</button>
 										</td>
 										<th>供应商报价：</th>
