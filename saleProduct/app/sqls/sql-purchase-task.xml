@@ -246,8 +246,7 @@
 			)}
     -->
     <entry key="sql_purchase_task_product_list">
-		SELECT DISTINCT  
-			sppd.ID, 
+		SELECT sppd.ID, 
 			sppd.ASIN, 
 			(SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = sppd.id
 	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
@@ -261,7 +260,12 @@
 			sppd.PLAN_START_TIME, 
 			sppd.PLAN_END_TIME, 
 			sppd.TAGS,
-			sptp.* ,
+			sptp.STATUS,
+                        sptp.QTC,
+                        sptp.QUALIFIED_PRODUCTS_NUM, 
+                        sptp.QUOTE_PRICE,
+                        sptp.AREA,
+                        sptp.WAREHOUSE_TIME,
 			srp.name AS TITLE,
 			srp.IMAGE_URL,
 			(SELECT NAME FROM sc_supplier WHERE id =sptp.PROVIDOR ) AS PROVIDOR_NAME,
