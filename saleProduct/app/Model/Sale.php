@@ -127,6 +127,10 @@ class Sale extends AppModel {
 						//判断是否存在
 						$ps = $this->getObject("sql_purchasePlanProductsIsExists", $query) ;
 						if(empty($ps)){
+							//根据sku获取货品ID
+							$sql = "select * from sc_real_product where sku = '{@#sku#}'" ;
+							$product = $this->getObject($sql, $query) ;
+							$query['realId'] = $product['ID'] ;
 							$this->exeSql("sql_insert_purchasePlanProducts", $query);
 						}
 				}catch(Exception $e){ }
