@@ -64,15 +64,6 @@ $(function(){
 			        {align:"center",key:"STATUS72",label:"试销采购",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='72'>"+(val||'0')+"</a>"
 			        }},
-			        {align:"center",key:"STATUS74",label:"库存到达",group:'流程状态',width:"6%",format:function(val,record){
-						return "<a href='#' class='fs-action' status='74'>"+(val||'0')+"</a>"
-			        }},
-			        {align:"center",key:"STATUS76",label:"营销展开",group:'流程状态',width:"6%",format:function(val,record){
-						return "<a href='#' class='fs-action' status='76'>"+(val||'0')+"</a>"
-			        }},
-			        {align:"center",key:"STATUS78",label:"开发总结",group:'流程状态',width:"6%",format:function(val,record){
-						return "<a href='#' class='fs-action' status='78'>"+(val||'0')+"</a>"
-			        }},
 			        {align:"center",key:"STATUS80",label:"结束",group:'流程状态',width:"6%",format:function(val,record){
 						return "<a href='#' class='fs-action' status='80'>"+(val||'0')+"</a>"
 			        }},
@@ -155,50 +146,15 @@ $(function(){
 					var map = {1:'自有',2:'跟卖',3:'废弃',4:'自有兼跟卖'} ;
 					return map[val] ;
 				}},
-				{align:"center",key:"COST_GROUP",label:"利润分类",width:"8%",sort:true,format:function(val,record){
+				{align:"center",key:"COST_COUNT",label:"利润分类",width:"8%",sort:true,format:function(val,record){
 					var INQUIRY_COUNT = record.INQUIRY_COUNT ;
 					var COST_COUNT = record.COST_COUNT ;
 					if( INQUIRY_COUNT<=0 ) return "待询价" ;
-					if( COST_COUNT<=0 ) return "待成本核算" ;
-					if( !val ) return "未算利润" ;
-					
-					var s = val.split(",") ;
-					var maxProfit = 0 ;
-					var maxType ;
-					$(s).each(function(){
-						var ss = this.split("|") ;
-						var type = ss[0] ;
-						var profit = parseFloat(ss[1]||0) ;
-						maxProfit = Math.max(maxProfit,profit) ;
-					}) ;
-					if(maxProfit <=0 ) return "亏本" ;
-					if(maxProfit <0.15 ) return "低利润" ;
-					return "利润达标" ;
+					return "-" ;
 					
 				   }},
 				   {align:"center",key:"COST_GROUP",label:"利润值",width:"8%",sort:true,format:function(val,record){
-					   var INQUIRY_COUNT = record.INQUIRY_COUNT ;
-						var COST_COUNT = record.COST_COUNT ;
-						
-						if( val ){
-							var s = val.split(",") ;
-							var maxProfit = 0 ;
-							var maxType ;
-							var profitRatio = {} ;
-							$(s).each(function(){
-								var ss = this.split("|") ;
-								var type = ss[0] ;
-								var profit = parseFloat(ss[1]||0) ;
-								var cost = ss[2] ;
-								//alert(profit+"   "+cost);
-								profitRatio[type] = type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")" ;
-								//profitRatio.push( type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")") ;
-							}) ;
-							
-							return profitRatio["FBA"]+"||"+profitRatio["FBM"] ;
-						}else{
-							return "-" ;
-						}
+					  return "-" ;
 					   },permission:function(){
 						   return $COST_VIEW_PROFIT ;
 					   }},
@@ -230,7 +186,50 @@ $(function(){
 				 title:"",
 				 indexColumn: false,
 				 querys:{sqlId:'sql_pdev_filter_details'},//status:$("[name='status']").val(),type:type,
-				 loadMsg:"数据加载中，请稍候......"
+				 loadMsg:"数据加载中，请稍候......",
+				 loadAfter:function(records){
+					    var asins = [] ;
+					 	$(records).each(function(){
+					 		if(this.ASIN)asins.push(this.ASIN);
+					 	}) ;
+					 	
+					 	asins = "'"+asins.join("','")+"'" ;
+					 	
+					 	//setTimeout(function(){
+					 		$.dataservice("sqlId:sql_pdev_filter_details_getCostGroup",{asins:asins},function(result){
+						 		$(result).each(function(index,item){
+						 			var t = item.t ;
+						 			var tr = $("[asin='"+t.ASIN+"']").closest("tr") ;
+						 			var costGroup = t.COST_GROUP||"" ;
+						 			var val = costGroup ;
+						 			if(val){
+						 				var s = val.split(",") ;
+										var maxProfit = 0 ;
+										var maxType ;
+										var profitRatio = {} ;
+										$(s).each(function(){
+											var ss = this.split("|") ;
+											var type = ss[0] ;
+											var profit = parseFloat(ss[1]||0) ;
+											var cost = ss[2] ;
+											//alert(profit+"   "+cost);
+											profitRatio[type] = type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")" ;
+											//profitRatio.push( type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")") ;
+										}) ;
+										
+										costGroup = profitRatio["FBA"]+"||"+profitRatio["FBM"] ;
+						 			}
+						 			
+						 			
+						 			$("<span>"+costGroup+"</span>").appendTo(tr.find("td[key='COST_GROUP']").find(".cell-div").empty() ).attr("title",costGroup) ;
+						 			if( t.COST_COUNT<=0 ) {
+						 				tr.find("td[key='COST_COUNT']").find(".cell-div").html("<span>待成本核算</span>") ;
+						 			}
+						 		}) ;
+					 			//$(".grid-content-details").llygrid("reload",{},true) ;
+							},{noblock:true}) ;
+					 	//},500) ;
+				 }
 			}) ;
 
 			$(".process-action").live("click",function(){
