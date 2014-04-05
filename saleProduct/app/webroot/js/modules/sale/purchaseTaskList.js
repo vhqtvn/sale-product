@@ -276,7 +276,7 @@ $(function(){
 		 },
 		 title:"",
 		 indexColumn:false,
-		 querys:{taskId:'',sqlId:"sql_purchase_task_product_list"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 querys:{taskId:'',sqlId:"sql_purchase_task_product_list",countSqlId:"sql_purchase_task_product_list_countSql"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......",
 		 loadAfter:function(){
 		 	$(".grid-checkbox").each(function(){

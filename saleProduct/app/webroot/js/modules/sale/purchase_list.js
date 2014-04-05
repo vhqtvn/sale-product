@@ -230,7 +230,7 @@
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{planId:'',status:"",sqlId:"sql_purchase_plan_details_listForSKU"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+				 querys:{planId:'',status:"",sqlId:"sql_purchase_plan_details_listForSKU",countSqlId:"sql_purchase_plan_details_listForSKU_countSql"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 					 $(".delete-action").click(function(){

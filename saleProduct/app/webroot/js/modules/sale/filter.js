@@ -198,10 +198,10 @@ var currentId = '' ;
 						var map = {1:'自有',2:'跟卖',3:'废弃',4:'自有兼跟卖'} ;
 						return map[val] ;
 					}},
-					{align:"center",key:"COST_GROUP",label:"利润分类",width:"8%",sort:true,format:function(val,record){
+					{align:"center",key:"COST_COUNT",label:"利润分类",width:"8%",sort:true,format:function(val,record){
 						var INQUIRY_COUNT = record.INQUIRY_COUNT ;
 						var COST_COUNT = record.COST_COUNT ;
-						
+						val = record.COST_GROUP;
 						if( val ){
 							var s = val.split(",") ;
 							var maxProfit = 0 ;
@@ -271,7 +271,30 @@ var currentId = '' ;
 				 indexColumn: false,
 				 querys:{taskView:'1',sqlId:'sql_pdev_filter_details'},//status:$("[name='status']").val(),type:type,
 				 loadMsg:"数据加载中，请稍候......",
-				 loadAfter:function(){
+				 loadAfter:function(records){
+					    var asins = [] ;
+					 	$(records).each(function(){
+					 		if(this.ASIN)asins.push(this.ASIN);
+					 	}) ;
+					 	
+					 	asins = "'"+asins.join("','")+"'" ;
+					 	
+					 	//setTimeout(function(){
+					 		$.dataservice("sqlId:sql_pdev_filter_details_getCostGroup",{asins:asins},function(result){
+						 		$(result).each(function(index,item){
+						 			var t = item.t ;
+						 			var tr = $("[asin='"+t.ASIN+"']").closest("tr") ;
+						 			var costGroup = t.COST_GROUP||"" ;
+						 			$("<span>"+costGroup+"</span>").appendTo(tr.find("td[key='COST_GROUP']").find(".cell-div").empty() ).attr("title",costGroup) ;
+						 			if( t.COST_COUNT<=0 ) {
+						 				tr.find("td[key='COST_COUNT']").find(".cell-div").html("<span>待成本核算</span>") ;
+						 			}
+						 		}) ;
+					 			//$(".grid-content-details").llygrid("reload",{},true) ;
+							}) ;
+					 	//},500) ;
+						 	
+					 
 					 	$(".process-action").bind("click",function(){
 							var row =  $(this).parents("tr:first").data("record") ;
 							var taskId = row.TASK_ID ;
@@ -295,8 +318,6 @@ var currentId = '' ;
 								}
 							}) ;
 						}) ;
-					 	
-					 	
 					 	
 					 	$(".delete-tp-action").click(function(){
 					 		var row =  $(this).parents("tr:first").data("record") ;

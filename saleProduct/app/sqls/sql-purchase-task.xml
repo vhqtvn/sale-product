@@ -278,7 +278,7 @@
 		LEFT JOIN sc_user su
 		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
-		ON ( sppd.SKU = srp.real_sku or srp.ID = sppd.REAL_ID)
+		ON (  srp.ID = sppd.REAL_ID)
 		WHERE 1=1 
 		    AND sptp.product_id = sppd.id
 		    {@ and sptp.task_id = '#taskId#'}
@@ -297,6 +297,34 @@
 			)}
 			and sptp.status != 80
 			order by sptp.task_id desc
+    </entry>
+    
+    <entry key="sql_purchase_task_product_list_countSql">
+		SELECT count(*)
+		FROM 
+		sc_purchase_task_products sptp,
+		sc_purchase_plan_details sppd 
+		LEFT JOIN sc_user su
+		ON su.login_id = sppd.executor
+		LEFT JOIN sc_real_product srp
+		ON (  srp.ID = sppd.REAL_ID)
+		WHERE 1=1 
+		    AND sptp.product_id = sppd.id
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+		    and sptp.task_id in (
+		    		select spt.id
+				         from sc_purchase_task spt 
+				         where 1=1
+				         {@ #$purchaseTask_view: and 1=0# }
+		    )
+		    {@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
+			)}
+			and sptp.status != 80
     </entry>
     
     <entry key="sql_purchase_task_product_list_done">
@@ -328,7 +356,7 @@
 		LEFT JOIN sc_user su
 		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
-		ON ( sppd.SKU = srp.real_sku or srp.ID = sppd.REAL_ID)
+		ON (  srp.ID = sppd.REAL_ID)
 		WHERE 1=1 
 		    AND sptp.product_id = sppd.id
 		    {@ and sptp.task_id = '#taskId#'}
@@ -364,7 +392,7 @@
 		LEFT JOIN sc_user su
 		on su.login_id = sppd.executor
 		left join sc_real_product srp
-		on sppd.SKU = srp.real_sku
+		on sppd.REAL_ID = srp.ID
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
 		    {@ and sptp.task_id = '#taskId#'}
@@ -397,7 +425,7 @@
 			( sppd.PLAN_NUM - IFNULL(sppd.REAL_PURCHASE_NUM,0) ) AS SUPPIERABLE_NUM
 		FROM sc_purchase_plan_details sppd 
 		LEFT JOIN sc_real_product srp
-		ON ( sppd.REAL_ID = srp.ID or srp.REAL_SKU = sppd.SKU )
+		ON ( sppd.REAL_ID = srp.ID  )
 		WHERE 1=1 
 		  	and sppd.executor = '{@#loginId#}'
 		  AND not EXISTS(
@@ -434,7 +462,7 @@
 			sc_purchase_task_products sptp,
 			sc_purchase_plan_details sppd
 			LEFT JOIN sc_real_product srp
-			ON ( sppd.SKU = srp.real_sku or sppd.REAL_ID = srp.ID)
+			ON ( sppd.REAL_ID = srp.ID)
 		WHERE 1=1 
 		    AND sptp.product_id = sppd.id
 		      and sptp.task_id = '{@#taskId#}'
@@ -466,7 +494,7 @@
 		sc_purchase_task_products sptp,
 		sc_purchase_plan_details sppd 
 		left join sc_real_product srp
-		on ( sppd.SKU = srp.real_sku  or srp.id = sppd.real_id)
+		on (   srp.id = sppd.real_id)
 		WHERE 1=1 
 		    and sptp.product_id = sppd.id
 		    and sptp.task_id = '{@#taskId#}'

@@ -42,7 +42,7 @@
 		LEFT JOIN sc_user su
 		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
-		ON (sppd.REAL_ID = srp.ID  or sppd.SKU = srp.REAL_SKU)
+		ON (sppd.REAL_ID = srp.ID  )
 		LEFT JOIN sc_product_category spc
 		ON srp.CATEGORY_ID = spc.ID
 		WHERE 1=1 
@@ -133,6 +133,36 @@
    
    
     -->
+    
+    
+    <entry key="sql_purchase_plan_details_listForSKU_countSql">
+		SELECT   
+		  count(*)  
+		FROM sc_purchase_plan_details sppd
+		LEFT JOIN sc_user su
+		ON su.login_id = sppd.executor
+		LEFT JOIN sc_real_product srp
+		ON (sppd.REAL_ID = srp.ID  )
+		WHERE 1=1 
+		     {@ #$VIEW_PP:and 1=0# }
+			{@AND sppd.plan_id = '#planId#'}
+			{@AND sppd.sku = '#sku#'}
+			{@AND sppd.id = '#id#'}
+		   {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+			{@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
+			)}
+			and ( 
+			  sppd.status != 25
+			  and
+			  not exists (
+				select 1 from sc_purchase_task_products s WHERE s.product_id = sppd.id and s.status = 80
+			  )
+			)
+   </entry>
+    
    <entry key="sql_purchase_plan_details_listForSKU">
 		SELECT   
 		sppd.* ,
@@ -152,7 +182,7 @@
 		LEFT JOIN sc_user su
 		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
-		ON (sppd.REAL_ID = srp.ID  or sppd.SKU = srp.REAL_SKU)
+		ON (sppd.REAL_ID = srp.ID  )
 		LEFT JOIN sc_product_category spc
 		ON srp.CATEGORY_ID = spc.ID
 		WHERE 1=1 
@@ -193,7 +223,7 @@
 			srp.IMAGE_URL AS LOCAL_URL
 		FROM sc_purchase_plan_details sppd 
 		left join sc_real_product srp
-		on sppd.SKU = srp.real_sku
+		on sppd.REAL_ID = srp.ID
 		WHERE 1=1 
 			 and sppd.status = '3' 
 		     {@ #$EXPORT_PP# }

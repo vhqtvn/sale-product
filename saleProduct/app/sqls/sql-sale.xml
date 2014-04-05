@@ -114,26 +114,24 @@
     </entry>
     
     <entry key="sql_purchase_plan_getAsinFromSku">
-    		select distinct sp.* ,
+    		select  sp.* ,
 				s1.LIMIT_PRICE,
     			s3.SKU,
     			s3.QUANTITY,
 				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL,
-				( SELECT s.TOTAL_COST  FROM sc_view_listing_cost s
-				WHERE s.account_id = s3.account_id and s.listing_sku = s3.sku  ) AS  TOTAL_COST,	
-				( SELECT s.TOTAL_PRICE  FROM sc_view_listing_cost s
-				WHERE s.account_id = s3.account_id and s.listing_sku = s3.sku
-						 ) AS  TOTAL_PRICE
-    		from 
+			s.TOTAL_COST,	
+			s.TOTAL_PRICE
+    		FROM 
+    		   sc_product sp,
     		   sc_purchase_plan_details s1,
     		   sc_real_product_rel s2,
     		   sc_amazon_account_product s3,
-    		   sc_product sp
-    		   LEFT JOIN sc_product_flow_details ON sc_product_flow_details.asin = sp.asin
-				LEFT JOIN sc_sale_competition_details  ON sc_sale_competition_details.asin = sp.asin
-    	 where s1.sku = s2.real_sku
-    	 and s2.sku = s3.sku
-    	 and s3.asin = sp.asin
+    		   sc_view_listing_cost s
+    	 WHERE 
+    	 s3.asin = sp.asin
+    	 AND s1.real_id = s2.real_id
+    	 AND s2.sku = s3.sku
+    	 AND s.account_id = s3.account_id AND s.listing_sku = s3.sku
     	 and s1.id = '{@#id#}'
     </entry>
     
@@ -146,6 +144,7 @@
     	INSERT INTO sc_purchase_plan_details 
 				(
 				ASIN, 
+				REAL_ID,
 				SKU, 
 				PLAN_ID, 
 				CREATOR, 
@@ -155,6 +154,7 @@
 				VALUES
 				(
 				'{@#asin#}', 
+				'{@#realId#}',
 				'{@#sku#}', 
 				'{@#planId#}', 
 				'{@#loginId#}', 
@@ -167,6 +167,7 @@
     	INSERT INTO sc_purchase_plan_details 
 				(
 				ASIN, 
+				REAL_ID,
 				SKU, 
 				PLAN_ID, 
 				PLAN_NUM,
@@ -177,6 +178,7 @@
 				VALUES
 				(
 				'{@#asin#}', 
+				'{@#realId#}',
 				'{@#sku#}', 
 				'{@#planId#}', 
 				'{@#planNum#}', 
