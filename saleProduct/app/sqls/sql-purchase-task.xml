@@ -83,6 +83,59 @@
          where 1=1
           {@ and spt.task_code like '%#taskCode#%'}
          {@ #$purchaseTask_view: and 1=0# }
+         and ( 
+            spt.status = 1
+            or
+            exists(
+              select 1 from sc_purchase_task_products sptp where sptp.task_id = spt.id and sptp.status < 80 
+            )
+         )
+         order by spt.id desc
+        ]]>
+    </entry>
+    
+    <entry key="sql_purchase_task_list_done">
+     <![CDATA[
+        select spt.* ,
+           (select name from sc_user where login_id = spt.created_by) as EXECUTOR_NAME,
+           ( select count(1) from sc_purchase_task_products sptp where sptp.task_id = spt.id and sptp.status < 80  ) as TP_STATUS,
+           ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   ) as STATUS0,
+			 ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status = 45  ) ) as STATUS45,	
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  46 ) ) as STATUS46,
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  47  ) ) as STATUS47,	
+			 ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status = 48  ) ) as STATUS48,	
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status = 49  ) ) as STATUS49,	
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  50 ) ) as STATUS50,			
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  60 ) ) as STATUS60,			
+			 ( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status = 70  ) ) as STATUS70,			
+			( select count(*) from sc_purchase_task_products sptp 
+						where sptp.task_id = spt.id   
+						and ( sptp.status =  80  ) ) as STATUS80
+         from sc_purchase_task spt 
+         where 1=1
+          {@ and spt.task_code like '%#taskCode#%'}
+         {@ #$purchaseTask_view: and 1=0# }
+         and 
+            exists(
+              select 1 from sc_purchase_task_products sptp where sptp.task_id = spt.id and sptp.status = 80 
+            )
          order by spt.id desc
         ]]>
     </entry>
@@ -238,6 +291,57 @@
 				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
 				or su.name like '%#searchKey#%'
 			)}
+			and sptp.status != 80
+			order by sptp.task_id desc
+    </entry>
+    
+    <entry key="sql_purchase_task_product_list_done">
+		SELECT DISTINCT  
+			sppd.ID, 
+			sppd.ASIN, 
+			(SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = sppd.id
+	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
+			sppd.SKU, 
+			srp.REAL_SKU,
+			sppd.PLAN_NUM, 
+			sppd.REAl_PURCHASE_NUM, 
+			sppd.PLAN_ID,
+			sppd.LIMIT_PRICE,
+			sppd.EXECUTOR, 
+			sppd.PLAN_START_TIME, 
+			sppd.PLAN_END_TIME, 
+			sppd.TAGS,
+			sptp.* ,
+			srp.name AS TITLE,
+			srp.IMAGE_URL,
+			(SELECT NAME FROM sc_supplier WHERE id =sptp.PROVIDOR ) AS PROVIDOR_NAME,
+			su.NAME AS EXECUTOR_NAME,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
+			( sppd.PLAN_NUM - IFNULL(sppd.REAl_PURCHASE_NUM,0) ) AS SUPPIERABLE_NUM
+		FROM 
+		sc_purchase_task_products sptp,
+		sc_purchase_plan_details sppd 
+		LEFT JOIN sc_user su
+		ON su.login_id = sppd.executor
+		LEFT JOIN sc_real_product srp
+		ON ( sppd.SKU = srp.real_sku or srp.ID = sppd.REAL_ID)
+		WHERE 1=1 
+		    AND sptp.product_id = sppd.id
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@ and sptp.task_id = '#taskId#'}
+		    {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+		    and sptp.task_id in (
+		    		select spt.id
+				         from sc_purchase_task spt 
+				         where 1=1
+				         {@ #$purchaseTask_view: and 1=0# }
+		    )
+		    {@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
+			)}
+			and sptp.status = 80
 			order by sptp.task_id desc
     </entry>
     

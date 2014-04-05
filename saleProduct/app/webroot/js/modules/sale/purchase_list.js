@@ -54,37 +54,30 @@
 		           	{align:"center",key:"STATUS25",label:img25,group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=25>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS30",label:img3,group:"状态",width:"4%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=30>"+val+"</a>" ;
-		           	}},
-		           	{align:"center",key:"STATUS40",label:img4,group:"状态",width:"4%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=40>"+val+"</a>" ;
-		           	}},
-		           	/*
-		           	{align:"center",key:"STATUS45",label:"询价",group:"状态",width:"4%",format:function(val,record){
+		           	{align:"center",key:"STATUS45",label:"待询价",group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=45>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS46",label:"申请",group:"状态",width:"4%",format:function(val,record){
+		           	{align:"center",key:"STATUS46",label:"再询价",group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=46>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS47",label:"交易",group:"状态",width:"4%",format:function(val,record){
+		           	{align:"center",key:"STATUS47",label:"交易审批",group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=47>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS48",label:"发货",group:"状态",width:"4%",format:function(val,record){
+		           	{align:"center",key:"STATUS48",label:"待交易",group:"状态",width:"4%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=48>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS50",label:img5,group:"状态",width:"3%",format:function(val,record){
+		           	{align:"center",key:"STATUS49",label:"待收货",group:"状态",width:"4%",format:function(val,record){
+		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=48>"+val+"</a>" ;
+		           	}},
+		           	{align:"center",key:"STATUS50",label:"QC验货",group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=50>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS60",label:img6,group:"状态",width:"3%",format:function(val,record){
+		           	{align:"center",key:"STATUS60",label:"入库",group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=60>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS70",label:img7,group:"状态",width:"3%",format:function(val,record){
+		           	{align:"center",key:"STATUS70",label:"采购审计",group:"状态",width:"3%",format:function(val,record){
 		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=70>"+val+"</a>" ;
 		           	}},
-		           	{align:"center",key:"STATUS80",label:img8,group:"状态",width:"3%",format:function(val,record){
-		           		return "<a href='javascript:void(0)' onClick='StatusClick(this)' class='status-action'  planId='"+record.ID+"' status=80>"+val+"</a>" ;
-		           	}},*/
 		           	{align:"center",key:"EXECUTOR_NAME",label:"负责人",width:"4%"},
 		           	{align:"center",key:"USERNAME",label:"创建人",width:"4%"},
 		           	{align:"center",key:"CREATE_TIME",label:"创建时间",width:"10%"}

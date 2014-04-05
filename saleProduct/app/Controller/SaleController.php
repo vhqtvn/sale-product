@@ -182,6 +182,11 @@ class SaleController extends AppController {
 		$this->set('flag', $flag);
 	}
 	
+	
+	public function purchaseListDone($flag){
+		$this->set('flag', $flag);
+	}
+	
 	public function purchaseListPrint($planId){
 		$plans = $this->Sale->getPurchasePlan($planId) ;
 		

@@ -121,10 +121,14 @@
 		$startTime = $product['PLAN_START_TIME'] ;
 		$endTime =$product['PLAN_END_TIME'] ; 
 		if( empty($product['PLAN_START_TIME']) ){
+			ini_set('date.timezone','Asia/Shanghai');
+			$startTime = date('Y-m-d');
+			$endTime  = date('Y-m-d',strtotime('+3 day'));
+			/*
 			$sql = "SELECT DATE_FORMAT(NOW(),'%Y-%m-%d') AS START_DATE,DATE_FORMAT( DATE_ADD(NOW(),INTERVAL 3 DAY),'%Y-%m-%d') AS END_DATE" ;
 			$_item = $SqlUtils->getObject( $sql , array() ) ;
 			$startTime = $_item['START_DATE'] ;
-			$endTime = $_item['END_DATE'] ;
+			$endTime = $_item['END_DATE'] ;*/
 		}
 		
 	

@@ -22,54 +22,8 @@
     	
     	$VIEW_PP$ :数据权限
     -->
-   
-   <entry key="sql_purchase_plan_list">
-      SELECT  sc_purchase_plan.* ,
-				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME,
-				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.executor ) as EXECUTOR_NAME,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# } ) as STATUS0,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and ( sppd.status = 10 or sppd.status is null ) ) as STATUS10,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and  sppd.status = 20  ) as STATUS20,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and  sppd.status = 25  ) as STATUS25,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 30 ) as STATUS30,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 40 ) as STATUS40,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 45 ) as STATUS45,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 46 ) as STATUS46,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 47 ) as STATUS47,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 48 ) as STATUS48,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 50 ) as STATUS50,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 60 ) as STATUS60,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id
-				 {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 70 ) as STATUS70,
-				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id
-						 {@ #$VIEW_PP:and 1=0# }
-						and sppd.status = 80 ) as STATUS80
-               FROM sc_purchase_plan 
-               where 1=1
-		{@ and  name like '%#name#%' }
-		{@ and  code like '%#code#%' }
-		{@ and  type = '#type#' }
-		and status = 1
-         order by sc_purchase_plan.create_time desc
-   </entry>
-   
-   <!-- 
-   
-   
-    -->
-   <entry key="sql_purchase_plan_details_listForSKU">
+    
+    <entry key="sql_purchase_plan_details_listForSKU_done">
 		SELECT DISTINCT  
 		sppd.* ,
 			srp.name AS TITLE,
@@ -80,13 +34,11 @@
 			spc.PURCHASE_CHARGER,
 			(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
 			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
-			
 			su.NAME AS EXECUTOR_NAME,
 			(SELECT GROUP_CONCAT(s.STATUS) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id    ) AS TASK_STATUS,
 			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id AND s.status !=80 ) AS IS_FINISH,
 			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id limit 0,1   ) AS TASK_COUNT
-		
-		FROM sc_purchase_plan_details sppd 
+		FROM sc_purchase_plan_details sppd
 		LEFT JOIN sc_user su
 		ON su.login_id = sppd.executor
 		LEFT JOIN sc_real_product srp
@@ -104,6 +56,123 @@
 				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
 				or su.name like '%#searchKey#%'
 			)}
+			and ( 
+			  sppd.status = 25
+			  or
+			  exists (
+				select 1 from sc_purchase_task_products s WHERE s.product_id = sppd.id and s.status = 80
+			  )
+			)
+			order by sppd.create_time desc
+   </entry>
+    
+    <entry key="sql_purchase_plan_list_done">
+     select t.* from (
+      SELECT  sc_purchase_plan.* ,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME,
+				( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.executor ) as EXECUTOR_NAME,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id   ) as STATUS0,
+				( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  
+						and  sppd.status = 25  ) as STATUS25,
+				( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+				where sptp.product_id = sppd.id and sptp.status = 80 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS80
+               FROM sc_purchase_plan 
+               where 1=1
+		{@ and  name like '%#name#%' }
+		{@ and  code like '%#code#%' }
+		{@ and  type = '#type#' }
+     ) t where t.STATUS0 >0 and (STATUS25>0 or STATUS80>0 )
+         order by t.create_time desc
+   </entry>
+   
+   <entry key="sql_purchase_plan_list">
+   select t.* from (
+		      SELECT  sc_purchase_plan.* ,
+						( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.creator ) as USERNAME,
+						( select sc_user.name from sc_user where sc_user.login_id = sc_purchase_plan.executor ) as EXECUTOR_NAME,
+						( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# } ) as STATUS0,
+						( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+								and ( sppd.status = 10 or sppd.status is null ) ) as STATUS10,
+						( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+								and  sppd.status = 20  ) as STATUS20,
+						( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+								and sppd.status = 30 ) as STATUS30,
+						( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  {@ #$VIEW_PP:and 1=0# }
+								and sppd.status = 40 ) as STATUS40,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 45 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS45,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 46 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS46,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 47 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS47,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 48 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS48,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 49 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS49,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 50 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS50,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 60 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS60,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+							where sptp.product_id = sppd.id and sptp.status = 70 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS70,
+						( select count(*) from sc_purchase_plan_details sppd where sppd.plan_id = sc_purchase_plan.id  
+								and  sppd.status = 25  ) as STATUS25,
+						( select count(*) from sc_purchase_task_products sptp ,sc_purchase_plan_details sppd 
+						where sptp.product_id = sppd.id and sptp.status = 80 and sc_purchase_plan.id = sppd.plan_id  ) as STATUS80
+		               FROM sc_purchase_plan 
+		               where 1=1
+				{@ and  name like '%#name#%' }
+				{@ and  code like '%#code#%' }
+				{@ and  type = '#type#' }
+				and status = 1
+        ) t where  STATUS0 =0 or ( STATUS0 >   ( STATUS25 + STATUS80  ) )
+         order by t.create_time desc
+   </entry>
+   
+   <!-- 
+   
+   
+    -->
+   <entry key="sql_purchase_plan_details_listForSKU">
+		SELECT   
+		sppd.* ,
+			srp.name AS TITLE,
+			srp.ID as REAL_PRODUCT_ID,
+			srp.REAL_SKU as REAL_PRODUCT_SKU,
+			srp.IMAGE_URL,
+			srp.CATEGORY_ID,
+			spc.PURCHASE_CHARGER,
+			(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
+			su.NAME AS EXECUTOR_NAME,
+			(SELECT GROUP_CONCAT(s.STATUS) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id    ) AS TASK_STATUS,
+			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id AND s.status !=80 ) AS IS_FINISH,
+			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id limit 0,1   ) AS TASK_COUNT
+		FROM sc_purchase_plan_details sppd
+		LEFT JOIN sc_user su
+		ON su.login_id = sppd.executor
+		LEFT JOIN sc_real_product srp
+		ON (sppd.REAL_ID = srp.ID  or sppd.SKU = srp.REAL_SKU)
+		LEFT JOIN sc_product_category spc
+		ON srp.CATEGORY_ID = spc.ID
+		WHERE 1=1 
+		     {@ #$VIEW_PP:and 1=0# }
+			{@AND sppd.plan_id = '#planId#'}
+			{@AND sppd.sku = '#sku#'}
+			{@AND sppd.id = '#id#'}
+		   {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+			{@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
+			)}
+			and ( 
+			  sppd.status != 25
+			  and
+			  not exists (
+				select 1 from sc_purchase_task_products s WHERE s.product_id = sppd.id and s.status = 80
+			  )
+			)
 			order by sppd.create_time desc
    </entry>
    
