@@ -125,9 +125,15 @@ class ScRequirement extends AppModel {
 					//获取总成本
 					$totalCost = $cost['TOTAL_COST'] ;
 					//获取销售价
-					$totalPrice = $cost['TOTAL_PRICE'] ;
+					$sellerPrice = null ;
+					if( $channel == 'Merchant'){
+						$sellerPrice = $cost['LOWEST_PRICE'] ;
+					}else{
+						$sellerPrice = $cost['LOWEST_FBA_PRICE'] ;
+					}
+					$totalPrice = $sellerPrice ;
 					
-					echo ">>>>>>>>>>>>>".$item['SKU']."<br/>" ;
+					//echo ">>>>>>>>>>>>>".$item['SKU']."<br/>" ;
 					
 					echo 'Price>>>["'.$totalCost.'"]【"'.$totalPrice.'"】<br>' ;
 					

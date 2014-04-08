@@ -47,12 +47,44 @@
    		}
    </style>
    <script>
-		var reqPlanId = '<?php echo $params['arg1'] ;?>'
+		var reqPlanId = '<?php echo $params['arg1'] ;?>';
    </script>
 
 </head>
 <body>
+   <div class="toolbar toolbar-auto toolbar1 query-container">
 
+		<table>
+			<tr>
+				<th>账号：</th>
+				<td>
+					<select name="accountId" class="span2">
+		     		<option value="">--选择--</option>
+			     	<?php
+			     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+		   				 $accounts = $amazonAccount->getAllAccounts(); 
+			     		foreach($accounts as $account ){
+			     			$account = $account['sc_amazon_account'] ;
+			     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+			     		} ;
+			     	?>
+					</select>
+				</td>
+				<th>类型：</th>
+				<td>
+					<select name="type" class="span2">
+		     			<option value=""></option>
+			     		<option value="C">未设置成本</option>
+			     		<option value="L">利润不达标</option>
+					</select>
+				</td>										
+				<td class="toolbar-btns">
+					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
+				</td>
+			</tr>						
+		</table>
+
+	</div>
 	<div class="grid-content"></div>
 	
 </body>

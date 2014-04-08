@@ -362,9 +362,6 @@
 		SELECT  sc_purchase_plan_details_delete.* ,
 				 sc_product.TITLE , sc_product_flow_details.DAY_PAGEVIEWS ,
                 (SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sc_product.asin LIMIT 0,1 ) AS LOCAL_URL,
-				( SELECT
-					TOTAL_COST - PURCHASE_COST
-				from sc_product_cost where sc_product_cost.asin = sc_product.asin limit 0,1 ) as P_COST,
 				sc_sale_competition.TARGET_PRICE as TARGET_PRICE,
 				(select name from sc_user where sc_user.login_id =sc_purchase_plan_details_delete.creator ) as CREATOR_NAME,
 				(select name from sc_user where sc_user.login_id =sc_purchase_plan_details_delete.deletor ) as DELETOR_NAME,

@@ -288,9 +288,9 @@
 									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['LISTING_SKU'];?>" style="width:50px;"/>
 									<input type="hidden" name="COMMISSION_RATIO"   value="<?php echo $item['COMMISSION_RATIO'];?>" style="width:50px;"/>
 									<input type="hidden" name="FULFILLMENT_CHANNEL"   value="<?php echo $item['FULFILLMENT_CHANNEL'];?>" style="width:50px;"/>
-									<?php echo $item['LISTING_SKU'];?>
+									<a href="#" product-detail="<?php echo $item['ASIN'];?>"><?php echo $item['LISTING_SKU'];?></a>
 								</td>
-								<td><?php echo $item['ASIN'];?></td>
+								<td><a href="#" offer-listing="<?php echo $item['ASIN'];?>"> <?php echo $item['ASIN'];?></a></td>
 								<td><?php echo $item['ACCOUNT_NAME'];?></td>
 								<td><?php echo $item['FULFILLMENT_CHANNEL'];?></td>
 								<td>

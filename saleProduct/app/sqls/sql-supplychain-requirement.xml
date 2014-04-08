@@ -207,6 +207,8 @@
 
     <entry key="sql_supplychain_requirement_list">
     	SELECT ssrp.* ,
+    	    ( select count(1) from  sc_supplychain_requirement_log ssrl where ssrl.req_plan_id = ssrp.id and type = 'C'  ) as STATUS_C,
+    	    ( select count(1) from  sc_supplychain_requirement_log ssrl where ssrl.req_plan_id = ssrp.id and type = 'L'  ) as STATUS_L,
     		(SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=6) AS STATUS6,
     		(SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=5) AS STATUS5,
 		   (SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=4) AS STATUS4,
@@ -368,19 +370,31 @@
 					srp.REAL_SKU,
 					saap.TITLE,
 					srp.name as P_NAME,
-					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = saap.asin LIMIT 0,1 ) AS LOCAL_URL
-			FROM sc_supplychain_requirement_log ssrl ,
-			sc_amazon_account_product saap,
-			sc_amazon_account saa,
-			sc_real_product_rel srpr,
-			sc_real_product srp
-			WHERE  ssrl.SKU = saap.SKU
-			AND ssrl.ACCOUNT_ID = saap.ACCOUNT_ID
-			AND saap.ACCOUNT_ID = saa.ID
-			AND srpr.ACCOUNT_ID = saa.ID
-			AND srpr.SKU = saap.SKU
-			AND srpr.REAL_ID = srp.ID 
-	   		and ssrl.req_plan_id = '{@#reqPlanId#}'
+					( SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = saap.asin LIMIT 0,1  ) AS LOCAL_URL,
+					svlc.FULFILLMENT_CHANNEL,
+				   (case when svlc.FULFILLMENT_CHANNEL='Merchant' then svlc.LOWEST_PRICE else svlc.LOWEST_FBA_PRICE end ) as LOWEST_PRICE,
+				   svlc.TOTAL_COST
+			FROM sc_supplychain_requirement_log ssrl 
+			left join sc_amazon_account_product saap
+			    on ssrl.SKU = saap.SKU
+				   AND ssrl.ACCOUNT_ID = saap.ACCOUNT_ID
+			left join sc_amazon_account saa
+			   on saap.ACCOUNT_ID = saa.ID
+			left join sc_real_product_rel srpr
+			   on srpr.ACCOUNT_ID = saa.ID
+			      AND srpr.SKU = saap.SKU
+			left join sc_real_product srp
+			  on srpr.REAL_ID = srp.ID 
+			left join sc_view_listing_cost svlc
+				on svlc.listing_sku = saap.sku
+				   and svlc.account_id = saap.account_id
+				   and svlc.listing_sku is not null
+				   and svlc.account_id is not null
+			WHERE  
+			       ssrl.req_plan_id = '{@#reqPlanId#}'
+			       {@ and ssrl.account_id = '#accountId#'}
+			       {@ and ssrl.type = '#type#'}
+			       order by svlc.LOWEST_PRICE,svlc.LOWEST_FBA_PRICE
 			]]>
 	    </entry>
 	    
