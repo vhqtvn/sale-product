@@ -28,7 +28,7 @@ $(function(){
 		 },
 		 title:"需求计划列表",
 		 indexColumn:false,
-		 querys:{sqlId:"sql_supplychain_requirement_list"},
+		 querys:{sqlId:"sql_supplychain_requirement_list",countSqlId:"sql_supplychain_requirement_list_count"},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowDblClick:function(row,record){
 			 //$(".grid-content-detials").llygrid("reload",{accountId:record.ACCOUNT_ID,shippmentId:record.SHIPMENT_ID},true) ;

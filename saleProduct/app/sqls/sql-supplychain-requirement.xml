@@ -220,6 +220,13 @@
 		  ORDER BY ssrp.create_date desc
     </entry>
 
+    <entry key="sql_supplychain_requirement_list_count">
+    	SELECT count(*)
+		  FROM sc_supplychain_requirement_plan ssrp
+    </entry>
+    
+    
+
 	 <!-- 获取能够创建需求计划的列表::: ANd sar.RECOMMENDED_INBOUND_QUANTITY >0
 	 SELECT sar.*  as C FROM sc_amazon_recommendations sar,
     	sc_amazon_account_product saap
@@ -359,6 +366,7 @@
 			]]>
 	    </entry>
 	    
+	    
 	    <entry key="sql_supplychain_req_log_list">
 		  <![CDATA[	
 	   		SELECT 
@@ -385,16 +393,26 @@
 			      AND srpr.SKU = saap.SKU
 			left join sc_real_product srp
 			  on srpr.REAL_ID = srp.ID 
-			left join sc_view_listing_cost svlc
+			left join sc_listing_cost svlc
 				on svlc.listing_sku = saap.sku
 				   and svlc.account_id = saap.account_id
-				   and svlc.listing_sku is not null
-				   and svlc.account_id is not null
 			WHERE  
 			       ssrl.req_plan_id = '{@#reqPlanId#}'
 			       {@ and ssrl.account_id = '#accountId#'}
 			       {@ and ssrl.type = '#type#'}
 			       order by svlc.LOWEST_PRICE,svlc.LOWEST_FBA_PRICE
+			]]>
+	    </entry>
+	    
+	    <entry key="sql_supplychain_req_log_list_count">
+		  <![CDATA[	
+	   		SELECT 
+					count(*)
+			FROM sc_supplychain_requirement_log ssrl 
+			WHERE  
+			       ssrl.req_plan_id = '{@#reqPlanId#}'
+			       {@ and ssrl.account_id = '#accountId#'}
+			       {@ and ssrl.type = '#type#'}
 			]]>
 	    </entry>
 	    

@@ -8,10 +8,25 @@ ini_set("post_max_size", "24M");
 class CronTaskController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Utils','Amazonaccount','ScRequirement');
+    var $uses = array('Utils','Amazonaccount','ScRequirement','Cost');
     
     public function clearLimitPrice(){
     	$this->Utils->exeSql("delete from sc_sale_schedule",array()) ;
+    }
+    
+    /**
+     * 同步成本
+     */
+    public function asynCost(){
+    	$accounts = $this->Amazonaccount->getAllAccountsFormat();
+    	foreach( $accounts as $account ){
+    		debug($account) ;
+    		try{
+    			$this->Cost->formatAllListingCost( $account['ID'] ) ;
+    		}catch(Exception $e){ 
+    			debug($e);
+    		}
+    	}
     }
     
     /**

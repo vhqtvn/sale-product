@@ -3,6 +3,45 @@ class Cost extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
 	/**
+	 * 格式化所有的Listing成本
+	 * @param unknown_type $accountId
+	 */
+	public function formatAllListingCost( $accountId ){
+		$sql = "select * from sc_view_listing_cost where  account_id = '{@#ACCOUNT_ID#}'" ;
+		$query = $this->exeSqlWithFormat($sql, array( "ACCOUNT_ID"=>$accountId)) ;
+		foreach( $query as $item ){
+			$sql = "select * from sc_listing_cost where listing_sku = '{@#LISTING_SKU#}' and account_id = '{@#ACCOUNT_ID#}'" ;
+			$result = $this->getObject($sql, $item ) ;
+			
+			if( empty($result) ){
+				//insert
+				$this->exeSql("sql_cost_listingCost_insert", $item) ;
+			}else{
+				//update
+				$this->exeSql("sql_cost_listingCost_update", $item) ;
+			}
+		}
+	}
+	
+	public function saveListingCost($listingSku,$accountId){
+		if( empty( $listingSku ) || empty( $accountId ) ) return ;
+		
+		$sql = "select * from sc_view_listing_cost where listing_sku = '{@#LISTING_SKU#}' and account_id = '{@#ACCOUNT_ID#}'" ;
+		$query = $this->getObject($sql, array("LISTING_SKU"=>$listingSku,"ACCOUNT_ID"=>$accountId)) ;
+	
+		$sql = "select * from sc_listing_cost where listing_sku = '{@#LISTING_SKU#}' and account_id = '{@#ACCOUNT_ID#}'" ;
+		$result = $this->getObject($sql, array("LISTING_SKU"=>$listingSku,"ACCOUNT_ID"=>$accountId)) ;
+
+		if( empty($result) ){
+			//insert
+			$this->exeSql("sql_cost_listingCost_insert", $query) ;
+		}else{
+			//update
+			$this->exeSql("sql_cost_listingCost_update", $query) ;
+		}
+	}
+	
+	/**
 	 * 初始化开发产品成本信息
 	 */
 	public function initDevCost($asin,$loginId){
@@ -121,6 +160,7 @@ class Cost extends AppModel {
 		//插入
 		$this->exeSql("sql_cost_details_update_new_forfee", $params) ;
 		
+		$this->saveListingCost($params['listingSku'], $params['accountId']) ;
 	}
 	
 	public function saveCostAsin($data){
@@ -235,6 +275,8 @@ class Cost extends AppModel {
 				$sql = "update sc_amazon_account_product set lowest_fba_price = '{@#TOTAL_PRICE#}'  where ACCOUNT_ID = '{@#ACCOUNT_ID#}' and SKU =  '{@#LISTING_SKU#}'" ;
 				$this->exeSql( $sql , $listingCost ) ;
 			}
+			
+			$this->saveListingCost($listingCost['LISTING_SKU'], $listingCost['ACCOUNT_ID']) ;
 		}
 	}
 	
