@@ -226,6 +226,15 @@ class Cost extends AppModel {
 			$listingCost['loginId'] =$data['loginId'] ;
 			//插入
 			$this->exeSql("sql_cost_details_update_new", $listingCost) ;
+			
+			//更新售价
+			if( $listingCost['FULFILLMENT_CHANNEL'] == 'Merchant' ){ //FBM
+				$sql = "update sc_amazon_account_product set lowest_price = '{@#TOTAL_PRICE#}'  where ACCOUNT_ID = '{@#ACCOUNT_ID#}' and SKU =  '{@#LISTING_SKU#}'" ;
+				$this->exeSql( $sql , $listingCost ) ;
+			}else{ //FBA
+				$sql = "update sc_amazon_account_product set lowest_fba_price = '{@#TOTAL_PRICE#}'  where ACCOUNT_ID = '{@#ACCOUNT_ID#}' and SKU =  '{@#LISTING_SKU#}'" ;
+				$this->exeSql( $sql , $listingCost ) ;
+			}
 		}
 	}
 	

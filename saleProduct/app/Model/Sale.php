@@ -262,7 +262,7 @@ class Sale extends AppModel {
 		/*$sql = "select sc_purchase_plan_details.* ,sc_real_product.*  from sc_purchase_plan_details , sc_real_product where 
 		sc_purchase_plan_details.asin = sc_real_product.asin
 		and sc_purchase_plan_details.id = '$id'" ;*/
-		return $this->getObject("sql_purchase_plan_details_listForSKU", array('id'=>$id) ) ;
+		return $this->getObject("sql_purchase_plan_details_getById", array('id'=>$id) ) ;
 		
 		//return $this->query($sql) ;
 	}

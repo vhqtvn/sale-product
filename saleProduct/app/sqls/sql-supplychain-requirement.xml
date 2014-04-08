@@ -357,6 +357,33 @@
 			]]>
 	    </entry>
 	    
+	    <entry key="sql_supplychain_req_log_list">
+		  <![CDATA[	
+	   		SELECT 
+					ssrl.* ,
+					saa.NAME AS ACCOUNT_NAME,
+					saap.ASIN,
+					srp.NAME,
+					srp.ID AS REAL_ID,
+					srp.REAL_SKU,
+					saap.TITLE,
+					srp.name as P_NAME,
+					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = saap.asin LIMIT 0,1 ) AS LOCAL_URL
+			FROM sc_supplychain_requirement_log ssrl ,
+			sc_amazon_account_product saap,
+			sc_amazon_account saa,
+			sc_real_product_rel srpr,
+			sc_real_product srp
+			WHERE  ssrl.SKU = saap.SKU
+			AND ssrl.ACCOUNT_ID = saap.ACCOUNT_ID
+			AND saap.ACCOUNT_ID = saa.ID
+			AND srpr.ACCOUNT_ID = saa.ID
+			AND srpr.SKU = saap.SKU
+			AND srpr.REAL_ID = srp.ID 
+	   		and ssrl.req_plan_id = '{@#reqPlanId#}'
+			]]>
+	    </entry>
+	    
 	    <entry key="sql_supplychain_requirement_insertlog">
 		  <![CDATA[	
 	    INSERT INTO sc_supplychain_requirement_log 

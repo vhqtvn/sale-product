@@ -5,6 +5,7 @@ $(function(){
 		    {align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
 		    	var html = [] ;
 		    	html.push("<a href='#' class='action edit_requirement_plan' val='"+val+"'>编辑</a>&nbsp;") ;
+		    	html.push("<a href='#' class='action gen_log' val='"+val+"'>日志</a>&nbsp;") ;
 		    	return html.join("") ;
 		    }},
 			{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
@@ -33,10 +34,22 @@ $(function(){
 
 			 $(".grid-content").find(".edit_requirement_plan").click(function(){
 				 var record = $(this).closest("tr").data("record") ; 
-				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_plan_edit/"+record.ID,1000,600,function(){
-						$(".grid-content").llygrid("reload",{},true) ;
+				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_plan_edit/"+record.ID,1000,600,function(result){
+					 	var val = $.dialogReturnValue() ;
+					 	alert(val);
+						if(result)$(".grid-content").llygrid("reload",{},true) ;
 				 }) ;
 			 }) ;
+			 
+			 $(".grid-content").find(".gen_log").click(function(){
+				 var record = $(this).closest("tr").data("record") ; 
+				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_gen_log/"+record.ID,1000,600,function(result){
+					 	var val = $.dialogReturnValue() ;
+					 	alert(val);
+						if(result)$(".grid-content").llygrid("reload",{},true) ;
+				 }) ;
+			 }) ;
+			 
 		 }
 	}) ;
 	

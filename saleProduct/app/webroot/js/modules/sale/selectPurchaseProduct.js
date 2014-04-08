@@ -61,8 +61,8 @@ $(function(){
 					skus.push(sku) ;
 				}) ;
 				$.dataservice("model:Sale.saveSelectedProduct",{ sku:skus.join(",") , planId:planId },function(){
-					jQuery.dialogReturnValue(true) ;
-					window.close() ;
+					//jQuery.dialogReturnValue(true) ;
+					//window.close() ;
 				})
 			}) ;
 }) ;

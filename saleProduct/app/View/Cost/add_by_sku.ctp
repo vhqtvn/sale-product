@@ -119,11 +119,9 @@
 									listingCosts.push(listingCost) ;
    	   						});
 
-   							
    							$.dataservice("model:Cost.saveCostFix" , {productCost:productCost,listingCosts:listingCosts} , function(){
-   								window.location.reload();
-   							})
-
+   								//window.location.reload();
+   							});
    						};
    						return false ;
    					}) ;
@@ -256,6 +254,7 @@
 							<caption>Listing成本</caption>
 							<tr>
 								<th>Listing SKU</th>
+								<th>ASIN</th>
 								<th>账号</th>
 								<th>销售渠道</th>
 								<th>FBM发货仓库</th>
@@ -288,20 +287,32 @@
 									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>
 									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['LISTING_SKU'];?>" style="width:50px;"/>
 									<input type="hidden" name="COMMISSION_RATIO"   value="<?php echo $item['COMMISSION_RATIO'];?>" style="width:50px;"/>
+									<input type="hidden" name="FULFILLMENT_CHANNEL"   value="<?php echo $item['FULFILLMENT_CHANNEL'];?>" style="width:50px;"/>
 									<?php echo $item['LISTING_SKU'];?>
 								</td>
+								<td><?php echo $item['ASIN'];?></td>
 								<td><?php echo $item['ACCOUNT_NAME'];?></td>
 								<td><?php echo $item['FULFILLMENT_CHANNEL'];?></td>
 								<td>
 									<?php echo $item['FULFILLMENT_CHANNEL']=='Merchant'?$item['FBM_WAREHOUSE_NAME']:"";?>
 								</td>
 								<td>
+								<?php 
+								$_ = 0 ;
+								$_text = "" ;
+								if( $item['FULFILLMENT_CHANNEL']=='Merchant'){
+									$_ = round($item['LOWEST_PRICE'],3);
+									$_text="FBM" ;
+								}else{
+									$_ = round($item['LOWEST_FBA_PRICE'],3);
+									$_text="FBA" ;
+								} ?>
 									<input type="text"  
-										name="TOTAL_PRICE"  value="<?php echo round($item['TOTAL_PRICE'],3);?>" style="width:50px;"/>
+										name="TOTAL_PRICE"  value="<?php echo $_ ; ?>" style="width:50px;"/><br/><?php echo $_text;?>
 								</td>
 								<td  class="totalCost"><?php echo round($item['TOTAL_COST'],3);?></td>
 								<td  class="totalProfile"><?php 
-											$totalProfile =round(  $item['TOTAL_PRICE'] - $item['TOTAL_COST'],2)   ;
+											$totalProfile =round(  $_ - $item['TOTAL_COST'],2)   ;
 											$totalRate = round( ( $totalProfile/$item['TOTAL_COST'] ) *100 ,2).'%' ;
 											echo $totalProfile."($totalRate)" ;
 								?></td>

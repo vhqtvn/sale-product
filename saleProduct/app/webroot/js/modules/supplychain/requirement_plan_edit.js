@@ -4,6 +4,8 @@
 				$(".grid-content").llygrid("reload",json,true) ;
 			}) ;
 			
+			$.dialogReturnValue("1111") ;
+			
 			var currentRealId = "" ;
 			var currentPlanProduct = {} ;
 			$(".grid-content").llygrid({

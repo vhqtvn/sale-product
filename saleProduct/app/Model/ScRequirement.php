@@ -137,7 +137,7 @@ class ScRequirement extends AppModel {
 									'ACCOUNT_ID'=>$item['ACCOUNT_ID'], 
 									'SKU'=>$item['SKU'], 
 									"TYPE"=>'C',
-									'MEMO'=>"该账户未设置成本数据"
+									'MEMO'=>"未设置成本数据"
 								)) ;
 						continue ;
 					}

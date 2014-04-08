@@ -206,6 +206,42 @@
 			order by sppd.create_time desc
    </entry>
    
+   <entry key="sql_purchase_plan_details_getById">
+		SELECT   
+		sppd.* ,
+			srp.name AS TITLE,
+			srp.ID as REAL_PRODUCT_ID,
+			srp.REAL_SKU as REAL_PRODUCT_SKU,
+			srp.IMAGE_URL,
+			srp.CATEGORY_ID,
+			spc.PURCHASE_CHARGER,
+			(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = sppd.creator ) AS CREATOR_NAME,
+			su.NAME AS EXECUTOR_NAME,
+			(SELECT GROUP_CONCAT(s.STATUS) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id    ) AS TASK_STATUS,
+			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id AND s.status !=80 ) AS IS_FINISH,
+			(SELECT COUNT(1) FROM sc_purchase_task_products s WHERE s.product_id = sppd.id limit 0,1   ) AS TASK_COUNT
+		FROM sc_purchase_plan_details sppd
+		LEFT JOIN sc_user su
+		ON su.login_id = sppd.executor
+		LEFT JOIN sc_real_product srp
+		ON (sppd.REAL_ID = srp.ID  )
+		LEFT JOIN sc_product_category spc
+		ON srp.CATEGORY_ID = spc.ID
+		WHERE 1=1 
+		     {@ #$VIEW_PP:and 1=0# }
+			{@AND sppd.plan_id = '#planId#'}
+			{@AND sppd.sku = '#sku#'}
+			{@AND sppd.id = '#id#'}
+		   {@  and ( sppd.status = '#status1#' or sppd.status is null ) }
+			{@  and sppd.status = '#status#' }
+			{@ and (
+				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
+				or su.name like '%#searchKey#%'
+			)}
+			order by sppd.create_time desc
+   </entry>
+   
    <entry key="sql_purchase_plan_details_listForPrint">
 		SELECT DISTINCT  
 			sppd.* ,
