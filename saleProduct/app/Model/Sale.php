@@ -116,6 +116,7 @@ class Sale extends AppModel {
 	 * @param unknown_type $params
 	 */
 	public function saveSelectedProduct($params){
+		
 			$skus = $params['sku'] ;
 			$loginId = $params['loginId'] ;
 			$planId = $params['planId'] ;
@@ -128,12 +129,13 @@ class Sale extends AppModel {
 						$ps = $this->getObject("sql_purchasePlanProductsIsExists", $query) ;
 						if(empty($ps)){
 							//根据sku获取货品ID
-							$sql = "select * from sc_real_product where sku = '{@#sku#}'" ;
+							$sql = "select * from sc_real_product where real_sku = '{@#sku#}'" ;
 							$product = $this->getObject($sql, $query) ;
 							$query['realId'] = $product['ID'] ;
 							$this->exeSql("sql_insert_purchasePlanProducts", $query);
 						}
-				}catch(Exception $e){ }
+				}catch(Exception $e){ 
+				}
 			};
 	}
 	
