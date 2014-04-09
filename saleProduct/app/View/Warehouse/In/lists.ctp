@@ -29,6 +29,13 @@
 		
 		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
 	?>
+	
+	<style>
+
+   		.ui-tabs .ui-tabs-nav li a{
+   			padding:0px 8px!important;
+   		}
+	</style>
   
 </head>
 <body>

@@ -245,8 +245,9 @@ class Inbound extends AppModel {
 		}else{
 			//更新本地状态到已同步
 			$this->exeSql("update sc_fba_inbound_local_plan set status = '1'  where plan_id = '{@#planId#}'", $params) ;
-			
+			if( !empty( $plan['IN_ID'] ) ){
+				$this->exeSql("sql_supplychain_requirement_complete", array('inId'=>$plan['IN_ID'])) ;//更新需求为已完成
+			}
 		}
-		
 	}
 }

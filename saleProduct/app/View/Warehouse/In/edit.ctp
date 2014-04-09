@@ -112,11 +112,11 @@
 										转仓&nbsp;<input type="radio"  name="inSourceType"  value="warehouse"  <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='warehouse'?"checked":"";?>   
 											data-validator="required"  style="vertical-align: top;"/>
-										<!-- 
+										
 										FBA入库&nbsp;<input type="radio"  name="inSourceType"  value="fba"  <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='fba'?"checked":"";?>   
 											data-validator="required"  style="vertical-align: top;"/>
-										 -->
+										
 									</td>
 								</tr>
 								<tr>

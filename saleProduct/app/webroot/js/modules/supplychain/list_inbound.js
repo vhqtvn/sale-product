@@ -62,7 +62,7 @@ $(function(){
 		 },
 		 title:"FBA入库计划列表",
 		 indexColumn:false,
-		 querys:{sqlId:"sql_supplychain_inbound_plan_list"},
+		 querys:{sqlId:"sql_supplychain_inbound_plan_list",localPlanId:planId},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowDblClick:function(row,record){
 			 $(".grid-content-detials").llygrid("reload",{accountId:record.ACCOUNT_ID,shippmentId:record.SHIPMENT_ID},true) ;
@@ -162,7 +162,7 @@ $(function(){
 		 },
 		 title:"FBA入库计划明细列表",
 		 indexColumn:false,
-		 querys:{sqlId:"sql_supplychain_inbound_plan_details_list"},
+		 querys:{sqlId:"sql_supplychain_inbound_plan_details_list",localPlanId:planId},
 		 loadMsg:"数据加载中，请稍候......"
 	}) ;
 	

@@ -4,12 +4,18 @@ $(function(){
 	flow.init(".flow-bar center",flowData) ;
 	flow.draw(currentStatus) ;
 	
+	var tabs = [
+				{label:'基本信息',iframe:true,url:contextPath+"/page/model/Warehouse.In.edit/"+inId,id:'t1'},//9
+				{label:'物流货品',iframe:true,url:contextPath+"/page/model/Warehouse.In.editBox/"+inId,id:'t2'},
+				{label:'跟踪状态',iframe:true,url:contextPath+"/page/model/Warehouse.In.editTrack/"+inId,id:'t3'}
+			] ;
+	if( inSourceType == 'fba' ){
+		tabs.push( {label:'FBA入库计划(本地)',iframe:true,url:contextPath+"/page/forward/SupplyChain.edit_inbound/"+fbaLocalId,id:'t4'} );
+		tabs.push( {label:'FBA入库计划(Amazon)',iframe:true,url:contextPath+"/page/forward/SupplyChain.list_inbound/"+fbaLocalId,id:'t4'} );
+	}
+	
 	var tab = $('#details_tab').tabs( {
-		tabs:[
-			{label:'基本信息',iframe:true,url:contextPath+"/page/model/Warehouse.In.edit/"+inId,id:'t1'},//9
-			{label:'物流货品',iframe:true,url:contextPath+"/page/model/Warehouse.In.editBox/"+inId,id:'t2'},
-			{label:'跟踪状态',iframe:true,url:contextPath+"/page/model/Warehouse.In.editTrack/"+inId,id:'t3'}
-		] ,
+		tabs:tabs ,
 		height:'520px',
 		select:function(event,ui){
 			var index = ui.index ;

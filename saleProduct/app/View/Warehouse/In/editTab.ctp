@@ -35,6 +35,16 @@
 			//获取
 			$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
 		}
+		
+		//http://localhost/saleProduct/index.php/page/forward/SupplyChain.edit_inbound/42A91866-3129-C5D5-0E52-7EC0D9BCBBCD
+		//获取FBA inbound入库计划
+		$fbaLocalId = "" ;
+		if( $warehoseIn['IN_SOURCE_TYPE'] == 'fba' ){
+			$sql = "select * from sc_fba_inbound_local_plan where in_id = '{@#inId#}'" ;
+			$item = $SqlUtils->getObject($sql,array("inId"=>$inId)) ;
+			$fbaLocalId = $item['PLAN_ID'] ;
+		}
+		
 	?>
 	
 	<script type="text/javascript">
@@ -42,6 +52,8 @@
      var currentStatus = "<?php echo $warehoseIn['STATUS'];?>" ;
      var flowType = "<?php echo $warehoseIn['FLOW_TYPE'];?>" ;
      var warehoseIn = <?php echo json_encode($warehoseIn) ; ?> ;
+     var inSourceType= "<?php echo $warehoseIn['IN_SOURCE_TYPE'];?>" ;
+     var fbaLocalId= "<?php echo $fbaLocalId;?>" ;
      
      function AuditAction(status , statusLabel ){
 		if(window.confirm("确认【"+statusLabel+"】？")){
@@ -98,7 +110,6 @@
 	
 	<style type="text/css">
 		.flow-node{
-			width:50px; 
 			height:20px; 
 			border:5px solid #0FF; 
 			border-radius:5px;

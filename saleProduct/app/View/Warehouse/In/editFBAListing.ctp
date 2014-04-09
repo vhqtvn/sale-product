@@ -158,10 +158,10 @@
 				json.inId = inId ;
 				json.items = row ;
 
-				alert( $.json.encode(json) ) ; ;
-				return ;
+				//alert( $.json.encode(json) ) ; ;
+				//return ;
 				$.dataservice("model:Warehouse.In.doSaveBoxProductForFBAReq",json,function(result){
-					//window.close() ;
+					window.close() ;
 				});
 			}
 			return false ;

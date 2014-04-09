@@ -196,7 +196,7 @@
 					<div class="span4"><h4>Inbound计划Listing</h4></div>
 					<div class="span8">
 						<?php  if( $plan['STATUS'] !=1 ){ ?>
-					<button class="btn btn-danger save-to-amazon"  >创建到Amazon</button>
+					<button class="btn btn-danger save-to-amazon"  >创建入库计划到Amazon</button>
 					<?php } ?>
 					</div>
 				</div>

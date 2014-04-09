@@ -4,8 +4,7 @@ $(function(){
 		columns:[
 		    {align:"center",key:"ID",label:"操作", width:"10%",format:function(val,record){
 		    	var html = [] ;
-		    	html.push("<a href='#' class='action edit_requirement_plan' val='"+val+"'>编辑</a>&nbsp;") ;
-		    	html.push("<a href='#' class='action gen_log' val='"+val+"'>日志</a>&nbsp;") ;
+		    	html.push("<a href='#' class='action edit_requirement_plan' val='"+val+"'>处理</a>&nbsp;") ;
 		    	return html.join("") ;
 		    }},
 			{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},

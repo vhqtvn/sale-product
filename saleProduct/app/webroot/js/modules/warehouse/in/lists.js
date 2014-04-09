@@ -79,6 +79,7 @@ $(function(){
 				{label:'编辑中',content:"tab-content",custom:"0"},
 				{label:'待审批',content:"tab-content",custom:"10"},
 				{label:'转仓出库',content:"tab-content",custom:"15"},
+				{label:'FBA入库计划',content:"tab-content",custom:"16"},
 				{label:'待发货',content:"tab-content",custom:"20"},
 				{label:'已发货',content:"tab-content",custom:"30"},
 				{label:'到达海关',content:"tab-content",custom:"40"},
@@ -116,7 +117,7 @@ $(function(){
 				setTimeout(function(){
 					loadCount() ;
 				},60000) ;
-			});
+			},{noblock:true});
 		}
 		loadCount() ;
 	
@@ -130,17 +131,19 @@ $(function(){
 				$(".grid-content").llygrid("reload",{status:10},true) ;
 			}else if(index == 2){//待发货
 				$(".grid-content").llygrid("reload",{status:'15'},true) ;
-			}else if(index == 3){//待发货
+			}else if(index == 3){//FBA入库计划
+				$(".grid-content").llygrid("reload",{status:'16'},true) ;
+			}else if(index == 4){//待发货
 				$(".grid-content").llygrid("reload",{status:'20'},true) ;
-			}else if(index == 4){//已发货
+			}else if(index == 5){//已发货
 				$(".grid-content").llygrid("reload",{status:30},true) ;
-			}else if(index == 5){//到达海关
+			}else if(index == 6){//到达海关
 				$(".grid-content").llygrid("reload",{status:'40'},true) ;
-			}else if(index == 6){//验货中
-				$(".grid-content").llygrid("reload",{status:50},true) ;
 			}else if(index == 7){//验货中
+				$(".grid-content").llygrid("reload",{status:50},true) ;
+			}else if(index == 8){//验货中
 				$(".grid-content").llygrid("reload",{status:60},true) ;
-			}else if(index == 8){//入库完成
+			}else if(index == 9){//入库完成
 				$(".grid-content").llygrid("reload",{status:'70'},true) ;
 			}
 		}

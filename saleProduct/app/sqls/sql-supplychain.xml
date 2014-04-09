@@ -10,6 +10,7 @@
     	select * from sc_fba_inbound_plan
     	where 1=1
     	{@ and account_id = '#accountId#'}
+    	{@ and plan_id = '#localPlanId#'}
     	order by order_no desc
     </entry>
     
@@ -18,6 +19,9 @@
     	where 1=1
     	{@ and account_id = '#accountId#'}
     	{@ and shipment_id = '#shippmentId#'}
+    	{@ and shipment_id in (
+    	   select shipment_id from sc_fba_inbound_plan where plan_id = '#localPlanId#'
+    	)}
     </entry>
     
     <entry key="sql_supplychain_inbound_local_plan_list">
@@ -27,6 +31,7 @@
     	 from sc_fba_inbound_local_plan sfilp
     	where 1=1
     	{@ and sfilp.account_id = '#accountId#'}
+    	order by IN_NUMBER desc
     </entry>
     
     <entry key="sql_supplychain_inbound_plan_local_details_list">

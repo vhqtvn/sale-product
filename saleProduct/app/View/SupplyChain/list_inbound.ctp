@@ -19,6 +19,8 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
 		echo $this->Html->script('modules/supplychain/list_inbound');
+		
+		$planId = $params['arg1'] ;
 	?>
   
    <style>
@@ -45,11 +47,18 @@
    			display:hidden;
    			margin-left:6px;
    		}
+   		
    </style>
+   
+   <script>
+		var planId = '<?php echo $planId;?>';
+   </script>
 
 </head>
 <body>
 <div class="toolbar toolbar-auto toolbar1 query-container">
+<?php if(empty($planId)){ ?>
+	
 		<table>
 			<tr>
 				<th>账号：</th>
@@ -71,6 +80,8 @@
 				</td>
 			</tr>						
 		</table>
+
+<?php }?>
 	</div>	
 	<div class="grid-content"></div>
 	
