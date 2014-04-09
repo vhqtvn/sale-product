@@ -485,14 +485,14 @@ class Amazonaccount extends AppModel {
 	
 	function getAccountsFront(){
 		$domain = $_SERVER['SERVER_NAME'] ;
-		$sql = "SELECT ID,NAME FROM sc_amazon_account where domain='$domain'";
+		$sql = "SELECT ID,NAME FROM sc_amazon_account where status=1 and domain='$domain'";
 		$array = $this->query($sql);
 		return $array ;
 	}
 	
 	function getAccounts(){
 		$domain = $_SERVER['SERVER_NAME'] ;
-		$sql = "SELECT * FROM sc_amazon_account where domain='$domain'";
+		$sql = "SELECT * FROM sc_amazon_account where status=1 and domain='$domain'";
 		$array = $this->query($sql);
 		return $array ;
 	}
@@ -504,13 +504,13 @@ class Amazonaccount extends AppModel {
 	}
 	
 	function getAllAccounts(){
-		$sql = "SELECT * FROM sc_amazon_account";
+		$sql = "SELECT * FROM sc_amazon_account where status= 1";
 		$array = $this->query($sql);
 		return $array ;
 	}
 	
 	function getAllAccountsFormat(){
-		$sql = "SELECT * FROM sc_amazon_account";
+		$sql = "SELECT * FROM sc_amazon_account where status = 1";
 		$array = $this->exeSqlWithFormat($sql, array()) ;
 		return $array ;
 	}

@@ -20,7 +20,6 @@ class CronTaskController extends AppController {
     public function asynCost(){
     	$accounts = $this->Amazonaccount->getAllAccountsFormat();
     	foreach( $accounts as $account ){
-    		debug($account) ;
     		try{
     			$this->Cost->formatAllListingCost( $account['ID'] ) ;
     		}catch(Exception $e){ 

@@ -245,9 +245,12 @@
 	 
 	  -->
      <entry key="sql_supplychain_requirement_cancreate_list">
-    	select saap.* from sc_amazon_account_product saap
+    	select saap.* from sc_amazon_account_product saap,
+    	sc_amazon_account saa
     	where saap.IS_ANALYSIS = 1
     	and saap.status = 'Y'
+    	and saap.account_id=saa.id
+    	and saa.status = 1
     	and not exists (
     		SELECT * FROM sc_supplychain_requirement_plan ssrp,
 		   sc_supplychain_requirement_item ssri
@@ -279,6 +282,8 @@
 				PLAN_ID, 
 				LISTING_SKU, 
 				FULFILLMENT, 
+				EXIST_QUANTITY,
+				CALC_QUANTITY,
 				QUANTITY, 
 				ID, 
 				CREATE_DATE,
@@ -290,6 +295,8 @@
 				'{@#planId#}', 
 				'{@#listingSku#}', 
 				'{@#fulfillment#}', 
+				'{@#existQuantity#}', 
+				'{@#calcQuantity#}', 
 				'{@#quantity#}', 
 				'{@#id#}', 
 				NOW(), 
@@ -317,6 +324,13 @@
 	 <entry key="sql_supplychain_requirement_getListingCost">
 	 			select * from 
 	 			sc_view_listing_cost 
+	 			where account_id= '{@#accountId#}'
+	 			and LISTING_SKU= '{@#listingSku#}'
+		</entry>
+		
+		<entry key="sql_supplychain_requirement_getListingCostNoView">
+	 			select * from 
+	 			sc_listing_cost 
 	 			where account_id= '{@#accountId#}'
 	 			and LISTING_SKU= '{@#listingSku#}'
 		</entry>

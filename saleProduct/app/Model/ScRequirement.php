@@ -120,6 +120,11 @@ class ScRequirement extends AppModel {
 					//计算Listing是否需要创建需求计划
 					$cost = $this->getListingCost( $item['ACCOUNT_ID']  , $item['SKU'] ) ;
 					
+					//获取当前账户库存
+					$sql="select * from sc_amazon_account_product where account_id='{@#accountId#}' and sku='{@#sku#}'";
+					$accountProduct = $this->getObject($sql, array('accountId'=>$accountId,"sku"=>$item['SKU'] )) ;	
+					$accountQuantity=$accountProduct['QUANTITY'] ;
+					
 					$channel = $item['FULFILLMENT_CHANNEL'] ;
 					
 					//获取总成本
@@ -135,7 +140,7 @@ class ScRequirement extends AppModel {
 					
 					//echo ">>>>>>>>>>>>>".$item['SKU']."<br/>" ;
 					
-					echo 'Price>>>["'.$totalCost.'"]【"'.$totalPrice.'"】<br>' ;
+					echo '[SKU:'.$item['SKU'].'   accountId:'.$accountId.']Price>>>["'.$totalCost.'"]["'.$totalPrice.'"]<br>' ;
 					
 					if( empty($cost) || empty($totalCost) || empty($totalPrice)){
 						$this->reqLog(array(
@@ -201,8 +206,13 @@ class ScRequirement extends AppModel {
 							$count = $count + $C ;
 						}
 						
+						//判断当前库存是否已经满足需求，如果已经满足需求，则不需要生成需求明细
 						//计算到的需求数量
 						$reqNum = ($count/14) * $supplyCycle * $reqAdjust ;
+						
+						if( $accountQuantity >= $reqNum ){
+							continue ;
+						}
 						
 						$ps = array() ;
 						$ps['accountId'] = $item['ACCOUNT_ID'] ;
@@ -210,7 +220,9 @@ class ScRequirement extends AppModel {
 						$ps['planId'] = $planId ;
 						$ps['listingSku'] = $item['SKU'] ;
 						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-						$ps['quantity'] =  $reqNum ;
+						$ps['existQuantity'] =  $accountQuantity ;
+						$ps['calcQuantity'] =  $reqNum ;
+						$ps['quantity'] =  $reqNum -  $accountQuantity ;
 						$ps['urgency'] =  "A" ;
 						$ps['reqType'] =  "A" ;
 						$itemCount++ ;
@@ -237,6 +249,9 @@ class ScRequirement extends AppModel {
 						
 						//计算到的需求数量
 						$reqNum = ($count/14) * $ConversionRate * $reqAdjust ;
+						if( $accountQuantity >= $reqNum ){
+							continue ;
+						}
 						
 						$ps = array() ;
 						$ps['accountId'] = $item['ACCOUNT_ID'] ;
@@ -244,7 +259,9 @@ class ScRequirement extends AppModel {
 						$ps['planId'] = $planId ;
 						$ps['listingSku'] = $item['SKU'] ;
 						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-						$ps['quantity'] =  $reqNum ;
+						$ps['existQuantity'] =  $accountQuantity ;
+						$ps['calcQuantity'] =  $reqNum ;
+						$ps['quantity'] =  $reqNum -  $accountQuantity ;
 						$ps['urgency'] =  "B" ;
 						$ps['reqType'] =  "B" ;
 						$itemCount++ ;
@@ -259,13 +276,14 @@ class ScRequirement extends AppModel {
 					$ps['planId'] = $planId ;
 					$ps['listingSku'] = $item['SKU'] ;
 					$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+					$ps['existQuantity'] =  $accountQuantity ;
+					$ps['calcQuantity'] =  0 ;
 					$ps['quantity'] =  0 ;
 					$ps['urgency'] =  "C" ;
 					$ps['reqType'] =  "C" ;
 					$itemCount++ ;
 					$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 				}
-				
 				
 				//预处理需求
 				$this->preProcess(array(
@@ -321,7 +339,7 @@ class ScRequirement extends AppModel {
 	 * @param unknown_type $listingSku
 	 */
 	public function getListingCost($accountId , $listingSku){
-		return $this->getObject("sql_supplychain_requirement_getListingCost", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
+		return $this->getObject("sql_supplychain_requirement_getListingCostNoView", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
 	}
 	
 	//获取Listing库存

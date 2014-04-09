@@ -262,7 +262,7 @@ class AppModel extends Model {
 			$sql = $this->getDbSql($sql) ;
 			
 			$sql = $this->getSql($sql,$query) ;
-			
+			echo $sql;
 		//	echo $sql ;
 		//	echo $sql ;
 			return $this->query($sql) ;
@@ -355,8 +355,8 @@ class AppModel extends Model {
 	    									}
 		    							}
 	    							}else  if( isset($query[$key]) &&( $query[$key]=='0' || !empty($query[$key]) 
-	    								|| !empty($defaultValue) || $defaultValue == '0' ) ){
-	    								
+	    								|| !empty($defaultValue) || $defaultValue == '0'  ) ){
+
 	    								$kValue = $query[$key] ;
 	    								//格式化$kValue,防止sql特殊字符
 	    								//$kValue = str_replace("'","\'",$kValue);
@@ -368,13 +368,20 @@ class AppModel extends Model {
 	    								if(empty($kValue) && $kValue != '0'){
 	    									$kValue = $defaultValue ;
 	    								}
-										if($noescape == 'true'){
-											$clause .= $kValue ;
-										}else{
-											$clause .=mysql_escape_string($kValue) ;
-										}
 	    								
+	    								$v__='NULL';
+										if($noescape == 'true'){
+											$v__.= $kValue ;
+										}else{
+											$v__=mysql_escape_string($kValue) ;
+										}
 										
+										$clause .= $v__ ;
+										
+										
+	    								$isTrue = true ;
+	    							}else if(!empty($defaultValue) || $defaultValue == '0' ){
+	    								$clause .= $defaultValue ;
 	    								$isTrue = true ;
 	    							}else{
 	    								$isTrue = false ;
