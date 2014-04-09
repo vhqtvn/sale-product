@@ -4,7 +4,7 @@
 				$(".grid-content").llygrid("reload",json,true) ;
 			}) ;
 			
-			$.dialogReturnValue("1111") ;
+			//$.dialogReturnValue("1111") ;
 			
 			var currentRealId = "" ;
 			var currentPlanProduct = {} ;
@@ -202,7 +202,7 @@
 				}else{
 					var  totalPurchaseNum = 0 ;
 					$(data).each(function(){
-						totalPurchaseNum += this.purchaseQuantity||0 ;
+						totalPurchaseNum += parseInt(this.purchaseQuantity)||0 ;
 					});
 					if(window.confirm("确认加入该采购计划进行采购？")){
 						$.dataservice("model:ScRequirement.add2PurchasePlan" , {
@@ -211,7 +211,7 @@
 							realId:currentRealId,
 							purchaseQuantity:totalPurchaseNum
 						} , function(){
-							window.location.reload() ;
+							//window.location.reload() ;
 						});
 					}
 				}

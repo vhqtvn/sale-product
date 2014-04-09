@@ -30,7 +30,7 @@ class ScRequirement extends AppModel {
 	public function add2PurchasePlan($params){
 		$purchasePlanId= $params['purchasePlanId'] ;
 		$reqPlanId =  $params['reqPlanId'] ;
-		$realId = $params['reqPlanId'] ;
+		$realId = $params['realId'] ;
 		$sql="sql_insert_sc_purchase_plan_details_";
 		
 		$query = array() ;
