@@ -48,6 +48,7 @@
    </style>
    <script>
 		var reqPlanId = '<?php echo $params['arg1'] ;?>';
+		var status = '<?php echo $params['arg2'] ;?>';
    </script>
 
 </head>
@@ -74,8 +75,8 @@
 				<td>
 					<select name="type" class="span2">
 		     			<option value=""></option>
-			     		<option value="C">未设置成本</option>
-			     		<option value="L">利润不达标</option>
+			     		<option value="C"  <?php  echo $params['arg2']=='C'?"selected":"";?>>未设置成本</option>
+			     		<option value="L" <?php  echo $params['arg2']=='L'?"selected":"";?>>利润不达标</option>
 					</select>
 				</td>										
 				<td class="toolbar-btns">

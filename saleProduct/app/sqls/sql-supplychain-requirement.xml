@@ -9,6 +9,7 @@
 	         		    where ssri.account_id = srpr.account_id
 	         		    and ssri.listing_sku = srpr.sku
 	         		    and srpr.real_id = srp.id
+	         		    and ssri.plan_id = ssrpp.plan_id
 	         		  ) as FIX_QUANTITY
 		 FROM 
 		     sc_supplychain_requirement_plan_product ssrpp,

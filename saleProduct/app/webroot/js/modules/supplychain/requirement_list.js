@@ -9,8 +9,14 @@ $(function(){
 		    	return html.join("") ;
 		    }},
 			{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS_C",label:"未设置成本",group:"分类",width:"7%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS_L",label:"利润不达标",group:"分类",width:"7%",forzen:false,align:"left"},
+			{align:"center",key:"STATUS_C",label:"未设置成本",group:"分类",width:"7%",forzen:false,align:"left",format:function(val,record){
+				if(!val) return "-" ;
+				return "<a href='#'  class='status-c'>"+val+"</a>" ;
+			}},
+			{align:"center",key:"STATUS_L",label:"利润不达标",group:"分类",width:"7%",forzen:false,align:"left",format:function(val,record){
+				if(!val) return "-" ;
+				return "<a href='#'  class='status-l'>"+val+"</a>" ;
+			}},
 			{align:"center",key:"STATUS0",label:"未审批",group:"状态",width:"6%",forzen:false,align:"left"},
 			{align:"center",key:"STATUS1",label:"审批通过",group:"状态",width:"6%",forzen:false,align:"left"},
 			{align:"center",key:"STATUS2",label:"审批不通过",group:"状态",width:"6%",forzen:false,align:"left"},
@@ -33,13 +39,18 @@ $(function(){
 		 rowDblClick:function(row,record){
 			 //$(".grid-content-detials").llygrid("reload",{accountId:record.ACCOUNT_ID,shippmentId:record.SHIPMENT_ID},true) ;
 		 },loadAfter:function(){
+			 
+			 $(".grid-content").find(".status-c").click(function(){
+				 var record = $(this).closest("tr").data("record") ; 
+				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_gen_log/"+record.ID+"/C",1000,600,function(result,result1){
+					 	if(result1)$(".grid-content").llygrid("reload",{},true) ;
+				 }) ;
+			 }) ;
 
 			 $(".grid-content").find(".edit_requirement_plan").click(function(){
 				 var record = $(this).closest("tr").data("record") ; 
-				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_plan_edit/"+record.ID,1000,600,function(result){
-					 	var val = $.dialogReturnValue() ;
-					 	alert(val);
-						if(result)$(".grid-content").llygrid("reload",{},true) ;
+				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_plan_edit/"+record.ID,1000,600,function(result,result1){
+					 	if(result1)$(".grid-content").llygrid("reload",{},true) ;
 				 }) ;
 			 }) ;
 			 

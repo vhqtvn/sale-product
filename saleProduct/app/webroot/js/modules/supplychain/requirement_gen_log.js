@@ -35,7 +35,7 @@ $(function(){
            	{align:"center",key:"CREATE_DATE",label:"创建日期",width:"10%"},
            	{align:"center",key:"TYPE",label:"类型",width:"5%"}
          ],
-         ds:{type:"url",content:contextPath+"/grid/query"},
+         ds:{type:"url",content:contextPath+"/grid/query" },
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
@@ -43,7 +43,7 @@ $(function(){
 		 },
 		 title:"需求计划日志列表",
 		 indexColumn:false,
-		 querys:{sqlId:"sql_supplychain_req_log_list",reqPlanId:reqPlanId},
+		 querys:{sqlId:"sql_supplychain_req_log_list",reqPlanId:reqPlanId, type : status},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowDblClick:function(row,record){
 			// $(".grid-content-detials").llygrid("reload",{accountId:record.ACCOUNT_ID,shippmentId:record.SHIPMENT_ID},true) ;

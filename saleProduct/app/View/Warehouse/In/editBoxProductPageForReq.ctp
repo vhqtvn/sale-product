@@ -180,7 +180,7 @@
 				<th style="width:25%;">实际库存数量</th>
 			</tr>
 	<?php  
-	
+	//debug($warehoseIn) ;
 	//列出可出库到目标仓库的产品（出库应该不按照需求计划来）
 	$reqProductList = $SqlUtils->exeSqlWithFormat("sql_supplychain_inventory_canToWarehouse",array('sourceWarehouseId'=>$warehoseIn['SOURCE_WAREHOUSE_ID'])) ;
 	

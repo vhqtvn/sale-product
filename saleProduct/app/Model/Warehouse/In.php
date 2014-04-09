@@ -451,10 +451,11 @@ class In extends AppModel {
 			$inventoryNew->transferIn( $params ) ;
 			
 			//更新计划单为已入库完成
-			//$this->doStatus( array('inId'=>$inId,'status'=>'70') ) ;
+			$this->doStatus( array('inId'=>$inId,'status'=>'70') ) ;
 			
 			$dataSource->commit() ;
 		}catch(Exception $e){
+			debug( $e ) ;
 			$dataSource->rollback() ;
 			print_r( $e->getMessage() ) ;
 		}

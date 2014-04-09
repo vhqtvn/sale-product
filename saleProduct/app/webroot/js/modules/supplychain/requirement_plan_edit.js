@@ -4,7 +4,7 @@
 				$(".grid-content").llygrid("reload",json,true) ;
 			}) ;
 			
-			//$.dialogReturnValue("1111") ;
+			$.dialogReturnValue(false) ;
 			
 			var currentRealId = "" ;
 			var currentPlanProduct = {} ;
@@ -58,7 +58,8 @@
 						 var id = record.ID ;
 						 $.dataservice("model:ScRequirement.saveItemFixQuantity" , {fixQuantity:fixQuatity,id:id} , function(){
 							// $(".grid-content-details").llygrid("reload",{},true) ;
-						 })
+							 $.dialogReturnValue(true) ;
+						 });
 					 }) ;
 					 
 					 
@@ -170,7 +171,7 @@
 				var data = getGridEditorData();
 				var memo = $(".audit-memo").val() ;
 				$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId} , function(){
-					//
+					$.dialogReturnValue(true) ;
 				})
 			}) ;
 			
@@ -180,6 +181,7 @@
 					var memo = $(".audit-memo").val() ;
 					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:1} , function(){
 						$(".grid-content").llygrid("reload",{},true) ;
+						$.dialogReturnValue(true) ;
 					});
 				}
 			}) ;
@@ -190,6 +192,7 @@
 					var memo = $(".audit-memo").val() ;
 					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:2} , function(){
 						$(".grid-content").llygrid("reload",{},true) ;
+						$.dialogReturnValue(true) ;
 					})
 				}
 			}) ;
@@ -211,7 +214,8 @@
 							realId:currentRealId,
 							purchaseQuantity:totalPurchaseNum
 						} , function(){
-							//window.location.reload() ;
+							$.dialogReturnValue(true) ;
+							window.location.reload() ;
 						});
 					}
 				}
