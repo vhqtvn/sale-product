@@ -21,6 +21,15 @@ $(function(){
 		    		return "<div class='alert-danger'>未处理</div>" ;
 		    	}
 		    }},
+		    {align:"center",key:"IS_ANALYSIS",label:"供应需求", width:"6%",format:function(val,record){
+				var html = [] ;
+				if(val == 1){
+					html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("success.gif","可计算供应需求")+'</a>&nbsp;') ;
+				}else{
+					html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("error.gif","不可计算供应需求")+'</a>&nbsp;') ;
+				}
+				return html.join("") ;
+			}},
            	{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"10%"},
            	{align:"center",key:"LOCAL_URL",label:"图片",width:"3%",format:{type:'img'}},
            	{align:"center",key:"SKU",label:"SKU",width:"10%"},
@@ -50,6 +59,30 @@ $(function(){
 		 },loadAfter:function(){
 			
 		 }
+	}) ;
+	
+	$(".analysis").live("click",function(){
+		var record = $(this).parents("tr:first").data("record");
+		var  isAnalysis = record.IS_ANALYSIS ;
+		var json = {} ;
+		json.id = record.ACCOUNT_PRODUCT_ID ;
+		
+		if(isAnalysis == 1  ){
+			if(window.confirm("确认取消自动计算供应需求？")){
+				json.isAnalysis = 0 ;
+				$.dataservice("model:SaleProduct.isAnalysis",json,function(result){
+					$(".grid-content").llygrid("reload",{},true) ;
+				});
+			}
+		}else{
+			
+			if(window.confirm("确认自动计算供应需求？")){
+				json.isAnalysis = 1 ;
+				$.dataservice("model:SaleProduct.isAnalysis",json,function(result){
+					$(".grid-content").llygrid("reload",{},true) ;
+				});
+			}
+		}
 	}) ;
 	
 });

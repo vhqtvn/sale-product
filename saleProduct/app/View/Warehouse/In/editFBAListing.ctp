@@ -230,7 +230,7 @@
 		$reqQuantity = 0 ;
 		$reqItemId = "" ;
 		foreach( $reqProductItemList as $rpi ){
-			$fixQuantity = $rpi['FIX_QUANTITY'] ;
+			$fixQuantity = $rpi['QUANTITY'] ;
 			$reqQuantity = $reqQuantity + $fixQuantity ;
 			
 			if(empty($reqItemId)){
@@ -337,7 +337,7 @@
 								<?php   foreach($reqProductItemList as $item){ ?>
 								   	<tr  class="req-row">
 								   		<td>
-								   			<input type="hidden" name="fixQuantity"  value="<?php echo $item['FIX_QUANTITY'];?>"/>
+								   			<input type="hidden" name="fixQuantity"  value="<?php echo $item['QUANTITY'];?>"/>
 											<?php echo $item['REQ_NAME'] ?>
 										</td>
 										<td>
@@ -346,7 +346,7 @@
 										<td><?php echo $item['ACCOUNT_NAME'] ?></td>
 										<td><?php echo $item['FULFILLMENT_CHANNEL'] ?></td>
 										<td><?php echo $item['URGENCY'] ?></td>
-										<td><?php echo $item['FIX_QUANTITY'];?></td>
+										<td><?php echo $item['QUANTITY'];?></td>
 										<td><?php echo $item['PURCHASE_QUANTITY'];?></td>
 										<td><?php echo $item['REAL_PURCHASE_QUANTITY'];?></td>
 								</tr>

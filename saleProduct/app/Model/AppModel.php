@@ -262,9 +262,7 @@ class AppModel extends Model {
 			$sql = $this->getDbSql($sql) ;
 			
 			$sql = $this->getSql($sql,$query) ;
-			echo $sql;
-		//	echo $sql ;
-		//	echo $sql ;
+
 			return $this->query($sql) ;
 		}
 		
@@ -371,7 +369,7 @@ class AppModel extends Model {
 	    								
 	    								$v__='NULL';
 										if($noescape == 'true'){
-											$v__.= $kValue ;
+											$v__= $kValue ;
 										}else{
 											$v__=mysql_escape_string($kValue) ;
 										}

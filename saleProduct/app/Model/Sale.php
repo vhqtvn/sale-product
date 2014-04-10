@@ -196,11 +196,21 @@ class Sale extends AppModel {
 	
 	public function deletePurchasePlanProduct($data){
 		$id = $data["id"] ;
+		$sql = "select * from sc_purchase_plan_details where id='{@#id#}'" ;
+		$planProduct = $this->getObject($sql, $data) ;
 		
 		$sql = "delete from sc_purchase_plan_details_track where pd_id = '$id'" ;
 		$this->query($sql) ;
 		$sql = "delete from sc_purchase_plan_details where id = '$id'" ;
 		$this->query($sql) ;
+		/**
+		 * 删除需求采购计划，是否需要将
+		 */
+		if( !empty( $planProduct['REQ_PLAN_ID'] ) ){
+			//将状态修改为审批不通过
+			$sql="update sc_supplychain_requirement_plan_product set status=2 where plan_id='{@#planId#}' and real_id='{@#realId#}'";
+			$this->exeSql($sql, array("planId"=>$planProduct['REQ_PLAN_ID'],"realId"=>$planProduct['REAL_ID']));
+		}
 	}
 	
 	public function warehouseIn($data){

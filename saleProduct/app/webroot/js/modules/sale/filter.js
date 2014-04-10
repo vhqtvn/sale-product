@@ -268,7 +268,6 @@ var currentId = '' ;
 					 	}) ;
 					 	
 					 	asins = "'"+asins.join("','")+"'" ;
-					 	
 					 	//setTimeout(function(){
 					 		$.dataservice("sqlId:sql_pdev_filter_details_getCostGroup",{asins:asins},function(result){
 						 		$(result).each(function(index,item){

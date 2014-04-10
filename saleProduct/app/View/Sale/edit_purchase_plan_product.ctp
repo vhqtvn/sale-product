@@ -263,10 +263,16 @@
 	        			<?php if( $pp_edit ) { ?>
 	        			,actions:[
 									{label:"保存",action:function(){ ForceAuditAction(10,"保存") }},
-		      	        			{label:"保存提交审批",action:function(){ AuditAction(20,"保存并提交审批") }}
+									<?php if( empty($product['REQ_PLAN_ID']) ){ ?>
+									{label:"保存提交审批",action:function(){ AuditAction(20,"保存并提交审批") }}
+									<?php }else{ ?>
+									{label:"保存提交采购",action:function(){ AuditAction(41,"保存提交采购") }}
+									<?php }?>
+		      	        			
 		      	        	]
 	        			<?php };?>
 	        		},
+	        		<?php if( empty($product['REQ_PLAN_ID']) ){ ?>
 	        		{status:20,label:"审批确认",memo:true,format:function(node){
 								if( currentStatus == 25 ){//审批不通过，中止采购
 									node.label = "审批不通过，结束采购" ;
@@ -305,7 +311,7 @@
 	        			<?php };?>
 	        		},
 	        		<?php  }  ?>
-	        		
+	        		<?php }?>
 	        		{status:41,label:"采购进行中",memo:false,format:function(node){
 
 	        			var text = "采购进行中" ;
@@ -416,7 +422,9 @@
 									</tr>
 									<tr>
 										<th>计划采购数量：</th>
-										<td><input id="plan_num"   class="10-input input"  data-validator="required"    type="text" value='<?php echo  $product['PLAN_NUM']  ;?>' /></td>
+										<td><input id="plan_num"   class="10-input input"  
+													<?php echo empty($product['REQ_PLAN_ID'])?"":"readonly='readOnly'";?>
+													data-validator="required"    type="text" value='<?php echo  $product['PLAN_NUM']  ;?>' /></td>
 										<th>采购限价：</th>
 										<td><input id="limit_price"   class="10-input 20-input 30-input input"   type="text" 
 													 <?php echo $status>=30?"data-validator='required'":"" ?>

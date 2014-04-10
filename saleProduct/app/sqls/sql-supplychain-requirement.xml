@@ -4,24 +4,28 @@
 	<entry key="sql_supplychain_requirement_plan_product_list">
 		SELECT  srp.*,
 	         		ssrpp.STATUS AS P_STATUS,
-	         		( select SUM(ssri.QUANTITY) from  sc_supplychain_requirement_item ssri,
-	         		    sc_real_product_rel srpr
-	         		    where ssri.account_id = srpr.account_id
-	         		    and ssri.listing_sku = srpr.sku
-	         		    and srpr.real_id = srp.id
-	         		    and ssri.plan_id = ssrpp.plan_id
-	         		  ) as FIX_QUANTITY
+	         		( SELECT sum(ssri.QUANTITY) FROM  sc_supplychain_requirement_item ssri,
+	         		    sc_real_product_rel srpr,
+                                    sc_amazon_account_product saap
+	         		    WHERE ssri.account_id = srpr.account_id
+	         		    AND ssri.listing_sku = srpr.sku
+	         		    AND srpr.real_id = srp.id
+	         		    AND ssri.plan_id = ssrpp.plan_id
+	         		    AND srpr.account_id =saap.account_id
+	         		    AND srpr.sku =saap.sku
+	         		) AS FIX_QUANTITY
 		 FROM 
 		     sc_supplychain_requirement_plan_product ssrpp,
 			 sc_real_product srp
 		WHERE ssrpp.plan_id = '{@#planId#}'
 		AND ssrpp.REAL_ID = srp.ID
+		and srp.status = 1
 </entry>
 
 	<entry key="sql_supplychain_requirement_plan_product_list_slow">
 	 SELECT  srp.*,
 	         ssrpp.STATUS as P_STATUS,
-	         SUM(ssri.FIX_QUANTITY) AS FIX_QUANTITY
+	         SUM(ssri.QUANTITY) AS FIX_QUANTITY
 		 FROM 
 		     sc_supplychain_requirement_plan_product ssrpp,
 		     sc_supplychain_requirement_item ssri,
@@ -54,6 +58,7 @@
     
     <entry key="sql_supplychain_requirement_plan_product_details_list">
     	  SELECT ssri.*,
+    	      saap.ASIN,
 	    	  saa.name as ACCOUNT_NAME,
 	    	  saap.FULFILLMENT_CHANNEL,
 	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
@@ -104,7 +109,7 @@
     <!-- 获取仓库对应的需求列表 -->
     <entry key="sql_supplychain_requirement_listProductFBMByWarehouseId">
 	  SELECT  srp.* ,
-	      SUM(s1.FIX_QUANTITY) AS REQ_QUANTITY
+	      SUM(s1.QUANTITY) AS REQ_QUANTITY
 	 FROM sc_real_product srp,
 	      sc_supplychain_requirement_item s1,
 	      sc_real_product_rel srpr,
@@ -285,6 +290,7 @@
 				EXIST_QUANTITY,
 				CALC_QUANTITY,
 				QUANTITY, 
+				PURCHASE_QUANTITY,
 				ID, 
 				CREATE_DATE,
 				URGENCY,
@@ -297,6 +303,7 @@
 				'{@#fulfillment#}', 
 				'{@#existQuantity#}', 
 				'{@#calcQuantity#}', 
+				'{@#quantity#}', 
 				'{@#quantity#}', 
 				'{@#id#}', 
 				NOW(), 
@@ -386,6 +393,8 @@
 		  <![CDATA[	
 	   		SELECT 
 					ssrl.* ,
+					saap.IS_ANALYSIS,
+					saap.ID as ACCOUNT_PRODUCT_ID,
 					saa.NAME AS ACCOUNT_NAME,
 					saap.ASIN,
 					srp.NAME,

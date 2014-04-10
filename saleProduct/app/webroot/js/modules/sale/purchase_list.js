@@ -116,7 +116,6 @@
 									$(".grid-content").llygrid("reload",{},true) ;
 									$(".grid-content-details").llygrid("reload",{planId:'---'}) ;
 								}) ;
-								
 							}
 						}) ;
 						

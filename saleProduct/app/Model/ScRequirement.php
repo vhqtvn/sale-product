@@ -48,6 +48,11 @@ class ScRequirement extends AppModel {
 		$p['realId'] = $realId ;
 		$p['status'] = '3' ;
 		$this->auditReqPlanProduct($p);
+		
+		//返回采购计划产品
+		$sql="select * from sc_purchase_plan_details where plan_id='{@#planId#}' and req_plan_id='{@#reqPlanId#}' and real_id = '{@#realId#}'";
+		$purchaseProduct=$this->getObject($sql, array("planId"=>$purchasePlanId,"reqPlanId"=>$reqPlanId,"realId"=>$realId));
+		return $purchaseProduct ;
 	}
 	
 	//auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId
@@ -60,7 +65,7 @@ class ScRequirement extends AppModel {
 		foreach($auditData as $d){
 			$d = get_object_vars($d) ;
 			//debug($d) ;
-			$sql = "update sc_supplychain_requirement_item set fix_quantity = '{@#fixQuantity#}',PURCHASE_QUANTITY='{@#purchaseQuantity#}',urgency = '{@#urgency#}' where id = '{@#id#}'" ;
+			$sql = "update sc_supplychain_requirement_item set {@fix_quantity = '#fixQuantity#',}{@PURCHASE_QUANTITY='#purchaseQuantity#',}urgency = '{@#urgency#}' where id = '{@#id#}'" ;
 			$this->exeSql($sql, $d ) ;
 		}
 		//保存轨迹
@@ -95,6 +100,7 @@ class ScRequirement extends AppModel {
 	public function createRequirement(){
 		$dataSource = $this->getDataSource();
 		//$dataSource->begin();
+		//创建需求之前先初始化成本
 		
 		try{
 		//2、检测是否需要创建需求；新增加的需求产品是否都包括在未完成的需求产品里面
@@ -142,7 +148,7 @@ class ScRequirement extends AppModel {
 					
 					echo '[SKU:'.$item['SKU'].'   accountId:'.$accountId.']Price>>>["'.$totalCost.'"]["'.$totalPrice.'"]<br>' ;
 					
-					if( empty($cost) || empty($totalCost) || empty($totalPrice)){
+					if( empty($cost) || empty($totalCost) || empty($totalPrice) || $totalPrice==0 ){
 						$this->reqLog(array(
 									'REQ_PLAN_ID'=>$planId, 
 									'ACCOUNT_ID'=>$item['ACCOUNT_ID'], 

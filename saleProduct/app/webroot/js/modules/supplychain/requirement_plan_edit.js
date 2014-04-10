@@ -14,12 +14,13 @@
 						return "<span class='pi-status hide'  realId='"+val+"'  title=''>查看</span>" ;
 					}},
 					{align:"center",key:"P_STATUS",label:"状态", width:"10%",format:{type:'json',content:{'0':'待审批','1':'审批通过','2':'审批不通过','3':'采购中','4':'采购完成','5':'入库中','6':'需求完成'}}},
-				 	{align:"center",key:"IMG_URL",label:"图片",width:"5%",format:{type:'img'}},
+				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
 					{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true},
-		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
+		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,record){
+		        		return "<a href='#'  product-realsku='"+record.REAL_SKU+"'>"+val+"</a>" ;
+		        	}},
 		        	{align:"center",key:"FIX_QUANTITY",label:"周期需求量",width:"8%",forzen:false,align:"left"},
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
-		          
 		           	{align:"center",key:"MEMO",label:"备注",width:"25%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
@@ -92,26 +93,24 @@
 			
 			$(".grid-content-details").llygrid({
 				columns:[
-				    {align:"center",key:"IN_FLAG",label:"状态",width:"7%",format:function(val,record){
+				    {align:"center",key:"IN_FLAG",label:"状态",width:"6%",format:function(val,record){
 				    	if(val>=1)return "入库中";
 				    	return "" ;
 				    }},
 				 	{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"10%"},
-		           	{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"20%",forzen:false,align:"left"},
+		           	{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"15%",forzen:false,align:"left",format:function(val,record){
+		        		return "<a href='#'  offer-listing='"+record.ASIN+"'>"+val+"</a>" ;
+		        	}},
 		        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"渠道",width:"10%",forzen:false,align:"left"},
-		           	{align:"center",key:"QUANTITY",label:"周期需求量",width:"10%",sort:true},
-		           	{align:"center",key:"FIX_QUANTITY",label:"需求数量（修正）",width:"15%",format:function(val,record){
-		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
-		           			return "<input type='text' class='edit-fix-quantity'  value='"+(val||record.QUANTITY||"0")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
-		           		}else{
-		           			return val ;
-		           		}
-		           	}},
+		        	{align:"center",key:"EXIST_QUANTITY",label:"当前库存/周期需求量",width:"8%",sort:true,format:function(val,record){
+		        		return (val||'-')+"/"+(record.CALC_QUANTITY||'-') ;
+		        	}},
+		           	{align:"center",key:"QUANTITY",label:"需求量",width:"6%",sort:true},
 		           	{align:"center",key:"PURCHASE_QUANTITY",label:"待采购数量",width:"8%",format:function(val,record){
-		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
+		           		if(  currentPlanProduct.P_STATUS ==0 ){
 		           			return "<input type='text' class='edit-purchase-quantity'  value='"+(val||"0")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
 		           		}else{
-		           			return val ;
+		           			return "<input type='hidden' class='edit-purchase-quantity'  value='"+(val||"0")+"'/>"+val ;
 		           		}
 		           	}},
 		           	{align:"center",key:"REAL_PURCHASE_QUANTITY",label:"实际入库",width:"8%"},
@@ -207,15 +206,19 @@
 					$(data).each(function(){
 						totalPurchaseNum += parseInt(this.purchaseQuantity)||0 ;
 					});
+					
 					if(window.confirm("确认加入该采购计划进行采购？")){
+						
 						$.dataservice("model:ScRequirement.add2PurchasePlan" , {
 							purchasePlanId:plan,
 							reqPlanId:planId,
 							realId:currentRealId,
 							purchaseQuantity:totalPurchaseNum
-						} , function(){
-							$.dialogReturnValue(true) ;
-							window.location.reload() ;
+						} , function(result){
+							openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_plan_product/"+result.ID, 850,500,function(){
+								$.dialogReturnValue(true) ;
+								window.location.reload() ;
+							},{showType:"dialog"}) ;
 						});
 					}
 				}
