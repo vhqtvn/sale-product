@@ -78,7 +78,7 @@ class Cost extends AppModel {
 			$this->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBC',"ID"=>$costId_,"loginId"=>$loginId)) ;
 		}
 	}
-	
+
 	
 	public function saveDevCostByFee( $params ){
 		debug($params) ;

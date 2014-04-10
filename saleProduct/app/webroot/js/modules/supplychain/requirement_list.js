@@ -7,6 +7,7 @@ $(function(){
 		    	html.push("<a href='#' class='action edit_requirement_plan' val='"+val+"'>处理</a>&nbsp;") ;
 		    	return html.join("") ;
 		    }},
+			//{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"8%",forzen:false,align:"left"},
 			{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
 			{align:"center",key:"STATUS_C",label:"未设置成本",group:"分类",width:"7%",forzen:false,align:"left",format:function(val,record){
 				if(!val) return "-" ;
@@ -42,6 +43,13 @@ $(function(){
 			 $(".grid-content").find(".status-c").click(function(){
 				 var record = $(this).closest("tr").data("record") ; 
 				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_gen_log/"+record.ID+"/C",1000,600,function(result,result1){
+					 	if(result1)$(".grid-content").llygrid("reload",{},true) ;
+				 }) ;
+			 }) ;
+			 
+			 $(".grid-content").find(".status-l").click(function(){
+				 var record = $(this).closest("tr").data("record") ; 
+				 openCenterWindow(contextPath+"/page/forward/SupplyChain.requirement_gen_log/"+record.ID+"/L",1000,600,function(result,result1){
 					 	if(result1)$(".grid-content").llygrid("reload",{},true) ;
 				 }) ;
 			 }) ;

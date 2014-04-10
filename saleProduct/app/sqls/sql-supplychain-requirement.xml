@@ -60,6 +60,8 @@
     	  SELECT ssri.*,
     	      saap.ASIN,
 	    	  saa.name as ACCOUNT_NAME,
+	    	  saap.id as ACCOUNT_PRODUCT_ID,
+	    	  saap.IS_ANALYSIS,
 	    	  saap.FULFILLMENT_CHANNEL,
 	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
 	    	  srp.IMAGE_URL,
@@ -103,6 +105,7 @@
 		   WHERE srpr.SKU = s1.LISTING_SKU
 		   AND srpr.ACCOUNT_ID = s1.ACCOUNT_ID
 		   AND s1.plan_id = '{@#planId#}'
+		   {@ and s1.account_id = '#accountId#'}
 		)
     </entry>
     
@@ -213,6 +216,7 @@
 
     <entry key="sql_supplychain_requirement_list">
     	SELECT ssrp.* ,
+    	   (select name from sc_amazon_account where id = ssrp.account_id ) as ACCOUNT_NAME,
     	    ( select count(1) from  sc_supplychain_requirement_log ssrl where ssrl.req_plan_id = ssrp.id and type = 'C'  ) as STATUS_C,
     	    ( select count(1) from  sc_supplychain_requirement_log ssrl where ssrl.req_plan_id = ssrp.id and type = 'L'  ) as STATUS_L,
     		(SELECT COUNT(1) FROM sc_supplychain_requirement_plan_product s WHERE s.plan_id = ssrp.ID AND STATUS=6) AS STATUS6,
@@ -250,8 +254,11 @@
 	 
 	  -->
      <entry key="sql_supplychain_requirement_cancreate_list">
-    	select saap.* from sc_amazon_account_product saap,
-    	sc_amazon_account saa
+    	select 
+    	        saap.*,
+    	        saa.name as  ACCOUNT_ANME
+    	from sc_amazon_account_product saap,
+    		    sc_amazon_account saa
     	where saap.IS_ANALYSIS = 1
     	and saap.status = 'Y'
     	and saap.account_id=saa.id
@@ -264,18 +271,21 @@
 		   AND ssri.ACCOUNT_ID = saap.ACCOUNT_ID
 		   AND ssri.LISTING_SKU = saap.SKU
     	)
+    	{@ and  saa.id = '#accountId#'}
     </entry>
     
      <entry key="sql_supplychain_requirement_plan_insert">
 		    INSERT INTO sc_supplychain_requirement_plan 
 			(ID, 
 			NAME, 
+			ACCOUNT_ID,
 			CREATE_DATE, 
 			STATUS
 			)
 			VALUES
 			('{@#planId#}', 
 			'{@#name#}', 
+			'{@#accountId#}', 
 			NOW(), 
 			0
 			)

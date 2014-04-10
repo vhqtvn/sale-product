@@ -10,7 +10,6 @@ class ScRequirement extends AppModel {
 				$sql = "select * from sc_supplychain_requirement_plan_product where plan_id = '{@#planId#}' and real_id = '{@#realId#}'" ;
 				$planProduct = $this->getObject($sql, array('planId'=>$planId,'realId'=>$realId)) ;
 				if( empty($planProduct) ){
-					//
 					$params = array() ;
 					$params['PLAN_ID'] = $planId ;
 					$params['REAL_ID'] = $realId ;
@@ -95,25 +94,41 @@ class ScRequirement extends AppModel {
 		$sql = "update sc_supplychain_requirement_plan_product set status='{@#status#}' where plan_id = '{@#planId#}' and real_id = '{@#realId#}'" ;
 		$this->exeSql($sql, $audit ) ;
 	}
-
 	
 	public function createRequirement(){
+		/*
+		 $Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+		$accounts = $Amazonaccount->getAllAccountsFormat();
+		foreach( $accounts as $account ){
+			$this->_createRequirement( $account);
+		}*/
+		$this->_createRequirement();
+	}
+
+	
+	public function _createRequirement( $account=null ){
 		$dataSource = $this->getDataSource();
 		//$dataSource->begin();
 		//创建需求之前先初始化成本
 		
 		try{
 		//2、检测是否需要创建需求；新增加的需求产品是否都包括在未完成的需求产品里面
-		
-		//1.获取可创建采购计划的Listing列表
-			$items = $this->exeSqlWithFormat("sql_supplychain_requirement_cancreate_list", array()) ;
+			$accountId = "" ;
+			$accountName = "";
+			if( !empty($account) ){
+				$accountId = $account['ID'] ;
+				$accountName = substr($account['NAME'],0,4);
+			}
+			//1.获取可创建采购计划的Listing列表
+			$items = $this->exeSqlWithFormat("sql_supplychain_requirement_cancreate_list", array('accountId'=>$accountId)) ;
 			if( count($items) >0 ){
-				
 				//创建需求计划
 				$planId = $this->create_guid() ;
 				$params['planId']  = $planId ;
-				$time = new DateTime('now', new DateTimeZone('UTC')) ;
-				$params['name']   = $time->format("c") ;
+				$params['accountId'] = $accountId ;
+				//$time = new DateTime('now', new DateTimeZone('UTC')) ;
+				$prefix = empty($accountName)?"":( $accountName.'-' ) ;
+				$params['name']   = $prefix.date("Ymd-His") ;
 				$this->exeSql("sql_supplychain_requirement_plan_insert", $params) ;
 				
 				//如果存在可创建Listing计划的列表
@@ -315,10 +330,10 @@ class ScRequirement extends AppModel {
 		if( $itemCount <=0  ){
 			//不存在需求明细，删除该需求
 			$sql = "delete from sc_supplychain_requirement_plan where id = '{@#planId#}'" ;
-			$this->exeSql($sql, array("planId"=>$planId)) ;
+			$this->exeSql($sql, $params) ;
 		}else{
 			//1、转换计划需求listing到产品
-			$this->transferPlanItem2Product($planId) ;
+			$this->transferPlanItem2Product($planId,$accountId) ;
 			//2、库存预处理
 		}
 	}

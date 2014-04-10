@@ -9,6 +9,17 @@ class SaleProduct extends AppModel {
 	function isAnalysis($params){
 		$sql= "update  sc_amazon_account_product set IS_ANALYSIS = {@#isAnalysis#} where id='{@#id#}'";
 		$this->exeSql($sql, $params) ;
+		
+		$sql = "select * from sc_amazon_account_product where id='{@#id#}'";
+		$accountProduct = $this->getObject($sql, $params) ;
+		
+		if( $params['isAnalysis'] == 0  ){ //将改货品计算的需求删除
+			$sql = "delete from sc_supplychain_requirement_item where status is null and account_id= '{@#ACCOUNT_ID#}' and LISTING_SKU = '{@#SKU#}'" ;
+			$this->exeSql($sql, $accountProduct) ;
+			$sql = "delete from sc_supplychain_requirement_log where  account_id= '{@#ACCOUNT_ID#}' and  SKU = '{@#SKU#}'" ;
+			$this->exeSql($sql, $accountProduct) ;
+			//判断对应采购货品是否存在
+		}
 	}
 	
 	/**
