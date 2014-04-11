@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_supplychain_recommendations_list">
+    	select sar.*,
+    	  (select name from sc_amazon_account where id=sar.account_id) as ACCOUNT_NAME
+    	 from sc_amazon_recommendations  sar
+    	where 1=1
+    	{@ and sar.account_id = '#accountId#'}
+    </entry>
+    
+    <entry key="sql_supplychain_recommendations_pricing_list">
+    	select sar.*,
+    	  (select name from sc_amazon_account where id=sar.account_id) as ACCOUNT_NAME
+    	 from sc_amazon_recommendations_pricing  sar
+    	where 1=1
+    	{@ and sar.account_id = '#accountId#'}
+    </entry>
+    
+    <entry key="sql_supplychain_recommendations_fulfillment_list">
+    	select sar.*,
+    	  (select name from sc_amazon_account where id=sar.account_id) as ACCOUNT_NAME
+    	 from sc_amazon_recommendations_fulfillment  sar
+    	where 1=1
+    	{@ and sar.account_id = '#accountId#'}
+    </entry>
+    
+    <entry key="sql_supplychain_recommendations_listingQuality_list">
+    	select sar.*,
+    	  (select name from sc_amazon_account where id=sar.account_id) as ACCOUNT_NAME
+    	 from sc_amazon_recommendations_listing_quality sar
+    	where 1=1
+    	{@ and sar.account_id = '#accountId#'}
+    </entry>
+    
+    <entry key="sql_supplychain_recommendations_selection_list">
+    	select sar.*,
+    	  (select name from sc_amazon_account where id=sar.account_id) as ACCOUNT_NAME
+    	 from sc_amazon_recommendations_selection sar
+    	where 1=1
+    	{@ and sar.account_id = '#accountId#'}
+    </entry>
+ </properties>

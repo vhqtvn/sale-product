@@ -1,6 +1,11 @@
 <?php
 class Amazonaccount extends AppModel {
 	var $useTable = "sc_election_rule" ;
+
+	function saveProductRisk($query){
+		$sql = "update sc_amazon_account_product set is_risk='{@#isRisk:0#}',risk_type='{@#riskType#}' where id = '{@#id#}'" ;
+		$this->exeSql($sql, $query) ;
+	}
 	
 	function getAmazonProductCostBySku($accountId , $listingSku){
 		$sql ="select *  from sc_view_listing_cost where account_id = '{@#accountId#}' and listing_sku='{@#listingSku#}'" ;

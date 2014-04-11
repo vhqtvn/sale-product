@@ -46,7 +46,6 @@
 		
 			loadTree(  $('#default-tree_0') ) ;
 			
-	       
 	       var gridConfig = {
 					columns:[
 						{align:"center",key:"ID",label:"状态",width:"6%",format:function(val,record){
@@ -87,6 +86,18 @@
 							}
 							return html.join("") ;
 						}},
+						{align:"center",key:"IS_RISK",label:"风险", width:"6%",format:function(val,record){
+							var html = [] ;
+							if(val == 1){
+								html.push('<a href="#" class="risk" val="'+val+'">'+getImage("error.gif","存在风险")+'</a>&nbsp;') ;
+							}else if(val == 2){
+								html.push('<a href="#" class="risk" val="'+val+'">'+getImage("success.gif","不存在风险")+'</a>&nbsp;') ;
+							}else{
+								html.push('<a href="#" class="risk" title="未设置风险" val="'+val+'">-</a>&nbsp;') ;
+							}
+							return html.join("") ;
+						}},
+						{align:"center",key:"RISK_TYPE_NAME",label:"风险类型", width:"6%"},
 						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
 						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
 								return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/saleProduct/details/"+val+"/sku#ui-tabs-5'>"+(val||"")+"</a>"
@@ -217,6 +228,15 @@
 							$(".category-set").each(function(){
 								var record = $(this).parents("tr:first").data("record");
 								$(this).popover({trigger:'click',title:"分类:"+record.SKU+"/"+record.ASIN,content: "加载中......",delay:{hide:50},width:500,placement :"bottom"}) ; 
+							}) ;
+							
+							$(".risk").live("click",function(){
+								var record = $(this).parents("tr:first").data("record");
+								var  isRisk = record.IS_RISK||"" ;
+								var  riskType  = record.RISK_TYPE||"" ;
+								openCenterWindow(contextPath+"/page/forward/Amazonaccount.product_risk/"+record.ID+"/"+isRisk+"/"+riskType , 850,500,function(win,result){
+									if(result)$(".grid-content").llygrid("reload",{},true) ;
+								},{showType:"dialog"}) ;
 							}) ;
 							
 							

@@ -133,7 +133,7 @@
 				var rowSpanHtml = rowspan>1?"rowspan='"+rowspan+"'":"" ;
 				$("<th "+rowSpanHtml+" key='"+this.key+"' colIndex='"+index+"'  class='lly-grid-head-column' style='border-bottom:0px;'>" +
 						"<div class='"+sort+" cell-div'>"+headCellRender(col)+ 
-						"</div> </th>").appendTo( $("."+container+" table.grid-table thead tr[idx='"+(options.headRowNum - rowspan  )+"']",target)) ;
+						"</div> </th>").appendTo( $("."+container+" table.grid-table thead tr[idx='"+(options.headRowNum - rowspan  )+"']",target)).attr("title",headCellRender(col)) ;
 	
 				width += parseInt(this.width) ;
 			}) ;

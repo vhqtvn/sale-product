@@ -9,13 +9,9 @@ $(function(){
 		    }},
 			//{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"8%",forzen:false,align:"left"},
 			{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
-			{align:"center",key:"STATUS_C",label:"未设置成本",group:"分类",width:"7%",forzen:false,align:"left",format:function(val,record){
+			{align:"center",key:"STATUS_C",label:"未设置成本",width:"7%",forzen:false,align:"left",format:function(val,record){
 				if(!val) return "-" ;
 				return "<a href='#'  class='status-c'>"+val+"</a>" ;
-			}},
-			{align:"center",key:"STATUS_L",label:"利润不达标",group:"分类",width:"7%",forzen:false,align:"left",format:function(val,record){
-				if(!val) return "-" ;
-				return "<a href='#'  class='status-l'>"+val+"</a>" ;
 			}},
 			{align:"center",key:"STATUS0",label:"未审批",group:"状态",width:"6%",forzen:false,align:"left"},
 			{align:"center",key:"STATUS1",label:"审批通过",group:"状态",width:"6%",forzen:false,align:"left"},

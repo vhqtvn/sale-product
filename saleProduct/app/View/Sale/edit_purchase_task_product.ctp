@@ -270,7 +270,7 @@
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        		},
-	        		{status:48,label:"交易",memo:true
+	        		{status:48,label:"待交易",memo:true
 	        			,actions:[{}
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(47,"回退") }}<?php   } ?>
 									<?php if( $isOwner || $ppp_deal) { ?>,{label:"保存",action:function(){ ForceAuditAction(48,"保存") }}<?php  } ?>
@@ -278,7 +278,7 @@
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        		},
-	        		{status:49,label:"已到货",memo:true //48->49
+	        		{status:49,label:"待收货",memo:true //48->49
 	        			,actions:[
 	        			          {}
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(48,"回退") }}<?php  }?>

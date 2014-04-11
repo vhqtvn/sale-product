@@ -19,6 +19,12 @@
 			 sc_real_product srp
 		WHERE ssrpp.plan_id = '{@#planId#}'
 		AND ssrpp.REAL_ID = srp.ID
+		{@ 
+		 and exists (
+		    select 1 from sc_supplychain_requirement_item ssri where ssri.real_id = ssrpp.real_id and ssri.plan_id = ssrpp.plan_id
+		    and ssri.req_type = '#reqType#'
+		 )
+		}
 		and srp.status = 1
 </entry>
 
@@ -59,6 +65,8 @@
     <entry key="sql_supplychain_requirement_plan_product_details_list">
     	  SELECT ssri.*,
     	      saap.ASIN,
+    	      saap.IS_RISK,
+    	       saap.RISK_TYPE,
 	    	  saa.name as ACCOUNT_NAME,
 	    	  saap.id as ACCOUNT_PRODUCT_ID,
 	    	  saap.IS_ANALYSIS,
@@ -256,7 +264,8 @@
      <entry key="sql_supplychain_requirement_cancreate_list">
     	select 
     	        saap.*,
-    	        saa.name as  ACCOUNT_ANME
+    	        saa.name as  ACCOUNT_ANME,
+    	        ( select real_id from sc_real_product_rel srpr where srpr.account_id = saap.account_id and srpr.sku = saap.sku  ) as REAL_ID
     	from sc_amazon_account_product saap,
     		    sc_amazon_account saa
     	where saap.IS_ANALYSIS = 1
@@ -296,6 +305,7 @@
 				(ACCOUNT_ID, 
 				PLAN_ID, 
 				LISTING_SKU, 
+				REAL_ID,
 				FULFILLMENT, 
 				EXIST_QUANTITY,
 				CALC_QUANTITY,
@@ -310,6 +320,7 @@
 				('{@#accountId#}', 
 				'{@#planId#}', 
 				'{@#listingSku#}', 
+				'{@#realId#}', 
 				'{@#fulfillment#}', 
 				'{@#existQuantity#}', 
 				'{@#calcQuantity#}', 
@@ -456,6 +467,7 @@
 				(REQ_PLAN_ID, 
 				ACCOUNT_ID, 
 				SKU, 
+				REAL_ID,
 				MEMO, 
 				TYPE,
 				CREATE_DATE
@@ -464,6 +476,7 @@
 				('{@#REQ_PLAN_ID#}', 
 				'{@#ACCOUNT_ID#}', 
 				'{@#SKU#}', 
+				'{@#REAL_ID#}', 
 				'{@#MEMO#}', 
 				'{@#TYPE#}', 
 				NOW()

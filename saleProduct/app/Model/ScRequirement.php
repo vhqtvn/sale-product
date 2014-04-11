@@ -105,7 +105,15 @@ class ScRequirement extends AppModel {
 		$this->_createRequirement();
 	}
 
-	
+	/**
+	 * 需求类型： 
+	 * A: 销量需求
+	 * B: 流量需求
+	 * C: 成本不完善
+	 * D: 利润不达标
+	 * E: 其他需求
+	 * @param unknown_type $account
+	 */
 	public function _createRequirement( $account=null ){
 		$dataSource = $this->getDataSource();
 		//$dataSource->begin();
@@ -140,6 +148,17 @@ class ScRequirement extends AppModel {
 					
 					//计算Listing是否需要创建需求计划
 					$cost = $this->getListingCost( $item['ACCOUNT_ID']  , $item['SKU'] ) ;
+					if( empty( $cost ) ){
+						$this->reqLog(array(
+								'REQ_PLAN_ID'=>$planId,
+								'ACCOUNT_ID'=>$item['ACCOUNT_ID'],
+								'SKU'=>$item['SKU'],
+								'REAL_ID' => $item['REAL_ID'] ,
+								"TYPE"=>'C',
+								'MEMO'=>"未设置成本数据"
+						)) ;
+						continue ;
+					}
 					
 					//获取当前账户库存
 					$sql="select * from sc_amazon_account_product where account_id='{@#accountId#}' and sku='{@#sku#}'";
@@ -162,31 +181,6 @@ class ScRequirement extends AppModel {
 					//echo ">>>>>>>>>>>>>".$item['SKU']."<br/>" ;
 					
 					echo '[SKU:'.$item['SKU'].'   accountId:'.$accountId.']Price>>>["'.$totalCost.'"]["'.$totalPrice.'"]<br>' ;
-					
-					if( empty($cost) || empty($totalCost) || empty($totalPrice) || $totalPrice==0 ){
-						$this->reqLog(array(
-									'REQ_PLAN_ID'=>$planId, 
-									'ACCOUNT_ID'=>$item['ACCOUNT_ID'], 
-									'SKU'=>$item['SKU'], 
-									"TYPE"=>'C',
-									'MEMO'=>"未设置成本数据"
-								)) ;
-						continue ;
-					}
-					
-					//获取利润水平
-					$profileLevel = $this->getProfileLevel($totalCost, $totalPrice) ;
-					if( $profileLevel == 1  ){
-						//忽略，利润不达标
-						$this->reqLog(array(
-								'REQ_PLAN_ID'=>$planId,
-								'ACCOUNT_ID'=>$item['ACCOUNT_ID'],
-								'SKU'=>$item['SKU'],
-								"TYPE"=>'L',
-								'MEMO'=>"利润不达标"
-						)) ;
-						continue;
-					}
 					
 					//供应周期
 					$supplyCycle = $cost['SUPPLY_CYCLE'] ;
@@ -239,13 +233,14 @@ class ScRequirement extends AppModel {
 						$ps['accountId'] = $item['ACCOUNT_ID'] ;
 						$ps['id'] = $this->create_guid() ;
 						$ps['planId'] = $planId ;
+						$ps['realId'] = $item['REAL_ID'] ;
 						$ps['listingSku'] = $item['SKU'] ;
 						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
 						$ps['existQuantity'] =  $accountQuantity ;
 						$ps['calcQuantity'] =  $reqNum ;
 						$ps['quantity'] =  $reqNum -  $accountQuantity ;
 						$ps['urgency'] =  "A" ;
-						$ps['reqType'] =  "A" ;
+						$ps['reqType'] =  "A" ;//销量需求
 						$itemCount++ ;
 						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 						continue ;
@@ -271,6 +266,7 @@ class ScRequirement extends AppModel {
 						//计算到的需求数量
 						$reqNum = ($count/14) * $ConversionRate * $reqAdjust ;
 						if( $accountQuantity >= $reqNum ){
+							//账号库存数量大于需求数量
 							continue ;
 						}
 						
@@ -278,16 +274,56 @@ class ScRequirement extends AppModel {
 						$ps['accountId'] = $item['ACCOUNT_ID'] ;
 						$ps['id'] = $this->create_guid() ;
 						$ps['planId'] = $planId ;
+						$ps['realId'] = $item['REAL_ID'] ;
 						$ps['listingSku'] = $item['SKU'] ;
 						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
 						$ps['existQuantity'] =  $accountQuantity ;
 						$ps['calcQuantity'] =  $reqNum ;
 						$ps['quantity'] =  $reqNum -  $accountQuantity ;
 						$ps['urgency'] =  "B" ;
-						$ps['reqType'] =  "B" ;
+						$ps['reqType'] =  "B" ;//流量需求
 						$itemCount++ ;
 						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 						continue ;
+					}
+					
+					if( empty($cost) || empty($totalCost) || empty($totalPrice) || $totalPrice==0 ){
+						$ps = array() ;
+						$ps['accountId'] = $item['ACCOUNT_ID'] ;
+						$ps['id'] = $this->create_guid() ;
+						$ps['planId'] = $planId ;
+						$ps['realId'] = $item['REAL_ID'] ;
+						$ps['listingSku'] = $item['SKU'] ;
+						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+						$ps['existQuantity'] =  $accountQuantity ;
+						$ps['calcQuantity'] =  0 ;
+						$ps['quantity'] =  0 ;
+						$ps['urgency'] =  "C" ;
+						$ps['reqType'] =  "C" ;//成本不完整
+						$itemCount++ ;
+						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+						continue ;
+					}
+						
+					//获取利润水平
+					$profileLevel = $this->getProfileLevel($totalCost, $totalPrice) ;
+					if( $profileLevel == 1  ){
+						//忽略，利润不达标
+						$ps = array() ;
+						$ps['accountId'] = $item['ACCOUNT_ID'] ;
+						$ps['id'] = $this->create_guid() ;
+						$ps['planId'] = $planId ;
+						$ps['realId'] = $item['REAL_ID'] ;
+						$ps['listingSku'] = $item['SKU'] ;
+						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+						$ps['existQuantity'] =  $accountQuantity ;
+						$ps['calcQuantity'] =  0 ;
+						$ps['quantity'] =  0 ;
+						$ps['urgency'] =  "C" ;
+						$ps['reqType'] =  "D" ;//利润不达标
+						$itemCount++ ;
+						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+						continue;
 					}
 					
 					//创建需求，数量为0，需要用户自己指定
@@ -295,13 +331,14 @@ class ScRequirement extends AppModel {
 					$ps['accountId'] = $item['ACCOUNT_ID'] ;
 					$ps['id'] = $this->create_guid() ;
 					$ps['planId'] = $planId ;
+					$ps['realId'] = $item['REAL_ID'] ;
 					$ps['listingSku'] = $item['SKU'] ;
 					$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
 					$ps['existQuantity'] =  $accountQuantity ;
 					$ps['calcQuantity'] =  0 ;
 					$ps['quantity'] =  0 ;
 					$ps['urgency'] =  "C" ;
-					$ps['reqType'] =  "C" ;
+					$ps['reqType'] =  "E" ;//其他原因需求
 					$itemCount++ ;
 					$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 				}
@@ -333,7 +370,7 @@ class ScRequirement extends AppModel {
 			$this->exeSql($sql, $params) ;
 		}else{
 			//1、转换计划需求listing到产品
-			$this->transferPlanItem2Product($planId,$accountId) ;
+			$this->transferPlanItem2Product($planId) ;
 			//2、库存预处理
 		}
 	}

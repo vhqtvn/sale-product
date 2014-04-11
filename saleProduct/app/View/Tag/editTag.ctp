@@ -17,7 +17,6 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
-		echo $this->Html->script('modules/users/edit_user');
 		
 		$typeId = $params['arg1'] ;
 		$tagId = $params['arg2'] ;

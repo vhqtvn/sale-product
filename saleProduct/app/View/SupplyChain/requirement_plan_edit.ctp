@@ -125,8 +125,28 @@
 <body>
   <div  style="width:100%;height:100%;">
 		<div region="center" split="true" border="true"  style="padding:2px;">
-	
-						<div class="grid-content"></div>
+			<div class="toolbar toolbar-auto query-bar">
+				<table class="query-table">	
+					<tr>	
+						<th>需求分类:</th>
+						<td>
+							<select name='reqType'  style="width:100px">
+								<option value=''>全部</option>
+								<option value='A'>销量需求</option>
+								<option value='B'>流量需求</option>
+								<option value='C'>成本不完善</option>
+								<option value='D'>利润不达标</option>
+								<option value='E'>其他需求</option>
+							</select>
+						</td>
+						<td>
+							<button class="btn btn-primary query query-btn" >查询</button>
+						</td>
+					</tr>						
+				</table>
+			</div>
+			
+			<div class="grid-content"></div>
 					
 			<div class="row-fluid">
 					<div class="span9">

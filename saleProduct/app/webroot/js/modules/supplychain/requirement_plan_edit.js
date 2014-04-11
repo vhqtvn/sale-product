@@ -106,6 +106,17 @@
 						}
 						return html.join("") ;
 					}},
+					{align:"center",key:"IS_RISK",label:"风险", width:"6%",format:function(val,record){
+						var html = [] ;
+						if(val == 1){
+							html.push('<a href="#" class="risk" val="'+val+'">'+getImage("error.gif","存在风险")+'</a>&nbsp;') ;
+						}else if(val == 2){
+							html.push('<a href="#" class="risk" val="'+val+'">'+getImage("success.gif","不存在风险")+'</a>&nbsp;') ;
+						}else{
+							html.push('<a href="#" class="risk" title="未设置风险" val="'+val+'">-</a>&nbsp;') ;
+						}
+						return html.join("") ;
+					}},
 				 	{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"10%"},
 		           	{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"15%",forzen:false,align:"left",format:function(val,record){
 		        		return "<a href='#'  offer-listing='"+record.ASIN+"'>"+val+"</a>" ;
@@ -123,7 +134,8 @@
 		           		}
 		           	}},
 		           	{align:"center",key:"REAL_PURCHASE_QUANTITY",label:"实际入库",width:"8%"},
-		           	{align:"center",key:"REQ_TYPE",label:"生成类别",width:"8%",format:{type:"json",content:{'A':"销量",'B':"流量",'C':"其他"}}},
+		           	{align:"center",key:"REQ_TYPE",label:"生成类别",width:"8%",format:{type:"json",content:{'A':"销量",'B':"流量",'C':"成本不完整",D:"利润不达标",E:'其他'}}}
+		           	/*,
 		           	{align:"center",key:"URGENCY",label:"紧急程度",width:"8%",format:function(val,record){
 		           		if(currentPlanProduct.P_STATUS == 1 || currentPlanProduct.P_STATUS ==0 ){
 		           			return $.llygrid.format.editor.body(val,record,{align:"center",key:"URGENCY",label:"紧急程度",width:"10%",
@@ -131,7 +143,7 @@
 		           		}else{
 		           			return val ;
 		           		}
-		           	}}
+		           	}}*/
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
@@ -183,6 +195,15 @@
 						});
 					}
 				}
+			}) ;
+			
+			$(".risk").live("click",function(){
+				var record = $(this).parents("tr:first").data("record");
+				var  isRisk = record.IS_RISK||"" ;
+				var  riskType  = record.RISK_TYPE||"" ;
+				openCenterWindow(contextPath+"/page/forward/Amazonaccount.product_risk/"+record.ACCOUNT_PRODUCT_ID+"/"+isRisk+"/"+riskType , 850,500,function(win,result){
+					if(result)$(".grid-content-details").llygrid("reload",{},true) ;
+				},{showType:"dialog"}) ;
 			}) ;
 			
 			function getGridEditorData(){
