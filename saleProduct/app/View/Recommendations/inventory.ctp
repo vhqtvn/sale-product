@@ -25,7 +25,9 @@
    		*{
    			font:12px "微软雅黑";
    		}
-   		
+th .cell-div{
+			white-space: inherit;
+   		}
    		.message{
    			width:600px;
    			border:1px solid #CCC;

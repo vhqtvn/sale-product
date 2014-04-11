@@ -26,7 +26,7 @@
    			font:12px "微软雅黑";
    		}
    		
-   		.cell-div{
+   		th .cell-div{
 			white-space: inherit;
    		}
    		

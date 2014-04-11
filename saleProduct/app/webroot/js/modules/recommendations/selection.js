@@ -21,7 +21,9 @@ ACCOUNT_ID,
 	$(".grid-content").llygrid({
 		columns:[
 		    {align:"center",key:"ACCOUNT_NAME",label:"账号",width:"8%",forzen:false,align:"left"},
-			{align:"center",key:"ASIN",label:"Asin",width:"8%",forzen:false,align:"left"},
+		    {align:"center",key:"ASIN",label:"Asin",width:"8%",forzen:false,align:"left",format:function(val,record){
+				return "<a href='#'  offer-listing='"+val+"'>"+(val||"")+"</a>" ;
+			}},
            	{align:"center",key:"SKU",label:"Sku",width:"8%",forzen:false,align:"left"},
            	{align:"center",key:"UPC",label:"Upc",width:"8%"},
            	{align:"center",key:"ITEM_NAME",label:"Title",width:"10%"},
@@ -39,7 +41,7 @@ ACCOUNT_ID,
         	{align:"center",key:"RECOMMENDATION_REASON",label:"Recommendation Reason",width:"20%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
-		 limit:10,
+		 limit:30,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
 			 return $(window).height() - 160 ;
