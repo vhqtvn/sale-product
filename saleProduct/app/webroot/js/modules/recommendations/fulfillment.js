@@ -22,6 +22,7 @@ $(function(){
 		columns:[
 		    {align:"center",key:"ACCOUNT_NAME",label:"账号",width:"8%",forzen:false,align:"left"},
         	{align:"center",key:"FULFILLMENT_CHANNEL",label:"Channel",width:"5%"},
+        	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:"img"}},
 			{align:"center",key:"ASIN",label:"Asin",group:"Lsiting",width:"8%",forzen:false,align:"left",format:function(val,record){
 				return "<a href='#'  offer-listing='"+val+"'>"+(val||"")+"</a>" ;
 			}},
