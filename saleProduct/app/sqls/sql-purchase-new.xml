@@ -48,20 +48,33 @@
    </entry>
     
     <entry key="sql_purchase_new_list">
+    select * from (
 			SELECT spp.*,
 			   srp.REAL_SKU,
 			   srp.IMAGE_URL,
 			   srp.name as TITLE,
+			   (SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = spp.id
+						ORDER BY spdt.create_time DESC LIMIT 0,1) AS TRACK_MEMO,
 			   (SELECT NAME FROM sc_user WHERE login_id = spp.EXECUTOR  ) AS  EXECUTOR_NAME,
 			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME
 			 FROM 
 			sc_purchase_product spp,
 			sc_real_product srp
 			WHERE spp.REAL_ID = srp.ID
-			and ( spp.executor is not null and spp.executor !='' and spp.limit_price is not null and spp.limit_price !=0 )
+			and ( spp.executor is not null and spp.executor !='' )
+			and ( spp.status != 80 and spp.status != 25)
+			and (spp.status > 45 or ( spp.limit_price is not null and spp.limit_price !=0 ))
 			{@ #$purchaseTask_view: and 1=0# }
 			{@ and spp.id = '#id#'}
 			{@ and spp.status = '#status#'}
+		) t
+		where 
+		  1=1
+		{@ and (
+				t.title like '%#searchKey#%' or t.real_sku = '#searchKey#'
+				or t.EXECUTOR_NAME like '%#searchKey#%'
+				or t.TRACK_MEMO  like '%#searchKey#%'
+			)}
    </entry>
    
    <entry key="sql_purchase_new_getById">
@@ -80,18 +93,54 @@
 			{@ and spp.status = '#status#'}
    </entry>
    
-   <entry key="sql_purchase_new_listForRepaire">
+   
+   
+   <entry key="sql_purchase_new_listForFinish">
         <![CDATA[	
+       select * from (
 			SELECT spp.*,
 			   srp.REAL_SKU,
 			   srp.IMAGE_URL,
 			   srp.name as TITLE,
+			   (SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = spp.id
+						ORDER BY spdt.create_time DESC LIMIT 0,1) AS TRACK_MEMO,
 			   (SELECT NAME FROM sc_user WHERE login_id = spp.EXECUTOR  ) AS  EXECUTOR_NAME,
 			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME
 			 FROM 
 			sc_purchase_product spp,
 			sc_real_product srp
 			WHERE spp.REAL_ID = srp.ID
+			  and ( spp.status = 80 or spp.status = 25)
+			  {@ #$purchaseTask_view: and 1=0# }
+			{@ and spp.id = '#id#'}
+			{@ and spp.status = '#status#'}
+		) t
+		where 
+		  1=1
+		{@ and (
+				t.title like '%#searchKey#%' or t.real_sku = '#searchKey#'
+				or t.EXECUTOR_NAME like '%#searchKey#%'
+				or t.TRACK_MEMO  like '%#searchKey#%'
+			)}
+			]]>	
+   </entry>
+   
+   <entry key="sql_purchase_new_listForRepaire">
+        <![CDATA[	
+       select * from (
+			SELECT spp.*,
+			   srp.REAL_SKU,
+			   srp.IMAGE_URL,
+			   srp.name as TITLE,
+			   (SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = spp.id
+						ORDER BY spdt.create_time DESC LIMIT 0,1) AS TRACK_MEMO,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.EXECUTOR  ) AS  EXECUTOR_NAME,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME
+			 FROM 
+			sc_purchase_product spp,
+			sc_real_product srp
+			WHERE spp.REAL_ID = srp.ID
+			 and ( spp.status <=45 and spp.status != 25 )
 			  {@ and (   ( spp.executor is null or spp.executor ='' ) and #status1# = 1 )  }
 			 {@ and   ( spp.limit_price is null or spp.limit_price <=0 ) and #status2# = 2 }
 			and (
@@ -101,6 +150,14 @@
 			)
 			{@ and spp.id = '#id#'}
 			{@ and spp.status = '#status#'}
+	) t
+		where 
+		  1=1
+		{@ and (
+				t.title like '%#searchKey#%' or t.real_sku = '#searchKey#'
+				or t.EXECUTOR_NAME like '%#searchKey#%'
+				or t.TRACK_MEMO  like '%#searchKey#%'
+			)}
 			]]>	
    </entry>
    
@@ -108,9 +165,10 @@
    
    <entry key="sql_purchase_new_loadStatics">
 			SELECT spp.STATUS,COUNT(spp.STATUS) AS COUNT FROM sc_purchase_product  spp
-			where  spp.executor is not null and spp.executor !=''
-			      and  spp.limit_price is not null and  spp.limit_price!=''
-			      and spp.limit_price>0
+			where  
+			 ( spp.executor is not null and spp.executor !='' )
+			and ( spp.status != 80 and spp.status != 25)
+			and (spp.status > 45 or ( spp.limit_price is not null and spp.limit_price !=0 ))
 			     {@ #$purchaseTask_view: and 1=0# }
 		GROUP BY spp.STATUS
    </entry>
@@ -119,9 +177,11 @@
        <![CDATA[	
 			SELECT '1' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
 			where   spp.executor is null or spp.executor =''  
+			and ( spp.status <=45 and spp.status != 25 )
 			union
 			SELECT '2' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
 			where   spp.limit_price is null or spp.limit_price <=0
+			and ( spp.status <=45 and spp.status != 25)
 	]]>	   
    </entry>
     
