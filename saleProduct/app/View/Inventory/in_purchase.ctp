@@ -20,10 +20,9 @@
 		echo $this->Html->script('modules/inventory/in_purchase');
 		echo $this->Html->script('calendar/WdatePicker');
 		
-		$taskId = $params['arg1'] ;
-		$planProductId = $params['arg2'] ;
-		$realId =  $params['arg3'] ;
-		$reqPlanId = $params['arg4'] ;
+		$purchaseProductId = $params['arg1'] ;
+		$realId =  $params['arg2'] ;
+		$reqPlanId = $params['arg3'] ;
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		
@@ -32,22 +31,20 @@
 		$result = $SqlUtils->exeSqlWithFormat("sql_supplychain_requirement_plan_product_details_list" ,array("planId"=>$reqPlanId,"realId"=>$realId)) ;
 		//debug($result) ;
 		
-		$taskProduct =  $SqlUtils->getObject("select * from sc_purchase_task_products
-				 where task_id = '{@#taskId#}' and product_id = '{@#productId#}'",
-				array("taskId"=> $taskId,"productId"=>$planProductId)) ;
+		$purchaseProduct =  $SqlUtils->getObject("select * from sc_purchase_product
+				 where id= '{@#productId#}'", array( "productId"=>$purchaseProductId)) ;
 
-		$warehouseId = $taskProduct['WAREHOUSE_ID'] ;
+		$warehouseId = $purchaseProduct['WAREHOUSE_ID'] ;
 		$sql = "select * from sc_warehouse where id = '{@#WAREHOUSE_ID#}'" ;
-		$warehouse = $SqlUtils->getObject($sql,$taskProduct) ;
+		$warehouse = $SqlUtils->getObject($sql,$purchaseProduct ) ;
 		
-		$status =$taskProduct['STATUS'] ;
+		$status =$purchaseProduct['STATUS'] ;
 		
 	?>
   
    <script type="text/javascript">
-	   	var inId = '<?php echo $params['arg1'] ;?>' ;	
-	   	var type = '<?php echo $type ;?>' ;	
-	   	var warehouseId =  '<?php echo $in['WAREHOUSE_ID'] ;?>' ;	
+	   	var purchaseProductId = '<?php echo $params['arg1'] ;?>' ;	
+	   	var warehouseId =  '<?php echo $purchaseProduct['WAREHOUSE_ID'] ;?>' ;	
    </script>
    
     <style type="text/css">
@@ -138,16 +135,15 @@
 
 	<div class="flow-toolbar toolbar">
 		<input type="hidden" name="realId" value="<?php echo $realId;?>"/>
-		<input type="hidden"  name="qualifiedProductsNum"  value="<?php echo $taskProduct['QUALIFIED_PRODUCTS_NUM'] ; ?>"/>
-		<input type="hidden"  name="badProductsNum"  value="<?php echo $taskProduct['BAD_PRODUCTS_NUM'] ; ?>"/>
-		<input type="hidden" name="taskId" value="<?php echo $taskId;?>"/>
-		<input type="hidden" name="planProductId" value="<?php echo $planProductId;?>"/>
+		<input type="hidden"  name="qualifiedProductsNum"  value="<?php echo $purchaseProduct['QUALIFIED_PRODUCTS_NUM'] ; ?>"/>
+		<input type="hidden"  name="badProductsNum"  value="<?php echo $purchaseProduct['BAD_PRODUCTS_NUM'] ; ?>"/>
+		<input type="hidden" name="purchaseProductId" value="<?php echo $purchaseProductId;?>"/>
 	
 		<div class="row-fluid">
 			<div class="span10 "  style="font-weight:bold;font-size:15px;">
-				   良品产品数量：<span class="alert-success" style="padding:1px 5px;"><?php echo $taskProduct['QUALIFIED_PRODUCTS_NUM'] ; ?></span>
+				   良品产品数量：<span class="alert-success" style="padding:1px 5px;"><?php echo $purchaseProduct['QUALIFIED_PRODUCTS_NUM'] ; ?></span>
 				   &nbsp; &nbsp; 
-					残品产品数量：<span class="alert-danger" style="padding:1px 5px;"><?php echo $taskProduct['BAD_PRODUCTS_NUM'] ; ?></span>
+					残品产品数量：<span class="alert-danger" style="padding:1px 5px;"><?php echo $purchaseProduct['BAD_PRODUCTS_NUM'] ; ?></span>
 					&nbsp; &nbsp; 
 					自由库存：<input type="text"  style="width:50px;"   name="freeQuantity"  value="" <?php echo $status>=70?"disabled":"" ?>/>
 					&nbsp; &nbsp; 
@@ -159,21 +155,21 @@
 											     $warehouses = $SqlUtils->exeSql("sql_warehouse_lists",array()) ;
 					                             foreach($warehouses as $w){
 					                             	  $w = $SqlUtils->formatObject( $w ) ;
-					                             	  $selected = $taskProduct['WAREHOUSE_ID'] == $w['ID'] ?"selected":"" ;
+					                             	  $selected = $purchaseProduct['WAREHOUSE_ID'] == $w['ID'] ?"selected":"" ;
 					                             	  echo "<option $selected value='".$w['ID']."'>".$w['NAME']."</option>" ;
 					                             }
 											   ?>
 											</select>
 						入库时间： <?php if($status>=70){ 
-							echo $taskProduct['WAREHOUSE_TIME'];
+							echo $purchaseProduct['WAREHOUSE_TIME'];
 						}else{ ?>
 						<input id="warehouseTime" class="60-input input"  data-options="{'isShowWeek':'true','dateFmt':'yyyy-MM-dd HH:mm:ss'}"
 													  type="text"  data-widget="calendar"
 															value='<?php 
-															if( $taskProduct['WAREHOUSE_TIME'] == "0000-00-00 00:00:00"){
+															if( $purchaseProduct['WAREHOUSE_TIME'] == "0000-00-00 00:00:00"){
 																echo "";
 															} else{
-																echo $taskProduct['WAREHOUSE_TIME'];
+																echo $purchaseProduct['WAREHOUSE_TIME'];
 															};?>' />
 					<?php }?>
 			</div>

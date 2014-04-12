@@ -6,7 +6,8 @@
     	  srp.NAME AS REAL_NAME,
     	  srp.REAL_SKU,
     	  srp.ID AS REAL_ID,
-    	  srp.IMAGE_URL
+    	  srp.IMAGE_URL,
+    	  (select TOTAL_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where sfsi.account_id = sar.account_id and sfsi.seller_sku = sar.sku ) as TOTAL_SUPPLY_QUANTITY
     	 FROM sc_amazon_recommendations  sar
     	 LEFT JOIN sc_real_product_rel srpr
     	 ON sar.ACCOUNT_ID = srpr.ACCOUNT_ID

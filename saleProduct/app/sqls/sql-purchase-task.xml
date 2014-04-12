@@ -246,6 +246,7 @@
 			)}
     -->
     <entry key="sql_purchase_task_product_list">
+    select * from (
 		SELECT
 		    sptp.TASK_ID,
 		    sppd.ID, 
@@ -293,16 +294,28 @@
 				         where 1=1
 				         {@ #$purchaseTask_view: and 1=0# }
 		    )
-		    {@ and (
-				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
-				or su.name like '%#searchKey#%'
-			)}
+		   
 			and sptp.status != 80
-			order by sptp.task_id desc
+		) t
+		where 1=1
+		 {@ and (
+				t.title like '%#searchKey#%' or t.real_sku = '#searchKey#'
+				or t.EXECUTOR_NAME like '%#searchKey#%'
+				or t.memo like  '%#searchKey#%'
+			)}
+			order by t.task_id desc
     </entry>
     
     <entry key="sql_purchase_task_product_list_countSql">
-		SELECT count(*)
+		select count(*) from (
+		SELECT
+		    sptp.TASK_ID,
+			(SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = sppd.id
+						ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
+			srp.REAL_SKU,
+			srp.name AS TITLE,
+			(SELECT NAME FROM sc_supplier WHERE id =sptp.PROVIDOR ) AS PROVIDOR_NAME,
+			su.NAME AS EXECUTOR_NAME
 		FROM 
 		sc_purchase_task_products sptp,
 		sc_purchase_plan_details sppd 
@@ -322,15 +335,19 @@
 				         where 1=1
 				         {@ #$purchaseTask_view: and 1=0# }
 		    )
-		    {@ and (
-				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
-				or su.name like '%#searchKey#%'
-			)}
 			and sptp.status != 80
+		) t
+		where 1=1
+		 {@ and (
+				t.title like '%#searchKey#%' or t.real_sku = '#searchKey#'
+				or t.EXECUTOR_NAME like '%#searchKey#%'
+				or t.memo like  '%#searchKey#%'
+			)}
     </entry>
     
     <entry key="sql_purchase_task_product_list_done">
-		SELECT DISTINCT  
+    select * from (
+		SELECT   
 			sppd.ID, 
 			sppd.ASIN, 
 			(SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = sppd.id
@@ -371,12 +388,15 @@
 				         where 1=1
 				         {@ #$purchaseTask_view: and 1=0# }
 		    )
-		    {@ and (
-				srp.name like '%#searchKey#%' or srp.real_sku = '#searchKey#'
-				or su.name like '%#searchKey#%'
-			)}
 			and sptp.status = 80
-			order by sptp.task_id desc
+		) t
+		where 1=1
+		 {@ and (
+				t.title like '%#searchKey#%' or t.real_sku = '#searchKey#'
+				or t.EXECUTOR_NAME like '%#searchKey#%'
+				or t.memo like  '%#searchKey#%'
+			)}
+			order by t.task_id desc
     </entry>
     
     <entry key="sql_purchase_product_listBySupplierId">

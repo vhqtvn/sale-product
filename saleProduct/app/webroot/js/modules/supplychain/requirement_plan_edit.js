@@ -19,7 +19,7 @@
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,record){
 		        		return "<a href='#'  product-realsku='"+record.REAL_SKU+"'>"+val+"</a>" ;
 		        	}},
-		        	{align:"center",key:"FIX_QUANTITY",label:"周期需求量",width:"8%",forzen:false,align:"left"},
+		        	{align:"center",key:"FIX_QUANTITY",label:"需求量",width:"8%",forzen:false,align:"left"},
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
 		           	{align:"center",key:"MEMO",label:"备注",width:"25%"}
 		         ],

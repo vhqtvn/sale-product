@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_">
+    </entry>
+    
+    <!--
+    	TODO:
+    	outAemricanArea: 1
+    	inAemricanArea : 0
+    	
+    	当空时设置：
+    	itemContidtionNull:1
+    	
+    	fulfillmentChannelNull:1
+    	
+    	isPriceQuery:1
+    	isQuantityQuery:1
+    	
+    	pm:other ==>0
+    	
+    	uncategory：1
+    	
+    	$VIEW_PP$ :数据权限
+    -->
+    <entry key="sql_purchase_new_productsForPrint">
+		SELECT DISTINCT  
+		    srp.REAL_SKU as SKU,
+			sptp.* ,
+			srp.name AS TITLE,
+			srp.IMAGE_URL,
+			(SELECT CODE FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_CODE,
+			(SELECT NAME FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_NAME,
+			(SELECT CONTACTOR FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_CONTACTOR,
+			(SELECT MOBILE FROM sc_supplier WHERE id = sptp.PROVIDOR ) AS PROVIDOR_PHONE,
+			(SELECT NAME FROM sc_user WHERE login_id = sptp.executor ) AS EXECUTOR_NAME,
+			sptp.PLAN_NUM AS SUPPIERABLE_NUM,
+			(SELECT su.name FROM sc_purchase_plan_details_track sppdt , sc_user su
+				 WHERE sppdt.PD_ID =sptp.ID AND sppdt.STATUS = 60
+				 AND sppdt.creator = su.login_id
+				  LIMIT 0,1  ) AS WARHOUSE_USERNAME
+		FROM 
+		sc_purchase_product sptp,
+		sc_real_product srp
+		WHERE 1=1 
+			
+		    and sptp.real_id = srp.id
+		    and sptp.id = '{@#purchaseProductId#}'
+   </entry>
+    
+    <entry key="sql_purchase_new_list">
+			SELECT spp.*,
+			   srp.REAL_SKU,
+			   srp.IMAGE_URL,
+			   srp.name as TITLE,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.EXECUTOR  ) AS  EXECUTOR_NAME,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME
+			 FROM 
+			sc_purchase_product spp,
+			sc_real_product srp
+			WHERE spp.REAL_ID = srp.ID
+			and ( spp.executor is not null and spp.executor !='' and spp.limit_price is not null and spp.limit_price !=0 )
+			{@ #$purchaseTask_view: and 1=0# }
+			{@ and spp.id = '#id#'}
+			{@ and spp.status = '#status#'}
+   </entry>
+   
+   <entry key="sql_purchase_new_getById">
+			SELECT spp.*,
+			   srp.REAL_SKU,
+			   srp.IMAGE_URL,
+			   srp.name as TITLE,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.EXECUTOR  ) AS  EXECUTOR_NAME,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME
+			 FROM 
+			sc_purchase_product spp,
+			sc_real_product srp
+			WHERE spp.REAL_ID = srp.ID
+			{@ #$purchaseTask_view: and 1=0# }
+			{@ and spp.id = '#id#'}
+			{@ and spp.status = '#status#'}
+   </entry>
+   
+   <entry key="sql_purchase_new_listForRepaire">
+        <![CDATA[	
+			SELECT spp.*,
+			   srp.REAL_SKU,
+			   srp.IMAGE_URL,
+			   srp.name as TITLE,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.EXECUTOR  ) AS  EXECUTOR_NAME,
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME
+			 FROM 
+			sc_purchase_product spp,
+			sc_real_product srp
+			WHERE spp.REAL_ID = srp.ID
+			  {@ and (   ( spp.executor is null or spp.executor ='' ) and #status1# = 1 )  }
+			 {@ and   ( spp.limit_price is null or spp.limit_price <=0 ) and #status2# = 2 }
+			and (
+			  1=0
+			 or   ( spp.executor is null or spp.executor ='' )  
+			 or   (spp.limit_price is null or spp.limit_price <=0 )  
+			)
+			{@ and spp.id = '#id#'}
+			{@ and spp.status = '#status#'}
+			]]>	
+   </entry>
+   
+   
+   
+   <entry key="sql_purchase_new_loadStatics">
+			SELECT spp.STATUS,COUNT(spp.STATUS) AS COUNT FROM sc_purchase_product  spp
+			where  spp.executor is not null and spp.executor !=''
+			      and  spp.limit_price is not null and  spp.limit_price!=''
+			      and spp.limit_price>0
+			     {@ #$purchaseTask_view: and 1=0# }
+		GROUP BY spp.STATUS
+   </entry>
+   
+   <entry key="sql_purchase_new_loadRepaireStatics">
+       <![CDATA[	
+			SELECT '1' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
+			where   spp.executor is null or spp.executor =''  
+			union
+			SELECT '2' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
+			where   spp.limit_price is null or spp.limit_price <=0
+	]]>	   
+   </entry>
+    
+   <entry key="sql_purchase_realproduct_select">
+		SELECT * FROM sc_real_product where status = 1 and is_onsale = 1
+		{@ and real_sku like '%#REAL_SKU#%' }
+		{@ and name like '%#NAME#%' }
+   </entry>
+   
+   <entry key="sql_purchase_new_product_updateStatus">
+				UPDATE sc_purchase_product
+					SET
+					status = '{@#status#}'
+					where
+					id = '{@#productId#}' 
+		</entry>
+   
+    <entry key="sql_purchase_new_create">
+		INSERT INTO sc_purchase_product 
+			(
+			ID, 
+			CODE,
+			REAL_ID, 
+			PLAN_NUM, 
+			LIMIT_PRICE, 
+			EXECUTOR, 
+			START_TIME, 
+			END_TIME, 
+			REQ_PRODUCT_ID, 
+			DEV_ID, 
+			CREATED_BY, 
+			CREATED_DATE, 
+			LAST_UPDATED_BY, 
+			LAST_UPDATED_DATE, 
+			TAGS
+			)
+			VALUES
+			('{@#guid#}', 
+			'{@#code#}', 
+			'{@#realId#}', 
+			'{@#planNum#}', 
+			{@#limitPrice:NULL#}, 
+			'{@#executor#}', 
+			'{@#startTime#}', 
+			'{@#endTime#}', 
+			'{@#reqProductId#}', 
+			'{@#devId#}',
+			'{@#loginId#}', 
+			NOW(), 
+			'{@#loginId#}', 
+			NOW(), 
+			'{@#tags#}'
+			)
+   </entry>
+   <entry key="sql_purchase_new_update">
+		   update sc_purchase_product 
+			set
+			{@plan_num = '#planNum#' , }
+			{@limit_price = '#limitPrice#' , }
+			{@executor = '#executor#' , }
+			{@start_time = '#startTime#' ,}
+			{@end_time = '#endTime#' ,}
+			{@req_product_id = '#reqProductId#' ,}
+			{@dev_id = '#devId#' ,}
+			{@real_num = '#realNum#' ,}
+			{@quote_price = '#quotePrice#' ,}
+			{@real_quote_price = '#realQuotePrice#' ,}
+			{@providor = '#providor#' ,}
+			{@real_providor = '#realProvidor#' ,}
+			{@area = '#area#' ,}
+			{@real_purchase_date = '#realPurchaseDate#' ,}
+			{@qualified_products_num = '#qualifiedProductsNum#' ,}
+			{@bad_products_num = '#badProductsNum#' ,}
+			{@check_memo = '#checkMemo#' ,}
+			{@warehouse_time = '#warehouseTime#' ,}
+			{@warehouse_id = '#warehouseId#' ,}
+			{@pay_type = '#payType#' ,}
+			{@promise_delivery_date = '#promiseDeliveryDate#' ,}
+			{@print_time = '#printTime#' ,}
+			{@qtc = '#qtc#' ,}
+			{@ship_fee_type = '#shipFeeType#' ,}
+			{@real_ship_fee_type = '#realShipFeeType#' ,}
+			{@ship_fee = '#shipFee#' ,}
+			{@real_ship_fee = '#realShipFee#' ,}
+			{@ship_fee_unit = '#shipFeeUnit#' ,}
+			{@real_ship_unit = '#realShipUnit#' ,}
+			{@last_updated_by = '#loginId#' ,}
+			{@tags = '#tags#' ,}
+			{@status = '#status#' ,}
+			{@memo = '#memo#' ,}
+			last_updated_date = NOW()
+			where
+			id = '{@#id#}'
+	</entry>
+</properties>

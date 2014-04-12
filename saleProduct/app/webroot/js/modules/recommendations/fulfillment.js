@@ -33,7 +33,6 @@ $(function(){
            		return "<a href='#'  product-realsku='"+val+"'>"+(val||"")+"</a>" ;
            	}},
         	{align:"center",key:"REAL_NAME",label:"货品名称",group:"货品",width:"8%",forzen:false,align:"left"},
-           	
         	{align:"center",key:"LAST_UPDATED",label:"Last Updated",width:"10%"},
         	{align:"center",key:"BRAND_NAME",label:"Brand",width:"10%"},
         	{align:"center",key:"PRODUCT_CATEGORY",label:"Category",width:"10%"},

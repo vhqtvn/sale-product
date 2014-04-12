@@ -4,6 +4,7 @@
 	<entry key="sql_supplychain_requirement_plan_product_list">
 		SELECT  srp.*,
 	         		ssrpp.STATUS AS P_STATUS,
+	         		ssrpp.REQ_PRODUCT_ID,
 	         		( SELECT sum(ssri.QUANTITY) FROM  sc_supplychain_requirement_item ssri,
 	         		    sc_real_product_rel srpr,
                                     sc_amazon_account_product saap
@@ -203,7 +204,9 @@
 	
     <entry key="sql_supplychain_requirement_product_insert">
     	 INSERT INTO sc_supplychain_requirement_plan_product 
-				(PLAN_ID, 
+				(
+				REQ_PRODUCT_ID,
+				PLAN_ID, 
 				REAL_ID, 
 				CREATOR, 
 				CREATE_DATE, 
@@ -212,7 +215,8 @@
 				STATUS
 				)
 				VALUES
-				('{@#PLAN_ID#}', 
+				('{@#REQ_PRODUCT_ID#}', 
+				'{@#PLAN_ID#}', 
 				'{@#REAL_ID#}', 
 				'{@#loginId#}', 
 				NOW(), 

@@ -182,10 +182,13 @@ class InventoryNew extends AppModel {
 		//debug() ;
 		
 		//获取对应货品
-		$taskProduct =  $this->getObject("select s1.*,s2.REQ_PLAN_ID from sc_purchase_task_products s1,
+		/*$taskProduct =  $this->getObject("select s1.*,s2.REQ_PLAN_ID from sc_purchase_task_products s1,
 				sc_purchase_plan_details s2
 				 where s1.product_id = s2.id and s1.task_id = '{@#taskId#}' and s1.product_id = '{@#productId#}'",
-				array("taskId"=> $params['taskId'],"productId"=>$params['planProductId'])) ;
+				array("taskId"=> $params['taskId'],"productId"=>$params['planProductId'])) ;*/
+		$taskProduct =  $this->getObject("select  spp.* from sc_purchase_product spp
+				 where spp.id = '{@#productId#}'",
+				array("productId"=>$params['purchaseProductId'])) ;
 		
 		//70 入库确认
 		if( $taskProduct['STATUS'] >= 70 ){//已经入库
@@ -273,17 +276,17 @@ class InventoryNew extends AppModel {
 		}
 		
 		//更新状态为已入库
-		$this->exeSql("update sc_purchase_task_products set status=70,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
-				 where task_id = '{@#taskId#}' and product_id = '{@#productId#}'",
-				array("taskId"=> $params['taskId'],
+		$this->exeSql("update sc_purchase_product set status=70,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
+				 where id = '{@#productId#}'",
+				array(
 						'warehouseId'=>$params['warehouseId'],
 						'warehouseTime'=>$params['warehouseTime'],
-						"productId"=>$params['planProductId'])) ;
+						"productId"=>$params['purchaseProductId'])) ;
 		
 		//更新需求为已采购
-		if( !empty($taskProduct['REQ_PLAN_ID']) ){
-			$sql = "update sc_supplychain_requirement_plan_product set status = 4 where plan_id='{@#planId#}' and real_id='{@#realId#}'" ;
-			$this->exeSql($sql, array('planId'=>$taskProduct['REQ_PLAN_ID'],'realId'=>$params['realId'] )) ;
+		if( !empty($taskProduct['REQ_PRODUCT_ID']) ){
+			$sql = "update sc_supplychain_requirement_plan_product set status = 4 where REQ_PRODUCT_ID='{@#reqProductId#}'" ;
+			$this->exeSql($sql, array('reqProductId'=>$taskProduct['REQ_PRODUCT_ID'])) ;
 		}
 	}
 	

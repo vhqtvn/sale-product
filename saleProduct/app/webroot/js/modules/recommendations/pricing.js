@@ -33,6 +33,8 @@ $(function(){
            		return "<a href='#'  product-realsku='"+val+"'>"+(val||"")+"</a>" ;
            	}},
         	{align:"center",key:"REAL_NAME",label:"货品名称",group:"货品",width:"8%",forzen:false,align:"left"},
+
+        	{align:"center",key:"LAST_UPDATED",label:"Last Updated",width:"10%"},
            	{align:"center",key:"YOUR_PRICE_PLUS_SHIPPING",label:"Your Price+Shipping",width:"10%"},
            	
            	{align:"center",key:"LOWEST_PRICE_PLUS_SHIPPING",label:"Lowest Price+Shipping",width:"10%"},

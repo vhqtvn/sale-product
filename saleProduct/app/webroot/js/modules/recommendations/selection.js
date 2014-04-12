@@ -24,8 +24,6 @@ ACCOUNT_ID,
 		    {align:"center",key:"ASIN",label:"Asin",width:"8%",forzen:false,align:"left",format:function(val,record){
 				return "<a href='#'  offer-listing='"+val+"'>"+(val||"")+"</a>" ;
 			}},
-           	{align:"center",key:"SKU",label:"Sku",width:"8%",forzen:false,align:"left"},
-           	{align:"center",key:"UPC",label:"Upc",width:"8%"},
            	{align:"center",key:"ITEM_NAME",label:"Title",width:"10%"},
            	{align:"center",key:"LAST_UPDATED",label:"Last Updated",width:"5%"},
            	{align:"center",key:"BRAND_NAME",label:"Brand",width:"10%"},

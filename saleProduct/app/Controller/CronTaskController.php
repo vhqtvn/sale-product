@@ -39,12 +39,12 @@ class CronTaskController extends AppController {
     	$this->asynCost() ;
     	
     	//1、同步需求数据
-    	foreach( $accounts as $account ){
+    	/*foreach( $accounts as $account ){
     		try{
 	    		$url = $this->Utils->buildUrl($account,"taskAsynAmazon/listRecommendations") ;
 	    		$result = file_get_contents($url  );
     		}catch(Exception $e){ }
-    	}
+    	}*/
     	//2、检测是否需要创建需求；新增加的需求产品是否都包括在未完成的需求产品里面
     	//3、创建需求
     	$this->ScRequirement->createRequirement() ;

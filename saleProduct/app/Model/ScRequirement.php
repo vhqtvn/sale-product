@@ -13,6 +13,7 @@ class ScRequirement extends AppModel {
 					$params = array() ;
 					$params['PLAN_ID'] = $planId ;
 					$params['REAL_ID'] = $realId ;
+					$params['REQ_PRODUCT_ID'] = $this->create_guid() ;
 					$this->exeSql("sql_supplychain_requirement_product_insert", $params) ;
 				}else{
 					//nothing to do
@@ -363,15 +364,59 @@ class ScRequirement extends AppModel {
 	public function preProcess( $params ){
 		$planId = $params['planId'] ;
 		$itemCount = $params['itemCount'] ;
+		$NewPurchaseService = ClassRegistry::init("NewPurchaseService") ;
 		
 		if( $itemCount <=0  ){
 			//不存在需求明细，删除该需求
 			$sql = "delete from sc_supplychain_requirement_plan where id = '{@#planId#}'" ;
 			$this->exeSql($sql, $params) ;
 		}else{
+			//设置初始化数据
+			ini_set('date.timezone','Asia/Shanghai');
+			$startTime = date('Y-m-d');
+			$endTime  = date('Y-m-d',strtotime('+3 day'));
+			
 			//1、转换计划需求listing到产品
 			$this->transferPlanItem2Product($planId) ;
-			//2、库存预处理
+			//2、自动生成采购单，需求量大于10的
+			$reqProducts = $this->exeSqlWithFormat("sql_supplychain_requirement_plan_product_list", $params) ;
+			
+			foreach($reqProducts as $product){
+				//采购数量
+				$quantity = $product['FIX_QUANTITY'] ;
+				//if( $quantity >=10 ){
+					/*('{@#guid#}', 
+			'{@#realId#}', 
+			'{@#planNum#}', 
+			{@#limitPrice:NULL#}, 
+			'{@#executor#}', 
+			'{@#startTime#}', 
+			'{@#endTime#}', 
+			'{@#reqProductId#}', 
+			'{@#devId#}',
+			'{@#loginId#}', 
+			NOW(), 
+			'{@#loginId#}', 
+			NOW(), 
+			'{@#tags#}'*/
+					$limitPrice = $NewPurchaseService->getDefaultLimitPrice($product['ID']) ;
+					$execut 	= $NewPurchaseService->getDefaultCharger($product['ID']) ;
+					$executor 			= $execut['charger'] ;
+					$executorName 	= $execut['chargerName'] ;
+					
+					$params = array(
+							'realId'=>$product['ID'],
+							'planNum'=>$quantity,
+							'limitPrice'=>$limitPrice ,
+							'executor'=>$executor,
+							'startTime'=>$startTime,
+							'endTime'=>$endTime,
+							'reqProductId'=>$product['REQ_PRODUCT_ID'],
+							'loginId'=>'auto'
+							);
+					$NewPurchaseService->createNewPurchaseProduct($params) ;
+				//}
+			}
 		}
 	}
 	
