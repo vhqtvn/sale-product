@@ -34,8 +34,7 @@ class NewPurchaseService extends AppModel {
 	
 	public function loadStatics(){
 		$result =  $this->exeSqlWithFormat("sql_purchase_new_loadStatics", array()) ;
-		debug($result) ;
-		return ;
+		return $result ;
 	}
 	
 	
