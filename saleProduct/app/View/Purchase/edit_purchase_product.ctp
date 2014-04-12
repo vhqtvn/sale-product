@@ -170,6 +170,11 @@
 			font-size:30px;
 		}
 		
+		.end-danger{
+			color:red;
+			font-weight:bold;
+		}
+		
 		.memo{
 			position:absolute;
 			top:85px;
@@ -300,7 +305,13 @@
 		      	        			]
 	        			
 	        		},
-	        		{status:80,label:"结束"}
+	        		{status:80,label:"结束",format:function(node){
+						if( '<?php echo $purchaseProduct['IS_TERMINATION']?>' == 1  ){
+							node.label = "终止采购" ;
+							node.status = 80 ;
+							node.statusClass = "end-danger" ;
+						}
+        			}}
 	        	] ;
    </script>
 </head>

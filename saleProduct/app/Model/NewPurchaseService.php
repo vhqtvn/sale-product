@@ -66,6 +66,10 @@ class NewPurchaseService extends AppModel {
 		$this->doPurchaseProductStatus($data) ;
 	}
 	
+	public function getPurchaseProductById($id){
+		return $this->getObject("select * from sc_purchase_product where id ='{@#id#}'", array("id"=>$id)) ;
+	}
+	
 	public function doPurchaseProductStatus($data){
 		if( isset($data['status'])  && !empty($data['status']) ){
 			
@@ -76,6 +80,9 @@ class NewPurchaseService extends AppModel {
 			}
 			//设置产品状态为废弃
 			$id = $data["id"] ;
+			
+			$purchaseProduct = $this->getPurchaseProductById($id) ;
+			
 			$memo =   $data["memo"] ;
 			$status = $data["status"] ;
 			$data['productId'] = $id ;
@@ -85,12 +92,20 @@ class NewPurchaseService extends AppModel {
 			$data['memo'] = $data['trackMemo'] ;
 			$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 			
-			if( $status == 80 ){ //采购结束
+			if( $status == 80 || $isTerminal ){ //采购结束
+				//产品开发结束流程
 				$sql = "UPDATE sc_product_dev spd SET spd.FLOW_STATUS = 80
 						WHERE CONCAT(spd.ASIN,'_',spd.TASK_ID) IN (
 							SELECT DEV_ID FROM sc_purchase_product sppd  where id = '{@#productId#}'
 						) " ;
 				$this->exeSql($sql, $data) ;
+				
+					//需求结束
+				if( !empty($purchaseProduct['REQ_PRODUCT_ID']) ){
+					$sql = "update sc_supplychain_requirement_plan_product set status = 6  where req_product_id = '{@#reqProductId#}'" ;
+					$this->exeSql($sql , array("reqProductId"=>$purchaseProduct['REQ_PRODUCT_ID']) ) ;
+				}
+				
 			}
 			
 			if( $isTerminal  ){
@@ -146,6 +161,7 @@ class NewPurchaseService extends AppModel {
 						  sc_real_product srp
 						  WHERE t.REAL_ID = srp.ID
 						  AND srp.ID = '{@#realId#}'
+				           and t.REAL_QUOTE_PRICE is not null
 						  ORDER BY t.WAREHOUSE_TIME DESC
 						  LIMIT 0 ,1 " ;
 		$item = $this->getObject($sql, array("realId"=>$realId)) ;

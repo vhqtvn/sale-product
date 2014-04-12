@@ -57,10 +57,13 @@ class ScRequirement extends AppModel {
 	
 	//auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId
 	public function saveItemAuditInfo($params){
+		ini_set('date.timezone','Asia/Shanghai');
+		$NewPurchaseService = ClassRegistry::init("NewPurchaseService") ;
 		$auditData = $params['auditData'] ;
 		$memo = $params['memo'] ;
 		$entityType = $params['entityType'] ;
 		$entityId = $params['entityId'] ;
+		$reqProductId = $params['reqProductId'] ;
 		$auditData =  json_decode( $auditData )   ;
 		foreach($auditData as $d){
 			$d = get_object_vars($d) ;
@@ -88,7 +91,31 @@ class ScRequirement extends AppModel {
 			$audit['realId'] = $realId ;
 			$audit['status'] = $params['status'] ;
 			$this->auditReqPlanProduct($audit) ;
+			
+			if( $params['status'] == 3  ){
+				$limitPrice = $NewPurchaseService->getDefaultLimitPrice( $realId ) ;
+				$execut 	= $NewPurchaseService->getDefaultCharger( $realId ) ;
+				
+				$startTime = date('Y-m-d');
+				$endTime  = date('Y-m-d',strtotime('+3 day'));
+				$executor 			= $execut['charger'] ;
+				$purchaseQuantity = $params['purchaseQuantity'] ;
+				//$params['status'] 加入采购计划
+				$params = array(
+						'realId'=>$realId,
+						'planNum'=>$purchaseQuantity,
+						'limitPrice'=>$limitPrice ,
+						'executor'=>$executor,
+						'startTime'=>$startTime,
+						'endTime'=>$endTime,
+						'reqProductId'=>$reqProductId,
+						'loginId'=>'auto'
+				);
+				$NewPurchaseService->createNewPurchaseProduct($params) ;
+			}
 		}
+		
+		
 	}
 	
 	public function auditReqPlanProduct($audit){
@@ -380,11 +407,11 @@ class ScRequirement extends AppModel {
 			$this->transferPlanItem2Product($planId) ;
 			//2、自动生成采购单，需求量大于10的
 			$reqProducts = $this->exeSqlWithFormat("sql_supplychain_requirement_plan_product_list", $params) ;
-			
+			//debug($reqProducts) ;
 			foreach($reqProducts as $product){
 				//采购数量
 				$quantity = $product['FIX_QUANTITY'] ;
-				//if( $quantity >=10 ){
+				if( $quantity >=10 ){
 					/*('{@#guid#}', 
 			'{@#realId#}', 
 			'{@#planNum#}', 
@@ -414,8 +441,12 @@ class ScRequirement extends AppModel {
 							'reqProductId'=>$product['REQ_PRODUCT_ID'],
 							'loginId'=>'auto'
 							);
-					$NewPurchaseService->createNewPurchaseProduct($params) ;
-				//}
+					  $NewPurchaseService->createNewPurchaseProduct($params) ;
+				  //debug($params) ;
+				  $sql = "update sc_supplychain_requirement_plan_product set status = 3 where req_product_id = '{@#REQ_PRODUCT_ID#}'" ;//采购中
+				  $this->exeSql($sql, $product) ;
+				 
+				}
 			}
 		}
 	}
@@ -424,7 +455,6 @@ class ScRequirement extends AppModel {
 		$this->exeSql("sql_supplychain_requirement_insertlog", $params) ;
 	}
 	
-
 	public function getConversionRate( $accountId , $listingSku ){
 		//周总订单数
 		$orderCount = $this->getObject("sql_supplychain_requirement_getOrderOneWeek", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;

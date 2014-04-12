@@ -228,13 +228,22 @@
 			}) ;
 			
 			$(".save-pass").click(function(){
-				if( window.confirm("确认审批通过？") ){
+				if( window.confirm("确认审批通过，并加入到采购单？") ){
 					var data = getGridEditorData();
 					var memo = $(".audit-memo").val() ;
-					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:1} , function(){
-						$(".grid-content").llygrid("reload",{},true) ;
-						$.dialogReturnValue(true) ;
+					var purchaseQuantity = 0 ;
+					$(data).each(function(){
+						purchaseQuantity += parseInt(this.purchaseQuantity||0) ;
 					});
+
+					if( purchaseQuantity >0  ){
+						$.dataservice("model:ScRequirement.saveItemAuditInfo" , {reqProductId:currentPlanProduct.REQ_PRODUCT_ID,auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:3,purchaseQuantity:purchaseQuantity} , function(){
+							$(".grid-content").llygrid("reload",{},true) ;
+							$.dialogReturnValue(true) ;
+						});
+					}else{
+						alert("采购数量必须大于0！") ;
+					}
 				}
 			}) ;
 			

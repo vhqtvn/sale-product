@@ -72,7 +72,8 @@ $(function(){
 			var json = $(document.body).toJson() ;
 			if(window.confirm("确认创建采购单吗？")){
 				$.dataservice("model:NewPurchaseService.createNewPurchaseProduct",json,function(result){
-					 alert(result);
+					$.dialogReturnValue(true) ;
+					 window.close() ;
 				 });
 			}
 		}
