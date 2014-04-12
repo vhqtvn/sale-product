@@ -179,12 +179,12 @@
    <entry key="sql_purchase_new_loadRepaireStatics">
        <![CDATA[	
 			SELECT '1' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
-			where   spp.executor is null or spp.executor =''  
+			where (  spp.executor is null or spp.executor =''  )
 			and spp.IS_TERMINATION = 0
 			and ( spp.status <=45 and spp.status != 25 )
 			union
 			SELECT '2' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
-			where   spp.limit_price is null or spp.limit_price <=0
+			where  ( spp.limit_price is null or spp.limit_price <=0 )
 			and spp.IS_TERMINATION = 0
 			and ( spp.status <=45 and spp.status != 25)
 	]]>	   

@@ -31,6 +31,7 @@ $(function(){
 		var label = args.label ;
 		$("#executor").val(value) ;
 		$("#executorName").val(label) ;
+		
 		return false;
 	}) ;
 	
@@ -64,6 +65,11 @@ $(function(){
 		var label = args.label ;
 		$("#realId").val(value) ;
 		$("#realName").val(label) ;
+		$.dataservice("model:NewPurchaseService.loadDefault",{"realId":value},function(result){
+			$("#executor").val(result.charger.charger) ;
+			$("#executorName").val(result.charger.chargerName) ;
+			$("#limitPrice").val( result.limitPrice ) ;
+		 });
 		return false;
 	}) ;
 	

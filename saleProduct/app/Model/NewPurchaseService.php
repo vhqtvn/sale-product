@@ -123,6 +123,13 @@ class NewPurchaseService extends AppModel {
 		}
 	}
 	
+	public  function loadDefault($params){
+		$realId = $params['realId'] ;
+		$charger = $this->getDefaultCharger($realId) ;
+		$limitPrice = $this->getDefaultLimitPrice($realId) ;
+		return array("charger"=>$charger,"limitPrice"=>$limitPrice) ;
+	}
+	
 	/**
 	 * 获取默认采购负责人
 	 */

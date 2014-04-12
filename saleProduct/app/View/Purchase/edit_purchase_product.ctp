@@ -299,7 +299,18 @@
 	        			,actions:[{}
 							<?php if( $ppp_confirm) { ?>
 									,{label:"保存",action:function(){ ForceAuditAction(70,"保存") }},
-		      	        			{label:"采购审计",action:function(){ AuditAction(80,"采购审计") } }
+		      	        			{label:"采购审计",action:function(){ AuditAction(75,"采购审计") } }
+									<?php };?>
+									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
+		      	        			]
+	        			
+	        		},
+	        		{status:75,label:"发货FBA",memo:true
+	        			
+	        			,actions:[{}
+							<?php if( $ppp_confirm) { ?>
+									,{label:"保存",action:function(){ ForceAuditAction(75,"保存") }},
+		      	        			{label:"已发货FBA",action:function(){ AuditAction(80,"已发货FBA") } }
 									<?php };?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
 		      	        			]

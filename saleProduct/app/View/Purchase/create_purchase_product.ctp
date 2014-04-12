@@ -82,16 +82,7 @@
 							<!-- 数据列表样式 -->
 							<table class="form-table" >
 								<caption>基本信息</caption>
-								<tbody>										   
-									<tr>
-										<th>执行人：</th><td>
-											<input type="hidden"   id="executor"  
-											value=""/>
-											<input type="text"   id="executorName"  readonly
-													value=""/>
-											<button class="btn btn-charger">选择</button>
-										</td>
-									</tr>
+								<tbody>
 									<tr>
 										<th>货品：</th>
 										<td colspan=3>
@@ -100,6 +91,15 @@
 											<input type="text"   id="realName"  readonly
 													value=""/>
 											<button class="btn btn-real-product">选择</button>
+										</td>
+									</tr>										   
+									<tr>
+										<th>执行人：</th><td>
+											<input type="hidden"   id="executor"  
+											value=""/>
+											<input type="text"   id="executorName"  readonly
+													value=""/>
+											<button class="btn btn-charger">选择</button>
 										</td>
 									</tr>
 									<tr>
