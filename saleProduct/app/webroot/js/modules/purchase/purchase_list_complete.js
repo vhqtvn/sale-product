@@ -7,56 +7,12 @@
 	 }
 
 	$(function(){
-		
-		function loadStatics(){
-			$.dataservice("model:NewPurchaseService.loadStatics",{},function(result){
-				 //$(".grid-content-details").llygrid("reload",{},true) ;
-				$(".flow-node").find(".count").html("(0)") ;
-				$(result).each(function(){
-					$(".flow-node[status='"+this.STATUS+"']").find(".count").html("("+this.COUNT+")") ;//this.COUNT
-				}) ;
-				
 
-				setTimeout(function(){
-					loadStatics() ;
-				},5000) ;
-				
-			 },{noblock:true});
-			
-		}
-		
-		loadStatics() ;
-
-		$(".create-purchase-product").live("click",function(){
-			openCenterWindow(contextPath+"/page/forward/Purchase.create_purchase_product/",980,620,function(win,ret){
-				if(ret){
-					$(".grid-content-details").llygrid("reload",{},true) ;
-				}
-			}) ;
-		}) ;
-		
-		$(".flow-node").click(function(){
-			var status = $(this).attr("status");
-			$(".flow-node").removeClass("active").addClass("disabled");
-			$(this).removeClass("disabled").addClass("active");
-			$(".grid-content-details").llygrid("reload",{status:status},true);
-		}) ;
-		
-			
 			$(".grid-content-details").llygrid({
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
-					{align:"center",key:"ID",label:"操作",forzen:false,width:"8%",format:function(val,record){
-						var status = record.STATUS ;
-						var html = [] ;
-						html.push('<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;');
-						if(status == 80 || status==25 ){
-							//
-						}else{
-							html.push( getImage("print.gif","打印采购确认单","print-product") +"&nbsp;") ;
-			            	html.push( getImage("print.gif","打印入库单","print-inproduct") ) ;
-						}
-						return  html.join("");
+					{align:"left",key:"ID",label:"操作",forzen:false,width:"4%",format:function(val,record){
+						return '<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;';
 						/*var isSku =( record.SKU||record.REAL_PRODUCT_SKU)?true:false ;
 						
 						var status = record.STATUS ;
@@ -93,7 +49,7 @@
 						
 						return message ;
 					} },
-		           	{align:"center",key:"TRACK_MEMO",label:"",width:"10%",forzen:false,align:"left"},
+					{align:"center",key:"TRACK_MEMO",label:"",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"center",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
@@ -113,11 +69,11 @@
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-				 	return $(window).height() - 170 ;
+				 	return $(window).height() - 120 ;
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{sqlId:"sql_purchase_new_list"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+				 querys:{sqlId:"sql_purchase_new_listForFinish"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
 					 $(".delete-action").click(function(){
@@ -134,23 +90,6 @@
 						if( $(".product-list ul li[asin='"+val+"']").length ){
 							$(this).attr("checked",true) ;
 						}
-					}) ;
-				 	
-				 	 $(".print-product").bind("click",function(event){
-						 event.stopPropagation() ;
-						 var record = $(this).parents("tr:first").data("record");
-				
-						if( ((record.STATUS==1||record.STATUS=='null'||!record.STATUS) && window.confirm("是否确认打印，如果点击确定，该任务单将不能更改！") ) || record.STATUS >1){
-							var val = record.ID ;
-							openCenterWindow(contextPath+"/page/forward/Purchase.purchaseTaskPrint/"+val,1000,700) ;
-						}
-					}) ;
-					 
-					 $(".print-inproduct").bind("click",function(event){
-						 event.stopPropagation() ;
-						 var record = $(this).parents("tr:first").data("record");
-							var val = record.ID ;
-							openCenterWindow(contextPath+"/page/forward/Purchase.purchaseInPrint/"+val,1000,700) ;
 					}) ;
 				 }
 			}) ;

@@ -86,6 +86,7 @@
 						
 						return message ;
 					} },
+					{align:"center",key:"TRACK_MEMO",label:"",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"center",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
