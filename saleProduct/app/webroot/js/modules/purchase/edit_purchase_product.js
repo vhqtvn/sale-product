@@ -279,7 +279,7 @@ function AuditAction(status , statusLabel){
 	
 	if(window.confirm("确认【"+statusLabel+"】？")){
 		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
-		var json1 = {id:id,status:status,trackMemo:memo} ;
+		var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus} ;
 		
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
@@ -292,10 +292,10 @@ function AuditAction(status , statusLabel){
 	}
 }
 
-function ForceAuditAction(status , statusLabel){
+function ForceAuditAction(status , statusLabel,isTerminal ){
 	if(window.confirm("确认【"+statusLabel+"】？")){
 				var memo = "("+statusLabel+")" + ($(".memo").val()||"")
-				var json1 = {id:id,status:status,trackMemo:memo} ;
+				var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus,isTerminal:isTerminal} ;
 				var json = $("#personForm").toJson() ;
 				json1 = $.extend(json,json1) ;
 				$.dataservice("model:NewPurchaseService.savePurchaseProduct",json1,function(){

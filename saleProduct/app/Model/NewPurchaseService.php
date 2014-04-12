@@ -68,6 +68,12 @@ class NewPurchaseService extends AppModel {
 	
 	public function doPurchaseProductStatus($data){
 		if( isset($data['status'])  && !empty($data['status']) ){
+			
+			$currentStatus = $data['currentStatus'] ;
+			$isTerminal = false ;
+			if( isset( $data['isTerminal'])  &&$data['isTerminal']  ){
+				$isTerminal = true ;
+			}
 			//设置产品状态为废弃
 			$id = $data["id"] ;
 			$memo =   $data["memo"] ;
@@ -84,6 +90,12 @@ class NewPurchaseService extends AppModel {
 						WHERE CONCAT(spd.ASIN,'_',spd.TASK_ID) IN (
 							SELECT DEV_ID FROM sc_purchase_product sppd  where id = '{@#productId#}'
 						) " ;
+				$this->exeSql($sql, $data) ;
+			}
+			
+			if( $isTerminal  ){
+				//终止采购
+				$sql = "update sc_purchase_product set IS_TERMINATION = 1 where  id = '{@#productId#}'" ;
 				$this->exeSql($sql, $data) ;
 			}
 			

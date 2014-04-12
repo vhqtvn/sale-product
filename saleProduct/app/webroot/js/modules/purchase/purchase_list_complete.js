@@ -12,25 +12,10 @@
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
 					{align:"left",key:"ID",label:"操作",forzen:false,width:"4%",format:function(val,record){
-						return '<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;';
-						/*var isSku =( record.SKU||record.REAL_PRODUCT_SKU)?true:false ;
-						
-						var status = record.STATUS ;
-						var html = [] ;
-						
-						if( status <=10 ){
-							html.push( getImage("delete.gif","删除","delete-action") ) ;
-						}
-
-						if(status == 80 || status==25 ){
-							isSku && html.push('<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/pre_print.gif"/></a>&nbsp;') ;
-						}else{
-							isSku && html.push('<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;') ;
-							
-						}
-						return html.join("") ;	*/
+						return '<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;';
 					}},
 					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"6%",format: function(val ,record){
+						if(record.IS_TERMINATION == 1) return "<span color='red'>终止采购</span>" ;
 						if(val){
 							return $.llygrid.format.purchaseProductStatus.body(val)  ;
 						}

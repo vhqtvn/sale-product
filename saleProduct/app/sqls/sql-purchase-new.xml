@@ -61,6 +61,7 @@
 			sc_purchase_product spp,
 			sc_real_product srp
 			WHERE spp.REAL_ID = srp.ID
+			and spp.IS_TERMINATION = 0
 			and ( spp.executor is not null and spp.executor !='' )
 			and ( spp.status != 80 and spp.status != 25)
 			and (spp.status > 45 or ( spp.limit_price is not null and spp.limit_price !=0 ))
@@ -140,6 +141,7 @@
 			sc_purchase_product spp,
 			sc_real_product srp
 			WHERE spp.REAL_ID = srp.ID
+			and spp.IS_TERMINATION = 0
 			 and ( spp.status <=45 and spp.status != 25 )
 			  {@ and (   ( spp.executor is null or spp.executor ='' ) and #status1# = 1 )  }
 			 {@ and   ( spp.limit_price is null or spp.limit_price <=0 ) and #status2# = 2 }
@@ -168,6 +170,7 @@
 			where  
 			 ( spp.executor is not null and spp.executor !='' )
 			and ( spp.status != 80 and spp.status != 25)
+			and spp.IS_TERMINATION = 0
 			and (spp.status > 45 or ( spp.limit_price is not null and spp.limit_price !=0 ))
 			     {@ #$purchaseTask_view: and 1=0# }
 		GROUP BY spp.STATUS
@@ -177,10 +180,12 @@
        <![CDATA[	
 			SELECT '1' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
 			where   spp.executor is null or spp.executor =''  
+			and spp.IS_TERMINATION = 0
 			and ( spp.status <=45 and spp.status != 25 )
 			union
 			SELECT '2' as STATUS , count(1) AS COUNT FROM sc_purchase_product  spp
 			where   spp.limit_price is null or spp.limit_price <=0
+			and spp.IS_TERMINATION = 0
 			and ( spp.status <=45 and spp.status != 25)
 	]]>	   
    </entry>

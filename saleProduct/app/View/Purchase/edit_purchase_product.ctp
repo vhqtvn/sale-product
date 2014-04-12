@@ -220,7 +220,7 @@
 	        			,actions:[{}
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(45,"保存") }}  <?php  }?>
 									<?php if( $isOwner ) { ?>,{label:"已询价，提交审批",action:function(){ AuditAction(47,"已询价，提交审批") } }<?php  }?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
+									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				],format:function(node){
 							if( currentStatus == 46  ){
 								node.label = "再询价" ;
@@ -243,7 +243,7 @@
 									<?php if( $ppp_callback ){ ?>,{label:"回退再询价",action:function(){ ForceAuditAction(46,"回退再询价") }}<?php   } ?>
 									<?php if( $isOwner  || $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>
 									<?php if( $pptp_audit ) { ?>,{label:"审批通过",action:function(){ AuditAction(48,"审批通过") } }<?php   }   ?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
+									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
 	        		},
 	        		{status:48,label:"待交易",memo:true
@@ -251,7 +251,7 @@
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(47,"回退") }}<?php   } ?>
 									<?php if( $isOwner || $ppp_deal) { ?>,{label:"保存",action:function(){ ForceAuditAction(48,"保存") }}<?php  } ?>
 									<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"已交易",action:function(){ AuditAction(49,"已交易") } }<?php   }   ?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
+									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
 	        		},
 	        		{status:49,label:"待收货",memo:true //48->49
@@ -260,7 +260,7 @@
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(48,"回退") }}<?php  }?>
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(49,"保存") }}<?php  } ?>
 									<?php if( $isOwner || $ppp_receviced) { ?>,{label:"已到货",action:function(){ AuditAction(50,"已到货") } }<?php } ?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
+									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
 	        			
 	        		},{status:50,label:"QC验货",memo:true
@@ -272,7 +272,7 @@
 									,{label:"保存",action:function(){ ForceAuditAction(50,"保存") }},
 		      	        			{label:"验货完成",action:function(){ AuditAction(60,"验货完成") } }
 								<?php };?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
+									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
 	        			
 	        		},{status:60,label:"货品入库",memo:true
@@ -285,7 +285,7 @@
 									,{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
 		      	        			{label:"入库确认",action:function(){ WarehouseInAction(70,"入库确认") } }
 								<?php };?>
-								<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
+								<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
 	        			
 	        		},
@@ -296,7 +296,7 @@
 									,{label:"保存",action:function(){ ForceAuditAction(70,"保存") }},
 		      	        			{label:"采购审计",action:function(){ AuditAction(80,"采购审计") } }
 									<?php };?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
+									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
 		      	        			]
 	        			
 	        		},
