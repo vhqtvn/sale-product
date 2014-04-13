@@ -139,13 +139,12 @@
 								<option value='E'>其他需求</option>
 							</select>
 						</td>
+						<th>需求状态:</th>
 						<td>
 							<select name='status'  style="width:100px">
 								<option value=''>全部</option>
 								<option value='1'>审批通过</option>
-								<option value='2'>审批不通过</option>
 								<option value='3'>采购中</option>
-								<option value='6'>需求结束</option>
 							</select>
 						</td>
 						<td>
