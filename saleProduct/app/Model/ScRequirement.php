@@ -270,7 +270,7 @@ class ScRequirement extends AppModel {
 						$ps['urgency'] =  "A" ;
 						$ps['reqType'] =  "A" ;//销量需求
 						$itemCount++ ;
-						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+						$this->createReqItem($ps) ;
 						continue ;
 					}
 					
@@ -311,7 +311,7 @@ class ScRequirement extends AppModel {
 						$ps['urgency'] =  "B" ;
 						$ps['reqType'] =  "B" ;//流量需求
 						$itemCount++ ;
-						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+						$this->createReqItem($ps) ;
 						continue ;
 					}
 					
@@ -329,7 +329,7 @@ class ScRequirement extends AppModel {
 						$ps['urgency'] =  "C" ;
 						$ps['reqType'] =  "C" ;//成本不完整
 						$itemCount++ ;
-						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+						$this->createReqItem($ps) ;
 						continue ;
 					}
 						
@@ -350,7 +350,7 @@ class ScRequirement extends AppModel {
 						$ps['urgency'] =  "C" ;
 						$ps['reqType'] =  "D" ;//利润不达标
 						$itemCount++ ;
-						$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+						$this->createReqItem($ps) ;
 						continue;
 					}
 					
@@ -368,7 +368,7 @@ class ScRequirement extends AppModel {
 					$ps['urgency'] =  "C" ;
 					$ps['reqType'] =  "E" ;//其他原因需求
 					$itemCount++ ;
-					$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+					$this->createReqItem($ps) ;
 				}
 				
 				//预处理需求
@@ -409,22 +409,22 @@ class ScRequirement extends AppModel {
 			$reqProducts = $this->exeSqlWithFormat("sql_supplychain_requirement_plan_product_list", $params) ;
 			//debug($reqProducts) ;
 			foreach($reqProducts as $product){
+				//判断当前采购计划是否存在该货品的采购单，如果存在，则自动关联到现在的需求单，不存在，则创建新的采购单
+				$sql = "select * from sc_purchase_product where real_id='{@#realId#}' and status <80 " ;//未完成的采购单
+				$purchaseProduct = $this->getObject($sql, array("realId"=>$product['ID'])) ;
+				if( !empty($purchaseProduct) ){
+					//更新采购计划单的需求单位该需求
+					$sql = "update sc_purchase_product set req_product_id = '{@#reqProductId#}' where id = '{@#id#}'" ;
+					$this->exeSql($sql, array("id"=>$purchaseProduct['ID'],"reqProductId"=>$product['REQ_PRODUCT_ID'])) ;
+					//更新需求单状态为采购中
+					$sql = "update sc_supplychain_requirement_plan_product set status = 3 where req_product_id = '{@#REQ_PRODUCT_ID#}'" ;//采购中
+					$this->exeSql($sql, $product) ;
+					continue ;
+				}
+				
 				//采购数量
 				$quantity = $product['FIX_QUANTITY'] ;
 				if( $quantity >=10 ){
-					//判断当前采购计划是否存在该货品的采购单，如果存在，则自动关联到现在的需求单，不存在，则创建新的采购单
-					$sql = "select * from sc_purchase_product where real_id='{@#realId#}' and status <80 " ;//未完成的采购单
-					$purchaseProduct = $this->getObject($sql, array("realId"=>$product['ID'])) ;
-					if( !empty($purchaseProduct) ){
-						//更新采购计划单的需求单位该需求
-						$sql = "update sc_purchase_product set req_product_id = '{@#reqProductId#}' where id = '{@#id#}'" ;
-						$this->exeSql($sql, array("id"=>$purchaseProduct['ID'],"reqProductId"=>$product['REQ_PRODUCT_ID'])) ;
-						//更新需求单状态为采购中
-						$sql = "update sc_supplychain_requirement_plan_product set status = 3 where req_product_id = '{@#REQ_PRODUCT_ID#}'" ;//采购中
-						$this->exeSql($sql, $product) ;
-						continue ;
-					}
-					
 					
 					$limitPrice = $NewPurchaseService->getDefaultLimitPrice($product['ID']) ;
 					$execut 	= $NewPurchaseService->getDefaultCharger($product['ID']) ;
@@ -449,6 +449,17 @@ class ScRequirement extends AppModel {
 				}
 			}
 		}
+	}
+	
+	function  createReqItem($ps){
+		$existQuantity = $ps['existQuantity'] ;
+		$quantity = $ps['quantity'] ;
+		
+		if( $existQuantity >0 && $existQuantity > $quantity  ){
+			return ;
+		}
+		
+		$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 	}
 	
 	public function reqLog($params){
