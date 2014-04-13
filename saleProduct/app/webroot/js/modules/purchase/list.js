@@ -46,6 +46,12 @@
 			$(".grid-content-details").llygrid({
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
+					{align:"center",key:"REQ_PRODUCT_ID",label:"",forzen:false,width:"2%",render:function(record){
+						if(record.REQ_PRODUCT_ID)$(this).find("td[key='REQ_PRODUCT_ID']")
+							.css("background","red").attr("title","自动采购单") ;
+					},format:function(){
+						return "" ;
+					}},
 					{align:"center",key:"ID",label:"操作",forzen:false,width:"8%",format:function(val,record){
 						var status = record.STATUS ;
 						var html = [] ;

@@ -26,6 +26,7 @@
 		    and ssri.req_type = '#reqType#'
 		 )
 		}
+		{@ and ssrpp.status = '#status#' }
 		and srp.status = 1
 </entry>
 
@@ -423,7 +424,6 @@
 					saa.NAME AS ACCOUNT_NAME,
 					saap.ASIN,
 					srp.NAME,
-					srp.ID AS REAL_ID,
 					srp.REAL_SKU,
 					saap.TITLE,
 					srp.name as P_NAME,

@@ -140,6 +140,15 @@
 							</select>
 						</td>
 						<td>
+							<select name='status'  style="width:100px">
+								<option value=''>全部</option>
+								<option value='1'>审批通过</option>
+								<option value='2'>审批不通过</option>
+								<option value='3'>采购中</option>
+								<option value='6'>需求结束</option>
+							</select>
+						</td>
+						<td>
 							<button class="btn btn-primary query query-btn" >查询</button>
 						</td>
 					</tr>						

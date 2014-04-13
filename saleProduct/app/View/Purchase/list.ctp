@@ -57,9 +57,6 @@
 	
 	<script type="text/javascript">
 
-	    var flag = <?php echo $flag ; ?> ; 
-		var loginId = <?php echo $flag == 1?"''":"'$loginId'" ?> ;
-	
 		var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
 		var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;
 		var $ppp_export= <?php echo $ppp_export?"true":"false" ;?> ;
