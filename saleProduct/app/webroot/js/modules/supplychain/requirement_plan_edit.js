@@ -27,7 +27,7 @@
 				 limit:20,
 				 pageSizes:[20,10,20,30,40],
 				 height:function(){
-				 	return 200 ;
+				 	return $(window).height() - 400 ;
 				 },
 				 title:"需求货品列表",
 				// autoWidth:true,
