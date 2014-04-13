@@ -2,6 +2,7 @@
 <properties>
 	
 	<entry key="sql_supplychain_requirement_plan_product_list">
+	<![CDATA[	
 		SELECT  srp.*,
 	         		ssrpp.STATUS AS P_STATUS,
 	         		ssrpp.REQ_PRODUCT_ID,
@@ -18,8 +19,7 @@
 		 FROM 
 		     sc_supplychain_requirement_plan_product ssrpp,
 			 sc_real_product srp
-		WHERE ssrpp.plan_id = '{@#planId#}'
-		AND ssrpp.REAL_ID = srp.ID
+		WHERE   ssrpp.REAL_ID = srp.ID
 		{@ 
 		 and exists (
 		    select 1 from sc_supplychain_requirement_item ssri where ssri.real_id = ssrpp.real_id and ssri.plan_id = ssrpp.plan_id
@@ -27,7 +27,10 @@
 		 )
 		}
 		{@ and ssrpp.status = '#status#' }
+		and ssrpp.status !=6
+		and ssrpp.status !=2
 		and srp.status = 1
+	]]>
 </entry>
 
 	<entry key="sql_supplychain_requirement_plan_product_list_slow">
@@ -41,8 +44,8 @@
 			 sc_real_product_rel srpr,
 			 sc_amazon_account saa,
 			 sc_amazon_account_product saap
-		WHERE ssrpp.plan_id = '{@#planId#}'
-		AND ssrpp.REAL_ID = srp.ID
+		WHERE ssrpp.REAL_ID = srp.ID
+		{@ and ssrpp.plan_id = '#planId#' }
 		AND ssri.ACCOUNT_ID = srpr.ACCOUNT_ID
 		AND saa.ID = ssri.account_id
 		AND saap.account_id = ssri.account_id
