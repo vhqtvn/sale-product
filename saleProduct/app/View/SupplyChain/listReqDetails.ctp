@@ -89,36 +89,8 @@
 			<div class="grid-content"></div>
 					
 			<div class="row-fluid">
-					<div class="span9">
 						<div class="grid-content-details"  ></div>
-					</div>
-					<div class="span3">
-						<div style="padding:5px 5px;position:relative;"  class="action-panel">
-							<div class="current-product" style="margin:5px;font-weight:bold;"></div>
-							<img  src="/<?php echo $fileContextPath;?>/app/webroot/img/tabs.gif"  style="position:absolute;right:0px;top:10px;" alt="查看操作日志"  class="track-img"/>
-							<br>
-							<button class="btn  save" >保存</button>
-							<button class="btn btn-success  save-pass" >审批通过</button>
-							<button class="btn btn-danger save-nopass" >审批不通过</button>
-							<?php 
-								$sql= "SELECT * FROM sc_purchase_plan spp WHERE STATUS = 1 ORDER BY id DESC LIMIT 0,20" ;
-								$items = $SqlUtils->exeSqlWithFormat($sql,array()) ;
-								
-							?>
-							<button class="btn btn-primary add-purchaseplan hide" >加入采购计划单</button>
-							<br>
-							<select style="margin-top:2px;"  class="purchase-plan hide">
-								<option value="">-选择采购计划-</option>
-								<?php 
-								foreach(  $items as $item){
-									echo "<option value='".$item['ID']."'>".$item['NAME']."</option>";
-								}
-								?>
-							</select>
-							<br>
-							<textarea  style="width:95%;height:150px;margin-top:10px;" class="audit-memo" placeHolder="输入备注"></textarea>
-						</div>
-					</div>
+					
 			</div>
 			
 		</div>

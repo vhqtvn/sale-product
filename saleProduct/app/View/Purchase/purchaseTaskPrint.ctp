@@ -148,16 +148,15 @@
 	</center>
 	<div style="padding:5px 10px;font-size:13px;font-weight:bold;">
 	   <div class="row-fluid title-bar">
-	   <?php /*
+	
 	   <div class="span3">
-		采购编号：<?php echo $purchaseProduct['TASK_CODE']?>
+		采购编号：<?php echo $purchaseProduct['CODE']?>
 		</div>
-		*/?>
-		<div class="span4">采购单位：深圳双橙科技有限公司</div>
-		<div class="span4">
+		<div class="span3">采购单位：深圳双橙科技有限公司</div>
+		<div class="span3">
 		申请人：<?php echo $purchaseProduct['EXECUTOR_NAME']?>
 		</div>
-		<div class="span4">
+		<div class="span3">
 		申请时间：<?php echo $purchaseProduct['CREATED_DATE']?>
 		</div>
 		</div>

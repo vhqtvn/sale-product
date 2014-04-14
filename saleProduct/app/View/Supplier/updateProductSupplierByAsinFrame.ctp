@@ -307,7 +307,7 @@
 					</tr>
 				</table>
 				</div>
-				<?php  if( $params['arg4'] == 'pop' ||$params['arg3'] == 'pop' ){ ?>
+				<?php  if( $params['arg4'] == 'pop' ||$params['arg3'] == 'pop' ||$params['arg5'] == 'pop' ){ ?>
 				<div class="panel-foot" style="position:fixed;bottom:0px;right:0px;left:0px;z-index:1;background-color:#FFF;">
 					<div class="form-actions  ">
 						<input type="submit" class="btn btn-primary" value="保存"/>

@@ -116,7 +116,7 @@
 									</tr>
 									<tr>
 										<th>计划采购数量：</th>
-										<td><input id="planNum"   class="10-input input"   
+										<td><input id="planNum"   class="10-input input"    readonly="readOnly"
 													data-validator="required"    type="text" value='' /></td>
 									</tr>
 									<tr>
@@ -126,12 +126,12 @@
 									</tr>
 									<tr>
 										<th>备注：</th><td colspan=3>
-										<textarea class="10-input input" style="width:500px;height:80px;" id="memo"></textarea>
+										<textarea class="10-input input" style="width:500px;height:50px;" id="memo"></textarea>
 										</td>
 									</tr>
 								</tbody>
 						</table>
-						
+						<div class="grid-content-details"  ></div>
 						</div>
 						
 						<!-- panel脚部内容-->
