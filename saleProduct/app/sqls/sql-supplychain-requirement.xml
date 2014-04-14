@@ -79,20 +79,20 @@
 	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
 	    	  srp.IMAGE_URL,
 	    	  ( select count(1) from sc_supplychain_reqitem_in where req_item_id =ssri.id ) as IN_FLAG
-		 FROM sc_supplychain_requirement_item ssri,
+		 FROM 
+		     sc_supplychain_requirement_item ssri,
+		     sc_supplychain_requirement_plan_product ssrpp,
 			 sc_real_product srp,
-			 sc_real_product_rel srpr,
 			 sc_amazon_account saa,
 			 sc_amazon_account_product saap
 		WHERE 
-		ssri.ACCOUNT_ID = srpr.ACCOUNT_ID
-		and saa.ID = ssri.account_id
+		ssri.real_id = srp.id
 		and saap.account_id = ssri.account_id
 		and saap.sku = ssri.listing_sku
-		AND ssri.LISTING_SKU = srpr.SKU
-		AND srpr.REAL_ID = srp.ID
-		AND ssri.PLAN_ID = '{@#planId#}'
-		AND srp.ID = '{@#realId#}'
+		and saa.id = ssri.account_id
+		and srp.id =  '{@#realId#}'
+		and ssrpp.req_product_id = '{@#reqProductId#}'
+		and ssri.plan_id = ssrpp.plan_id
     </entry>
 
 	<entry key="sql_supplychain_requirement_category">

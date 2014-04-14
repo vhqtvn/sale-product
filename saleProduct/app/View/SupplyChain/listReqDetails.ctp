@@ -12,11 +12,12 @@
 		include_once ('config/config.php');
   		include_once ('config/header.php');
   		
-		echo $this->Html->script('modules/supplychain/requirement_plan_edit');
+		echo $this->Html->script('modules/supplychain/listReqDetails');
 		echo $this->Html->css('../js/modules/tag/tagutil');
 		echo $this->Html->script('modules/tag/tagutil');
 		
 		$planId = $params['arg1'] ;
+		$realId = $params['arg1'] ;
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		//获取计划
@@ -60,50 +61,9 @@
 		$view_giveup_product = <?php echo $view_giveup_product?'true':'false';?> ;
 		$product_stock_quanity_assign = <?php echo $product_stock_quanity_assign?'true':'false';?> ;
 		$product_onsale = <?php echo $product_onsale?'true':'false';?> ;
-		var planId = '<?php echo $planId;?>' ;
+		var realId = '<?php echo $realId;?>' ;
+		var reqProductId = '<?php echo $params['arg2'];?>' ;
 
-		function loadTree(){
-			$('#default-tree').tree({//tree为容器ID
-				//source:'array',
-				//data:treeData ,
-				rootId  : 'root',
-				rootText : '产品分类',
-				expandLevel:2,
-				asyn:false,
-				CommandName : 'sqlId:sql_supplychain_requirement_category',
-				recordFormat:true,
-				dataFormat:function(data){
-					data.push({id:'uncategory',text:'未分类产品',memo:'',isExpand:true});
-					return data;
-				},
-				nodeFormat:function(record){
-					if(record.id=='root' ||record.id == 'uncategory') return record ;
-					record.text = record.text+"("+record.TOTAL+")"
-					return record ;
-				},
-				params : {
-					planId: '<?php echo $planId;?>'
-				},
-				onNodeClick:function(id,text,record){
-					var uncategory = "" ;
-					if(id == 'uncategory'){
-						id="" ;
-						uncategory = 1 ;
-					}else{
-						uncategory = "" ;
-					}
-					
-					if( id == 'root' ){
-						$(".grid-content").llygrid("reload",{categoryId:"",uncategory:uncategory}) ;
-					}else{
-						$(".grid-content").llygrid("reload",{categoryId:id,uncategory:uncategory}) ;
-					}
-				}
-	       }) ;
-		}
-		$(function(){
-			loadTree() ;
-		});
    </script>
    
    <style>
@@ -125,36 +85,7 @@
 <body>
   <div  style="width:100%;height:100%;">
 		<div region="center" split="true" border="true"  style="padding:2px;">
-			<div class="toolbar toolbar-auto query-bar">
-				<table class="query-table">	
-					<tr>	
-						<th>需求分类:</th>
-						<td>
-							<select name='reqType'  style="width:100px">
-								<option value=''>全部</option>
-								<option value='A'>销量需求</option>
-								<option value='B'>流量需求</option>
-								<option value='C'>成本不完善</option>
-								<option value='D'>利润不达标</option>
-								<option value='E'>其他需求</option>
-							</select>
-						</td>
-						<th>需求状态:</th>
-						<td>
-							<select name='status'  style="width:100px">
-								<option value=''>全部</option>
-								<option value='0'>待审批</option>
-								<option value='1'>审批通过</option>
-								<option value='3'>采购中</option>
-							</select>
-						</td>
-						<td>
-							<button class="btn btn-primary query query-btn" >查询</button>
-						</td>
-					</tr>						
-				</table>
-			</div>
-			
+
 			<div class="grid-content"></div>
 					
 			<div class="row-fluid">

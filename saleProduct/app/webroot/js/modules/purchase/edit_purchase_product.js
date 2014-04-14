@@ -23,6 +23,7 @@ $(function(){
 	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
 	//if( currentStatus >=45 ){
 		//tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
+	tabs.push( {label:'采购需求',iframe:true,url: contextPath+"/page/forward/SupplyChain.listReqDetails/"+realId+"/"+reqProductId} ) ;
 	tabs.push( {label:'货品询价',iframe:true,url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+sku} ) ;
 	//}
 	tabs.push( {label:'供应商信息',iframe:true,url: contextPath+"/page/forward/Supplier.listsBySku/"+sku} ) ;

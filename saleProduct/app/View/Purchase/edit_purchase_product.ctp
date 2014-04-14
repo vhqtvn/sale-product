@@ -62,6 +62,8 @@
 		$ppp_qc								= $security->hasPermission($loginId , 'ppp_qc') ;
 		$ppp_inwarehouse				= $security->hasPermission($loginId , 'ppp_inwarehouse') ;
 		$ppp_confirm 						= $security->hasPermission($loginId , 'ppp_confirm') ;
+
+		$ppp_sendfba 						= $security->hasPermission($loginId , 'ppp_sendfba') ;
 		$reedit_pp_product				= $security->hasPermission($loginId , 'reedit_pp_product') ;//在编辑功能
 		$hasSetSupplierPermission = $security->hasPermission($loginId, 'SET_PRODUCT_SUPPLIER_FLAG') ;
 		$hasViewRelListing =  $security->hasPermission($loginId , 'view_rp_rel_listing') ;
@@ -203,6 +205,7 @@
     var  $COST_VIEW_PROFIT = '<?php echo $COST_VIEW_PROFIT;?>' ;
     var sku = '<?php echo $purchaseProduct['REAL_SKU'];?>' ;
     var realId =  '<?php echo $purchaseProduct['REAL_ID'];?>' ;
+    var reqProductId =  '<?php echo $purchaseProduct['REQ_PRODUCT_ID'];?>' ;
     var reqPlanId =  '<?php echo $reqPlanId;?>' ;
    
     var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
@@ -295,7 +298,6 @@
 	        			
 	        		},
 	        		{status:70,label:"采购审计",memo:true
-	        			
 	        			,actions:[{}
 							<?php if( $ppp_confirm) { ?>
 									,{label:"保存",action:function(){ ForceAuditAction(70,"保存") }},
@@ -308,7 +310,7 @@
 	        		{status:75,label:"发货FBA",memo:true
 	        			
 	        			,actions:[{}
-							<?php if( $ppp_confirm) { ?>
+							<?php if( $ppp_sendfba) { ?>
 									,{label:"保存",action:function(){ ForceAuditAction(75,"保存") }},
 		      	        			{label:"已发货FBA",action:function(){ AuditAction(80,"已发货FBA") } }
 									<?php };?>

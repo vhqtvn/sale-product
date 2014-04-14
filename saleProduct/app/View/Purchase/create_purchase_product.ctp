@@ -37,7 +37,7 @@
 		
 	?>
   
-   <style>
+<style>
    		*{
    			font:12px "微软雅黑";
    		}
@@ -51,10 +51,6 @@
    			display:block;
    		}
    </style>
-   
-   
-
-  
 </head>
 
 

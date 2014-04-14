@@ -8,89 +8,7 @@
 			
 			var currentRealId = "" ;
 			var currentPlanProduct = {} ;
-			$(".grid-content").llygrid({
-				columns:[
-					{align:"center",key:"ID",label:"动态", width:"6%",format:function(val,record){
-						return "<span class='pi-status hide'  realId='"+val+"'  title=''>查看</span>" ;
-					}},
-					{align:"center",key:"P_STATUS",label:"状态", width:"10%",format:{type:'json',content:{'0':'待审批','1':'审批通过','2':'审批不通过','3':'采购中','4':'采购完成','5':'入库中','6':'需求完成'}}},
-				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
-					{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true},
-		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left",format:function(val,record){
-		        		return "<a href='#'  product-realsku='"+record.REAL_SKU+"'>"+val+"</a>" ;
-		        	}},
-		        	{align:"center",key:"FIX_QUANTITY",label:"需求量",width:"8%",forzen:false,align:"left"},
-		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
-		           	{align:"center",key:"MEMO",label:"备注",width:"25%"}
-		         ],
-		         ds:{type:"url",content:contextPath+"/grid/query"},
-				 limit:20,
-				 pageSizes:[20,10,20,30,40],
-				 height:function(){
-				 	return $(window).height() - 400 ;
-				 },
-				 title:"需求货品列表",
-				// autoWidth:true,
-				 indexColumn:false,
-				  querys:{sqlId:"sql_supplychain_requirement_plan_product_list",planId:planId},
-				 loadMsg:"数据加载中，请稍候......",
-				 rowClick:function(row,record){
-					 enableActionPanel(record.P_STATUS);
-					 currentRealId = record.ID ;
-					 currentPlanProduct = record ;
-					 $(".grid-content-details").llygrid("reload",{realId:record.ID,reqProductId:record.REQ_PRODUCT_ID}) ;
-					 $(".current-product").html("#"+record.REAL_SKU+"#") ;
-				 },
-				 loadAfter:function(records){
-					 //重新点击行
-					 if(currentRealId){
-						 $(".grid-content").find(".lly-grid-row").each(function(){
-							 var _record = $(this).data("record") ;
-							 if(_record.ID == currentRealId){
-								 currentPlanProduct = _record ;
-								 $(this).click() ;
-							 }
-						 }) ;
-					 }
-					 
-					 $(".grid-content").find('.audit').click(function(){
-						 var record = $(this).closest("tr").data("record") ;
-						 var fixQuatity = $(this).val() ;
-						 var id = record.ID ;
-						 $.dataservice("model:ScRequirement.saveItemFixQuantity" , {fixQuantity:fixQuatity,id:id} , function(){
-							// $(".grid-content-details").llygrid("reload",{},true) ;
-							 $.dialogReturnValue(true) ;
-						 });
-					 }) ;
-					 
-					 
-					$realIds = [] ;
-					$(records).each(function(){
-						$realIds.push(this.ID) ;
-					}) ;
-					
-					Business.getProductStatus($realIds.join(",") , function( map ){
-						$(".pi-status").each(function(){
-							var realId = $(this).attr("realId") ;
-							var $title = map[realId] ;
-							if( $title ){
-								$(this).show().popover({trigger:'click',content: $title,delay:{hide:50},width:500}) ; 
-								$(this).mouseenter(function(){
-									var me = $(this) ;
-									$(".pi-status").popover("hide") ;
-									$(this).popover("show") ;
-									$(".popover-inner").mouseleave(function(){
-										me.popover("hide") ;
-									}) ;
-								}) ;
-							}else{
-								$(this).hide() ;
-							}
-						});
-					}) ;
-				}
-			}) ;
-			
+		
 			$(".grid-content-details").llygrid({
 				columns:[
 				    {align:"center",key:"IN_FLAG",label:"状态",width:"6%",format:function(val,record){
@@ -154,7 +72,7 @@
 				 title:"需求货品明细",
 				// autoWidth:true,
 				 indexColumn:false,
-				  querys:{sqlId:"sql_supplychain_requirement_plan_product_details_list",realId:'-'},
+				  querys:{sqlId:"sql_supplychain_requirement_plan_product_details_list",realId:realId,reqProductId:reqProductId},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(records){ 
 					 //修正数量
