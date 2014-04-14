@@ -2,6 +2,16 @@
 class SaleProduct extends AppModel {
 	var $useTable = "sc_product_flow" ;
 	
+	function saveLimitPrices($params){
+		$limitPrices = json_decode( $params['limitPrices'] ) ;
+		foreach($limitPrices as $limit){
+			$limit = get_object_vars($limit) ;
+			$sql = "update sc_amazon_account_product set limit_price = '{@#limitPrice#}' 
+								where account_id = '{@#accountId#}' and sku='{@#sku#}'" ;
+			$this->exeSql($sql, $limit) ;
+		}
+	}
+	
 	function saveLimitPrice($params){
 		$this->exeSql("sql_saleproduct_saveLimitPrice", $params) ;
 	}

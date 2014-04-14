@@ -35,6 +35,19 @@ class GatherData extends AppModel {
 		return $plat ;
 	}
 	
+	public function fbaPricePlatform($params ){
+		$asin = $params['asin'] ;
+		$platformId = $params['platformId'] ;
+	
+		$plat = $this->getPlatform($asin, $platformId ) ;
+	
+		$process = $plat['PROCCESS'] ;
+	
+		$r = new ReflectionClass($process);
+		$instance = $r->newInstance();
+		$instance->lowestFbaPrice( $this->platformId , $params ) ;
+	}
+	
 	public function asinInfoPlatform($params ){
 		$asin = $params['asin'] ;
 		$platformId = $params['platformId'] ;

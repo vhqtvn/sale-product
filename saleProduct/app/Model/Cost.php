@@ -81,7 +81,7 @@ class Cost extends AppModel {
 
 	
 	public function saveDevCostByFee( $params ){
-		debug($params) ;
+		//debug($params) ;
 		//清楚数据库查询缓存
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;

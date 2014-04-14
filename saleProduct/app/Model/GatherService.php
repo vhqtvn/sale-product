@@ -5,6 +5,21 @@ App::import('Model', 'Log') ;
 class GatherService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
+	public function saveFbaLowestPrice($asin , $priceArray){
+		$minPrice = 999999 ;
+		foreach( $priceArray as $price  ){
+			if( empty($price) || $price == 0 ) continue ;
+			$minPrice = min($minPrice ,$price ) ;
+		}
+		if( $minPrice == 999999  ){
+			return ;
+		}else{
+			$sql = "update sc_amazon_account_product set LOWEST_FBA_PRICE ='{@#minPrice#}' ,FBA_PRICE_ARRAY='{@#priceArray#}' ,FBA_PRICE_LAST_UPDATE_TIME=NOW() 
+						where asin='{@#asin#}' and status = 'Y' " ;
+			$this->exeSql($sql, array("minPrice"=>$minPrice,"priceArray"=>join(",", $priceArray),"asin"=>$asin )) ;
+		}
+	}
+	
 	/**
 	 * 产品保存
 	 */

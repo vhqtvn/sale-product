@@ -198,7 +198,7 @@
 			$(".save-sale-price .save-limit").click(function(){
 				var json = $(".save-sale-price").toJson() ;
 				$.dataservice("model:SaleProduct.saveLimitPrice",json,function(){
-					//window.location.reload() ;
+					$(".grid-content-details").llygrid("reload",{},true) ;
 				}) ;
 			}) ;
    	 });

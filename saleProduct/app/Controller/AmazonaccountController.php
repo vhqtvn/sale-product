@@ -341,5 +341,4 @@ class AmazonaccountController extends AppController {
 		$this->response->body("success");
 		return $this->response;
 	}
-	
 }

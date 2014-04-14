@@ -111,7 +111,7 @@
 				 	}},
 		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true},
-		           	{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
+		           	/*{align:"center",key:"LAST_IN_TIME",label:"",group:"库存",width:"3%",format:function(val,record){
 		           		if( record.LAST_ASSIGN_TIME &&( val >= record.LAST_ASSIGN_TIME ) ){
 							return '<img title="已经分配" src="/'+fileContextPath+'/app/webroot/img/success.gif">';
 				
@@ -133,10 +133,10 @@
 		           			$(this).find("td[key='ASSIGN_QUANTITY']").css({"background":"red",'font-size':'15px',color:'#FFF'}).find("span").attr("title",title);
 		           		}
 		           	}},
-		           	
+		           	*/
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
 		          
-		           	{align:"center",key:"MEMO",label:"备注",width:"25%"},
+		           	{align:"center",key:"MEMO",label:"备注",width:"30%"},
 		           	{align:"center",key:"ID",label:"操作", width:"6%",format:function(val,record){
 						//if(tabIndex < 2){
 							var html = [] ;

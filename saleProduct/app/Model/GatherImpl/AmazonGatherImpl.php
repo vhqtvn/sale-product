@@ -33,6 +33,60 @@ class AmazonGatherImpl extends AppModel {
 		return $siteUrl ;
 	}
 	
+	
+	public function lowestFbaPrice($platformId,$params){
+		debug($params) ;
+		$asin = $params['asin'] ;
+		$id = $params['id'] ;
+		$index = $params['index'] ;
+		$logId = $params['taskId'] ;
+		$condition = "new" ;
+		//$code = $params['code'] ;
+		
+		$utils = new Utils() ;
+		$service = new GatherService() ;
+		$log = new Log() ;
+
+		try{
+			$siteUrl = $this->getAmazonSiteUrl($asin,$platformId) ;
+
+			//$url = "$siteUrl/gp/offer-listing/$asin/?condition=$condition&me=$code" ;
+			$url = "$siteUrl/gp/offer-listing/$asin/sr=/qid=/ref=olp_sss_new?ie=UTF8&condition=$condition&shipPromoFilter=1&sort=sip" ;
+			$d = date("U") ;
+			$url = $url."&ddd=$d" ;
+				
+			$snoopy = new Snoopy;
+			$snoopy->agent =  $this->getAgent($index) ;
+			$snoopy->referer = $url ;
+			$snoopy->rawheaders["Pragma"] = "no-cache"; 
+
+			if( $snoopy->fetch($url) ){
+				$Result = $snoopy->results ;
+
+				$html = new simple_html_dom();
+				$html->load( $Result  ,true ,false );
+
+				try{
+					//////////////////////////////////////////////////////////////////////////////////////////
+					$arrays = array() ;
+					foreach( $html->find(".olpOfferPrice") as $e ){
+						$priceText = trim ( $e->plaintext );
+						$arrays[] = str_replace("$", "", $priceText) ;
+					}
+					debug($arrays) ;
+					//保存fba最低价格到数据库
+					$service->saveFbaLowestPrice( $asin , $arrays ) ;
+				}catch(Exception $e){
+				}
+				$html->clear() ;
+				unset($html) ;
+			}else{
+			}
+			unset($snoopy) ;
+		}catch( Exception $e){
+		}
+	}
+	
 	public function baseinfo($platformId, $params ){
 	
 		$asin = $params['asin'] ;
