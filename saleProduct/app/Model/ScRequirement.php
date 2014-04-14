@@ -455,10 +455,6 @@ class ScRequirement extends AppModel {
 		$existQuantity = $ps['existQuantity'] ;
 		$quantity = $ps['quantity'] ;
 		
-		if( $existQuantity >0 && $existQuantity > $quantity  ){
-			return ;
-		}
-		
 		$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 	}
 	
