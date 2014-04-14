@@ -30,7 +30,7 @@ App::uses('AppController', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers/pages-controller.html
  */
 class PageController extends AppController {
-	public function forward($routes,$arg1 = null ,$arg2 = null , $arg3 = null , $arg4 = null){
+	public function forward($routes,$arg1 = null ,$arg2 = null , $arg3 = null , $arg4 = null,$arg5=null,$arg6=null,$arg7=null){
 		$rs = str_replace(".","/",$routes) ;
 		
 		$params = $this->requestMap() ;
@@ -39,6 +39,9 @@ class PageController extends AppController {
 		$params['arg2'] = $arg2 ;
 		$params['arg3'] = $arg3 ;
 		$params['arg4'] = $arg4 ;
+		$params['arg5'] = $arg5 ;
+		$params['arg6'] = $arg6 ;
+		$params['arg7'] = $arg7 ;
 		
 		$user =  $this->getCookUser() ;
 		
