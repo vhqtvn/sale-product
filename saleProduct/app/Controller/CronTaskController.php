@@ -56,7 +56,10 @@ class CronTaskController extends AppController {
     	foreach( $accounts as $account ){
     		$accountId = $account['ID'] ;
     		$config = $this->System->getAccountPlatformConfig($accountId) ;
-    		$sql = "select distinct ASIN from sc_amazon_account_product where FULFILLMENT_CHANNEL like 'AMAZON%' and account_id = '{@#accountId#}'" ;
+    		$sql = "select distinct ASIN from sc_amazon_account_product where
+    				 FULFILLMENT_CHANNEL like 'AMAZON%' 
+    				and status = 'Y'
+    				and account_id = '{@#accountId#}'" ;
     		$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
     		foreach( $items as $item ){
     			$asin = $item['ASIN'] ;
@@ -84,6 +87,7 @@ class CronTaskController extends AppController {
 						FULFILLMENT_CHANNEL like 'AMAZON%' 
 						and account_id = '{@#accountId#}' 
 						and limit_price > 0
+						and status = 'Y'
 						and lowest_fba_price >0 " ;
 				$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
 				$_products = array() ;
@@ -104,4 +108,5 @@ class CronTaskController extends AppController {
 			}catch(Exception $e){ }
 		}
 	}
+
 }
