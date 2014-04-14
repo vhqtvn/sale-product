@@ -40,9 +40,8 @@
 		        		return "<a href='#'  offer-listing='"+record.ASIN+"'>"+val+"</a>" ;
 		        	}},
 		        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"渠道",width:"10%",forzen:false,align:"left"},
-		        	{align:"center",key:"EXIST_QUANTITY",label:"当前库存/周期需求量",width:"8%",sort:true,format:function(val,record){
-		        		return (val||'-')+"/"+(record.CALC_QUANTITY||'-') ;
-		        	}},
+		        	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"当前库存",width:"8%",sort:true },
+		        	{align:"center",key:"CALC_QUANTITY",label:"周期需求量",width:"8%",sort:true },
 		           	{align:"center",key:"QUANTITY",label:"需求量",width:"6%",sort:true},
 		           	{align:"center",key:"PURCHASE_QUANTITY",label:"待采购数量",width:"8%",format:function(val,record){
 		           		if(  currentPlanProduct.P_STATUS ==0 ){
@@ -72,7 +71,7 @@
 				 title:"需求货品明细",
 				// autoWidth:true,
 				 indexColumn:false,
-				  querys:{sqlId:"sql_supplychain_requirement_plan_product_details_list",realId:realId,reqProductId:reqProductId},
+				  querys:{sqlId:"sql_supplychain_requirement_plan_product_details_list_ALL",realId:realId,reqProductId:reqProductId},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(records){ 
 					 //修正数量

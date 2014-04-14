@@ -595,12 +595,12 @@
 				</form>
 			</div>
 			<?php if( $hasViewRelListing ) { ?>
-			<div id="ref-asins" style="width:880px;padding:10px;">
-				<div class="grid-content-details" style="width:858px;"></div>
+			<div id="ref-asins" style="padding:10px;">
+				<div class="grid-content-details" style="width:98%;"></div>
 			</div>
 			<?php } ?>
-			<div id="tracks" style="width:880px;padding:10px;">
-				<div class="grid-track" style="width:858px;"></div>
+			<div id="tracks" style="padding:10px;">
+				<div class="grid-track" style="width:98%;"></div>
 			</div>
 		</div>
 	</div>

@@ -86,13 +86,90 @@
 			 sc_amazon_account saa,
 			 sc_amazon_account_product saap
 		WHERE 
-		ssri.real_id = srp.id
-		and saap.account_id = ssri.account_id
-		and saap.sku = ssri.listing_sku
-		and saa.id = ssri.account_id
-		and srp.id =  '{@#realId#}'
-		and ssrpp.req_product_id = '{@#reqProductId#}'
-		and ssri.plan_id = ssrpp.plan_id
+			ssri.real_id = srp.id
+			and saap.account_id = ssri.account_id
+			and saap.sku = ssri.listing_sku
+			and saa.id = ssri.account_id
+			and srp.id =  '{@#realId#}'
+			and ssrpp.req_product_id = '{@#reqProductId#}'
+			and ssri.plan_id = ssrpp.plan_id
+    </entry>
+    
+    <!-- 
+   			 
+    	  SELECT ssri.*,
+    	      saap.ASIN,
+    	      saap.IS_RISK,
+    	       saap.RISK_TYPE,
+	    	  saa.name as ACCOUNT_NAME,
+	    	  saap.id as ACCOUNT_PRODUCT_ID,
+	    	  saap.IS_ANALYSIS,
+	    	  saap.FULFILLMENT_CHANNEL,
+	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
+	    	  srp.IMAGE_URL,
+	    	  ( select count(1) from sc_supplychain_reqitem_in where req_item_id =ssri.id ) as IN_FLAG
+		 FROM 
+		     sc_supplychain_requirement_item ssri,
+		     sc_supplychain_requirement_plan_product ssrpp,
+			 sc_real_product srp,
+			 sc_amazon_account saa,
+			 sc_amazon_account_product saap
+		WHERE 
+			ssri.real_id = srp.id
+			and saap.account_id = ssri.account_id
+			and saap.sku = ssri.listing_sku
+			and saa.id = ssri.account_id
+			and srp.id =  '{@#realId#}'
+			and ssrpp.req_product_id = '{@#reqProductId#}'
+			and ssri.plan_id = ssrpp.plan_id -->
+    <entry key="sql_supplychain_requirement_plan_product_details_list_ALL">
+         select 
+             saap.SKU as LISTING_SKU,
+              saap.ASIN,
+    	      saap.RISK_TYPE,
+	    	  saa.name as ACCOUNT_NAME,
+	    	  saap.id as ACCOUNT_PRODUCT_ID,
+	    	  saap.IS_ANALYSIS,
+	    	  saap.FULFILLMENT_CHANNEL,
+	    	  (select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME,
+	    	  srp.IMAGE_URL,
+	    	  sfsi.TOTAL_SUPPLY_QUANTITY,
+	    	  sar.SALES_FOR_THELAST14DAYS,
+	    	  sar.SALES_FOR_THELAST30DAYS,
+	    	  (select  ssri.QUANTITY from  sc_supplychain_requirement_item ssri,
+		     						sc_supplychain_requirement_plan_product ssrpp
+		     						where ssri.real_id = srp.id
+		     						and saap.sku = ssri.listing_sku
+									and saa.id = ssri.account_id
+		     						and ssrpp.req_product_id = '{@#reqProductId#}'
+		     						and ssri.plan_id = ssrpp.plan_id 
+		     		 ) as QUANTITY,
+	    	  (select  ssri.PURCHASE_QUANTITY from  sc_supplychain_requirement_item ssri,
+		     						sc_supplychain_requirement_plan_product ssrpp
+		     						where ssri.real_id = srp.id
+		     						and saap.sku = ssri.listing_sku
+									and saa.id = ssri.account_id
+		     						and ssrpp.req_product_id = '{@#reqProductId#}'
+		     						and ssri.plan_id = ssrpp.plan_id 
+		     		 ) as PURCHASE_QUANTITY
+          from 
+             sc_real_product srp,
+             sc_real_product_rel srpr , 
+			 sc_amazon_account saa,
+			 sc_amazon_account_product saap
+			 left join sc_fba_supply_inventory sfsi
+			 on sfsi.account_id  = saap.account_id
+			 and sfsi.seller_sku = saap.sku
+			 left join sc_amazon_recommendations sar
+			 on sar.account_id = sfsi.account_id
+			 and sar.sku = sfsi.seller_sku
+	    where 
+   			 srp.id =  '{@#realId#}'
+   			 and srpr.real_id = srp.id
+   			 and srpr.account_id = saap.account_id
+   			 and srpr.sku = saap.sku
+   			 and saa.id = saap.account_id
+   			 
     </entry>
 
 	<entry key="sql_supplychain_requirement_category">
