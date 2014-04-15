@@ -35,7 +35,7 @@ class AmazonGatherImpl extends AppModel {
 	
 	
 	public function lowestFbaPrice($platformId,$params){
-		debug($params) ;
+		//debug($params) ;
 		$asin = $params['asin'] ;
 		$id = $params['id'] ;
 		$index = $params['index'] ;
@@ -59,13 +59,15 @@ class AmazonGatherImpl extends AppModel {
 			$snoopy->agent =  $this->getAgent($index) ;
 			$snoopy->referer = $url ;
 			$snoopy->rawheaders["Pragma"] = "no-cache"; 
-
+			$snoopy->rawheaders["X_FORWARDED_FOR"] = "127.0.0.101";
+			debug($url) ;
 			if( $snoopy->fetch($url) ){
 				$Result = $snoopy->results ;
+				//debug($Result) ;
 
 				$html = new simple_html_dom();
-				$html->load( $Result  ,true ,false );
-
+				$html->load( $Result  ,true ,false );	
+				
 				try{
 					//////////////////////////////////////////////////////////////////////////////////////////
 					$arrays = array() ;
@@ -77,6 +79,7 @@ class AmazonGatherImpl extends AppModel {
 					//保存fba最低价格到数据库
 					$service->saveFbaLowestPrice( $asin , $arrays ) ;
 				}catch(Exception $e){
+					debug( $e->getMessage() ) ;
 				}
 				$html->clear() ;
 				unset($html) ;

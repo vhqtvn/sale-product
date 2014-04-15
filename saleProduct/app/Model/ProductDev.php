@@ -76,7 +76,7 @@ class ProductDev extends AppModel {
 	}
 	
 	function doFlow( $params ){
-		
+		ini_set('date.timezone','Asia/Shanghai');
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
 		
@@ -96,14 +96,45 @@ class ProductDev extends AppModel {
 			}
 			
 			if( $params['FLOW_STATUS'] == 72 ){ //审批通过，生成采购单
-				$PurchaseService  = ClassRegistry::init("PurchaseService") ;
+				/*$PurchaseService  = ClassRegistry::init("PurchaseService") ;
 				
 				$p = array('realId'=>$params['REAL_PRODUCT_ID'],
 						'planNum'=>$params['TRY_PURCHASE_NUM'],
 						'loginId'=>$params['loginId'],
 						'devId'=>$params['ASIN'].'_'.$params['TASK_ID']
 				) ;
+				$PurchaseService->createItemForProductDev($p) ;*/
+				$realId = $params['REAL_ID'] ;
+				$NewPurchaseService  = ClassRegistry::init("NewPurchaseService") ;
+				
+				$limitPrice = $NewPurchaseService->getDefaultLimitPrice( $realId ) ;
+				$execut 	= $NewPurchaseService->getDefaultCharger( $realId ) ;
+				
+				$startTime = date('Y-m-d');
+				$endTime  = date('Y-m-d',strtotime('+3 day'));
+				$executor 			= $execut['charger'] ;
+				//$purchaseQuantity = $params['purchaseQuantity'] ;
+				//$params['status'] 加入采购计划
+				$params = array(
+						'realId'=>$realId,
+						'planNum'=>$params['TRY_PURCHASE_NUM'] ,
+						'limitPrice'=>$limitPrice ,
+						'executor'=>$executor,
+						'startTime'=>$startTime,
+						'endTime'=>$endTime,
+						'reqProductId'=>'',
+						'devId'=>$params['ASIN'].'_'.$params['TASK_ID'],
+						'loginId'=>'auto'
+				);
+				$NewPurchaseService->createNewPurchaseProduct($params) ;
+				/*
+				$p = array('realId'=>$params['REAL_PRODUCT_ID'],
+						'planNum'=>$params['TRY_PURCHASE_NUM'],
+						'loginId'=>$params['loginId'],
+						'devId'=>$params['ASIN'].'_'.$params['TASK_ID']
+				) ;
 				$PurchaseService->createItemForProductDev($p) ;
+				*/
 			}
 			//保存轨迹
 			

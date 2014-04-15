@@ -297,6 +297,7 @@ html{-webkit-text-size-adjust: none;}
 				json.ASIN = asin ;
 				json.FLOW_STATUS = status;
 				json.TASK_ID = taskId ;
+				//json.REAL_ID = $("#REAL_PRODUCT_ID").val() ;
 
 				if( json.DEV_STATUS == 3 ){
 					json.FLOW_STATUS = 15 ;
