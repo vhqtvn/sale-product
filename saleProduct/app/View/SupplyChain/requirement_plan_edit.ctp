@@ -148,6 +148,17 @@
 								<option value='3'>采购中</option>
 							</select>
 						</td>
+						<th>销售渠道:</th>
+						<td>
+							<select name='fulfillmentChannel'  style="width:100px">
+								<option value=''>全部</option>
+								<option value='AMAZON'>FBA</option>
+								<option value='Merchant'>FBM</option>
+							</select>
+						</td>
+						<td>
+							<input type="text"  name="searchKey"  placeholder="SKU、NAME" value="" style="width:300px;"/>
+ 						</td>
 						<td>
 							<button class="btn btn-primary query query-btn" >查询</button>
 						</td>

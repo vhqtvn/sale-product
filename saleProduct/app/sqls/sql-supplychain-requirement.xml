@@ -6,7 +6,9 @@
 		SELECT  srp.*,
 	         		ssrpp.STATUS AS P_STATUS,
 	         		ssrpp.REQ_PRODUCT_ID,
-	         		( SELECT sum(ssri.QUANTITY) FROM  sc_supplychain_requirement_item ssri,
+	         		ssrpp.CREATE_DATE,
+	         		( SELECT sum(ssri.QUANTITY) 
+	         		FROM  sc_supplychain_requirement_item ssri,
 	         		    sc_real_product_rel srpr,
                                     sc_amazon_account_product saap
 	         		    WHERE ssri.account_id = srpr.account_id
@@ -25,6 +27,16 @@
 		    select 1 from sc_supplychain_requirement_item ssri where ssri.real_id = ssrpp.real_id and ssri.plan_id = ssrpp.plan_id
 		    and ssri.req_type = '#reqType#'
 		 )
+		}
+		{@ 
+		   and exists (
+		      select  1 from sc_supplychain_requirement_item ssri 
+		         where ssri.real_id = ssrpp.real_id and ssri.plan_id = ssrpp.plan_id
+		         and ssri.fulfillment like '%#fulfillmentChannel#%'
+		   )
+		}
+		{@
+		  and ( srp.real_sku like '%#searchKey#%' or srp.name like '%#searchKey#%'  )
 		}
 		{@ and ssrpp.status = '#status#' }
 		and ssrpp.status !=6

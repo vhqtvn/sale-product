@@ -21,7 +21,7 @@
 		        	}},
 		        	{align:"center",key:"FIX_QUANTITY",label:"需求量",width:"8%",forzen:false,align:"left"},
 		           	{align:"center",key:"TYPE",label:"货品类型",width:"10%",format:{type:"json",content:{'base':"基本类型",'package':"打包货品"}}},
-		           	{align:"center",key:"MEMO",label:"备注",width:"25%"}
+		           	{align:"center",key:"CREATE_DATE",label:"创建时间",width:"15%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,

@@ -198,7 +198,7 @@
 				}else{
 					$providor = $pd['PROVIDOR'] ;
 				}
-				
+				$qtc = "" ;
 				if(empty($providor)){
 					echo "<div class='alert alert-danger'>未选择供应商</div>" ;
 				}else{
@@ -260,7 +260,7 @@
 			<!-- 采购信息 -->
 			<td style="text-algin:center;">
 			<?php 
-					$totalPrice = $pd['QUOTE_PRICE'] * $pd['SUPPIERABLE_NUM'] ;
+					$totalPrice = $pd['QUOTE_PRICE'] * $pd['SUPPIERABLE_NUM'] +($pd['SHIP_FEE']||0)  ;
 		           	if($totalPrice) $totalPrice = $totalPrice ;// .toFixed(2) ;
 		          
 		           	$payType = $pd['PAY_TYPE'] ;
@@ -287,6 +287,10 @@
 									<div class="row-fluid">
 										<div class="span4">数量：</div>
 										<div class="label-content span8">'.$pd['SUPPIERABLE_NUM'].'</div>
+									</div>
+									<div class="row-fluid">
+										<div class="span4">运费：</div>
+										<div class="label-content span8">'.$pd['SHIP_FEE'].'</div>
 									</div>
 									<div class="row-fluid">
 										<div class="span4">总价：</div>
