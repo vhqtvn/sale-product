@@ -104,7 +104,7 @@ class ProductDev extends AppModel {
 						'devId'=>$params['ASIN'].'_'.$params['TASK_ID']
 				) ;
 				$PurchaseService->createItemForProductDev($p) ;*/
-				$realId = $params['REAL_ID'] ;
+				$realId = $params['REAL_PRODUCT_ID'] ;
 				$NewPurchaseService  = ClassRegistry::init("NewPurchaseService") ;
 				
 				$limitPrice = $NewPurchaseService->getDefaultLimitPrice( $realId ) ;

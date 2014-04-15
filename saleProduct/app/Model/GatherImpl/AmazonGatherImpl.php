@@ -33,8 +33,12 @@ class AmazonGatherImpl extends AppModel {
 		return $siteUrl ;
 	}
 	
-	
 	public function lowestFbaPrice($platformId,$params){
+		$this->_lowestFbaPrice($platformId, $params,0) ;
+	}
+	
+	
+	public function _lowestFbaPrice($platformId,$params,$index__){
 		//debug($params) ;
 		$asin = $params['asin'] ;
 		$id = $params['id'] ;
@@ -75,9 +79,25 @@ class AmazonGatherImpl extends AppModel {
 						$priceText = trim ( $e->plaintext );
 						$arrays[] = str_replace("$", "", $priceText) ;
 					}
-					debug($arrays) ;
-					//保存fba最低价格到数据库
-					$service->saveFbaLowestPrice( $asin , $arrays ) ;
+					
+					
+					if( count( $arrays ) <=0 ){
+						if( $index__ < 5 ){
+							try{
+								$html->clear() ;
+								unset($html) ;
+								unset($snoopy) ;
+							}catch(Exception $e){}
+							//重试
+							sleep(1) ;
+							$this->_lowestFbaPrice($platformId, $params,$index__+1) ;
+							return ;
+						}
+					}else{
+						debug($arrays) ;
+						//保存fba最低价格到数据库
+						$service->saveFbaLowestPrice( $asin , $arrays ) ;
+					}
 				}catch(Exception $e){
 					debug( $e->getMessage() ) ;
 				}
