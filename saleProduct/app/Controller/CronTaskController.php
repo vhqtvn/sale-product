@@ -56,12 +56,16 @@ class CronTaskController extends AppController {
     	foreach( $accounts as $account ){
     		$accountId = $account['ID'] ;
     		$config = $this->System->getAccountPlatformConfig($accountId) ;
-    		$sql = "select distinct ASIN from sc_amazon_account_product where
-    				 FULFILLMENT_CHANNEL like 'AMAZON%' 
-    				and status = 'Y'
-    				and account_id = '{@#accountId#}'" ;
+    		$sql = "select distinct ASIN from sc_amazon_account_product saap ,
+    				                    sc_amazon_account saa
+    				where
+    				 saap.FULFILLMENT_CHANNEL like 'AMAZON%' 
+    				and saap.status = 'Y'
+    				and saap.account_id = saa.id
+    				and saa.status = 1
+    				and saap.account_id = '{@#accountId#}'" ;
     		$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
-    		echo "------------------------".count($items)."======================" ;
+    		echo "----------".$account['NAME']."--------------".count($items)."======================" ;
     		$index = 0 ;
     		foreach( $items as $item ){
     			sleep(1) ;
@@ -99,7 +103,8 @@ class CronTaskController extends AppController {
 				$_products = array() ;
 				
 				foreach( $items as $item ){
-					$listPrice = $item['LIST_PRICE'] ;
+					
+					$listPrice = $item['PRICE'] ;
 					$lowestFbaPrice = $item['LOWEST_FBA_PRICE'] ;
 					$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
 					$execPrice =  $item['LIMIT_PRICE'] ;//限价
@@ -107,6 +112,7 @@ class CronTaskController extends AppController {
 					if( empty($execPrice) || $execPrice==0 ){
 						$execPrice = $listPrice ;
 					}
+					//debug($item) ;
 					
 					$fbaPriceArray = explode(",", $fbaPriceArray) ;
 					$fbaPriceCount = count( $fbaPriceArray ) ;
@@ -147,6 +153,7 @@ class CronTaskController extends AppController {
 				} 
 				
 				$Feed = $this->Amazonaccount->getPriceFeed( $MerchantIdentifier , $_products ) ;
+				debug($Feed) ;
 				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/price" ) ;
 				$this->triggerRequest($url,array("feed"=>$Feed )) ;
 			}catch(Exception $e){ }
