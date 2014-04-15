@@ -154,7 +154,7 @@
 				 title:"需求货品明细",
 				// autoWidth:true,
 				 indexColumn:false,
-				  querys:{sqlId:"sql_supplychain_requirement_plan_product_details_list",realId:'-'},
+				  querys:{sqlId:"sql_supplychain_requirement_plan_product_details_list",reqProductId:'-'},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(records){ 
 					 //修正数量
@@ -251,7 +251,7 @@
 					if( window.confirm("确认审批不通过？") ){
 					var data = getGridEditorData();
 					var memo = $(".audit-memo").val() ;
-					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:2} , function(){
+					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {reqProductId:currentPlanProduct.REQ_PRODUCT_ID,auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:2} , function(){
 						$(".grid-content").llygrid("reload",{},true) ;
 						$.dialogReturnValue(true) ;
 					})

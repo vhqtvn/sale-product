@@ -10,11 +10,16 @@ class ScRequirement extends AppModel {
 				$sql = "select * from sc_supplychain_requirement_plan_product where plan_id = '{@#planId#}' and real_id = '{@#realId#}'" ;
 				$planProduct = $this->getObject($sql, array('planId'=>$planId,'realId'=>$realId)) ;
 				if( empty($planProduct) ){
+					$reqProductId =  $this->create_guid() ;
 					$params = array() ;
 					$params['PLAN_ID'] = $planId ;
 					$params['REAL_ID'] = $realId ;
-					$params['REQ_PRODUCT_ID'] = $this->create_guid() ;
+					$params['REQ_PRODUCT_ID'] = $reqProductId ;
 					$this->exeSql("sql_supplychain_requirement_product_insert", $params) ;
+					
+					//更新需求明细关联到采购单REQ_PRODUCT_ID
+					$sql = "update sc_supplychain_requirement_item set req_product_id = '{@#REQ_PRODUCT_ID#}' where plan_id='{@#PLAN_ID#}' and real_id='{@#REAL_ID#}'" ;
+					$this->exeSql($sql, $params) ;
 				}else{
 					//nothing to do
 				}
@@ -47,6 +52,7 @@ class ScRequirement extends AppModel {
 		$p['planId'] = $reqPlanId ;
 		$p['realId'] = $realId ;
 		$p['status'] = '3' ;
+		$p['reqProductId'] = $params['reqProductId'] ;
 		$this->auditReqPlanProduct($p);
 		
 		//返回采购计划产品
@@ -89,6 +95,7 @@ class ScRequirement extends AppModel {
 			$audit=array() ;
 			$audit['planId'] = $planId ;
 			$audit['realId'] = $realId ;
+			$audit['reqProductId'] = $reqProductId;
 			$audit['status'] = $params['status'] ;
 			$this->auditReqPlanProduct($audit) ;
 			
@@ -119,7 +126,7 @@ class ScRequirement extends AppModel {
 	}
 	
 	public function auditReqPlanProduct($audit){
-		$sql = "update sc_supplychain_requirement_plan_product set status='{@#status#}' where plan_id = '{@#planId#}' and real_id = '{@#realId#}'" ;
+		$sql = "update sc_supplychain_requirement_plan_product set status='{@#status#}' where req_product_id = '{@#reqProductId#}'" ;
 		$this->exeSql($sql, $audit ) ;
 	}
 	

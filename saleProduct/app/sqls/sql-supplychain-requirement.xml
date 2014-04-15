@@ -104,7 +104,7 @@
 			and saa.id = ssri.account_id
 			and srp.id =  '{@#realId#}'
 			and ssrpp.req_product_id = '{@#reqProductId#}'
-			and ssri.plan_id = ssrpp.plan_id
+			and ssri.req_product_id = ssrpp.req_product_id
     </entry>
     
     <!-- 
@@ -316,7 +316,7 @@
 				NOW(), 
 				'{@#loginId#}', 
 				NOW(), 
-				0
+				{@#status:0#}
 				)
     </entry>
 
@@ -371,9 +371,9 @@
     	and saap.account_id=saa.id
     	and saa.status = 1
     	and not exists (
-    		SELECT * FROM sc_supplychain_requirement_plan ssrp,
-		   sc_supplychain_requirement_item ssri
-		   WHERE ssrp.ID = ssri.PLAN_ID
+    		SELECT * FROM sc_supplychain_requirement_plan_product ssrp,
+		   					sc_supplychain_requirement_item ssri
+		   WHERE ssrp.REQ_PRODUCT_ID = ssri.REQ_PRODUCT_ID
 		   AND ssrp.status not in (2,6)
 		   AND ssri.ACCOUNT_ID = saap.ACCOUNT_ID
 		   AND ssri.LISTING_SKU = saap.SKU
@@ -412,7 +412,8 @@
 				ID, 
 				CREATE_DATE,
 				URGENCY,
-				REQ_TYPE
+				REQ_TYPE,
+				REQ_PRODUCT_ID
 				)
 				VALUES
 				('{@#accountId#}', 
@@ -427,7 +428,8 @@
 				'{@#id#}', 
 				NOW(), 
 				'{@#urgency#}', 
-				'{@#reqType#}'
+				'{@#reqType#}', 
+				'{@#reqProductId#}'
 				)
 		</entry>
 		

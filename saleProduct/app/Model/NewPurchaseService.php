@@ -22,6 +22,7 @@ class NewPurchaseService extends AppModel {
 			$params1['PLAN_ID'] = "__auto__" ;
 			$params1['REAL_ID'] = $params['realId'] ;
 			$params1['REQ_PRODUCT_ID'] = $reqProductId ;
+			$params1['STATUS'] = 3 ;
 			$this->exeSql("sql_supplychain_requirement_product_insert", $params1) ;
 			$purchaseDetails = json_decode($params['purchaseDetails']) ;
 			
