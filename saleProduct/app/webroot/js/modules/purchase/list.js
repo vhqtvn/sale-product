@@ -12,10 +12,12 @@
 			$.dataservice("model:NewPurchaseService.loadStatics",{},function(result){
 				 //$(".grid-content-details").llygrid("reload",{},true) ;
 				$(".flow-node").find(".count").html("(0)") ;
+				var count = 0 ;
 				$(result).each(function(){
 					$(".flow-node[status='"+this.STATUS+"']").find(".count").html("("+this.COUNT+")") ;//this.COUNT
+					count +=parseInt(this.COUNT) ;
 				}) ;
-				
+				$(".total").find(".count").html("("+count+")") ;
 
 				setTimeout(function(){
 					loadStatics() ;

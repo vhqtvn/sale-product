@@ -173,7 +173,7 @@
 			and spp.IS_TERMINATION = 0
 			and (spp.status > 45 or ( spp.limit_price is not null and spp.limit_price !=0 ))
 			     {@ #$purchaseTask_view: and 1=0# }
-		GROUP BY spp.STATUS
+		    GROUP BY spp.STATUS
    </entry>
    
    <entry key="sql_purchase_new_loadRepaireStatics">

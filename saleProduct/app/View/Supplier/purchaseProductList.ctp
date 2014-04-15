@@ -58,7 +58,7 @@
 		        	{align:"center",key:"PROVIDOR_NAME",label:"采购供应商",width:"10%",format:function(val,record){
 									return "<a supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
 			        	}},
-					{align:"left",key:"SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
+					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 		           	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"8%",forzen:false,align:"left"},
@@ -76,7 +76,7 @@
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{supplierId:'<?php echo $supplierId;?>',productId:'<?php echo $productId;?>',sqlId:"sql_purchase_product_listBySupplierId"},
+				 querys:{supplierId:'<?php echo $supplierId;?>',productId:'<?php echo $productId;?>',sqlId:"sql_purchase_product_listByRealId"},
 				 loadMsg:"数据加载中，请稍候......"
 			}) ;
 
