@@ -399,6 +399,25 @@
 			order by t.task_id desc
     </entry>
     
+    <entry key="sql_purchase_product_listByRealId">
+		SELECT DISTINCT  
+			spp.* ,
+			srp.name as TITLE,
+			srp.IMAGE_URL,
+			(select name from sc_supplier where id = spp.PROVIDOR ) as PROVIDOR_NAME,
+			su.NAME AS EXECUTOR_NAME,
+			( select sc_user.name from sc_user where sc_user.login_id = spp.created_by ) as CREATOR_NAME
+		FROM 
+		sc_purchase_product spp
+		LEFT JOIN sc_user su
+		on su.login_id = spp.executor
+		left join sc_real_product srp
+		on spp.REAL_ID = srp.ID
+		WHERE 1=1
+		and spp.real_id = '{@#productId#}'
+			order by spp.real_purchase_date desc
+    </entry>
+    
     <entry key="sql_purchase_product_listBySupplierId">
 		SELECT DISTINCT  
 			sptp.* ,
