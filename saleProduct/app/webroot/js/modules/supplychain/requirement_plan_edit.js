@@ -238,6 +238,7 @@
 					});
 
 					if( purchaseQuantity >0  ){
+						disabledActionPanel();
 						$.dataservice("model:ScRequirement.saveItemAuditInfo" , {reqProductId:currentPlanProduct.REQ_PRODUCT_ID,auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:3,purchaseQuantity:purchaseQuantity} , function(){
 							$(".grid-content").llygrid("reload",{},true) ;
 							$.dialogReturnValue(true) ;
@@ -252,6 +253,7 @@
 					if( window.confirm("确认审批不通过？") ){
 					var data = getGridEditorData();
 					var memo = $(".audit-memo").val() ;
+					disabledActionPanel();
 					$.dataservice("model:ScRequirement.saveItemAuditInfo" , {reqProductId:currentPlanProduct.REQ_PRODUCT_ID,auditData:data,memo:memo,entityType:"planProduct",entityId:planId+"_"+currentRealId,status:2} , function(){
 						$(".grid-content").llygrid("reload",{},true) ;
 						$.dialogReturnValue(true) ;
@@ -259,33 +261,6 @@
 				}
 			}) ;
 			
-			$(".add-purchaseplan").click(function(){
-				var data = getGridEditorData();
-				var  plan = $(".purchase-plan").val();
-				if(!plan){
-					alert("请选择需求计划！");
-				}else{
-					var  totalPurchaseNum = 0 ;
-					$(data).each(function(){
-						totalPurchaseNum += parseInt(this.purchaseQuantity)||0 ;
-					});
-					
-					if(window.confirm("确认加入该采购计划进行采购？")){
-						
-						$.dataservice("model:ScRequirement.add2PurchasePlan" , {
-							purchasePlanId:plan,
-							reqPlanId:planId,
-							realId:currentRealId,
-							purchaseQuantity:totalPurchaseNum
-						} , function(result){
-							openCenterWindow(contextPath+"/page/forward/Sale.edit_purchase_plan_product/"+result.ID, 850,500,function(){
-								$.dialogReturnValue(true) ;
-								window.location.reload() ;
-							},{showType:"dialog"}) ;
-						});
-					}
-				}
-			}) ;
 			
 			
 			$(".track-img").click(function(){
