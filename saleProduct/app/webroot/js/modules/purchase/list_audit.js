@@ -7,7 +7,7 @@
 	 }
 
 	$(function(){
-
+		
 			$(".grid-content-details").llygrid({
 				columns:[
 					//{align:"center",key:"ID",label:"编号",width:"4%"},
@@ -17,30 +17,17 @@
 					},format:function(){
 						return "" ;
 					}},
-					{align:"left",key:"ID",label:"操作",forzen:false,width:"4%",format:function(val,record){
-						return '<a href="#" title="查看" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;';
+					{align:"center",key:"ID",label:"操作",forzen:false,width:"8%",format:function(val,record){
+						var status = record.STATUS ;
+						var html = [] ;
+						html.push('<a href="#" title="处理" class="edit-action" val="'+val+'"><img src="/'+fileContextPath+'/app/webroot/img/edit.png"/></a>&nbsp;');
+						return  html.join("");
 					}},
 					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"6%",format: function(val ,record){
-						if(record.IS_TERMINATION == 1) return "<span color='red'>终止采购</span>" ;
-						if(val){
-							return $.llygrid.format.purchaseProductStatus.body(val)  ;
-						}
 						
-						val = record.STATUS || 10 ;
-						var message = "" ;
-						switch(val){
-							case '10':  message = "编辑中";break;
-							case '20':  message = "等待审批";break;
-							case '25':  message = "审批不通过";break;
-							case '30':  message = "限价确认";break;
-							case '40':  message = "分配执行人";break;
-							case '41':  message = "--";break;
-						}
-						if(val>25)message = "待采购" ;
-						
-						return message ;
+						return "采购审计" ;
 					} },
-					{align:"center",key:"TRACK_MEMO",label:"",width:"10%",forzen:false,align:"left"},
+		           	{align:"center",key:"TRACK_MEMO",label:"",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"CODE",label:"编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"center",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
@@ -61,28 +48,14 @@
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-				 	return $(window).height() - 120 ;
+				 	return $(window).height() - 170 ;
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{sqlId:"sql_purchase_new_listForFinish"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+				 querys:{sqlId:"sql_purchase_new_list_audit"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
-					 $(".delete-action").click(function(){
-						 var record = $(this).parents("tr:first").data("record");
-						 if(window.confirm("确认删除吗？")){
-							 $.dataservice("model:Sale.deletePurchasePlanProduct",{id:record.ID},function(){
-								 $(".grid-content-details").llygrid("reload",{},true) ;
-							 });
-						 }
-					 }) ;
-					 
-				 	$(".grid-checkbox").each(function(){
-						var val = $(this).attr("value") ;
-						if( $(".product-list ul li[asin='"+val+"']").length ){
-							$(this).attr("checked",true) ;
-						}
-					}) ;
+					
 				 }
 			}) ;
 			
@@ -95,7 +68,7 @@
 			
 			$(".edit-action").live("click",function(){
 				var val = $(this).attr("val") ;//采购计划ID
-				openCenterWindow(contextPath+"/page/forward/Purchase.edit_purchase_product/"+val,980,620,function(win,ret){
+				openCenterWindow(contextPath+"/page/forward/Purchase.edit_purchase_product/"+val+"/audit",980,620,function(win,ret){
 					if(ret){
 						$(".grid-content-details").llygrid("reload",{},true) ;
 					}

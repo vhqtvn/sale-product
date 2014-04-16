@@ -103,18 +103,7 @@
 			<div class="toolbar toolbar-auto query-bar">
 				<table style="width:100%;" class="query-table">	
 					<tr>
-						<th>ASIN:</th>
-						<td>
-							<input type="text" name="asin" style="width:100px"/>
-						</td>
-						<th>名称:</th>
-						<td>
-							<input type="text" name="title" style="width:100px"/>
-						</td>
-						<th>价格:</th>
-						<td>
-							从<input type="text" name="price1" style="width:50px"/>到<input type="text" name="price2" style="width:50px"/>
-						</td>
+						
 						<th>销售渠道:</th>
 						<td>
 							<select name='fulfillmentChannel'  class="span2">
@@ -123,6 +112,10 @@
 								<option value='Merchant'>Merchant</option>
 								<option value='-'>未知</option>
 							</select>
+						</td>
+						<th>关键字:</th>
+						<td colspan="2">
+							<input type="text" name="searchKey" placeHolder="ASIN、SKU、名称"  style="width:400px"/>
 						</td>
 					</tr>
 					<tr>	
@@ -133,14 +126,6 @@
 								<option value=11>New</option>
 								<option value=1>Used</option>
 								<option value='-'>未知</option>
-							</select>
-						</td>
-						<th>FM商品:</th>
-						<td>
-							<select name='isFM'   style="width:100px">
-								<option value=''>全部</option>
-								<option value="FM">FM</option>
-								<option value="NEW">NEW</option>
 							</select>
 						</td>
 						<th>排名:</th>
@@ -155,7 +140,7 @@
 								<option value="other">其他</option>
 							</select>
 						</td>
-						<td colspan="2">
+						<td>
 							<button class="btn btn-primary query query-btn" >查询</button>
 							
 							<button class="btn btn-primary btn-mini query-reply-btn">重复产品过滤</button>

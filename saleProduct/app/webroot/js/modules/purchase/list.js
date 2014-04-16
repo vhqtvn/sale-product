@@ -13,10 +13,24 @@
 				 //$(".grid-content-details").llygrid("reload",{},true) ;
 				$(".flow-node").find(".count").html("(0)") ;
 				var count = 0 ;
+				var map = {} ;
 				$(result).each(function(){
-					$(".flow-node[status='"+this.STATUS+"']").find(".count").html("("+this.COUNT+")") ;//this.COUNT
+					map[this.STATUS+"_"] = parseInt(this.COUNT) ;
+					//$(".flow-node[status='"+this.STATUS+"']").find(".count").html("("+this.COUNT+")") ;//this.COUNT
 					count +=parseInt(this.COUNT) ;
 				}) ;
+				//alert( $.json.encode(map) ) ;
+				$(".flow-node").each(function(){
+					var status = $(this).attr("status") ;
+					var ss = (status+"").split(",") ;
+					var c = 0 ;
+					$(ss).each(function(index,item){
+						if(!item)return ;
+						c = (map[item+"_"]||0) +c;
+					}) ;
+					$(".flow-node[status='"+status+"']").find(".count").html("("+c+")") ;
+				}) ;
+				
 				$(".total").find(".count").html("("+count+")") ;
 
 				setTimeout(function(){
@@ -103,6 +117,7 @@
 					} },
 		           	{align:"center",key:"TRACK_MEMO",label:"",width:"10%",forzen:false,align:"left"},
 		           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"center",format:{type:'img'}},
+		           	{align:"center",key:"CODE",label:"编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 					{align:"left",key:"START_TIME",label:"采购时限",width:"14%",format:function(val,record){

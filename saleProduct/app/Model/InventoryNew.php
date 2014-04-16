@@ -275,13 +275,14 @@ class InventoryNew extends AppModel {
 			
 		}
 		
-		//更新状态为已入库
-		$this->exeSql("update sc_purchase_product set status=70,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
+		//更新状态为已入库,开启采购审计开关
+		$this->exeSql("update sc_purchase_product set status=75,is_audit=1,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
 				 where id = '{@#productId#}'",
 				array(
 						'warehouseId'=>$params['warehouseId'],
 						'warehouseTime'=>$params['warehouseTime'],
 						"productId"=>$params['purchaseProductId'])) ;
+		
 		
 		//更新需求为已采购
 		if( !empty($taskProduct['REQ_PRODUCT_ID']) ){

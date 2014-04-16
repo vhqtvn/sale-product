@@ -48,7 +48,15 @@
 					{@ and country >= '#outAemricanArea#' }
 					{@ and country = '#inAemricanArea#' }
 					{@ and warning like '%#warning#%' }
-					
+					{@ and 
+					   (
+					      sc_amazon_account_product.asin like '%#searchKey#%' 
+					       or 
+					       sc_amazon_account_product.sku like '%#searchKey#%' 
+					       or 
+					       sp.title  like '%#searchKey#%' 
+					   )
+					}
 					{@ and ( fulfillment_channel is null or fulfillment_channel = '' ) and 1 = #fulfillmentChannelNull# }
 					{@ and fulfillment_channel like '%#fulfillmentChannel#%' }
 					

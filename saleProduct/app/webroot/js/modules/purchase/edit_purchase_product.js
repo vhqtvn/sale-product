@@ -10,9 +10,13 @@ $(function(){
 		}) ;
 
 	 //设置页面是否刻度
+	 var __setStatus = currentStatus ;
+	 if(actionType == 'audit'){
+		 __setStatus = 70 ;
+	 }
 
 	 $("#personForm   :input").attr("disabled",'disabled') ;
-	 $("."+currentStatus+"-input").removeAttr("disabled") ;
+	 $("."+__setStatus+"-input").removeAttr("disabled") ;
 	 $(".btn.input[disabled]").hide();
 	 $(".no-disabled").removeAttr("disabled") ;
 

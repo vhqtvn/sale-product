@@ -31,6 +31,7 @@
 		echo $this->Html->script('calendar/WdatePicker');
 		
 		$purchaseProductId = $params['arg1'] ;
+		$actionType = $params['arg2'] ;
 		
 		$Sale  = ClassRegistry::init("Sale") ;
 		$security  = ClassRegistry::init("Security") ;
@@ -207,6 +208,7 @@
     var realId =  '<?php echo $purchaseProduct['REAL_ID'];?>' ;
     var reqProductId =  '<?php echo $purchaseProduct['REQ_PRODUCT_ID'];?>' ;
     var reqPlanId =  '<?php echo $reqPlanId;?>' ;
+    var actionType = '<?php echo $actionType;?>'
    
     var $pp_edit = <?php echo $pp_edit?"true":"false" ;?> ;
 	var $ppp_add_product = <?php echo $ppp_add_product?"true":"false" ;?> ;
@@ -291,21 +293,10 @@
 									,{label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
 									<?php }?>
 									,{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
-		      	        			{label:"入库确认",action:function(){ WarehouseInAction(70,"入库确认") } }
+		      	        			{label:"入库确认",action:function(){ WarehouseInAction(75,"入库确认") } }
 								<?php };?>
 								<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
-	        			
-	        		},
-	        		{status:70,label:"采购审计",memo:true
-	        			,actions:[{}
-							<?php if( $ppp_confirm) { ?>
-									,{label:"保存",action:function(){ ForceAuditAction(70,"保存") }},
-		      	        			{label:"采购审计",action:function(){ AuditAction(75,"采购审计") } }
-									<?php };?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
-		      	        			]
-	        			
 	        		},
 	        		{status:75,label:"发货FBA",memo:true
 	        			
@@ -313,9 +304,16 @@
 							<?php if( $ppp_sendfba) { ?>
 									,{label:"保存",action:function(){ ForceAuditAction(75,"保存") }},
 		      	        			{label:"已发货FBA",action:function(){ AuditAction(80,"已发货FBA") } }
-									<?php };?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
+									<?php };?>
 		      	        			]
+        			,format:function(node){
+            			if( currentStatus==75 ){
+            				<?php  if( $actionType == 'audit' ){ ?>
+        								node.actions = [ {label:"采购审计",action:function(){ AuditAction(2,"采购审计") } }] ;
+            				<?php }	?>
+                		}
+            		}
 	        			
 	        		},
 	        		{status:80,label:"结束",format:function(node){
@@ -324,6 +322,12 @@
 							node.status = 80 ;
 							node.statusClass = "end-danger" ;
 						}
+
+						if( currentStatus==80 ){
+            				<?php  if( $actionType == 'audit' ){ ?>
+        								node.actions = [ {label:"采购审计",action:function(){ AuditAction(2,"采购审计") } }] ;
+            				<?php }	?>
+                		}
         			}}
 	        	] ;
    </script>
@@ -434,7 +438,7 @@
 									<tr class="real-purchase-tr">
 										<th>计划供应商：</th>
 										<td >
-										<select id="providor"   class="45-input   input"  data-validator='required''>
+										<select id="providor"   class="45-input 46-input   input"  data-validator='required''>
 										
 											<option value="">--</option>
 										<?php
@@ -452,10 +456,10 @@
 										<?php if( !empty($purchaseProduct['PROVIDOR']) ){ ?>
 										<a href="#" supplier-id="<?php echo $purchaseProduct['PROVIDOR'] ;?>">查看</a>
 										<?php } ?>
-										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 45-input  input">编辑</button>
+										<button sku="<?php echo $sku ;?>" class="btn edit_supplier 45-input 46-input  input">编辑</button>
 										</td>
 										<th>供应商报价：</th>
-										<td><input id="quotePrice"   class="45-input input"   type="text" 
+										<td><input id="quotePrice"   class="45-input 46-input input"   type="text" 
 													data-validator="double<?php echo $status>=45?",required":"" ?>"
 													 value='<?php echo $purchaseProduct['QUOTE_PRICE'] ;?>' /></td>
 										</td>
@@ -464,7 +468,7 @@
 										
 										<th>运费支付：</th>
 										<td>
-											<select id="shipFeeType"  class="45-input input  ship-fee"   <?php echo $status>=45?"data-validator='required'":"" ?> >
+											<select id="shipFeeType"  class="45-input 46-input input  ship-fee"   <?php echo $status>=45?"data-validator='required'":"" ?> >
 												<option value="">选择</option>
 												<option value="by" <?php if( $purchaseProduct['SHIP_FEE_TYPE'] == 'by' ) echo 'selected' ;?>>卖家承担</option>
 												<option value="hdfk" <?php if($purchaseProduct['SHIP_FEE_TYPE']  == 'hdfk' ) echo 'selected' ;?> >到付</option>
@@ -473,14 +477,14 @@
 										</td>
 										<th>运费：</th>
 										<td>
-											<input id="shipFee"   class="45-input input"   type="text"   data-validator="double"
+											<input id="shipFee"   class="45-input 46-input input"   type="text"   data-validator="double"
 													value='<?php echo $purchaseProduct['SHIP_FEE'] ;?>' />
 										</td>
 									</tr>
 									<tr>
 										<th>支付方式：</th>
 										<td>
-											<select  id="payType" class="45-input input"  <?php echo $status>=45?"data-validator='required'":"" ?>>
+											<select  id="payType" class="45-input 46-input  input"  <?php echo $status>=45?"data-validator='required'":"" ?>>
 												<option value="">--</option>
 												<option value="dh"  <?php if( $purchaseProduct['PAY_TYPE'] == 'dh' ) echo 'selected' ;?>>电汇</option>
 												<option value="zfb" <?php if( $purchaseProduct['PAY_TYPE'] == 'zfb' ) echo 'selected' ;?>>支付宝</option>
@@ -490,7 +494,7 @@
 										</td>
 										<th>承诺交期：</th>
 										<td>
-											<select  id="promiseDeliveryDate" class="45-input input"  <?php echo $status>=45?"data-validator='required'":"" ?>>
+											<select  id="promiseDeliveryDate" class="45-input 46-input input"  <?php echo $status>=45?"data-validator='required'":"" ?>>
 												<option value="">--</option>
 												<option value="1"  <?php if( $purchaseProduct['PROMISE_DELIVERY_DATE'] == '1' ) echo 'selected' ;?>>常备库存</option>
 												<option value="2" <?php if( $purchaseProduct['PROMISE_DELIVERY_DATE'] == '2' ) echo 'selected' ;?>>少量库存</option>

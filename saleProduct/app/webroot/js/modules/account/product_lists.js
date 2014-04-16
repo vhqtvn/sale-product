@@ -413,6 +413,7 @@
 				querys.reply = 0 ;
 				querys.accountId = currentAccountId||'-----';
 				querys.asin = asin ;
+				querys.searchKey = $("[name='searchKey']").val()  ;
 				querys.title = title ;
 				querys.quantity1 = $("[name='quantity1']").val() ;
 				querys.quantity2 = $("[name='quantity2']").val() ;

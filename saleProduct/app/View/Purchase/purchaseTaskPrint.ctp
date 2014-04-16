@@ -260,12 +260,15 @@
 			<!-- 采购信息 -->
 			<td style="text-algin:center;">
 			<?php 
-					$totalPrice = $pd['QUOTE_PRICE'] * $pd['SUPPIERABLE_NUM'] +($pd['SHIP_FEE']||0)  ;
-		           	if($totalPrice) $totalPrice = $totalPrice ;// .toFixed(2) ;
-		          
+					$shipFee = $pd['SHIP_FEE'] ;
+					if(empty( $shipFee )){
+						$shipFee = 0 ;
+					}
+			
+					$totalPrice =( $pd['QUOTE_PRICE'] * $pd['SUPPIERABLE_NUM'])  ;
+		           	//if($totalPrice) $totalPrice = $totalPrice ;// .toFixed(2) ;
 		           	$payType = $pd['PAY_TYPE'] ;
 		           
-		           	
 		           	if( $payType == "dh" ){
 		           		$payType = "电汇" ;
 		           	}else 	if( $payType == "zfb" ){
@@ -276,7 +279,12 @@
 		           		$payType = "账期支付" ;
 		           	}
 		           	
-
+		           	$shipFeeType = $pd['SHIP_FEE_TYPE'] ;
+		           	if( $shipFeeType == 'by' ){
+		           	}else{
+		           		$totalPrice = $totalPrice+$shipFee ;
+		           	}
+		           	
 		           	$html = '
 		           		<div>
 								<div class="product-purchase">

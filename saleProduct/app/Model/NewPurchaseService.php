@@ -128,6 +128,14 @@ class NewPurchaseService extends AppModel {
 			$memo =   $data["memo"] ;
 			$status = $data["status"] ;
 			$data['productId'] = $id ;
+			
+			if(status == 2){
+				$sql = "update sc_purchase_product set is_audit=2 where id='{@#productId#}'" ;
+				$data['memo'] = $data['trackMemo'] ;
+				$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
+				return ;
+			}
+			
 			//更新状态
 			$this->exeSql("sql_purchase_new_product_updateStatus", $data) ;
 			//添加轨迹

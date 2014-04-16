@@ -17,7 +17,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
-		echo $this->Html->script('modules/purchase/list');
+		echo $this->Html->script('modules/purchase/list_audit');
 		
 		$user = $this->Session->read("product.sale.user") ;
 		$groupCode = $user["GROUP_CODE"] ;
@@ -170,35 +170,15 @@
 					关键字:
 				</th>
 				<td>
-					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题、执行人、编号" style="width:400px;"/>
+					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题、执行人" style="width:400px;"/>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
-					<button class="btn btn-primary create-purchase-product"  >创建采购单</button>
 				</td>
 			</tr>						
 		</table>
 	</div>	
-	<div class="flow-bar1">
-		<center><table class="flow-table">						<tbody>
-		<tr>	
-		<td><div class="flow-node active total" status="">全部<span class="count"></span></div>
-	
-		</td>
-		<td>	&nbsp;&nbsp;&nbsp;&nbsp;</td>
-		<td><div class="flow-node disabled " status="45,46">询价<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="47">交易审批<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="48">待交易<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="49">待收货<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="50">QC验货<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="60">货品入库<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="70">采购审计<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="75">发货FBA<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="80">结束<span class="count"></span></div></td>
-		</tr>					</tbody>
-		</table>										
-		</center>
-	</div>
+
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 	<iframe src="" id="exportIframe" style="display:none"></iframe>

@@ -122,6 +122,7 @@
 		        		return "<a href='#'  offer-listing='"+record.ASIN+"'>"+val+"</a>" ;
 		        	}},
 		        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"渠道",width:"10%",forzen:false,align:"left"},
+		        	{align:"center",key:"REALTIME_QUANTITY",label:"实时库存",width:"8%",sort:true},
 		        	{align:"center",key:"EXIST_QUANTITY",label:"当前库存/周期需求量",width:"8%",sort:true,format:function(val,record){
 		        		return (val||'-')+"/"+(record.CALC_QUANTITY||'-') ;
 		        	}},
