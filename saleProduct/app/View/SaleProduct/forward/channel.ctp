@@ -119,9 +119,9 @@
 							if(!record) return ;
 							var limitPrice = $(this).find("input").val() ;
 							if( limitPrice &&  limitPrice >0 ){
-								limitPrices.push( { limitPrice: limitPrice, accountId:record.ACCOUNT_ID,sku:record.SKU }) ;
+								limitPrices.push( { limitPrice: limitPrice, accountId:record.ACCOUNT_ID,sku:record.SKU,asin:record.ASIN }) ;
 							}else{
-								limitPrices.push( { limitPrice: 0, accountId:record.ACCOUNT_ID,sku:record.SKU }) ;
+								limitPrices.push( { limitPrice: 0, accountId:record.ACCOUNT_ID,sku:record.SKU,asin:record.ASIN }) ;
 							}
 					});
 					
@@ -130,7 +130,7 @@
 						$(".grid-content").llygrid("reload",{},true) ;
 					});
 			}) ;
-			
+
 			$(".add-channel-product").click(function(){
 				openCenterWindow(contextPath+"/saleProduct/bindProduct/<?php echo $id;?>/1",1000,640) ;
 			}) ;
@@ -180,13 +180,14 @@
 
 </head>
 <body style="magin:0px;padding:0px;">
-			<div class="toolbar toolbar-auto query-bar">
+			<div class="toolbar toolbar-auto">
 				<table style="width:100%;" class="query-table  save-sale-price">
 					<tr>
-						<td>
+						<td  class=" query-bar" style="width:300px;">
 								<button class="btn btn-primary btn-mini add-btn add-channel-product">选择渠道产品</button>
 				 				<button class="btn btn-primary btn-mini add-btn add-sku">相关产品SKU</button>
-				 				&nbsp;&nbsp;&nbsp;&nbsp;
+						</td>
+						<td>
 				 				<?php if($limitPricePermissin){ ?>
 				 				<button class="btn btn-danger btn-mini add-btn save-limit">保存限价</button>
 				 				<?php  } ?>
@@ -197,6 +198,5 @@
 			<div style="clear:both;height:5px;"></div>
 			<div class="grid-content" style="width:99%;">
 			</div>
-	
 </body>
 </html>

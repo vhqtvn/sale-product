@@ -170,11 +170,9 @@ class CronTaskController extends AppController {
 				} 
 				
 				$Feed = $this->Amazonaccount->getPriceFeed( $MerchantIdentifier , $_products ) ;
-				debug($Feed) ;
 				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/price" ) ;
 				$this->triggerRequest($url,array("feed"=>$Feed )) ;
 			}catch(Exception $e){ }
 		}
 	}
-
-}
+	}

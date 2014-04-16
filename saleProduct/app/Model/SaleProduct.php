@@ -3,12 +3,35 @@ class SaleProduct extends AppModel {
 	var $useTable = "sc_product_flow" ;
 	
 	function saveLimitPrices($params){
+		$GatherData = ClassRegistry::init("GatherData") ;
+		$System = ClassRegistry::init("System") ;
+		
 		$limitPrices = json_decode( $params['limitPrices'] ) ;
 		foreach($limitPrices as $limit){
 			$limit = get_object_vars($limit) ;
 			$sql = "update sc_amazon_account_product set limit_price = '{@#limitPrice#}' 
 								where account_id = '{@#accountId#}' and sku='{@#sku#}'" ;
 			$this->exeSql($sql, $limit) ;
+			
+			$sql = "select * from sc_amazon_account_product where  account_id = '{@#accountId#}' and sku='{@#sku#}'" ;
+			$product = $this->getObject($sql, $limit) ;
+			$config = $this->System->getAccountPlatformConfig($product['ACCOUNT_ID']) ;
+			
+			if( $product['FULFILLMENT_CHANNEL'] != 'Merchant' ){
+				//采集FBA数据获取
+				$gatherParams = array(
+						"asin"=>$product['ASIN'] ,
+						"platformId"=>$config['PLATFORM_ID'] ,
+						"id"=>$product['ACCOUNT_ID'],
+						"index"=>0,
+						"taskId"=>"getFbaLowestPrice"
+				) ;
+				$GatherData->fbaPricePlatform($gatherParams) ;
+				//调整价格
+			}
+			
+			
+			
 		}
 	}
 	
