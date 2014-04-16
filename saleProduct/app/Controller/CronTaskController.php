@@ -50,6 +50,9 @@ class CronTaskController extends AppController {
     	$this->ScRequirement->createRequirement() ;
     }
     
+    /**
+     * 获取FBA最低价
+     */
     public function getFbaLowestPrice(){
     	/*获取系统所有FBA产品的ASIN  */
     	$accounts = $this->Amazonaccount->getAllAccountsFormat();
@@ -82,6 +85,20 @@ class CronTaskController extends AppController {
     			$this->GatherData->fbaPricePlatform($gatherParams) ;
     		}
     	}
+    }
+    
+    /**
+     * 清除亚马逊需求
+     */
+    public function  clearAmazonInventoryReq(){
+    	/*
+    	1、列出当前已经到达Amazon入库的流程对应的采购单
+    	2、判断采购单是否对应存在的需求，如果存在对应的需求，判断对应需求listing的库存是否已经到达Amazon，
+    	      如果已经达到，结束该需求；未到达，不处理
+    	3、采购单不存在对应的需求，检查对应该货品的未完成需求，是否满足，如果满足，结束改需求
+    	*/
+    	$this->ScRequirement->clearAmazonInventoryReq() ;
+    	
     }
 
     /**

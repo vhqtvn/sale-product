@@ -36,9 +36,28 @@
     
     
     <entry key="sql_supplychain_fbainventory_list">
-    	select * from sc_fba_supply_inventory
-    	where 1=1
-    	{@ and account_id = '#accountId#'}
+    	SELECT sfsi.*,
+       			srp.NAME AS REAL_NAME,
+       			srp.REAL_SKU,
+       			srp.IMAGE_URL,
+       			saap.TITLE
+			 FROM sc_fba_supply_inventory sfsi,
+			sc_amazon_account_product saap
+			LEFT JOIN sc_real_product_rel srpr
+			ON srpr.ACCOUNT_ID =saap.ACCOUNT_ID
+			AND srpr.SKU = saap.SKU
+			LEFT JOIN sc_real_product srp
+			ON srpr.REAL_ID = srp.ID
+			WHERE sfsi.ACCOUNT_ID = saap.ACCOUNT_ID
+			AND sfsi.SELLER_SKU = saap.SKU
+    	{@ and sfsi.account_id = '#accountId#'}
+    	{@ and (
+    	    saap.title like '%searchKey%'  or
+    	    srp.real_sku like '%searchKey%' or 
+    	    srp.name like '%searchKey%' or
+    	    saap.asin like '%searchKey%' or
+    	    saap.sku like '%searchKey%'
+    	)}
     </entry>
     
      <entry key="sql_supplychain_fbainventory_details_list">

@@ -2,6 +2,111 @@
 class ScRequirement extends AppModel {
 	var $useTable = "sc_election_rule" ;
 	
+	/*
+	 1、列出当前已经到达Amazon入库的流程对应的采购单
+	 2、判断采购单是否对应存在的需求，如果存在对应的需求，判断对应需求listing的库存是否已经到达Amazon，
+		  如果已经达到，结束该需求；未到达，不处理
+	 3、采购单不存在对应的需求，检查对应该货品的未完成需求，是否满足，如果满足，结束改需求
+	*/
+	public function clearAmazonInventoryReq(){
+		$sql = "select * from sc_purchase_product where status = '75'" ;
+		$items = $this->exeSqlWithFormat( $sql , array() ) ;
+		foreach( $items as $item ){
+			$reqProductId = $item['REQ_PRODUCT_ID'] ;
+			$realId  = $item['REAL_ID'] ;
+			$qualifiedProductsNum = $item['QUALIFIED_PRODUCTS_NUM'] ;//采购合格数量
+			if( empty($reqProductId) ){
+				//不存在对应的需求单，只判断是否存在对应的库存
+				$sql = "SELECT sfsi.* FROM  sc_fba_supply_inventory sfsi,
+								   sc_real_product_rel srpr
+								 WHERE sfsi.ACCOUNT_ID = srpr.ACCOUNT_ID
+								 AND sfsi.SELLER_SKU = srpr.SKU and srpr.real_id = '{@#realId#}'   " ;
+				$inventorys = $this->exeSqlWithFormat($sql, array("realId"=>$realId)) ;
+				if( empty($inventorys) || count($inventorys) <=0 ){
+						//不存在该产品的库存，则不处理
+						continue ;
+				}else{
+						//QUALIFIED_PRODUCTS_NUM
+						$isComplete = true ;
+						$count = 0 ;
+						foreach($inventorys as $inventory){
+							$totalSupplyQuantity = $inventory['TOTAL_SUPPLY_QUANTITY'] ;//当前总库存
+							$quantityInbound = $inventory['QUANTITY_INBOUND'] ;//当前在途库存
+							$count = $count+$totalSupplyQuantity;
+						}
+						if( $count >= ($qualifiedProductsNum-3)  ){
+							
+						}else{
+							$isComplete = false ;
+						}
+						if( $isComplete ){
+							//更新采购计划完成
+							$sql = "update sc_purchase_product set status=80 where id = '{@#id#}'" ;
+							$this->exeSql($sql, array("id"=>$item['ID'])) ;
+
+							$data=array() ;
+							$data['status'] = 80 ;
+							$data['productId'] = $item['ID'] ;
+							$data['memo'] = "FBA入库完成" ;
+							$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
+							
+							//产品开发结束流程
+							$sql = "UPDATE sc_product_dev spd SET spd.FLOW_STATUS = 80
+							WHERE CONCAT(spd.ASIN,'_',spd.TASK_ID) IN (
+								SELECT DEV_ID FROM sc_purchase_product sppd  where id = '{@#productId#}'
+							) " ;
+							$this->exeSql($sql, $data) ;
+						}
+				}
+			}else{ //存在对应的需求单
+				$sql = "select ssri.*,sfsi.TOTAL_SUPPLY_QUANTITY ,
+											sfsi.QUANTITY_INBOUND 
+						from sc_supplychain_requirement_item ssri
+						left join sc_fba_supply_inventory sfsi
+						on ssri.account_id = sfsi.account_id and ssri.listing_sku=sfsi.seller_sku
+						where ssri.req_product_id = '{@#reqProductId#}'" ;
+				$records = $this->exeSqlWithFormat($sql, array("reqProductId"=>$reqProductId)) ;
+				$isComplete = true ;
+				foreach( $records as $record ){
+					$existQuantity = $record['EXIST_QUANTITY'] ;//创建需求时存在的库存数量
+					$purchaseQuantity = $record['PURCHASE_QUANTITY'] ;
+					if( empty($purchaseQuantity) || $purchaseQuantity==0 ){
+						continue ;
+					}
+					$totalSupplyQuantity = $record['TOTAL_SUPPLY_QUANTITY'] ;//当前总库存
+					$quantityInbound = $record['QUANTITY_INBOUND'] ;//当前在途库存
+					if( $totalSupplyQuantity > $existQuantity ){//如果当前库存大于创建需求时库存，说明已经存在入库产品
+						//更新需求为已完成	
+						//$sql = "update sc_supplychain_requirement_plan_product set status=6 where req_product_id = '{@#reqProductId#}'" ;
+						//$this->exeSql($sql, array("reqProductId"=>$reqProductId)) ;
+					}else{
+						$isComplete = false ;
+					}
+				}
+				if( $isComplete ){
+					//更新需求计划完成
+					$sql = "update sc_supplychain_requirement_plan_product set status=6 where req_product_id = '{@#reqProductId#}'" ;
+					$this->exeSql($sql, array("reqProductId"=>$reqProductId)) ;
+					//更新采购计划完成
+					$sql = "update sc_purchase_product set status=80 where id = '{@#id#}'" ;
+					$this->exeSql($sql, array("id"=>$item['ID'])) ;
+					$data=array() ;
+					$data['status'] = 80 ;
+					$data['productId'] = $item['ID'] ;
+					$data['memo'] = "FBA入库完成" ;
+					$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
+					
+					//产品开发结束流程
+					$sql = "UPDATE sc_product_dev spd SET spd.FLOW_STATUS = 80
+						WHERE CONCAT(spd.ASIN,'_',spd.TASK_ID) IN (
+							SELECT DEV_ID FROM sc_purchase_product sppd  where id = '{@#productId#}'
+						) " ;
+					$this->exeSql($sql, $data) ;
+				}
+			}
+		}
+	}
+	
 	public  function transferPlanItem2Product($planId){
 		$items = $this->exeSqlWithFormat("sql_supplychain_requirement_getFormatPlanItem2Product", array('planId'=>$planId)) ;
 		if( count($items) >0 ){

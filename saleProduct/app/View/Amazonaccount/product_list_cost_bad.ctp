@@ -88,79 +88,108 @@
 			font-size:12px;
    		}
    </style>
+   
+   <style type="text/css">
+		.flow-node{
+			min-width:50px; 
+			height:20px; 
+			border:5px solid #0FF; 
+			border-radius:5px;
+			font-weight:bold;
+			cursor:pointer;
+		}
+		
+		.flow-node.active{
+			border-color:#3809F7 ;
+			background-color:#3809F7 ;
+			color:#EEE;
+		}
+		
+		.flow-node.passed{
+			border-color:#92E492 ;
+			background-color:#92E492 ;
+			
+		}
+		
+		.flow-node.termination{
+			color:red;
+	        background-color:pink ;
+			border-color:pink;
+		    white-space: nowrap;
+		}
+		
+		.flow-node.disabled{
+			border-color:#CCC ;
+			background-color:#CCC ;
+			color:#EEE;
+		}
+		
+		.flow-table{
+			text-align:center;
+			margin:5px 0px;
+		}
+		
+
+		.flow-action{
+			position:absolute;;
+			right:10px;
+			top:48px;
+			z-index:100;
+		}
+		
+		.flow-split{
+			font-size:30px;
+		}
+		
+		.memo{
+			position:absolute;
+			top:85px;
+			z-index:1;
+			right:10px;
+			width:300px;
+			height:50px;
+			background:#ffd700;
+			display:none;
+		}
+		
+		.memo-control{
+			display:none;
+		}
+		
+		.tag-container li{
+			float:left;
+			list-style: none;
+			margin:2px 5px;
+		 	padding:2px;
+		}
+		
+		.count{
+			font-weigbt:bold;
+			color:red;
+		}
+	</style>
 
 </head>
 <body style="magin:0px;padding:0px;">
-	<div data-widget="layout" style="width:100%;height:100%;">
-		<div region="center" split="true" border="true" title="产品列表" style="padding:2px;">
-			<div class="toolbar toolbar-auto query-bar">
-				<table style="width:100%;" class="query-table">	
-					<tr>
-						<th>ASIN:</th>
-						<td>
-							<input type="text" name="asin" style="width:100px"/>
-						</td>
-						<th>名称:</th>
-						<td>
-							<input type="text" name="title" style="width:100px"/>
-						</td>
-						<th>价格:</th>
-						<td>
-							从<input type="text" name="price1" style="width:50px"/>到<input type="text" name="price2" style="width:50px"/>
-						</td>
-						<th>销售渠道:</th>
-						<td>
-							<select name='fulfillmentChannel'  class="span2">
-								<option value=''>全部</option>
-								<option value='AMAZON_NA'>Amazon</option>
-								<option value='Merchant'>Merchant</option>
-								<option value='-'>未知</option>
-							</select>
-						</td>
-					</tr>
-					<tr>	
-						<th>使用程度:</th>
-						<td>
-							<select name='itemCondition'  style="width:100px">
-								<option value=''>全部</option>
-								<option value=11>New</option>
-								<option value=1>Used</option>
-								<option value='-'>未知</option>
-							</select>
-						</td>
-						<th>FM商品:</th>
-						<td>
-							<select name='isFM'   style="width:100px">
-								<option value=''>全部</option>
-								<option value="FM">FM</option>
-								<option value="NEW">NEW</option>
-							</select>
-						</td>
-						<th>排名:</th>
-						<td>
-							<select name='pm'   style="width:100px">
-								<option value=''>全部</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="other">其他</option>
-							</select>
-						</td>
-						<td colspan="2">
-							<button class="btn btn-primary query query-btn" >查询</button>
-						</td>
-					</tr>						
-				</table>
-			</div>
-			
+
+				<div class="flow-bar1">
+		<center><table class="flow-table">						
+		<tbody>
+		<tr>	
+		<td>	&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td><div class="flow-node active " status="1">采购成本不完整<span class="count"></span></div></td>
+		<td class="flow-split">-</td><td><div class="flow-node disabled" status="2">售价不完整<span class="count"></span></div></td>
+		<td class="flow-split">-</td><td><div class="flow-node disabled" status="3">Amazon费用缺失<span class="count"></span></div></td>
+		<td class="flow-split">-</td><td><div class="flow-node disabled" status="4">重量缺失<span class="count"></span></div></td>
+		<td class="flow-split">-</td><td><div class="flow-node disabled" status="5">利润不准确<span class="count"></span></div></td>
+		</tr>					
+		</tbody>
+		</table>										
+		</center>
+	</div>
 			<div style="clear:both;height:5px;"></div>
 			<div class="grid-content" style="width:99%;">
 			</div>
-			
-		</div>
-   </div>
-	
+
 </body>
 </html>

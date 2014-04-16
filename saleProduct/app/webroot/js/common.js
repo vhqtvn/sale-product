@@ -1073,6 +1073,14 @@ $("[product-detail]").live("click",function(){
 }) ;
 
 
+$("[product-edit]").live("click",function(){
+	var asin = $(this).attr("product-edit") ;
+	openCenterWindow(contextPath+"/saleProduct/details/"+asin,950,650) ;
+	return false;
+}) ;
+
+
+
 $("[supplier-id]").live("click",function(){
 	var supplierId = $(this).attr("supplier-id") ;
 	openCenterWindow(contextPath+"/supplier/view/"+supplierId,900,580) ;

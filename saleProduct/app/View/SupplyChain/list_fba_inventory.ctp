@@ -52,6 +52,8 @@
 <div class="toolbar toolbar-auto toolbar1 query-container">
 		<table>
 			<tr>
+				<th>关键字：</th>
+				<td><input type="text"  name="searchKey" style="width:200" placeHolder="ASIN、SKU、NAME"/></td>
 				<th>账号：</th>
 				<td>
 					<select name="accountId" class="span2">

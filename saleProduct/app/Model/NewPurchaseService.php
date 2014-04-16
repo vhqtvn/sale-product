@@ -273,6 +273,5 @@ class NewPurchaseService extends AppModel {
 		  
 		}
 		return $limitPrice ;
-	
 	}
 }

@@ -16,16 +16,23 @@ $(function(){
 	$(".grid-content").llygrid({
 		columns:[
 			{align:"center",key:"SELLER_SKU",label:"Seller Sku",width:"8%",forzen:false,align:"left"},
-           	{align:"center",key:"FNSKU",label:"FNSKU",width:"20%",forzen:false,align:"left"},
-           	{align:"center",key:"ASIN",label:"Asin",width:"20%"},
+           //	{align:"center",key:"FNSKU",label:"FNSKU",width:"20%",forzen:false,align:"left"},
+           	{align:"center",key:"ASIN",label:"Asin",width:"10%",format:function(val){
+           		return "<a href='#' offer-listing='"+val+"'>"+val+"</a>" ;
+           	}},
+           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:"img"}},
+           	{align:"center",key:"REAL_SKU",label:"货品SKU",width:"8%",forzen:false,align:"left",format:function(val){
+           		return "<a href='#' product-realsku='"+val+"'>"+(val||"")+"</a>" ;
+           	}},
+           	{align:"center",key:"REAL_NAME",label:"货品名称",width:"8%",forzen:false,align:"left"},
            	{align:"center",key:"CONDITION",label:"Condition",width:"10%"},
-           	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"Total Supply Quantity",width:"20%"},
-           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"InStock Supply Quantity",width:"20%"},
-           	{align:"center",key:"QUANTITY_IN_STOCK",label:"Quantitiy InStock",width:"20%"},
-           	{align:"center",key:"QUANTITY_INBOUND",label:"Quantitiy Inbound",width:"20%"},
-           	{align:"center",key:"QUANTITY_TRANSFER",label:"Quantitiy Transfer",width:"20%"},
-           	{align:"center",key:"EARLIEST_TIMEPOINT_TYPE",label:"Earliest Timepoint TYpe",width:"20%"},
-        	{align:"center",key:"EARLIEST_DATETIME",label:"Earliest Datetime",width:"20%"}
+           	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"Total Supply Quantity",width:"10%"},
+           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"InStock Supply Quantity",width:"10%"},
+           	{align:"center",key:"QUANTITY_IN_STOCK",label:"Quantitiy InStock",width:"10%"},
+           	{align:"center",key:"QUANTITY_INBOUND",label:"Quantitiy Inbound",width:"10%"},
+           	{align:"center",key:"QUANTITY_TRANSFER",label:"Quantitiy Transfer",width:"10%"},
+           	{align:"center",key:"EARLIEST_TIMEPOINT_TYPE",label:"Earliest Timepoint TYpe",width:"10%"},
+        	{align:"center",key:"EARLIEST_DATETIME",label:"Earliest Datetime",width:"10%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:10,

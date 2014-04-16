@@ -151,77 +151,138 @@
 	]]>	      
     </entry>
     
+    <entry key="sql_account_product_cost_bad_statics">
+    <![CDATA[	
+		SELECT  1 as STATUS,count(1) as COUNT
+					FROM sc_amazon_account saa,
+					sc_amazon_account_product saap,
+					sc_real_product srp,
+					sc_real_product_rel srpr
+					LEFT JOIN sc_listing_cost slc
+					ON slc.account_id = srpr.account_id
+					AND slc.listing_sku = srpr.sku
+					WHERE 
+					saap.status = 'Y'
+					AND srp.id= srpr.REAL_ID
+					AND saa.id = saap.account_id
+					AND saap.account_id = srpr.account_id
+					AND saap.sku = srpr.sku
+					AND saa.status= 1
+					and (  slc.P_PURCHASE_COST is null or slc.P_PURCHASE_COST='' or slc.P_PURCHASE_COST = 0) 
+		union
+		SELECT  2 as STATUS,count(1) as COUNT
+					FROM sc_amazon_account saa,
+					sc_amazon_account_product saap,
+					sc_real_product srp,
+					sc_real_product_rel srpr
+					LEFT JOIN sc_listing_cost slc
+					ON slc.account_id = srpr.account_id
+					AND slc.listing_sku = srpr.sku
+					WHERE 
+					saap.status = 'Y'
+					AND srp.id= srpr.REAL_ID
+					AND saa.id = saap.account_id
+					AND saap.account_id = srpr.account_id
+					AND saap.sku = srpr.sku
+					AND saa.status= 1
+				and (  slc.total_price is null or slc.total_price='' or slc.total_price = 0) 
+		union
+		SELECT  3 as STATUS,count(1) as COUNT
+					FROM sc_amazon_account saa,
+					sc_amazon_account_product saap,
+					sc_real_product srp,
+					sc_real_product_rel srpr
+					LEFT JOIN sc_listing_cost slc
+					ON slc.account_id = srpr.account_id
+					AND slc.listing_sku = srpr.sku
+					WHERE 
+					saap.status = 'Y'
+					AND srp.id= srpr.REAL_ID
+					AND saa.id = saap.account_id
+					AND saap.account_id = srpr.account_id
+					AND saap.sku = srpr.sku
+					AND saa.status= 1
+					and (  slc.fba_cost is null or slc.fba_cost='' or slc.fba_cost = 0) and slc.fulfillment_channel like '%AMAZON%' 
+		union
+		SELECT  4 as STATUS,count(1) as COUNT
+					FROM sc_amazon_account saa,
+					sc_amazon_account_product saap,
+					sc_real_product srp,
+					sc_real_product_rel srpr
+					LEFT JOIN sc_listing_cost slc
+					ON slc.account_id = srpr.account_id
+					AND slc.listing_sku = srpr.sku
+					WHERE 
+					saap.status = 'Y'
+					AND srp.id= srpr.REAL_ID
+					AND saa.id = saap.account_id
+					AND saap.account_id = srpr.account_id
+					AND saap.sku = srpr.sku
+					AND saa.status= 1
+					and (  srp.WEIGHT is null or srp.WEIGHT='' or srp.WEIGHT = 0) 
+		union
+		SELECT  5 as STATUS,count(1) as COUNT
+					FROM sc_amazon_account saa,
+					sc_amazon_account_product saap,
+					sc_real_product srp,
+					sc_real_product_rel srpr
+					LEFT JOIN sc_listing_cost slc
+					ON slc.account_id = srpr.account_id
+					AND slc.listing_sku = srpr.sku
+					WHERE 
+					saap.status = 'Y'
+					AND srp.id= srpr.REAL_ID
+					AND saa.id = saap.account_id
+					AND saap.account_id = srpr.account_id
+					AND saap.sku = srpr.sku
+					AND saa.status= 1
+					and slc.total_price >0
+					and slc.total_cost >0
+					and (
+					     ( slc.total_price - slc.total_cost ) >  slc.total_cost
+					     or
+					     slc.total_price - slc.total_cost < 0 
+					)
+	]]>	      
+    </entry>
+    
     <!-- 成本数据不完整：
           1、关联到货品
           2、成本数据不完整
      -->
     <entry key="sql_account_product_list_cost_bad">
     <![CDATA[	
-		SELECT  sc_amazon_account_product.* ,
-					(case when ( sc_amazon_account_product.title is  null  or sc_amazon_account_product.title = '') then sp.title else sc_amazon_account_product.title end ) as P_TITLE,
-					(CASE WHEN ( sc_amazon_account_product.title IS  NULL  OR sc_amazon_account_product.title = '') 
-					THEN (
-					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.ASIN LIMIT 0,1)
-					) ELSE sc_amazon_account_product.LOCAL_URL END ) AS P_LOCAL_URL,
+		SELECT  saap.* ,
+					srp.NAME,
+					srp.IMAGE_URL,
 					srpr.REAL_ID,
 					srpr.REAL_SKU
 					FROM sc_amazon_account saa,
-					sc_amazon_account_product 
-					LEFT JOIN sc_product sp
-					ON sp.ASIN = sc_amazon_account_product.ASIN
-					LEFT JOIN sc_real_product_rel srpr
-					on srpr.sku = sc_amazon_account_product.sku
-					where sc_amazon_account_product.status = 'Y'
-					and saa.id = sc_amazon_account_product.account_id
-					and  exists (
-					     select 1 from sc_real_product_rel srpr1,
-					             sc_real_product srp
-					      where srpr1.account_id = saa.id and srpr1.sku =sc_amazon_account_product.sku
-					          and srp.id =srpr1.real_id
-					          and srp.status = 1
-					)
-					and not exists (
-					   select 1 from sc_listing_cost slc where slc.account_id = saa.id and slc.listing_sku= sc_amazon_account_product.sku
-					   and slc.total_price >0 and slc.total_cost >0
-					)
-					and saa.status= 1
-					{@ and sp.title like '%#title#%' }
-					{@ and sc_amazon_account_product.asin = '#asin#' }
-					{@ and sc_amazon_account_product.sku = '#sku#' }
-					{@ and sc_amazon_account_product.quantity >= #quantity1# }
-					{@ and sc_amazon_account_product.quantity <= #quantity2# }
-					{@ and sc_amazon_account_product.price >= #price1# }
-					{@ and sc_amazon_account_product.price <= #price2# }
-					{@ and sc_amazon_account_product.account_id = '#accountId#' }
-					{@ and IS_FM = '#isFM#' }
-					{@ and country >= '#outAemricanArea#' }
-					{@ and country = '#inAemricanArea#' }
-					{@ and warning like '%#warning#%' }
-					
-					{@ and ( fulfillment_channel is null or fulfillment_channel = '' ) and 1 = #fulfillmentChannelNull# }
-					{@ and fulfillment_channel like '%#fulfillmentChannel#%' }
-					
-					{@ and ( item_condition is null or item_condition = '' ) and 1 = #itemContidtionNull# }
-					{@ and item_condition = '#itemCondition#' }
-					
-					{@ and ( feed_price <> '' and feed_price is not null ) and 1 = #isPriceQuery# }
-					{@ and ( feed_quantity <> '' and feed_quantity is not null ) and 1 = #isQuantityQuery# }
-					{@ and ( F_PM = '#pm#' or N_PM = '#pm#' or U_PM = '#pm#'  or FBA_PM = '#pm#' ) }
-					
-					{@ and sc_amazon_account_product.sku not in (
-								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '#accountId#')
-						and 1= #uncategory#
-					}
-					{@ and sc_amazon_account_product.sku in (
-								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
-								and sku is not null and account_id = '#accountId#'
+					sc_amazon_account_product saap,
+					sc_real_product srp,
+					sc_real_product_rel srpr
+					LEFT JOIN sc_listing_cost slc
+					ON slc.account_id = srpr.account_id
+					AND slc.listing_sku = srpr.sku
+					WHERE 
+					saap.status = 'Y'
+					AND srp.id= srpr.REAL_ID
+					AND saa.id = saap.account_id
+					AND saap.account_id = srpr.account_id
+					AND saap.sku = srpr.sku
+					AND saa.status= 1
+					{@ and (  slc.P_PURCHASE_COST is null or slc.P_PURCHASE_COST='' or slc.P_PURCHASE_COST = 0) and #status1# = 1}
+					{@ and (  slc.total_price is null or slc.total_price='' or slc.total_price = 0) and #status2# = 1}
+					{@ and (  slc.fba_cost is null or slc.fba_cost='' or slc.fba_cost = 0) and slc.fulfillment_channel like '%AMAZON%' and #status3# = 1}
+					{@ and (  srp.WEIGHT is null or srp.WEIGHT='' or srp.WEIGHT = 0) and #status4# = 1}
+					{@ and  #status5# = 1 
+					and slc.total_price >0
+					and slc.total_cost >0
+					and (
+					     ( slc.total_price - slc.total_cost ) >  slc.total_cost
+					     or
+					     slc.total_price - slc.total_cost < 0 
 					)}
-					{@ and 
-					concat(srpr.account_id ,'$$', sc_amazon_account_product.sku ,'$$', sc_amazon_account_product.asin) 
-					  in (
-							select ste.entity_id  from sc_tag_entity ste where ste.entity_type like 'listingTag%'
-						and ste.tag_id = '#tagId#'
-					)
 	]]>	      
     </entry>
     
