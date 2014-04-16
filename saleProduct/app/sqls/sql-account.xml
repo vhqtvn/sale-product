@@ -163,6 +163,7 @@
 					AND slc.listing_sku = srpr.sku
 					WHERE 
 					saap.status = 'Y'
+					and saap.fulfillment_channel like '%AMAZON%'
 					AND srp.id= srpr.REAL_ID
 					AND saa.id = saap.account_id
 					AND saap.account_id = srpr.account_id
@@ -180,6 +181,7 @@
 					AND slc.listing_sku = srpr.sku
 					WHERE 
 					saap.status = 'Y'
+					and saap.fulfillment_channel like '%AMAZON%'
 					AND srp.id= srpr.REAL_ID
 					AND saa.id = saap.account_id
 					AND saap.account_id = srpr.account_id
@@ -197,6 +199,7 @@
 					AND slc.listing_sku = srpr.sku
 					WHERE 
 					saap.status = 'Y'
+					and saap.fulfillment_channel like '%AMAZON%'
 					AND srp.id= srpr.REAL_ID
 					AND saa.id = saap.account_id
 					AND saap.account_id = srpr.account_id
@@ -214,6 +217,7 @@
 					AND slc.listing_sku = srpr.sku
 					WHERE 
 					saap.status = 'Y'
+					and saap.fulfillment_channel like '%AMAZON%'
 					AND srp.id= srpr.REAL_ID
 					AND saa.id = saap.account_id
 					AND saap.account_id = srpr.account_id
@@ -231,6 +235,7 @@
 					AND slc.listing_sku = srpr.sku
 					WHERE 
 					saap.status = 'Y'
+					and saap.fulfillment_channel like '%AMAZON%'
 					AND srp.id= srpr.REAL_ID
 					AND saa.id = saap.account_id
 					AND saap.account_id = srpr.account_id
@@ -254,6 +259,7 @@
     <![CDATA[	
 		SELECT  saap.* ,
 					srp.NAME,
+					saa.name as ACCOUNT_NAME,
 					srp.IMAGE_URL,
 					srpr.REAL_ID,
 					srpr.REAL_SKU
@@ -269,6 +275,7 @@
 					AND srp.id= srpr.REAL_ID
 					AND saa.id = saap.account_id
 					AND saap.account_id = srpr.account_id
+					and saap.fulfillment_channel like '%AMAZON%'
 					AND saap.sku = srpr.sku
 					AND saa.status= 1
 					{@ and (  slc.P_PURCHASE_COST is null or slc.P_PURCHASE_COST='' or slc.P_PURCHASE_COST = 0) and #status1# = 1}
