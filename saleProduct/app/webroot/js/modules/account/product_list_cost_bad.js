@@ -27,6 +27,7 @@
 							}
 							return html.join("") ;
 						}},
+						{align:"left",key:"ACCOUNT_NAME",label:"账号",width:"8%"},
 						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
 						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
 							return "<a href='#' product-edit='"+record.REAL_ID+"'>"+(val||"")+"</a>" ;
@@ -34,7 +35,7 @@
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		return "<a href='#' offer-listing='"+val+"'>"+(val||"")+"</a>" ;
 			           	}},
-			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"6%",forzen:false,align:"left",format:{type:'img'}},
+			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 			           	{align:"center",key:"NAME",label:"产品标题",width:"10%",forzen:false,align:"left"},
 			           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
 			           		if(!val) return '-' ;
