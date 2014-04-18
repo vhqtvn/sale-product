@@ -362,6 +362,9 @@
 		and saap.IS_ANALYSIS = 1
 	 
 	  -->
+	  <!-- 
+	  	存在货品中：上次审批不通过三天内
+	   -->
      <entry key="sql_supplychain_requirement_cancreate_list">
     	select 
     	        saap.*,
@@ -372,6 +375,14 @@
     	where saap.IS_ANALYSIS = 1
     	and saap.status = 'Y'
     	and saap.account_id=saa.id
+    	and  exists (
+    	    select 1 from sc_real_product_rel srpr,
+    	            sc_real_product srp
+    	       where srpr.real_id = srp.id
+    	            and srpr.account_id = saap.account_id and srpr.sku = saap.sku
+    	            and srp.IS_ONSALE= 1
+    	            and ( srp.REQ_AUDIT_NO_TIME is null  or DATEDIFF( NOW() , srp.REQ_AUDIT_NO_TIME ) >=3 )
+    	)
     	and saa.status = 1
     	and not exists (
     		SELECT * FROM sc_supplychain_requirement_plan_product ssrp,
