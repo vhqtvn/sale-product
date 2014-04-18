@@ -1085,15 +1085,13 @@ $("[supplier-id]").live("click",function(){
 	var supplierId = $(this).attr("supplier-id") ;
 	openCenterWindow(contextPath+"/supplier/view/"+supplierId,900,580) ;
 	return false ;
-})
+});
 
 $("[offer-listing]").live("click",function(){
 	var sku = $(this).attr("offer-listing") ;
-	openCenterWindow(""+contextPath+"/page/forward/Platform.asin/"+sku) ;
+	openCenterWindow(""+contextPath+"/page/forward/Platform.asin/"+sku,1000,650) ;
 	return false ;
-})
-
-
+});
 
 $("[product-realsku]").live("click",function(){
 	var sku = $(this).attr("product-realsku") ;

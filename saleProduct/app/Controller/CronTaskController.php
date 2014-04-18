@@ -15,6 +15,48 @@ class CronTaskController extends AppController {
     }
     
     /**
+     * 格式化计算货品重量
+     */
+    public  function calcRealProductWeight(){
+    	$sql = "select ID,WEIGHT from sc_real_product where is_onsale=1" ;
+    	$products= $this->Utils->exeSqlWithFormat($sql,array()) ;
+    	foreach( $products as $product ){
+    		$realId = $product['ID'] ;
+    		$weight = $product['WEIGHT'] ;
+    		if( empty($weight) || $weight == 0 ){
+    			$sql = "SELECT MAX(spsi.WEIGHT) AS WEIGHT FROM sc_purchase_supplier_inquiry spsi
+								WHERE ( (
+								spsi.SKU IN (
+								  SELECT srp.REAL_SKU FROM sc_real_product srp WHERE srp.ID = '{@#realId#}'
+								)
+								AND spsi.SKU IS NOT NULL 
+								AND spsi.SKU !=''
+								)
+								OR (
+								  spsi.ASIN IS NOT NULL
+								  AND spsi.ASIN !=''
+								  AND spsi.ASIN IN (
+								    SELECT saap.ASIN FROM sc_amazon_account_product saap,
+								    sc_real_product_rel srpr
+								    WHERE saap.ACCOUNT_ID = srpr.ACCOUNT_ID
+								    AND saap.SKU = srpr.SKU
+								    AND srpr.REAL_ID = '{@#realId#}'  
+								  )
+								)
+								)
+								AND spsi.WEIGHT IS NOT NULL
+								AND spsi.WEIGHT !=''" ;//获取询价重量
+    			
+    			$weight= $this->Utils->getObject($sql,array("realId"=>$realId)) ;
+    			if(!empty($weight) && !empty($weight['WEIGHT']) ){
+    				$sql = "update sc_real_product set weight='{@#weight#}' where id='{@#realId#}'" ;
+    				$this->Utils->exeSql( $sql , array("realId"=>$realId,"weight"=>$weight['WEIGHT']) ) ;
+    			}
+    		}
+    	}
+    }
+    
+    /**
      * 同步成本
      */
     public function asynCost(){
@@ -102,12 +144,24 @@ class CronTaskController extends AppController {
     }
 
     /**
-     * 执行营销
+     * 
+     * 执行营销,前提价格数据准确
+     * 1、采集价格数据
      */
 	public function  execMarketing(){
 		$accounts = $this->Amazonaccount->getAllAccountsFormat();
 		foreach( $accounts as $account ){
 			$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
+			//		$url = "http://".$domain."/".$context."/index.php/taskAsynAmazon/getMyPriceForSKU/".$accountId."?".$random ;
+			
+			try{
+				//同步实时价格
+				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/getMyPriceForSKU" ) ;
+				$this->triggerRequest($url,null) ;
+			}catch(Exception $e){
+			}
+			
+			
 			try{
 				$sql = "select * from sc_amazon_account_product 
 						where 
@@ -120,14 +174,19 @@ class CronTaskController extends AppController {
 				$_products = array() ;
 				
 				foreach( $items as $item ){
+					//debug( $item ) ;
+					$listPrice = $item['LIST_PRICE'] ;
 					
-					$listPrice = $item['PRICE'] ;
 					$lowestFbaPrice = $item['LOWEST_FBA_PRICE'] ;
 					$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
 					$execPrice =  $item['LIMIT_PRICE'] ;//限价
-					
+
 					if( empty($execPrice) || $execPrice==0 ){
-						$execPrice = $listPrice ;
+						$execPrice = empty($listPrice)?$item['PRICE']:$listPrice ;
+					}
+					
+					if( empty($listPrice) ){
+						$listPrice = $lowestFbaPrice*1.1 ;
 					}
 					//debug($item) ;
 					
@@ -170,6 +229,7 @@ class CronTaskController extends AppController {
 				} 
 				
 				$Feed = $this->Amazonaccount->getPriceFeed( $MerchantIdentifier , $_products ) ;
+				debug($Feed) ;
 				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/price" ) ;
 				$this->triggerRequest($url,array("feed"=>$Feed )) ;
 			}catch(Exception $e){ }

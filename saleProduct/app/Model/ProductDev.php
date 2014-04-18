@@ -2,6 +2,10 @@
 class ProductDev extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
+	function loadStatics(){
+		
+	}
+	
 	function getProductDev($id){
 		return $this->getObject("select * from sc_product_dev where id='{@#id#}'", array("id"=>$id)) ;
 	}

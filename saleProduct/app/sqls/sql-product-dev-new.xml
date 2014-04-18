@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+		<entry key="sql_productDev_new_loadStativcs">
+				SELECT FLOW_STATUS AS STATUS,COUNT(1) AS COUNT FROM sc_product_developer WHERE FLOW_STATUS !=80
+				GROUP BY FLOW_STATUS
+		</entry>
+		
+		<entry key="sql_productDev_new_IsDeving">
+		     select * from sc_product_developer where flow_status not in ('15','80')
+		       and asin ='{@#asin#}'
+		</entry>
+		
+		<entry key="sql_pdev_new_getByDevId">
+				SELECT sp.TITLE as P_TITLE, 
+				    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin  ) as ASIN_COUNT,
+				    (SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+					ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
+					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
+					spfd.*,
+					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
+					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.dev_charger ) AS DEV_CHARGER_NAME,
+					( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME,
+					( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME,
+					( SELECT count(1) FROM sc_purchase_supplier_inquiry spsi 
+							WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 12 MONTH)) 
+							and spsi.asin = spfd.asin
+							) as INQUIRY_COUNT
+				FROM  
+							sc_product_developer spfd
+					LEFT JOIN sc_product sp 
+					on sp.asin = spfd.asin
+				WHERE   1=1
+				      and spfd.dev_id =  '{@#devId#}'
+	   </entry>
+		
+		<entry key="sql_pdev_new_list">
+SELECT sp.TITLE as P_TITLE, 
+    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin  ) as ASIN_COUNT,
+    (SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
+	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
+	spfd.*,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.dev_charger ) AS DEV_CHARGER_NAME,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME,
+	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME,
+	( SELECT count(1) FROM sc_purchase_supplier_inquiry spsi 
+			WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 12 MONTH)) 
+			and spsi.asin = spfd.asin
+			) as INQUIRY_COUNT
+FROM  
+			sc_product_developer spfd
+	LEFT JOIN sc_product sp 
+	on sp.asin = spfd.asin
+WHERE   spfd.dev_status !='3'
+     {@  and sp.title like '%#title#%'}
+     {@  and sp.asin = '#asin#'}
+     {@  and spfd.flow_status in ( #status#) }
+     {@  and spfd.dev_status in ( #devStatus#) }
+     {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
+     {@  and spfd.task_id = '#taskId#' }
+     {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%'  or spfd.title like '%#searchKey#%')}
+      {@  and 	spfd.flow_status = '#mystatus#'
+      	 	and  spfd.asin in (
+      				select spcr.asin
+      				from sc_product_category_rel spcr ,sc_product_category spc
+						WHERE 
+						     spcr.category_id = spc.id
+                             AND spc.purchase_charger = '#Evn.loginId#'
+     	)
+     }
+     {@  and 	spfd.flow_status = '#unasignstatus#'
+      	 	and  spfd.asin not in (
+      				select spcr.asin
+      				from sc_product_category_rel spcr ,sc_product_category spc
+						WHERE 
+						     spcr.category_id = spc.id
+                            and ( spc.purchase_charger is null or spc.purchase_charger = '' )
+     	)
+     }
+     {@ and spfd.asin  in (
+							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
+						and ste.tag_id = '#tagId#'
+			)
+	  }
+   </entry>
+   
+   <entry key="sql_pdev_new_update">
+UPDATE sc_product_developer
+	SET
+			ASIN = '{@#ASIN#}' , 
+			{@ REAL_PRODUCT_ID = '#REAL_PRODUCT_ID#',}
+			{@ LISTING_SKU = '#LISTING_SKU#',}
+			{@ PRODUCTS_SOLUTIONS = '#PRODUCTS_SOLUTIONS#',}
+			{@ TITLE = '#TITLE#',}
+			{@ SUPPLIER_MAX_PRICE = '#SUPPLIER_MAX_PRICE#',}
+			{@ SALE_LOWEST_PRICE = '#SALE_LOWEST_PRICE#',}
+			{@ SALE_SUGGEST_PRICE = '#SALE_SUGGEST_PRICE#',}
+			{@ SALE_LOWEST_PRICE_FBA = '#SALE_LOWEST_PRICE_FBA#',}
+			{@ SALE_SUGGEST_PRICE_FBA = '#SALE_SUGGEST_PRICE_FBA#',}
+			{@ SALE_LOWEST_PRICE_FBM = '#SALE_LOWEST_PRICE_FBM#',}
+			{@ SALE_SUGGEST_PRICE_FBM = '#SALE_SUGGEST_PRICE_FBM#',}
+			{@ INQUIRY_CHARGER = '#INQUIRY_CHARGER#',}
+			{@ TRY_PURCHASE_NUM = '#TRY_PURCHASE_NUM#',}
+			END_TIME = NOW() , 
+			RANK = '{@#RANK#}' , 
+			{@FLOW_STATUS = '#FLOW_STATUS#',}
+			ESTIMATE_TRAFFIC = '{@#ESTIMATE_TRAFFIC#}' , 
+			ESTIMATE_COST = '{@#ESTIMATE_COST#}' , 
+			ESTIMATE_PROFIT = '{@#ESTIMATE_PROFIT#}' , 
+			HOT_SELL_PERIOD = '{@#HOT_SELL_PERIOD#}' , 
+			{@ DEV_STATUS = '#DEV_STATUS#' , }
+			{@ SAMPLE_EVALUATE = '#SAMPLE_EVALUATE#' , } 
+			{@ SAMPLE_CHECK_DETAILS = '#SAMPLE_CHECK_DETAILS#' ,} 
+			{@ SAMPLE_ORDER_TIME = '#SAMPLE_ORDER_TIME#' , }
+			{@ SAMPLE_ARRIVE_TIME = '#SAMPLE_ARRIVE_TIME#',}
+			FOLLOW_RISK_PRODUCT = '{@#FOLLOW_RISK_PRODUCT#}' , 
+			FOLLOW_RISK_BRAND = '{@#FOLLOW_RISK_BRAND#}' , 
+			FOLLOW_RISK_SUPPLIER = '{@#FOLLOW_RISK_SUPPLIER#}' , 
+			PPC_STRATEGY = '{@#PPC_STRATEGY#}' , 
+			LOGI_STRATEGY = '{@#LOGI_STRATEGY#}' , 
+			PPC_STRATEGY_MEMO = '{@#PPC_STRATEGY_MEMO#}' , 
+			LOGI_STRATEGY_MEMO = '{@#LOGI_STRATEGY_MEMO#}' , 
+			SPREAD_STRATEGY = '{@#SPREAD_STRATEGY#}' , 
+			EBAY_KEY = '{@#EBAY_KEY#}' , 
+			EBAY_SALE_MEMO = '{@#EBAY_SALE_MEMO#}' , 
+			CORE_KEY = '{@#CORE_KEY#}' , 
+			CK_VALID_COMP = '{@#CK_VALID_COMP#}' , 
+			CK_SR_SEARCH = '{@#CK_SR_SEARCH#}' , 
+			CK_SR_COM = '{@#CK_SR_COM#}' , 
+			CK_SR_CPC = '{@#CK_SR_CPC#}' , 
+			OP_KEY1 = '{@#OP_KEY1#}' , 
+			OK_VALID_COMP1 = '{@#OK_VALID_COMP1#}' , 
+			OK_SR_SEARCH1 = '{@#OK_SR_SEARCH1#}' , 
+			OK_SR_COM1 = '{@#OK_SR_COM1#}' , 
+			OK_SR_CPC1 = '{@#OK_SR_CPC1#}' , 
+			OP_KEY2 = '{@#OP_KEY2#}' , 
+			OK_VALID_COMP2 = '{@#OK_VALID_COMP2#}' , 
+			OK_SR_SEARCH2 = '{@#OK_SR_SEARCH2#}' , 
+			OK_SR_COM2 = '{@#OK_SR_COM2#}' , 
+			OK_SR_CPC2 = '{@#OK_SR_CPC2#}' , 
+			OP_KEY3 = '{@#OP_KEY3#}' , 
+			OK_VALID_COMP3 = '{@#OK_VALID_COMP3#}' , 
+			OK_SR_SEARCH3 = '{@#OK_SR_SEARCH3#}' , 
+			OK_SR_COM3 = '{@#OK_SR_COM3#}' , 
+			OK_SR_CPC3 = '{@#OK_SR_CPC3#}' , 
+			OP_KEY4 = '{@#OP_KEY4#}' , 
+			OK_VALID_COMP4 = '{@#OK_VALID_COMP4#}' , 
+			OK_SR_SEARCH4 = '{@#OK_SR_SEARCH4#}' , 
+			OK_SR_COM4 = '{@#OK_SR_COM4#}' , 
+			OK_SR_CPC4 = '{@#OK_SR_CPC4#}'
+			WHERE
+			DEV_ID = '{@#DEV_ID#}'
+     </entry>
+     
+     <entry key="sql_pdev_new_insert">
+				INSERT INTO sc_product_developer 
+					(
+						DEV_ID,
+						ASIN, 
+						CREATOR, 
+						CREATE_TIME, 
+						FLOW_STATUS,
+						DEV_CHARGER
+					)
+					VALUES
+					(
+					'{@#devId#}', 
+					'{@#asin#}', 
+					'{@#loginId#}', 
+					NOW(), 
+					10,
+					'{@#loginId#}'
+					)
+     </entry>
+   
+</properties>

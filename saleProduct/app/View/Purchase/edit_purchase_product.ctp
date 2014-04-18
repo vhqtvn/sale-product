@@ -226,10 +226,10 @@
 	var currentStatus = "<?php echo $purchaseProduct['STATUS'];?>" ;
 
 	 var flowData = [
-	        		{status:45,label:"询价",memo:true
+	        		{status:45,label:"待采购",memo:true
 	        			,actions:[{}
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(45,"保存") }}  <?php  }?>
-									<?php if( $isOwner ) { ?>,{label:"已询价，提交审批",action:function(){ AuditAction(47,"已询价，提交审批") } }<?php  }?>
+									<?php if( $isOwner ) { ?>,{label:"已保存采购，提交审批",action:function(){ AuditAction(47,"已保存采购，提交审批") } }<?php  }?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				],format:function(node){
 							if( currentStatus == 46  ){
@@ -248,7 +248,7 @@
         				]
 	        		},
 	        		*/?>
-	        		{status:47,label:"交易审批",memo:true
+	        		{status:47,label:"采购审批",memo:true
 	        			,actions:[{}
 									<?php if( $ppp_callback ){ ?>,{label:"回退再询价",action:function(){ ForceAuditAction(46,"回退再询价") }}<?php   } ?>
 									<?php if( $isOwner  || $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>

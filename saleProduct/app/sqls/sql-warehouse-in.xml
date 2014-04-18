@@ -10,15 +10,11 @@
 	</entry>
 	
 	<entry key="sc_warehouse_in_product_select_warehouse">
-				SELECT srp.*,
-				       sgi.QUANTITY AS WAREHOUSE_QUANTITY,
-				       sgi.TYPE as WH_TYPE
-				FROM sc_real_product srp ,
-				sc_goods_inventory sgi
-				WHERE srp.id = sgi.GOODS_ID
+				SELECT srp.*
+				FROM sc_real_product srp 
+				WHERE 1=1
 				{@ and srp.REAL_SKU like '%#REAL_SKU#%'}
-			{@ and srp.NAME like '%#NAME#%'}
-				AND sgi.WAREHOUSE_ID = '{@#sourceWarehouseId#}'
+			   {@ and srp.NAME like '%#NAME#%'}
 
 	</entry>
 

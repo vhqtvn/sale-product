@@ -186,8 +186,8 @@
 	
 		</td>
 		<td>	&nbsp;&nbsp;&nbsp;&nbsp;</td>
-		<td><div class="flow-node disabled " status="45,46">询价<span class="count"></span></div></td>
-		<td class="flow-split">-</td><td><div class="flow-node disabled" status="47">交易审批<span class="count"></span></div></td>
+		<td><div class="flow-node disabled " status="45,46">待采购<span class="count"></span></div></td>
+		<td class="flow-split">-</td><td><div class="flow-node disabled" status="47">采购审批<span class="count"></span></div></td>
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="48">待交易<span class="count"></span></div></td>
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="49">待收货<span class="count"></span></div></td>
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="50">QC验货<span class="count"></span></div></td>

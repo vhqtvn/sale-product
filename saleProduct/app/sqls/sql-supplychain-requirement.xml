@@ -364,6 +364,8 @@
 	  -->
 	  <!-- 
 	  	存在货品中：上次审批不通过三天内
+	  	不存在于需求计划中
+	  	不存在于采购计划中
 	   -->
      <entry key="sql_supplychain_requirement_cancreate_list">
     	select 
@@ -385,7 +387,15 @@
     	)
     	and saa.status = 1
     	and not exists (
-    		SELECT * FROM sc_supplychain_requirement_plan_product ssrp,
+    	   select 1 from sc_purchase_product spp ,
+    	                sc_real_product_rel srpr
+    	               where spp.real_id = srpr.real_id
+    	                and srpr.account_id = saap.account_id and srpr.sku = saap.sku
+    	                and spp.status !=80 
+    	                and spp.IS_TERMINATION = 0
+    	)
+    	and not exists (
+    	   SELECT * FROM sc_supplychain_requirement_plan_product ssrp,
 		   					sc_supplychain_requirement_item ssri
 		   WHERE ssrp.REQ_PRODUCT_ID = ssri.REQ_PRODUCT_ID
 		   AND ssrp.status not in (2,6)

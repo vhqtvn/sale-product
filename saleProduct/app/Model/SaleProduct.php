@@ -13,25 +13,26 @@ class SaleProduct extends AppModel {
 								where account_id = '{@#accountId#}' and sku='{@#sku#}'" ;
 			$this->exeSql($sql, $limit) ;
 			
-			$sql = "select * from sc_amazon_account_product where  account_id = '{@#accountId#}' and sku='{@#sku#}'" ;
-			$product = $this->getObject($sql, $limit) ;
-			$config = $this->System->getAccountPlatformConfig($product['ACCOUNT_ID']) ;
-			
-			if( $product['FULFILLMENT_CHANNEL'] != 'Merchant' ){
-				//采集FBA数据获取
-				$gatherParams = array(
-						"asin"=>$product['ASIN'] ,
-						"platformId"=>$config['PLATFORM_ID'] ,
-						"id"=>$product['ACCOUNT_ID'],
-						"index"=>0,
-						"taskId"=>"getFbaLowestPrice"
-				) ;
-				$GatherData->fbaPricePlatform($gatherParams) ;
-				//调整价格
+			try{
+				$sql = "select * from sc_amazon_account_product where  account_id = '{@#accountId#}' and sku='{@#sku#}'" ;
+				$product = $this->getObject($sql, $limit) ;
+				$config = $System->getAccountPlatformConfig($product['ACCOUNT_ID']) ;
+					
+				if( $product['FULFILLMENT_CHANNEL'] != 'Merchant' ){
+					//采集FBA数据获取
+					$gatherParams = array(
+							"asin"=>$product['ASIN'] ,
+							"platformId"=>$config['PLATFORM_ID'] ,
+							"id"=>$product['ACCOUNT_ID'],
+							"index"=>0,
+							"taskId"=>"getFbaLowestPrice"
+					) ;
+					$GatherData->fbaPricePlatform($gatherParams) ;
+					//调整价格
+				}
+			}catch(Exception $e){
+				debug( $e ) ;
 			}
-			
-			
-			
 		}
 	}
 	

@@ -106,7 +106,7 @@
 								<tr>
 									<th>入库类型：</th>
 									<td  colspan="3">
-										采购入库&nbsp;<input type="radio"  name="inSourceType"  value="out" <?php echo $isRead?"disabled":"" ;?>
+										采购入库&nbsp;<input type="radio"  name="inSourceType"  disabled value="out" <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='out'?"checked":"";?>   
 											data-validator="required" style="vertical-align: top;"/>&nbsp;&nbsp;&nbsp; 
 										转仓&nbsp;<input type="radio"  name="inSourceType"  value="warehouse"  <?php echo $isRead?"disabled":"" ;?>

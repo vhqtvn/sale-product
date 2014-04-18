@@ -86,18 +86,10 @@
    
     <entry key="sql_saleproduct_list">
  			SELECT sc_real_product.*,
-		        (SELECT SUM(QUANTITY) FROM sc_warehouse_order s1 WHERE s1.real_id =sc_real_product.id
-		        	and status = 1 ) AS LOCK_QUANTITY ,
-		        ( select sum(quantity) from sc_goods_inventory sgi where sgi.goods_id = sc_real_product.id  and type = '1'
-		           {@ and warehouse_id = '#warehouseId#' }
-		         )  as COMMON_QUANTITY,
-		         ( select sum(quantity) from sc_goods_inventory sgi where sgi.goods_id = sc_real_product.id  and type = '2'
-		            {@ and warehouse_id = '#warehouseId#' }
-		          )  as FBA_QUANTITY,
 		          ( CASE WHEN ( sc_real_product.IMAGE_URL  IS NULL or sc_real_product.IMAGE_URL  = '' ) THEN (
 		               ( select image_url from sc_utils_image where entity_type='realProduct' and entity_id =sc_real_product.id limit 0,1 ) 
 		          ) ELSE  sc_real_product.IMAGE_URL END ) as IMG_URL
-		         from sc_real_product
+		     from sc_real_product
 		          where 1=1
 		     {@ and is_onsale='#isOnsale#'}
  			{@ and type='#type#'}
@@ -106,6 +98,7 @@
  			{@ and ( name like '%#searchKey#%' or real_sku like '%#searchKey#%'  or memo like '%#searchKey#%' 
  			  or real_sku in (
  			    select sr.real_sku from sc_real_product_rel sr ,sc_amazon_account_product sp where sr.sku = sp.sku
+ 			    and sr.account_id = sp.account_id
  			    and sp.asin like '%#searchKey#%'
  			)
  			)}

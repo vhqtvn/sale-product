@@ -204,7 +204,7 @@ class ScRequirement extends AppModel {
 			$audit['status'] = $params['status'] ;
 			$this->auditReqPlanProduct($audit) ;
 			
-			if( $params['status'] == 3  ){
+			if( $params['status'] == 3  ){//采购中
 				$limitPrice = $NewPurchaseService->getDefaultLimitPrice( $realId ) ;
 				$execut 	= $NewPurchaseService->getDefaultCharger( $realId ) ;
 				
@@ -224,6 +224,11 @@ class ScRequirement extends AppModel {
 						'loginId'=>'auto'
 				);
 				$NewPurchaseService->createNewPurchaseProduct($params) ;
+			}else if( $params['status'] == 2  ){
+				//审批不通过，设置需求审批不通过时间，下次生成需求的时候在一定时间段类直接过滤掉这些Listing
+				//REQ_AUDIT_NO_TIME
+				$sql = "update sc_real_product set REQ_AUDIT_NO_TIME=NOW() where id = '{@#realId#}' " ;
+				$this->exeSql($sql, array("realId"=>$realId)) ;
 			}
 		}
 		
@@ -427,6 +432,9 @@ class ScRequirement extends AppModel {
 						continue ;
 					}
 					
+					//如果账户库存大于10个，则不生成需求
+					if( $accountQuantity >= 10 ) continue ;
+					
 					if( empty($cost) || empty($totalCost) || empty($totalPrice) || $totalPrice==0 ){
 						$ps = array() ;
 						$ps['accountId'] = $item['ACCOUNT_ID'] ;
@@ -444,6 +452,7 @@ class ScRequirement extends AppModel {
 						$this->createReqItem($ps) ;
 						continue ;
 					}
+					
 						
 					//获取利润水平
 					$profileLevel = $this->getProfileLevel($totalCost, $totalPrice) ;

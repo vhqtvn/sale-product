@@ -272,6 +272,7 @@
 					AND slc.listing_sku = srpr.sku
 					WHERE 
 					saap.status = 'Y'
+					AND srp.is_onsale=1
 					AND srp.id= srpr.REAL_ID
 					AND saa.id = saap.account_id
 					AND saap.account_id = srpr.account_id

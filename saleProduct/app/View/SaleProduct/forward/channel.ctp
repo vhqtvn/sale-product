@@ -39,8 +39,7 @@
 		var isView = window.parent.action == 'view' ;
 		
 		if( isView ){
-			$(":input").attr("disabled",true);
-			$("[type='button'],button,[type='file']").hide();
+			$(".query-bar").hide();
 		}
 	       var gridConfig = {
 					columns:[

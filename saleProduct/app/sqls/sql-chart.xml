@@ -9,7 +9,7 @@
    SELECT sppd.REAL_QUOTE_PRICE ,
    				sppd.REAL_PURCHASE_DATE ,
    				ss.NAME
-   FROM  sc_purchase_plan_details sppd 
+   FROM  sc_purchase_product sppd 
    left join sc_supplier ss
    on ss.id = sppd.REAL_PROVIDOR
 	WHERE sppd.REAL_QUOTE_PRICE IS NOT NULL
