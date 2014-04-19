@@ -14,6 +14,15 @@ class CronTaskController extends AppController {
     	$this->Utils->exeSql("delete from sc_sale_schedule",array()) ;
     }
     
+    //LOWEST_PROFIT
+    /**
+     * 定时根据成本计算限价
+     * @TODO
+     */
+    public function calcLimitPrice( ) {
+    	$sql = "select * from sc_listing_cost where fulfillment_channel='AMAZON_NA' " ;
+    }
+    
     /**
      * 格式化计算货品重量
      */
@@ -142,15 +151,42 @@ class CronTaskController extends AppController {
     	$this->ScRequirement->clearAmazonInventoryReq() ;
     	
     }
-
+   
     /**
      * 
      * 执行营销,前提价格数据准确
      * 1、采集价格数据
      */
 	public function  execMarketing(){
+		ini_set('date.timezone','Asia/Shanghai');
+		$hour = date('H');
+		debug($hour) ;
 		$accounts = $this->Amazonaccount->getAllAccountsFormat();
+		
+		//获取全局配置
+		$limitTimePriceStart = $this->Amazonaccount->getAmazonConfig("LIMIT_TIME_PRICE_START") ;//限时营销开始时间
+		$limitTimePriceEnd = $this->Amazonaccount->getAmazonConfig("LIMIT_TIME_PRICE_END") ;//限时营销开始时间
+		
+		//判断是不是限时调价时间
+		$isLimitStrategy =  false ;
+		if( (!empty($limitTimePriceStart)) && $limitTimePriceStart!='-'  ){ 
+			$isLimitStrategy= true ;
+		}
+		$isLimitStart = false ;
+		$isLimitEnd   = false ;
+		$isLimiting    = false ;
+		if( $isLimitStrategy ){
+			if( $limitTimePriceStart == $hour ){
+				$isLimitStart = true ;
+			}else  if( $limitTimePriceEnd == $hour ){
+				$isLimitEnd = true ;
+			}else if( $hour >$limitTimePriceStart && $hour < $limitTimePriceEnd  ){
+				$isLimiting = true ;
+			}
+		}
+		echo $isLimitStrategy;
 		foreach( $accounts as $account ){
+			debug($account['NAME']) ;
 			$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
 			//		$url = "http://".$domain."/".$context."/index.php/taskAsynAmazon/getMyPriceForSKU/".$accountId."?".$random ;
 			
@@ -159,84 +195,139 @@ class CronTaskController extends AppController {
 				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/getMyPriceForSKU" ) ;
 				$this->triggerRequest($url,null) ;
 			}catch(Exception $e){
+				debug($e) ;
 			}
 			
+			//开始执行营销，设置标志位为1
+			//$sql = "update  sc_amazon_account_product set marketing_flag = 1 where account_id = '{@#accountId#}'" ;
+			//$this->Utils->exeSql($sql,array("accountId"=>$account['ID'])) ;
 			
 			try{
-				$sql = "select * from sc_amazon_account_product 
-						where 
-						FULFILLMENT_CHANNEL like 'AMAZON%' 
-						and account_id = '{@#accountId#}' 
-						and limit_price > 0
-						and status = 'Y'
-						and lowest_fba_price >0 " ;
-				$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
-				$_products = array() ;
 				
-				foreach( $items as $item ){
-					//debug( $item ) ;
-					$listPrice = $item['LIST_PRICE'] ;
-					$priceStrategy = $item['PRICE_STRATEGY'] ;
-					$lowestFbaPrice = $item['LOWEST_FBA_PRICE'] ;
-					$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
-					$execPrice =  $item['LIMIT_PRICE'] ;//限价
+				$start = 0 ;
+				$limit = 200 ;
+				$items = null ;
+				$index=0 ;
+				while(true){
+					$_products = array() ;
 					
-					if( $priceStrategy == 2 ){ //直接执行限价
-						
-					}
-
-					if( empty($execPrice) || $execPrice==0 ){
-						$execPrice = empty($listPrice)?$item['PRICE']:$listPrice ;
-					}
+					$sql = "select * from sc_amazon_account_product
+					where
+					FULFILLMENT_CHANNEL like 'AMAZON%'
+					and account_id = '{@#accountId#}'
+					and limit_price > 0
+					and status = 'Y'
+					and lowest_fba_price >0
+					limit $start,$limit " ;
+					$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
+					$start = $start+$limit ;
+					if( empty( $items ) || count($items)<=0 ) break ;
 					
-					if( empty($listPrice) ){
-						$listPrice = $lowestFbaPrice*1.1 ;
-					}
-					//debug($item) ;
-					
-					$fbaPriceArray = explode(",", $fbaPriceArray) ;
-					$fbaPriceCount = count( $fbaPriceArray ) ;
-					
-					if( $fbaPriceCount <= 1 ){
-						//如果只有一个FBA卖家，就不处理价格
-						continue ;
-					}
-					
-					//当前价格比FBA最低价格高
-					if( $listPrice > $lowestFbaPrice ){
-						if( $lowestFbaPrice >  $execPrice  ){//如果最低价格大于限价
-							$_products[] = array("SKU"=>$item['SKU'],"FEED_PRICE"=>$lowestFbaPrice ) ;
-						}else{ //设置价格为限价
-							$_products[] = array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
-						}
-						continue ;
-					}
-					
-					//如果价格就是FBA最低价格，判断是否存在多个卖家都是最低价格
-					if($listPrice ==  $lowestFbaPrice ){
-						$lowestCount = 0 ;
-						$secondPrice = 0 ;
-						foreach( $fbaPriceArray as $fpa ){
-							if( $fpa ==$lowestFbaPrice  ){
-								$lowestCount++ ;
-							}else{
-								$secondPrice = $fpa ;
-								break ;
-							}
-						}
-						if( $lowestCount == 1 ){//如果最低价格只有一个，则调整价格为第二
-							if( $secondPrice >0 ){
-								$_products[] = array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice ) ;
-							}
+					foreach( $items as $item ){
+						$index++ ;
+						echo $index.'<br>' ;
+						$mItem = $this->_marketingItem($item, $isLimitStrategy, $isLimitStart, $isLimitEnd, $isLimiting) ;
+						if(!empty($mItem)){
+							$_products[] = $mItem;
 						}
 					}
-				} 
+					try{
+						$Feed = $this->Amazonaccount->getPriceFeed( $MerchantIdentifier , $_products ) ;
+						debug($Feed) ;
+						$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/price" ) ;
+						$this->triggerRequest($url,array("feed"=>$Feed )) ;
+					}catch(Exception $e){
+						debug( $e ) ;
+					}
+				}
 				
-				$Feed = $this->Amazonaccount->getPriceFeed( $MerchantIdentifier , $_products ) ;
-				debug($Feed) ;
-				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/price" ) ;
-				$this->triggerRequest($url,array("feed"=>$Feed )) ;
-			}catch(Exception $e){ }
+			}catch(Exception $e){
+				debug( $e ) ;
+			}
 		}
 	}
+	
+	public function _marketingItem($item,$isLimitStrategy,$isLimitStart,$isLimitEnd,$isLimiting){
+
+		//debug( $item ) ;
+		$listPrice = $item['LIST_PRICE'] ;
+		$lowestFbaPrice = $item['LOWEST_FBA_PRICE'] ;
+		$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
+		$execPrice =  $item['LIMIT_PRICE'] ;//限价
+			
+		if( empty($execPrice) || $execPrice==0 ){
+			$execPrice = empty($listPrice)?$item['PRICE']:$listPrice ;
+		}
+			
+		if( empty($listPrice) ){
+			$listPrice = $lowestFbaPrice*1.05 ;
+		}
+		//debug($item) ;
+			
+		$fbaPriceArray = explode(",", $fbaPriceArray) ;
+		$fbaPriceCount = count( $fbaPriceArray ) ;
+			
+		if(  $isLimitStrategy  ){
+			if( $isLimitStart ){//限时调价开始，记录当前价格到数据库
+				$sql= "update sc_amamzon_account_product set lt_before_price='{@#ltBeforePrice#}' where id='{@#id#}'" ;
+				$this->Utils->exeSql($sql,array("ltBeforePrice"=>$listPrice,"id"=>$item['ID'] )) ;
+			}else if($isLimitEnd){//限时调价结束
+				//还原价格
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$item['LT_BEFORE_PRICE'] ) ;
+			}else if($isLimiting){//限时调价中
+				//调价中，下面做处理
+			}
+		}
+			
+			
+		if( $fbaPriceCount <= 1 ){
+			//如果只有一个FBA卖家，就不处理价格
+			return null ;
+		}
+			
+		//当前价格比FBA最低价格高
+		if( $listPrice > $lowestFbaPrice ){
+			if( $lowestFbaPrice >  $execPrice  ){//如果最低价格大于限价
+				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$lowestFbaPrice-0.01 ) ;
+				}else{
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$lowestFbaPrice ) ;
+				}
+			}else{ //设置价格为限价
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+			}
+			return null ;
+		}
+			
+		//如果价格就是FBA最低价格，判断是否存在多个卖家都是最低价格
+		if($listPrice ==  $lowestFbaPrice ){
+			$lowestCount = 0 ;
+			$secondPrice = 0 ;
+			foreach( $fbaPriceArray as $fpa ){
+				if( $fpa ==$lowestFbaPrice  ){
+					$lowestCount++ ;
+				}else{
+					$secondPrice = $fpa ;
+					break ;
+				}
+			}
+		
+		
+			if( $lowestCount == 1 ){//如果最低价格只有一个，则调整价格为第二
+				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+					//在限时调价进行中，最低价不做处理......
+				}else{
+					if( $secondPrice >0 ){
+						return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice ) ;
+					}
+				}
+			}else{
+				//如果最低价不止一个
+				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$listPrice-0.01 ) ;
+				}
+			}
+		}
+		return null;
 	}
+}
