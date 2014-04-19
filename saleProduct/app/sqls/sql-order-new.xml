@@ -161,7 +161,11 @@
 		Item_Tax_Currency_Code, 
 		Item_Tax_Amount, 
 		Shipping_Tax_Currency_Code, 
-		Shipping_Tax_Amount
+		Shipping_Tax_Amount,
+		account_id,
+		real_sku,
+		real_id,
+		purchase_date
 		)
 		VALUES
 		('{@#order-item-id#}', 
@@ -176,7 +180,11 @@
 		'{@#currency#}', 
 		'{@#item-tax#}', 
 		'{@#currency#}', 
-		'{@#shipping-tax#}'
+		'{@#shipping-tax#}', 
+		'{@#accountId#}', 
+		'{@#realSku#}', 
+		'{@#realId#}', 
+		'{@#purchaseDate#}'
 		)
 	</entry>
 	
@@ -196,6 +204,10 @@
 			Item_Tax_Amount = '{@#item-tax#}' , 
 			Shipping_Tax_Currency_Code = '{@#currency#}' , 
 			Shipping_Tax_Amount = '{@#shipping-tax#}' 
+			{@,account_id='#accountId#'}
+			{@,real_sku='#realSku#'}
+			{@,real_id='#realId#'}
+			{@,purchase_date='#purchaseDate#'}
 			WHERE
 			Order_Item_Id = '{@#order-item-id#}'  AND Order_ID = '{@#order-id#}' 
 	</entry>
@@ -225,7 +237,11 @@
 		Shipping_Discount_Currency_Code, 
 		Shipping_Discount_Amount, 
 		Promotion_Discount_Currency_Code, 
-		Promotion_Discount_Amount
+		Promotion_Discount_Amount,
+		account_id,
+		real_sku,
+		real_id,
+		purchase_date
 		)
 		VALUES
 		('{@#OrderItemId#}', 
@@ -251,7 +267,11 @@
 		'{@#ShippingDiscountCurrencyCode#}', 
 		'{@#ShippingDiscountAmount#}', 
 		'{@#PromotionDiscountCurrency_Code#}', 
-		'{@#PromotionDiscountAmount#}'
+		'{@#PromotionDiscountAmount#}', 
+		'{@#accountId#}', 
+		'{@#realSku#}', 
+		'{@#realId#}', 
+		'{@#purchaseDate#}'
 		)
 	</entry>
 	
@@ -281,6 +301,10 @@
 			Shipping_Discount_Amount = '{@#ShippingDiscountAmount#}' , 
 			Promotion_Discount_Currency_Code = '{@#PromotionDiscountCurrencyCode#}' , 
 			Promotion_Discount_Amount = '{@#PromotionDiscountAmount#}'
+			{@,account_id='#accountId#'}
+			{@,real_sku='#realSku#'}
+			{@,real_id='#realId#'}
+			{@,purchase_date='#purchaseDate#'}
 			
 			WHERE
 			Order_Item_Id = '{@#OrderItemId#}'  AND Order_ID = '{@#OrderId#}' 

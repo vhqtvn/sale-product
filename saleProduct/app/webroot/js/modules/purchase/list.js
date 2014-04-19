@@ -120,7 +120,7 @@
 		           	{align:"center",key:"CODE",label:"编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
-					{align:"left",key:"PROVIDOR_NAME",label:"货品SKU", width:"10%",format:function(val,record){
+					{align:"left",key:"PROVIDOR_NAME",label:"供应商", width:"10%",format:function(val,record){
 						return "<a href='#'  supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
 					}},
 					/*{align:"left",key:"START_TIME",label:"采购时限",width:"14%",format:function(val,record){

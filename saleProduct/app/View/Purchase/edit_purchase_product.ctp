@@ -600,11 +600,11 @@
 			</div>
 			<?php if( $hasViewRelListing ) { ?>
 			<div id="ref-asins" style="padding:10px;">
-				<div class="grid-content-details" style="width:98%;"></div>
+				<div class="grid-content-details" style="width:940px;"></div>
 			</div>
 			<?php } ?>
 			<div id="tracks" style="padding:10px;">
-				<div class="grid-track" style="width:98%;"></div>
+				<div class="grid-track" style="width:940px;"></div>
 			</div>
 		</div>
 	</div>
