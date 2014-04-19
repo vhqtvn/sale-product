@@ -37,6 +37,12 @@ class AppModel extends Model {
 		  	
 		}
 		
+		public function getAmazonConfig($key){
+			$sql = "select * from sc_amazon_config where name='{@#key#}'" ;
+			$cost = $this->getObject($sql, array('key'=>$key)) ;
+			return $cost['VALUE'] ;
+		}
+		
 		public function getDefaultCodeOnlyIndex($code){
 			$index = $this->getMaxValue($code , null , 1) ;
 			if( strlen($index) < 5 ){
