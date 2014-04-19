@@ -55,6 +55,10 @@
 		.flow-node {
 			border: 2px solid #0FF;
 		}
+		
+		.flow-split{
+			display:none;
+		}
    </style>
 
 </head>
@@ -92,6 +96,10 @@
 					<td><div class="flow-node disabled" status="30">产品经理审批<span class="count"></span></div></td>
 					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="40">总监审批<span class="count"></span></div></td>
+					<td class="flow-split">-</td>
+					<td><div class="flow-node disabled" status="42">样品检测<span class="count"></span></div></td>
+					<td class="flow-split">-</td>
+					<td><div class="flow-node disabled" status="44">检测审批<span class="count"></span></div></td>
 					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="50">录入货品<span class="count"></span></div></td>
 					<td class="flow-split">-</td>

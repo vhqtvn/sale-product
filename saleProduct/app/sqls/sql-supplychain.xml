@@ -40,7 +40,14 @@
        			srp.NAME AS REAL_NAME,
        			srp.REAL_SKU,
        			srp.IMAGE_URL,
-       			saap.TITLE
+       			saap.TITLE,
+		(SELECT sar.SALES_FOR_THELAST14DAYS FROM sc_amazon_recommendations sar where sar.account_id =saap.account_id
+		   and sar.sku = saap.sku
+		 ) as SALES_FOR_THELAST14DAYS,
+		(SELECT sar.SALES_FOR_THELAST30DAYS FROM sc_amazon_recommendations sar where sar.account_id =saap.account_id
+		   and sar.sku = saap.sku
+		 ) as SALES_FOR_THELAST30DAYS
+		 
 			 FROM sc_fba_supply_inventory sfsi,
 			sc_amazon_account_product saap
 			LEFT JOIN sc_real_product_rel srpr
@@ -52,11 +59,11 @@
 			AND sfsi.SELLER_SKU = saap.SKU
     	{@ and sfsi.account_id = '#accountId#'}
     	{@ and (
-    	    saap.title like '%searchKey%'  or
-    	    srp.real_sku like '%searchKey%' or 
-    	    srp.name like '%searchKey%' or
-    	    saap.asin like '%searchKey%' or
-    	    saap.sku like '%searchKey%'
+    	    saap.title like '%#searchKey#%'  or
+    	    srp.real_sku like '%#searchKey#%' or 
+    	    srp.name like '%#searchKey#%' or
+    	    saap.asin like '%#searchKey#%' or
+    	    saap.sku like '%#searchKey#%'
     	)}
     </entry>
     

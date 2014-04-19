@@ -275,6 +275,12 @@
     SELECT * FROM (	
 		SELECT  sc_amazon_account_product.*,
 		sc_real_product_rel.sku AS REL_SKU,
+		(SELECT sar.SALES_FOR_THELAST14DAYS FROM sc_amazon_recommendations sar where sar.account_id =sc_amazon_account_product.account_id
+		   and sar.sku = sc_amazon_account_product.sku
+		 ) as SALES_FOR_THELAST14DAYS,
+		(SELECT sar.SALES_FOR_THELAST30DAYS FROM sc_amazon_recommendations sar where sar.account_id =sc_amazon_account_product.account_id
+		   and sar.sku = sc_amazon_account_product.sku
+		 ) as SALES_FOR_THELAST30DAYS,
 		sc_real_product_rel.QUANTITY as ASSIGN_QUANTITY,
 		(case when ( sc_amazon_account_product.title is  null  or sc_amazon_account_product.title = '') then sp.title else sc_amazon_account_product.title end ) as P_TITLE,
 		(CASE WHEN ( sc_amazon_account_product.title IS  NULL  OR sc_amazon_account_product.title = '') 

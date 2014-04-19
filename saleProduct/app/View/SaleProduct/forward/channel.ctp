@@ -66,6 +66,8 @@
 			           		if(val == 11) return 'New' ;
 			           		return '' ;
 			           	}},
+			        	{align:"center",key:"SALES_FOR_THELAST14DAYS",label:'14天销量',width:"6%"},
+			        	{align:"center",key:"SALES_FOR_THELAST30DAYS",label:'30天销量',width:"6%"},
 			           	{align:"center",key:"LOWEST_FBA_PRICE",label:"FBA最低价",width:"8%"},
 			           	{align:"center",key:"FBA_PRICE_ARRAY",label:"FBA卖家价格",width:"8%"},
 			           	{align:"center",key:"LIMIT_PRICE",label:"最低限价",width:"8%",format:function(val,record){

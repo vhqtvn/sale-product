@@ -120,11 +120,15 @@
 		           	{align:"center",key:"CODE",label:"编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left"},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
-					{align:"left",key:"START_TIME",label:"采购时限",width:"14%",format:function(val,record){
+					{align:"left",key:"PROVIDOR_NAME",label:"货品SKU", width:"10%",format:function(val,record){
+						return "<a href='#'  supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
+					}},
+					/*{align:"left",key:"START_TIME",label:"采购时限",width:"14%",format:function(val,record){
 		           		var r = record.START_TIME||"" ;
 		           		var r1 = record.END_TIME||"" ;
 		           		return $.trim(r.replace("00:00:00","")) +(r1?"到":"")+ $.trim(r1.replace("00:00:00","")) ;
-		           	}},
+		           	}},*/
+		           	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		        	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
 		           	{align:"center",key:"PLAN_NUM",label:"计划采购数量",width:"7%"},

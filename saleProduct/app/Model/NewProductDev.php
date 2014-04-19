@@ -2,6 +2,19 @@
 class NewProductDev extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
+	function confirmSampleTime($params){
+		ini_set('date.timezone','Asia/Shanghai');
+		$printTime = date('Y-m-d H:i:s');
+		
+		if( isset($params['order']) && $params['order'] == 1 ){
+			$params['sampleOrderTime'] = $printTime ;
+		}else if( isset($params['arrive']) && $params['arrive'] == 1 ){
+			$params['sampleArriveTime'] = $printTime ;
+		}
+		
+		$this->exeSql("sql_productDev_new_updateSampleTime", $params) ;
+	}
+	
 	function addNewAsinDev($params){
 		$params['FLOW_STATUS'] = 10 ;//默认状态
 		$asins = $params['asins'] ;

@@ -293,7 +293,7 @@ class ScRequirement extends AppModel {
 					
 					//计算Listing是否需要创建需求计划
 					$cost = $this->getListingCost( $item['ACCOUNT_ID']  , $item['SKU'] ) ;
-					if( empty( $cost ) ){
+					/*if( empty( $cost ) ){
 						$this->reqLog(array(
 								'REQ_PLAN_ID'=>$planId,
 								'ACCOUNT_ID'=>$item['ACCOUNT_ID'],
@@ -303,7 +303,7 @@ class ScRequirement extends AppModel {
 								'MEMO'=>"未设置成本数据"
 						)) ;
 						continue ;
-					}
+					}*/
 					
 					//获取当前账户库存
 					$sql="select * from sc_amazon_account_product where account_id='{@#accountId#}' and sku='{@#sku#}'";
@@ -313,38 +313,47 @@ class ScRequirement extends AppModel {
 					$channel = $item['FULFILLMENT_CHANNEL'] ;
 					
 					//获取总成本
-					$totalCost = $cost['TOTAL_COST'] ;
+					$totalCost = empty($cost)?null:$cost['TOTAL_COST'] ;
 					//获取销售价
 					$sellerPrice = null ;
-					if( $channel == 'Merchant'){
-						$sellerPrice = $cost['LOWEST_PRICE'] ;
-					}else{
-						$sellerPrice = $cost['LOWEST_FBA_PRICE'] ;
+					$totalPrice = null ;
+					if( !empty($cost) ){
+						if( $channel == 'Merchant'){
+							$sellerPrice = $cost['LOWEST_PRICE'] ;
+						}else{
+							$sellerPrice = $cost['LOWEST_FBA_PRICE'] ;
+						}
+						$totalPrice = $sellerPrice ;
 					}
-					$totalPrice = $sellerPrice ;
 					
 					//echo ">>>>>>>>>>>>>".$item['SKU']."<br/>" ;
 					
 					echo '[SKU:'.$item['SKU'].'   accountId:'.$accountId.']Price>>>["'.$totalCost.'"]["'.$totalPrice.'"]<br>' ;
 					
 					//供应周期
-					$supplyCycle = $cost['SUPPLY_CYCLE'] ;
-					if( empty($supplyCycle) || $supplyCycle==0 ){
-						$supplyCycle = $cost['A_SUPPLY_CYCLE'] ;
-					}
-					if(empty($supplyCycle)){
-						$supplyCycle = 14 ;
+					$supplyCycle = 14 ;
+					if( !empty($cost) ){
+						$supplyCycle = $cost['SUPPLY_CYCLE'] ;
+						if( empty($supplyCycle) || $supplyCycle==0 ){
+							$supplyCycle = $cost['A_SUPPLY_CYCLE'] ;
+						}
+						if(empty($supplyCycle)){
+							$supplyCycle = 14 ;
+						}
 					}
 					
 					echo 'SupplyCycle>>>["'.$supplyCycle.'"]<br>' ;
 					
 					//需求调整系数
-					$reqAdjust = $cost['REQ_ADJUST'] ;
-					if( empty($reqAdjust) || $reqAdjust==0 ){
-						$reqAdjust = $cost['A_REQ_ADJUST'] ;
+					$reqAdjust = 1.2 ;
+					if( !empty($cost) ){
+						$reqAdjust = $cost['REQ_ADJUST'] ;
+						if( empty($reqAdjust) || $reqAdjust==0 ){
+							$reqAdjust = $cost['A_REQ_ADJUST'] ;
+						}
 					}
-					if( empty($reqAdjust) ){
-						//获取全局的配置
+					
+					if( empty($reqAdjust) ){//获取全局的配置
 						$reqAdjust = $this->getGlobalReqAdjust($item['ACCOUNT_ID']  , $item['SKU'] ) ;
 					}
 					if( empty($reqAdjust) ){

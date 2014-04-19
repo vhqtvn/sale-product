@@ -124,7 +124,26 @@
 				openCenterWindow(contextPath+"/product/assignCategory/"+asin,400,500) ;
 			}) ;
 			
-
+			$(".btn-sample-order").click(function(){
+				if( window.confirm("确认样品已经下单？") ){
+					var json = {devId:devId,order:1} ;
+					$.dataservice("model:NewProductDev.confirmSampleTime",json,function(result){
+						window.location.reload() ;
+					});
+				}
+			}) ;
+			
+			$(".btn-sample-arrive").click(function(){
+				if( window.confirm("确认样品已经到达？") ){
+					var json = {devId:devId,arrive:1} ;
+					$.dataservice("model:NewProductDev.confirmSampleTime",json,function(result){
+						window.location.reload() ;
+					});
+				}
+			}) ;
+			
+			
+			
 			$("[testStatus]").click(function(){//下架
 				
 				var testStatus = $(this).attr("testStatus") ;
@@ -166,6 +185,7 @@
 		
 		
 		$(function(){
+			var selected = 0 ;
 			var _tabs = [
 					     {label:'产品开发',content:"dev-tab"},
 					     {label:'产品询价',url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+asin+"/asin/"+taskId  , iframe:true},
@@ -177,12 +197,16 @@
 						 {label:'开发轨迹',content:"track-tab"},
 						 {label:'产品流量',content:"flow-tab",iframe:true,url:contextPath+"/page/forward/Flow.flowAsin/"+asin}
 					] ;
-			if(devStatus==1){
-				_tabs.push(  {label:'样品检测',content:"sample-check-tab"}  ) ;
+			if(devStatus==1 ){
+				if( pdStatus == 42 || pdStatus == 44 ){
+					selected = 6;
+				}
+				_tabs.push(  {label:'样品检测',content:"sample-check-tab",select:true}  ) ;
 			}
 			
 			var tab = $('#details_tab').tabs( {
 				tabs:_tabs,
+				selected:selected,
 				height:function(){
 					return $(window).height() - 120 ;
 				}

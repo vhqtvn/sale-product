@@ -18,7 +18,7 @@ class CronTaskController extends AppController {
      * 格式化计算货品重量
      */
     public  function calcRealProductWeight(){
-    	$sql = "select ID,WEIGHT from sc_real_product where is_onsale=1" ;
+    	$sql = "select ID,WEIGHT from sc_real_product where is_onsale=1 and ( weight is null or weight='' )" ;
     	$products= $this->Utils->exeSqlWithFormat($sql,array()) ;
     	foreach( $products as $product ){
     		$realId = $product['ID'] ;
@@ -176,10 +176,14 @@ class CronTaskController extends AppController {
 				foreach( $items as $item ){
 					//debug( $item ) ;
 					$listPrice = $item['LIST_PRICE'] ;
-					
+					$priceStrategy = $item['PRICE_STRATEGY'] ;
 					$lowestFbaPrice = $item['LOWEST_FBA_PRICE'] ;
 					$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
 					$execPrice =  $item['LIMIT_PRICE'] ;//限价
+					
+					if( $priceStrategy == 2 ){ //直接执行限价
+						
+					}
 
 					if( empty($execPrice) || $execPrice==0 ){
 						$execPrice = empty($listPrice)?$item['PRICE']:$listPrice ;

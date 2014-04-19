@@ -174,7 +174,7 @@ html{-webkit-text-size-adjust: none;}
 </script>
  
  <script>
- var costColumns = [] ;
+	 var costColumns = [] ;
 
 	<?php  if( $COST_EDIT ){?>
 	costColumns.push({align:"center",key:"ID",label:"操作",width:"6%",forzen:true,format:function(val,record){
@@ -242,6 +242,7 @@ html{-webkit-text-size-adjust: none;}
 
     var taskId = '' ;
  	var asin = '<?php echo $asin;?>' ;
+ 	var devId  = '<?php echo $productDev['DEV_ID'] ;?>' ;
  	var username = '<?php echo $username;?>' ;
  	var pdStatus = '<?php echo $pdStatus;?>' ;
  	var platformId = '<?php echo $product['PLATFORM_ID'] ;?>' ;
@@ -512,22 +513,31 @@ html{-webkit-text-size-adjust: none;}
 				<tbody>
 				<tr>
 						<th>样品下单时间：</th>
-						<td><input type="hidden"   id="SAMPLE_ORDER_TIME"  value="<?php echo $productDev['SAMPLE_ORDER_TIME']?>"/>
+						<td><input type="hidden"   id="SAMPLE_ORDER_TIME"  class="input 42-input 44-input"  
+								<?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>
+								value="<?php echo $productDev['SAMPLE_ORDER_TIME']?>"/>
 								<?php echo $productDev['SAMPLE_ORDER_TIME']?>
+								<?php if( empty($productDev['SAMPLE_ORDER_TIME']) &&( $pdStatus==42 || $pdStatus==44 ) ){?>
 								<button  class="btn-sample-order btn">确认已经下单</button>
+								<?php }?>
 						</td>
 				</tr>
 				<tr>
 						<th>样品到达时间：</th>
-						<td><input type="hidden"  name="SAMPLE_ARRIVE_TIME"  value="<?php echo $productDev['SAMPLE_ARRIVE_TIME']?>" ></input>
+						<td><input type="hidden"  name="SAMPLE_ARRIVE_TIME"  
+									 class="input 42-input 44-input" 
+									 <?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>
+									value="<?php echo $productDev['SAMPLE_ARRIVE_TIME']?>" ></input>
 								<?php echo $productDev['SAMPLE_ARRIVE_TIME']?>
+								<?php if( empty($productDev['SAMPLE_ARRIVE_TIME'])&&( $pdStatus==42 || $pdStatus==44 ) ){?>
 								<button class="btn btn-sample-arrive">确认样品到达</button>
+								<?php }?>
 						</td>
 				</tr>
 				<tr>
 						<th>样品总体评价：</th>
 						<td>
-							<select  name="SAMPLE_EVALUATE">
+							<select  name="SAMPLE_EVALUATE"   class="input 42-input 44-input"  <?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>>
 									<option value="">选择</option>
 									<option value="10"  <?php echo $productDev['SAMPLE_ARRIVE_TIME']==10?"selected":"";?>>优</option>
 									<option value="20" <?php echo $productDev['SAMPLE_ARRIVE_TIME']==20?"selected":"";?>>良</option>
@@ -538,7 +548,8 @@ html{-webkit-text-size-adjust: none;}
 				</tr>
 				<tr>
 						<th>样品检测明细：</th>
-						<td><textarea name="SAMPLE_CHECK_DETAILS"  style="width:500px;height:300px;"><?php echo $productDev['SAMPLE_CHECK_DETAILS']?></textarea></td>
+						<td><textarea name="SAMPLE_CHECK_DETAILS"   class="input 42-input 44-input"  <?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>
+									style="width:500px;height:300px;"><?php echo $productDev['SAMPLE_CHECK_DETAILS']?></textarea></td>
 				</tr>
 				</tbody>
 			</table>

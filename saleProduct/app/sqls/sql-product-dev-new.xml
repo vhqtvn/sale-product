@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+		<entry key="sql_productDev_new_updateSampleTime">
+				update sc_product_developer set  dev_id = '{@#devId#}'
+				{@ ,SAMPLE_ORDER_TIME= '#sampleOrderTime#'}
+				{@ ,SAMPLE_ARRIVE_TIME= '#sampleArriveTime#'}
+				where dev_id = '{@#devId#}'
+		</entry>
+
 		<entry key="sql_productDev_new_loadStativcs">
 				SELECT FLOW_STATUS AS STATUS,COUNT(1) AS COUNT FROM sc_product_developer WHERE FLOW_STATUS !=80
 				GROUP BY FLOW_STATUS

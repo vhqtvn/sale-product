@@ -56,7 +56,8 @@
 			   (SELECT spdt.MESSAGE FROM sc_purchase_plan_details_track spdt WHERE spdt.pd_id = spp.id
 						ORDER BY spdt.create_time DESC LIMIT 0,1) AS TRACK_MEMO,
 			   (SELECT NAME FROM sc_user WHERE login_id = spp.EXECUTOR  ) AS  EXECUTOR_NAME,
-			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME
+			   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME,
+				(SELECT NAME FROM sc_supplier WHERE id = spp.PROVIDOR ) AS PROVIDOR_NAME
 			 FROM 
 			sc_purchase_product spp,
 			sc_real_product srp
