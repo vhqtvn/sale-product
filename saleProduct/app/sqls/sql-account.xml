@@ -291,6 +291,15 @@
 					     or
 					     slc.total_price - slc.total_cost < 0 
 					)}
+					{@ and  (
+					    srp.name like '%#searchKey#%'
+					    or
+					     srp.real_sku like '%#searchKey#%'
+					     or
+					     saap.sku  like '%#searchKey#%'
+					     or 
+					     saap.title  like '%#searchKey#%'
+					)}
 	]]>	      
     </entry>
     

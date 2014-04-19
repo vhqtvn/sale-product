@@ -57,7 +57,7 @@
 					 limit:30,
 					 pageSizes:[15,20,30,40],
 					 height:function(){
-						 return $(window).height()-110;
+						 return $(window).height()-170;
 					 },
 					 title:"",
 					 indexColumn:false,

@@ -172,7 +172,22 @@
 </head>
 <body style="magin:0px;padding:0px;">
 
-				<div class="flow-bar1">
+	<div class="toolbar toolbar-auto toolbar1">
+		<table>
+			<tr>
+				<th>
+					关键字:
+				</th>
+				<td>
+					<input type="text" id="searchKey" placeHolder="SKU、NAME" style="width:400px;"/>
+				</td>								
+				<td class="toolbar-btns">
+					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
+				</td>
+			</tr>						
+		</table>
+	</div>	
+	<div class="flow-bar1">
 		<center><table class="flow-table">						
 		<tbody>
 		<tr>	
