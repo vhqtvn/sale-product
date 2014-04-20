@@ -70,8 +70,7 @@
 				</th>
 				<td>
 					
-					<input type="text" id="purchaseDate"   data-widget="calendar"  value="<?php echo $printTime;?>
-						/>
+					<input type="text" id="purchaseDate"   data-widget="calendar"  value='<?php echo $printTime;?>'/>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
@@ -80,8 +79,6 @@
 		</table>
 	</div>	
 	<div class="grid-content" style="margin-top:5px;">
-	</div>
-	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 </body>
 </html>

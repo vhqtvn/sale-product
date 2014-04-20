@@ -55,19 +55,7 @@ $(function(){
 	           	{align:"center",key:"UNSHIPPED_NUM",label:"待发货数量",group:"库存",width:"8%"},
 	        	{align:"center",key:"ORDER_NUM",label:"订单数量",group:"库存",width:"8%"},
 	        	{align:"center",key:"FEED_PRICE",label:'调整价格',group:'价格',width:"8%",format:{type:'editor',fields:['ACCOUNT_ID','SKU']},render:function(record){
-	        		var shipFee = parseFloat(record.SHIPPING_PRICE||0);
-	        		var fc = record.FULFILLMENT_CHANNEL||"" ;
-	        		if( fc.indexOf("AMAZON") !=-1){
-	        			var price = parseFloat($(".SALE_LOWEST_PRICE_FBA").text()||0) - shipFee;
-	        			var ph = "" ;
-	        			if( price >0  ){
-	        				ph =">="+price ;
-	        			}else{
-	        				ph = "-" ;
-	        			}
-	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",ph) ;
-	           		}else{
-	           			var price = parseFloat($(".SALE_LOWEST_PRICE_FBM").text()||0) - shipFee;
+	           			var price = record.LIMIT_PRICE ;
 	           			var ph = "" ;
 	        			if( price >0  ){
 	        				ph =">="+price ;
@@ -75,26 +63,10 @@ $(function(){
 	        				ph = "-" ;
 	        			}
 	           			$(this).find("[key='FEED_PRICE']").attr("lowestPrice",price).attr("placeHolder",ph ) ;
-	           		}
+	           		
 	        	}},
-	        	{align:"center",key:"PRICE",label:"账户价格",group:"价格",width:"6%"},
-	           	{align:"center",key:"SHIPPING_PRICE",label:"运费",group:"价格",width:"4%"},
-	           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"4%",format:function(val,record){
-	           		var pm = '' ;
-	           		if(record.FULFILLMENT_CHANNEL != 'Merchant') pm = record.FBA_PM  ;
-	           		else if( record.ITEM_CONDITION == '1' ) pm =   record.U_PM||'-'  ;
-	           		else if( record.IS_FM == 'FM' ) pm =   record.F_PM||'-'  ;
-	           		else if( record.IS_FM == 'NEW' ) pm =   record.N_PM||'-'  ;
-	           		if(!pm || pm == '0') return '-' ;
-	           		return pm ;
-	           	}},
-	           	{align:"center",key:"FBM_PRICE__",label:"最低价",group:"价格",width:"6%",format:function(val,record){
-	           		if(record.FULFILLMENT_CHANNEL != 'Merchant') return record.FBA_PRICE ;
-	           		if( record.ITEM_CONDITION == '1' ) return  record.FBM_U_PRICE ;
-	           		if( record.IS_FM == 'FM' ) return  record.FBM_F_PRICE ;
-	           		if( record.IS_FM == 'NEW' ) return  record.FBM_N_PRICE ;
-	           		return "" ;
-	           	}},
+	        	{align:"center",key:"LIMIT_PRICE",label:"最低限价",group:"价格",width:"6%"},
+	        	{align:"center",key:"LIST_PRICE",label:"账户价格",group:"价格",width:"6%"},
 	           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"6%"},
 	        	
 	        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"}

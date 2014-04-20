@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <entry key="sql_report_orderRealProductList">
-    		SELECT * FROM (
-			SELECT 
-			  soi.REAL_ID,
-			  srp.IMAGE_URL,
-			   soi.REAL_SKU , srp.NAME , COUNT(1) AS C , SUM(soi.Item_Price_Amount) AS AMOUNT
-			 FROM sc_order_item soi,
-			sc_real_product srp
-			WHERE 
-			soi.REAL_ID = srp.id
-			AND soi.PURCHASE_DATE LIKE '{@%#purchaseDate#%}'
-			GROUP BY soi.REAL_SKU
-			) t
-			ORDER BY t.C desc
-    </entry>
-    
+
     <entry key="sql_report_orderRealProductList_Items">
     		
 			SELECT 
-			   soi.SELLER_SKU , COUNT(1) AS C , SUM(soi.Item_Price_Amount) AS AMOUNT
-			 FROM sc_order_item soi,
-			sc_real_product srp
+			   soi.REAL_ID,
+			  srp.IMAGE_URL,
+			   soi.REAL_SKU ,
+			    srp.NAME,
+			    soi.ASIN,
+			    (select name from sc_amazon_account where id = soi.ACCOUNT_ID) as ACCOUNT_NAME,
+			   soi.SELLER_SKU , 
+			   COUNT(1) AS C ,
+			   sfsi.TOTAL_SUPPLY_QUANTITY,
+			   sfsi.IN_STOCK_SUPPLY_QUANTITY
+			 FROM 
+			 	sc_real_product srp,
+			 	sc_order_item soi
+			left jion sc_fba_supply_inventory sfsi
+				on sfsi.account_id = soi.account_id
+					and sfsi.SELLER_SKU = soi.SELLER_SKU
 			WHERE 
 			soi.REAL_ID = srp.id
 			AND soi.PURCHASE_DATE LIKE '{@%#purchaseDate#%}'
-			AND soi.real_id = '{@#realId#}'
-			group by soi.seller_sku
+			group by soi.seller_sku,soi.account_id
     </entry>
 </properties>

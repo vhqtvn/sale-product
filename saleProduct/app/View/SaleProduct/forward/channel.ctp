@@ -53,13 +53,10 @@
 							return val||record.REL_SKU ;
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
-			           		var memo = record.MEMO||"" ;
-			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||'')+"</a>" ;
+			           		return "<a href='#' offer-listing='"+val+"'>"+(val||'')+"</a>" ;
 			           	}},
 			           	{align:"center",key:"P_LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
-			           	{align:"center",key:"P_TITLE",label:"名称",width:"10%",forzen:false,align:"left",format:function(val,record){
-			           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||'产品信息页')+"</a>" ;
-			           	}},
+			           	{align:"center",key:"P_TITLE",label:"名称",width:"10%",forzen:false,align:"left"},
 			           	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
 			           	{align:"center",key:"ITEM_CONDITION",label:"使用程度",width:"8%",format:function(val){
 			           		if(val == 1) return "Used" ;

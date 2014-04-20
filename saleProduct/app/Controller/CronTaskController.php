@@ -159,13 +159,14 @@ class CronTaskController extends AppController {
      */
 	public function  execMarketing(){
 		ini_set('date.timezone','Asia/Shanghai');
-		$hour = date('H');
+		$hour = (int)date('H');
 		debug($hour) ;
 		$accounts = $this->Amazonaccount->getAllAccountsFormat();
 		
 		//获取全局配置
 		$limitTimePriceStart = $this->Amazonaccount->getAmazonConfig("LIMIT_TIME_PRICE_START") ;//限时营销开始时间
 		$limitTimePriceEnd = $this->Amazonaccount->getAmazonConfig("LIMIT_TIME_PRICE_END") ;//限时营销开始时间
+		debug($limitTimePriceStart) ;
 		
 		//判断是不是限时调价时间
 		$isLimitStrategy =  false ;
@@ -182,6 +183,8 @@ class CronTaskController extends AppController {
 				$isLimitEnd = true ;
 			}else if( $hour >$limitTimePriceStart && $hour < $limitTimePriceEnd  ){
 				$isLimiting = true ;
+			}else{
+				$isLimitStrategy = false ;
 			}
 		}
 		echo $isLimitStrategy;
@@ -269,7 +272,7 @@ class CronTaskController extends AppController {
 			
 		if(  $isLimitStrategy  ){
 			if( $isLimitStart ){//限时调价开始，记录当前价格到数据库
-				$sql= "update sc_amamzon_account_product set lt_before_price='{@#ltBeforePrice#}' where id='{@#id#}'" ;
+				$sql= "update sc_amazon_account_product set lt_before_price='{@#ltBeforePrice#}' where id='{@#id#}'" ;
 				$this->Utils->exeSql($sql,array("ltBeforePrice"=>$listPrice,"id"=>$item['ID'] )) ;
 			}else if($isLimitEnd){//限时调价结束
 				//还原价格
