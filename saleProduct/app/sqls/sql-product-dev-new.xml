@@ -33,7 +33,7 @@
 							WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 12 MONTH)) 
 							and spsi.asin = spfd.asin
 							) as INQUIRY_COUNT
-				FROM  
+				     FROM
 							sc_product_developer spfd
 					LEFT JOIN sc_product sp 
 					on sp.asin = spfd.asin

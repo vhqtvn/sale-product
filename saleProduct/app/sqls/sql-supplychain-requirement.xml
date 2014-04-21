@@ -345,6 +345,40 @@
     </entry>
     
     
+     <!-- 获取能创建需求的Listing -->
+     <entry key="sql_supplychain_requirement_cancreate_list_V1.2">
+    	select 
+    	        saap.*,
+    	        saa.name as  ACCOUNT_ANME,
+    	        saa.SUPPLY_CYCLE,
+    	        saa.REQ_ADJUST,
+    	        saa.CONVERSION_RATE,
+    	        srp.ID as REAL_ID
+    	from sc_amazon_account_product saap,
+    		    sc_amazon_account saa,
+    		    sc_real_product_rel srpr,
+    		    sc_real_product srp
+    	where saap.IS_ANALYSIS = 1
+    			and saap.status = 'Y'
+    			and saap.account_id=saa.id
+    			and saa.status = 1
+    			and srp.is_onsale = 1
+    			and ( srp.REQ_AUDIT_NO_TIME is null  or DATEDIFF( NOW() , srp.REQ_AUDIT_NO_TIME ) >=3 )
+    			and not exists (
+	    	    	select 1 from sc_purchase_product spp
+	    	               where spp.real_id = srpr.real_id
+	    	                and spp.status !=80 
+	    	                and spp.IS_TERMINATION = 0
+	    	   )
+	    	   and not exists (
+		    	   SELECT * FROM sc_supplychain_requirement_plan_product ssrp
+				   WHERE  ssrp.status not in (2,6)
+				   				AND ssrp.REAL_ID = srp.ID
+		    	)
+		    	limit {@#start#},{@#limit#}
+    </entry>
+    
+    
 
 	 <!-- 获取能够创建需求计划的列表::: ANd sar.RECOMMENDED_INBOUND_QUANTITY >0
 	 SELECT sar.*  as C FROM sc_amazon_recommendations sar,
@@ -489,15 +523,24 @@
 		
 		<entry key="sql_supplychain_requirement_getLastestSaleData">
 		  <![CDATA[	
-		SELECT DATE_FORMAT( so.PURCHASE_DATE, "%Y-%m-%d" ) AS D,
+		SELECT DATE_FORMAT( soi.PURCHASE_DATE, "%Y-%m-%d" ) AS D,
 			SUM(soi.quantity_ordered) AS C  
-		 FROM sc_order so,
-		sc_order_item soi
-		WHERE so.order_id = soi.order_id
-		AND TO_DAYS(NOW()) -TO_DAYS(so.PURCHASE_DATE) <= 14
-		AND so.account_id = '{@#accountId#}'
+		 FROM sc_order_item soi
+		WHERE   TO_DAYS(NOW()) -TO_DAYS(soi.PURCHASE_DATE) <= 14
+		AND soi.account_id = '{@#accountId#}'
 		AND soi.seller_sku =  '{@#listingSku#}'
-		GROUP BY DATE_FORMAT( so.purchase_date, "%Y-%m-%d" )
+		GROUP BY DATE_FORMAT( soi.purchase_date, "%Y-%m-%d" )
+			]]>
+		</entry>
+		
+		<!-- 最近几天销售数据 -->
+		<entry key="sql_supplychain_requirement_getLastestSaleDataDays">
+		  <![CDATA[	
+		SELECT  SUM(soi.quantity_ordered) AS C  
+		 FROM sc_order_item soi
+		WHERE   TO_DAYS(NOW()) -TO_DAYS(soi.PURCHASE_DATE) <= {@#days#}
+		AND soi.account_id = '{@#accountId#}'
+		AND soi.seller_sku =  '{@#listingSku#}' 
 			]]>
 		</entry>
 		

@@ -84,10 +84,10 @@ class CronTaskController extends AppController {
      * 1、同步amazon推荐数据
      */
     public function createAmazonRequirement(){
-    	$accounts = $this->Amazonaccount->getAllAccountsFormat();
+    	//$accounts = $this->Amazonaccount->getAllAccountsFormat();
     	
-    	//先计算成本
-    	$this->asynCost() ;
+    	//先计算成本,需求计算与成本无关
+    	//$this->asynCost() ;
     	
     	//1、同步需求数据
     	/*foreach( $accounts as $account ){

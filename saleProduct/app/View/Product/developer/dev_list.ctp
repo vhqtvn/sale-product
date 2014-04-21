@@ -96,7 +96,8 @@
 		<center>
 		<table class="flow-table">						
 			<tbody>
-				<tr>						
+				<tr>		
+					<td><div class="flow-node active  total" status="">全部<span class="count"></span></div></td>	
 					<td><div class="flow-node disabled" status="10">产品分析<span class="count"></span></div></td>
 					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="20">产品询价<span class="count"></span></div></td>

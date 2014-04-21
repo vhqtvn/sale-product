@@ -231,8 +231,6 @@ class ScRequirement extends AppModel {
 				$this->exeSql($sql, array("realId"=>$realId)) ;
 			}
 		}
-		
-		
 	}
 	
 	public function auditReqPlanProduct($audit){
@@ -247,9 +245,175 @@ class ScRequirement extends AppModel {
 		foreach( $accounts as $account ){
 			$this->_createRequirement( $account);
 		}*/
-		$this->_createRequirement();
+		//$this->_createRequirement();
+		$this->_createRequirementV12() ;
 	}
 
+	public  function _createRequirementV12(){
+		//$sql = "sql_supplychain_requirement_cancreate_list_V1.2" ;
+		$start = 0 ;
+		$limit = 200 ;
+		$planId= null  ;
+		$itemCount = 0 ;
+		while(true){
+			$sql = "select 
+    	        saap.*,
+    	        saa.name as  ACCOUNT_ANME,
+    	        saa.SUPPLY_CYCLE,
+    	        saa.REQ_ADJUST,
+    	        saa.CONVERSION_RATE,
+    	        srp.ID as REAL_ID
+    	from sc_amazon_account_product saap,
+    		    sc_amazon_account saa,
+    		    sc_real_product_rel srpr,
+    		    sc_real_product srp
+    	where saap.IS_ANALYSIS = 1
+    			and saap.status = 'Y'
+    			and saap.account_id=saa.id
+    			and saap.fulfillment_channel like '%AMAZON%'
+    			and saa.status = 1
+    			and srp.is_onsale = 1
+    			AND srpr.ACCOUNT_ID = saap.ACCOUNT_ID
+    			AND srpr.SKU = saap.SKU
+    			AND  srpr.REAL_ID = srp.ID
+    			and ( srp.REQ_AUDIT_NO_TIME is null  or DATEDIFF( NOW() , srp.REQ_AUDIT_NO_TIME ) >=3 )
+    			and not exists (
+	    	    	select 1 from sc_purchase_product spp
+	    	               where spp.real_id = srpr.real_id
+	    	                and spp.status !=80 
+	    	                and spp.IS_TERMINATION = 0
+	    	   )
+	    	   and not exists (
+		    	   SELECT * FROM sc_supplychain_requirement_plan_product ssrp
+				   WHERE  ssrp.status not in (2,6)
+				   				AND ssrp.REAL_ID = srp.ID
+		    	)
+		    	limit $start ,$limit" ;
+			$items = $this->exeSqlWithFormat($sql,array()) ;
+			$start = $start+$limit ;
+			if( empty( $items ) || count($items)<=0 ) break ;
+			
+			if( empty($planId)  ){
+				//创建需求生成批次（计划）
+				$planId = $this->create_guid() ;
+				$params['planId']  = $planId ;
+				$params['name']   = date("Ymd-His") ;
+				$this->exeSql("sql_supplychain_requirement_plan_insert", $params) ;
+			}
+			
+			foreach( $items as $item  ){
+				$ic = $this->_createItemRequirementV12($item,$planId) ;
+				$itemCount = $itemCount+$ic ;
+			}
+		}
+		
+		//预处理需求
+		$this->preProcess(array(
+				'planId'=>$planId,
+				'itemCount'=>$itemCount
+		)) ;
+	}
+	
+	public function _createItemRequirementV12($item,$planId){
+		//账号当前库存
+		$existQuantity=$item['QUANTITY'] ;
+		//获取当前SKU的最近7天销售数据
+		//最近7天存在销售数量的天数
+		$saleDataLast3 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,3 ) ;
+		$saleDataLast7 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,7 ) ;
+		$saleDataLast14 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,14 ) ;
+		$daySaleNum = 0 ;
+		if( $saleDataLast7 - $saleDataLast3 == 0  ){
+			$daySaleNum = $saleDataLast3/3 ;
+		}else if( $saleDataLast14 - $saleDataLast7 == 0  ){
+			$daySaleNum = $saleDataLast7/7 ;
+		}else{
+			$daySaleNum = $saleDataLast14/14 ;
+		}
+		
+		$supplyCycle = (empty($item['SUPPLY_CYCLE'])|| $item['SUPPLY_CYCLE']=0)?14: $item['SUPPLY_CYCLE'] ;
+		$reqAdjust    = (empty($item['REQ_ADJUST'])|| $item['REQ_ADJUST']=0)?1.2 : $item['REQ_ADJUST'] ;
+		$ConversionRate = $item['CONVERSION_RATE'] ; 
+		if(empty($ConversionRate)){
+			$ConversionRate = 0.001 ;
+		}
+		
+		if( $daySaleNum >0 ){
+			//计算需求数量
+			$reqNum =$daySaleNum * $supplyCycle * $reqAdjust ;
+			if( $existQuantity >= $reqNum ){
+				//如果存在库存大于需求量，忽略不处理
+				return 0 ;
+			}else{
+				$ps = array() ;
+				$ps['accountId'] = $item['ACCOUNT_ID'] ;
+				$ps['id'] = $this->create_guid() ;
+				$ps['planId'] = $planId ;
+				$ps['realId'] = $item['REAL_ID'] ;
+				$ps['listingSku'] = $item['SKU'] ;
+				$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+				$ps['existQuantity'] =  $existQuantity ;
+				$ps['calcQuantity'] =  $reqNum ;
+				$ps['quantity'] =  ceil( $reqNum -  $existQuantity ) ;
+				$ps['urgency'] =  "A" ;
+				$ps['reqType'] =  "A" ;//销量需求
+				$this->createReqItem($ps) ;
+				return 1 ;
+			}
+		}
+		
+		//获取流量数据
+		$flowData = $this->getLastestFlowData($item['ACCOUNT_ID']  , $item['SKU'] ) ;
+		$flowDays =  count( $flowData  ) ;
+		
+		if( $flowDays>=3  ){
+			$count = 0 ;
+			foreach( $flowData as $i ){
+				$C = $i['C'] ;
+				$count = $count + $C ;
+			}
+		
+			//计算到的需求数量
+			$reqNum = ($count/14) * $ConversionRate * $reqAdjust ;
+			if( $existQuantity >= $reqNum ){
+				//账号库存数量大于需求数量
+				return 0  ;
+			}
+		
+			$ps = array() ;
+			$ps['accountId'] = $item['ACCOUNT_ID'] ;
+			$ps['id'] = $this->create_guid() ;
+			$ps['planId'] = $planId ;
+			$ps['realId'] = $item['REAL_ID'] ;
+			$ps['listingSku'] = $item['SKU'] ;
+			$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+			$ps['existQuantity'] =  $existQuantity ;
+			$ps['calcQuantity'] =  $reqNum ;
+			$ps['quantity'] = ceil( $reqNum -  $existQuantity ) ;
+			$ps['urgency'] =  "B" ;
+			$ps['reqType'] =  "B" ;//流量需求
+			$this->createReqItem($ps) ;
+			return 1 ;
+		}
+		
+		//如果存在库存大于0，则不创建需求
+		if( $existQuantity >= 10 ) return 0 ;
+		$ps = array() ;
+		$ps['accountId'] = $item['ACCOUNT_ID'] ;
+		$ps['id'] = $this->create_guid() ;
+		$ps['planId'] = $planId ;
+		$ps['realId'] = $item['REAL_ID'] ;
+		$ps['listingSku'] = $item['SKU'] ;
+		$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+		$ps['existQuantity'] =  $existQuantity ;
+		$ps['calcQuantity'] =  0 ;
+		$ps['quantity'] =  0 ;
+		$ps['urgency'] =  "C" ;
+		$ps['reqType'] =  "E" ;//其他原因需求
+		$this->createReqItem($ps) ;
+		return 1 ;
+	}
+	
 	/**
 	 * 需求类型： 
 	 * A: 销量需求
@@ -258,6 +422,7 @@ class ScRequirement extends AppModel {
 	 * D: 利润不达标
 	 * E: 其他需求
 	 * @param unknown_type $account
+	 * @deprecated
 	 */
 	public function _createRequirement( $account=null ){
 		$dataSource = $this->getDataSource();
@@ -628,6 +793,11 @@ class ScRequirement extends AppModel {
 	public function getLastestSaleData($accountId , $listingSku){
 		$cost = $this->exeSqlWithFormat("sql_supplychain_requirement_getLastestSaleData", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
 		return $cost ;
+	}
+	
+	public function getLastestSaleDataDays($accountId , $listingSku , $days ){
+		$cost = $this->getObject("sql_supplychain_requirement_getLastestSaleDataDays", array('accountId'=>$accountId,'listingSku'=>$listingSku,"days"=>$days)) ;
+		return $cost['C'] ;
 	}
 	
 	//获取流量数据
