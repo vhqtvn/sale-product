@@ -118,7 +118,7 @@ var currentId = '' ;
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					 return $(window).height() - 150 ;
+					 return $(window).height() - 160 ;
 				 },
 				 //title:"产品列表",
 				 indexColumn: false,
@@ -152,10 +152,8 @@ var currentId = '' ;
 											profitRatio[type] = type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")" ;
 											//profitRatio.push( type+"("+cost+","+( (profit)*100).toFixed(2)+"%"+")") ;
 										}) ;
-										
 										costGroup = profitRatio["FBA"]+"||"+profitRatio["FBM"] ;
 						 			}
-						 			
 						 			
 						 			$("<span>"+costGroup+"</span>").appendTo(tr.find("td[key='COST_GROUP']").find(".cell-div").empty() ).attr("title",costGroup) ;
 						 			if( t.COST_COUNT<=0 ) {
@@ -166,7 +164,6 @@ var currentId = '' ;
 							},{noblock:true}) ;
 					 	//},500) ;
 						 	
-					 
 					 	$(".process-action").bind("click",function(){
 							var row =  $(this).parents("tr:first").data("record") ;
 							var devId = row.DEV_ID ;
@@ -198,7 +195,6 @@ var currentId = '' ;
 						 			$(".grid-content-details").llygrid("reload",{},true) ;
 								}) ;
 					 		}
-					 		
 					 	}) ;
 				 }
 			}) ;
@@ -206,7 +202,7 @@ var currentId = '' ;
 			$(".product-detail").live("click",function(){
 				var asin = $(this).attr("asin") ;
 				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
-			})
+			});
 			
 			
 			$(".create-task").click(function(){

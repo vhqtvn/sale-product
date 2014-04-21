@@ -43,6 +43,7 @@ class Cost extends AppModel {
 	
 	/**
 	 * 初始化开发产品成本信息
+	 * 
 	 */
 	public function initDevCost($asin,$loginId){
 		$sql = "SELECT sc_product_cost.* FROM sc_product_cost where asin = '$asin'";

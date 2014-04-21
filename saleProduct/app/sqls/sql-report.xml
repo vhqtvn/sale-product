@@ -17,7 +17,7 @@
 			 FROM 
 			 	sc_real_product srp,
 			 	sc_order_item soi
-			left jion sc_fba_supply_inventory sfsi
+			left join sc_fba_supply_inventory sfsi
 				on sfsi.account_id = soi.account_id
 					and sfsi.SELLER_SKU = soi.SELLER_SKU
 			WHERE 

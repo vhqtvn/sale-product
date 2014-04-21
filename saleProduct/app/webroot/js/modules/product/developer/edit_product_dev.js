@@ -1,5 +1,4 @@
-
- 	$(function(){
+$(function(){
  		//init input
  		$(".input").attr("disabled","disabled");
  		$("."+pdStatus+"-input").removeAttr("disabled") ;

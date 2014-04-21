@@ -110,12 +110,16 @@ class CronTaskController extends AppController {
     	foreach( $accounts as $account ){
     		$accountId = $account['ID'] ;
     		$config = $this->System->getAccountPlatformConfig($accountId) ;
-    		$sql = "select distinct ASIN from sc_amazon_account_product saap ,
-    				                    sc_amazon_account saa
+    		$sql = "select distinct saap.ASIN from sc_amazon_account_product saap ,
+    				                    sc_amazon_account saa,
+    									sc_fba_supply_inventory sfsi
     				where
     				 saap.FULFILLMENT_CHANNEL like 'AMAZON%' 
     				and saap.status = 'Y'
     				and saap.account_id = saa.id
+    				and saap.account_id = sfsi.account_id
+					and saap.sku =sfsi.seller_sku
+					and sfsi.IN_STOCK_SUPPLY_QUANTITY >0 
     				and saa.status = 1
     				and saap.account_id = '{@#accountId#}'" ;
     		$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
@@ -213,11 +217,15 @@ class CronTaskController extends AppController {
 				$index=0 ;
 				while(true){
 					$_products = array() ;
-					
-					$sql = "select * from sc_amazon_account_product
+					//库存大于0的才进行自动营销
+					$sql = "select saap.* from sc_amazon_account_product  saap,
+					          sc_fba_supply_inventory sfsi
 					where
-					FULFILLMENT_CHANNEL like 'AMAZON%'
-					and account_id = '{@#accountId#}'
+					saap.FULFILLMENT_CHANNEL like 'AMAZON%'
+					and saap.account_id = sfsi.account_id
+					and saap.sku =sfsi.seller_sku
+					and sfsi.IN_STOCK_SUPPLY_QUANTITY >0 
+					and saap.account_id = '{@#accountId#}'
 					and limit_price > 0
 					and status = 'Y'
 					and lowest_fba_price >0
@@ -287,6 +295,29 @@ class CronTaskController extends AppController {
 			//如果只有一个FBA卖家，就不处理价格
 			return null ;
 		}
+		
+		$lowestCount = 0 ;
+		$secondPrice = 0 ;
+		foreach( $fbaPriceArray as $fpa ){
+			if( $fpa ==$lowestFbaPrice  ){
+				$lowestCount++ ;
+			}else{
+				$secondPrice = $fpa ;
+				break ;
+			}
+		}
+		
+		$myPriceCount= 0 ;
+		$limitPriceLargerPrice= 0 ;
+		foreach( $fbaPriceArray as $fpa ){
+			if( $fpa == $execPrice ){
+				$myPriceCount++ ;
+			}
+			if( $fpa > $execPrice  ){
+				$limitPriceLargerPrice = $fpa ;
+				break ;
+			}
+		}
 			
 		//当前价格比FBA最低价格高
 		if( $listPrice > $lowestFbaPrice ){
@@ -296,26 +327,25 @@ class CronTaskController extends AppController {
 				}else{
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$lowestFbaPrice ) ;
 				}
-			}else{ //设置价格为限价
+			}else if( $lowestFbaPrice ==  $execPrice  ){ //设置价格为限价
 				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+			}else if( $lowestFbaPrice <  $execPrice  ){ //最低价格小于限价
+				if( $myPriceCount > 1 || ( $myPriceCount==1 && $execPrice != $listPrice ) ){
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+				}
+				
+				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+				}else{
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice ) ;
+				}
 			}
 			return null ;
 		}
 			
 		//如果价格就是FBA最低价格，判断是否存在多个卖家都是最低价格
 		if($listPrice ==  $lowestFbaPrice ){
-			$lowestCount = 0 ;
-			$secondPrice = 0 ;
-			foreach( $fbaPriceArray as $fpa ){
-				if( $fpa ==$lowestFbaPrice  ){
-					$lowestCount++ ;
-				}else{
-					$secondPrice = $fpa ;
-					break ;
-				}
-			}
-		
-		
+			
 			if( $lowestCount == 1 ){//如果最低价格只有一个，则调整价格为第二
 				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
 					//在限时调价进行中，最低价不做处理......

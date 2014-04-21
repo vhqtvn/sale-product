@@ -31,7 +31,7 @@
 				 },
 				 title:"",
 				 indexColumn:false,
-				 querys:{sqlId:"sql_report_orderRealProductList",purchaseDate:newDate},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+				 querys:{sqlId:"sql_report_orderRealProductList_Items",purchaseDate:newDate},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
 				 },

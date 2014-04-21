@@ -90,6 +90,10 @@
 		$PD_START_FQ				=  $security->hasPermission($loginId , 'PD_START_FQ') ;//启用废弃产品
 		$PD_SALE_RPICE			=  $security->hasPermission($loginId , 'PD_SALE_RPICE') ;//销售限价
 		$PD_SUPPLIER_MAX_PRICE	=  $security->hasPermission($loginId , 'PD_SUPPLIER_MAX_PRICE') ;//供应限价
+		//样品检测权限
+		$PD_SAMPLE_EVALUATE	=  $security->hasPermission($loginId , 'PD_SAMPLE_EVALUATE') ;
+		$PD_SAMPLE_EVALUATE_AUDIT	=  $security->hasPermission($loginId , 'PD_SAMPLE_EVALUATE_AUDIT') ;
+		$PD_SAMPLE_ORDER_ARREIVE		=  $security->hasPermission($loginId , 'PD_ORDER_ARREIVE') ;
 		
 		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
 		
@@ -130,6 +134,8 @@ html{-webkit-text-size-adjust: none;}
    		
    		.flow-node{
 			font-size:11px;
+   			width:60px;
+   			word-wrap: break-word;
    		}
    		
    		.flow-split{
@@ -359,7 +365,7 @@ html{-webkit-text-size-adjust: none;}
 	<?php if( $productDev['DEV_STATUS'] == 1 ){//自有开发流程 ?>
 		flowData.push( {status:42,label:"样品检测",memo:true ,
 			actions:[ 
-					<?php if( $PD_ZJSP ){ ?>
+					<?php if( $PD_SAMPLE_EVALUATE ){ ?>
 			         {label:"保存",action:function(){ ForceAuditAction('42',"保存") } },
 					 {label:"检测完成",action:function(){ AuditAction('44',"样品检测完成，提交审批") } }
 					<?php }?>
@@ -367,7 +373,7 @@ html{-webkit-text-size-adjust: none;}
 	     ) ;
 		flowData.push( {status:44,label:"样品检测审批",memo:true ,
 			actions:[ 
-					<?php if( $PD_ZJSP ){ ?>
+					<?php if( $PD_SAMPLE_EVALUATE_AUDIT ){ ?>
 			         {label:"保存",action:function(){ ForceAuditAction('44',"保存") } },
 			         {label:"重新检测",action:function(){ AuditAction('42',"审批不通过，重新检测") } },
 			         {label:"审批不通过",action:function(){ AuditAction('80',"审批不通过，终止开发") } },
@@ -376,7 +382,6 @@ html{-webkit-text-size-adjust: none;}
 		     ]}
 	     ) ;
 	<?php }?>
-    
 	flowData.push( {status:50,label:"录入货品",memo:true ,
 		actions:[ 
 					<?php if( $PD_HPLR ){ ?>
@@ -518,7 +523,9 @@ html{-webkit-text-size-adjust: none;}
 								value="<?php echo $productDev['SAMPLE_ORDER_TIME']?>"/>
 								<?php echo $productDev['SAMPLE_ORDER_TIME']?>
 								<?php if( empty($productDev['SAMPLE_ORDER_TIME']) &&( $pdStatus==42 || $pdStatus==44 ) ){?>
-								<button  class="btn-sample-order btn">确认已经下单</button>
+									<?php if( $PD_SAMPLE_ORDER_ARREIVE ){ ?>
+									<button  class="btn-sample-order btn">确认已经下单</button>
+									<?php } ?>
 								<?php }?>
 						</td>
 				</tr>
@@ -530,7 +537,9 @@ html{-webkit-text-size-adjust: none;}
 									value="<?php echo $productDev['SAMPLE_ARRIVE_TIME']?>" ></input>
 								<?php echo $productDev['SAMPLE_ARRIVE_TIME']?>
 								<?php if( empty($productDev['SAMPLE_ARRIVE_TIME'])&&( $pdStatus==42 || $pdStatus==44 ) ){?>
-								<button class="btn btn-sample-arrive">确认样品到达</button>
+									<?php if( $PD_SAMPLE_ORDER_ARREIVE ){ ?>
+									<button class="btn btn-sample-arrive">确认样品到达</button>
+									<?php } ?>
 								<?php }?>
 						</td>
 				</tr>
@@ -539,10 +548,10 @@ html{-webkit-text-size-adjust: none;}
 						<td>
 							<select  name="SAMPLE_EVALUATE"   class="input 42-input 44-input"  <?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>>
 									<option value="">选择</option>
-									<option value="10"  <?php echo $productDev['SAMPLE_ARRIVE_TIME']==10?"selected":"";?>>优</option>
-									<option value="20" <?php echo $productDev['SAMPLE_ARRIVE_TIME']==20?"selected":"";?>>良</option>
-									<option value="30" <?php echo $productDev['SAMPLE_ARRIVE_TIME']==30?"selected":"";?>>一般</option>
-									<option value="40" <?php echo $productDev['SAMPLE_ARRIVE_TIME']==40?"selected":"";?>>差</option>
+									<option value="10"  <?php echo $productDev['SAMPLE_EVALUATE']==10?"selected":"";?>>优</option>
+									<option value="20" <?php echo $productDev['SAMPLE_EVALUATE']==20?"selected":"";?>>良</option>
+									<option value="30" <?php echo $productDev['SAMPLE_EVALUATE']==30?"selected":"";?>>一般</option>
+									<option value="40" <?php echo $productDev['SAMPLE_EVALUATE']==40?"selected":"";?>>差</option>
 							</select>
 						</td>
 				</tr>

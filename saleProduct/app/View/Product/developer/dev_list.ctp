@@ -50,6 +50,9 @@
 	<style type="">
    		.flow-node{
 			cursor: pointer ;
+			width:60px;
+   			word-wrap: break-word;
+   			height:35px;
    		}
    		
 		.flow-node {
@@ -72,6 +75,13 @@
 				</th>
 				<td>
 					<input type="text" id="searchKey" placeHolder="输入ASIN、产品名称、开发标题" style="width:400px;"/>
+				</td>
+				<td>
+					<select  id="devStatus" style="width:80px;"> 
+						<option value="">--全部--</option>
+						<option value="2">跟卖</option>
+						<option value="1">自有</option>
+					</select>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
