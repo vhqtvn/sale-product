@@ -166,6 +166,9 @@
 					
 					if( channel != 'Merchant' ) itemCost +=parseFloat(  item.FBA_COST );
 					if( channel != 'Merchant' ) itemCost +=parseFloat(  item.INVENTORY_CENTER_FEE) ;
+
+					itemCost +=parseFloat(  item.VARIABLE_CLOSING_FEE) ;
+					
 					itemCost +=parseFloat(  $("[name='OTHER_COST']","#"+rowId).val()||0) ; 
 
 					var totalPrice=$("[name='TOTAL_PRICE']","#"+rowId).val() || item.TOTAL_PRICE ;//总售价
