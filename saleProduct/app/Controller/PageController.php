@@ -30,6 +30,8 @@ App::uses('AppController', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers/pages-controller.html
  */
 class PageController extends AppController {
+	public $helpers = array('Html', 'Form',"Barcode");//,'Ajax','Javascript
+	
 	public function forward($routes,$arg1 = null ,$arg2 = null , $arg3 = null , $arg4 = null,$arg5=null,$arg6=null,$arg7=null){
 		$rs = str_replace(".","/",$routes) ;
 		

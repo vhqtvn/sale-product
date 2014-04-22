@@ -43,11 +43,11 @@
 		}
 	       var gridConfig = {
 					columns:[
-						/*{align:"center",key:"SKU",label:"操作",width:"6%",format:{type:"checkbox",render:function(record){
-								if(record.checked >=1){
-									$(this).attr("checked",true) ;
-								}
-						}}},*/
+						{align:"center",key:"SKU",label:"打印Label",width:"6%",format:function(val,record){
+							if(record.FULFILLMENT_CHANNEL == 'AMAZON_NA')
+			           			return "<a href='#' class='print-label'>打印Label</a>" ;
+							else return "" ;
+			           	}},
 						{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"8%"},
 						{align:"center",key:"SKU",label:"SKU",width:"8%",format:function(val,record){
 							return val||record.REL_SKU ;
@@ -97,6 +97,11 @@
 				$(".grid-content").llygrid("reload",getQueryCondition(),
 					{ds:{type:"url",content:contextPath+"/grid/query/"}}) ;	
 			}) ;
+
+			$(".print-label").live("click",function(){
+				var record = $(this).closest("tr").data("record") ;
+				openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+record.SKU+"/"+record.ACCOUNT_ID,850,700) ;
+			}) ;
 			
 			function getQueryCondition(){
 				var asin = $("[name='asin']").val() ;
@@ -110,7 +115,6 @@
 			}
 
 			$(".save-limit").click(function(){
-
 				    var limitPrices = [] ;
 					$(".lly-grid-content").find("tr").each(function(){
 							var record = $(this).data("record") ;

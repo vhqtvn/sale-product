@@ -509,8 +509,8 @@
 									<tr>
 										<th>实际供应商：</th>
 										<td>
-										<select id="realProvidor"   class=" 70-input  input" 
-											<?php echo $status>=70?"data-validator='required'":"" ?>
+										<select id="realProvidor"   class="  input" 
+											<?php echo $actionType == 'audit' ?"data-validator='required'":"" ?>
 										>
 											<option value="">--</option>
 										<?php
@@ -536,17 +536,17 @@
 										<td><input id="realPurchaseDate"  data-widget="calendar" 
 											data-options="{'isShowWeek':'true','dateFmt':'yyyy-MM-dd HH:mm:ss'}"
 											 type="text"   class="70-input input" 
-											<?php echo $status>=70?"data-validator='required'":"" ?>
+											<?php echo $actionType == 'audit'?"data-validator='required'":"" ?>
 											value='<?php echo $purchaseProduct['REAL_PURCHASE_DATE'] ;?>' /></td>
 										<th>实际采购价：</th>
 										<td><input id="realQuotePrice"   type="text"   class="70-input input" 
-													data-validator="double<?php echo $status>=70?",required":"" ?>"
+													data-validator="double<?php echo $actionType == 'audit'?",required":"" ?>"
 											value='<?php echo $purchaseProduct['REAL_QUOTE_PRICE'] ;?>' /></td>
 									</tr>
 									<tr class="check-purchase-tr">
 										<th>实际运费支付：</th>
 										<td>
-											<select id="realShipFeeType"  class="70-input input ship-fee"   <?php echo $status>=70?"data-validator='required'":"" ?> >
+											<select id="realShipFeeType"  class="70-input input ship-fee"   <?php echo $actionType == 'audit'?"data-validator='required'":"" ?> >
 												<option value="">选择</option>
 												<option value="by" <?php if( $purchaseProduct['REAL_SHIP_FEE_TYPE'] == 'by' ) echo 'selected' ;?>>卖家承担</option>
 												<option value="hdfk" <?php if($purchaseProduct['REAL_SHIP_FEE_TYPE']  == 'hdfk' ) echo 'selected' ;?> >到付</option>

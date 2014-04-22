@@ -257,12 +257,12 @@ class ScRequirement extends AppModel {
 		$itemCount = 0 ;
 		while(true){
 			$sql = "select 
-    	        saap.*,
-    	        saa.name as  ACCOUNT_ANME,
-    	        saa.SUPPLY_CYCLE,
-    	        saa.REQ_ADJUST,
-    	        saa.CONVERSION_RATE,
-    	        srp.ID as REAL_ID
+			    	        saap.*,
+			    	        saa.name as  ACCOUNT_ANME,
+			    	        saa.SUPPLY_CYCLE,
+			    	        saa.REQ_ADJUST,
+			    	        saa.CONVERSION_RATE,
+			    	        srp.ID as REAL_ID
     	from sc_amazon_account_product saap,
     		    sc_amazon_account saa,
     		    sc_real_product_rel srpr,
@@ -276,7 +276,6 @@ class ScRequirement extends AppModel {
     			AND srpr.ACCOUNT_ID = saap.ACCOUNT_ID
     			AND srpr.SKU = saap.SKU
     			AND  srpr.REAL_ID = srp.ID
-    			and ( srp.REQ_AUDIT_NO_TIME is null  or DATEDIFF( NOW() , srp.REQ_AUDIT_NO_TIME ) >=3 )
     			and not exists (
 	    	    	select 1 from sc_purchase_product spp
 	    	               where spp.real_id = srpr.real_id
@@ -286,7 +285,7 @@ class ScRequirement extends AppModel {
 	    	   and not exists (
 		    	   SELECT * FROM sc_supplychain_requirement_plan_product ssrp
 				   WHERE  ssrp.status not in (2,6)
-				   				AND ssrp.REAL_ID = srp.ID
+				   		AND ssrp.REAL_ID = srp.ID
 		    	)
 		    	limit $start ,$limit" ;
 			$items = $this->exeSqlWithFormat($sql,array()) ;
@@ -321,18 +320,21 @@ class ScRequirement extends AppModel {
 		//最近7天存在销售数量的天数
 		$saleDataLast3 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,3 ) ;
 		$saleDataLast7 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,7 ) ;
-		$saleDataLast14 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,14 ) ;
 		$daySaleNum = 0 ;
-		if( $saleDataLast7 - $saleDataLast3 == 0  ){
+		if( $saleDataLast7 - $saleDataLast3 == 0  ){//如果只存在3天销量
 			$daySaleNum = $saleDataLast3/3 ;
-		}else if( $saleDataLast14 - $saleDataLast7 == 0  ){
-			$daySaleNum = $saleDataLast7/7 ;
-		}else{
-			$daySaleNum = $saleDataLast14/14 ;
+		}else{//如果只存在7天销量
+			$daySaleNum =( ($saleDataLast3/3)*0.8) +((($saleDataLast7-$saleDataLast3)/4)*0.2);
 		}
+		/*else{//如果存在14天销量
+			$daySaleNum =( ($saleDataLast3/3)*0.7) +((($saleDataLast7-$saleDataLast3)/4)*0.2)+((($saleDataLast14-$saleDataLast3)/4)*0.2);
+		}
+		/*echo 'sku:::'.$item['SKU'].'<br/>' ;
+		echo '$existQuantity:'.$existQuantity.'<br/>' ;
+		echo 'daySaleNum:'.$daySaleNum.'<br/>' ;*/
 		
-		$supplyCycle = (empty($item['SUPPLY_CYCLE'])|| $item['SUPPLY_CYCLE']=0)?14: $item['SUPPLY_CYCLE'] ;
-		$reqAdjust    = (empty($item['REQ_ADJUST'])|| $item['REQ_ADJUST']=0)?1.2 : $item['REQ_ADJUST'] ;
+		$supplyCycle = (empty($item['SUPPLY_CYCLE'])|| $item['SUPPLY_CYCLE']==0)?14: $item['SUPPLY_CYCLE'] ;
+		$reqAdjust    = (empty($item['REQ_ADJUST'])|| $item['REQ_ADJUST']==0)?1.2 : $item['REQ_ADJUST'] ;
 		$ConversionRate = $item['CONVERSION_RATE'] ; 
 		if(empty($ConversionRate)){
 			$ConversionRate = 0.001 ;
@@ -341,6 +343,7 @@ class ScRequirement extends AppModel {
 		if( $daySaleNum >0 ){
 			//计算需求数量
 			$reqNum =$daySaleNum * $supplyCycle * $reqAdjust ;
+
 			if( $existQuantity >= $reqNum ){
 				//如果存在库存大于需求量，忽略不处理
 				return 0 ;
@@ -357,6 +360,7 @@ class ScRequirement extends AppModel {
 				$ps['quantity'] =  ceil( $reqNum -  $existQuantity ) ;
 				$ps['urgency'] =  "A" ;
 				$ps['reqType'] =  "A" ;//销量需求
+			
 				$this->createReqItem($ps) ;
 				return 1 ;
 			}
@@ -747,6 +751,9 @@ class ScRequirement extends AppModel {
 	}
 	
 	function  createReqItem($ps){
+		//debug( $ps ) ;
+		//return ;
+		
 		$existQuantity = $ps['existQuantity'] ;
 		$quantity = $ps['quantity'] ;
 		
