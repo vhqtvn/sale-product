@@ -130,7 +130,7 @@
 					<tr>	
 						<th>需求分类:</th>
 						<td>
-							<select name='reqType'  style="width:100px">
+							<select name='reqType'  style="width:80px">
 								<option value=''>全部</option>
 								<option value='A'>销量需求</option>
 								<option value='B'>流量需求</option>
@@ -141,7 +141,7 @@
 						</td>
 						<th>需求状态:</th>
 						<td>
-							<select name='status'  style="width:100px">
+							<select name='status'  style="width:80px">
 								<option value=''>全部</option>
 								<option value='0'>待审批</option>
 								<option value='1'>审批通过</option>
@@ -150,12 +150,26 @@
 						</td>
 						<th>销售渠道:</th>
 						<td>
-							<select name='fulfillmentChannel'  style="width:100px">
+							<select name='fulfillmentChannel'  style="width:80px">
 								<option value=''>全部</option>
 								<option value='AMAZON'>FBA</option>
 								<option value='Merchant'>FBM</option>
 							</select>
 						</td>
+						<th>账号：</th>
+						<td>
+							<select name="accountId" style="width:80px">
+				     		<option value="">--选择--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     		} ;
+					     	?>
+							</select>
+						</td>			
 						<td>
 							<input type="text"  name="searchKey"  placeholder="SKU、NAME" value="" style="width:300px;"/>
  						</td>

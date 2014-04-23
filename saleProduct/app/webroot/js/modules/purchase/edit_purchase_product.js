@@ -283,7 +283,7 @@ function WarehouseInAction(status , statusLabel){
 function AuditAction(status , statusLabel){
 	
 	if(window.confirm("确认【"+statusLabel+"】？")){
-		var memo = "("+statusLabel+")" + ($(".memo").val()||"")
+		var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
 		var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus} ;
 		
 			if( !$.validation.validate('#personForm').errorInfo ) {
@@ -299,7 +299,7 @@ function AuditAction(status , statusLabel){
 
 function ForceAuditAction(status , statusLabel,isTerminal ){
 	if(window.confirm("确认【"+statusLabel+"】？")){
-				var memo = "("+statusLabel+")" + ($(".memo").val()||"")
+				var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
 				var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus,isTerminal:isTerminal} ;
 				var json = $("#personForm").toJson() ;
 				json1 = $.extend(json,json1) ;

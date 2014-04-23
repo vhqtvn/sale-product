@@ -119,6 +119,7 @@ class NewPurchaseService extends AppModel {
 	}
 	
 	public function doPurchaseProductStatus($data){
+		debug($data) ;
 		if( isset($data['status'])  && !empty($data['status']) ){
 			
 			$currentStatus = $data['currentStatus'] ;
@@ -136,7 +137,8 @@ class NewPurchaseService extends AppModel {
 			$data['productId'] = $id ;
 			
 			if($status == 2){
-				$sql = "update sc_purchase_product set is_audit=2 where id='{@#productId#}'" ;
+				$sql = "update sc_purchase_product set is_audit=2 where id='{@#id#}'" ;
+				$this->exeSql($sql, $data) ;
 				$data['memo'] = $data['trackMemo'] ;
 				$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 				return ;

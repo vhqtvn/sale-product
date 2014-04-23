@@ -11,6 +11,10 @@
 		
 			$(".grid-content-details").llygrid({
 				columns:[
+					{align:"center",key:"ID",label:"Label",width:"10%",forzen:false,align:"left",format:function(val,record){
+						if( !record.FC_SKU ) return "" ;
+						return "<input type='text'  style='width:35px;height:20px;margin-top:2px;padding:0px;' value='' title='输入打印数量'>&nbsp;<button class='btn print-btn'>打印</button>" ;
+					}},
 				    {align:"center",key:"IN_FLAG",label:"状态",width:"6%",format:function(val,record){
 				    	if(val>=1)return "入库中";
 				    	return "" ;
@@ -40,6 +44,7 @@
 		        		return "<a href='#'  offer-listing='"+record.ASIN+"'>"+val+"</a>" ;
 		        	}},
 		        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"渠道",width:"10%",forzen:false,align:"left"},
+		        	{align:"center",key:"FC_SKU",label:"FNSKU",width:"10%",forzen:false,align:"left"},
 		        	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"当前库存",width:"8%",sort:true },
 		        	{align:"center",key:"CALC_QUANTITY",label:"周期需求量",width:"8%",sort:true },
 		           	{align:"center",key:"QUANTITY",label:"需求量",width:"6%",sort:true},
@@ -113,6 +118,14 @@
 					}
 				}
 			}) ;
+			
+			$(".print-btn").live("click",function(){
+				var record = $(this).closest("tr").data("record") ;
+				var printNum = $(this).prev().val() ;
+				var accountId = record.ACCOUNT_ID ;
+				var listingSku = record.SKU ;
+				openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
+			});
 			
 			$(".risk").live("click",function(){
 				var record = $(this).parents("tr:first").data("record");

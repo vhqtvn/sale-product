@@ -142,6 +142,7 @@
              saap.SKU as LISTING_SKU,
               saap.ASIN,
     	      saap.RISK_TYPE,
+    	      saap.FC_SKU,
 	    	  saa.name as ACCOUNT_NAME,
 	    	  saap.ACCOUNT_ID,
 	    	  saap.id as ACCOUNT_PRODUCT_ID,

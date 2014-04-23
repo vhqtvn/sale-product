@@ -56,7 +56,7 @@ $(function(){
 		var printNum = $(this).prev().val() ;
 		var accountId = record.ACCOUNT_ID ;
 		var listingSku = record.SKU ;
-		openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+(printNum||44)+"/"+listingSku+"/"+accountId ,850,700) ;
+		openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
 	});
 	
 });
