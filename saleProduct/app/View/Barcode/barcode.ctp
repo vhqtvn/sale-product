@@ -154,7 +154,7 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 	
 	.label-item-11{
 		height:100px;
-		width:207px;
+		width:209px;
 		border:none;
 		padding:0px;
 		margin:0px;
