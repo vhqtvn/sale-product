@@ -7,16 +7,9 @@
 	<meta http-equiv="cache-control" content="no-cache"/>
 
    <?php
-  		include_once ('config/config.php');
-   
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('../js/grid/jquery.llygrid');
-		echo $this->Html->css('default/style');
-
-		echo $this->Html->script('jquery');
-		echo $this->Html->script('common');
-		echo $this->Html->script('jquery.json');
-		echo $this->Html->script('grid/jquery.llygrid');
+		include_once ('config/config.php');
+  		include_once ('config/header.php');
+  		
 		echo $this->Html->script('modules/product/developer/dev_list');
 		
 		echo $this->Html->css('../js/modules/tag/tagutil');
@@ -66,7 +59,8 @@
 
 </head>
 <body>
-
+  <div data-widget="layout" style="width:100%;height:100%;">
+		<div region="center" split="true" border="true" title="开发列表" style="padding:2px;">
 	<div class="toolbar toolbar-auto toolbar1 query-container">
 		<table>
 			<tr>
@@ -128,5 +122,11 @@
 	</div>
 	<div class="grid-content-details" style="width:99.5%;">
 	</div>
+	</div>
+	<div region="west"  split="true" border="true" title="货品分类" style="width:150px;">
+			<div id="tree-wrap">
+			<div id="default-tree" class="tree" style="padding: 5px; "></div>
+			</div>
+		</div>
 </body>
 </html>

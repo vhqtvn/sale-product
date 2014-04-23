@@ -595,6 +595,14 @@ html{-webkit-text-size-adjust: none;}
 		<table class="form-table"  style="margin:5px 2px;" id="flag1">
 				<tbody>
 					<tr>
+						<th>开发标题：</th>
+						<td colspan="3">
+							<input type="text"  id="TITLE" class="input 10-input 30-input 40-input"
+								 value="<?php echo $productDev['TITLE'];?>"
+								 data-validator="required" style="width:90%;" placeHolder="输入开发标题"/>
+						</td>
+					</tr>
+					<tr>
 						<th>产品信息：</th>
 						<td colspan="3">
 							<?php 
@@ -613,11 +621,11 @@ html{-webkit-text-size-adjust: none;}
 						</td>
 					</tr>
 					<tr>
-						<th>开发标题：</th>
+						<th>开发产品分类：</th>
 						<td colspan="3">
-							<input type="text"  id="TITLE" class="input 10-input 30-input 40-input"
-								 value="<?php echo $productDev['TITLE'];?>"
-								 data-validator="required" style="width:90%;" placeHolder="输入开发标题"/>
+							<input type="hidden"  id="categoryId" name="categoryId" value="<?php echo $productDev['CATEGORY_ID']?>"/>
+							<input type="text" id="categoryName" name="categoryName" value="<?php echo $productDev['CATEGORY_NAME']?>"/>
+							<button class="btn select-category">选择</button>
 						</td>
 					</tr>
 					<tr>

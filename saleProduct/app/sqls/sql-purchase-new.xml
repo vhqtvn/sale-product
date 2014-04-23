@@ -316,4 +316,31 @@
 			where
 			id = '{@#id#}'
 	</entry>
+	
+	<entry key="sql_purchase_new_listing_label">
+    	SELECT saap.*,
+       			srp.NAME AS REAL_NAME,
+       			srp.REAL_SKU,
+       			srp.IMAGE_URL,
+       			saa.NAME as ACCOUNT_NAME
+		FROM 
+			  sc_amazon_account_product saap,
+			  sc_amazon_account saa,
+			  sc_real_product_rel srpr ,
+			  sc_real_product srp
+		WHERE srpr.ACCOUNT_ID =saap.ACCOUNT_ID
+			AND srpr.SKU = saap.SKU
+			AND srpr.REAL_ID = srp.ID
+			AND saap.STATUS = 'Y'
+			AND saa.id = saap.account_id
+			and saap.fulfillment_channel like '%AMAZON%'
+    	{@ and saap.account_id = '#accountId#'}
+    	{@ and (
+    	    saap.title like '%#searchKey#%'  or
+    	    srp.real_sku like '%#searchKey#%' or 
+    	    srp.name like '%#searchKey#%' or
+    	    saap.asin like '%#searchKey#%' or
+    	    saap.sku like '%#searchKey#%'
+    	)}
+    </entry>
 </properties>

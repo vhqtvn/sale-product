@@ -12,6 +12,18 @@ class Amazonaccount extends AppModel {
 		return $this->getObject($sql, array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
 	}
 	
+	function checkProductValid( $accountId , $sellerSku ){
+		//检查该产品是否能够打印标签
+		$account = $this->getAccountIngoreDomainById($accountId)  ;
+		$account = $account[0]['sc_amazon_account']  ;
+		
+		$Utils  = ClassRegistry::init("Utils") ;
+		$url = $Utils->buildUrl($account,"taskAsynAmazon/GetMatchingProductForId") ;
+		$url = $url.'/'.$sellerSku ;
+		$result = file_get_contents($url  );
+		return $result ;
+	}
+	
 	function getAmazonAllAvalidProduct(){
 		$sql ="select *  from sc_view_listing_cost" ;
 		return $this->exeSqlWithFormat($sql, array()) ;

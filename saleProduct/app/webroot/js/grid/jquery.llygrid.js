@@ -789,7 +789,7 @@
 							getRow(grid,row).find("td").removeClass("ui-state-checked ui-state-highlight") ;
 						}
 						callback.call(this,$(row).data("record")) ;
-						event.stopPropagation();
+						//event.stopPropagation();
 					});
 				}
 			},"checkbox":{

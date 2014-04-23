@@ -122,6 +122,26 @@
 						<table class="form-table" >
 							<tbody>	
 								<tr>
+									<th>所属平台：</th>
+									<td>
+									<select name="platformId"  data-validator="required"  class="input 10-input" >
+										<option value="">--选择平台--</option>
+										<?php 
+											$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+											$strategys = $SqlUtils->exeSql("sql_platform_list",array()) ;
+											foreach( $strategys as $s){
+												$s = $SqlUtils->formatObject($s) ;
+												$selected = '' ;
+												if( $s['ID'] == $result['PLATFORM_ID'] ){
+													$selected = "selected" ;
+												}
+												echo "<option $selected value='".$s['ID']."'>".$s['NAME']."</option>" ;
+											}
+										?>
+										</select>
+									</td>
+								</tr>
+								<tr>
 									<th>ASIN（逗号分隔）：</th>
 									<td><textarea id="asins" data-validator="required" style="width:95%;height:200px;"></textarea></td>
 								</tr>

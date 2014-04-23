@@ -104,7 +104,13 @@ class NewPurchaseService extends AppModel {
 			'{@#tags#}'
 	 */
 	public function savePurchaseProduct($data){
+		$status = $data['status'] ;
+		if( $status == 2 ){
+			$data['status'] = "" ;
+		}
 		$this->exeSql("sql_purchase_new_update" , $data ) ;
+		
+		$data['status'] = $status ;
 		$this->doPurchaseProductStatus($data) ;
 	}
 	
@@ -129,7 +135,7 @@ class NewPurchaseService extends AppModel {
 			$status = $data["status"] ;
 			$data['productId'] = $id ;
 			
-			if(status == 2){
+			if($status == 2){
 				$sql = "update sc_purchase_product set is_audit=2 where id='{@#productId#}'" ;
 				$data['memo'] = $data['trackMemo'] ;
 				$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;

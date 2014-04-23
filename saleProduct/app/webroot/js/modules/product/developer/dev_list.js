@@ -1,5 +1,47 @@
 var currentId = '' ;
 	$(function(){
+		function loadTree(){
+			$('#default-tree').tree({//tree为容器ID
+				//source:'array',
+				//data:treeData ,
+				rootId  : 'root',
+				rootText : '产品分类',
+				expandLevel:2,
+				asyn:false,
+				CommandName : 'sqlId:sql_productDev_new_categorytree',
+				recordFormat:true,
+				dataFormat:function(data){
+					//data.push({id:'uncategory',text:'未分类产品',memo:'',isExpand:true});
+					return data;
+				},
+				nodeFormat:function(record){
+					if(record.id=='root' ||record.id == 'uncategory') return record ;
+					record.text = record.text+"("+record.TOTAL+")";
+					return record ;
+				},
+				params : {
+					//accountId: accountId
+				},
+				onNodeClick:function(id,text,record){
+					var uncategory = "" ;
+					if(id == 'uncategory'){
+						id="" ;
+						uncategory = 1 ;
+					}else{
+						uncategory = "" ;
+					}
+					
+					if( id == 'root' ){
+						$(".grid-content-details").llygrid("reload",{categoryId:"",uncategory:uncategory}) ;
+					}else{
+						$(".grid-content-details").llygrid("reload",{categoryId:id,uncategory:uncategory}) ;
+					}
+				}
+	       }) ;
+		}
+		
+		loadTree() ;
+		
 			function loadStatics(){
 				$.dataservice("sqlId:sql_productDev_new_loadStativcs",{},function(result){
 					 //$(".grid-content-details").llygrid("reload",{},true) ;
@@ -73,6 +115,7 @@ var currentId = '' ;
 						var map = {1:'自有',2:'跟卖',3:'废弃',4:'自有兼跟卖'} ;
 						return map[val] ;
 					}},
+					{align:"center",key:"PLATFORM_NAME",label:"所属平台",width:"6%"},
 	           		{align:"center",key:"DEV_CHARGER_NAME",label:"开发负责人",width:"6%"},
 	           		{align:"center",key:"INQUIRY_CHARGER_NAME",label:"询价负责人",width:"6%"},
 					{align:"center",key:"COST_COUNT",label:"利润分类",width:"8%",sort:true,format:function(val,record){

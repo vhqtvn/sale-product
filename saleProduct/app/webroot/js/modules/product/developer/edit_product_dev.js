@@ -17,6 +17,32 @@ $(function(){
 			 }) ;
 	   }) ;
  		
+ 		var categoryTreeSelect = {
+ 				title:'产品分类选择页面',
+ 				valueField:"#categoryId",
+ 				labelField:"#categoryName",
+ 				key:{value:'ID',label:'NAME'},//对应value和label的key
+ 				multi:true ,
+ 				tree:{
+ 					title:"产品分类选择页面",
+ 					method : 'post',
+ 					nodeFormat:function(node){
+ 						node.complete = false ;
+ 					},
+ 					asyn : false, //异步
+ 					cascadeCheck:false,
+ 					rootId  : 'root',
+ 					expandLevel:2,
+ 					rootText : '产品分类',
+ 					CommandName : 'sqlId:sql_saleproduct_categorytree',
+ 					recordFormat:true,
+ 					params : {
+ 					}
+ 				}
+ 		   } ;
+ 		   
+ 		$(".select-category").listselectdialog( categoryTreeSelect) ;
+ 		
  		var chargeGridSelect = {
 				title:'用户选择页面',
 				defaults:[],//默认值

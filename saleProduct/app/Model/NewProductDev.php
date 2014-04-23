@@ -18,7 +18,7 @@ class NewProductDev extends AppModel {
 	function addNewAsinDev($params){
 		$params['FLOW_STATUS'] = 10 ;//默认状态
 		$asins = $params['asins'] ;
-	
+		$platformId = $params['platformId'] ;
 		$return = array() ;
 		foreach ( explode(",", $asins) as $asin ){
 				
@@ -26,7 +26,7 @@ class NewProductDev extends AppModel {
 				//format asin
 				preg_match_all("/[A-Za-z0-9-_]/i",$asin,$result);
 				$asin=implode('',$result[0]);
-	
+
 				$params['ASIN'] = trim($asin);
 	
 				//判断ASIN是否正在开发中 结束标志：80（结束） 和 （15废弃）
@@ -37,7 +37,8 @@ class NewProductDev extends AppModel {
 					$p = array(
 								'devId'=>$this->create_guid(),
 								'asin'=>$params['ASIN'] ,
-								'loginId'=>$params['loginId']
+								'loginId'=>$params['loginId'],
+								'platformId'=>$platformId
 							) ;
 					
 					$this->exeSql("sql_pdev_new_insert", $p) ;

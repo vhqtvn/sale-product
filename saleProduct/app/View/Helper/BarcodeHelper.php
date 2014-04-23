@@ -239,7 +239,7 @@ class BarcodeHelper extends AppHelper
             $this->CODE = ''; 
             $this->FULLCODE = 'NO CODE SET'; 
             $this->TYPE = 'ERR'; 
-            $this->HEIGHT = 15; 
+            $this->HEIGHT = 9; 
             $this->WIDTH = 0; 
             $this->CALMZONE = 10; 
             $this->HR = 'AUTO'; 
@@ -273,9 +273,9 @@ class BarcodeHelper extends AppHelper
         */ 
         function setSize($height, $width=0, $calmZone=0) 
         { 
-            $this->HEIGHT = ($height > 15 ? $height : 15); 
+            $this->HEIGHT = $height ;
             $this->WIDTH = ($width > 0 ? $width : 0); 
-            $this->CALMZONE = ($calmZone > 10 ? $calmZone : 10); 
+            $this->CALMZONE =$calmZone;// ($calmZone > 10 ? $calmZone : 10); 
         } 
         /** 
         * Set the Printed Text under Bars 

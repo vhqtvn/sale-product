@@ -275,7 +275,6 @@
     SELECT * FROM (	
 		SELECT  sc_amazon_account_product.*,
 		sc_real_product_rel.sku AS REL_SKU,
-		(select FNSKU from sc_fba_supply_inventory sfsi where sfsi.account_id =sc_amazon_account_product.id and sfsi.listing_sku =sc_amazon_account_product.sku  ) as FNSKU,
 		(SELECT sar.SALES_FOR_THELAST14DAYS FROM sc_amazon_recommendations sar where sar.account_id =sc_amazon_account_product.account_id
 		   and sar.sku = sc_amazon_account_product.sku
 		 ) as SALES_FOR_THELAST14DAYS,
