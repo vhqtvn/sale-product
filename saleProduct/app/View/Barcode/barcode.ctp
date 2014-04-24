@@ -75,7 +75,6 @@
 </head>
 <body>
 <center>
-
 <?php 
 include_once ('config/config.php');
 
@@ -195,6 +194,10 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 		<?php for($i=0 ;$i<$row ;$i++){ 
 					$clazz = "label-item" ;
 					if( ($i+1) % 11 == 0 ){
+						$clazz = "label-item-11" ;
+					}
+					
+					if( $i == $row -1 ){
 						$clazz = "label-item-11" ;
 					}
 			?>
