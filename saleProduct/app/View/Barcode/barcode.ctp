@@ -1,92 +1,3 @@
-<?php 
-include_once ('config/config.php');
-
-//error_reporting(0);
-$printNum 	=  44  ;
-$sellerSku   	=  $params['arg1']  ;
-$accountId 	=  $params['arg2']  ;
-$_fnsku 		=  $params['arg3']  ;
-
-
-$row = ceil($printNum/4) ;
-$nullRow = (11 -  ($row%11))%11  ;
-
-$basedir = dirname(__FILE__);
-$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-$sqlParams = array("accountId"=>$accountId,"sku"=>$sellerSku) ;
-
-$sql = "select saap.*,saa.name as ACCOUNT_NAME from 
-			sc_amazon_account saa ,
-			sc_amazon_account_product saap where
-             saap.account_id = saa.id
-			and saap.account_id = '{@#accountId#}' and saap.sku = '{@#sku#}'" ;
-$item = $SqlUtils->getObject($sql,$sqlParams) ;
-$title = $item['TITLE'] ;
-$condition = "New" ;//$item['ITEM_CONDITION']==
-$fnSku = empty($item['FNSKU'])?$item['FC_SKU']:$item['FNSKU'] ;
-if(empty($fnSku)){
-	$fnSku = $_fnsku ;
-}
-
-$sku = $accountId.'-'.$sellerSku;//.'-'.$item['ASIN'] ;
-//19
-
-//echo strlen($title) ;
-$displayText = $title ;
-$length = strlen($displayText) ;
-if( $length <=40  ){
-	//nothing
-}else{
-	$start = substr($displayText, 0,20) ;
-	$end = substr($displayText, $length-20 , 20) ;
-	$displayText = $start.'...'.$end ;
-}
-
-if( empty($displayText) ){
-	$displayText = "no title" ;
-}
-
-$data_to_encode = $fnSku ;
-
-//App::uses('BarcodeHelper', 'View/Helper');
-
-//$barcode = new BarcodeHelper() ;
-
-// Generate Barcode data
-$this->Barcode->barcode();
-$this->Barcode->setType('C128');
-$this->Barcode->setCode($data_to_encode);
-$this->Barcode->setSize(33,145);
-$this->Barcode->hideCodeType() ;
-$this->Barcode->setText("") ;
-
-// Generate filename
-//$file = 'img/barcode/code_'.$random.'.png';
-//D:\DEVELOPER\PHP\saleProduct\barcode
-$file = "$basedir/../../../barcode/$fnSku.png" ;
-// Generates image file on server
-$this->Barcode->writeBarcodeFile($file);
-
-//检查该产品是否能够打印标签
-$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
-$result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
-
-$json = json_decode($result) ;
-$json = get_object_vars($json) ;
-$status = $json['status'] ;
-$status = strtolower($status) ;
-$isError = false ;
-if( strpos($status,"error"  ) ===false ){
-}else{
-	//错误
-	$isError = true ;
-}
-
-if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
-	//错误
-	$isError = true ;
-}
-?>
 <html>
 <head>
  <style style="text/css">
@@ -164,9 +75,102 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 </head>
 <body>
 <center>
-<?php if($isError ){ ?>
+
+<?php 
+include_once ('config/config.php');
+
+//error_reporting(0);
+$sellerSku   	=  $params['arg1']  ;
+$accountId 	=  $params['arg2']  ;
+$printNum 	=  $params['arg3']  ;
+
+
+//检查该产品是否能够打印标签
+$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+$result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
+
+$json = json_decode($result) ;
+$json = get_object_vars($json) ;
+$status = $json['status'] ;
+$status = strtolower($status) ;
+$isError = false ;
+if( strpos($status,"error"  ) ===false ){
+}else{ ?>
 	<div  style="color:red;font-size:20px;font-weight:bold;">该Listing目前无效，不能打印标签！</div>
-<?php return ; } ?>
+<?php 
+	return ; 
+}
+
+if(empty( $printNum ))
+	$printNum = 44 ;
+
+$row = ceil($printNum/4) ;
+$nullRow = (11 -  ($row%11))%11  ;
+
+$basedir = dirname(__FILE__);
+$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+$sqlParams = array("accountId"=>$accountId,"sku"=>$sellerSku) ;
+
+$sql = "select saap.*,saa.name as ACCOUNT_NAME from 
+			sc_amazon_account saa ,
+			sc_amazon_account_product saap where
+             saap.account_id = saa.id
+			and saap.account_id = '{@#accountId#}' and saap.sku = '{@#sku#}'" ;
+$item = $SqlUtils->getObject($sql,$sqlParams) ;
+$title = $item['TITLE'] ;
+$condition = "New" ;//$item['ITEM_CONDITION']==
+$fnSku =  $item['FC_SKU'] ;
+
+if( empty($fnSku) ){
+	$result = $Amazonaccount->listInventorySupplyBySellerSKU($accountId,$sellerSku)  ;
+	$item = $SqlUtils->getObject($sql,$sqlParams) ;
+	$fnSku =  $item['FC_SKU'] ;
+}
+
+$sku = $accountId.'-'.$sellerSku;//.'-'.$item['ASIN'] ;
+
+//echo strlen($title) ;
+$displayText = $title ;
+$length = strlen($displayText) ;
+if( $length <=40  ){
+	//nothing
+}else{
+	$start = substr($displayText, 0,20) ;
+	$end = substr($displayText, $length-20 , 20) ;
+	$displayText = $start.'...'.$end ;
+}
+
+if( empty($displayText) ){
+	$displayText = "no title" ;
+}
+
+$data_to_encode = $fnSku ;
+
+//App::uses('BarcodeHelper', 'View/Helper');
+
+//$barcode = new BarcodeHelper() ;
+
+// Generate Barcode data
+$this->Barcode->barcode();
+$this->Barcode->setType('C128');
+$this->Barcode->setCode($data_to_encode);
+$this->Barcode->setSize(33,145);
+$this->Barcode->hideCodeType() ;
+$this->Barcode->setText("") ;
+
+// Generate filename
+//$file = 'img/barcode/code_'.$random.'.png';
+//D:\DEVELOPER\PHP\saleProduct\barcode
+$file = "$basedir/../../../barcode/$fnSku.png" ;
+// Generates image file on server
+$this->Barcode->writeBarcodeFile($file);
+
+
+if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
+	//错误
+	$isError = true ;
+}
+?>
 
 <?php  if( empty( $fnSku ) ){  ?>
 <b>

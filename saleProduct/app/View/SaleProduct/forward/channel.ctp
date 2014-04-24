@@ -43,11 +43,6 @@
 		}
 	       var gridConfig = {
 					columns:[
-						{align:"center",key:"SKU",label:"打印Label",width:"6%",format:function(val,record){
-							if(record.FULFILLMENT_CHANNEL == 'AMAZON_NA')
-			           			return "<a href='#' class='print-label'>打印Label</a>" ;
-							else return "" ;
-			           	}},
 						{align:"center",key:"CHANNEL_NAME",label:"ACCONT",width:"8%"},
 						{align:"center",key:"SKU",label:"SKU",width:"8%",format:function(val,record){
 							return val||record.REL_SKU ;

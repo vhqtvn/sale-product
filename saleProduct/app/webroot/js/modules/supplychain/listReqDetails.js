@@ -11,9 +11,11 @@
 		
 			$(".grid-content-details").llygrid({
 				columns:[
-					{align:"center",key:"ID",label:"Label",width:"10%",forzen:false,align:"left",format:function(val,record){
-						if( !record.FC_SKU ) return "" ;
-						return "<input type='text'  style='width:35px;height:20px;margin-top:2px;padding:0px;' value='' title='输入打印数量'>&nbsp;<button class='btn print-btn'>打印</button>" ;
+					{align:"center",key:"ID",label:"标签",width:"10%",forzen:false,align:"left",format:function(val,record){
+						var  FULFILLMENT_CHANNEL = record.FULFILLMENT_CHANNEL||"" ;
+						if( FULFILLMENT_CHANNEL.indexOf("AMAZON") < 0 ) return "" ;
+						var num = parseInt(record.PURCHASE_QUANTITY||0) +5 ;
+						return "<input type='text'  style='width:35px;height:20px;margin-top:2px;padding:0px;' value='"+num+"' title='输入打印数量'>&nbsp;<button class='btn print-btn'>打印</button>" ;
 					}},
 				    {align:"center",key:"IN_FLAG",label:"状态",width:"6%",format:function(val,record){
 				    	if(val>=1)return "入库中";
@@ -123,7 +125,7 @@
 				var record = $(this).closest("tr").data("record") ;
 				var printNum = $(this).prev().val() ;
 				var accountId = record.ACCOUNT_ID ;
-				var listingSku = record.SKU ;
+				var listingSku = record.LISTING_SKU ;
 				openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
 			});
 			

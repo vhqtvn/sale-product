@@ -23,6 +23,13 @@
 			 sc_real_product srp
 		WHERE   ssrpp.REAL_ID = srp.ID
 		{@ 
+		   and exists (
+		      select  1 from sc_supplychain_requirement_item ssri 
+		         where ssri.real_id = ssrpp.real_id and ssri.plan_id = ssrpp.plan_id
+		         and ssri.account_id = '#accountId#'
+		   )
+		}
+		{@ 
 		 and exists (
 		    select 1 from sc_supplychain_requirement_item ssri where ssri.real_id = ssrpp.real_id and ssri.plan_id = ssrpp.plan_id
 		    and ssri.req_type = '#reqType#'
