@@ -3,7 +3,6 @@ $(function(){
 		var id = $(this).attr("val") ;
 	
 		if( $(this).hasClass("del") ){
-			
 			var record = $.llygrid.getRecord(this) ;
 			if(window.confirm("确认删除吗")){
 				$.dataservice("model:ProductDev.deleteDoc",{docId:record.DOC_ID},function(result){
@@ -14,7 +13,7 @@ $(function(){
 			openCenterWindow(contextPath+"/page/forward/Product.developer.addDoc/"+devId,800,550) ;
 		} 
 		return false ;
-	})
+	});
 
 	$(".grid-content").llygrid({
 		columns:[
