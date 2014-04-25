@@ -3,7 +3,7 @@
 class ProductController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-     var $uses = array('Sale', 'Product','Amazonaccount');
+     var $uses = array('Sale', 'Product','Amazonaccount','ProductDev');
     
     function beforeFilter() {
 		parent::beforeFilter();
@@ -156,6 +156,42 @@ class ProductController extends AppController {
 		$this->response->body( "Save Success" )   ;
 
 		return $this->response ;
+	}
+	
+	public function doDocUpload(){
+		$basedir = dirname(__FILE__).'/../../files/dev' ;
+		
+		$params = $this->request->data  ;
+		$devId = $params['devId'] ;
+		$name = $params['name'] ;
+		$textContent = $params['textContent'] ;
+		
+		$basedir = $basedir.'/'.$devId ;
+		
+		if(!file_exists($basedir)){
+			mkdir($basedir,"0777",true) ;
+		}
+		 
+		$user =  $this->getCookUser() ;
+		$loginId = $user["LOGIN_ID"] ;
+		$params['loginId'] = $loginId ;
+		$guid = $this->ProductDev->create_guid() ;
+		 
+		if(isset($_FILES['filePath'])){
+			$params['fileName'] = $_FILES["filePath"]["name"]   ;
+			$path = $basedir."/" . $guid.'_'.$_FILES["filePath"]["name"]  ;
+			move_uploaded_file( $_FILES["filePath"]["tmp_name"],  $path );
+			$params['fileUrl'] = $path ;
+			
+			$this->response->type("html");
+			$this->response->body("<script type='text/javascript'>window.parent.close();</script>");
+		}
+	
+		//保存开发附件
+		$this->ProductDev->saveProductDecDoc( $params ) ;
+	
+		return $this->response;
+	
 	}
 	
 	

@@ -229,6 +229,7 @@ class CronTaskController extends AppController {
 					and limit_price > 0
 					and status = 'Y'
 					and lowest_fba_price >0
+					order by id
 					limit $start,$limit " ;
 					$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
 					$start = $start+$limit ;
@@ -265,7 +266,8 @@ class CronTaskController extends AppController {
 		$lowestFbaPrice = $item['LOWEST_FBA_PRICE'] ;
 		$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
 		$execPrice =  $item['LIMIT_PRICE'] ;//限价
-			
+		//debug($item) ;
+		//if($isLimitStrategy)echo 'true&&' ;else echo 'false&&' ;
 		if( empty($execPrice) || $execPrice==0 ){
 			$execPrice = empty($listPrice)?$item['PRICE']:$listPrice ;
 		}
@@ -346,6 +348,10 @@ class CronTaskController extends AppController {
 		//如果价格就是FBA最低价格，判断是否存在多个卖家都是最低价格
 		if($listPrice ==  $lowestFbaPrice ){
 			
+			if( $lowestFbaPrice < $execPrice ){//如果最低价格小于限价，则向上调整价格
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+			}
+
 			if( $lowestCount == 1 ){//如果最低价格只有一个，则调整价格为第二
 				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
 					//在限时调价进行中，最低价不做处理......
