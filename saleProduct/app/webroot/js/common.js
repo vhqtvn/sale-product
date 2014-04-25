@@ -989,6 +989,74 @@ var Flow = function(){
 		_selector = selector ;
 		return this ;
 	}
+	
+	this.drawDiv = function(current){
+		itemTemplate = '<div class="flow-node {statusClass}" status="{status}">{label}</div>' ;
+		//create container
+		var html = '<div class="flow-table">\
+					</div>\
+					<div class="flow-action">\
+						<div class="btn-container"></div>\
+						<a href="#" class="memo-control">附加备注</a>\
+					</div>\
+					<textarea class="memo" placeHolder="输入附加备注信息"></textarea>' ;
+		
+		$(_selector).empty().html(html) ;
+		
+		$(".memo-control").toggle(function(){
+			$(".memo").show() ;
+		},function(){
+			$(".memo").hide() ;
+		}) ;
+		
+		var flowContainer = $(_selector).find(".flow-table")
+		
+		var length = _data.length ;
+		var isContinue = true ;
+		$(_data).each(function(index,node){
+			if( node.format ) node.format(node) ;
+			if(!isContinue) return ;
+ 			var statusClass = node.statusClass||(current == this.status ?"active":(this.status < current?"passed":"disabled")) ;
+			var status = this.status ;
+			var isMemo = this.memo ;
+			var label = this.label ;
+			html =  itemTemplate.replace(/{statusClass}/g,statusClass)
+								.replace(/{status}/g,status)
+								.replace(/{label}/g,label) ;
+			$(html).appendTo(flowContainer) ;
+			
+			if(length != index+1){
+				flowContainer.append("<div class='flow-split'>-</div>") ;
+			}
+			
+			
+			if( current == this.status ){
+				var actions = this.actions ;
+				
+				if(this.memo && actions && actions.length >=1 ){
+					$(".memo-control").show();
+				}
+				
+				
+				$(actions||[]).each(function(){
+					if(!this.label) return ;
+					var me = this ;
+					$("<button class='btn btn-primary btn-flow' style='margin-right:3px;'>"+this.label+"</button>&nbsp;&nbsp;")
+						.appendTo(".btn-container").click(function(){
+							me.validate = me.validate||function(){return true ;} ;
+							if( me.validate() ){
+								me.action() ;
+							}
+						}) ;  ;
+				}) ;
+			}
+			if(node.isbreak){
+				isContinue = false ;
+				var tdlast = $(".flow-table >div:last") ;
+				if(tdlast.hasClass("flow-split")) tdlast.remove() ;
+			}  ;
+		}) ;
+	}
 
 	this.draw = function(current){
 		//create container

@@ -112,6 +112,30 @@ class NewPurchaseService extends AppModel {
 		
 		$data['status'] = $status ;
 		$this->doPurchaseProductStatus($data) ;
+		
+		$ScRequirement  = ClassRegistry::init("ScRequirement") ;
+		$reqProductId = $data['reqProductId'] ;//reqProductId
+		
+		if( isset( $data['purchaseDetails'] ) ){
+			//创建需求产品
+			$purchaseDetails = json_decode($data['purchaseDetails']) ;
+	
+			foreach( $purchaseDetails as $item  ){
+				$item = get_object_vars($item) ;
+		
+				$sku = $item['sku'] ;
+				$accountId = $item['accountId'] ;
+				$quantity = $item['quantity'] ;
+
+				//创建需求明细
+				$ps = array() ;
+				$ps['accountId'] = $accountId ;
+				$ps['reqProductId'] = $reqProductId ;
+				$ps['sku'] = $sku ;
+				$ps['quantity'] =  $item['quantity'] ;
+				$ScRequirement->updateReqItem($ps) ;
+			}
+		}
 	}
 	
 	public function getPurchaseProductById($id){
@@ -119,7 +143,7 @@ class NewPurchaseService extends AppModel {
 	}
 	
 	public function doPurchaseProductStatus($data){
-		debug($data) ;
+
 		if( isset($data['status'])  && !empty($data['status']) ){
 			
 			$currentStatus = $data['currentStatus'] ;

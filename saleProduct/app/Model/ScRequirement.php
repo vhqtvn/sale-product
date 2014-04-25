@@ -760,6 +760,15 @@ class ScRequirement extends AppModel {
 		$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 	}
 	
+	function  updateReqItem($ps){
+		//debug( $ps ) ;
+		//return ;
+		$sql= "update sc_supplychain_requirement_item  set PURCHASE_QUANTITY= '{@#quantity#}' where account_id = '{@#accountId#}'
+				and listing_sku='{@#sku#}' and req_product_id = '{@#reqProductId#}' ";
+	
+		$this->exeSql($sql , $ps) ;
+	}
+	
 	public function reqLog($params){
 		$this->exeSql("sql_supplychain_requirement_insertlog", $params) ;
 	}

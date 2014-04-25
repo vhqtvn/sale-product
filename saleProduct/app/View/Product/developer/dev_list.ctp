@@ -43,17 +43,25 @@
 	<style type="">
    		.flow-node{
 			cursor: pointer ;
-			width:60px;
+			/*width:60px;
    			word-wrap: break-word;
-   			height:35px;
+   			height:35px;*/
    		}
    		
 		.flow-node {
 			border: 2px solid #0FF;
+   			float:left ;
+			margin-bottom:5px;   		
 		}
 		
 		.flow-split{
-			display:none;
+			float:left ;
+			/*display:none;*/
+			margin-bottom:5px;
+		}
+		
+		.flow-bar{
+			height:50px;
 		}
    </style>
 
@@ -87,40 +95,37 @@
 		</table>
 	</div>	
 	<div class="flow-bar">
-		<center>
-		<table class="flow-table">						
-			<tbody>
-				<tr>		
-					<td><div class="flow-node active  total" status="">全部<span class="count"></span></div></td>	
-					<td><div class="flow-node disabled" status="10">产品分析<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="20">产品询价<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="25">成本利润<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="30">产品经理审批<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="40">总监审批<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="42">样品检测<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="44">检测审批<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="50">录入货品<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="60">制作Listing<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="70">Listing审批<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="72">试销采购<span class="count"></span></div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="80">结束<span class="count"></span></div></td>
-					</tr>					
-			</tbody>
-		</table>				
-	 </center>
+			<center  class="flow-table">
+					<div class="clear:both;"></div>	
+		  			<div class="flow-node active  total" status="">全部<span class="count"></span></div>
+		  			<div class="flow-split">&nbsp; &nbsp; &nbsp; </div>
+		 			<div class="flow-node disabled" status="10">产品分析<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="20">产品询价<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="25">成本利润<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="30">产品经理审批<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="40">总监审批<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="42">样品检测<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="44">检测审批<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="50">录入货品<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="60">制作Listing<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="70">Listing审批<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="72">试销采购<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="80">结束<span class="count"></span></div>		
+					<div class="clear:both;"></div>	
+	 		</center>
 	</div>
-	<div class="grid-content-details" style="width:99.5%;">
+	<div class="grid-content-details" style="width:99.5%;margin-top:10px;">
 	</div>
 	</div>
 	<div region="west"  split="true" border="true" title="货品分类" style="width:150px;">

@@ -353,6 +353,7 @@
 		        <form id="personForm" action="#" data-widget="validator,ajaxform" class="form-horizontal" >
 		        	<input id="id" type="hidden" value='<?php echo $purchaseProduct['ID'] ;?>' />
 		        	<input id="realId" type="hidden" value='<?php echo $purchaseProduct['REAL_ID'] ;?>' />
+		        	<input id="reqProductId" type="hidden" value='<?php echo $purchaseProduct['REQ_PRODUCT_ID'] ;?>' />
 					<!-- panel 头部内容  此场景下是隐藏的-->
 					<div class="panel apply-panel">
 						<!-- panel 中间内容-->
@@ -389,12 +390,57 @@
 									</tr>
 									<tr>
 										<th>计划采购数量：</th>
-										<td><input type="text" class="input"  name="planNum" value="<?php echo  $purchaseProduct['PLAN_NUM']  ;?>"/></td>
+										<td><input type="text" disabled="disabled" name="planNum" value="<?php echo  $purchaseProduct['PLAN_NUM']  ;?>"/></td>
 										<th>采购限价：</th>
 										<td><input type="text" class="input" name="limitPrice" value="<?php echo $purchaseProduct['LIMIT_PRICE'];?>"/></td>
 									</tr>
 								</tbody>
 						</table>
+						
+						<table class="form-table" >
+								<caption>采购需求<?php if( $reedit_pp_product  && $status <= 47){ 
+								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+								}?></caption>
+								<thead>
+									<tr>
+										<th></th>
+										<th  style="font-weight:bold;">账号</th>
+										<th style="font-weight:bold;">Listing SKU</th>
+										<th style="font-weight:bold;">FNSKU</th>
+										<th style="font-weight:bold;">渠道</th>
+										<th style="font-weight:bold;">采购数量</th>
+										<th style="font-weight:bold;">当前库存</th>
+										<th style="font-weight:bold;">最近14天销量</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php 
+										$sqlId = "sql_supplychain_requirement_plan_product_details_list_ALL" ;
+										$reqList = $SqlUtils->exeSqlWithFormat($sqlId,array("realId"=>$purchaseProduct['REAL_ID'],"reqProductId"=>$purchaseProduct['REQ_PRODUCT_ID'])) ;
+										foreach( $reqList as $req){
+											$IS_ANALYSIS = $req['IS_ANALYSIS'] ;
+											if( $IS_ANALYSIS == 0 ) continue ;
+										?>
+									  <tr   class="edit-data-row">
+										<td></td>
+										<td><?php echo $req['ACCOUNT_NAME'] ;?></td>
+										<td><?php echo $req['LISTING_SKU'] ;?></td>
+										<td><?php echo $req['FC_SKU'] ;?></td>
+										<td><?php echo $req['FULFILLMENT_CHANNEL'] ;?></td>
+										<td>
+											<input type="hidden" class="fulfillment"   value='<?php echo $req['FULFILLMENT_CHANNEL'] ;?>'/>
+											<input type="hidden" class="accountId"   value='<?php echo $req['ACCOUNT_ID'] ;?>'/>
+											<input type="hidden" class="supplyQuantity"   value='<?php echo $req['TOTAL_SUPPLY_QUANTITY'] ;?>'/>
+											<input type="hidden" class="listingSku"   value='<?php echo $req['LISTING_SKU'] ;?>'/>
+											<input type="text" 	   class="purchaseQuantity input 45-input"  value='<?php echo $req['PURCHASE_QUANTITY'] ;?>' style="width:50px;"/>
+										</td>
+										<td><?php echo $req['TOTAL_SUPPLY_QUANTITY'] ;?></td>
+										<td><?php echo $req['SALES_FOR_THELAST14DAYS'] ;?></td>
+									</tr>
+									<?php  } ?>
+								</tbody>
+						</table>
+						
 						<table class="form-table" >
 								<caption>入库信息<?php if( $reedit_pp_product  && $status < 80){ 
 								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;

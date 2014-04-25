@@ -134,6 +134,7 @@ UPDATE sc_product_developer
 			ESTIMATE_PROFIT = '{@#ESTIMATE_PROFIT#}' , 
 			HOT_SELL_PERIOD = '{@#HOT_SELL_PERIOD#}' , 
 			{@ DEV_STATUS = '#DEV_STATUS#' , }
+			{@ DEV_STATUS_FLOW = '#DEV_STATUS_FLOW#' , }
 			{@ SAMPLE_EVALUATE = '#SAMPLE_EVALUATE#' , } 
 			{@ CATEGORY_ID = '#categoryId#' , } 
 			{@ SAMPLE_CHECK_DETAILS = '#SAMPLE_CHECK_DETAILS#' ,} 
@@ -176,6 +177,47 @@ UPDATE sc_product_developer
 			OK_SR_CPC4 = '{@#OK_SR_CPC4#}'
 			WHERE
 			DEV_ID = '{@#DEV_ID#}'
+     </entry>
+     
+     
+     
+     <entry key="sql_pdev_new_doc_list">
+     		select spd.* ,
+     			(select name from sc_user where id = spd.created_by ) as CREATED_NAME
+     		from sc_product_doc spd
+     		where spd.dev_id = '{@#devId#}'
+     </entry>
+     
+     <entry key="sql_pdev_new_doc_insert">
+			INSERT INTO sc_product_doc 
+				(DOC_ID, 
+				NAME, 
+				TYPE, 
+				TEXT_CONTENT, 
+				FILE_URL, 
+				FILE_NAME,
+				CREATED_BY, 
+				CREATED_DATE, 
+				LAST_UPDATED_BY, 
+				LAST_UPDATED_DATE, 
+				DEV_ID, 
+				REAL_ID
+				)
+				VALUES
+				('{@#docId#}', 
+				'{@#name#}', 
+				'{@#type#}', 
+				'{@#textContent#}', 
+				'{@#fileUrl#}', 
+				'{@#fileName#}', 
+				'{@#loginId#}', 
+				NOW(), 
+				'{@#loginId#}', 
+				NOW(), 
+				'{@#devId#}', 
+				'{@#realId#}'
+				)
+
      </entry>
      
      <entry key="sql_pdev_new_insert">

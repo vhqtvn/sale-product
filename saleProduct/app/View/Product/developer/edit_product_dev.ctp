@@ -105,26 +105,18 @@
 		$Config  = ClassRegistry::init("Config") ;
 		$websites = $Config->getAmazonConfig("PRODUCT_DEV_WEBSITE") ;
 		
-		//成本权限
-		$COST_EDIT_PURCHASE  				= $security->hasPermission($loginId , 'COST_EDIT_PURCHASE') ;
-		$COST_EDIT_LOGISTIC  					= $security->hasPermission($loginId , 'COST_EDIT_LOGISTIC') ;
-		$COST_EDIT_PRODUCT_CHANNEL 	= $security->hasPermission($loginId , 'COST_EDIT_PRODUCT_CHANNEL') ;
-		$COST_EDIT_FEE    							= $security->hasPermission($loginId , 'COST_EDIT_FEE') ;
-		$COST_EDIT_OTHER   						= $security->hasPermission($loginId , 'COST_EDIT_OTHER') ;
-		$COST_EDIT_SALEPRICE   				= $security->hasPermission($loginId , 'COST_EDIT_SALEPRICE') ;
-		$COST_EDIT_PROFIT   						= $security->hasPermission($loginId , 'COST_EDIT_PROFIT') ;
+	
+		$devStatusFlow = $productDev['DEV_STATUS_FLOW'] ;
+		$devStatusFlow = json_decode($devStatusFlow) ;
+		$devStatusFlow = get_object_vars($devStatusFlow) ;
+		$isPurchaseSample = false ;
+		if( isset( $devStatusFlow['isPurchaseSample'] ) && $devStatusFlow['isPurchaseSample'] == 1 ){
+			$isPurchaseSample = true ;
+		}
 		
-		$COST_VIEW_TOTAL  						= $security->hasPermission($loginId , 'COST_VIEW_TOTAL') ;
-		$COST_VIEW_PROFIT  						= $security->hasPermission($loginId , 'COST_VIEW_PROFIT') ||$COST_EDIT_PROFIT  ;
-		$COST_VIEW_PURCHASE  				= ( $security->hasPermission($loginId , 'COST_VIEW_PURCHASE') )||$COST_EDIT_PURCHASE ;
-		$COST_VIEW_LOGISTIC  					= ( $security->hasPermission($loginId , 'COST_VIEW_LOGISTIC') )|| $COST_EDIT_LOGISTIC ;
-		$COST_VIEW_PRODUCT_CHANNEL =(  $security->hasPermission($loginId , 'COST_VIEW_PRODUCT_CHANNEL')  )|| $COST_EDIT_PRODUCT_CHANNEL ;
-		$COST_VIEW_FEE  							= ( $security->hasPermission($loginId , 'COST_VIEW_FEE')  )|| $COST_EDIT_FEE ;
-		$COST_VIEW_OTHER  						=(  $security->hasPermission($loginId , 'COST_VIEW_OTHER')  )|| $COST_EDIT_OTHER ;
-		$COST_VIEW_SALEPRICE					= ( $security->hasPermission($loginId , 'COST_VIEW_SALEPRICE') )|| $COST_EDIT_SALEPRICE ;
-		
-		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE||$COST_EDIT_PROFIT ;
-	?>
+		ini_set('date.timezone','Asia/Shanghai');
+		$now = date('Y-m-d H:i:s');
+?>
   
    <style>
 html{-webkit-text-size-adjust: none;}
@@ -134,12 +126,14 @@ html{-webkit-text-size-adjust: none;}
    		
    		.flow-node{
 			font-size:11px;
-   			width:60px;
-   			word-wrap: break-word;
+   			/*width:60px;
+   			word-wrap: break-word;*/
+   			float:left;
    		}
    		
    		.flow-split{
-			display:none;
+   			float:left;
+   			margin-top:-8px;
    		}
    		
    		.flow-bar{
@@ -148,7 +142,7 @@ html{-webkit-text-size-adjust: none;}
    			padding-top:10px;
    			left:0px;
    			right:0px;
-   			height:50px;
+   			height:70px;
    			z-index:1000;
    			background:#EEE;
    			margin:0px;
@@ -180,79 +174,14 @@ html{-webkit-text-size-adjust: none;}
 </script>
  
  <script>
-	 var costColumns = [] ;
-
-	<?php  if( $COST_EDIT ){?>
-	costColumns.push({align:"center",key:"ID",label:"操作",width:"6%",forzen:true,format:function(val,record){
-		var status = record.STATUS ;
-		var html = [] ;
-		html.push("<a href='#' class='edit-action' val='"+val+"'>编辑</a>&nbsp;") ;
-		return html.join("") ;
-	}}) ;
-	<?php }?>
-	costColumns.push( {align:"center",key:"TYPE",label:"成本类型", width:"6%" }) ;
-
-	<?php  if($COST_VIEW_PROFIT){ ?>
-	//利润率
-	costColumns.push({align:"center",key:"PROFIT_MARGINS",label:"产品利润",sort:true,forzen:true,width:"7%",format:function(val ,record){
-		var pn = record.PROFIT_NUM ;
-		if(!pn) return "未算利润" ;
-
-		var totalCost = record.TOTAL_COST ;
-		var pl = pn/totalCost ;
-		if(pl<=0){
-			return "亏本" ;
-		}
-
-		if(pl<0.15) return "低利润" ;
-		return "利润达标" ;
-	}}) ;
-	<?php }?>
-	<?php  if($COST_VIEW_TOTAL){ ?>
-	//总成本
-	costColumns.push( {align:"center",key:"TOTAL_COST",label:"总成本",forzen:true,width:"6%",format:function(val,record){
-			return val;
-		}} ) ;
-	<?php }?>
-	<?php  if($COST_VIEW_PURCHASE){ ?>
-	//采购成本
-	costColumns.push( {align:"center",key:"PURCHASE_COST",label:"采购成本",width:"8%"}) ;
-	<?php }?>
-	<?php  if($COST_VIEW_LOGISTIC){ ?>
-	//物流成本
-	costColumns.push( {align:"center",key:"BEFORE_LOGISTICS_COST",label:"入库前物流费用",width:"8%",forzen:false,align:"left"}) ;
-	costColumns.push(	{align:"center",key:"TARIFF",label:"关税",width:"6%",forzen:false,align:"left"}) ;
-	costColumns.push(	{align:"center",key:"WAREHOURSE_COST",label:"仓储费用",width:"6%"}) ;
-	costColumns.push( {align:"center",key:"USPS_COST",label:"USPS邮费",width:"6%"}) ;
-	<?php }?>
-	<?php  if($COST_VIEW_PRODUCT_CHANNEL){ ?>
-	//产品渠道成本
-	costColumns.push( {align:"center",key:"AMAZON_FEE",label:"amazon佣金",width:"8%"}) ;
-	costColumns.push( {align:"center",key:"VARIABLE_CLOSURE_COST",label:"可变关闭费用",width:"8%"}) ;
-	costColumns.push( {align:"center",key:"OORDER_PROCESSING_FEE",label:"订单处理费",width:"6%"}) ;
-	costColumns.push( {align:"center",key:"TAG_COST",label:"标签费用",width:"8%"} ) ;
-	costColumns.push( {align:"center",key:"PACKAGE_COST",label:"打包费",width:"6%"}) ;
-	costColumns.push( {align:"center",key:"STABLE_COST",label:"称重费",width:"8%"}) ;
-	<?php }?>
-	<?php  if($COST_VIEW_FEE){ ?>
-	//税费人工成本
-	costColumns.push( {align:"center",key:"LOST_FEE",label:"当地税费",width:"6%"}) ;
-	costColumns.push( {align:"center",key:"LABOR_COST",label:"人工成本",width:"6%"}) ;
-	costColumns.push( {align:"center",key:"SERVICE_COST",label:"服务成本",width:"6%"}) ;
-	<?php }?>
-	<?php  if($COST_VIEW_OTHER){ ?>
-	//其他成本
-	costColumns.push(	{align:"center",key:"OTHER_COST",label:"其他成本",width:"8%"} ) ;
-	<?php }?>
-	costColumns.push(	{align:"center",key:"LAST_UPDATE_TIME",label:"更新时间",width:"15%"} ) ;
-
     var taskId = '' ;
- 	var asin = '<?php echo $asin;?>' ;
- 	var devId  = '<?php echo $productDev['DEV_ID'] ;?>' ;
- 	var username = '<?php echo $username;?>' ;
- 	var pdStatus = '<?php echo $pdStatus;?>' ;
- 	var platformId = '<?php echo $product['PLATFORM_ID'] ;?>' ;
- 	var devStatus = '<?php echo $productDev['DEV_STATUS'] ;?>' ;
+ 	var asin 			= '<?php echo $asin;?>' ;
+ 	var devId  		= '<?php echo $productDev['DEV_ID'] ;?>' ;
+ 	var username 	= '<?php echo $username;?>' ;
+ 	var pdStatus 	= '<?php echo $pdStatus;?>' ;
+ 	var platformId 	= '<?php echo $product['PLATFORM_ID'] ;?>' ;
+ 	var devStatus 	= '<?php echo $productDev['DEV_STATUS'] ;?>' ;
+ 	var isPurchaseSample = <?php echo $isPurchaseSample?"true":"false"?> ;
 
  	jQuery.dialogReturnValue(false) ;
 
@@ -260,13 +189,25 @@ html{-webkit-text-size-adjust: none;}
 			if(window.confirm("确认【"+statusLabel+"】吗？")){
 				var json = $("#personForm").toJson() ;
 				json = $.extend({},json,fixParams) ;
+
 				json.ASIN = asin ;
 				json.FLOW_STATUS = status;
-				json.DEV_ID = '<?php echo $productDev['DEV_ID'];?>' ;
+				json.DEV_ID =devId ;
 				//json.REAL_ID = $("#REAL_PRODUCT_ID").val() ;
 
 				if( json.DEV_STATUS == 3 ){
 					json.FLOW_STATUS = 15 ;
+				}
+
+				var devStatusFlow = {} ;
+				$(".dev_status_flow").each(function(){
+					var key = $(this).attr("key") ;
+					if( $(this).attr("checked") ){
+						devStatusFlow[key] = 1 ;
+					}
+				}) ;
+				if($(".dev_status_flow").length>0  ){
+					json.DEV_STATUS_FLOW = $.json.encode(devStatusFlow)  ;
 				}
 				
 				var memo = "("+statusLabel+")"+ ($(".memo").val()||"") ;
@@ -301,168 +242,204 @@ html{-webkit-text-size-adjust: none;}
 	     ]}
      ) ;
  	<?php if( $pdStatus ==15 ){ ?>
- 	flowData.push( {status:15,label:"废弃",memo:true ,
-		actions:[ 
-<?php if( $PD_START_FQ ){ ?>
-				{label:"启用",action:function(){ AuditAction('10',"启用废弃产品",{DEV_STATUS:'0'}) } }
-				 <?php }?>
-	     ]}
-     ) ;
+		 	flowData.push( {status:15,label:"废弃",memo:true ,
+				actions:[ 
+						<?php if( $PD_START_FQ ){ ?>
+						{label:"启用",action:function(){ AuditAction('10',"启用废弃产品",{DEV_STATUS:'0'}) } }
+						 <?php }?>
+			     ]}
+		     ) ;
  	<?php }?>
-    <?php if( $pdStatus !=15 ){ ?>
-	flowData.push( {status:20,label:"产品询价",memo:true ,
-		actions:[ 
-				<?php if( $PD_INQUIRY ){ ?>
-				{label:"保存",action:function(){ ForceAuditAction('20',"保存") } },
-				 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
-				 {label:"成本利润",action:function(){ AuditAction('25',"成本利润分析") } },
-				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
-				 <?php }?>
-	     ]}
-     ) ;
-	flowData.push( {status:25,label:"成本利润",memo:true ,
-		actions:[ 
-				<?php if( $PD_COST ){ ?>
-				{label:"保存",action:function(){ ForceAuditAction('25',"保存") } },
-				 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
-				 {label:"询价",action:function(){ AuditAction('20',"询价") } },
-				 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
-				 <?php }?>
-	     ]}
-     ) ;
+	<?php if( $pdStatus !=15 ){ ?>
+			flowData.push( {status:20,label:"产品询价",memo:true ,
+				actions:[ 
+						<?php if( $PD_INQUIRY ){ ?>
+						{label:"保存",action:function(){ ForceAuditAction('20',"保存") } },
+						 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
+						 {label:"成本利润",action:function(){ AuditAction('25',"成本利润分析") } },
+						 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
+						 <?php }?>
+			     ]}
+		     ) ;
+			flowData.push( {status:25,label:"成本利润",memo:true ,
+				actions:[ 
+						<?php if( $PD_COST ){ ?>
+						{label:"保存",action:function(){ ForceAuditAction('25',"保存") } },
+						 {label:"开发分析",action:function(){ AuditAction('10',"开发分析") } },
+						 {label:"询价",action:function(){ AuditAction('20',"询价") } },
+						 {label:"提交审批",action:function(){ AuditAction('30',"提交审批") } }
+						 <?php }?>
+			     ]}
+		     ) ;
+		
+			<?php 
+				$aduitPassStatus = 50 ;
+				$aduitPassText = "审批通过，录入货品" ;
+				if( $productDev['DEV_STATUS'] == 1 && $isPurchaseSample  ){
+					$aduitPassStatus = 41 ;
+					$aduitPassText = "审批通过，进入样品下单环节" ;
+				}else  if( $productDev['DEV_STATUS'] == 1    ){
+					$aduitPassStatus = 46 ;
+					$aduitPassText = "审批通过，进入资料准备环节" ;
+				}
+		    ?>
+		    
+			flowData.push( {status:30,label:"产品经理审批",memo:true ,
+				actions:[ 
+						<?php if( $PD_CPJLSP ){ ?>
+			          {label:"保存",action:function(){ ForceAuditAction('30',"保存") } },
+					  {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
+					  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
+					  {label:"提交总监审批",action:function(){ AuditAction('40',"提交总监审批 " ) } },
+					  {label:"审批通过",action:function(){ AuditAction('<?php echo $aduitPassStatus;?>',"<?php echo $aduitPassText;?>" ) } }
+					  <?php }?>
+			     ]}
+		     ) ;
 
-	<?php 
-		$aduitPassStatus = 50 ;
-		$aduitPassText = "审批通过，录入货品" ;
-		if( $productDev['DEV_STATUS'] == 1  ){
-			$aduitPassStatus = 42 ;
-			$aduitPassText = "审批通过，进入样品检测环节" ;
-		}
-    ?>
-    
-	flowData.push( {status:30,label:"产品经理审批",memo:true ,
-		actions:[ 
-				<?php if( $PD_CPJLSP ){ ?>
-	          {label:"保存",action:function(){ ForceAuditAction('30',"保存") } },
-			  {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
-			  {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
-			  {label:"提交总监审批",action:function(){ AuditAction('40',"提交总监审批 " ) } },
-			  {label:"审批通过",action:function(){ AuditAction('<?php echo $aduitPassStatus;?>',"<?php echo $aduitPassText;?>" ) } }
-			  <?php }?>
-	     ]}
-     ) ;
-	flowData.push( {status:40,label:"总监审批",memo:true ,
-		actions:[ 
-				<?php if( $PD_ZJSP ){ ?>
-		         {label:"保存",action:function(){ ForceAuditAction('40',"保存") } },
-		         {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
-				 {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
-				 {label:"审批通过",action:function(){ AuditAction('<?php echo $aduitPassStatus;?>',"<?php echo $aduitPassText;?>") } }
-				<?php }?>
-	     ]}
-     ) ;
-
-	<?php if( $productDev['DEV_STATUS'] == 1 ){//自有开发流程 ?>
-		flowData.push( {status:42,label:"样品检测",memo:true ,
-			actions:[ 
-					<?php if( $PD_SAMPLE_EVALUATE ){ ?>
-			         {label:"保存",action:function(){ ForceAuditAction('42',"保存") } },
-					 {label:"检测完成",action:function(){ AuditAction('44',"样品检测完成，提交审批") } }
-					<?php }?>
-		     ]}
-	     ) ;
-		flowData.push( {status:44,label:"样品检测审批",memo:true ,
-			actions:[ 
-					<?php if( $PD_SAMPLE_EVALUATE_AUDIT ){ ?>
-			         {label:"保存",action:function(){ ForceAuditAction('44',"保存") } },
-			         {label:"重新检测",action:function(){ AuditAction('42',"审批不通过，重新检测") } },
-			         {label:"审批不通过",action:function(){ AuditAction('80',"审批不通过，终止开发") } },
-					 {label:"审批通过",action:function(){ AuditAction('50',"审批通过，准备录入货品") } }
-					<?php }?>
-		     ]}
-	     ) ;
-	<?php }?>
-	flowData.push( {status:50,label:"录入货品",memo:true ,
-		actions:[ 
-					<?php if( $PD_HPLR ){ ?>
-		         {label:"保存",action:function(){ ForceAuditAction('50',"保存") } },
-		         {label:"确认货品录入",action:function(){ AuditAction('60',"确认货品录入完成") } ,validate:function(){
-		        	 var val = $("#REAL_PRODUCT_ID").val() ;
-		        	 if(!val){
-							alert("必须关联货品！") ;
-							return false ;
-			        	} 
-			        	return true ;
-			      }}
-		         <?php }?>
-	     ]}
-     ) ;
-	flowData.push( {status:60,label:"制作Listing",memo:true ,
-		actions:[ 
-					<?php if( $PD_MADE_LISTING ){ ?>
-	          {label:"保存",action:function(){ ForceAuditAction('60',"保存") } },
-		      {label:"确认Listing制作完成",action:function(){ AuditAction('70',"确认Listing制作完成") },validate:function(){
-		    	  var val = $("#LISTING_SKU").val() ;
-		        	 if(!val){
-							alert("必须关联Listing SKU！") ;
-							return false ;
-			        	} 
-			        	return true ;
-			      }}
-	          <?php }?>
-	     ]}
-     ) ;
-	flowData.push( {status:70,label:"Listing审批",memo:true ,
-		actions:[ 
-					<?php if( $PD_LISTING_SP ){ ?>
-	           {label:"保存",action:function(){ ForceAuditAction('70',"保存") } },
-		       {label:"审批通过",action:function(){ AuditAction('72',"审批通过，进入试销采购，采购单将自动生成！") } }
-	           <?php }?>
-	     ]}
-     ) ;
-
-	flowData.push( {status:72,label:"试销采购",memo:true ,
-		actions:[ 
-<?php if( $PD_SXCG ){ ?>
-		         {label:"保存",action:function(){ ForceAuditAction('72',"保存") } }
-			//  ,   {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
-		         <?php }?>
-	     ]}
-     ) ;
-	<?php /*
-	flowData.push( {status:74,label:"库存到达",memo:true ,
-		actions:[ 
-                <?php if( $PD_KCDW ){ ?>
-				{label:"保存",action:function(){ ForceAuditAction('74',"保存") } }
-				,{label:"下一步",action:function(){ AuditAction('80',"库存到达，进入下一步") } }
-				<?php }?>
-	     ]}
-     ) ;
-	
-	flowData.push( {status:76,label:"营销展开",memo:true ,
-		actions:[ 
-<?php if( $PD_YXZK ){ ?>
-			{label:"保存",action:function(){ ForceAuditAction('76',"保存") } },
-			{label:"下一步",action:function(){ AuditAction('78',"营销展开，进入下一步") } }
+			flowData.push( {status:40,label:"总监审批",memo:true ,
+				actions:[ 
+						<?php if( $PD_ZJSP ){ ?>
+				         {label:"保存",action:function(){ ForceAuditAction('40',"保存") } },
+				         {label:"撤回分析",action:function(){ AuditAction('10',"审批不通过，撤回分析") } },
+						 {label:"撤回询价",action:function(){ AuditAction('20',"审批不通过，撤回询价") } },
+						 {label:"审批通过",action:function(){ AuditAction('<?php echo $aduitPassStatus;?>',"<?php echo $aduitPassText;?>") } }
+						<?php }?>
+			     ]}
+		     ) ;
+		
+			<?php if( $productDev['DEV_STATUS'] == 1 && $isPurchaseSample ){//自有开发流程 ?>
+				flowData.push( {status:41,label:"样品下单",memo:true ,
+					actions:[ 
+						{label:"确认样品下单",action:function(){ AuditAction('42',"下单完成，等待样品到达",{"SAMPLE_ORDER_TIME":'<?php echo $now;?>'}) } }	
+				     ]}
+			    ) ;
+				flowData.push( {status:42,label:"样品到达",memo:true ,
+					actions:[ 
+						{label:"确认样品到达",action:function(){ AuditAction('43',"样品到达，产品资料准备",{"SAMPLE_ARRIVE_TIME":'<?php echo $now;?>'}) } }	
+				     ]}
+			     ) ;
+				flowData.push( {status:43,label:"产品资料准备",memo:true ,
+					actions:[ 
+						{label:"保存",action:function(){ ForceAuditAction('43',"保存") } }	,
+						{label:"完成产品资料准备",action:function(){ ForceAuditAction('44',"产品资料准备完成，进入样品检测") } }
+				     ]}
+			     ) ;
+				flowData.push( {status:44,label:"样品检测",memo:true ,
+					actions:[ 
+								{label:"保存",action:function(){ ForceAuditAction('44',"保存") } }	,
+								{label:"产品资料准备",action:function(){ ForceAuditAction('45',"样品检测完成，提交审批") } }
+				     ]}
+			     ) ;
+				flowData.push( {status:45,label:"检测审批",memo:true ,
+					actions:[ 
+						<?php if( $PD_SAMPLE_EVALUATE_AUDIT ){ ?>
+						{label:"保存",action:function(){ ForceAuditAction('45',"保存") } },
+						{label:"重新检测",action:function(){ AuditAction('44',"审批不通过，重新检测") } },
+						{label:"审批不通过",action:function(){ AuditAction('80',"审批不通过，终止开发") } },
+						{label:"审批通过",action:function(){ AuditAction('46',"审批通过，上传资料准备") } }
+						<?php }?>
+				     ]}
+			     ) ;
 			<?php }?>
-	     ]}
-     ) ;
-  
-	flowData.push( {status:78,label:"开发总结",memo:true ,
-		actions:[ 
-<?php if( $PD_KFZJ ){ ?>
-				{label:"保存",action:function(){ ForceAuditAction('78',"保存") } },
-				{label:"结束",action:function(){ AuditAction('80',"开发总结填写完成，结束开发流程") } }
-				<?php }?>
-	     ]}
-     ) ;
-	*/   ?>
-	flowData.push( {status:80,label:"结束"}) ;
-	<?php } ?>
+			<?php if( $productDev['DEV_STATUS'] == 1  ){//自有开发流程 ?>
+				flowData.push( {status:46,label:"上传资料准备",memo:true ,
+					actions:[ 
+						{label:"保存",action:function(){ ForceAuditAction('44',"保存") } }	,
+						{label:"完成产品上传资料准备",action:function(){ ForceAuditAction('45',"产品上传资料准备完成，进入录入货品") } }
+				     ]}
+			     ) ;
+			<?php }?>
+			flowData.push( {status:50,label:"录入货品",memo:true ,
+				actions:[ 
+							<?php if( $PD_HPLR ){ ?>
+				         {label:"保存",action:function(){ ForceAuditAction('50',"保存") } },
+				         {label:"确认货品录入",action:function(){ AuditAction('60',"确认货品录入完成") } ,validate:function(){
+				        	 var val = $("#REAL_PRODUCT_ID").val() ;
+				        	 if(!val){
+									alert("必须关联货品！") ;
+									return false ;
+					        	} 
+					        	return true ;
+					      }}
+				         <?php }?>
+			     ]}
+		     ) ;
+			flowData.push( {status:60,label:"制作Listing",memo:true ,
+				actions:[ 
+							<?php if( $PD_MADE_LISTING ){ ?>
+			          {label:"保存",action:function(){ ForceAuditAction('60',"保存") } },
+				      {label:"确认Listing制作完成",action:function(){ AuditAction('70',"确认Listing制作完成") },validate:function(){
+				    	  var val = $("#LISTING_SKU").val() ;
+				        	 if(!val){
+									alert("必须关联Listing SKU！") ;
+									return false ;
+					        	} 
+					        	return true ;
+					      }}
+			          <?php }?>
+			     ]}
+		     ) ;
+			flowData.push( {status:70,label:"Listing审批",memo:true ,
+				actions:[ 
+							<?php if( $PD_LISTING_SP ){ ?>
+			           {label:"保存",action:function(){ ForceAuditAction('70',"保存") } },
+				       {label:"审批通过",action:function(){ AuditAction('72',"审批通过，进入试销采购，采购单将自动生成！") } }
+			           <?php }?>
+			     ]}
+		     ) ;
+		
+			flowData.push( {status:72,label:"试销采购",memo:true ,
+				actions:[ 
+		<?php if( $PD_SXCG ){ ?>
+				         {label:"保存",action:function(){ ForceAuditAction('72',"保存") } }
+					//  ,   {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
+				         <?php }?>
+			     ]}
+		     ) ;
+			<?php if( $productDev['DEV_STATUS'] == 1  ){//自有开发流程 ?>
+				flowData.push( {status:76,label:"营销展开",memo:true ,
+					actions:[ 
+						<?php if( $PD_YXZK ){ ?>
+						{label:"保存",action:function(){ ForceAuditAction('76',"保存") } },
+						{label:"下一步",action:function(){ AuditAction('78',"营销展开，进入下一步") } }
+						<?php }?>
+				     ]}
+			     ) ;
+			<?php }?>	
+			<?php /*
+			flowData.push( {status:74,label:"库存到达",memo:true ,
+				actions:[ 
+		                <?php if( $PD_KCDW ){ ?>
+						{label:"保存",action:function(){ ForceAuditAction('74',"保存") } }
+						,{label:"下一步",action:function(){ AuditAction('80',"库存到达，进入下一步") } }
+						<?php }?>
+			     ]}
+		     ) ;
+			
+			flowData.push( {status:76,label:"营销展开",memo:true ,
+				actions:[ 
+		<?php if( $PD_YXZK ){ ?>
+					{label:"保存",action:function(){ ForceAuditAction('76',"保存") } },
+					{label:"下一步",action:function(){ AuditAction('78',"营销展开，进入下一步") } }
+					<?php }?>
+			     ]}
+		     ) ;
+		  
+			flowData.push( {status:78,label:"开发总结",memo:true ,
+				actions:[ 
+		<?php if( $PD_KFZJ ){ ?>
+						{label:"保存",action:function(){ ForceAuditAction('78',"保存") } },
+						{label:"结束",action:function(){ AuditAction('80',"开发总结填写完成，结束开发流程") } }
+						<?php }?>
+			     ]}
+		     ) ;
+			*/   ?>
+			flowData.push( {status:80,label:"结束"}) ;
+			<?php } ?>
 	$(function(){
 		var flow = new Flow() ;
 		flow.init(".flow-bar center",flowData) ;
-		flow.draw(<?php echo $pdStatus;?>) ;
+		flow.drawDiv(<?php echo $pdStatus;?>) ;
 	}) ;
  </script>
 
@@ -498,55 +475,44 @@ html{-webkit-text-size-adjust: none;}
 	</table>
 	
 		
-	<div  class="flow-bar">
+	<div  class="flow-bar"  style="padding-left:10px;">
 		<center>
 			<table class="flow-table"></table>
 			<div class="flow-action"></div>
 		</center>
 	</div>
 <form id="personForm" action="#" data-widget="validator" class="form-horizontal" >
-	<div id="details_tab" style="border:0px;position:fixed;top:90px;left:0px;right:0px;">
+	<div id="details_tab" style="border:0px;position:fixed;top:110px;left:0px;right:0px;">
 	</div>	
 	
 	<div class="hide"  id="track-tab">
 		<div class="grid-track" style="width:920px;"></div>
 	</div>
+	<div  id="ad-tab"  class="hide">
+	<textarea id="SPREAD_STRATEGY"   class="input 10-input" 
+								style="width:95%;height:277px;margin-top:10px;"><?php echo  $productDev['SPREAD_STRATEGY']?></textarea>
+	</div>
 	
-	<?php if( $productDev['DEV_STATUS'] == 1 ){ ?>
+	<?php if( $productDev['DEV_STATUS'] == 1    ){ ?>
 	<div class="hide"  id="sample-check-tab">
 			<table  class="table  from-table">
 				<tbody>
 				<tr>
 						<th>样品下单时间：</th>
-						<td><input type="hidden"   id="SAMPLE_ORDER_TIME"  class="input 42-input 44-input"  
-								<?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>
-								value="<?php echo $productDev['SAMPLE_ORDER_TIME']?>"/>
+						<td>
 								<?php echo $productDev['SAMPLE_ORDER_TIME']?>
-								<?php if( empty($productDev['SAMPLE_ORDER_TIME']) &&( $pdStatus==42 || $pdStatus==44 ) ){?>
-									<?php if( $PD_SAMPLE_ORDER_ARREIVE ){ ?>
-									<button  class="btn-sample-order btn">确认已经下单</button>
-									<?php } ?>
-								<?php }?>
 						</td>
 				</tr>
 				<tr>
 						<th>样品到达时间：</th>
-						<td><input type="hidden"  name="SAMPLE_ARRIVE_TIME"  
-									 class="input 42-input 44-input" 
-									 <?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>
-									value="<?php echo $productDev['SAMPLE_ARRIVE_TIME']?>" ></input>
+						<td>
 								<?php echo $productDev['SAMPLE_ARRIVE_TIME']?>
-								<?php if( empty($productDev['SAMPLE_ARRIVE_TIME'])&&( $pdStatus==42 || $pdStatus==44 ) ){?>
-									<?php if( $PD_SAMPLE_ORDER_ARREIVE ){ ?>
-									<button class="btn btn-sample-arrive">确认样品到达</button>
-									<?php } ?>
-								<?php }?>
 						</td>
 				</tr>
 				<tr>
 						<th>样品总体评价：</th>
 						<td>
-							<select  name="SAMPLE_EVALUATE"   class="input 42-input 44-input"  <?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>>
+							<select  name="SAMPLE_EVALUATE"   class="input 45-input 46-input"  <?php if($pdStatus==45 || $pdStatus==46){ echo ' data-validator="required" ' ; }?>>
 									<option value="">选择</option>
 									<option value="10"  <?php echo $productDev['SAMPLE_EVALUATE']==10?"selected":"";?>>优</option>
 									<option value="20" <?php echo $productDev['SAMPLE_EVALUATE']==20?"selected":"";?>>良</option>
@@ -557,7 +523,7 @@ html{-webkit-text-size-adjust: none;}
 				</tr>
 				<tr>
 						<th>样品检测明细：</th>
-						<td><textarea name="SAMPLE_CHECK_DETAILS"   class="input 42-input 44-input"  <?php if($pdStatus==42 || $pdStatus==44){ echo ' data-validator="required" ' ; }?>
+						<td><textarea name="SAMPLE_CHECK_DETAILS"   class="input 45-input 46-input"  <?php if($pdStatus==45 || $pdStatus==46){ echo ' data-validator="required" ' ; }?>
 									style="width:500px;height:300px;"><?php echo $productDev['SAMPLE_CHECK_DETAILS']?></textarea></td>
 				</tr>
 				</tbody>
@@ -591,7 +557,7 @@ html{-webkit-text-size-adjust: none;}
 			<li><a href="#flag6" class="alert alert-info">营销计划与策略</a></li>
 		</ul>
 		<div style="clear:both;"></div>
-	 <div style="height:480px;overflow:auto;">	
+	 <div style="height:480px;overflow:auto;"  class="apply-panel">	
 		<table class="form-table"  style="margin:5px 2px;" id="flag1">
 				<tbody>
 					<tr>
@@ -646,6 +612,12 @@ html{-webkit-text-size-adjust: none;}
 						<?php } ?>
 						</td>
 					</tr>
+					<?php if( $pdStatus ==10 ){ ?>
+					<tr class="dev_status_memo hide">
+						<th style="width:20%;"></th>
+						<td>是否采购样品：<input type="checkbox"  value="1"  <?php echo $isPurchaseSample?"checked='checked'":"";?>  class="dev_status_flow"  key="isPurchaseSample"/></td>
+					</tr>
+					<?php } ?>
 					<tr>
 						<th style="width:20%;">
 							试销采购量
@@ -896,8 +868,7 @@ html{-webkit-text-size-adjust: none;}
 								style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['LOGI_STRATEGY_MEMO']?></textarea>
 						</td>
 						<td>
-							<textarea id="SPREAD_STRATEGY"   class="input 10-input" 
-								style="width:95%;height:77px;"><?php echo  $productDev['SPREAD_STRATEGY']?></textarea>
+							
 						</td>
 					</tr>
 				</tbody>

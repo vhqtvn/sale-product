@@ -299,7 +299,11 @@ class Cost extends AppModel {
 		$realQuotePrice = $data['realQuotePrice'] ;
 		$realShipFee = $data['realShipFee'] ;
 		$qualifiedProductsNum = $data['qualifiedProductsNum'] ;
-		
+		if( !empty($qualifiedProductsNum) &&  $qualifiedProductsNum >0 ){
+			//
+		}else{
+			return ;
+		}
 		$purchaseCost = $realQuotePrice+round( ($realShipFee/$qualifiedProductsNum),2 );
 		
 		//如果未创建成本数据，则新创建FBA和FBM成本

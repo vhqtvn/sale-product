@@ -6,6 +6,16 @@ class ProductDev extends AppModel {
 		
 	}
 	
+	function deleteDoc($params){
+		$sql = "delete from sc_product_doc where  doc_id = '{@#docId#}'" ;
+		$this->exeSql($sql, $params) ;
+	}
+	
+	function saveProductDecDoc($params){
+		$params['docId'] = $this->create_guid() ;
+		$this->exeSql("sql_pdev_new_doc_insert", $params) ;
+	}
+	
 	function getProductDev($id){
 		return $this->getObject("select * from sc_product_dev where id='{@#id#}'", array("id"=>$id)) ;
 	}

@@ -10,13 +10,16 @@
   		include_once ('config/config.php');
    
 		echo $this->Html->meta('icon');
+		echo $this->Html->css('../js/validator/jquery.validation');
 		echo $this->Html->css('../js/grid/jquery.llygrid');
 		echo $this->Html->css('default/style');
 
 		echo $this->Html->script('jquery');
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
+		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('grid/jquery.llygrid');
+		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('modules/report/orderRealProductList');
 
 		echo $this->Html->script('calendar/WdatePicker');
@@ -49,7 +52,31 @@
 	
 	<script type="text/javascript">
 		var newDate = '<?php echo $printTime; ?>';
-
+	
+		$(function(){
+			$(".asyn-btn").click(function(){
+				if( !$.validation.validate('.asyn-form').errorInfo ) {
+					var json = $(".asyn-form").toJson() ;
+					var url =contextPath+"/amazon/listOrders/" + json.accountId ;
+					url= url +"?LastUpdatedAfter=" + json.LastUpdatedAfter;
+					if( json.LastUpdatedBefore ){
+						url= url +"&LastUpdatedBefore=" + json.LastUpdatedBefore ;
+					}
+					if(window.confirm("确认同步？")){
+						$.ajax({
+							type:"post",
+							url: url ,
+							data:{},
+							cache:false,
+							dataType:"text",
+							success:function(result,status,xhr){
+								alert("执行结束") ;
+							}
+						});
+					}
+				}
+			}) ;
+		}) ;
 	</script>
 
 	 <style type="text/css">
@@ -62,21 +89,56 @@
 <body>
 
 	<div style="clear:both;height:1px;" ></div>
-	<div class="toolbar toolbar-auto toolbar1">
-		<table>
+	<div class="toolbar toolbar-auto">
+	  <div class="row-fluid">
+	  	<div class="span3">
+		<table class="toolbar1">
 			<tr>
 				<th>
 					日期:
 				</th>
 				<td>
-					
-					<input type="text" id="purchaseDate"   data-widget="calendar"  value='<?php echo $printTime;?>'/>
+					<input type="text" id="purchaseDate"   data-widget="calendar"  value='<?php echo $printTime;?>'  style="width:100px;"/>
 				</td>								
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
 				</td>
+		</table>
+		</div>
+		<div class="span9">
+		<table class="asyn-form"  data-widget="validator">
+				<th>账号：</th>
+						<td>
+						<select name="accountId" data-validator="required"  style="width:100px;">
+				     		<option value="">--选择--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     		} ;
+					     	?>
+							</select>
+						</td>
+						<th>开始时间：</th>
+						<td>
+							<input  type="text"  id="LastUpdatedAfter" data-widget="calendar"  data-options="{isShowWeek:true,dateFmt:'yyyy-MM-dd HH:mm:ss'}"  
+									data-validator="required"  style="width:150px;"/>
+						</td>
+						<th>结束时间：</th>
+						<td>
+							<input  type="text" data-widget="calendar"   id="LastUpdatedBefore"  style="width:150px;"/>
+						</td>
+						<td colspan=2>
+						<center>
+							<button class="btn btn-primary asyn-btn">执行同步</button>
+						</center>
+						</td>
 			</tr>						
 		</table>
+		</div>
+		</div>
 	</div>	
 	<div class="grid-content" style="margin-top:5px;">
 	</div>

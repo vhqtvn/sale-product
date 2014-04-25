@@ -45,18 +45,18 @@
 		           	{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"15%",forzen:false,align:"left",format:function(val,record){
 		        		return "<a href='#'  offer-listing='"+record.ASIN+"'>"+val+"</a>" ;
 		        	}},
-		        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"渠道",width:"10%",forzen:false,align:"left"},
-		        	{align:"center",key:"FC_SKU",label:"FNSKU",width:"10%",forzen:false,align:"left"},
-		        	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"当前库存",width:"8%",sort:true },
-		        	{align:"center",key:"CALC_QUANTITY",label:"周期需求量",width:"8%",sort:true },
-		           	{align:"center",key:"QUANTITY",label:"需求量",width:"6%",sort:true},
-		           	{align:"center",key:"PURCHASE_QUANTITY",label:"待采购数量",width:"8%",format:function(val,record){
+		        	{align:"center",key:"PURCHASE_QUANTITY",label:"待采购数量",width:"8%",format:function(val,record){
 		           		if(  currentPlanProduct.P_STATUS ==0 ){
 		           			return "<input type='text' class='edit-purchase-quantity'  value='"+(val||"0")+"' style='width:100%;height:100%;padding:0px;border:none;'/>" ;
 		           		}else{
 		           			return "<input type='hidden' class='edit-purchase-quantity'  value='"+(val||"0")+"'/>"+val ;
 		           		}
 		           	}},
+		        	{align:"center",key:"FULFILLMENT_CHANNEL",label:"渠道",width:"10%",forzen:false,align:"left"},
+		        	{align:"center",key:"FC_SKU",label:"FNSKU",width:"10%",forzen:false,align:"left"},
+		        	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"当前库存",width:"8%",sort:true },
+		        	{align:"center",key:"CALC_QUANTITY",label:"周期需求量",width:"8%",sort:true },
+		           	{align:"center",key:"QUANTITY",label:"需求量",width:"6%",sort:true},
 		           	{align:"center",key:"REAL_PURCHASE_QUANTITY",label:"实际入库",width:"8%"},
 		           	{align:"center",key:"REQ_TYPE",label:"生成类别",width:"8%",format:{type:"json",content:{'A':"销量",'B':"流量",'C':"成本不完整",D:"利润不达标",E:'其他'}}}
 		           	/*,

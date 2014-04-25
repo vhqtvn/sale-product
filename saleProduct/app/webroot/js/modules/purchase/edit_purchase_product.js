@@ -227,6 +227,20 @@ $(function(){
 		}) ;
 	}) ;
 	
+	function calcPurchaseProduct(){
+		$quantity =  0 ;
+		$(".purchaseQuantity").each(function(){
+			$quantity += parseInt( $(this).val()||0 ) ;
+		}) ;
+		$("[name='planNum']").val( $quantity ) ;
+	}
+	
+	$(".purchaseQuantity").keyup(function(){
+		calcPurchaseProduct() ;
+	}).blur(function(){
+		calcPurchaseProduct() ;
+	}) ;;
+	
 	$(".update-supplier").click(function(){
 		var supplierId = $(this).attr("supplierId") ;
 		openCenterWindow(contextPath+"/supplier/updateProductSupplierPage/"+sku+"/"+supplierId+"/"+planId,650,600) ;
@@ -289,6 +303,7 @@ function AuditAction(status , statusLabel){
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
 				json1 = $.extend(json,json1) ;
+				json1.purchaseDetails = getEditData() ;
 				$.dataservice("model:NewPurchaseService.savePurchaseProduct",json,function(){
 					//执行状态更新
 					window.location.reload();
@@ -297,12 +312,26 @@ function AuditAction(status , statusLabel){
 	}
 }
 
+function getEditData(){
+	var  result = [] ;
+	$(".edit-data-row").each(function(){
+		var accountId = $(this).find(".accountId").val() ;
+		var listingSku  = $(this).find(".listingSku").val() ;
+		var purchaseQuantity  = $(this).find(".purchaseQuantity").val() ;
+		var supplyQuantity  = $(this).find(".supplyQuantity").val() ;
+		var fulfillment =  $(this).find(".fulfillment").val() ;
+		result.push({accountId:accountId,sku:listingSku,quantity:purchaseQuantity}) ;//,fulfillment:fulfillment,supplyQuantity:supplyQuantity
+	}) ;
+	return result ;
+}
+
 function ForceAuditAction(status , statusLabel,isTerminal ){
 	if(window.confirm("确认【"+statusLabel+"】？")){
 				var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
 				var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus,isTerminal:isTerminal} ;
 				var json = $("#personForm").toJson() ;
 				json1 = $.extend(json,json1) ;
+				json1.purchaseDetails = getEditData() ;
 				$.dataservice("model:NewPurchaseService.savePurchaseProduct",json1,function(){
 					//执行状态更新
 					window.location.reload();

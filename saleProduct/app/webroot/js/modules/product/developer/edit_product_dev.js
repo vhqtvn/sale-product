@@ -17,6 +17,20 @@ $(function(){
 			 }) ;
 	   }) ;
  		
+ 		function devStatusRender(){//dev_status_memo
+ 			var val = $("[name='DEV_STATUS']:checked").val() ;
+ 			if( val == 1 ){
+ 				$(".dev_status_memo").show();
+ 			}else{
+ 				$(".dev_status_memo").hide();
+ 			}
+ 		}
+ 		devStatusRender() ;
+ 		
+ 		$("[name='DEV_STATUS']").click(function(){
+ 			devStatusRender() ;
+ 		}) ;
+ 		
  		var categoryTreeSelect = {
  				title:'产品分类选择页面',
  				valueField:"#categoryId",
@@ -218,16 +232,18 @@ $(function(){
 					    // {label:'成本利润',content:"supplier-tab",iframe:true},
 						// {label:'基本信息',content:"baseinfo-tab"},
 						 //{label:'竞争信息',content:"competetion-tab"},
-						 {label:'产品分类',url:contextPath+"/product/assignCategory/"+asin,iframe:true},
-						 {label:'开发轨迹',content:"track-tab"},
-						 {label:'产品流量',content:"flow-tab",iframe:true,url:contextPath+"/page/forward/Flow.flowAsin/"+asin}
+						 {label:'开发轨迹',content:"track-tab"}//,
+						// {label:'产品流量',content:"flow-tab",iframe:true,url:contextPath+"/page/forward/Flow.flowAsin/"+asin}
 					] ;
 			if(devStatus==1 ){
 				if( pdStatus == 42 || pdStatus == 44 ){
 					selected = 6;
 				}
-				_tabs.push(  {label:'样品检测',content:"sample-check-tab",select:true}  ) ;
+				if(isPurchaseSample)_tabs.push(  {label:'样品检测',content:"sample-check-tab",select:true}  ) ;
+				_tabs.push(  {label:'产品资料',iframe:true,url:contextPath+"/page/forward/Product.developer.doc_list/"+devId}  ) ;
+				_tabs.push(  {label:'营销',content:"ad-tab"}  ) ;
 			}
+			
 			
 			var tab = $('#details_tab').tabs( {
 				tabs:_tabs,
