@@ -1,14 +1,14 @@
 <?php
-ignore_user_abort(1);
-set_time_limit(0);
+	ignore_user_abort(1);
+	set_time_limit(0);
 
-ini_set("memory_limit", "62M");
-ini_set("post_max_size", "24M");
+	ini_set("memory_limit", "62M");
+	ini_set("post_max_size", "24M");
 
 class CronTaskController extends AppController {
     public $helpers = array('Html', 'Form');//,'Ajax','Javascript
     
-    var $uses = array('Utils','Amazonaccount','ScRequirement','Cost','NewPurchaseService','GatherData',"System");
+    var $uses = array('Utils','Amazonaccount','ScRequirement','Cost','NewPurchaseService','GatherData',"System","ScCache");
     
     public function clearLimitPrice(){
     	$this->Utils->exeSql("delete from sc_sale_schedule",array()) ;
@@ -105,42 +105,100 @@ class CronTaskController extends AppController {
      * 获取FBA最低价
      */
     public function getFbaLowestPrice(){
+    	$gatherTaskId = $this->Utils->create_guid() ;
+    	//判断是否正在采集数据
+    	$cache = $this->ScCache->getCache("__gatherFbaLowestPrice__") ;
+    	
+    	if( empty($cache)  ){
+    		//如果不存在，则创建一个采集任务，继续往下面进行采集
+    		$this->ScCache->createCache( "__gatherFbaLowestPrice__",$gatherTaskId ) ;
+    	}else{
+    		//判断是否过期
+    		$lastUpdatedTime = $cache['LAST_UPDATED_TIME'] ;
+    		ini_set('date.timezone','Asia/Shanghai');
+    		$now = date('Y-m-d H:i:s');
+    		$diffH = $this->Utils->DateDiff( $now , $lastUpdatedTime , 'h'  ) ;//小时差异
+
+    		if( $diffH >=1  ){
+    			//如果超过一个小时没有更新表示过期
+    			$this->ScCache->removeCache("__gatherFbaLowestPrice__") ;
+    			$this->ScCache->createCache( "__gatherFbaLowestPrice__",$gatherTaskId ) ;
+    		}else{
+    			//未过期，任务还正在进行中...
+    			echo "存在采集任务在进行中......" ;
+    			return ;
+    		}
+    	}
+    	
+    	$this->___getFbaLowestPrice( $gatherTaskId ) ;
+    }
+    
+    
+    /**
+     * 获取FBA最低价
+     */
+    public function ___getFbaLowestPrice( $gatherTaskId ){
+    	$cache = $this->ScCache->getCache("__gatherFbaLowestPrice__") ;
+    	$cacheValue = $cache['CACHE_VALUE'] ;
+    	if( $cacheValue != $gatherTaskId ){
+    		echo "task is invalid ,break ;" ;
+    		return ;
+    	}
     	/*获取系统所有FBA产品的ASIN  */
     	$accounts = $this->Amazonaccount->getAllAccountsFormat();
     	foreach( $accounts as $account ){
     		$accountId = $account['ID'] ;
     		$config = $this->System->getAccountPlatformConfig($accountId) ;
-    		$sql = "select distinct saap.ASIN from sc_amazon_account_product saap ,
-    				                    sc_amazon_account saa,
-    									sc_fba_supply_inventory sfsi
-    				where
-    				 saap.FULFILLMENT_CHANNEL like 'AMAZON%' 
-    				and saap.status = 'Y'
-    				and saap.account_id = saa.id
-    				and saap.account_id = sfsi.account_id
-					and saap.sku =sfsi.seller_sku
-					and sfsi.IN_STOCK_SUPPLY_QUANTITY >0 
-    				and saa.status = 1
-    				and saap.account_id = '{@#accountId#}'" ;
-    		$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
-    		echo "----------".$account['NAME']."--------------".count($items)."======================" ;
-    		$index = 0 ;
-    		foreach( $items as $item ){
-    			sleep(1) ;
-    			$index++ ;
-    			echo "<br>index:$index<br>";
-    			$asin = $item['ASIN'] ;
-    			$gatherParams = array(
-    					"asin"=>$asin ,
-    					"platformId"=>$config['PLATFORM_ID'] ,
-    					"id"=>$accountId,
-    					"index"=>0,
-    					"taskId"=>"getFbaLowestPrice"
-    			) ;
-    			$this->GatherData->fbaPricePlatform($gatherParams) ;
-    		}
-    	}
-    }
+    
+    		$start = 0 ;
+    		$limit = 200 ;
+    
+    		while(true){
+    			
+    			$sql = "select distinct saap.ASIN from sc_amazon_account_product saap ,sc_amazon_account saa,sc_fba_supply_inventory sfsi
+    			where
+    			saap.FULFILLMENT_CHANNEL like 'AMAZON%'
+    			and saap.status = 'Y'
+    			and saap.account_id = saa.id
+    			and saap.account_id = sfsi.account_id
+    			and saap.sku =sfsi.seller_sku
+    			and sfsi.IN_STOCK_SUPPLY_QUANTITY >0
+    			and saa.status = 1
+    			and saap.account_id = '{@#accountId#}'
+    			limit $start,$limit " ;
+    			/*$sql = "select distinct saap.ASIN from sc_amazon_account_product saap
+    			 where
+    			saap.account_id = '{@#accountId#}'
+    			limit $start,$limit " ;*/
+    			 
+    			$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
+    			$start = $start+$limit ;
+    			if( empty( $items ) || count($items)<=0 ) break ;
+    			echo "----------".$account['NAME']."--------------".count($items)."======================" ;
+    					$index = 0 ;
+    			foreach( $items as $item ){
+    				//刷新缓存最新更新时间
+    				$this->ScCache->refreshCache("__gatherFbaLowestPrice__") ;
+    				
+        			sleep(5) ;//间隔5秒
+        			$index++ ;
+        				echo "<br>index:$index<br>";
+        				$asin = $item['ASIN'] ;
+        				$gatherParams = array(
+        						"asin"=>$asin ,
+        						"platformId"=>$config['PLATFORM_ID'] ,
+    						"id"=>$accountId,
+        								"index"=>0,
+        								"taskId"=>"getFbaLowestPrice"
+        						) ;
+    				$this->GatherData->fbaPricePlatform($gatherParams) ;
+        		}
+        	}
+        }
+        //递归循环采集
+        sleep(180) ;
+        $this->___getFbaLowestPrice($gatherTaskId) ;
+     }
     
     /**
      * 清除亚马逊需求
@@ -193,9 +251,39 @@ class CronTaskController extends AppController {
 		}
 		echo $isLimitStrategy;
 		foreach( $accounts as $account ){
+			$accountName = $account['NAME'] ;
 			debug($account['NAME']) ;
+			$sql = "select * from sc_amazon_account_union where status=1 order by piror desc" ;
+			$unions = $this->Utils->exeSqlWithFormat( $sql , array() ) ;
+			
+			$unionAccount = null ;
+			foreach($unions as $union){
+				$unionAccountNames = $union['UNION_ACCOUNT_NAMES'] ;
+				$unionAccountNames = json_decode($unionAccountNames) ;
+				foreach ($unionAccountNames as $unionAccountName){
+					$unionAccountName = get_object_vars($unionAccountName) ;
+					$_aName = $unionAccountName['accountName'] ;
+					if( $_aName == $accountName ){
+						//当前账号在该联盟
+						$unionAccount = $unionAccountNames ;
+						break ;
+					}
+				}
+				if( !empty($unionAccount) )break ;
+			}
+			$uams = array() ;
+			if( !empty($unionAccount) ){
+				foreach ($unionAccount as $unionAccountName){
+					$unionAccountName = get_object_vars($unionAccountName) ;
+					$uams[] = $unionAccountName ;
+				}
+			}
+			
+			if( count($uams) <=0 ){
+				$uams[]  = array("accountName"=>$accountName) ;
+			}
+			
 			$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
-			//		$url = "http://".$domain."/".$context."/index.php/taskAsynAmazon/getMyPriceForSKU/".$accountId."?".$random ;
 			
 			try{
 				//同步实时价格
@@ -205,12 +293,7 @@ class CronTaskController extends AppController {
 				debug($e) ;
 			}
 			
-			//开始执行营销，设置标志位为1
-			//$sql = "update  sc_amazon_account_product set marketing_flag = 1 where account_id = '{@#accountId#}'" ;
-			//$this->Utils->exeSql($sql,array("accountId"=>$account['ID'])) ;
-			
 			try{
-				
 				$start = 0 ;
 				$limit = 200 ;
 				$items = null ;
@@ -228,7 +311,6 @@ class CronTaskController extends AppController {
 					and saap.account_id = '{@#accountId#}'
 					and limit_price > 0
 					and status = 'Y'
-					and lowest_fba_price >0
 					order by id
 					limit $start,$limit " ;
 					$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
@@ -238,7 +320,7 @@ class CronTaskController extends AppController {
 					foreach( $items as $item ){
 						$index++ ;
 						echo $index.'<br>' ;
-						$mItem = $this->_marketingItem($item, $isLimitStrategy, $isLimitStart, $isLimitEnd, $isLimiting) ;
+						$mItem = $this->_marketingItemV20($item, $isLimitStrategy, $isLimitStart, $isLimitEnd, $isLimiting,$uams) ;
 						if(!empty($mItem)){
 							$_products[] = $mItem;
 						}
@@ -259,12 +341,187 @@ class CronTaskController extends AppController {
 		}
 	}
 	
-	public function _marketingItem($item,$isLimitStrategy,$isLimitStart,$isLimitEnd,$isLimiting){
+	public function _marketingItemV20($item,$isLimitStrategy,$isLimitStart,$isLimitEnd,$isLimiting , $unoinAccountNames ){
+		/**
+		 * 初始化计算需求所要数据
+		 * @$listPrice   Listing价格
+		 * @$execPrice  设置最低限价
+		 * @$secondPrice  最低价格，除联盟卖家之外的
+		 * @$limitPriceLargerPrice  比限价大的价格
+		 */
+		$listPrice 			= $item['LIST_PRICE'] ;
+		$execPrice 		=  $item['LIMIT_PRICE'] ;//限价
+		if( empty($listPrice) || $listPrice == 0  ){
+			$listPrice = $execPrice ;
+		}
+
+		//if( $item['SKU'] != '10000207-1' ) return null ;
+	
+		$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
+		//如果采集到的FBA价格为空，则不进行改listing调价
+		if( empty( $fbaPriceArray ) ){
+			if( $execPrice > $listPrice ){
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice) ;
+			}else{
+				return null ;
+			}
+		}
+	
+		//从价格中剔除联盟账号
+		$fbaPriceArray = json_decode($fbaPriceArray) ;
+		$fixFbaPriceArray = array() ;
+		foreach( $fbaPriceArray as $fbaPrice ){
+			$fbaPrice = get_object_vars($fbaPrice) ;
+			$accoutName = $fbaPrice['seller'] ;
+			$isUnionAccount = false ;
+			foreach($unoinAccountNames as  $unionAccount){
+				$unitAccountName = $unionAccount['accountName'] ;
+				if( $accoutName == $unitAccountName  ){
+					$isUnionAccount = true ;
+					break ;
+				}
+			}
+			if( !$isUnionAccount ){
+				$fixFbaPriceArray[] = $fbaPrice ;
+			}
+		}
+		
+		//得到剔除联盟账号的价格列表$fixFbaPriceArray
+		//获取剔除后的最低价
+		$secondPrice = 0 ;
+		$limitPriceLargerPrice = 0 ;
+		foreach( $fixFbaPriceArray as $fixFbaPrice ){
+			$_price = $fixFbaPrice['price'] ;
+			if( $secondPrice== 0 ){
+				$secondPrice = $_price ;//初始化出自己联盟卖家外价格最低的
+			}
+			
+			if( $_price > $execPrice && $limitPriceLargerPrice == 0  ){
+				$limitPriceLargerPrice = $_price ;
+			}
+		}
+
+		/**
+		 * @如果是限时执行，则区分限时开始、结束、限时进行中......
+		 */
+		if(  $isLimitStrategy  ){
+			if( $isLimitStart ){//限时调价开始，记录当前价格到数据库
+				$sql= "update sc_amazon_account_product set lt_before_price='{@#ltBeforePrice#}' where id='{@#id#}'" ;
+				$this->Utils->exeSql($sql,array("ltBeforePrice"=>$listPrice,"id"=>$item['ID'] )) ;
+			}else if($isLimitEnd){//限时调价结束
+				//还原价格
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$item['LT_BEFORE_PRICE'] ) ;
+			}else if($isLimiting){//限时调价中
+				//调价中，下面做处理
+			}
+		}
+	
+		/**
+         *@如果除了同盟卖家之外，不存在其他卖家，则价格只与限价进行比较，
+         *    如果价格大于或等于限价，则不进行调价；如果小于限价，则价格向上调整至限价
+		 */
+		$fbaPriceCount = count( $fixFbaPriceArray ) ;
+		if( $fbaPriceCount < 0 ){
+			//如果除了同盟卖家之外，没有其他卖家，则不进行调价
+			if( $listPrice >= $execPrice ){
+				return null ;
+			}else{
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+			}
+		}
+
+		/**
+		 * @处理同盟卖家，还吃了再其他卖家
+		 */
+		
+		//当前价格比其他FBA卖家最低价格高
+		/**
+		 * 1、如果自己价格大于其他卖家最低价格
+		 *   C1：如果其他卖家价格最低价格（$secondPrice）大于限价，则在限时营销时，调整为$secondPrice-0.01，否则调整为其他卖家价格最低价格
+		 *   C2：如果其他卖家最低价格等于限价，则自己价格调整为限价
+		 *   C3：如果其他卖家价格小于限价，则分几种情况
+		 *           如果不存在比限价大的价格，这调整价格为限价（$limitPriceLargerPrice==0）。
+		 *           在限时营销时段，取比限价大的价格$limitPriceLargerPrice，然后$limitPriceLargerPrice-0.01
+		 *           如果在其他时段，调整价格为比限价大的价格$limitPriceLargerPrice
+		 */
+		if( $listPrice > $secondPrice ){
+			if( $secondPrice >  $execPrice  ){//如果最低价格大于限价
+				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice - 0.01 ) ;
+				}else{
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice ) ;
+				}
+			}else if( $secondPrice ==  $execPrice  ){ //设置价格为限价
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+			}else if( $secondPrice <  $execPrice  ){ //最低价格小于限价
+				if( $limitPriceLargerPrice == 0  ){
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+				}
+				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;//限价后面价格-0.01
+				}else{
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+				}
+			}
+			return null ;
+		}
+			
+		//如果价格就是FBA最低价格，判断是否存在多个卖家都是最低价格
+		/**
+		 * 2、如果自己价格与其他卖家最低价格一致的话
+		 * 		C1：如果当前价格低于限价
+		 *                如果不存在比限价大的其他卖家价格，则调整为限价
+		 *                如果存在，则调整为其他卖家最低价格-0.01
+		 *      C2：如果当前价格等于限价，则不进行处理
+		 *      C3：如果当前价格大于限价
+		 *      		   在限时营销时段设置为当前价格-0.01，保持最低价
+		 *                如果其他时段，保持当前价格
+		 */
+		if($listPrice ==  $secondPrice ){
+			if( $listPrice < $execPrice ){ //如果其他卖家最低价格小于限价
+				if( $limitPriceLargerPrice == 0  ){
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+				}
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+			}
+			
+			if( $listPrice == $execPrice ){
+				return null ;//array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+			}
+			
+			if( $listPrice > $execPrice ){
+				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$listPrice - 0.01 ) ;//最低价格-0.01
+				}else{
+					return null ;//array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice ) ;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param unknown_type $item
+	 * @param unknown_type $isLimitStrategy
+	 * @param unknown_type $isLimitStart
+	 * @param unknown_type $isLimitEnd
+	 * @param unknown_type $isLimiting
+	 * @param unknown_type $uams   联盟账号
+	 * @return multitype:unknown |NULL|multitype:number unknown |multitype:unknown Ambigous <number, unknown>
+	 * @deprecated
+	 */
+	public function _marketingItem($item,$isLimitStrategy,$isLimitStart,$isLimitEnd,$isLimiting , $unoinAccountNames ){
 
 		//debug( $item ) ;
 		$listPrice = $item['LIST_PRICE'] ;
 		$lowestFbaPrice = $item['LOWEST_FBA_PRICE'] ;
+		
 		$fbaPriceArray   = $item['FBA_PRICE_ARRAY'] ;
+		//从价格中剔除联盟账号
+		//$fbaPriceArray = json_decode($fbaPriceArray) ;
+		
+		
 		$execPrice =  $item['LIMIT_PRICE'] ;//限价
 		//debug($item) ;
 		//if($isLimitStrategy)echo 'true&&' ;else echo 'false&&' ;
@@ -276,7 +533,6 @@ class CronTaskController extends AppController {
 			$listPrice = $lowestFbaPrice*1.05 ;
 		}
 		//debug($item) ;
-			
 		$fbaPriceArray = explode(",", $fbaPriceArray) ;
 		$fbaPriceCount = count( $fbaPriceArray ) ;
 			
@@ -291,8 +547,7 @@ class CronTaskController extends AppController {
 				//调价中，下面做处理
 			}
 		}
-			
-			
+		
 		if( $fbaPriceCount <= 1 ){
 			//如果只有一个FBA卖家，就不处理价格
 			return null ;

@@ -22,8 +22,6 @@
 			$productSupplier = $SqlUtils->getObject("sql_getSupplierInquiryByInquiryId",array('id'=>$inquiryId)) ;
 		}
 
-		$pop = $params['arg4'] ;
-		
 		$asin = "" ;
 		$sku = "" ;
 		$suppliers = array() ;
@@ -33,6 +31,14 @@
 			$sku = $value ;
 			$suppliers = $SqlUtils->exeSql("sql_getProductSuppliersBySku",array('realSku'=>$sku)) ;
 		}
+		$productDev = null ;
+		if( $type == 'asin' ){
+			$sql = "select * from sc_product_developer where dev_id = '{@#devId#}'" ;
+			$productDev= $SqlUtils->getObject($sql , array("devId"=>$taskId)) ;
+		}
+		
+		ini_set('date.timezone','Asia/Shanghai');
+		$now = date('Y-m-d H:i:s');
 	?>
   
    <script>
@@ -144,6 +150,30 @@
 				    	catalogId : 'sale'
 				    }
 				});
+
+				var inquiryId = "<?php echo $productSupplier['ID'];?>" ;
+				$(".confirm-sample-order").click(function(){
+					if( window.confirm("确认样品已经下单？") ){
+						var val = $("#samplePrice").val() ;
+						if( !val ){
+							alert("样品价格未设置") ;
+							return ;
+						}
+						var json = {inquiryId:inquiryId,"sampleOrderTime":'<?php echo $now;?>','taskId':'<?php echo $taskId;?>',type:'<?php echo $type;?>',samplePrice:val} ;
+						$.dataservice("model:Supplier.confirmSampleTime",json,function(result){
+							window.location.reload() ;
+						});
+					}
+				}) ;
+				
+				$(".confirm-sample-arrive").click(function(){
+					if( window.confirm("确认样品已经到达？") ){
+						var json = {inquiryId:inquiryId,"sampleArriveTime":'<?php echo $now;?>','taskId':'<?php echo $taskId;?>',type:'<?php echo $type;?>'} ;
+						$.dataservice("model:Supplier.confirmSampleTime",json,function(result){
+							window.location.reload() ;
+						});
+					}
+				}) ;
 		 }) ;
    </script>
 
@@ -306,6 +336,32 @@
 							<textarea id="memo" name="memo"  style="width:80%;height:50px;" placeHolder="其他产品信息"><?php echo $productSupplier['MEMO'];?></textarea></td>
 					</tr>
 				</table>
+				
+				<?php if( $type == 'asin'  && (!empty($productDev)) && $productDev['FLOW_STATUS'] >=41 ){ ?>
+				<table class="form-table">
+					<caption>样品信息</caption>
+					<tr>
+						<th>样品下单：</th><td style="width:250px;"><?php echo  $productSupplier['SAMPLE_ORDER_TIME'];?>
+						<?php if( empty($productSupplier['SAMPLE_ORDER_TIME']) ){ ?>
+						<button class="btn  confirm-sample-order">确认样品下单</button></td>
+						<?php } ?>
+						<th>样品到达：</th><td><?php echo  $productSupplier['SAMPLE_ARRIVE_TIME'];?>
+							<?php if( empty($productSupplier['SAMPLE_ARRIVE_TIME']) && !empty($productSupplier['SAMPLE_ORDER_TIME']) ){ ?>
+								<button class="btn  confirm-sample-arrive">确认样品到达</button>
+							<?php } ?>
+						</td>
+					</tr>
+					<tr>
+						<th>样品价格：</th><td colspan="3">
+							<input type="text" id="samplePrice" name="samplePrice"  value="<?php echo $productSupplier['SAMPLE_PRICE'];?>"/>
+						</td>
+					</tr>
+					<tr>
+						<th>样品备注：</th><td colspan="3"><textarea style="width:90%;height:45px;"></textarea></td>
+					</tr>
+				</table>
+				<?php } ?>
+				
 				</div>
 				<?php  if( $params['arg4'] == 'pop' ||$params['arg3'] == 'pop' ||$params['arg5'] == 'pop' ){ ?>
 				<div class="panel-foot" style="position:fixed;bottom:0px;right:0px;left:0px;z-index:1;background-color:#FFF;">

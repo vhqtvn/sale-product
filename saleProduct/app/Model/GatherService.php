@@ -8,6 +8,7 @@ class GatherService extends AppModel {
 	public function saveFbaLowestPrice($asin , $priceArray){
 		$minPrice = 999999 ;
 		foreach( $priceArray as $price  ){
+			$price = $price['price'] ;
 			if( empty($price) || $price == 0 ) continue ;
 			$minPrice = min($minPrice ,$price ) ;
 		}
@@ -16,7 +17,7 @@ class GatherService extends AppModel {
 		}else{
 			$sql = "update sc_amazon_account_product set LOWEST_FBA_PRICE ='{@#minPrice#}' ,FBA_PRICE_ARRAY='{@#priceArray#}' ,FBA_PRICE_LAST_UPDATE_TIME=NOW() 
 						where asin='{@#asin#}' and status = 'Y' " ;
-			$this->exeSql($sql, array("minPrice"=>$minPrice,"priceArray"=>join(",", $priceArray),"asin"=>$asin )) ;
+			$this->exeSql($sql, array("minPrice"=>$minPrice,"priceArray"=>json_encode($priceArray),"asin"=>$asin )) ;
 		}
 	}
 	
@@ -371,7 +372,6 @@ class GatherService extends AppModel {
 		$sql = "delete from sc_gather_asin where task_id = '".$taskId."'" ;
 		$this->query($sql) ;
 	}
-	
 	
 	/**
 	 * 保存上传

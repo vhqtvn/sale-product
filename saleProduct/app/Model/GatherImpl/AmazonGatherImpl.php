@@ -50,7 +50,7 @@ class AmazonGatherImpl extends AppModel {
 		$utils = new Utils() ;
 		$service = new GatherService() ;
 		$log = new Log() ;
-
+		debug($asin) ;
 		try{
 			$siteUrl = $this->getAmazonSiteUrl($asin,$platformId) ;
 
@@ -75,11 +75,25 @@ class AmazonGatherImpl extends AppModel {
 				try{
 					//////////////////////////////////////////////////////////////////////////////////////////
 					$arrays = array() ;
-					foreach( $html->find(".olpOfferPrice") as $e ){
-						$priceText = trim ( $e->plaintext );
-						$arrays[] = str_replace("$", "", $priceText) ;
+					$index = 0 ;
+					foreach( $html->find(".olpOffer") as $e ){//olpOfferPrice
+						$index++ ;
+						$oldOfferPriceEl = $e->find(".olpOfferPrice",0) ;
+						$sellerNameEl = $e->find(".olpSellerName img",0) ;
+						$priceText = trim ( $oldOfferPriceEl->plaintext );
+						$price = str_replace("$", "", $priceText) ;
+						//获取卖家
+						$sellerName = "" ;
+						if( empty($sellerNameEl) ){
+							$sellerName =  trim( $e->find(".olpSellerName",0)->plaintext )  ;
+						}else{
+							$sellerName =  $sellerNameEl->title  ;
+							if( empty($sellerName) ){
+								$sellerName =  $sellerNameEl->alt  ;
+							}
+						}
+						$arrays[] = array("price"=>$price,"seller"=>$sellerName,"index"=>$index) ;
 					}
-					
 					
 					if( count( $arrays ) <=0 ){
 						if( $index__ < 5 ){
@@ -89,7 +103,7 @@ class AmazonGatherImpl extends AppModel {
 								unset($snoopy) ;
 							}catch(Exception $e){}
 							//重试
-							sleep(1) ;
+							sleep( 1+$index__ ) ;
 							$this->_lowestFbaPrice($platformId, $params,$index__+1) ;
 							return ;
 						}
