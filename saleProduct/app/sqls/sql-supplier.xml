@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_supplier_updateSampleTime">
+				update sc_purchase_supplier_inquiry set  id = '{@#inquiryId#}'
+				{@ ,SAMPLE_ORDER_TIME= '#sampleOrderTime#'}
+				{@ ,SAMPLE_ARRIVE_TIME= '#sampleArriveTime#'}
+				{@ ,SAMPLE_PRICE= '#samplePrice#'}
+				where id = '{@#inquiryId#}'
+		</entry>
+
 	<entry key="list_supplier_4_autocomplete">
 			select id as VALUE ,name as TEXT from sc_supplier 
 			where  name like '{@%#INPUT_VALUE#%}' 

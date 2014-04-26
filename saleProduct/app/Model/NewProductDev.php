@@ -11,8 +11,34 @@ class NewProductDev extends AppModel {
 		}else if( isset($params['arrive']) && $params['arrive'] == 1 ){
 			$params['sampleArriveTime'] = $printTime ;
 		}
-		
 		$this->exeSql("sql_productDev_new_updateSampleTime", $params) ;
+		
+		$sql = "select * from sc_product_developer where dev_id = '{@#devId#}'" ;
+		$productDeveloper = $this->getObject($sql, $params) ;
+		
+		if( isset( $params['sampleOrderTime']  ) ){//更新流程到样品下单下一环节
+			//更改状态
+			$sql = "update sc_product_developer set flow_status=42 where flow_status = 41 and dev_id = '{@#devId#}' " ;
+			$this->exeSql($sql, $params) ;
+			//保存轨迹'{@#ASIN#}',  '{@#TASK_ID#}',  '{@#trackMemo#}',  '{@#loginId#}', 
+			$this->exeSql("sql_pdev_track_insert", array(
+						'ASIN'=>$productDeveloper['ASIN'],
+						'TASK_ID'=>$params['devId'],
+						'trackMemo'=>'样品下单确认',
+						'loginId'=>$params['loginId']
+					)) ;
+		}else  if( isset( $params['sampleArriveTime']  ) ){//更新流程到样品到达下一环节
+			//更改状态
+			$sql = "update sc_product_developer set flow_status=43 where flow_status = 42 and dev_id = '{@#devId#}' " ;
+			$this->exeSql($sql, $params) ;
+			//保存轨迹
+			$this->exeSql("sql_pdev_track_insert", array(
+						'ASIN'=>$productDeveloper['ASIN'],
+						'TASK_ID'=>$params['devId'],
+						'trackMemo'=>'样品到达确认',
+						'loginId'=>$params['loginId']
+					)) ;
+		}
 	}
 	
 	function addNewAsinDev($params){

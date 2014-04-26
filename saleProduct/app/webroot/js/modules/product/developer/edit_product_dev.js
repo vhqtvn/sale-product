@@ -227,12 +227,12 @@ $(function(){
 			var selected = 0 ;
 			var _tabs = [
 					     {label:'产品开发',content:"dev-tab"},
-					     {label:'产品询价',url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+asin+"/asin/"+taskId  , iframe:true},
-					     {label:'成本利润',url: contextPath+"/page/forward/Cost.add_by_asin/"+asin+"/"+taskId,iframe:true},
+					     {label:'产品询价',url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+asin+"/asin/"+devId  , iframe:true},
+					     {label:'成本利润',url: contextPath+"/page/forward/Cost.add_by_asin/"+asin+"/"+devId,iframe:true}
 					    // {label:'成本利润',content:"supplier-tab",iframe:true},
 						// {label:'基本信息',content:"baseinfo-tab"},
 						 //{label:'竞争信息',content:"competetion-tab"},
-						 {label:'开发轨迹',content:"track-tab"}//,
+						//,
 						// {label:'产品流量',content:"flow-tab",iframe:true,url:contextPath+"/page/forward/Flow.flowAsin/"+asin}
 					] ;
 			if(devStatus==1 ){
@@ -243,7 +243,7 @@ $(function(){
 				_tabs.push(  {label:'产品资料',iframe:true,url:contextPath+"/page/forward/Product.developer.doc_list/"+devId}  ) ;
 				_tabs.push(  {label:'营销',content:"ad-tab"}  ) ;
 			}
-			
+			_tabs.push(  {label:'开发轨迹',content:"track-tab"} ) ;
 			
 			var tab = $('#details_tab').tabs( {
 				tabs:_tabs,

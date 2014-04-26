@@ -94,6 +94,7 @@
 		$PD_SAMPLE_EVALUATE	=  $security->hasPermission($loginId , 'PD_SAMPLE_EVALUATE') ;
 		$PD_SAMPLE_EVALUATE_AUDIT	=  $security->hasPermission($loginId , 'PD_SAMPLE_EVALUATE_AUDIT') ;
 		$PD_SAMPLE_ORDER_ARREIVE		=  $security->hasPermission($loginId , 'PD_ORDER_ARREIVE') ;
+		$PD_DOC		=  $security->hasPermission($loginId , 'PD_DOC') ;
 		
 		$PD_TRANSFER			=  $security->hasPermission($loginId , 'PD_TRANSFER') ;
 		
@@ -108,10 +109,13 @@
 	
 		$devStatusFlow = $productDev['DEV_STATUS_FLOW'] ;
 		$devStatusFlow = json_decode($devStatusFlow) ;
-		$devStatusFlow = get_object_vars($devStatusFlow) ;
+		
 		$isPurchaseSample = false ;
-		if( isset( $devStatusFlow['isPurchaseSample'] ) && $devStatusFlow['isPurchaseSample'] == 1 ){
-			$isPurchaseSample = true ;
+		if(!empty($devStatusFlow)){
+			$devStatusFlow = get_object_vars($devStatusFlow) ;
+			if( isset( $devStatusFlow['isPurchaseSample'] ) && $devStatusFlow['isPurchaseSample'] == 1 ){
+				$isPurchaseSample = true ;
+			}
 		}
 		
 		ini_set('date.timezone','Asia/Shanghai');
@@ -310,24 +314,28 @@ html{-webkit-text-size-adjust: none;}
 			<?php if( $productDev['DEV_STATUS'] == 1 && $isPurchaseSample ){//自有开发流程 ?>
 				flowData.push( {status:41,label:"样品下单",memo:true ,
 					actions:[ 
-						{label:"确认样品下单",action:function(){ AuditAction('42',"下单完成，等待样品到达",{"SAMPLE_ORDER_TIME":'<?php echo $now;?>'}) } }	
+						//{label:"确认样品下单",action:function(){ AuditAction('42',"下单完成，等待样品到达",{"SAMPLE_ORDER_TIME":'<?php echo $now;?>'}) } }	
 				     ]}
 			    ) ;
 				flowData.push( {status:42,label:"样品到达",memo:true ,
 					actions:[ 
-						{label:"确认样品到达",action:function(){ AuditAction('43',"样品到达，产品资料准备",{"SAMPLE_ARRIVE_TIME":'<?php echo $now;?>'}) } }	
+						//{label:"确认样品到达",action:function(){ AuditAction('43',"样品到达，产品资料准备",{"SAMPLE_ARRIVE_TIME":'<?php echo $now;?>'}) } }	
 				     ]}
 			     ) ;
 				flowData.push( {status:43,label:"产品资料准备",memo:true ,
 					actions:[ 
+						<?php if($PD_DOC){?>
 						{label:"保存",action:function(){ ForceAuditAction('43',"保存") } }	,
 						{label:"完成产品资料准备",action:function(){ ForceAuditAction('44',"产品资料准备完成，进入样品检测") } }
+						<?php }?>
 				     ]}
 			     ) ;
 				flowData.push( {status:44,label:"样品检测",memo:true ,
-					actions:[ 
+					actions:[
+								<?php if($PD_SAMPLE_EVALUATE){?>
 								{label:"保存",action:function(){ ForceAuditAction('44',"保存") } }	,
 								{label:"产品资料准备",action:function(){ ForceAuditAction('45',"样品检测完成，提交审批") } }
+								<?php }?>
 				     ]}
 			     ) ;
 				flowData.push( {status:45,label:"检测审批",memo:true ,

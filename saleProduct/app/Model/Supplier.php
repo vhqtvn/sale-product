@@ -2,7 +2,18 @@
 class Supplier extends AppModel {
 	var $useTable = "sc_supplier" ;
 	
-
+	public function confirmSampleTime($params){
+		//更新样品时间
+		$this->exeSql("sql_supplier_updateSampleTime", $params) ;
+		//更新
+		if( isset( $params['type'] )  ){
+			$NewProductDev  = ClassRegistry::init("NewProductDev") ;
+			$devId = $params['taskId'] ;
+			$params['devId'] = $devId ;
+			$NewProductDev->confirmSampleTime( $params ) ;
+		} 
+	}
+	
 	
 	public function getProductSuppliers($asin){
 		$sql = "select sc_supplier.* from sc_supplier , sc_product_supplier

@@ -72,45 +72,45 @@
 				columns:[
 							//名称	产品重量	生产周期	包装方式	付款方式	产品尺寸	包装尺寸	报价1	报价2	报价3
 							<?php if($PD_INQUIRY){ ?>
-							{align:"center",key:"TASK_ID",label:"操作",width:"5%",format:function(val,record){
+							{align:"center",key:"TASK_ID",label:"操作",width:"3%",format:function(val,record){
 									var html = [] ;
 									html.push( getImage("edit.png","修改","process-action") ) ;
-									if( record.DAY_NUM > 7 ) return "" ;
+									//if( record.DAY_NUM > 7 ) return "" ;
 									return html.join("") ;
 							}},
 							 <?php }?>
-							{align:"center",key:"CREATE_TIME",label:"询价时间",width:"15%",forzen:false,align:"left"},
-							{align:"center",key:"USERNAME",label:"提交人",width:"6%",forzen:false,align:"left"},
-							{align:"center",key:"IMAGE",label:"图片",width:"4%",forzen:false,align:"left",format:{type:'img'}},
-					     	{align:"center",key:"NAME",label:"供应商名称",width:"15%",forzen:false,align:"left",format:function(val,record){
-									return "<a href='#' supplier-id='"+record.SUPPLIER_ID+"'>"+val+"<a>" ;
+
+							{align:"center",key:"IMAGE",label:"图片",width:"3%",forzen:false,align:"left",format:{type:'img'}},
+							{align:"left",key:"CREATE_TIME",label:"询价信息",width:"15%",forzen:false,align:"left",format:function(val,record){
+									var html=  [] ;
+									html.push( record.CREATE_TIME ) ;
+									html.push( record.USERNAME ) ;
+									html.push( "<a href='#' supplier-id='"+record.SUPPLIER_ID+"'>"+record.NAME+"<a>" ) ;
+									return html.join("<br/>") ;
+							}},
+						     {align:"left",key:"SAMPLE",label:"样品信息",width:"20%",forzen:false,align:"left",format:function(val,record){
+							     	if( !record.SAMPLE_ORDER_TIME ) return "" ;
+									return "下单时间："+record.SAMPLE_ORDER_TIME+"<br/>到达时间："+record.SAMPLE_ARRIVE_TIME+"<br/>样品报价："+record.SAMPLE_PRICE ;
 						     }},
-						     {align:"left",key:"EVALUATE",label:"供应商评价",width:"10%",format:{type:'json',content:{1:'不推荐',2:'备选',3:'推荐',4:'优先推荐'}}},
-						     {align:"center",key:"WEIGHT",label:"产品重量(kg)",width:"6%",forzen:false,align:"left"},
+							 
+				           	{align:"left",key:"NUM1",label:"报价",width:"15%",format:function(val,record){
+				           			var prices = [] ;
+				           			if(record.NUM1)prices.push("报价1："+record.NUM1+"/"+record.OFFER1+"/"+getShipFeeType(record.NUM1_SHIP_FEE)) ;
+				           			if(record.NUM2)prices.push("报价2："+record.NUM2+"/"+record.OFFER2+"/"+getShipFeeType(record.NUM2_SHIP_FEE)) ;
+				           			if(record.NUM3)prices.push("报价3："+record.NUM3+"/"+record.OFFER3+"/"+getShipFeeType(record.NUM3_SHIP_FEE)) ;
+				           			
+									return prices.join("<br/>");
+					        }},
+						   {align:"center",key:"WEIGHT",label:"产品重量(kg)",width:"6%",forzen:false,align:"left"},
 					           	{align:"center",key:"PRODUCT_SIZE",label:"产品尺寸(cm)",width:"10%",format:function(val,record){
 						           	if(!record.PRODUCT_LENGTH) return "-" ;
 										return record.PRODUCT_LENGTH+"*"+record.PRODUCT_WIDTH+"*"+record.PRODUCT_HEIGHT ;
 							 }},
-				           	{align:"center",key:"NUM1",label:"报价1",width:"10%",format:function(val,record){
-				           			if(!val) return "-" ;
-				           			
-									return val+"/"+record.OFFER1+"/"+getShipFeeType(record.NUM1_SHIP_FEE) ;
-					        }},
-				           	{align:"center",key:"NUM2",label:"报价2",width:"10%",format:function(val,record){
-					           	if(!val) return "-" ;
-								return val+"/"+record.OFFER2+"/"+getShipFeeType(record.NUM2_SHIP_FEE) ;
-					          }},
-				           	{align:"center",key:"NUM3",label:"报价3",width:"10%",format:function(val,record){
-				           		if(!val) return "-" ;
-								return val+"/"+record.OFFER3+"/"+getShipFeeType(record.NUM3_SHIP_FEE) ;
-					          }},
 						     {align:"center",key:"URL",label:"产品网址",width:"10%",forzen:false,align:"left",format:function(val,record){
 									return "<a href='"+val+"' target='_blank'>"+val+"<a>" ;
 						     }},
 				           	{align:"center",key:"CYCLE",label:"生产周期",width:"6%",format:{type:"cycle"}},
 				           	{align:"center",key:"PACKAGE",label:"包装方式",width:"6%",format:{type:"package"}},
-				           	
-				           //	{align:"center",key:"PACKAGE_SIZE",label:"包装尺寸",width:"6%"},
 				        	{align:"center",key:"PACKINGS_PECIFICATIONS",label:"装箱规格",width:"6%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
@@ -174,13 +174,23 @@
 		 $(".grid-content-details").llygrid("reload",{},true);
 	}
 
-	
    </script>
    
    <style>
    		*{
    			font:12px "微软雅黑";
    		}
+   		
+		.lly-grid .lly-grid-row td.lly-grid-body-column {
+				height: 52px;
+				padding: 0 2px 0 2px;
+				border-left: none;
+				border-top: none;
+				font-weight: normal;
+				border-color: #A8CFEB;
+				border-right: 1px solid #A8CFEB;
+				position: relative;
+		}
    </style>
 
 </head>
