@@ -298,6 +298,8 @@ class In extends AppModel {
 		}
 	}
 	
+	
+	
 	public function doSaveBoxProductForFBAReq($params){
 		$items  = $params['items'] ;
 		$boxId  = $params['boxId'] ;
@@ -355,6 +357,48 @@ class In extends AppModel {
 			$this->exeSql("sql_warehouse_box_product_update",$params) ;
 			return $params['id'] ;
 		}
+	}
+	
+	/*'{@#guid#}', 
+				'{@#BOX_ID#}', 
+				'{@#REAL_PRODUCT_ID#}', 
+				'{@#QUANTITY#}', 
+				'{@#ACCOUNT_ID#}', 
+				'{@#LISTING_SKU#}', 
+				'{@#DELIVERY_TIME#}', 
+				'{@#PRODUCT_TRACKCODE#}', 
+				'{@#inventoryType#}', 
+				'{@#MEMO#}'*/
+	public function doSaveBoxProductNew($params){
+		$purchaseDetails = json_decode($params['purchaseDetails']) ;
+			
+		foreach( $purchaseDetails as $item  ){
+			$item = get_object_vars($item) ;
+			$sku = $item['sku'] ;
+			$accountId = $item['accountId'] ;
+			$quantity = $item['quantity'] ;
+			$asin = $item['asin'] ;
+			
+			$params['LISTING_SKU'] = $sku ;
+			$params['ACCOUNT_ID'] = $accountId ;
+			$params['QUANTITY'] = $quantity ;
+			$params['PRODUCT_TRACKCODE'] = $asin ;
+			
+			$params['guid'] =$this->create_guid() ;
+			$this->exeSql("sql_warehouse_box_product_insert",$params) ;
+			//return $params['guid'] ;
+		}
+		/*	
+		if( empty( $params['id'] ) ){
+			if(!isset($params['guid']) ){
+				$params['guid'] =$this->create_guid() ;
+			}
+			$this->exeSql("sql_warehouse_box_product_insert",$params) ;
+			return $params['guid'] ;
+		}else{
+			$this->exeSql("sql_warehouse_box_product_update",$params) ;
+			return $params['id'] ;
+		}*/
 	}
 	/**
 	 * '{@#IN_ID#}', 

@@ -126,6 +126,9 @@
 				 ) t
     	</entry>
     	
+    	<!-- 
+    	  询价，就已经是单价了
+    	 -->
     	<entry key="sql_inquiry_cost_calc_all">
     	<![CDATA[	
     			SELECT t.*,
@@ -133,12 +136,12 @@
 				       ROUND((t.PER2_PRICE + t.PER2_SHIP_FEE),2) AS COST2,
 				       ROUND((t.PER3_PRICE + t.PER3_SHIP_FEE),2) AS COST3
 				 FROM (
-					SELECT spsi.* , 
-					IFNULL(spsi.OFFER1/spsi.NUM1,0) AS PER1_PRICE,
+					SELECT spsi.* ,
+					spsi.OFFER1 AS PER1_PRICE,
 					0 AS PER1_SHIP_FEE,
-					IFNULL(spsi.OFFER2/spsi.NUM2,0) AS PER2_PRICE,
+					spsi.OFFER2 AS PER2_PRICE,
 					0 AS PER2_SHIP_FEE,
-					IFNULL(spsi.OFFER3/spsi.NUM3,0) AS PER3_PRICE,
+					spsi.OFFER3 AS PER3_PRICE,
 					0 AS PER3_SHIP_FEE
 					 FROM sc_purchase_supplier_inquiry spsi 
 					 WHERE (

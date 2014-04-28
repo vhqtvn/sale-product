@@ -430,7 +430,7 @@
 										?>
 									  <tr   class="edit-data-row">
 										<td>
-										  <input type='text'  class="print-num no-disabled" style='width:35px;height:20px;margin-top:2px;padding:0px;' value=''<?php echo $req['TOTAL_SUPPLY_QUANTITY']+5 ;?>  title='输入打印数量'>
+										  <input type='text'  class="print-num no-disabled" style='width:35px;height:20px;margin-top:2px;padding:0px;' value='<?php echo $req['TOTAL_SUPPLY_QUANTITY']+5 ;?>'  title='输入打印数量'>
 										  &nbsp;<button class='btn print-btn  no-disabled'>打印</button>
 										</td>
 										<td><?php echo $req['ACCOUNT_NAME'] ;?></td>

@@ -266,6 +266,8 @@ $(function(){
 	 if( $(".btn-flow").length <=0 ){
 		 $("#personForm   :input").attr("disabled",'disabled') ;
 	 }
+
+	 $(".no-disabled").removeAttr("disabled") ;
 	 
 	 $(".print-btn").live("click",function(){
 			var tr = $(this).closest("tr") ;

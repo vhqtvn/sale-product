@@ -154,7 +154,6 @@ class CronTaskController extends AppController {
     		$limit = 200 ;
     
     		while(true){
-    			
     			$sql = "select distinct saap.ASIN from sc_amazon_account_product saap ,sc_amazon_account saa,sc_fba_supply_inventory sfsi
     			where
     			saap.FULFILLMENT_CHANNEL like 'AMAZON%'
@@ -285,13 +284,26 @@ class CronTaskController extends AppController {
 			
 			$MerchantIdentifier = $account["MERCHANT_IDENTIFIER"] ;
 			
-			try{
+			/**
+			 * 同步自己的实时价格
+			 */
+			/*try{
 				//同步实时价格
 				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/getMyPriceForSKU" ) ;
 				$this->triggerRequest($url,null) ;
 			}catch(Exception $e){
 				debug($e) ;
-			}
+			}*/
+			/**
+			 * 同步最低FBA价格
+			 */
+			/*try{
+				//同步实时FBA最低价格
+				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/GetLowestOfferListingsForASIN" ) ;
+				$this->triggerRequest($url,null) ;
+			}catch(Exception $e){
+				debug($e);
+			}*/
 			
 			try{
 				$start = 0 ;

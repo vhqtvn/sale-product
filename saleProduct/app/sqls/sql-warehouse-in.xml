@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sc_warehouse_in_ListInventory">
+			SELECT srp.ID AS REAL_ID,srp.NAME,srp.REAL_SKU,srp.IMAGE_URL ,SUM(swi.QUANTITY) AS QUANTITY 
+			
+			FROM sc_real_product srp,sc_warehouse_inventory swi
+				WHERE srp.id = swi.real_product_id
+				GROUP BY srp.ID
+	</entry>
+	
+	<entry key="sc_warehouse_in_ListInventory_track">
+			select swit.*,
+			   ( select NAME from sc_warehouse sw where sw.ID = swit.WAREHOUSE_ID ) as WAREHOUSE_NAME
+			 from sc_warehouse_inventory_track swit
+			where swit.real_product_id = '{@#realId#}'
+			order by swit.action_time desc
+	</entry>
+
 	<entry key="sc_warehouse_in_product_select_out">
 				SELECT srp.*
 			FROM sc_real_product srp

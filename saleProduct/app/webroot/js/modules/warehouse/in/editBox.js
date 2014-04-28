@@ -92,7 +92,9 @@
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
-				 height:200,
+				 height:function(){
+					 return $(window).height() -280 ;
+				 },
 				 title:"货品列表",
 				 autoWidth:true,
 				 querys:{sqlId:"sql_warehouse_box_products",boxId:''},
@@ -131,7 +133,7 @@
 			}) ;
 			
 			$(".add-box-product").live("click",function(){
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/",750,480,function(){
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/",850,650,function(){
 					$(".grid-content-details").llygrid("reload",{},true);
 				}) ;
 			})
@@ -142,7 +144,7 @@
 						$(".grid-content-details").llygrid("reload",{},true);
 					}) ;
 				}else{
-					openCenterWindow(contextPath+"/page/forward/Warehouse.In.editBoxProductPageForReq/"+currentId+"/",800,550,function(){
+					openCenterWindow(contextPath+"/page/forward/Warehouse.In.editBoxProductPageForReq/"+currentId+"/",850,650,function(){
 						$(".grid-content-details").llygrid("reload",{},true);
 					}) ;
 				}
@@ -152,7 +154,7 @@
 			$(".edit-box-product").live("click",function(){
 				//var boxPId = $(this).attr("val") ;
 				var record = $(this).closest("tr").data("record") ;
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+record.ID,750,480,function(){
+				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+record.ID,850,650,function(){
 					$(".grid-content-details").llygrid("reload",{},true);
 				}) ;
 			})
