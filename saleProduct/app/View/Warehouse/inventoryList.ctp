@@ -42,62 +42,7 @@
 		<?php
 		}
 	?>
-	
-	<script type="text/javascript">
-		$product_edit = <?php echo $product_edit?'true':'false';?> ;
-		$product_giveup = <?php echo $product_giveup?'true':'false';?> ;
-		$view_giveup_product = <?php echo $view_giveup_product?'true':'false';?> ;
-		$product_stock_quanity_assign = <?php echo $product_stock_quanity_assign?'true':'false';?> ;
-		$product_onsale = <?php echo $product_onsale?'true':'false';?> ;
 
-
-		function loadTree(){
-			$('#default-tree').tree({//tree为容器ID
-				//source:'array',
-				//data:treeData ,
-				rootId  : 'root',
-				rootText : '产品分类',
-				expandLevel:2,
-				asyn:false,
-				CommandName : 'sqlId:sql_saleproduct_categorytree',
-				recordFormat:true,
-				dataFormat:function(data){
-					data.push({id:'uncategory',text:'未分类产品',memo:'',isExpand:true});
-					return data;
-				},
-				nodeFormat:function(record){
-					if(record.id=='root' ||record.id == 'uncategory') return record ;
-					record.text = record.text+"("+record.TOTAL+")"
-					return record ;
-				},
-				params : {
-					//accountId: accountId
-				},
-				onNodeClick:function(id,text,record){
-					var uncategory = "" ;
-					if(id == 'uncategory'){
-						id="" ;
-						uncategory = 1 ;
-					}else{
-						uncategory = "" ;
-					}
-					
-					if( id == 'root' ){
-						$(".grid-content").llygrid("reload",{categoryId:"",uncategory:uncategory}) ;
-					}else{
-						$(".grid-content").llygrid("reload",{categoryId:id,uncategory:uncategory}) ;
-					}
-				}
-	       }) ;
-		}
-		$(function(){
-			loadTree() ;
-
-		     DynTag.listByType("productTag",function(entityType,tagId){
-		    	 $(".grid-content").llygrid("reload",{tagId:tagId},true) ;
-			}) ;
-		});
-   </script>
    
    <style>
    	.span1_5{
@@ -107,8 +52,7 @@
 
 </head>
 <body>
-  <div data-widget="layout" style="width:100%;height:100%;">
-		<div region="center" split="true" border="true" title="货品列表" style="padding:2px;">
+
 			<div class="toolbar toolbar-auto">
 				<table style="width:100%;" class="query-table">	
 					<tr>
@@ -139,13 +83,15 @@
 			</div>
 			
 			<div class="grid-content"  ></div>
-			<div class="grid-content-details"  style="margin-top:3px;"></div>
-		</div>
-		<div region="west"  split="true" border="true" title="货品分类" style="width:180px;">
-			<div id="tree-wrap">
-			<div id="default-tree" class="tree" style="padding: 5px; "></div>
+			<div class="row-fluid">
+					<div class="span6">
+						<div class="grid-content-details"  style="margin-top:3px;"></div>
+					</div>
+					<div class="span6">
+						<div class="grid-content-tracks"  style="margin-top:3px;"></div>
+					</div>
 			</div>
-		</div>
-   </div>	
+			
+
 </body>
 </html>
