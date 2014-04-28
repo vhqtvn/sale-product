@@ -266,6 +266,14 @@ $(function(){
 	 if( $(".btn-flow").length <=0 ){
 		 $("#personForm   :input").attr("disabled",'disabled') ;
 	 }
+	 
+	 $(".print-btn").live("click",function(){
+			var tr = $(this).closest("tr") ;
+			var printNum = tr.find(".print-num").val() ;//$(this).prev().val() ;
+			var accountId =  tr.find(".accountId").val() ;//record.ACCOUNT_ID ;
+			var listingSku =  tr.find(".listingSku").val() ;//record.SKU ;
+			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
+	 });
 	
 }) ;
 

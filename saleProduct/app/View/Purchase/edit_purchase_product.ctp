@@ -403,7 +403,7 @@
 								}?></caption>
 								<thead>
 									<tr>
-										<th></th>
+										<th>标签</th>
 										<th  style="font-weight:bold;">账号</th>
 										<th style="font-weight:bold;">Listing SKU</th>
 										<th style="font-weight:bold;">FNSKU</th>
@@ -417,12 +417,22 @@
 									<?php 
 										$sqlId = "sql_supplychain_requirement_plan_product_details_list_ALL" ;
 										$reqList = $SqlUtils->exeSqlWithFormat($sqlId,array("realId"=>$purchaseProduct['REAL_ID'],"reqProductId"=>$purchaseProduct['REQ_PRODUCT_ID'])) ;
+										$count  = count($reqList) ;
+										$planNum = $purchaseProduct['PLAN_NUM'] ;
+										
 										foreach( $reqList as $req){
 											$IS_ANALYSIS = $req['IS_ANALYSIS'] ;
 											if( $IS_ANALYSIS == 0 ) continue ;
+											$purchaseQuantity = $req['PURCHASE_QUANTITY'] ;
+											if( $count == 1 && ( empty($req['PURCHASE_QUANTITY']) || $req['PURCHASE_QUANTITY'] == 0)  ){
+												$purchaseQuantity = $planNum ;
+											}
 										?>
 									  <tr   class="edit-data-row">
-										<td></td>
+										<td>
+										  <input type='text'  class="print-num no-disabled" style='width:35px;height:20px;margin-top:2px;padding:0px;' value=''<?php echo $req['TOTAL_SUPPLY_QUANTITY']+5 ;?>  title='输入打印数量'>
+										  &nbsp;<button class='btn print-btn  no-disabled'>打印</button>
+										</td>
 										<td><?php echo $req['ACCOUNT_NAME'] ;?></td>
 										<td><?php echo $req['LISTING_SKU'] ;?></td>
 										<td><?php echo $req['FC_SKU'] ;?></td>
@@ -432,7 +442,7 @@
 											<input type="hidden" class="accountId"   value='<?php echo $req['ACCOUNT_ID'] ;?>'/>
 											<input type="hidden" class="supplyQuantity"   value='<?php echo $req['TOTAL_SUPPLY_QUANTITY'] ;?>'/>
 											<input type="hidden" class="listingSku"   value='<?php echo $req['LISTING_SKU'] ;?>'/>
-											<input type="text" 	   class="purchaseQuantity input 45-input"  value='<?php echo $req['PURCHASE_QUANTITY'] ;?>' style="width:50px;"/>
+											<input type="text" 	   class="purchaseQuantity input 45-input"  value='<?php echo $purchaseQuantity ;?>' style="width:50px;"/>
 										</td>
 										<td><?php echo $req['TOTAL_SUPPLY_QUANTITY'] ;?></td>
 										<td><?php echo $req['SALES_FOR_THELAST14DAYS'] ;?></td>
