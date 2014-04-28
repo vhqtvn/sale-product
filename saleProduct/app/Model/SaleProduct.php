@@ -103,6 +103,25 @@ class SaleProduct extends AppModel {
 		$this->exeSql($sql, $params) ;
 	}
 	
+	function setDefaultImage($params){
+		$imgId = $params['imgId'] ;
+		$entityType = $params['entityType'] ;
+		$entityId = $params['entityId'] ;
+		
+		$sql="update sc_utils_image set is_default = null where ENTITY_TYPE = '{@#entityType#}' and entity_id = '{@#entityId#}'  " ;
+		$this->exeSql($sql, $params) ;
+		
+		$sql = "update sc_utils_image set is_default=1 where id= '{@#imgId#}'" ;
+		$this->exeSql($sql, $params) ;
+		
+		$sql = "select * from sc_utils_image where id = '{@#imgId#}'" ;
+		$img = $this->getObject($sql, $params) ;
+		
+		$imageUrl = $img['IMAGE_URL'];
+		$sql = "update sc_real_product set image_url= '{@#imageUrl#}' where id='{@#realId#}'" ;
+		$this->exeSql($sql, array("imageUrl"=>$imageUrl,"realId"=>$entityId )) ;
+	}
+	
 	function giveup($id,$type){
 		if( $type == 1 ){//作废
 			$sql = "update sc_real_product set status='0' where id = '$id'" ;

@@ -949,8 +949,10 @@ class UploadHandler
         $response = array() ;
         foreach(  $result as $item ){
         	$response[] = array(
+        				"imgId"=>$item['ID'],
         				"name"=>$item['FILE_NAME'],
         				"url"=>$item['IMAGE_URL'],
+        				"isDefault"=>$item['IS_DEFAULT'],
         				"thumbnailUrl"=>$item['THUNBNAIL_URL'],
         				"deleteType"=>"DELETE",
         				"deleteUrl"=>"upload/image?entityType=$entityType&entityId=$enitityId&file=".$item['FILE_NAME']

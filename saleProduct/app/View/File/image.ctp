@@ -140,6 +140,9 @@
             {% } %}
         </td>
         <td>
+            <input type="radio"  name="defaultImg"    {% if (file.isDefault == 1) { %}  checked   {% } %}  value="{%=file.imgId%}" title="是否默认图片"/>
+        </td>
+		<td>
             <span class="size">{%=o.formatFileSize(file.size)%}</span>
         </td>
         <td>
@@ -183,7 +186,14 @@
 					});
 				}
 				return false ;
-				
+			}) ;
+
+			$("[name='defaultImg']").live("click",function(){
+				var val = $(this).val() ;
+				$.dataservice("model:SaleProduct.setDefaultImage",{imgId: val,entityType:entityType,entityId:entityId},function(){
+					window.location.reload();
+				}) ;
+				return false ;
 			}) ;
 	}) ;
 </script>
