@@ -6,13 +6,22 @@ var DynTag = {
 			}
 			
 			var img =   getImage('tabs.gif','标签','tag-list ') ;
-			$(document.body).append("<div class='tag-list-container'>"+img+"<ul></ul></div>") ;
+			var isExist = true ;
+			if( $(".tag-list-container").length <=0  ) {
+				isExist = false ;
+				$(document.body).append("<div class='tag-list-container'>"+img+"<ul></ul></div>") ;
+			}
+			
 			
 			$(".tag-list-container>img").toggle(function(){
 				$(".tag-list-container ul").show() ;
 			},function(){
 				$(".tag-list-container ul").hide() ;
 			}) ;
+			
+			if(isExist){
+				$(".tag-list-container ul").show() ;
+			}
 			
 			$(".tag-list-container ul li").live("click",function(){
 				$(".tag-list-container ul li").removeClass("active") ;
