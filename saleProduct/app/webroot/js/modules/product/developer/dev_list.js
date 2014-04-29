@@ -96,7 +96,7 @@ var currentId = '' ;
 					{align:"center",key:"TASK_ID",label:"操作",width:"4%",format:function(val,record){
 							var html = [] ;
 							if(record.FLOW_STATUS <= 10){
-								if( $loginId == record.CREATOR ) html.push( getImage("delete.gif","删除","delete-tp-action") ) ;
+								html.push( getImage("delete.gif","删除","delete-tp-action") ) ;
 							}
 							
 							html.push( getImage("edit.png","处理","process-action") ) ;
