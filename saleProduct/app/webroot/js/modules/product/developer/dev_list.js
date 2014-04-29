@@ -87,7 +87,7 @@ var currentId = '' ;
 			//开发新产品
 		   $(".create-product-dev").click(function(){
 			   openCenterWindow(contextPath+"/page/forward/Product.developer.devFromNewAsin/",600,400,function(win , rt){
-					
+				   $(".grid-content-details").llygrid("reload",{},true) ;
 				}) ;
 		   }) ;
 		

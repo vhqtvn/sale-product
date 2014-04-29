@@ -88,9 +88,6 @@
 				<td class="toolbar-btns">
 					<button class="query-btn btn btn-primary" data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
 				</td>
-				<td class="toolbar-btns">
-					<button class="query-btn btn btn-primary  create-product-dev" >开发新产品</button>
-				</td>
 			</tr>						
 		</table>
 	</div>	

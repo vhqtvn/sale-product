@@ -67,8 +67,7 @@ SELECT
 	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
 FROM  
 			sc_product_developer spfd
-WHERE   spfd.dev_status !='3'
-     and spfd.flow_status !=80
+WHERE   spfd.flow_status =80
      {@  and spfd.category_id = '#categoryId#'}
      {@  and spfd.flow_status in ( #status#) }
      {@  and spfd.dev_status in ( #devStatus#) }

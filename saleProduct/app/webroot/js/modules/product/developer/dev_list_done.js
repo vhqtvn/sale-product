@@ -113,7 +113,7 @@ var currentId = '' ;
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					 return $(window).height() - 200 ;
+					 return $(window).height() - 150 ;
 				 },
 				 //title:"产品列表",
 				 indexColumn: false,
