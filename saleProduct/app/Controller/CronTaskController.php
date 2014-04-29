@@ -346,7 +346,7 @@ class CronTaskController extends AppController {
 					
 					foreach( $items as $item ){
 						$index++ ;
-						echo $index.'<br>' ;
+						echo $index.'---'.$item['SKU'].'<br>' ;
 						$mItem = $this->_marketingItemV20($item, $isLimitStrategy, $isLimitStart, $isLimitEnd, $isLimiting,$uams) ;
 						if(!empty($mItem)){
 							$_products[] = $mItem;
@@ -369,6 +369,8 @@ class CronTaskController extends AppController {
 	}
 	
 	public function _marketingItemV20($item,$isLimitStrategy,$isLimitStart,$isLimitEnd,$isLimiting , $unoinAccountNames ){
+		//if(  $item['SKU'] != '10001826-F' ) return null ;
+		//debug($item) ;
 		/**
 		 * 初始化计算需求所要数据
 		 * @$listPrice   Listing价格
@@ -524,6 +526,15 @@ class CronTaskController extends AppController {
 				}
 			}
 		}
+		
+		if( $listPrice < $secondPrice ){
+			if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice - 0.01 ) ;//最低价格-0.01
+			}else{
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice ) ;
+			}
+		}
+		
 		return null;
 	}
 	

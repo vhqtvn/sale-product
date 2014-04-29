@@ -83,21 +83,35 @@ $sellerSku   	=  $params['arg1']  ;
 $accountId 	=  $params['arg2']  ;
 $printNum 	=  $params['arg3']  ;
 
+$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+$sqlParams = array("accountId"=>$accountId,"sku"=>$sellerSku) ;
 
-//检查该产品是否能够打印标签
-$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
-$result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
+$sql = "select saap.*,saa.name as ACCOUNT_NAME from
+			sc_amazon_account saa ,
+			sc_amazon_account_product saap where
+             saap.account_id = saa.id
+			and saap.account_id = '{@#accountId#}' and saap.sku = '{@#sku#}'" ;
+$item = $SqlUtils->getObject($sql,$sqlParams) ;
+$title = $item['TITLE'] ;
+$condition = "New" ;//$item['ITEM_CONDITION']==
+$fnSku =  $item['FC_SKU'] ;
 
-$json = json_decode($result) ;
-$json = get_object_vars($json) ;
-$status = $json['status'] ;
-$status = strtolower($status) ;
-$isError = false ;
-if( strpos($status,"error"  ) ===false ){
-}else{ ?>
-	<div  style="color:red;font-size:20px;font-weight:bold;">该Listing目前无效，不能打印标签！</div>
-<?php 
-	return ; 
+if( empty( $fnSku  ) ){
+	//检查该产品是否能够打印标签
+	$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+	$result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
+	
+	$json = json_decode($result) ;
+	$json = get_object_vars($json) ;
+	$status = $json['status'] ;
+	$status = strtolower($status) ;
+	$isError = false ;
+	if( strpos($status,"error"  ) ===false ){
+	}else{ ?>
+		<div  style="color:red;font-size:20px;font-weight:bold;">该Listing目前无效，不能打印标签！</div>
+	<?php 
+		return ; 
+	}
 }
 
 if(empty( $printNum ))
@@ -107,18 +121,6 @@ $row = ceil($printNum/4) ;
 $nullRow = (11 -  ($row%11))%11  ;
 
 $basedir = dirname(__FILE__);
-$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-$sqlParams = array("accountId"=>$accountId,"sku"=>$sellerSku) ;
-
-$sql = "select saap.*,saa.name as ACCOUNT_NAME from 
-			sc_amazon_account saa ,
-			sc_amazon_account_product saap where
-             saap.account_id = saa.id
-			and saap.account_id = '{@#accountId#}' and saap.sku = '{@#sku#}'" ;
-$item = $SqlUtils->getObject($sql,$sqlParams) ;
-$title = $item['TITLE'] ;
-$condition = "New" ;//$item['ITEM_CONDITION']==
-$fnSku =  $item['FC_SKU'] ;
 
 if( empty($fnSku) ){
 	$result = $Amazonaccount->listInventorySupplyBySellerSKU($accountId,$sellerSku)  ;

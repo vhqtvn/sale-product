@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-
+  <entry key="sql_report_providor_statics">
+		SELECT
+			  DATE_FORMAT(spp.REAL_PURCHASE_DATE,"%Y-%m" ) AS PURCHASE_DATE ,
+			  ss.NAME       AS SUPPLIER_NAME,
+			  srp.NAME      AS REAL_PRODUCT_NAME,
+			  srp.ID as REAL_ID,
+			  srp.REAL_SKU,
+			  ss.id as PROVIDOR_ID,
+			  srp.IMAGE_URL,
+			  SUM(spp.QUALIFIED_PRODUCTS_NUM) AS QUALIFIED_PRODUCTS_NUM ,
+			  SUM(spp.BAD_PRODUCTS_NUM) AS BAD_PRODUCTS_NUM
+			FROM sc_purchase_product spp,
+			  sc_supplier ss,
+			  sc_real_product srp
+			WHERE spp.REAL_PROVIDOR = ss.id
+			    AND spp.REAL_ID = srp.ID
+			    AND ss.name like '%{@#supplierName#}%'
+			    AND spp.REAL_PURCHASE_DATE like '%{@#purchaseDate#}%'
+			GROUP BY spp.REAL_PROVIDOR,spp.REAL_ID,DATE_FORMAT(spp.REAL_PURCHASE_DATE,"%Y-%m" ) 
+			ORDER BY spp.REAL_PROVIDOR,DATE_FORMAT(spp.REAL_PURCHASE_DATE,"%Y-%m" )  DESC 
+</entry>
     <entry key="sql_report_orderRealProductList_Items">
     		
 			SELECT 
