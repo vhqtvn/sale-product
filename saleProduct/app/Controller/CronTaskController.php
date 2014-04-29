@@ -144,9 +144,14 @@ class CronTaskController extends AppController {
     		echo "task is invalid ,break ;" ;
     		return ;
     	}
+    	
+    	$isTerminal = false ;
+    	
     	/*获取系统所有FBA产品的ASIN  */
     	$accounts = $this->Amazonaccount->getAllAccountsFormat();
     	foreach( $accounts as $account ){
+    		if($isTerminal) break ;
+    		
     		$accountId = $account['ID'] ;
     		$config = $this->System->getAccountPlatformConfig($accountId) ;
     
@@ -154,6 +159,8 @@ class CronTaskController extends AppController {
     		$limit = 200 ;
     
     		while(true){
+    			if( $isTerminal ) break ;
+    			
     			$sql = "select distinct saap.ASIN from sc_amazon_account_product saap ,sc_amazon_account saa,sc_fba_supply_inventory sfsi
     			where
     			saap.FULFILLMENT_CHANNEL like 'AMAZON%'
@@ -176,6 +183,14 @@ class CronTaskController extends AppController {
     			echo "----------".$account['NAME']."--------------".count($items)."======================" ;
     					$index = 0 ;
     			foreach( $items as $item ){
+    				
+    				$cache = $this->ScCache->getCache("__gatherFbaLowestPrice__") ;
+    				$cacheValue = $cache['CACHE_VALUE'] ;
+    				if( $cacheValue != $gatherTaskId ){
+    					$isTerminal = true ;
+    					break ;
+    				}
+    				
     				//刷新缓存最新更新时间
     				$this->ScCache->refreshCache("__gatherFbaLowestPrice__") ;
     				

@@ -41,56 +41,7 @@ var currentId = '' ;
 		}
 		
 		loadTree() ;
-		
-			function loadStatics(){
-				$.dataservice("sqlId:sql_productDev_new_loadStativcs",{},function(result){
-					 //$(".grid-content-details").llygrid("reload",{},true) ;
-					$(".flow-node").find(".count").html("(0)") ;
-					var count = 0 ;
-					var map = {} ;
-					$(result).each(function(index,item){
-						item = item.t ;
-						map[item.STATUS+"_"] = parseInt(item.COUNT) ;
-						count +=parseInt(item.COUNT) ;
-					}) ;
-					//alert( $.json.encode(map) ) ;
-					$(".flow-node").each(function(){
-						var status = $(this).attr("status") ;
-						var ss = (status+"").split(",") ;
-						var c = 0 ;
-						$(ss).each(function(index,item){
-							if(!item)return ;
-							c = (map[item+"_"]||0) +c;
-						}) ;
-						$(".flow-node[status='"+status+"']").find(".count").html("("+c+")") ;
-					}) ;
-					
-					$(".total").find(".count").html("("+count+")") ;
 
-					setTimeout(function(){
-						loadStatics() ;
-					},5000) ;
-					
-				 },{noblock:true});
-				
-			}
-			
-			loadStatics() ;
-			
-			$(".flow-node").click(function(){
-				var status = $(this).attr("status");
-				$(".flow-node").removeClass("active").addClass("disabled");
-				$(this).removeClass("disabled").addClass("active");
-				$(".grid-content-details").llygrid("reload",{status:status});
-			}) ;
-			
-			//开发新产品
-		   $(".create-product-dev").click(function(){
-			   openCenterWindow(contextPath+"/page/forward/Product.developer.devFromNewAsin/",600,400,function(win , rt){
-					
-				}) ;
-		   }) ;
-		
 			$(".grid-content-details").llygrid({
 				columns:[
 					{align:"center",key:"TASK_ID",label:"操作",width:"4%",format:function(val,record){
@@ -166,7 +117,7 @@ var currentId = '' ;
 				 },
 				 //title:"产品列表",
 				 indexColumn: false,
-				 querys:{taskView:'1',sqlId:'sql_pdev_new_list'},//status:$("[name='status']").val(),type:type,
+				 querys:{taskView:'1',sqlId:'sql_pdev_new_list_done'},//status:$("[name='status']").val(),type:type,
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(records){
 					    var asins = [] ;
@@ -222,23 +173,19 @@ var currentId = '' ;
 							var row =  $(this).parents("tr:first").data("record") ;
 							var taskId = row.TASK_ID ;
 							var asin = row.ASIN ;
-							var devId = row.DEV_ID ;
+							var devId = row.ID ;
 							openCenterWindow(contextPath+"/page/forward/Product.developer.edit_product_dev/"+devId+"#track-tab",1000,670,function(win , rt){
 								if(rt){
 									$(".grid-content-details").llygrid("reload",{},true) ;
 								}
 							}) ;
+							/*
+							openCenterWindow(contextPath+"/sale/details1/"+taskId+"/"+asin+"#track-tab",1000,650,function(win , rt){
+								if(rt){
+									$(".grid-content-details").llygrid("reload",{},true) ;
+								}
+							}) ;*/
 						}) ;
-					 	
-					 	$(".delete-tp-action").click(function(){
-					 		var row =  $(this).parents("tr:first").data("record") ;
-					 		if(window.confirm("确认删除吗？")){
-					 			var devId = row.DEV_ID ;
-					 			$.dataservice("model:NewProductDev.deleteProduct",{devId:devId},function(){
-						 			$(".grid-content-details").llygrid("reload",{},true) ;
-								}) ;
-					 		}
-					 	}) ;
 				 }
 			}) ;
 			
@@ -247,18 +194,6 @@ var currentId = '' ;
 				openCenterWindow(contextPath+"/product/details/"+asin,950,650) ;
 			});
 			
-			
-			$(".create-task").click(function(){
-				openCenterWindow(contextPath+"/page/forward/Product.developer.createTask/",700,400,function(){
-					var params = $.dialogReturnValue()  ;
-					if(!params ) return ;
-					if(!params.code) return ;
-
-					$.dataservice("model:ProductDev.saveTask",params,function(){
-						$(".grid-content").llygrid("reload",{}) ;
-					}) ;
-				}) ;
-			}) ;
    	 });
 	
 	function formatGridQuery( json, jsonOptions ){

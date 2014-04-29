@@ -10,7 +10,7 @@
 		include_once ('config/config.php');
   		include_once ('config/header.php');
   		
-		echo $this->Html->script('modules/product/developer/dev_list');
+		echo $this->Html->script('modules/product/developer/dev_list_done');
 		
 		echo $this->Html->css('../js/modules/tag/tagutil');
 		echo $this->Html->script('modules/tag/tagutil');
@@ -94,47 +94,7 @@
 			</tr>						
 		</table>
 	</div>	
-	<div class="flow-bar">
-			<center  class="flow-table">
-					<div class="clear:both;"></div>	
-		  			<div class="flow-node active  total" status="">全部<span class="count"></span></div>
-		  			<div class="flow-split">&nbsp; &nbsp; &nbsp; </div>
-		 			<div class="flow-node disabled" status="10">产品分析<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="20">产品询价<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="25">成本利润<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="30">产品经理审批<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="40">总监审批<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="41">样品下单<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="42">样品达到<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="43">产品资料准备<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="44">样品检测<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="45">检测审批<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="46">上传资料准备<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="50">录入货品<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="60">制作Listing<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="70">Listing审批<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="72">试销采购<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="76">营销展开<span class="count"></span></div>
-					<div class="flow-split">-</div>
-					<div class="flow-node disabled" status="80">结束<span class="count"></span></div>		
-					<div class="clear:both;"></div>	
-	 		</center>
-	</div>
+	
 	<div class="grid-content-details" style="width:99.5%;margin-top:10px;">
 	</div>
 	</div>

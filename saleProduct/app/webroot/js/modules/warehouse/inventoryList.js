@@ -2,15 +2,19 @@
 			$(".query").click(function(){
 				var json = $(".query-table").toJson() ;
 				$(".grid-content").llygrid("reload",json,true) ;
+				$(".grid-content-details").llygrid("reload",json,true) ;
+				$(".grid-content-tracks").llygrid("reload",json,true) ;
 			}) ;
 		
 
 			$(".grid-content").llygrid({
 				columns:[
-				 	{align:"center",key:"IMG_URL",label:"图片",width:"5%",format:{type:'img'}},
-		           	{align:"center",key:"NAME",label:"名称",width:"20%",forzen:false,align:"left"},
+				 	{align:"center",key:"IMAGE_URL",label:"图片",width:"5%",format:{type:'img'}},
+		           	{align:"center",key:"NAME",label:"名称",width:"30%",forzen:false,align:"left"},
 		           	{align:"center",key:"REAL_SKU",label:"SKU",width:"10%",sort:true},
-		           	{align:"center",key:"QUANTITY",label:"库存数量",width:"10%",sort:true}
+		           	{align:"center",key:"QUANTITY",label:"库存数量",width:"10%",sort:true},
+		           	{align:"center",key:"BAD_QUANTITY",label:"残品数量",width:"10%",sort:true},
+		           	{align:"center",key:"LAST_UPDATED_TIME",label:"最近更新时间",width:"15%",sort:true}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
@@ -32,11 +36,11 @@
 			$(".grid-content-details").llygrid({
 				columns:[
 				    {align:"center",key:"ACCOUNT_NAME",label:"账号",width:"10%",sort:true},
-		           	{align:"center",key:"LISTING_SKU",label:"SKU",width:"10%",sort:true},
-		        	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"10%",sort:true},
-		           	{align:"center",key:"QUANTITY",label:"库存数量",width:"10%",sort:true},
-		        	{align:"center",key:"INVENTORY_STATUS",label:"库存状态",width:"10%",sort:true,format:{type:"json",content:{'1':'在库','2':'在途'}}},
-		        	{align:"center",key:"INVENTORY_TYPE",label:"库存类型",width:"10%",sort:true,format:{type:"json",content:{'1':'FBM','2':'FBA','3':'残品','4':'自由库存'}}}
+		           	{align:"center",key:"LISTING_SKU",label:"SKU",width:"20%",sort:true},
+		        	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"20%",sort:true},
+		           	{align:"center",key:"QUANTITY",label:"数量",width:"10%",sort:true},
+		        	{align:"center",key:"INVENTORY_STATUS",label:"状态",width:"15%",sort:true,format:{type:"json",content:{'1':'在库','2':'在途'}}},
+		        	{align:"center",key:"INVENTORY_TYPE",label:"类型",width:"15%",sort:true,format:{type:"json",content:{'1':'FBM','2':'FBA','3':'残品','4':'自由库存'}}}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
@@ -56,14 +60,14 @@
 			$(".grid-content-tracks").llygrid({
 				columns:[
 		           	{align:"center",key:"LISTING_SKU",label:"SKU",width:"10%",sort:true},
-		        	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"10%",sort:true},
-		        	{align:"center",key:"ACTION_TYPE",label:"Action Type",width:"10%",sort:true,format:{type:"json",content:{'1':'入库','2':'出库'}}},
-		        	{align:"center",key:"ACTION",label:"Action",width:"10%",sort:true,format:{type:"json",content:{'101':'采购入库','102':'转仓入库','103':'RMA入库'
+		        	{align:"center",key:"WAREHOUSE_NAME",label:"仓库",width:"20%",sort:true},
+		        	{align:"center",key:"ACTION_TYPE",label:"操作类型",width:"12%",sort:true,format:{type:"json",content:{'1':'入库','2':'出库'}}},
+		        	{align:"center",key:"ACTION",label:"操作",width:"12%",sort:true,format:{type:"json",content:{'101':'采购入库','102':'转仓入库','103':'RMA入库'
 		        		,'104':'托管入库','105':'库存转换入库','106':'借调入库','107':'其他入库','108':'FBM入库','201':'转仓出库','202':'订单出库','203':'借调归还出库','204':'退货出库'
 		        	}}},
-		           	{align:"center",key:"QUANTITY",label:"库存数量",width:"10%",sort:true},
+		           	{align:"center",key:"QUANTITY",label:"数量",width:"10%",sort:true},
 		           	{align:"center",key:"ACTION_TIME",label:"操作时间",width:"20%",sort:true},
-		           	{align:"center",key:"ACTIONOR",label:"操作用户",width:"10%",sort:true}
+		           	{align:"center",key:"ACTIONOR",label:"操作用户",width:"12%",sort:true}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,

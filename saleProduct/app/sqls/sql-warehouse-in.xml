@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 	<entry key="sc_warehouse_in_ListInventory">
-			SELECT srp.ID AS REAL_ID,srp.NAME,srp.REAL_SKU,srp.IMAGE_URL ,SUM(swi.QUANTITY) AS QUANTITY 
-			
-			FROM sc_real_product srp,sc_warehouse_inventory swi
-				WHERE srp.id = swi.real_product_id
-				GROUP BY srp.ID
+	   select t.* from (
+			SELECT srp.ID AS REAL_ID,srp.NAME,srp.REAL_SKU,srp.IMAGE_URL ,
+			SUM(swi.QUANTITY) AS QUANTITY ,
+			max(swi.LAST_UPDATED_TIME) as LAST_UPDATED_TIME,
+			( select swi.QUANTITY from sc_warehouse_inventory swi where swi.real_product_id = srp.id and swi.INVENTORY_TYPE= 3 ) as BAD_QUANTITY
+			FROM sc_real_product srp
+			left join sc_warehouse_inventory swi
+			on  srp.id = swi.real_product_id
+				and swi.INVENTORY_TYPE != 3
+				WHERE 1=1
+				{@ and swi.warehouse_id =  '#warehouseId#'}
+		  GROUP BY srp.ID
+	) t 
+	where t.QUANTITY >0 or t.BAD_QUANTITY >0
+	order by t.QUANTITY desc ,t.BAD_QUANTITY desc
 	</entry>
 	
 	<entry key="sc_warehouse_in_ListInventory_details">
 			select t.* ,
 			( select NAME from sc_warehouse sw where sw.ID = t.WAREHOUSE_ID ) as WAREHOUSE_NAME,
 			( select NAME from sc_amazon_account sw where sw.ID = t.ACCOUNT_ID ) as ACCOUNT_NAME
-			from  sc_warehouse_inventory_track t where t.real_product_id = '{@#realId#}'
+			from  sc_warehouse_inventory t where t.real_product_id = '{@#realId#}'
+			{@ and t.warehouse_id =  '#warehouseId#'}
 	</entry>
 	
 	<entry key="sc_warehouse_in_ListInventory_track">
@@ -20,6 +31,7 @@
 			   ( select NAME from sc_warehouse sw where sw.ID = swit.WAREHOUSE_ID ) as WAREHOUSE_NAME
 			 from sc_warehouse_inventory_track swit
 			where swit.real_product_id = '{@#realId#}'
+			{@ and swit.warehouse_id =  '#warehouseId#'}
 			order by swit.action_time desc
 	</entry>
 

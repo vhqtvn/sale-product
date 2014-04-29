@@ -106,6 +106,8 @@ class AmazonGatherImpl extends AppModel {
 							sleep( 1+$index__ ) ;
 							$this->_lowestFbaPrice($platformId, $params,$index__+1) ;
 							return ;
+						}else{
+							$service->saveFbaLowestPrice( $asin , $arrays ) ;
 						}
 					}else{
 						debug($arrays) ;

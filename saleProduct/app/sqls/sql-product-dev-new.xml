@@ -53,60 +53,63 @@
 				WHERE   1=1
 				      and spfd.dev_id =  '{@#devId#}'
 	   </entry>
-		
-		<entry key="sql_pdev_new_list">
-SELECT sp.TITLE as P_TITLE, 
-    (select count(1) from sc_product_dev spd1 where spd1.asin = spfd.asin  ) as ASIN_COUNT,
-    (SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
-	ORDER BY spdt.create_time DESC LIMIT 0,1) AS MEMO,
-	(select sp.name from sc_platform sp where  sp.ID = spfd.platform_id ) as PLATFORM_NAME,
-	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL , 
+	   
+	   <entry key="sql_pdev_new_list_done">
+SELECT 
+    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+			ORDER BY spdt.create_time DESC LIMIT 0,1 ) AS MEMO,
+	( select sp.name from sc_platform sp where  sp.ID = spfd.platform_id ) as PLATFORM_NAME,
+	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = spfd.asin LIMIT 0,1 ) AS LOCAL_URL , 
 	spfd.*,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.dev_charger ) AS DEV_CHARGER_NAME,
 	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME,
-	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME,
-	( SELECT count(1) FROM sc_purchase_supplier_inquiry spsi 
-			WHERE  spsi.create_time > (DATE_SUB(CURDATE(), INTERVAL 12 MONTH)) 
-			and spsi.asin = spfd.asin
-			) as INQUIRY_COUNT
+	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
 FROM  
 			sc_product_developer spfd
-	LEFT JOIN sc_product sp 
-	on sp.asin = spfd.asin
 WHERE   spfd.dev_status !='3'
-     {@  and sp.title like '%#title#%'}
-     {@  and sp.asin = '#asin#'}
+     and spfd.flow_status !=80
      {@  and spfd.category_id = '#categoryId#'}
      {@  and spfd.flow_status in ( #status#) }
      {@  and spfd.dev_status in ( #devStatus#) }
      {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
-     {@  and spfd.task_id = '#taskId#' }
-     {@  and (spfd.asin like '%#searchKey#%' or sp.title like '%#searchKey#%'  or spfd.title like '%#searchKey#%')}
-      {@  and 	spfd.flow_status = '#mystatus#'
-      	 	and  spfd.asin in (
-      				select spcr.asin
-      				from sc_product_category_rel spcr ,sc_product_category spc
-						WHERE 
-						     spcr.category_id = spc.id
-                             AND spc.purchase_charger = '#Evn.loginId#'
-     	)
-     }
-     {@  and 	spfd.flow_status = '#unasignstatus#'
-      	 	and  spfd.asin not in (
-      				select spcr.asin
-      				from sc_product_category_rel spcr ,sc_product_category spc
-						WHERE 
-						     spcr.category_id = spc.id
-                            and ( spc.purchase_charger is null or spc.purchase_charger = '' )
-     	)
-     }
+     {@  and (spfd.asin like '%#searchKey#%' or spfd.title like '%#searchKey#%')}
      {@ and spfd.asin  in (
 							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
 						and ste.tag_id = '#tagId#'
 			)
 	  }
 	  {@ #$VIEW_PRODUCT_DEV# }
+	  order by spfd.CREATE_TIME desc
+   </entry>
+		
+		<entry key="sql_pdev_new_list">
+SELECT 
+    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+			ORDER BY spdt.create_time DESC LIMIT 0,1 ) AS MEMO,
+	( select sp.name from sc_platform sp where  sp.ID = spfd.platform_id ) as PLATFORM_NAME,
+	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = spfd.asin LIMIT 0,1 ) AS LOCAL_URL , 
+	spfd.*,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.dev_charger ) AS DEV_CHARGER_NAME,
+	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME,
+	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
+FROM  
+			sc_product_developer spfd
+WHERE   spfd.dev_status !='3'
+     and spfd.flow_status !=80
+     {@  and spfd.category_id = '#categoryId#'}
+     {@  and spfd.flow_status in ( #status#) }
+     {@  and spfd.dev_status in ( #devStatus#) }
+     {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
+     {@  and (spfd.asin like '%#searchKey#%' or spfd.title like '%#searchKey#%')}
+     {@ and spfd.asin  in (
+							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
+						and ste.tag_id = '#tagId#'
+			)
+	  }
+	  {@ #$VIEW_PRODUCT_DEV# }
+	  order by spfd.CREATE_TIME desc
    </entry>
    
    <entry key="sql_pdev_new_update">

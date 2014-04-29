@@ -6,6 +6,8 @@ class GatherService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
 	public function saveFbaLowestPrice($asin , $priceArray){
+		ini_set('date.timezone','Asia/Shanghai');
+		$printTime = date('Y-m-d H:i:s');
 		$minPrice = 999999 ;
 		foreach( $priceArray as $price  ){
 			$price = $price['price'] ;
@@ -13,9 +15,11 @@ class GatherService extends AppModel {
 			$minPrice = min($minPrice ,$price ) ;
 		}
 		if( $minPrice == 999999  ){
+			$sql = "update  sc_amazon_account_product set FBA_FETCH_STATUS=2,FBA_FETCH_ERROR_TIME='$printTime' where asin='{@#asin#}' and status = 'Y' " ;
+			$this->exeSql($sql, array("asin"=>$asin )) ;
 			return ;
 		}else{
-			$sql = "update sc_amazon_account_product set LOWEST_FBA_PRICE ='{@#minPrice#}' ,FBA_PRICE_ARRAY='{@#priceArray#}' ,FBA_PRICE_LAST_UPDATE_TIME=NOW() 
+			$sql = "update sc_amazon_account_product set FBA_FETCH_STATUS=1,LOWEST_FBA_PRICE ='{@#minPrice#}' ,FBA_PRICE_ARRAY='{@#priceArray#}' ,FBA_PRICE_LAST_UPDATE_TIME='$printTime' 
 						where asin='{@#asin#}' and status = 'Y' " ;
 			$this->exeSql($sql, array("minPrice"=>$minPrice,"priceArray"=>json_encode($priceArray),"asin"=>$asin )) ;
 		}

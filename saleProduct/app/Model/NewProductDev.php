@@ -2,6 +2,11 @@
 class NewProductDev extends AppModel {
 	var $useTable = 'sc_election_rule';
 	
+	function deleteProduct($params){
+		$sql = "delete  from sc_product_developer where dev_id = '{@#devId#}'" ;
+		$this->exeSql($sql, $params) ;
+	}
+	
 	function confirmSampleTime($params){
 		ini_set('date.timezone','Asia/Shanghai');
 		$printTime = date('Y-m-d H:i:s');

@@ -6,12 +6,13 @@ $(function(){
 	
 	var tabs = [
 				{label:'基本信息',iframe:true,url:contextPath+"/page/model/Warehouse.In.edit/"+inId,id:'t1'},//9
-				{label:'物流货品',iframe:true,url:contextPath+"/page/model/Warehouse.In.editBox/"+inId,id:'t2'},
-				{label:'跟踪状态',iframe:true,url:contextPath+"/page/model/Warehouse.In.editTrack/"+inId,id:'t3'}
+				{label:'入库货品(Listing)',iframe:true,url:contextPath+"/page/forward/Warehouse.In.inProductList/"+inId,id:'t2'},
+				{label:'物流货品',iframe:true,url:contextPath+"/page/model/Warehouse.In.editBox/"+inId,id:'t3'},
+				{label:'跟踪状态',iframe:true,url:contextPath+"/page/model/Warehouse.In.editTrack/"+inId,id:'t4'}
 			] ;
 	if( inSourceType == 'fba' ){
-		tabs.push( {label:'FBA入库计划(本地)',iframe:true,url:contextPath+"/page/forward/SupplyChain.edit_inbound/"+fbaLocalId,id:'t4'} );
-		tabs.push( {label:'FBA入库计划(Amazon)',iframe:true,url:contextPath+"/page/forward/SupplyChain.list_inbound/"+fbaLocalId,id:'t4'} );
+		//tabs.push( {label:'FBA入库计划(本地)',iframe:true,url:contextPath+"/page/forward/SupplyChain.edit_inbound/"+fbaLocalId,id:'t4'} );
+		//tabs.push( {label:'FBA入库计划(Amazon)',iframe:true,url:contextPath+"/page/forward/SupplyChain.list_inbound/"+fbaLocalId,id:'t4'} );
 	}
 	
 	var tab = $('#details_tab').tabs( {
@@ -21,9 +22,7 @@ $(function(){
 			var index = ui.index ;
 			//renderAction(index);
 		}
-	} ) ;
-	
-	//
+	}) ;
 }) ;
 
 var Flow = function(){
