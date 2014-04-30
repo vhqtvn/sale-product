@@ -242,7 +242,19 @@ class CronTaskController extends AppController {
 		//获取全局配置
 		$limitTimePriceStart = $this->Amazonaccount->getAmazonConfig("LIMIT_TIME_PRICE_START") ;//限时营销开始时间
 		$limitTimePriceEnd = $this->Amazonaccount->getAmazonConfig("LIMIT_TIME_PRICE_END") ;//限时营销开始时间
-		debug($limitTimePriceStart) ;
+		
+		$noSaleTimeStart  = $this->Amazonaccount->getAmazonConfig("NO_SALE_TIME_START") ;//非营销时段开始时间
+		$noSaleTimeEnd   = $this->Amazonaccount->getAmazonConfig("NO_SALE_TIME_END") ;//非营销时间结束时间
+		
+		//debug($limitTimePriceStart) ;
+		$isNoSaleTime = false ;
+		if(  $hour >= $noSaleTimeStart  && $hour < $noSaleTimeEnd  ){
+			$isNoSaleTime = true ;
+		}
+		
+		if( $isNoSaleTime  ){ //如果非营销时段，不执行价格调整
+			return ;
+		}
 		
 		//判断是不是限时调价时间
 		$isLimitStrategy =  false ;
@@ -347,7 +359,7 @@ class CronTaskController extends AppController {
 					foreach( $items as $item ){
 						$index++ ;
 						echo $index.'---'.$item['SKU'].'<br>' ;
-						$mItem = $this->_marketingItemV20($item, $isLimitStrategy, $isLimitStart, $isLimitEnd, $isLimiting,$uams) ;
+						$mItem = $this->_marketingItemV20($item, $isLimitStrategy, $isLimitStart, $isLimitEnd, $isLimiting,$uams ,$isNoSaleTime ) ;
 						if(!empty($mItem)){
 							$_products[] = $mItem;
 						}
@@ -368,7 +380,7 @@ class CronTaskController extends AppController {
 		}
 	}
 	
-	public function _marketingItemV20($item,$isLimitStrategy,$isLimitStart,$isLimitEnd,$isLimiting , $unoinAccountNames ){
+	public function _marketingItemV20($item,$isLimitStrategy,$isLimitStart,$isLimitEnd,$isLimiting , $unoinAccountNames , $isNoSaleTime ){
 		//if(  $item['SKU'] != '10001826-F' ) return null ;
 		//debug($item) ;
 		/**
@@ -452,11 +464,22 @@ class CronTaskController extends AppController {
 		$fbaPriceCount = count( $fixFbaPriceArray ) ;
 		if( $fbaPriceCount < 0 ){
 			//如果除了同盟卖家之外，没有其他卖家，则不进行调价
+			$fixPrice = $execPrice * 0.2 ;
+			if( $fixPrice <1 ){
+				$fixPrice = 1 ;
+			}
+			
+			if( $listPrice >= ($fixPrice+$execPrice)  ){
+				return null ;
+			}else{
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>($fixPrice+$execPrice) ) ;
+			}
+			/*
 			if( $listPrice >= $execPrice ){
 				return null ;
 			}else{
 				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
-			}
+			}*/
 		}
 
 		/**
