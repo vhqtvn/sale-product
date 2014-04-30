@@ -1,10 +1,10 @@
 $(function(){
-	var isView = window.parent.action == 'view' ;
+	/*var isView = window.parent.action == 'view' ;
 	
 	if( isView ){
 		$(":input").attr("disabled",true);
 		$("[type='button'],button,[type='file']").hide();
-	}
+	}*/
 
 	
 	var categoryTreeSelect = {

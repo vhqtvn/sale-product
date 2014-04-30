@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_report_listingRankForFba">
+		SELECT t.* FROM ( 
+		     SELECT 
+		          srp.NAME,
+		          srp.REAL_SKU,
+		          srp.IMAGE_URL,
+		          saap.ASIN,
+		          saap.NAME as ACCOUNT_NAME,
+		          saap.ACCOUNT_ID,
+		          saap.SKU AS SELLER_SKU,
+		          sfsi.TOTAL_SUPPLY_QUANTITY ,
+		          sfsi.IN_STOCK_SUPPLY_QUANTITY,
+		          saap.LIST_PRICE,
+		          ( SELECT MIN(sapb.price) 
+				FROM sc_amazon_product_bidding sapb 
+				WHERE 	sapb.asin = saap.asin 
+					AND sapb.type='FBA'  ) AS LOWEST_PRICE
+		     FROM    sc_fba_supply_inventory sfsi,
+		             sc_amazon_account saa ,
+		             sc_amazon_account_product saap
+		             LEFT JOIN sc_real_product_rel srpr
+		             ON srpr.ACCOUNT_ID = saap.ACCOUNT_ID
+		                AND srpr.SKU = saap.SKU
+		             LEFT JOIN sc_real_product srp
+		             ON srpr.REAL_ID = srp.ID
+		     WHERE saap.ACCOUNT_ID = sfsi.ACCOUNT_ID
+		           AND saap.SKU = sfsi.SELLER_SKU
+		           AND saap.ACCOUNT_ID = saa.ID
+		           AND sfsi.IN_STOCK_SUPPLY_QUANTITY > 0
+		) t
+		WHERE t.LIST_PRICE != t.LOWEST_PRICE
+	</entry>
   <entry key="sql_report_providor_statics">
 		SELECT
 			  DATE_FORMAT(spp.REAL_PURCHASE_DATE,"%Y-%m" ) AS PURCHASE_DATE ,

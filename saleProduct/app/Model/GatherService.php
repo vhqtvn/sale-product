@@ -22,6 +22,23 @@ class GatherService extends AppModel {
 			$sql = "update sc_amazon_account_product set FBA_FETCH_STATUS=1,LOWEST_FBA_PRICE ='{@#minPrice#}' ,FBA_PRICE_ARRAY='{@#priceArray#}' ,FBA_PRICE_LAST_UPDATE_TIME='$printTime' 
 						where asin='{@#asin#}' and status = 'Y' " ;
 			$this->exeSql($sql, array("minPrice"=>$minPrice,"priceArray"=>json_encode($priceArray),"asin"=>$asin )) ;
+			//删除竞价
+			$sql = "delete from sc_amazon_product_bidding where asin = '{@#asin#}' and type='{@#type#}'" ;
+			$this->exeSql($sql, array("asin"=>$asin,"type"=>'FBA')) ;
+			//保存竞价
+			foreach( $priceArray as $price  ){
+				$price_ = $price['price'] ;
+				if( empty($price_) || $price_ == 0 ) continue ;
+				$price['id'] = $this->create_guid() ;
+				$price['asin'] = $asin ;
+				$price['type'] = "FBA" ;
+				$price['index_'] =$price['index'] ;
+				//debug($price) ; 
+				$sql = " INSERT INTO sc_amazon_product_bidding (ID, ASIN, PRICE, SELLER, `INDEX`, TYPE)	
+							VALUES('{@#id#}',	'{@#asin#}', '{@#price#}', '{@#seller#}', '{@#index_#}', '{@#type#}')" ;
+				$this->exeSql( $sql , $price ) ;
+ 			}
+			
 		}
 	}
 	
