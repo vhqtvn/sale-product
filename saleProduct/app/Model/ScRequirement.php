@@ -256,17 +256,23 @@ class ScRequirement extends AppModel {
 		$planId= null  ;
 		$itemCount = 0 ;
 		while(true){
-			$sql = "select 
+			$sql = "SELECT 
 			    	        saap.*,
-			    	        saa.name as  ACCOUNT_ANME,
+			    	        saa.name AS  ACCOUNT_ANME,
 			    	        saa.SUPPLY_CYCLE,
 			    	        saa.REQ_ADJUST,
+			    	        saa.SECURITY_STOCK_DAYS,
 			    	        saa.CONVERSION_RATE,
-			    	        srp.ID as REAL_ID
-    	from sc_amazon_account_product saap,
+			    	        srp.ID AS REAL_ID,
+			    	        sfsi.TOTAL_SUPPLY_QUANTITY,
+			    	        sfsi.IN_STOCK_SUPPLY_QUANTITY
+    	FROM sc_amazon_account_product saap,
     		    sc_amazon_account saa,
-    		    sc_real_product_rel srpr,
-    		    sc_real_product srp
+    		    sc_real_product srp,
+    		    sc_real_product_rel srpr
+    		    LEFT JOIN sc_fba_supply_inventory sfsi
+    		    ON sfsi.ACCOUNT_ID = srpr.ACCOUNT_ID
+    		    AND srpr.SKU = sfsi.SELLER_SKU
     	where saap.IS_ANALYSIS = 1
     			and saap.status = 'Y'
     			and saap.account_id=saa.id
@@ -301,7 +307,7 @@ class ScRequirement extends AppModel {
 			}
 			
 			foreach( $items as $item  ){
-				$ic = $this->_createItemRequirementV12($item,$planId) ;
+				$ic = $this->_createItemRequirementV13($item,$planId) ;
 				$itemCount = $itemCount+$ic ;
 			}
 		}
@@ -312,6 +318,148 @@ class ScRequirement extends AppModel {
 				'itemCount'=>$itemCount
 		)) ;
 	}
+	
+	public function _createItemRequirementV13($item,$planId){
+		/**
+		 * 1、计算每日销售量
+		 * @$daySaleNum 根据销量计算每日需求量,取最近7天  （前3天*60% + 前7天*40%）
+		 */
+		$saleDataLast3 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,3 ) ;//获取当前SKU的最近3天销售数据
+		$saleDataLast7 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,7 ) ;//获取当前SKU的最近7天销售数据
+		$daySaleNum = 0 ;
+		if( $saleDataLast7 - $saleDataLast3 == 0  ){//如果只存在3天销量
+			$daySaleNum = $saleDataLast3/3 ;
+		}else{//如果只存在7天销量
+			$daySaleNum =( ($saleDataLast3/3)*0.5) +(($saleDataLast7/7)*0.5);
+		}
+
+		$supplyCycle = (empty($item['SUPPLY_CYCLE'])|| $item['SUPPLY_CYCLE']==0)?14: $item['SUPPLY_CYCLE'] ;
+		$reqAdjust    = (empty($item['REQ_ADJUST'])|| $item['REQ_ADJUST']==0)?1.2 : $item['REQ_ADJUST'] ;
+		$ConversionRate = $item['CONVERSION_RATE'] ; 
+		if(empty($ConversionRate)){
+			$ConversionRate = 0.001 ;
+		}
+		
+		/**
+		 * 2、计算当前有效库存 $validStockQuantity
+		 *      安全库存数据 $securityStockQuantity
+		 */
+		$securityStockQuantity = $daySaleNum * $item['SECURITY_STOCK_DAYS'] ; //8天库存为安全库存天数
+		$validStockQuantity = 0 ;
+		$existQuantity=$item['QUANTITY'] ;
+		$totalSupplyQuantity 		= $item['TOTAL_SUPPLY_QUANTITY'] ;
+		$inStockSupplyQuantity 	= $item['IN_STOCK_SUPPLY_QUANTITY'] ;
+		if( empty($totalSupplyQuantity) ){
+			$totalSupplyQuantity = 0 ;
+		}
+		if( empty($inStockSupplyQuantity) ){
+			$inStockSupplyQuantity = 0 ;
+		}
+		$inboundSupplyQuantity = $totalSupplyQuantity - $inStockSupplyQuantity;
+		
+		if( $inStockSupplyQuantity == 0 ){//如果在库数量为0，则当前有效库存为总库存
+			$validStockQuantity = $totalSupplyQuantity ;
+		}else{//有效库存为总库存-在库库存
+			$temp = $inStockSupplyQuantity - $securityStockQuantity ;//在库库存-安全库存
+			if( $temp >0 ){
+				$validStockQuantity = $inboundSupplyQuantity + $temp ;
+			}else{
+				$validStockQuantity = $inboundSupplyQuantity ;
+			}
+		}
+		
+		
+	
+		if( $daySaleNum >0 ){
+			/**
+			 * 3、计算周期需求量 = $daySaleNum*供应周期*调整系数
+			 */
+			$reqNum =$daySaleNum * $supplyCycle ;// * $reqAdjust ;// * $reqAdjust ;,暂时不需要调整系数
+			
+			/**
+			 * 4、计算账户需求量 = 周期需求量（$reqNum） - 当前有效库存（$validStockQuantity）
+			 */
+			$accountReqNum = $reqNum - $validStockQuantity ;
+
+			if(  $accountReqNum <=0  ){
+				//如果账户需求量小于0，不存在供应需求
+				return 0 ;
+			}else{
+				$ps = array() ;
+				$ps['accountId'] = $item['ACCOUNT_ID'] ;
+				$ps['id'] = $this->create_guid() ;
+				$ps['planId'] = $planId ;
+				$ps['realId'] = $item['REAL_ID'] ;
+				$ps['listingSku'] = $item['SKU'] ;
+				$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+				$ps['existQuantity'] =  $existQuantity ;
+				$ps['calcQuantity'] =  $reqNum ;
+				$ps['quantity'] =  ceil( $accountReqNum ) ;
+				$ps['urgency'] =  "A" ;
+				$ps['reqType'] =  "A" ;//销量需求
+			
+				$this->createReqItem($ps) ;
+				return 1 ;
+			}
+		}
+		
+		//获取流量数据
+		$flowData = $this->getLastestFlowData($item['ACCOUNT_ID']  , $item['SKU'] ) ;
+		$flowDays =  count( $flowData  ) ;
+		
+		if( $flowDays>=3  ){
+			$count = 0 ;
+			foreach( $flowData as $i ){
+				$C = $i['C'] ;
+				$count = $count + $C ;
+			}
+			
+			//计算到的需求数量
+			$reqNum = ($count/14) * $ConversionRate * $reqAdjust ;
+			
+			/**
+			 * 4、计算账户需求量 = 周期需求量（$reqNum） - 当前有效库存（$validStockQuantity）
+			 */
+			$accountReqNum = $reqNum - $validStockQuantity ;
+			if( $accountReqNum<=0 ){
+				//账号库存数量大于需求数量
+				return 0  ;
+			}
+		
+			$ps = array() ;
+			$ps['accountId'] = $item['ACCOUNT_ID'] ;
+			$ps['id'] = $this->create_guid() ;
+			$ps['planId'] = $planId ;
+			$ps['realId'] = $item['REAL_ID'] ;
+			$ps['listingSku'] = $item['SKU'] ;
+			$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+			$ps['existQuantity'] =  $existQuantity ;
+			$ps['calcQuantity'] =  $reqNum ;
+			$ps['quantity'] = ceil( $accountReqNum ) ;
+			$ps['urgency'] =  "B" ;
+			$ps['reqType'] =  "B" ;//流量需求
+			$this->createReqItem($ps) ;
+			return 1 ;
+		}
+		
+		//如果存在库存大于0，则不创建需求
+		if( $existQuantity >= 10 ) return 0 ;
+		$ps = array() ;
+		$ps['accountId'] = $item['ACCOUNT_ID'] ;
+		$ps['id'] = $this->create_guid() ;
+		$ps['planId'] = $planId ;
+		$ps['realId'] = $item['REAL_ID'] ;
+		$ps['listingSku'] = $item['SKU'] ;
+		$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
+		$ps['existQuantity'] =  $existQuantity ;
+		$ps['calcQuantity'] =  0 ;
+		$ps['quantity'] =  0 ;
+		$ps['urgency'] =  "C" ;
+		$ps['reqType'] =  "E" ;//其他原因需求
+		$this->createReqItem($ps) ;
+		return 1 ;
+	}
+	
 	
 	public function _createItemRequirementV12($item,$planId){
 		//账号当前库存
@@ -688,6 +836,8 @@ class ScRequirement extends AppModel {
 	 * 需求预处理
 	 */
 	public function preProcess( $params ){
+		//debug($params) ;
+		//return ;
 		$planId = $params['planId'] ;
 		$itemCount = $params['itemCount'] ;
 		$NewPurchaseService = ClassRegistry::init("NewPurchaseService") ;
@@ -753,7 +903,6 @@ class ScRequirement extends AppModel {
 	function  createReqItem($ps){
 		//debug( $ps ) ;
 		//return ;
-		
 		$existQuantity = $ps['existQuantity'] ;
 		$quantity = $ps['quantity'] ;
 		
