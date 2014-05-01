@@ -17,42 +17,16 @@
 	       
 	       var gridConfig = {
 					columns:[
-						
-						{align:"center",key:"IS_ANALYSIS",label:"供应需求", width:"10%",format:function(val,record){
-							var html = [] ;
-							if(val == 1){
-								return "<span style='color:green'>可计算</span>" ;
-							}else{
-								return "<span style='color:green'>不可计算</span>" ;
-							}
-							return html.join("") ;
-						}},
-						{align:"left",key:"ACCOUNT_NAME",label:"账号",width:"8%"},
-						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
+					    {align:"center",key:"IMAGE_URL",label:"图片",width:"5%",forzen:false,align:"left",format:{type:'img'}},
 						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
-							return "<a href='#' product-edit='"+record.REAL_ID+"'>"+(val||"")+"</a>" ;
+							return "<a href='#' product-edit='"+record.ID+"'>"+(val||"")+"</a>" ;
 						}},
-			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
-			           		return "<a href='#' offer-listing='"+val+"'>"+(val||"")+"</a>" ;
-			           	}},
-			           	{align:"center",key:"IMAGE_URL",label:"图片",width:"3%",forzen:false,align:"left",format:{type:'img'}},
-			           	{align:"center",key:"NAME",label:"产品标题",width:"10%",forzen:false,align:"left"},
-			           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
-			           		if(!val) return '-' ;
-			           		return Math.round(val) ;
-			           	}},
-			           	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
-			           	{align:"center",key:"ITEM_CONDITION",label:"使用程度",width:"8%",format:function(val){
-			           		if(val == 1) return "Used" ;
-			           		if(val == 11) return 'New' ;
-			           		return '' ;
-			           	}},
-			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
-			           	{align:"center",key:"QUANTITY",label:"库存",width:"6%"},
-			        	{align:"center",key:"SUPPLY_CYCLE",label:"供应周期",width:"8%" },
-			        	{align:"center",key:"REQ_ADJUST",label:"需求调整系数",width:"8%" }
+			           	{align:"center",key:"NAME",label:"产品标题",width:"20%",forzen:false,align:"left"},
+			           	{align:"center",key:"DECLARATION_NAME",label:" 报关名称",width:"20%",forzen:false,align:"left"},
+			           	{align:"center",key:"DECLARATION_PRICE",label:" 报关价格",width:"10%",forzen:false,align:"left"},
+			           	{align:"center",key:"PURCHASE_COST",label:"采购成本",width:"10%",forzen:false,align:"left"},
+			           	{align:"center",key:"WEIGHT",label:"产品重量",width:"10%",forzen:false,align:"left"},
 			         ],
-			         //ds:{type:"url",content:contextPath+"/amazongrid/product/"+accountId},
 			         ds:{type:"url",content:contextPath+"/grid/query"},
 					 limit:30,
 					 pageSizes:[15,20,30,40],

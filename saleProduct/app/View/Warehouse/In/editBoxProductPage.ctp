@@ -53,8 +53,7 @@
 				var purchaseDetails = formatPurchaseData() ;
 				var json = $("#personForm").toJson() ;
 				json.purchaseDetails = purchaseDetails ;
-				alert( $.json.encode(json) ) ;
-				return ;
+				
 				isSaved = true ;
 				$.dataservice("model:Warehouse.In.doSaveBoxProductNew",json,function(result){
 					window.close() ;
@@ -69,7 +68,7 @@
 						{align:"center",key:"REAL_SKU",label:"SKU",sort:true,width:"30%",query:true},
 						{align:"center",key:"NAME",label:"名称",sort:true,width:"30%",query:true},
 						{align:"center",key:"IMAGE_URL",label:"",sort:true,width:"10%",format:{type:'img'}}
-					] ;
+				] ;
 		if(sourceWarehouseId){
 			columns.push( {align:"center",key:"WAREHOUSE_QUANTITY",label:"仓库库存",sort:true,width:"10%"} ) ;
 		}

@@ -2,6 +2,29 @@
 class In extends AppModel {
 	var $useTable = "sc_warehouse_in" ;
 	
+	public function deleteInProduct($params){
+		$ipId = $params['ipId'] ;
+		$sql = "delete from sc_warehouse_in_product where id = '{@#ipId#}'" ;
+		$this->exeSql($sql, $params) ;
+	}
+	
+	public function updateInProduct( $params ){
+		$sql = "update sc_warehouse_in_product set quantity='{@#quantity#}' where id = '{@#id#}'" ;
+		$this->exeSql($sql, $params) ;
+	}
+	
+	public  function saveInProduct($params){
+		$inId = $params['inId'] ;
+		$items = $params['items'] ;
+		$items = json_decode($items) ;
+		foreach($items as $item){
+			$item = get_object_vars($item) ;
+			$item['id'] = $this->create_guid() ;
+			$item['inId'] = $inId ;
+			$this->exeSql("sc_warehouse_in_new_insertInProduct", $item) ;
+		}
+	}
+	
 	public function deleteBox($params){
 		$boxId = $params['boxId'] ;
 		

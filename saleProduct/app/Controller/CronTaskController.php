@@ -232,6 +232,7 @@ class CronTaskController extends AppController {
      * 
      * 执行营销,前提价格数据准确
      * 1、采集价格数据
+     * /taskAsynAmazon/getMyPriceForSKU
      */
 	public function  execMarketing(){
 		ini_set('date.timezone','Asia/Shanghai');
@@ -314,13 +315,13 @@ class CronTaskController extends AppController {
 			/**
 			 * 同步自己的实时价格
 			 */
-			/*try{
+			try{
 				//同步实时价格
 				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/getMyPriceForSKU" ) ;
 				$this->triggerRequest($url,null) ;
 			}catch(Exception $e){
 				debug($e) ;
-			}*/
+			}
 			/**
 			 * 同步最低FBA价格
 			 */
@@ -340,17 +341,21 @@ class CronTaskController extends AppController {
 				while(true){
 					$_products = array() ;
 					//库存大于0的才进行自动营销
-					$sql = "select saap.* from sc_amazon_account_product  saap,
-					          sc_fba_supply_inventory sfsi
+					$sql = "select saap.* ,
+					                   saa.name as ACCOUNT_NAME
+								from sc_amazon_account_product  saap,
+					          sc_fba_supply_inventory sfsi,
+					          sc_amazon_account saa
 					where
-					saap.FULFILLMENT_CHANNEL like 'AMAZON%'
+					saap.account_id = saa.id
+					and saap.FULFILLMENT_CHANNEL like 'AMAZON%'
 					and saap.account_id = sfsi.account_id
 					and saap.sku =sfsi.seller_sku
 					and sfsi.IN_STOCK_SUPPLY_QUANTITY >0 
 					and saap.account_id = '{@#accountId#}'
-					and limit_price > 0
-					and status = 'Y'
-					order by id
+					and saap.limit_price > 0
+					and saap.status = 'Y'
+					order by saap.id
 					limit $start,$limit " ;
 					$items = $this->Utils->exeSqlWithFormat($sql,array("accountId"=>$account['ID'])) ;
 					$start = $start+$limit ;
@@ -441,6 +446,8 @@ class CronTaskController extends AppController {
 				$limitPriceLargerPrice = $_price ;
 			}
 		}
+		
+		echo '<br/>'.$secondPrice.'           '.$listPrice.'<br/>' ;
 
 		/**
 		 * @如果是限时执行，则区分限时开始、结束、限时进行中......
@@ -451,7 +458,8 @@ class CronTaskController extends AppController {
 				$this->Utils->exeSql($sql,array("ltBeforePrice"=>$listPrice,"id"=>$item['ID'] )) ;
 			}else if($isLimitEnd){//限时调价结束
 				//还原价格
-				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$item['LT_BEFORE_PRICE'] ) ;
+				$isLimitStrategy = false ;
+				//return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$item['LT_BEFORE_PRICE'] ) ;
 			}else if($isLimiting){//限时调价中
 				//调价中，下面做处理
 			}

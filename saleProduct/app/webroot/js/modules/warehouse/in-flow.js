@@ -510,6 +510,63 @@ var flowConfig = {
 						{status:0,label:"编辑中",memo:true
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(0,"保存") }},
+							          {label:"提交，打印条码标签",action:function(){ AuditAction(11,"打印条码标签") }}]
+						},
+						{status:11,label:"打印标签",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(11,"保存") }},
+							          {label:"确认打印完成",action:function(){ AuditAction(12,"标签打印粘贴完成，准备装箱") } }
+							]
+						},
+						{status:12,label:"装箱",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(12,"保存") }},
+							          {label:"装箱完成",action:function(){ transOutInventory(14,"确认装箱完成，并且入库产品数量准确") } }
+							]
+						},
+						{status:14,label:"FBA计划",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(14,"保存") }},
+							          {label:"导出装箱单",action:function(){ printBox();} },
+							          {label:"导出发票",action:function(){ printInvoice();} },
+							          {label:"FBA计划完成",action:function(){ AuditAction(15,"发货完成") } }
+							]
+						},
+						{status:15,label:"出库",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(15,"保存") }},
+							          {label:"确认出库",action:function(){ transOutInventory(20,"确认出库") } }
+							]
+						},
+						{status:20,label:"待发货",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(20,"保存") }},
+							          {label:"导出装箱单",action:function(){ printBox();} },
+							          {label:"导出发票",action:function(){ printInvoice();} },
+							          {label:"发货完成",action:function(){ AuditAction(30,"发货完成") } }
+							]
+						},
+						{status:30,label:"已发货",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(30,"保存") }},
+							          {label:"导出装箱单",action:function(){ printBox();} },
+							          {label:"导出发票",action:function(){ printInvoice();} },
+							          {label:"到达Amazon",action:function(){ AuditAction(70,"到达Amazon") } }
+							]
+						},
+						{status:70,label:"入库完成"
+							,actions:[
+							]
+						}
+					] 
+			},
+			fba_v2: { //转仓
+				name:"中国到Amazon仓库",
+				logistics:true,
+				flow: [
+						{status:0,label:"编辑中",memo:true
+							,actions:[
+							          {label:"保存",action:function(){ AuditAction(0,"保存") }},
 							          {label:"提交审批",action:function(){ AuditAction(10,"提交审批") }}]
 						},
 						{status:10,label:"待审批",memo:true

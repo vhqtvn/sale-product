@@ -2,25 +2,42 @@
 
 	var currentId = '' ;
 	$(function(){
+		$(".print-btn").live("click",function(){
+			var tr = $(this).closest("tr") ;
+			var record = $(this).closest("tr").data("record") ;
+			var printNum = tr.find(".print-num").val() ;//$(this).prev().val() ;
+			var accountId = record.ACCOUNT_ID ;//record.ACCOUNT_ID ;
+			var listingSku =  record.LISTING_SKU ;//record.SKU ;
+			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
+	 });
+		
 			$(".grid-content-details").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"操作",width:"3%",permission:function(){
-		           		return !$isRead ;
+		           		return   !$isRead ;
 		           	},format:function(val,record){
 		           		var html = [] ;
-		           		html.push(  getImage('edit.png','编辑','edit-box-product ') +"&nbsp;") ;
-		           		html.push( getImage("delete.gif","删除","delete-box-product") ) ;
+		           		html.push( getImage("delete.gif","删除","delete-in-product") ) ;
 						return html.join("") ;
 					}},
-				    {align:"center",key:"BOX_NUMBER",label:"包装箱",width:"5%"},
+					{align:"center",key:"ID",label:"打印标签",width:"5%",format:function(val,record){
+						var quntity = record.QUANTITY||0 ;
+						var html = [] ;
+		           		html.push("<input type='text'  class='print-num no-disabled' style='width:35px;height:20px;margin-top:2px;padding:0px;' value='"+quntity+"'  title='输入打印数量'>") ;
+		           		html.push( "&nbsp;<button class='btn print-btn  no-disabled'>打印</button>") ;
+						return html.join("") ;
+					}},
 					{align:"center",key:"IMAGE_URL",label:"",width:"2%",format:{type:'img'}},
-		           	{align:"center",key:"NAME",label:"货品名称",width:"5%"},
-	           		{align:"center",key:"SKU",label:"货品SKU",width:"5%",format:function(val,reocrd){
+		           	{align:"center",key:"REAL_NAME",label:"货品名称",width:"5%"},
+	           		{align:"center",key:"REAL_SKU",label:"货品SKU",width:"5%",format:function(val,reocrd){
 	           			return "<a href='#' product-realsku='"+val+"'>"+val+"</a>" ;
 	           		}},
+	           		{align:"center",key:"FN_SKU",label:"FNSKU",width:"5%"},
 	           		{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"5%"},
-	           		{align:"center",key:"INVENTORY_TYPE",label:"库存类型",width:"5%",format:{type:'json',content:{1:'普通库存',2:'FBA库存'}}}, 
-	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%"},
+	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%",format:function(val,record){
+	           			var dis = $isRead?"disabled='disabled'":'' ;
+	           			return "<input type='text' "+dis+"  class='in-quantity' style='width:50px;height:20px;margin-top:2px;padding:0px;padding-left:2px;' value='"+(val||0)+"'>" ;
+	           		}},
 	           		{align:"center",key:"DELIVERY_TIME",label:"供货时间",width:"6%"},
 	           		{align:"center",key:"PRODUCT_TRACKCODE",label:"产品跟踪码",width:"6%"},
 	           		{align:"center",key:"MEMO",label:"备注",width:"6%"}
@@ -33,14 +50,14 @@
 				 },
 				 title:"货品列表",
 				 autoWidth:true,
-				 querys:{sqlId:"sql_warehouse_box_products",boxId:''},
+				 querys:{sqlId:"sql_warehouse_new_in_products",inId:inId},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(){
-					 $(".delete-box-product").bind("click",function(event){
+					 $(".delete-in-product").bind("click",function(event){
 							event.stopPropagation() ;
 							if(window.confirm("确认删除？")){
-								var bpId = $(this).parents("tr").data("record")['ID'] ;
-								$.dataservice("model:Warehouse.In.deleteBoxProduct",{bpId:bpId},function(result){
+								var ipId = $(this).parents("tr").data("record")['ID'] ;
+								$.dataservice("model:Warehouse.In.deleteInProduct",{ipId:ipId},function(result){
 									if(result){
 										alert(result) ;
 									}else{
@@ -48,53 +65,27 @@
 									}
 								});
 							}
-							
 							return false ;
-						}) ;
+					 }) ;
+					 
+					$(".in-quantity").blur(function(){
+						var record = $(this).parents("tr").data("record") ;
+						var quantity = $(this).val() ;
+						$.dataservice("model:Warehouse.In.updateInProduct",{quantity:quantity,id:record.ID},function(result){
+							if(result){
+								alert(result) ;
+							}
+						});
+					}) ;
 				 }
 			}) ;
 			
-			$(".process-action").live("click",function(){
-				var FILTER_ID = $(this).attr("val") ;
-				var asin = $(this).attr("asin") ;
-				var status = $(this).attr("status") ;
-				openCenterWindow(contextPath+"/sale/details1/"+FILTER_ID+"/"+asin+"/"+type+"/"+status,950,650) ;
-			}) ;
-			
-			$(".add-box").live("click",function(){
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxPage/"+inId,550,420,function(){
-					$(".grid-content").llygrid("reload",{});
-					$(".grid-content-details").llygrid("reload",{boxId:''});
-				}) ;
-			}) ;
-			
-			$(".add-box-product").live("click",function(){
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/",850,650,function(){
+
+			$(".add-in-product").live("click",function(){
+				openCenterWindow(contextPath+"/page/forward/Warehouse.In.editInProductPage/"+inId+"/",850,650,function(){
 					$(".grid-content-details").llygrid("reload",{},true);
 				}) ;
-			})
-			
-			$(".add-box-product-req").live("click",function(){
-				if( warehouse.IN_SOURCE_TYPE == "fba" ){
-					openCenterWindow(contextPath+"/page/forward/Warehouse.In.editFBAListing/"+currentId+"/",800,550,function(){
-						$(".grid-content-details").llygrid("reload",{},true);
-					}) ;
-				}else{
-					openCenterWindow(contextPath+"/page/forward/Warehouse.In.editBoxProductPageForReq/"+currentId+"/",850,650,function(){
-						$(".grid-content-details").llygrid("reload",{},true);
-					}) ;
-				}
-				
-			})
-			
-			$(".edit-box-product").live("click",function(){
-				//var boxPId = $(this).attr("val") ;
-				var record = $(this).closest("tr").data("record") ;
-				openCenterWindow(contextPath+"/page/model/Warehouse.In.editBoxProductPage/"+currentId+"/"+record.ID,850,650,function(){
-					$(".grid-content-details").llygrid("reload",{},true);
-				}) ;
-			})
-			
+			});
    	 });
    	 
    	 function openCallback(type){

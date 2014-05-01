@@ -193,10 +193,15 @@
 		<tr>	
 		<td>	&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		<td><div class="flow-node active " status="1">采购成本不完整<span class="count"></span></div></td>
+		<!-- 
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="2">售价不完整<span class="count"></span></div></td>
+		 -->
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="3">Amazon费用缺失<span class="count"></span></div></td>
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="4">重量缺失<span class="count"></span></div></td>
+		<!-- 
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="5">利润不准确<span class="count"></span></div></td>
+		 -->
+		<td class="flow-split">-</td><td><div class="flow-node disabled" status="6">报关数据缺失<span class="count"></span></div></td>
 		</tr>					
 		</tbody>
 		</table>										

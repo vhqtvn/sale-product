@@ -29,7 +29,7 @@
 		$status = $warehoseIn['STATUS'];
 		
 		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
-		$isRead = $hasEditPermission?($status >= 10 ?true:false):true ;
+		$isRead = $hasEditPermission?($status >= 14 ?true:false):true ;
 	?>
   
    <script type="text/javascript">
@@ -49,7 +49,7 @@
 				</td>			
 				<?php if(!$isRead){ ?>					
 				<td class="toolbar-btns">
-					<button class="add-box-product-req btn btn-primary" disabled>添加入库产品</button>
+					<button class="add-in-product btn btn-primary"  >添加入库产品</button>
 				</td>
 				<?php } ?>
 			</tr>						

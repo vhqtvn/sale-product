@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<entry key="sc_warehouse_in_new_listFBAProduct">
+		SELECT swi.* ,
+		       		srp.NAME AS REAL_NAME,
+		       		srp.IMAGE_URL,
+		       		srp.REAL_SKU,
+		       		srp.ID as REAL_ID
+		FROM 
+			   		sc_real_product srp ,
+		       		sc_warehouse_inventory swi 
+		WHERE swi.inventory_type = 2 
+				AND swi.warehouse_id = '{@#warehouseId#}'
+		     	AND swi.REAL_PRODUCT_ID =srp.ID
+	</entry>
+	
+	<entry key="sc_warehouse_in_new_listFBAProduct_ALL">
+		SELECT swi.* ,
+		       srp.NAME AS REAL_NAME,
+		       srp.IMAGE_URL,
+		       srp.REAL_SKU,
+		       srp.ID as REAL_ID
+		FROM 
+			   sc_real_product srp left join
+		       sc_warehouse_inventory swi 
+		       on swi.REAL_PRODUCT_ID =srp.ID
+		       and swi.inventory_type = 2 
+		       and swi.warehouse_id = '{@#warehouseId#}'
+		where 1=1
+				{@ and swi.quantity >0 and #includeOnly# = #includeOnly# }
+	</entry>
+	
+	
+	<entry key="sql_warehouse_new_in_products">
+			SELECT swip.*,
+		        srp.NAME AS REAL_NAME,
+		       srp.IMAGE_URL,
+		       srp.REAL_SKU,
+		       (select FC_SKU from sc_amazon_account_product saap where saap.account_id = swip.account_id and saap.sku = swip.listing_sku) as FN_SKU
+		 FROM sc_warehouse_in_product swip ,
+		     sc_real_product srp 
+		   WHERE  swip.REAL_ID =srp.ID
+		   and swip.in_id='{@#inId#}'
+	</entry>
+	
+	<entry key="sc_warehouse_in_new_insertInProduct">
+		INSERT INTO sc_warehouse_in_product 
+				(ID, 
+				IN_ID, 
+				REAL_ID, 
+				LISTING_SKU, 
+				QUANTITY, 
+				ACCOUNT_ID
+				)
+				VALUES
+				('{@#id#}', 
+				'{@#inId#}', 
+				'{@#realId#}', 
+				'{@#listingSku#}', 
+				'{@#quantity#}', 
+				'{@#accountId#}'
+				)
+	</entry>
+	
+</properties>

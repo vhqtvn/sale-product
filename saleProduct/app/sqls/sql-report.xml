@@ -7,12 +7,17 @@
 		          srp.REAL_SKU,
 		          srp.IMAGE_URL,
 		          saap.ASIN,
-		          saap.NAME as ACCOUNT_NAME,
+		          saa.NAME as ACCOUNT_NAME,
 		          saap.ACCOUNT_ID,
+		          saap.LIMIT_PRICE,
 		          saap.SKU AS SELLER_SKU,
 		          sfsi.TOTAL_SUPPLY_QUANTITY ,
 		          sfsi.IN_STOCK_SUPPLY_QUANTITY,
-		          saap.LIST_PRICE,
+		           ( SELECT MIN(sapb.price) 
+				FROM sc_amazon_product_bidding sapb 
+				WHERE 	sapb.asin = saap.asin 
+				    and sapb.seller = saa.name
+					AND sapb.type='FBA'  ) AS LIST_PRICE,
 		          ( SELECT MIN(sapb.price) 
 				FROM sc_amazon_product_bidding sapb 
 				WHERE 	sapb.asin = saap.asin 

@@ -24,201 +24,169 @@
 		$Utils  = ClassRegistry::init("Utils") ;
 		//debug($result) ;
 	?>
-
-</head>
+	
+		<style type="">
+   		div.flow-node{
+			cursor: pointer ;
+			/*width:60px;
+   			word-wrap: break-word;
+   			height:35px;*/
+   		}
+   		
+		div.flow-node {
+			
+   			float:left ;
+			margin-bottom:5px;   		
+		}
+		
+		div.flow-split{
+			float:left ;
+			/*display:none;*/
+			margin-bottom:5px;
+		}
+		
+		div.flow-bar{
+			height:50px;
+		}
+		
+		.flow-node{
+			border: 1px solid #CCC;
+			padding:1px 2px;
+			background:#EEE;
+		}
+		
+		.has-count{
+			color:red;
+			font-weight:bold;
+		}
+   </style>
+ </head>
 <body>
 	<div class="home-page">	
 		<div class="container-fluid">
 			<div class="row-fluid">
-				<div class="span6 first">
-					<div class="panel">
-						<div class="panel-head">
-							<div class="row-fluid">
-								<div class="span6 first">							
-									<h2>标签动态</h2>
+					<div class="span12">
+						<div class="panel  purchase-widget">
+								<div class="panel-head">
+									<div class="row-fluid">
+										<div class="span6 first">							
+											<h2>采购单</h2>
+										</div>
+										<div class="span6">
+		                                	<div class="pull-right">
+		                                    </div>
+										</div>
+									</div>
+									<a href="#" class="toggle"></a>
 								</div>
-								<div class="span6">
+								<div class="panel-content">
+									<!-- 数据列表默认样式 start -->						
+									<table class="flow-table">						
+									<tbody>
+										<tr>	
+										<td><div class="flow-node" status="45,46">待采购<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node " status="47">采购审批<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node " status="48">待交易<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node " status="49">待收货<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node " status="50">QC验货<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node " status="60">货品入库<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node " status="75">发货FBA<span class="count"></span></div></td>
+										</tr>					
+										</tbody>
+									</table>	
+									<!-- 数据列表默认样式 end -->
+											
 								</div>
 							</div>
-							<a href="#" class="toggle"></a>
-						</div>
-						<div class="panel-content  tag-dyn">
-								
-						</div>
 					</div>
+			</div>
+			<div class="row-fluid">
+				<div class="span12  first">
+						<div class="panel  productDev-widget">
+								<div class="panel-head">
+									<div class="row-fluid">
+										<div class="span6 first">							
+											<h2>产品开发</h2>
+										</div>
+										<div class="span6">
+		                                	<div class="pull-right">
+		                                    </div>
+										</div>
+									</div>
+									<a href="#" class="toggle"></a>
+								</div>
+								<div class="panel-content">
+									<!-- 数据列表默认样式 start -->
+						 			<div class="flow-node " status="10">产品分析<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="20">产品询价<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="25">成本利润<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="30">产品经理审批<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="40">总监审批<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="41">样品下单<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="42">样品达到<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="43">产品资料准备<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="44">样品检测<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="45">检测审批<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="46">上传资料准备<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="50">录入货品<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="60">制作Listing<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="70">Listing审批<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="72">试销采购<span class="count"></span></div>
+									<div class="flow-split">-</div>
+									<div class="flow-node " status="76">营销展开<span class="count"></span></div>
+								</div>
+							</div>
 				
-				
-					<!-- panel内容开始 -->
-					<div class="panel">
-						<div class="panel-head">
-							<div class="row-fluid">
-								<div class="span6 first">							
-									<h2>产品开发任务</h2>
-								</div>
-								<div class="span6">
-								</div>
-							</div>
-							<a href="#" class="toggle"></a>
-						</div>
-						<div class="panel-content">
-							<table class="table table-striped table-condensed">
-								<tbody>
-									<tr>
-										<th>我的待审批的开发任务(产品专员)</th>
-										<td class="cpzyMy-product">加载中...</td>
-									</tr>
-									<tr>
-										<th>所有待审批的开发任务(产品专员)</th>
-										<td class="cpzyAll-product">加载中...</td>
-									</tr>
-									<tr>
-										<th>待审批的开发任务(产品经理)</th>
-										<td class="cpjl-product">加载中...</td>
-									</tr>
-									<tr>
-										<th>待审批的开发任务(总经理)</th>
-										<td class="zjl-product">加载中...</td>
-									</tr>
-								</tbody>
-							</table>								
-						</div>
-					</div>
-					
-					
-					
-					<!-- panel 内容结束 -->
-
-					<!-- panel内容开始 -->
-					<div class="panel">
-						<div class="panel-head">
-							<div class="row-fluid">
-								<div class="span6 first">							
-									<h2>采购任务待办</h2>
-								</div>
-								<div class="span6">
-                                	<div class="pull-right">
-                                    </div>
-								</div>
-							</div>
-							<a href="#" class="toggle"></a>
-						</div>
-						<div class="panel-content">
-							<!-- 数据列表默认样式 start -->						
-							<table class="table table-striped table-condensed">
-								<tbody>
-									<tr>
-										<th>我的采购计划</th>
-										<td class="my-purchase">加载中...</td>
-									</tr>
-									<tr>
-										<th>我的采购执行计划</th>
-										<td class="myexecutor-purchase">加载中...</td>
-									</tr>
-									<tr>
-										<th>所有采购计划</th>
-										<td class="all-purchase">加载中...</td>
-									</tr>
-								</tbody>
-							</table>
-							<!-- 数据列表默认样式 end -->
-									
-						</div>
-					</div>
-					<!-- panel 内容结束 -->
-					
 				</div>
-				<div class="span6">
-					<!-- panel内容开始 -->
-					<div class="panel">
-						<div class="panel-head">
-							<div class="row-fluid">
-								<div class="span6 first">							
-									<h2>订单信息</h2>
+			</div>
+			<div class="row-fluid">
+				<div class="span12  first">
+						<div class="panel  productInfoComplete-widget">
+								<div class="panel-head">
+									<div class="row-fluid">
+										<div class="span6 first">							
+											<h2>产品数据补充</h2>
+										</div>
+										<div class="span6">
+		                                	<div class="pull-right">
+		                                    </div>
+										</div>
+									</div>
+									<a href="#" class="toggle"></a>
 								</div>
-								<div class="span6">
-                                	<div class="pull-right">
-                                    </div>
-								</div>
-							</div>
-							<a href="#" class="toggle"></a>
-						</div>
-						<div class="panel-content">
-							<table class="table table-striped table-condensed">
-								<tbody>
-									<tr>
-										<th>未审核单品订单</th>
-										<td class="orderOne-order">加载中...</td>
-									</tr>
-									<tr>
-										<th>未审核多品订单</th>
-										<td class="orderMany-order">加载中...</td>
-									</tr>
-									<tr>
-										<th>我的处理中拣货单</th>
-										<td class="pickedMy-order">加载中...</td>
-									</tr>
-									<tr>
-										<th>所有处理中拣货单</th>
-										<td class="pickedAll-order">加载中...</td>
-									</tr>
-								</tbody>
-							</table>		
-						</div>
-					</div>
-					<!-- panel 内容结束 -->
-                    
-                    
-                    <!-- panel内容开始 -->
-					<div class="panel ">
-						<div class="panel-head">
-							<div class="row-fluid">
-								<div class="span6 first">							
-									<h2>入库计划</h2>
-								</div>
-								<div class="span6">
-                                	<div class="pull-right">
-                                    </div>
+								<div class="panel-content">
+									<!-- 数据列表默认样式 start -->
+						 			<table class="flow-table">						
+									<tbody>
+									<tr>	
+									<!-- 
+									<td><div class="flow-node  " status="7">Listing未关联货品<span class="count"></span></div></td>
+									<td class="flow-split">-</td><td>
+									 -->
+									<div class="flow-node  " status="1">采购成本不完整<span class="count"></span></div></td>
+									<td class="flow-split">-</td><td><div class="flow-node " status="3">Amazon费用缺失<span class="count"></span></div></td>
+									<td class="flow-split">-</td><td><div class="flow-node " status="4">重量缺失<span class="count"></span></div></td>
+									<td class="flow-split">-</td><td><div class="flow-node " status="6">报关数据缺失<span class="count"></span></div></td>
+									</tr>					
+									</tbody>
+									</table>	
 								</div>
 							</div>
-							<a href="#" class="toggle"></a>
-						</div>
-						<div class="panel-content">
-							<table class="table table-striped table-condensed">
-								<tbody>
-									<tr>
-										<th>编辑中</th>
-										<td class="0-inplan inplan">加载中...</td>
-									</tr>
-									<tr>
-										<th>待审批</th>
-										<td class="10-inplan inplan">加载中...</td>
-									</tr>
-									<tr>
-										<th>待收货</th>
-										<td class="20-inplan inplan">加载中...</td>
-									</tr>
-									<tr>
-										<th>已发货</th>
-										<td class="30-inplan inplan">加载中...</td>
-									</tr>
-									<tr>
-										<th>到达海关</th>
-										<td class="40-inplan inplan">加载中...</td>
-									</tr>
-									<tr>
-										<th>验货中</th>
-										<td class="50-inplan inplan">加载中...</td>
-									</tr>
-									<tr>
-										<th>入库中</th>
-										<td class="60-inplan inplan">加载中...</td>
-									</tr>
-								</tbody>
-							</table>	
-						</div>
-					</div>
-					<!-- panel 内容结束 -->
-                 
+				
 				</div>
 			</div>
 		</div>		

@@ -153,6 +153,99 @@
     
     <entry key="sql_account_product_cost_bad_statics">
     <![CDATA[	
+    	SELECT  1 as STATUS,count(1) as COUNT
+					FROM 
+					sc_real_product srp 
+					left join sc_product_cost spc
+					on srp.id = spc.real_id
+					WHERE 
+					 srp.is_onsale=1 
+					    and   ( 
+					        spc.PURCHASE_COST is null or spc.PURCHASE_COST='' or spc.PURCHASE_COST = 0 
+					   ) 
+		union
+		SELECT  3 as STATUS,count(1) as COUNT
+					FROM 
+					sc_real_product srp 
+					left join sc_product_cost spc
+					on srp.id = spc.real_id
+					WHERE 
+					 srp.is_onsale=1
+					 and not exists (
+					     select 1 from sc_product_cost_details spcd
+					     where spcd.cost_id = spc.id
+					   ) 
+		union
+		SELECT  4 as STATUS,count(1) as COUNT
+		FROM 
+					sc_real_product srp  
+					WHERE 
+					 srp.is_onsale=1
+					  and (  srp.WEIGHT is null or srp.WEIGHT='' or srp.WEIGHT = 0)  
+		union
+		SELECT 6 as STATUS,count(1) as COUNT
+					FROM 
+					sc_real_product srp 
+					left join sc_product_cost spc
+					on srp.id = spc.real_id
+					WHERE 
+					 srp.is_onsale=1 
+						and ( srp.declaration_Name is null or srp.declaration_Name =''
+						       or 
+						       srp.declaration_Price is null or srp.declaration_Price = ''
+						  )
+	]]>	      
+    </entry>
+    
+    <!-- 成本数据不完整：
+          1、关联到货品
+          2、成本数据不完整
+     -->
+    <entry key="sql_account_product_list_cost_bad">
+    <![CDATA[	
+		SELECT  srp.*,
+		             spc.PURCHASE_COST
+					FROM 
+					sc_real_product srp 
+					left join sc_product_cost spc
+					on srp.id = spc.real_id
+					WHERE 
+					 srp.is_onsale=1
+					{@ and  #status1# = 1 
+					    and   ( 
+					        spc.PURCHASE_COST is null or spc.PURCHASE_COST='' or spc.PURCHASE_COST = 0 
+					   ) }
+					{@   and not exists (
+					     select 1 from sc_product_cost_details spcd
+					     where spcd.cost_id = spc.id
+					   ) 
+					   and #status3# = 1 }
+					
+					{@ and (  srp.WEIGHT is null or srp.WEIGHT='' or srp.WEIGHT = 0) and #status4# = 1}
+					{@ and  #status5# = 1 
+						and slc.total_price >0
+						and slc.total_cost >0
+						and (
+					     	( slc.total_price - slc.total_cost ) >  slc.total_cost
+					     	or
+					     	slc.total_price - slc.total_cost < 0 
+						)}
+					{@ and  #status6# = 1 
+						and ( srp.declaration_Name is null or srp.declaration_Name =''
+						       or 
+						       srp.declaration_Price is null or srp.declaration_Price = ''
+						  ) }	
+						
+					{@ and  (
+					    srp.name like '%#searchKey#%'
+					    or
+					     srp.real_sku like '%#searchKey#%'
+					)}
+	]]>	      
+    </entry>
+    
+    <entry key="sql_account_product_cost_bad_statics_v1">
+    <![CDATA[	
 		SELECT  1 as STATUS,count(1) as COUNT
 					FROM sc_amazon_account saa,
 					sc_amazon_account_product saap,
@@ -251,11 +344,7 @@
 	]]>	      
     </entry>
     
-    <!-- 成本数据不完整：
-          1、关联到货品
-          2、成本数据不完整
-     -->
-    <entry key="sql_account_product_list_cost_bad">
+    <entry key="sql_account_product_list_cost_bad_v1">
     <![CDATA[	
 		SELECT  saap.* ,
 					srp.NAME,
@@ -284,13 +373,19 @@
 					{@ and (  slc.fba_cost is null or slc.fba_cost='' or slc.fba_cost = 0) and slc.fulfillment_channel like '%AMAZON%' and #status3# = 1}
 					{@ and (  srp.WEIGHT is null or srp.WEIGHT='' or srp.WEIGHT = 0) and #status4# = 1}
 					{@ and  #status5# = 1 
-					and slc.total_price >0
-					and slc.total_cost >0
-					and (
-					     ( slc.total_price - slc.total_cost ) >  slc.total_cost
-					     or
-					     slc.total_price - slc.total_cost < 0 
-					)}
+						and slc.total_price >0
+						and slc.total_cost >0
+						and (
+					     	( slc.total_price - slc.total_cost ) >  slc.total_cost
+					     	or
+					     	slc.total_price - slc.total_cost < 0 
+						)}
+					{@ and  #status6# = 1 
+						and ( srp.declaration_Name is null or srp.declaration_Name =''
+						       or 
+						       srp.declaration_Price is null or srp.declaration_Price = ''
+						  ) }	
+						
 					{@ and  (
 					    srp.name like '%#searchKey#%'
 					    or

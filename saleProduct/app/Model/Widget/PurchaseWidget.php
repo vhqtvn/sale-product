@@ -14,8 +14,10 @@ class PurchaseWidget extends AppModel {
 			//sql_widget_purchase_my
 			//sql_widget_purchase_myexecutor
 			//sql_widget_purchase_all
-			
-			$my = $this->getObject("sql_widget_purchase_my", array('loginId'=>$user['LOGIN_ID'])) ;
+			$staticLists = $this->exeSqlWithFormat("sql_purchase_new_loadStatics", array()) ;
+			return $staticLists ;
+			//sql_purchase_new_loadStatics
+			/*$my = $this->getObject("sql_widget_purchase_my", array('loginId'=>$user['LOGIN_ID'])) ;
 			$myexecutor = $this->getObject("sql_widget_purchase_myexecutor", array('loginId'=>$user['LOGIN_ID'])) ;
 			$all = $this->getObject("sql_widget_purchase_all", array('loginId'=>$user['LOGIN_ID'])) ;
 			
@@ -23,7 +25,7 @@ class PurchaseWidget extends AppModel {
 					'my'					=>array('value'=>$my['c'],'url'=>'/sale/purchaseList/1')
 					,'myexecutor'	=>array('value'=>$myexecutor['c'],'url'=>'/sale/purchaseList/2')
 					,'all'					=>array('value'=>$all['c'],'url'=>'/sale/purchaseList/1')
-				) ;
+				) ;*/
 	}
 	
 }

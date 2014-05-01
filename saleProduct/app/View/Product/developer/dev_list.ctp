@@ -41,26 +41,26 @@
    </script>
 	
 	<style type="">
-   		.flow-node{
+   		div.flow-node{
 			cursor: pointer ;
 			/*width:60px;
    			word-wrap: break-word;
    			height:35px;*/
    		}
    		
-		.flow-node {
+		div.flow-node {
 			border: 2px solid #0FF;
    			float:left ;
 			margin-bottom:5px;   		
 		}
 		
-		.flow-split{
+		div.flow-split{
 			float:left ;
 			/*display:none;*/
 			margin-bottom:5px;
 		}
 		
-		.flow-bar{
+		div.flow-bar{
 			height:50px;
 		}
    </style>
