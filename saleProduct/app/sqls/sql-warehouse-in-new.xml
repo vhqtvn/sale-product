@@ -19,7 +19,11 @@
 		       srp.NAME AS REAL_NAME,
 		       srp.IMAGE_URL,
 		       srp.REAL_SKU,
-		       srp.ID as REAL_ID
+		       srp.ID as REAL_ID,
+		       sfsi.IN_STOCK_SUPPLY_QUANTITY,
+		       sfsi.TOTAL_SUPPLY_QUANTITY,
+		       sar.SALES_FOR_THELAST14DAYS,
+	    	  sar.SALES_FOR_THELAST30DAYS
 		FROM 
 		       sc_real_product_rel srpr,
 			   sc_real_product srp ,
@@ -28,10 +32,19 @@
 		       on swi.listing_sku =saap.sku
 		       and  swi.account_id = saap.account_id
 		       and  swi.warehouse_id = '{@#warehouseId#}'
+		       left join sc_fba_supply_inventory sfsi
+		      ON sfsi.ACCOUNT_ID = swi.ACCOUNT_ID
+		       AND sfsi.SELLER_SKU = swi.LISTING_SKU
+		       left join sc_amazon_recommendations sar
+			 on sar.account_id = sfsi.account_id
+			 and sar.sku = sfsi.seller_sku
 		where 1=1
 		        and saap.account_id = srpr.account_id
 		        and saap.sku = srpr.sku
 		        and srpr.real_id = srp.id
+		        and saap.status = 'Y'
+		        and saap.is_active = 1
+		        and  srp.is_onsale = 1
 		        and saap.account_id = '{@#accountId#}'
 				{@ and swi.quantity >0 and #includeOnly# = #includeOnly# }
 		order by srp.id

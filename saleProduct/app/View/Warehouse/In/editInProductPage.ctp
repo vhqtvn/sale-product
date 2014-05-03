@@ -56,9 +56,13 @@
 			         }}},
 					{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"REAL_NAME",label:"货品名称",width:"20%",forzen:false,align:"left"},
-		           	{align:"center",key:"REAL_SKU",label:"货品SKU",width:"15%",forzen:false,align:"left"},
+		           	{align:"center",key:"REAL_SKU",label:"货品SKU",width:"12%",forzen:false,align:"left"},
 		           	{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"15%"},
-		           	{align:"center",key:"QUANTITY",label:"库存数量",width:"8%"}
+		           	{align:"center",key:"QUANTITY",label:"本地库存数量",width:"10%"},
+		           	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"账户总库存",width:"8%"},
+		           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"账户可售库存",width:"10%"},
+		           	{align:"center",key:"SALES_FOR_THELAST14DAYS",label:"14天销量",width:"8%"},
+		           	{align:"center",key:"SALES_FOR_THELAST30DAYS",label:"30天销量",width:"8%"}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
