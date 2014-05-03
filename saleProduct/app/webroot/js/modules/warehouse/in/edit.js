@@ -56,6 +56,7 @@
 		function initLogistics(){
 			var flowConfigName = $("#flowType").val() ;
 			var flow = FlowFactory.get(flowConfigName,inSourceType) ;
+			flow.logistics = true ;
 			if( flow.logistics ){ //物流
 				$(".logistics-tbody").show().html(logisticsCacheHtml).uiwidget() ;
 			}else{

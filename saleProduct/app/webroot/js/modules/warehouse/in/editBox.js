@@ -25,7 +25,9 @@
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:20,
 				 pageSizes:[10,20,30,40],
-				 height:120,
+				 height:function(){
+					 return $(window).height() - 150;
+				 },
 				 title:"",
 				 querys:{sqlId:"sql_warehouse_box_lists",inId:inId},
 				 loadMsg:"数据加载中，请稍候......",
@@ -65,7 +67,7 @@
 				 }
 				 
 			}) ;
-			
+			/*
 			$(".grid-content-details").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"操作",width:"3%",permission:function(){
@@ -117,7 +119,7 @@
 						}) ;
 				 }
 			}) ;
-			
+			*/
 			$(".process-action").live("click",function(){
 				var FILTER_ID = $(this).attr("val") ;
 				var asin = $(this).attr("asin") ;

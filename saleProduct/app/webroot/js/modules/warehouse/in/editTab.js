@@ -7,7 +7,7 @@ $(function(){
 	var tabs = [
 				{label:'基本信息',iframe:true,url:contextPath+"/page/model/Warehouse.In.edit/"+inId,id:'t1'},//9
 				{label:'入库货品(Listing)',iframe:true,url:contextPath+"/page/forward/Warehouse.In.inProductList/"+inId,id:'t2'},
-				{label:'物流货品',iframe:true,url:contextPath+"/page/model/Warehouse.In.editBox/"+inId,id:'t3'},
+				{label:'包装箱',iframe:true,url:contextPath+"/page/model/Warehouse.In.editBox/"+inId,id:'t3'},
 				{label:'跟踪状态',iframe:true,url:contextPath+"/page/model/Warehouse.In.editTrack/"+inId,id:'t4'}
 			] ;
 	if( inSourceType == 'fba' ){

@@ -106,12 +106,13 @@
 								<tr>
 									<th>入库类型：</th>
 									<td  colspan="3">
+									<?php /*
 										采购入库&nbsp;<input type="radio"  name="inSourceType"  disabled value="out" <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='out'?"checked":"";?>   
 											data-validator="required" style="vertical-align: top;"/>&nbsp;&nbsp;&nbsp; 
 										转仓&nbsp;<input type="radio"  name="inSourceType"  value="warehouse"  <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='warehouse'?"checked":"";?>   
-											data-validator="required"  style="vertical-align: top;"/>
+											data-validator="required"  style="vertical-align: top;"/>*/?>
 										 
 										FBA入库&nbsp;<input type="radio"  name="inSourceType"  value="fba"  <?php echo $isRead?"disabled":"" ;?>
 											<?php echo $result['IN_SOURCE_TYPE']=='fba'?"checked":"";?>   
@@ -187,7 +188,7 @@
 						</table>
 						<table class="form-table " >
 							<caption>物流信息<?php if($hasReEditPermission){?><img class="reedit"  title="在编辑" src="/<?php echo $fileContextPath?>/app/webroot/img/edit.png"/><?php }?></caption>
-							<tbody class="logistics-tbody" style="display:none;">
+							<tbody class="logistics-tbody" >
 								<tr>
 									<th>运输公司：</th>
 									<td colspan="3"><input data-validator="required" class="span9" type="text" id="shipCompany"
