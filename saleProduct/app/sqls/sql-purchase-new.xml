@@ -80,6 +80,17 @@
 			)}
    </entry>
    
+   <entry key="sql_purchase_new_list_audit_count">
+			SELECT count(1) as C
+			 FROM 
+			sc_purchase_product spp,
+			sc_real_product srp
+			WHERE spp.REAL_ID = srp.ID
+			and spp.IS_TERMINATION = 0
+			and spp.is_audit = 1
+			{@ #$purchaseTask_view: and 1=0# }
+   </entry>
+   
    <entry key="sql_purchase_new_list_audit">
     select * from (
 			SELECT spp.*,

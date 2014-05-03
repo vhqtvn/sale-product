@@ -80,17 +80,21 @@
 									<a href="#" class="toggle"></a>
 								</div>
 								<div class="panel-content">
-									<!-- 数据列表默认样式 start -->						
+									<!-- 数据列表默认样式 start -->				
 									<table class="flow-table">						
 									<tbody>
 										<tr>	
-										<td><div class="flow-node" status="45,46">待采购<span class="count"></span></div></td>
-										<td class="flow-split">-</td><td><div class="flow-node " status="47">采购审批<span class="count"></span></div></td>
-										<td class="flow-split">-</td><td><div class="flow-node " status="48">待交易<span class="count"></span></div></td>
-										<td class="flow-split">-</td><td><div class="flow-node " status="49">待收货<span class="count"></span></div></td>
-										<td class="flow-split">-</td><td><div class="flow-node " status="50">QC验货<span class="count"></span></div></td>
-										<td class="flow-split">-</td><td><div class="flow-node " status="60">货品入库<span class="count"></span></div></td>
-										<td class="flow-split">-</td><td><div class="flow-node " status="75">发货FBA<span class="count"></span></div></td>
+										<td><div class="flow-node  normal" status="45,46">待采购<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node normal" status="47">采购审批<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node normal" status="48">待交易<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node normal" status="49">待收货<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node normal" status="50">QC验货<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node normal" status="60">货品入库<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node normal" status="75">发货FBA<span class="count"></span></div></td>
+										
+										<td class="flow-split">&nbsp;&nbsp;</td><td><div class="flow-node audit">采购审计<span class="audit-count"></span></div></td>
+										<td class="flow-split">&nbsp;&nbsp;</td><td><div class="flow-node  repair-node" status="1">未设置执行用户<span class="count"></span></div></td>
+										<td class="flow-split">-</td><td><div class="flow-node repair-node" status="2">未设置限价<span class="count"></span></div></td>
 										</tr>					
 										</tbody>
 									</table>	
@@ -181,6 +185,7 @@
 									<td class="flow-split">-</td><td><div class="flow-node " status="3">Amazon费用缺失<span class="count"></span></div></td>
 									<td class="flow-split">-</td><td><div class="flow-node " status="4">重量缺失<span class="count"></span></div></td>
 									<td class="flow-split">-</td><td><div class="flow-node " status="6">报关数据缺失<span class="count"></span></div></td>
+									<td class="flow-split">-</td><td><div class="flow-node " status="7">产品属性为空<span class="count"></span></div></td>
 									</tr>					
 									</tbody>
 									</table>	

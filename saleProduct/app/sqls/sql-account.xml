@@ -194,6 +194,13 @@
 						       or 
 						       srp.declaration_Price is null or srp.declaration_Price = ''
 						  )
+			union
+		SELECT 7 as STATUS,count(1) as COUNT
+		FROM 
+					sc_real_product srp  
+					WHERE 
+					 srp.is_onsale=1
+					  and (  srp.properties is null or srp.properties='' )  
 	]]>	      
     </entry>
     
@@ -235,7 +242,9 @@
 						       or 
 						       srp.declaration_Price is null or srp.declaration_Price = ''
 						  ) }	
-						
+					{@ and  #status7# = 1 
+						and ( srp.properties is null or srp.properties =''
+						  ) }	
 					{@ and  (
 					    srp.name like '%#searchKey#%'
 					    or
