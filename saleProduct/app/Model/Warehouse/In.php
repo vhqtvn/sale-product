@@ -82,9 +82,11 @@ class In extends AppModel {
 	public function transOutInventory($params){
 		$inId = $params['inId'] ;
 		$result = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+		/**
+		 * 出库仓库ID
+		 */
 		$sourceWarehouseId = $result['SOURCE_WAREHOUSE_ID'] ;
-		$inventory  = ClassRegistry::init("Inventory") ;
-		
+	
 		$outparams = array() ;
 		$outparams['warehouseId'] = $sourceWarehouseId ;
 		/**
@@ -93,10 +95,16 @@ class In extends AppModel {
 			$badQuantity = $item->badQuantity ;
 			$inventoryType = $item->inventoryType ;
 		 */
-		$products = $this->exeSql("sql_warehouse_in_products", array('inId'=>$inId)) ;
+		/**
+		 * 获取出库货品
+		 */
+		$products = $this->exeSql("sql_warehouse_in_productsV20", array('inId'=>$inId)) ;
 		
 		$inventory  = ClassRegistry::init("Inventory") ;
 		
+		/**
+		 * 准备出库参数
+		 */
 		$inventoryParams = array() ;
 		$inventoryParams['warehouseId'] = $sourceWarehouseId ;//warehouseId
 		$inventoryParams['inId']  = $inId ;
@@ -106,13 +114,13 @@ class In extends AppModel {
 			$product = $this->formatObject( $product ) ;
 		
 			$details[] = array(
-					'goodsId'=>$product['REAL_PRODUCT_ID']  ,
+					'goodsId'=>$product['REAL_ID']  ,
 					'quantity'=>$product['QUANTITY'] ,
 					'badQuantity'=>0 ,
-					'inventoryType'=>$product['INVENTORY_TYPE']
+					'listingSku'=>$product['LISTING_SKU'],
+					'accountId'=>$product['ACCOUNT_ID']
 			) ;
 			$inventoryParams['details'] =  json_encode( $details ) ;
-			
 		}
 		
 		//debug($inventoryParams) ;
@@ -249,8 +257,7 @@ class In extends AppModel {
 	}
 	
 	public function lockInventory( $inventoryId,$entityType,$entityId,$quantity ){
-		$sql = "
-					INSERT INTO sc_warehouse_inventory_lock 
+		$sql = " INSERT INTO sc_warehouse_inventory_lock 
 						(INVENTORY_ID, 
 						ENTITY_TYPE, 
 						ENTITY_ID, 

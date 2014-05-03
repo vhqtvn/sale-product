@@ -22,13 +22,13 @@
 		
 		$purchaseProductId = $params['arg1'] ;
 		$realId =  $params['arg2'] ;
-		$reqPlanId = $params['arg3'] ;
+		$reqProductId = $params['arg3'] ;
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		
 		//获取需求对应产品
 		//debug($reqPlanId) ;
-		$result = $SqlUtils->exeSqlWithFormat("sql_supplychain_requirement_plan_product_details_list" ,array("planId"=>$reqPlanId,"realId"=>$realId)) ;
+		$result = $SqlUtils->exeSqlWithFormat("sql_supplychain_requirement_plan_product_details_list" ,array("reqProductId"=>$reqProductId,"realId"=>$realId)) ;
 		//debug($result) ;
 		
 		$purchaseProduct =  $SqlUtils->getObject("select * from sc_purchase_product

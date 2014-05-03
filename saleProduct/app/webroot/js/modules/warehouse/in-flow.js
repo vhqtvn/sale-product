@@ -521,7 +521,7 @@ var flowConfig = {
 						{status:12,label:"装箱",memo:true
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(12,"保存") }},
-							          {label:"装箱完成",action:function(){ transOutInventory(14,"确认装箱完成，并且入库产品数量准确") } }
+							          {label:"装箱完成",action:function(){ AuditAction(14,"确认装箱完成，并且入库产品数量准确") } }
 							]
 						},
 						{status:14,label:"FBA计划",memo:true
@@ -535,7 +535,7 @@ var flowConfig = {
 						{status:15,label:"出库",memo:true
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(15,"保存") }},
-							          {label:"确认出库",action:function(){ transOutInventory(20,"确认出库") } }
+							          {label:"确认出库",action:function(){ transOutInventoryFBA(20,"确认出库") } }
 							]
 						},
 						{status:20,label:"待发货",memo:true

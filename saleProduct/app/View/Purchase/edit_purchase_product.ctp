@@ -293,7 +293,7 @@
 									,{label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
 									<?php }?>
 									,{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
-		      	        			{label:"入库确认",action:function(){ WarehouseInAction(75,"入库确认") } }
+		      	        			{label:"入库确认",action:function(){ WarehouseInAction(60,"入库确认") } }
 								<?php };?>
 								<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]

@@ -60,7 +60,7 @@
 			var json = {inId:inId,status:status,memo:$(".memo").val(),inSourceType:warehoseIn.IN_SOURCE_TYPE} ;
 			//console.log(json) ;
 			//return ;
-			$.dataservice("model:Warehouse.In.doStatus",json,function(result){
+			$.dataservice("model:Warehouse.NewIn.doStatus",json,function(result){
 				window.location.reload();
 			});
 		}
@@ -68,10 +68,21 @@
 
     //转仓出库
     function transOutInventory( status , statusLabel  ){
-    	if(window.confirm("确认【"+statusLabel+"】？")){
+        alert("TODO") ;
+    	/*if(window.confirm("确认【"+statusLabel+"】？")){
 			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
 			$.dataservice("model:Warehouse.In.transOutInventory",json,function(result){
 				window.location.reload();
+			});
+		}*/
+    }
+
+    //转仓出库
+    function transOutInventoryFBA( status , statusLabel  ){
+    	if(window.confirm("确认【"+statusLabel+"】？")){
+			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
+			$.dataservice("model:Warehouse.NewIn.transOutInventory",json,function(result){
+				//window.location.reload();
 			});
 		}
     }

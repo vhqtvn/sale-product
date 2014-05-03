@@ -32,6 +32,7 @@ class InventoryNew extends AppModel {
 	var $ACTOIN_OUT_ORDER    = 202 ;//订单出库
 	var $ACTOIN_OUT_BORROW_RETURN = 203 ;//借调归还出库
 	var $ACTOIN_OUT_RETURN_SUPPLIER = 204 ;//退货出库
+	var $ACTOIN_OUT_TRANSFER_FBA = 205  ;//转仓出库
 	
 	/**
 	 * 库存类型
@@ -336,6 +337,9 @@ class InventoryNew extends AppModel {
 			}else if( $this->ACTION_TYPE_OUT ==$actionType  ){
 				$quantity = $quantity - $changeQuantity ;
 			}
+			
+			//如果小于0，则修正为0
+			if( $quantity <0 ) $quantity = 0 ;
 			
 			//更新库存
 			$this->exeSql("sql_inventory_update", array(

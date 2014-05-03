@@ -39,7 +39,7 @@
 			        swi.*,
 			        ssil.ENTITY_ID as LOCK_ID
 			   FROM sc_warehouse_inventory_lock ssil,
-			        sc_warehouse_inventory swi
+			        	sc_warehouse_inventory swi
 			     WHERE ssil.entity_type = 'boxProduct' AND ssil.ENTITY_ID IN (
 			  SELECT swbp.id FROM sc_warehouse_box_product swbp,sc_warehouse_box swb
 			  WHERE swbp.BOX_ID = swb.ID

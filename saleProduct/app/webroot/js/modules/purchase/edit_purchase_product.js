@@ -27,7 +27,7 @@ $(function(){
 	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
 	//if( currentStatus >=45 ){
 		//tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
-	tabs.push( {label:'采购需求',iframe:true,url: contextPath+"/page/forward/SupplyChain.listReqDetails/"+realId+"/"+reqProductId} ) ;
+	//tabs.push( {label:'采购需求',iframe:true,url: contextPath+"/page/forward/SupplyChain.listReqDetails/"+realId+"/"+reqProductId} ) ;
 	tabs.push( {label:'货品询价',iframe:true,url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+sku} ) ;
 	//}
 	tabs.push( {label:'供应商信息',iframe:true,url: contextPath+"/page/forward/Supplier.listsBySku/"+sku} ) ;
@@ -281,26 +281,29 @@ $(function(){
 
 function WarehouseInAction(status , statusLabel){
 	if(window.confirm("确认【"+statusLabel+"】？")){
-		//var memo = "("+statusLabel+")" + ($(".memo").val()||"");
-	
+
+		var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
+		var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus} ;
+		
+			if( !$.validation.validate('#personForm').errorInfo ) {
+				var json = $("#personForm").toJson() ;
+				json1 = $.extend(json,json1) ;
+				json1.purchaseDetails = getEditData() ;
+				$.dataservice("model:NewPurchaseService.savePurchaseProduct",json,function(){
+					//执行状态更新
+					openCenterWindow(contextPath+"/page/forward/Inventory.in_purchase/"+id+"/"+realId+"/"+reqProductId,800,600,function(){
+						window.location.reload();
+					}) ;
+				}) ;
+			}
+			/*
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				//var json = $("#personForm").toJson() ;
 				//入库
 				openCenterWindow(contextPath+"/page/forward/Inventory.in_purchase/"+id+"/"+realId+"/"+reqPlanId,800,600,function(){
 					window.location.reload();
 				}) ;
-				/*
-				$.dataservice("model:Sale.warehouseIn",json,function(result){
-					//alert( $.json.encode( result ));
-					//执行状态更新
-				//$.dataservice("model:Sale.savePurchaseTaskProduct",json,function(){
-					$.dataservice("model:Sale.doTaskProductStatus",json1,function(result){
-						window.location.reload();
-					});
-				//}) ;
-				}) ;
-				*/
-			}
+			}*/
 	}
 }
 

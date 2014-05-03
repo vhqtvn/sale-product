@@ -21,13 +21,20 @@
 		       srp.REAL_SKU,
 		       srp.ID as REAL_ID
 		FROM 
-			   sc_real_product srp left join
-		       sc_warehouse_inventory swi 
-		       on swi.REAL_PRODUCT_ID =srp.ID
-		       and swi.inventory_type = 2 
-		       and swi.warehouse_id = '{@#warehouseId#}'
+		       sc_real_product_rel srpr,
+			   sc_real_product srp ,
+			   sc_amazon_account_product saap
+			   left join  sc_warehouse_inventory swi 
+		       on swi.listing_sku =saap.sku
+		       and  swi.account_id = saap.account_id
+		       and  swi.warehouse_id = '{@#warehouseId#}'
 		where 1=1
+		        and saap.account_id = srpr.account_id
+		        and saap.sku = srpr.sku
+		        and srpr.real_id = srp.id
+		        and saap.account_id = '{@#accountId#}'
 				{@ and swi.quantity >0 and #includeOnly# = #includeOnly# }
+		order by srp.id
 	</entry>
 	
 	

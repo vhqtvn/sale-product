@@ -281,6 +281,17 @@
    		 GROUP BY status
    </entry>
    
+   <entry key="sql_warehouse_in_productsV20">
+   SELECT swip.*, 
+       srp.NAME , srp.REAL_SKU AS SKU , srp.IMAGE_URL
+       ,srp.MEMO AS P_MEMO ,srp.DECLARATION_NAME , srp.DECLARATION_PRICE ,
+       srp.WEIGHT*swip.QUANTITY AS WEIGHT
+FROM sc_warehouse_in_product swip,
+sc_real_product srp
+WHERE swip.IN_ID= '{@#inId#}'
+AND swip.REAL_ID = srp.ID
+</entry>
+   
    <entry key="sql_warehouse_in_products">
 		SELECT s1.* , s2.NAME , s2.REAL_SKU as SKU , s2.IMAGE_URL
 			,s2.MEMO as P_MEMO ,s2.DECLARATION_NAME , s2.DECLARATION_PRICE ,

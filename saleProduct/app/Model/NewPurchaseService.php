@@ -122,7 +122,7 @@ class NewPurchaseService extends AppModel {
 				$purchaseDetails = json_decode($data['purchaseDetails']) ;
 				foreach( $purchaseDetails as $item  ){
 					$item = get_object_vars($item) ;
-				
+					
 					$sku = $item['sku'] ;
 					$accountId = $item['accountId'] ;
 					$quantity = $item['quantity'] ;
