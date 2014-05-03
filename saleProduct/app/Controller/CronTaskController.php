@@ -470,7 +470,7 @@ class CronTaskController extends AppController {
          *    如果价格大于或等于限价，则不进行调价；如果小于限价，则价格向上调整至限价
 		 */
 		$fbaPriceCount = count( $fixFbaPriceArray ) ;
-		if( $fbaPriceCount < 0 ){
+		if( $fbaPriceCount <= 0 ){
 			//如果除了同盟卖家之外，没有其他卖家，则不进行调价
 			$fixPrice = $execPrice * 0.2 ;
 			if( $fixPrice <1 ){
