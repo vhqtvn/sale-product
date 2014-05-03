@@ -39,12 +39,19 @@ $(function(){
 			 limit:10,
 			 pageSizes:[10,20,30,40],
 			 height:function(){
-			 	return $(window).height() - 200 ;
+			 	return $(window).height() - 170 ;
 			 },
 			 title:"入库计划列表",
 			 indexColumn:false,
 			 querys:{sqlId:"sql_warehouse_in_lists",status:"0"},
 			 loadMsg:"数据加载中，请稍候......"
+		}) ;
+		
+		$(".flow-node").click(function(){
+			var status = $(this).attr("status");
+			$(".flow-node").removeClass("active").addClass("disabled");
+			$(this).removeClass("disabled").addClass("active");
+			$(".grid-content").llygrid("reload",{status:status});
 		}) ;
 		
 		$(".add-btn").click(function(){
@@ -74,7 +81,7 @@ $(function(){
 			return false;
 		}) ;
 		 
-		var tab = $('#details_tab').tabs( {
+		/*var tab = $('#details_tab').tabs( {
 			tabs:[
 				{label:'编辑中',content:"tab-content",custom:"0"},
 				{label:'待审批',content:"tab-content",custom:"10"},
@@ -93,11 +100,11 @@ $(function(){
 				tabIndex = index ;
 				renderAction(index);
 			}
-		} ) ; 
+		} ) ; */
 		
 		function loadCount(){
 			$.dataservice("model:Warehouse.In.loadStatusCount",{},function(result){
-			
+				$(".flow-bar").find(".count").html("(0)") ;
 				$(result).each(function(){
 					var item = {} ;
 					for(var o in this){
@@ -106,6 +113,7 @@ $(function(){
 							item[o] = _[o] ;
 						}
 					}
+					$(".flow-bar").find("[status='"+item['STATUS']+"']").find(".count").html( "("+(item['C']||0)+")" ) ;
 					var el = $("[custom='"+item['STATUS']+"']") ;
 					if(el.length){
 						var cl = el.attr("customLabel");

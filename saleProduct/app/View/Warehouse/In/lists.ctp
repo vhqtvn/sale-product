@@ -36,6 +36,33 @@
    			padding:0px 8px!important;
    		}
 	</style>
+		<style type="">
+   		div.flow-node{
+			cursor: pointer ;
+			/*width:60px;
+   			word-wrap: break-word;
+   			height:35px;*/
+   		}
+   		
+		div.flow-node {
+			border: 2px solid #0FF;
+   			float:left ;
+			margin-bottom:5px;   	
+			padding:1px  3px;
+			color:#000;	
+		}
+		
+		div.flow-split{
+			float:left ;
+			/*display:none;*/
+			margin-bottom:5px;
+		}
+		
+		div.flow-bar{
+			height:30px;
+			width:100%;
+		}
+   </style>
   
 </head>
 <body>
@@ -55,10 +82,31 @@
 					<?php } ?>
 				</td>
 			</tr>						
-		</table>					
-
+		</table>
 	</div>
-
+	<div class="flow-bar">
+			<center  class="flow-table">
+					<div class="clear:both;"></div>	
+		  			<div class="flow-node active  total" status="">全部<span class="count"></span></div>
+		  			<div class="flow-split">&nbsp; &nbsp; &nbsp; </div>
+		 			<div class="flow-node disabled" status="0">编辑中<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="11">打印标签<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="12">装箱<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="14">FBA计划<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="15">出库<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="20">待发货<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="30">已发货<span class="count"></span></div>
+					<div class="flow-split">-</div>
+					<div class="flow-node disabled" status="70">入库完成<span class="count"></span></div>
+	 		</center>
+	</div>
+	<div class="clear:both;"></div>	
 	<div id="details_tab"></div>
 	<div class="grid-content" id="tab-content"></div>
 </body>
