@@ -20,10 +20,15 @@
 		       srp.IMAGE_URL,
 		       srp.REAL_SKU,
 		       srp.ID as REAL_ID,
-		       sfsi.IN_STOCK_SUPPLY_QUANTITY,
-		       sfsi.TOTAL_SUPPLY_QUANTITY,
-		       sar.SALES_FOR_THELAST14DAYS,
-	    	  sar.SALES_FOR_THELAST30DAYS
+		       saap.SKU,
+		        (select  sar.IN_STOCK_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where  sfsi.account_id = saap.account_id
+			 and sfsi.sku = SELLER_SKU.sku ) as IN_STOCK_SUPPLY_QUANTITY,
+		        (select  sar.TOTAL_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where  sfsi.account_id = saap.account_id
+			 and sfsi.sku = SELLER_SKU.sku ) as TOTAL_SUPPLY_QUANTITY,
+		       (select  sar.SALES_FOR_THELAST14DAYS from sc_amazon_recommendations sar where  sar.account_id = saap.account_id
+			 and sar.sku = saap.sku ) as SALES_FOR_THELAST14DAYS,
+		       (select  sar.SALES_FOR_THELAST30DAYS from sc_amazon_recommendations sar where  sar.account_id = saap.account_id
+			 and sar.sku = saap.sku ) as SALES_FOR_THELAST30DAYS
 		FROM 
 		       sc_real_product_rel srpr,
 			   sc_real_product srp ,
@@ -32,12 +37,6 @@
 		       on swi.listing_sku =saap.sku
 		       and  swi.account_id = saap.account_id
 		       and  swi.warehouse_id = '{@#warehouseId#}'
-		       left join sc_fba_supply_inventory sfsi
-		      ON sfsi.ACCOUNT_ID = swi.ACCOUNT_ID
-		       AND sfsi.SELLER_SKU = swi.LISTING_SKU
-		       left join sc_amazon_recommendations sar
-			 on sar.account_id = sfsi.account_id
-			 and sar.sku = sfsi.seller_sku
 		where 1=1
 		        and saap.account_id = srpr.account_id
 		        and saap.sku = srpr.sku
