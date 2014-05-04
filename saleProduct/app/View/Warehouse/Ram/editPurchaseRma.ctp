@@ -90,7 +90,7 @@
 		}
 		
 		//决策原因
-		$policys = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'policy')) ;
+		$policys = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'policy',"rmaType"=>"P")) ;
 		$selectedPolicy = null ;
 		foreach( $policys as $cause ){
 			$cause = $SqlUtils->formatObject($cause) ;
@@ -360,25 +360,19 @@
 									<?php 	}  ?>
 								</tr>
 								<tr>
-									<th>订单ID：</th><td><input data-validator="required" 
+									<th>采购单：</th><td colspan="3"><input data-validator="required" 
 										type="text" id="orderId"
 										<?php echo !$isInit?"readOnly":"" ;?>
-										value="<?php if(empty($result['ORDER_ID'])){
-											echo $order['ORDER_ID'] ;
+										value="<?php if(empty($result['PURCHASE_ID'])){
+											echo $order['PURCHASE_ID'] ;
 										}else{
-											echo $result['ORDER_ID'] ;
+											echo $result['PURCHASE_ID'] ;
 										};?>"/>
 										<button class="btn btn-order"
 										<?php echo !$isInit?"style='display:none;'":"" ;?>
 										>选择</button>
 									</td>
-									<th>订单内部订单号：</th><td><input data-validator="required" type="text" id="orderNo"
-										<?php echo !$isInit?"readOnly":"" ;?>
-										value="<?php if(empty($result['ORDER_NO'])){
-											echo $order['ORDER_NUMBER'] ;
-										}else{
-											echo $result['ORDER_NO'] ;
-										};?>"/></td>
+									
 								</tr>
 								
 								<tr>
@@ -388,7 +382,7 @@
 											<option value="">请选择</option>
 										<?php
 											$causeCode = $result['CAUSE_CODE'];
-											$causes = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'cause')) ;
+											$causes = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'cause',"rmaType"=>'P')) ;
 											
 											foreach( $causes as $cause ){
 												$cause = $SqlUtils->formatObject($cause) ;
@@ -404,7 +398,6 @@
 										<select name="policyCode" data-validator="required" <?php echo !$isInit?"disabled":"" ;?>>
 											<option value="">请选择</option>
 										<?php
-											
 											$selectedPolicy = null ;
 											foreach( $policys as $cause ){
 												$cause = $SqlUtils->formatObject($cause) ;

@@ -306,6 +306,8 @@
 			{@real_purchase_date = '#realPurchaseDate#' ,}
 			{@qualified_products_num = '#qualifiedProductsNum#' ,}
 			{@bad_products_num = '#badProductsNum#' ,}
+			{@out_Of_Num = '#outOfNum#' ,}
+			{@no_Consistency_Num = '#noConsistencyNum#' ,}
 			{@check_memo = '#checkMemo#' ,}
 			{@warehouse_time = '#warehouseTime#' ,}
 			{@warehouse_id = '#warehouseId#' ,}

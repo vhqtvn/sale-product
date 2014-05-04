@@ -622,10 +622,27 @@
 										<td><input id="qualifiedProductsNum" class="50-input input"   type="text" 
 													<?php echo $status>=50?"data-validator='required'":"" ?>
 													value='<?php echo $purchaseProduct['QUALIFIED_PRODUCTS_NUM'] ;?>' /></td>
-										<th>不合格数量：</th>
-										<td><input id="badProductsNum" class="50-input input"  type="text"
+										<th>缺货数量：</th>
+										<td><input id="outOfNum" class="50-input input"  type="text"
 													<?php echo $status>=50?"data-validator='required'":"" ?>
-													value='<?php echo $purchaseProduct['BAD_PRODUCTS_NUM'] ;?>' /></td>
+													value='<?php echo $purchaseProduct['OUT_OF_NUM'] ;?>' /></td>
+									</tr>
+									<tr class="check-purchase-tr">
+										<th>残品数量：</th>
+										<td>
+													<input id="badProductsNum" class="50-input input"  type="text"
+														<?php echo $status>=50?"data-validator='required'":"" ?>
+													value='<?php echo $purchaseProduct['BAD_PRODUCTS_NUM'] ;?>' />
+										</td>
+										<th>与需求不一致：</th>
+										<td>
+													<input id="noConsistencyNum" class="50-input input"  type="text"
+															<?php echo $status>=50?"data-validator='required'":"" ?>
+															value='<?php echo $purchaseProduct['NO_CONSISTENCY_NUM'] ;?>' />
+										</td>
+									</tr>
+									<tr class="check-purchase-tr">
+										
 									</tr>
 									<tr>
 										<th>采购地区：</th><td colspan=3>

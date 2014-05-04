@@ -56,7 +56,7 @@
 	   
 	   <entry key="sql_pdev_new_list_done">
 SELECT 
-    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE   spfd.asin = spdt.asin 
 			ORDER BY spdt.create_time DESC LIMIT 0,1 ) AS MEMO,
 	( select sp.name from sc_platform sp where  sp.ID = spfd.platform_id ) as PLATFORM_NAME,
 	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = spfd.asin LIMIT 0,1 ) AS LOCAL_URL , 
@@ -84,7 +84,7 @@ WHERE   spfd.flow_status =80
 		
 		<entry key="sql_pdev_new_list">
 SELECT 
-    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE spdt.task_id = spfd.task_id AND spfd.asin = spdt.asin 
+    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE   spfd.asin = spdt.asin 
 			ORDER BY spdt.create_time DESC LIMIT 0,1 ) AS MEMO,
 	( select sp.name from sc_platform sp where  sp.ID = spfd.platform_id ) as PLATFORM_NAME,
 	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = spfd.asin LIMIT 0,1 ) AS LOCAL_URL , 

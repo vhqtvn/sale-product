@@ -33,9 +33,11 @@
 		     WHERE saap.ACCOUNT_ID = sfsi.ACCOUNT_ID
 		           AND saap.SKU = sfsi.SELLER_SKU
 		           AND saap.ACCOUNT_ID = saa.ID
+		           {@  and saap.account_id =  '#accountId#'}
 		           AND sfsi.IN_STOCK_SUPPLY_QUANTITY > 0
 		) t
 		WHERE t.LIST_PRICE != t.LOWEST_PRICE
+		{@ and ( t.ASIN like '%#searchKey#%'  or t.SELLER_SKU like '%#searchKey#%'   or t.REAL_SKU like '%#searchKey#%'  ) }
 	</entry>
   <entry key="sql_report_providor_statics">
 		SELECT

@@ -8,51 +8,59 @@ class NewPurchaseService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
 	public function createNewPurchaseProduct($params){
-		
-		$ScRequirement  = ClassRegistry::init("ScRequirement") ;
+		$dataSource = $this->getDataSource();
+		$dataSource->begin();
 		$guid = $this->create_guid() ;
-		$params['guid'] = $guid ;
-		$params['code'] = $this->getUserDefaultCode("PT")  ;
-		$this->exeSql("sql_purchase_new_create", $params) ;
-		
-		if( isset( $params['purchaseDetails'] ) ){
-			//创建需求产品
-			$reqProductId =  $this->create_guid() ;
-			$params1 = array() ;
-			$params1['PLAN_ID'] = "__auto__" ;
-			$params1['REAL_ID'] = $params['realId'] ;
-			$params1['REQ_PRODUCT_ID'] = $reqProductId ;
-			$params1['STATUS'] = 3 ;
-			$this->exeSql("sql_supplychain_requirement_product_insert", $params1) ;
-			$purchaseDetails = json_decode($params['purchaseDetails']) ;
+		try{
+				
+			$ScRequirement  = ClassRegistry::init("ScRequirement") ;
 			
-			foreach( $purchaseDetails as $item  ){
-				$item = get_object_vars($item) ;
+			$params['guid'] = $guid ;
+			$params['code'] = $this->getUserDefaultCode("PT")  ;
+			$this->exeSql("sql_purchase_new_create", $params) ;
+			
+			if( isset( $params['purchaseDetails'] ) ){
+				//创建需求产品
+				$reqProductId =  $this->create_guid() ;
+				$params1 = array() ;
+				$params1['PLAN_ID'] = "__auto__" ;
+				$params1['REAL_ID'] = $params['realId'] ;
+				$params1['REQ_PRODUCT_ID'] = $reqProductId ;
+				$params1['STATUS'] = 3 ;
+				$this->exeSql("sql_supplychain_requirement_product_insert", $params1) ;
+				$purchaseDetails = json_decode($params['purchaseDetails']) ;
 				
-				$sku = $item['sku'] ;
-				$accountId = $item['accountId'] ;
-				$quantity = $item['quantity'] ;
+				foreach( $purchaseDetails as $item  ){
+					$item = get_object_vars($item) ;
+					
+					$sku = $item['sku'] ;
+					$accountId = $item['accountId'] ;
+					$quantity = $item['quantity'] ;
+					
+					//创建需求明细
+					$ps = array() ;
+					$ps['accountId'] = $accountId ;
+					$ps['reqProductId'] = $reqProductId ;
+					$ps['id'] = $this->create_guid() ;
+					$ps['planId'] = "__auto__" ;
+					$ps['realId'] = $params['realId'] ;
+					$ps['listingSku'] = $sku ;
+					$ps['fulfillment'] = $item['fulfillment'] ;
+					$ps['existQuantity'] =  $item['supplyQuantity'] ;
+					$ps['calcQuantity'] = ((int)$item['supplyQuantity'])+( (int)$item['quantity'] )  ;
+					$ps['quantity'] =  $item['quantity'] ;
+					$ps['urgency'] =  "A" ;
+					$ps['reqType'] =  "A" ;//销量需求
+					$ScRequirement->createReqItem($ps) ;
+				}
 				
-				//创建需求明细
-				$ps = array() ;
-				$ps['accountId'] = $accountId ;
-				$ps['reqProductId'] = $reqProductId ;
-				$ps['id'] = $this->create_guid() ;
-				$ps['planId'] = "__auto__" ;
-				$ps['realId'] = $params['realId'] ;
-				$ps['listingSku'] = $sku ;
-				$ps['fulfillment'] = $item['fulfillment'] ;
-				$ps['existQuantity'] =  $item['supplyQuantity'] ;
-				$ps['calcQuantity'] = ((int)$item['supplyQuantity'])+( (int)$item['quantity'] )  ;
-				$ps['quantity'] =  $item['quantity'] ;
-				$ps['urgency'] =  "A" ;
-				$ps['reqType'] =  "A" ;//销量需求
-				$ScRequirement->createReqItem($ps) ;
+				//更新产品的REQ_PRODUCT_ID
+				$sql = "update sc_purchase_product set req_product_id = '{@#reqProductId#}'  where id = '{@#id#}'" ;
+				$this->exeSql($sql, array("reqProductId"=>$reqProductId,"id"=>$guid)) ;
 			}
-			
-			//更新产品的REQ_PRODUCT_ID
-			$sql = "update sc_purchase_product set req_product_id = '{@#reqProductId#}'  where id = '{@#id#}'" ;
-			$this->exeSql($sql, array("reqProductId"=>$reqProductId,"id"=>$guid)) ;
+			$dataSource->commit() ;
+		}catch(Exception $e){
+				$dataSource->rollback() ;
 		}
 		return $guid ;
 	}
@@ -104,77 +112,108 @@ class NewPurchaseService extends AppModel {
 			'{@#tags#}'
 	 */
 	public function savePurchaseProduct($data){
-		$status = $data['status'] ;
-		if( $status == 2 ){
-			$data['status'] = "" ;
-		}
-		$this->exeSql("sql_purchase_new_update" , $data ) ;
-		
-		$data['status'] = $status ;
-		$this->doPurchaseProductStatus($data) ;
-		
-		$ScRequirement  = ClassRegistry::init("ScRequirement") ;
-		$reqProductId = $data['reqProductId'] ;//reqProductId
-		
-		if( isset( $data['purchaseDetails'] ) ){
-			if( !empty( $reqProductId ) ){
-				//创建需求产品
-				$purchaseDetails = json_decode($data['purchaseDetails']) ;
-				foreach( $purchaseDetails as $item  ){
-					$item = get_object_vars($item) ;
-					
-					$sku = $item['sku'] ;
-					$accountId = $item['accountId'] ;
-					$quantity = $item['quantity'] ;
+		$dataSource = $this->getDataSource();
+		$dataSource->begin();
+		try{
 				
-					//创建需求明细
-					$ps = array() ;
-					$ps['accountId'] = $accountId ;
-					$ps['reqProductId'] = $reqProductId ;
-					$ps['sku'] = $sku ;
-					$ps['quantity'] =  $item['quantity'] ;
-					$ScRequirement->updateReqItem($ps) ;
+				$status = $data['status'] ;
+				if( $status == 2 ){
+					$data['status'] = "" ;
 				}
-			}else{
-				$reqProductId =  $this->create_guid() ;
-				$params1 = array() ;
-				$params1['PLAN_ID'] = "__auto__" ;
-				$params1['REAL_ID'] = $data['realId'] ;
-				$params1['REQ_PRODUCT_ID'] = $reqProductId ;
-				$params1['STATUS'] = 3 ;
-				$params1['status'] = 3 ;
-				$this->exeSql("sql_supplychain_requirement_product_insert", $params1) ;
+				$this->exeSql("sql_purchase_new_update" , $data ) ;
+				$purchaseProduct = $this->getPurchaseProductById( $data['id'] ) ; 
+				$data['status'] 		 = $status ;
+				$this->doPurchaseProductStatus($data) ;
+				$ScRequirement  = ClassRegistry::init("ScRequirement") ;
+				$RamPurchase  = ClassRegistry::init("RamPurchase") ;
 				
-				//创建需求产品
-				$purchaseDetails = json_decode($data['purchaseDetails']) ;
-				foreach( $purchaseDetails as $item  ){
-					$item = get_object_vars($item) ;
 				
-					$sku = $item['sku'] ;
-					$accountId = $item['accountId'] ;
-					$quantity = $item['quantity'] ;
+				$reqProductId = $data['reqProductId'] ;//reqProductId
+				//判断是否需要创建RMA计划 badProductsNum  noConsistencyNum  outOfNum
+				
+				if( $data['status'] == 60 ){
+					if( (!empty( $data['outOfNum'] ))  && $data['outOfNum'] >0 ) {//缺货数量
+						$RamPurchase->createRam( array( "purchaseId"=>$data['id'] , "rmaNum"=>$data['outOfNum'] ,
+								"causeCode"=>"CGQH","rmaCharger"=>$purchaseProduct['EXECUTOR'] ) ) ;
+						sleep(1);
+					}
 					
-					//创建需求明细
-					$ps = array() ;
-					$ps['accountId'] = $accountId ;
-					$ps['reqProductId'] = $reqProductId ;
-					$ps['id'] = $this->create_guid() ;
-					$ps['planId'] = "__auto__" ;
-					$ps['realId'] = $data['realId'] ;
-					$ps['listingSku'] = $sku ;
-					$ps['fulfillment'] = $item['fulfillment'] ;
-					$ps['existQuantity'] =  $item['supplyQuantity'] ;
-					$ps['calcQuantity'] = ((int)$item['supplyQuantity'])+( (int)$item['quantity'] )  ;
-					$ps['quantity'] =  $item['quantity'] ;
-					$ps['urgency'] =  "A" ;
-					$ps['reqType'] =  "A" ;//销量需求
-					$ScRequirement->createReqItem($ps) ;
+					if( (!empty( $data['badProductsNum'] ))  && $data['badProductsNum'] >0 ) {//残品数量
+						$RamPurchase->createRam( array( "purchaseId"=>$data['id'] , "rmaNum"=>$data['badProductsNum'] ,
+								"causeCode"=>"CGCP" ,"rmaCharger"=>$purchaseProduct['EXECUTOR'] ) ) ;
+						sleep(1);
+					}
+					
+					if( (!empty( $data['noConsistencyNum'] ))  && $data['noConsistencyNum'] >0 ) {//需求不一致数量
+						$RamPurchase->createRam( array( "purchaseId"=>$data['id'] , "rmaNum"=>$data['noConsistencyNum'] ,
+								"causeCode"=>"CGXQBYZ","rmaCharger"=>$purchaseProduct['EXECUTOR'] ) ) ;
+					}
 				}
 				
-				//更新产品的REQ_PRODUCT_ID
-				$sql = "update sc_purchase_product set req_product_id = '{@#reqProductId#}'  where id = '{@#id#}'" ;
-				$this->exeSql( $sql , array("reqProductId"=>$reqProductId,"id"=>$data['id'] ) ) ;
-			}
+				if( isset( $data['purchaseDetails'] ) ){
+					if( !empty( $reqProductId ) ){
+						//创建需求产品
+						$purchaseDetails = json_decode($data['purchaseDetails']) ;
+						foreach( $purchaseDetails as $item  ){
+							$item = get_object_vars($item) ;
+							
+							$sku = $item['sku'] ;
+							$accountId = $item['accountId'] ;
+							$quantity = $item['quantity'] ;
+						
+							//创建需求明细
+							$ps = array() ;
+							$ps['accountId'] = $accountId ;
+							$ps['reqProductId'] = $reqProductId ;
+							$ps['sku'] = $sku ;
+							$ps['quantity'] =  $item['quantity'] ;
+							$ScRequirement->updateReqItem($ps) ;
+						}
+					}else{
+						$reqProductId =  $this->create_guid() ;
+						$params1 = array() ;
+						$params1['PLAN_ID'] = "__auto__" ;
+						$params1['REAL_ID'] = $data['realId'] ;
+						$params1['REQ_PRODUCT_ID'] = $reqProductId ;
+						$params1['STATUS'] = 3 ;
+						$params1['status'] = 3 ;
+						$this->exeSql("sql_supplychain_requirement_product_insert", $params1) ;
+						
+						//创建需求产品
+						$purchaseDetails = json_decode($data['purchaseDetails']) ;
+						foreach( $purchaseDetails as $item  ){
+							$item = get_object_vars($item) ;
+						
+							$sku = $item['sku'] ;
+							$accountId = $item['accountId'] ;
+							$quantity = $item['quantity'] ;
+							
+							//创建需求明细
+							$ps = array() ;
+							$ps['accountId'] = $accountId ;
+							$ps['reqProductId'] = $reqProductId ;
+							$ps['id'] = $this->create_guid() ;
+							$ps['planId'] = "__auto__" ;
+							$ps['realId'] = $data['realId'] ;
+							$ps['listingSku'] = $sku ;
+							$ps['fulfillment'] = $item['fulfillment'] ;
+							$ps['existQuantity'] =  $item['supplyQuantity'] ;
+							$ps['calcQuantity'] = ((int)$item['supplyQuantity'])+( (int)$item['quantity'] )  ;
+							$ps['quantity'] =  $item['quantity'] ;
+							$ps['urgency'] =  "A" ;
+							$ps['reqType'] =  "A" ;//销量需求
+							$ScRequirement->createReqItem($ps) ;
+						}
+						
+						//更新产品的REQ_PRODUCT_ID
+						$sql = "update sc_purchase_product set req_product_id = '{@#reqProductId#}'  where id = '{@#id#}'" ;
+						$this->exeSql( $sql , array("reqProductId"=>$reqProductId,"id"=>$data['id'] ) ) ;
+					}
+				}
+			$dataSource->commit() ;
+		}catch(Exception $e){
+			$dataSource->rollback() ;
+			debug( $e ) ;
 		}
 	}
 	

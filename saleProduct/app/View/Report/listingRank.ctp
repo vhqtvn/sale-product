@@ -70,22 +70,12 @@
 	<div style="clear:both;height:1px;" ></div>
 	<div class="toolbar toolbar-auto">
 	  <div class="row-fluid">
-	  	<div class="span3">
+	  	<div class="span12">
 		<table class="toolbar1">
 			<tr>
-				<th>
-					日期:
-				</th>
 				<td>
-					<input type="text" id="purchaseDate"   data-widget="calendar"  value='<?php echo $printTime;?>'  style="width:100px;"/>
-				</td>								
-				<td class="toolbar-btns">
-					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
-				</td>
-		</table>
-		</div>
-		<div class="span9">
-		<table class="asyn-form"  data-widget="validator">
+					<input type="text" id="searchKey"  placeHolder="SKU、ASIN"  style="width:200px;"/>
+				</td>		
 				<th>账号：</th>
 						<td>
 						<select name="accountId" data-validator="required"  style="width:100px;">
@@ -99,8 +89,10 @@
 					     		} ;
 					     	?>
 							</select>
-						</td>
-			</tr>						
+						</td>						
+				<td class="toolbar-btns">
+					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
+				</td>
 		</table>
 		</div>
 		</div>

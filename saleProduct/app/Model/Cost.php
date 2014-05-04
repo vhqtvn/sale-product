@@ -296,6 +296,7 @@ class Cost extends AppModel {
 	 */
 	public function saveCostWithPurchase($data){
 		$sku = $data['sku'] ;
+		$realId = $data['realId'] ;
 		$realQuotePrice = $data['realQuotePrice'] ;
 		$realShipFee = $data['realShipFee'] ;
 		$qualifiedProductsNum = $data['qualifiedProductsNum'] ;
@@ -307,39 +308,22 @@ class Cost extends AppModel {
 		$purchaseCost = $realQuotePrice+round( ($realShipFee/$qualifiedProductsNum),2 );
 		
 		//如果未创建成本数据，则新创建FBA和FBM成本
-		$fbaSql = "select * from sc_product_cost where type='FBA' and sku='{@#sku#}'" ;
-		$fbmSql= "select * from sc_product_cost where type='FBM' and sku='{@#sku#}'" ;
+		$Sql = "select * from sc_product_cost where REAL_ID='{@#realId#}'" ;
+		
 		$insertSql = "" ;
-		$fbaCost = $this->getObject($fbaSql, $data) ;
-		$fbmCost= $this->getObject($fbmSql, $data) ;
+		$fbaCost = $this->getObject($Sql, $data) ;
 		if( empty($fbaCost) ){
 			$params  = array() ;
-			$params['SKU']  = $sku ;
-			$params['TYPE'] = "FBA" ;
+			$params['REAL_ID']  = $realId ;
 			$params['PURCHASE_COST'] = $purchaseCost ;
 			$this->exeSql("sql_cost_product_insert_simple",$params) ;
 		}else{
 			$params  = array() ;
 			$params['ID'] = $fbaCost['ID'] ;
-			$params['SKU']  = $sku ;
-			$params['TYPE'] = "FBA" ;
+			$params['REAL_ID']  = $realId ;
 			$params['PURCHASE_COST'] = $purchaseCost ;
-			$this->exeSql("sql_cost_product_update",$params) ;
-		}
-		
-		if( empty($fbmCost) ){
-			$params  = array() ;
-			$params['SKU']  = $sku ;
-			$params['TYPE'] = "FBM" ;
-			$params['PURCHASE_COST'] = $purchaseCost ;
-			$this->exeSql("sql_cost_product_insert_simple",$params) ;
-		}else{
-			$params  = array() ;
-			$params['ID'] = $fbmCost['ID'] ;
-			$params['SKU']  = $sku ;
-			$params['TYPE'] = "FBM" ;
-			$params['PURCHASE_COST'] = $purchaseCost ;
-			$this->exeSql("sql_cost_product_update",$params) ;
+			//$this->exeSql("sql_cost_product_update",$params) ;
+			$this->exeSql("sql_cost_update_new", $params) ;
 		}
 	}
 	

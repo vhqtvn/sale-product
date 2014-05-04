@@ -213,6 +213,7 @@
 						             where saap.account_id = srpr.account_id
 						             and saap.sku = srpr.sku
 						             and srpr.real_id = srp.id
+						             and saap.fulfillment_channel like '%AMAZON%'
 						             and ( saap.limit_price is null or saap.limit_price<=0)
 						)
 	]]>	      
@@ -266,6 +267,7 @@
 						             where saap.account_id = srpr.account_id
 						             and saap.sku = srpr.sku
 						             and srpr.real_id = srp.id
+						             and saap.fulfillment_channel like '%AMAZON%'
 						              and ( saap.limit_price is null or saap.limit_price<=0)
 						) }	
 					{@ and  (

@@ -14,7 +14,7 @@
    
    
    <entry key="sql_ram_options_getByType">
-  		select * from sc_ram_options where type = '{@#type#}'
+  		select * from sc_ram_options where type = '{@#type#}'  and rma_type = '{@#rmaType#}'
    </entry>
    
    <entry key="sql_ram_option_insert">	
@@ -128,6 +128,9 @@
 		CODE, 
 		ORDER_ID, 
 		ORDER_NO, 
+		PURCHASE_ID,
+		RMA_TYPE,
+		RMA_NUM,
 		CAUSE_CODE, 
 		POLICY_CODE, 
 		CREATOR, 
@@ -142,14 +145,17 @@
 		'{@#code#}', 
 		'{@#orderId#}', 
 		'{@#orderNo#}', 
+		'{@#purchaseId#}', 
+		'{@#rmaType#}', 
+		'{@#rmaNum:0#}', 
 		'{@#causeCode#}', 
 		'{@#policyCode#}', 
 		'{@#loginId#}', 
 		NOW(), 
 		'{@#status#}', 
 		'{@#memo#}', 
-		'{@#proposedTime#}', 
-		''
+		'{@#charger#}', 
+		{@#proposedTime:NOW()#}
 		)
    </entry>
    
@@ -167,12 +173,14 @@
    <entry key="sql_ram_event_update">
 		UPDATE sc_ram_event 
 			SET
-			CODE = '{@#code#}' , 
-			ORDER_ID = '{@#orderId#}' , 
-			ORDER_NO = '{@#orderNo#}' , 
-			CAUSE_CODE = '{@#causeCode#}' , 
-			POLICY_CODE = '{@#policyCode#}' ,
-			MEMO = '{@#memo#}' , 
+			{@CODE = '#code#' , }
+			{@ORDER_ID = '#orderId#' ,} 
+			{@ORDER_NO = '#orderNo#' ,}  
+			{@CAUSE_CODE = '#causeCode#' ,} 
+			{@POLICY_CODE = '#policyCode#' ,} 
+			{@RMA_TYPE = '#rmaType#' ,} 
+			{@RMA_NUM = '#rmaNum#' ,} 
+			{@MEMO = '#memo#' ,} 
 			{@ feed_back = '#feedBack#',}
 			{@ status = '#status#',}
 			{@ is_receive = '#isReceive#',}
@@ -181,8 +189,8 @@
 			{@ resend_status = '#resendStatus#',}
 			{@ refund_value = '#refundValue#',}
 			{@ PROPOSED_TIME = '#proposedTime#',}
-			END_TIME = now(),
-			CHARGER = '{@#charger#}'
+			{@CHARGER = '#charger#' ,} 
+			END_TIME = now()
 			WHERE
 			ID = '{@#id#}'
    </entry>
