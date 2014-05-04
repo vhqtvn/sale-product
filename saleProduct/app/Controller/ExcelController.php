@@ -157,7 +157,7 @@ class ExcelController extends AppController {
 	public function read($id){
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$in = $SqlUtils->getObject("sql_warehouse_in_getById",array('id'=> $id)) ;
-		$inProducts = $SqlUtils->exeSql("sql_warehouse_in_products",array('inId'=>$id)) ;
+		$inProducts = $SqlUtils->exeSql("sql_warehouse_in_products4Invoice",array('inId'=>$id)) ;
 		
 		$indate = $ppo=date('Y/m/d',strtotime($in['SHIP_DATE']));
 		$in['SHIP_DATE'] = $indate ;

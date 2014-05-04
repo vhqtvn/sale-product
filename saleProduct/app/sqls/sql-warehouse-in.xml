@@ -291,6 +291,22 @@ sc_real_product srp
 WHERE swip.IN_ID= '{@#inId#}'
 AND swip.REAL_ID = srp.ID
 </entry>
+
+<!-- 获取入库货品For报关 -->
+<entry key="sql_warehouse_in_products4Invoice">
+   SELECT  
+       srp.DECLARATION_NAME,
+       srp.DECLARATION_PRICE,
+       sum( swip.QUANTITY ) as QUANTITY
+FROM sc_warehouse_in_product swip,
+sc_real_product srp
+WHERE swip.IN_ID= '{@#inId#}'
+AND swip.REAL_ID = srp.ID
+group by  srp.DECLARATION_NAME,
+       srp.DECLARATION_PRICE
+</entry>
+
+
    
    <entry key="sql_warehouse_in_products">
 		SELECT s1.* , s2.NAME , s2.REAL_SKU as SKU , s2.IMAGE_URL

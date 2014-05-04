@@ -46,12 +46,12 @@
 				$name = $sfs['NAME'] ;
 				$pid  = $sfs['PARENT_ID'] ;
 				$url  = $sfs['URL'] ;
-				
-				//format $url ;
-				if( substr($url, 0, 1)=="/" ){
-					$url = "/".$fileContextPath.$url;
-				}else{
-					$url = $contextPath.'/'.$url ;
+				if( !empty($url) ){
+					if( substr($url, 0, 1)=="/" ){
+						$url = "/".$fileContextPath.$url;
+					}else{
+						$url = $contextPath.'/'.$url ;
+					}
 				}
 				
 				echo " var item$index = {id:'$id',text:'$name',pid:'$pid',url:'$url',isexpand:false,code:'$code'} ;" ;
@@ -147,7 +147,6 @@
 					if( prevText && $.trim(prevText) ){
 						prevText = prevText+" 》" ;
 					}
-
 					f_addTab(tabid,prevText+ node.data.text, node.data.url);
 			    }
 			});

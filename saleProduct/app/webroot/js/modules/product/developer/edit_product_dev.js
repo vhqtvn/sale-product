@@ -123,6 +123,8 @@ $(function(){
 					var json = $("#personForm").toJson() ;
 					json = $.extend({},json) ;
 					json.ASIN = asin ;
+					json.FLOW_STATUS = 60 ;
+					json.DEV_ID = json.devId ;
 					$.dataservice("model:NewProductDev.doFlow",json,function(result){
 						window.location.reload() ;
 					});

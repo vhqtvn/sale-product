@@ -21,10 +21,10 @@
 		       srp.REAL_SKU,
 		       srp.ID as REAL_ID,
 		       saap.SKU,
-		        (select  sar.IN_STOCK_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where  sfsi.account_id = saap.account_id
-			 and sfsi.sku = SELLER_SKU.sku ) as IN_STOCK_SUPPLY_QUANTITY,
-		        (select  sar.TOTAL_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where  sfsi.account_id = saap.account_id
-			 and sfsi.sku = SELLER_SKU.sku ) as TOTAL_SUPPLY_QUANTITY,
+		        (select  sfsi.IN_STOCK_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where  sfsi.account_id = saap.account_id
+			 and sfsi.SELLER_SKU = saap.sku ) as IN_STOCK_SUPPLY_QUANTITY,
+		        (select  sfsi.TOTAL_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where  sfsi.account_id = saap.account_id
+			 and sfsi.SELLER_SKU = saap.sku ) as TOTAL_SUPPLY_QUANTITY,
 		       (select  sar.SALES_FOR_THELAST14DAYS from sc_amazon_recommendations sar where  sar.account_id = saap.account_id
 			 and sar.sku = saap.sku ) as SALES_FOR_THELAST14DAYS,
 		       (select  sar.SALES_FOR_THELAST30DAYS from sc_amazon_recommendations sar where  sar.account_id = saap.account_id
