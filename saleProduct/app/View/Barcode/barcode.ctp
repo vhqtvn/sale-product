@@ -96,12 +96,29 @@ $title = $item['TITLE'] ;
 $condition = "New" ;//$item['ITEM_CONDITION']==
 $fnSku =  $item['FC_SKU'] ;
 
+$_result = null ;
+
+if( empty($title) ){
+	$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+	$_result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
+	try{
+		$json = json_decode($_result) ;
+		$json = get_object_vars($json) ;
+		$Attributes = $json['Attributes'] ;
+		$Attributes = get_object_vars($Attributes) ;
+		$title = $Attributes['Title'] ;
+	}catch(Exception $e){
+	}
+}
+
 if( empty( $fnSku  ) ){
 	//检查该产品是否能够打印标签
-	$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
-	$result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
+	if( empty($_result) ){
+		$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+		$_result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
+	}
 	
-	$json = json_decode($result) ;
+	$json = json_decode($_result) ;
 	$json = get_object_vars($json) ;
 	$status = $json['status'] ;
 	$status = strtolower($status) ;
