@@ -566,7 +566,7 @@
 									</tr>
 									<tr>
 										<th>实际供应商：</th>
-										<td>
+										<td  colspan="3">
 										<select id="realProvidor"   class=" 70-input  input" 
 											<?php echo $actionType == 'audit' ?"data-validator='required'":"" ?>
 										>

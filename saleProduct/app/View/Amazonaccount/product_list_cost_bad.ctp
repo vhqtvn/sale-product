@@ -203,6 +203,7 @@
 		 -->
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="6">报关数据缺失<span class="count"></span></div></td>
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="7">产品属性为空<span class="count"></span></div></td>
+		<td class="flow-split">-</td><td><div class="flow-node disabled" status="8">未设置限价<span class="count"></span></div></td>
 		</tr>					
 		</tbody>
 		</table>										

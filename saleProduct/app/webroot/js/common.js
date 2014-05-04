@@ -13,7 +13,6 @@ function getContextPath() {
 }
 
 window.onerror = function(){
-	
 }
 
 window.Config = window.Config || {
@@ -503,7 +502,7 @@ jQuery.request.addEvent = function( type , func ){
 }
  
 jQuery.request.defaultErrorHandler = function(xhr, textStatus, errorThrown,url){
-	alert(errorThrown+"  "+textStatus) ;
+	//alert(errorThrown+"  "+textStatus) ;
 	// jQuery.open(Global.contextPath+"/common/error/report500.jsp",570,410,{errorThrown:errorThrown} ) ;
 }
 

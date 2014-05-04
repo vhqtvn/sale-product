@@ -201,6 +201,20 @@
 					WHERE 
 					 srp.is_onsale=1
 					  and (  srp.properties is null or srp.properties='' )  
+		    union
+		    SELECT 8 as STATUS,count(1) as COUNT
+			FROM 
+					sc_real_product srp  
+		    where
+		    srp.is_onsale=1
+		     and exists (
+						   select * from sc_amazon_account_product saap,
+						             sc_real_product_rel srpr
+						             where saap.account_id = srpr.account_id
+						             and saap.sku = srpr.sku
+						             and srpr.real_id = srp.id
+						             and ( saap.limit_price is null or saap.limit_price<=0)
+						)
 	]]>	      
     </entry>
     
@@ -245,6 +259,15 @@
 					{@ and  #status7# = 1 
 						and ( srp.properties is null or srp.properties =''
 						  ) }	
+					{@ and  #status8# = 1 
+						and  exists (
+						   select * from sc_amazon_account_product saap,
+						             sc_real_product_rel srpr
+						             where saap.account_id = srpr.account_id
+						             and saap.sku = srpr.sku
+						             and srpr.real_id = srp.id
+						              and ( saap.limit_price is null or saap.limit_price<=0)
+						) }	
 					{@ and  (
 					    srp.name like '%#searchKey#%'
 					    or
