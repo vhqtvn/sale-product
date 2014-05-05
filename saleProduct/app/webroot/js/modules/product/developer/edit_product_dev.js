@@ -30,11 +30,11 @@ $(function(){
  		$("[name='DEV_STATUS']").click(function(){
  			devStatusRender() ;
  		}) ;
- 		
+ 
  		var categoryTreeSelect = {
  				title:'产品分类选择页面',
- 				valueField:"#categoryId",
- 				labelField:"#categoryName",
+ 				//valueField:"#categoryId",
+ 				//labelField:"#categoryName",
  				key:{value:'ID',label:'NAME'},//对应value和label的key
  				multi:true ,
  				tree:{
@@ -55,7 +55,23 @@ $(function(){
  				}
  		   } ;
  		   
- 		$(".select-category").listselectdialog( categoryTreeSelect) ;
+ 		$(".select-category").listselectdialog( categoryTreeSelect,function(){
+
+ 			var args = jQuery.dialogReturnValue() ;
+ 			
+			var value = args.value[0] ;
+			var label = args.label[0] ;
+			
+			$("#categoryId").val(value) ;
+			$("#categoryName").val(label) ;
+			//获取分类询价负责人为当前产品询价
+			var selectReocrds = args.selectReocrds[value+""] ;
+			console.log(selectReocrds) ;
+			$("#INQUIRY_CHARGER").val(selectReocrds.INQUIRY_CHARGER||"" ) ;
+			$("#INQUIRY_CHARGER_NAME").val(selectReocrds.INQUIRY_CHARGER_NAME||"" ) ;
+			
+			return false;
+ 		}) ;
  		
  		var chargeGridSelect = {
 				title:'用户选择页面',

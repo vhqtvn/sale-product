@@ -598,7 +598,9 @@ html{-webkit-text-size-adjust: none;}
 						<th>开发产品分类：</th>
 						<td colspan="3">
 							<input type="hidden"  id="categoryId" name="categoryId" value="<?php echo $productDev['CATEGORY_ID']?>"/>
-							<input type="text" id="categoryName" name="categoryName" value="<?php echo $productDev['CATEGORY_NAME']?>"/>
+							<input type="text" id="categoryName"  class="input 10-input"   
+							  data-validator="required" 
+							  name="categoryName" value="<?php echo $productDev['CATEGORY_NAME']?>"/>
 							<button class="btn select-category">选择</button>
 						</td>
 					</tr>

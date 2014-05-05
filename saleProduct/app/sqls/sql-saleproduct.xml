@@ -2,7 +2,7 @@
 <properties>
     <entry key="sql_list_supplierInquiryHistory">
     	SELECT t1.* FROM (     
-     SELECT s.* ,
+    {@ SELECT s.* ,
     	ss.NAME,
     	ss.EVALUATE,
     	( TO_DAYS( NOW() ) - TO_DAYS(s.CREATE_TIME) ) AS DAY_NUM,
@@ -10,7 +10,7 @@
     	FROM sc_purchase_supplier_inquiry s ,
     	sc_supplier ss
     	WHERE
-    	s.sku ='{@#realSku#}'
+    	s.sku ='#realSku#'
     	AND s.supplier_id = ss.id
     	UNION
     	SELECT s.* ,
@@ -26,7 +26,20 @@
     	  s.ASIN = spd.asin
         AND srp.id = spd.real_product_id
     	AND s.supplier_id = ss.id
-    	AND srp.real_sku = '{@#realSku#}'
+    	AND srp.real_sku = '#realSku#'
+     }	
+      {@ 
+      	SELECT s.* ,
+    	ss.NAME,
+    	ss.EVALUATE,
+    	( TO_DAYS( NOW() ) - TO_DAYS(s.CREATE_TIME) ) AS DAY_NUM,
+    	(SELECT NAME FROM sc_user WHERE login_id = s.creator) AS USERNAME
+    	FROM sc_purchase_supplier_inquiry s ,
+    	sc_supplier ss
+    	WHERE
+    	s.asin ='#asin#'
+    	AND s.supplier_id = ss.id
+       }	
    ) t1 ORDER BY t1.create_time DESC
     </entry>
     
@@ -428,7 +441,8 @@
         	  		and s.product_id = '#productId#'
 					 ) as checkstate,
         	    }
-              (select count(*) from sc_real_product_category where sc_real_product_category.category_id = sc_product_category.id ) as TOTAL
+              (select count(*) from sc_real_product_category where sc_real_product_category.category_id = sc_product_category.id ) as TOTAL,
+              (SELECT NAME FROM sc_user su WHERE su.login_id = sc_product_category.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME
               from sc_product_category
    
 	]]>	      
