@@ -10,6 +10,24 @@ class CronTaskController extends AppController {
     
     var $uses = array('Utils','Amazonaccount','ScRequirement','Cost','NewPurchaseService','GatherData',"System","ScCache");
     
+    public function initPurchaseLimitPrice(){
+    	$sql = "sql_purchase_new_listForRepaire" ;
+    	$products = $this->Utils->exeSqlWithFormat("sql_purchase_new_listForRepaire",array()) ;
+    	foreach($products as $product  ){
+    		$id = $product['ID'] ;
+    		$realId =  $product['REAL_ID'] ;
+    		
+    		if( empty($product['LIMIT_PRICE']  ) || $product['LIMIT_PRICE'] <=0 ){
+    			$limitPrice = $this->NewPurchaseService->getDefaultLimitPrice($realId) ;
+    			echo $realId.'       '.$limitPrice.'<br>' ;
+    			ob_flush() ;
+    			if( empty($limitPrice) )continue ;
+    			$sql = "update sc_purchase_product set limit_price = '{@#limitPrice#}' where id='{@#id#}'" ;
+    			$this->Utils->exeSql($sql,array("limitPrice"=>$limitPrice,"id"=>$id)) ;
+    		}
+    	}
+    }
+    
     public function clearLimitPrice(){
     	$this->Utils->exeSql("delete from sc_sale_schedule",array()) ;
     }
