@@ -3,6 +3,15 @@ class NewIn extends AppModel {
 	var $useTable = "sc_warehouse_in" ;
 	
 	/**
+	 * AMazon入库数量校验
+	 */
+	public function checkQuantityForAmazon($params){
+		$inId = $params['inId'] ;
+		$p = $this->getObject("sc_warehouse_in_new_checkQuantityForAmazon", $params) ;
+		return empty($p)?true:false ;
+	}
+	
+	/**
 	 * 转仓出库
 	 * @param unknown_type $params
 	 */

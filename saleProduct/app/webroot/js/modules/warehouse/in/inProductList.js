@@ -36,17 +36,21 @@
 	           		{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"5%"},
 	           		{align:"center",key:"QUANTITY",label:"数量",width:"3%",format:function(val,record){
 	           			var dis = $isRead?"disabled='disabled'":'' ;
-	           			return "<input type='text' "+dis+"  class='in-quantity' style='width:50px;height:20px;margin-top:2px;padding:0px;padding-left:2px;' value='"+(val||0)+"'>" ;
+	           			return "<input type='text' "+dis+"  class='in-quantity' style='width:40px;height:20px;margin-top:2px;padding:0px;padding-left:2px;' value='"+(val||0)+"'>" ;
+	           		}},
+	           		{align:"center",key:"IN_QUANTITY",label:"实际入库数量",width:"3%",format:function(val,record){
+	           			var dis = $isInRead?"disabled='disabled'":'' ;
+	           			return "<input type='text' "+dis+"  class='real-in-quantity' style='width:40px;height:20px;margin-top:2px;padding:0px;padding-left:2px;' value='"+(val||'')+"'>" ;
 	           		}},
 	           		{align:"center",key:"DELIVERY_TIME",label:"供货时间",width:"6%"},
 	           		{align:"center",key:"PRODUCT_TRACKCODE",label:"产品跟踪码",width:"6%"},
-	           		{align:"center",key:"MEMO",label:"备注",width:"6%"}
+	           		{align:"center",key:"MEMO",label:"备注",width:"6%" }
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
 				 pageSizes:[10,20,30,40],
 				 height:function(){
-					 return $(window).height() -280 ;
+					 return $(window).height() -120 ;
 				 },
 				 title:"货品列表",
 				 autoWidth:true,
@@ -72,6 +76,16 @@
 						var record = $(this).parents("tr").data("record") ;
 						var quantity = $(this).val() ;
 						$.dataservice("model:Warehouse.In.updateInProduct",{quantity:quantity,id:record.ID},function(result){
+							if(result){
+								alert(result) ;
+							}
+						});
+					}) ;
+					
+					$(".real-in-quantity").blur(function(){
+						var record = $(this).parents("tr").data("record") ;
+						var quantity = $(this).val() ;
+						$.dataservice("model:Warehouse.In.updateInProduct",{inQuantity:quantity,id:record.ID},function(result){
 							if(result){
 								alert(result) ;
 							}

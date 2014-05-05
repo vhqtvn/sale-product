@@ -9,7 +9,10 @@ class In extends AppModel {
 	}
 	
 	public function updateInProduct( $params ){
-		$sql = "update sc_warehouse_in_product set quantity='{@#quantity#}' where id = '{@#id#}'" ;
+		$sql = "update sc_warehouse_in_product set  id = '{@#id#}'
+				{@,quantity='#quantity#'}
+				{@,in_quantity='#inQuantity#'}
+				 where id = '{@#id#}'" ;
 		$this->exeSql($sql, $params) ;
 	}
 	

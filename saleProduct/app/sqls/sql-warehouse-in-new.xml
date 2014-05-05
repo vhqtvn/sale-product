@@ -14,6 +14,12 @@
 		     	AND swi.REAL_PRODUCT_ID =srp.ID
 	</entry>
 	
+	<entry key="sc_warehouse_in_new_checkQuantityForAmazon">
+		SELECT * FROM sc_warehouse_in_product swip WHERE 
+   swip.IN_ID = '{@#inId#}'
+   AND ( swip.IN_QUANTITY IS NULL  OR swip.IN_QUANTITY = '')
+	</entry>
+	
 	<entry key="sc_warehouse_in_new_listFBAProduct_ALL">
 		SELECT swi.* ,
 		       srp.NAME AS REAL_NAME,

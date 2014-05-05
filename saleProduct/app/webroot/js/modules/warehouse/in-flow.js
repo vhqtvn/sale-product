@@ -510,7 +510,7 @@ var flowConfig = {
 						{status:0,label:"编辑中",memo:true
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(0,"保存") }},
-							          {label:"提交，准备装箱",action:function(){ AuditAction(12,"打印条码标签") }}]
+							          {label:"提交，准备装箱",action:function(){ AuditAction(12,"准备装箱") }}]
 						},
 						/*{status:11,label:"打印标签",memo:true
 							,actions:[
@@ -551,7 +551,7 @@ var flowConfig = {
 							          {label:"保存",action:function(){ AuditAction(30,"保存") }},
 							          {label:"导出装箱单",action:function(){ printBox();} },
 							          {label:"导出发票",action:function(){ printInvoice();} },
-							          {label:"到达Amazon",action:function(){ AuditAction(70,"到达Amazon") } }
+							          {label:"到达Amazon，入库完成",action:function(){ AmazonInAction(70,"到达Amazon，入库完成") } }
 							]
 						},
 						{status:70,label:"入库完成"

@@ -30,11 +30,14 @@
 		
 		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
 		$isRead = $hasEditPermission?($status >= 14 ?true:false):true ;
+		
+		$isInRead = $hasEditPermission?( ( $status != 30 ) ?true:false):true ;
 	?>
   
    <script type="text/javascript">
    	var inId = '<?php echo $params['arg1'] ;?>' ;
    	var $isRead = <?php echo $isRead?"true":"false" ; ?> ;	 
+   	var $isInRead = <?php echo $isInRead?"true":"false" ; ?> ;	
    	var warehouse = <?php echo  json_encode($warehoseIn) ; ?> ;	
    </script>
 
