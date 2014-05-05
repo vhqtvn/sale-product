@@ -1172,6 +1172,13 @@ $(".product-realsku").live("click",function(){
 	return false;
 }) ;
 
+$("[purchase-product]").live("click",function(){
+	var sku = $(this).attr("purchase-product") ;
+	openCenterWindow(contextPath+"/page/forward/Purchase.edit_purchase_product/"+sku,950,650) ;
+	return false;
+}) ;
+
+
 $("td[key='ORDER_ID']").live("click",function(){
 	if( $(this).find(":input").length ) return ;
 	var orderId = $.trim( $(this).text() ) ;

@@ -510,14 +510,14 @@ var flowConfig = {
 						{status:0,label:"编辑中",memo:true
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(0,"保存") }},
-							          {label:"提交，打印条码标签",action:function(){ AuditAction(11,"打印条码标签") }}]
+							          {label:"提交，准备装箱",action:function(){ AuditAction(12,"打印条码标签") }}]
 						},
-						{status:11,label:"打印标签",memo:true
+						/*{status:11,label:"打印标签",memo:true
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(11,"保存") }},
 							          {label:"确认打印完成",action:function(){ AuditAction(12,"标签打印粘贴完成，准备装箱") } }
 							]
-						},
+						},*/
 						{status:12,label:"装箱",memo:true
 							,actions:[
 							          {label:"保存",action:function(){ AuditAction(12,"保存") }},

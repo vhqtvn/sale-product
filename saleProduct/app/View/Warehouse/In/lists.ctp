@@ -90,8 +90,10 @@
 		  			<div class="flow-node active  total" status="">全部<span class="count"></span></div>
 		  			<div class="flow-split">&nbsp; &nbsp; &nbsp; </div>
 		 			<div class="flow-node disabled" status="0">编辑中<span class="count"></span></div>
+		 			<!--
 					<div class="flow-split">-</div>
 					<div class="flow-node disabled" status="11">打印标签<span class="count"></span></div>
+					  -->
 					<div class="flow-split">-</div>
 					<div class="flow-node disabled" status="12">装箱<span class="count"></span></div>
 					<div class="flow-split">-</div>

@@ -351,7 +351,7 @@ class NewPurchaseService extends AppModel {
 			$cost2 = $indata['COST2'] ;
 			$cost3 = $indata['COST3'] ;
 	
-			if( $cost1 !=0 ){
+			if( ( !empty( $cost1 )) && $cost1 !=0 ){
 				$minCost = min($minCost , $cost1 ) ;
 				if($minCost == $cost1  ){
 					$PER_PRICE = $indata['PER1_PRICE'] ;
@@ -360,7 +360,7 @@ class NewPurchaseService extends AppModel {
 				}
 			}
 	
-			if( $cost2 !=0 ){
+			if(   ( !empty( $cost2)) && $cost2 !=0 ){
 				$minCost = min($minCost , $cost2 ) ;
 				if($minCost == $cost2  ){
 					$PER_PRICE = $indata['PER2_PRICE'] ;
@@ -369,7 +369,7 @@ class NewPurchaseService extends AppModel {
 				}
 			}
 	
-			if( $cost3 !=0 ){
+			if(  ( !empty( $cost3 )) && $cost3 !=0 ){
 				$minCost = min($minCost , $cost3 ) ;
 				if($minCost == $cost3  ){
 					$PER_PRICE = $indata['PER3_PRICE'] ;
@@ -379,9 +379,10 @@ class NewPurchaseService extends AppModel {
 			}
 		}
 	
-		if( $PER_PRICE >0  ){
+		if( $PER_PRICE >0 && $limitPrice >0  ){
 			$limitPrice = min($PER_PRICE,$limitPrice) ;
-		  
+		}else if( $PER_PRICE >0 ){
+			$limitPrice = $PER_PRICE ;
 		}
 		return $limitPrice ;
 	}

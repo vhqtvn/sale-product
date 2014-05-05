@@ -64,6 +64,7 @@ $(function(){
 				}
 				
 			}},
+			{key:"IMAGE_URL",label:"",width:"4%",forzen:false,align:"center",format:{type:"img"}},
 			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"left",format:{type:"json",content:{'10':"编辑中",20:"待审批",30:"退货标签确认",40:"退货确认",50:"退货入库",60:"退款",70:"重发配置",75:"重发确认",78:"重发收货确认",79:"Feedback",80:"结束"}}},
 			{key:"TRACK_MEMO",label:"最新轨迹",width:"10%",forzen:false,align:"left",format:function(val,record){
 				if(!val) return "" ;
@@ -71,18 +72,15 @@ $(function(){
 				return val ;
 			}},
 			{key:"TRACK_TIME",label:"更新时间",width:"10%",forzen:false,align:"left"},
-			{key:"CODE",label:"编号",width:"14%",forzen:false,align:"center"},
-			{key:"ORDER_ID",label:"订单ID",width:"14%",forzen:false,align:"center"},
-			{key:"ORDER_NO",label:"内部订单号",width:"8%",forzen:false,align:"center"},
-			{align:"left",key:"ORDER_PRODUCTS",label:"订单货品", width:"10%",format:function(val,record){
-	      		val = val||"" ;
-	      		var html = [] ;
-	      		$( val.split(";") ).each(function(index,item){
-	      			var array = item.split("|") ;
-	      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
-	      		})  ;
-	      		return html.join("") ;
-	      	}},
+			{key:"CODE",label:"RMA编号",width:"14%",forzen:false,align:"center"},
+			//http://localhost/saleProduct/index.php/page/forward/Purchase.edit_purchase_product/4EFCF5E9-AFB6-F5BB-AF5B-A5A5022C8643
+			{key:"PURCHASE_CODE",label:"采购编号",width:"14%",forzen:false,align:"center",format:function(val,record){
+           		return "<a href='#' purchase-product='"+record.PURCHASE_ID+"'>"+(val||"")+"</a>" ;
+           	}},
+			{key:"REAL_NAME",label:"货品名称",width:"14%",forzen:false,align:"center"},
+			{align:"center",key:"REAL_SKU",label:"货品SKU",width:"8%",forzen:false,align:"left",format:function(val){
+           		return "<a href='#' product-realsku='"+val+"'>"+(val||"")+"</a>" ;
+           	}},
            	{key:"CAUSE_NAME",label:"原因",width:"13%",align:"left"},
            	{key:"POLICY_NAME",label:"决策",width:"10%",align:"left"},
            	{key:"USER_NAME",label:"创建用户",width:"6%",align:"left"},
@@ -97,9 +95,9 @@ $(function(){
 		 height:function(){
 		 	return $(window).height()-230 ;
 		 },
-		 title:"RAM事件列表",
+		 title:"采购RAM事件列表",
 		 indexColumn:false,
-		 querys:{sqlId:"sql_ram_events_list",status:'',status1:"1"},
+		 querys:{sqlId:"sql-rma-purchaes-list",status:'',status1:"1"},
 		 loadMsg:"数据加载中，请稍候......",
 		 rowClick:function(row,record){
 		 	//$(".grid-content-active").llygrid("reload",{planId:record.ID});

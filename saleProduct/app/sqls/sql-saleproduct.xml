@@ -17,7 +17,7 @@
 		    	 	s.asin in (
 		    	 		select spd.asin 
 		    	 		from sc_real_product srp,
-		    	 		sc_product_dev spd
+		    	 		sc_product_developer spd
 		    	 		 where 
 		    	 		 srp.id = spd.real_product_id
 		    	 		 and srp.real_sku = '#realSku#'

@@ -398,7 +398,7 @@
 						</table>
 						
 						<table class="form-table" >
-								<caption>采购需求<?php if( $reedit_pp_product  && $status <= 47){ 
+								<caption>采购需求<?php if( $reedit_pp_product  && $status <= 50){ 
 								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 								}?></caption>
 								<thead>

@@ -37,7 +37,7 @@
 				 },
 				 title:"排名列表",
 				 indexColumn:false,
-				 querys:{sqlId:"sql_report_listingRankForFba",purchaseDate:newDate},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+				 querys:{sqlId:"sql_report_listingRankForFba"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
 				 },

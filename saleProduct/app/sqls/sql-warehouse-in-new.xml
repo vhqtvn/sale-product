@@ -45,6 +45,7 @@
 		        and saap.is_active = 1
 		        and  srp.is_onsale = 1
 		        and saap.account_id = '{@#accountId#}'
+		        {@ and ( srp.name like '%#searchKey#%' or srp.real_sku like '%#searchKey#%' ) }
 				{@ and swi.quantity >0 and #includeOnly# = #includeOnly# }
 		order by srp.id
 	</entry>

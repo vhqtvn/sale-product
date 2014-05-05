@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+   <entry key="sql-rma-purchaes-list">
+  		SELECT 
+			    sre.*,
+			    spp.CODE as PURCHASE_CODE,
+			    srp.NAME as REAL_NAME,
+			    srp.IMAGE_URL,
+			    srp.REAL_SKU
+			FROM sc_ram_event sre,
+			     sc_purchase_product spp,
+			     sc_real_product srp
+			 WHERE sre.PURCHASE_ID IS NOT NULL 
+			     AND sre.PURCHASE_ID = spp.ID
+			     AND srp.ID = spp.REAL_ID
+   </entry>
+</properties>
