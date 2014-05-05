@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
     <entry key="sql_list_supplierInquiryHistory">
-    	select s.* ,
+    	SELECT t1.* FROM (     
+     SELECT s.* ,
     	ss.NAME,
     	ss.EVALUATE,
-    	( TO_DAYS( NOW() ) - TO_DAYS(s.CREATE_TIME) ) as DAY_NUM,
-    	(select name from sc_user where login_id = s.creator) as USERNAME
-    	from sc_purchase_supplier_inquiry s ,
+    	( TO_DAYS( NOW() ) - TO_DAYS(s.CREATE_TIME) ) AS DAY_NUM,
+    	(SELECT NAME FROM sc_user WHERE login_id = s.creator) AS USERNAME
+    	FROM sc_purchase_supplier_inquiry s ,
     	sc_supplier ss
-    	where
-    	( 
-    		1=1
-    		{@ and ( 
-    				s.sku = '#realSku#'
-		    	 	or 
-		    	 	s.asin in (
-		    	 		select spd.asin 
-		    	 		from sc_real_product srp,
-		    	 		sc_product_developer spd
-		    	 		 where 
-		    	 		 srp.id = spd.real_product_id
-		    	 		 and srp.real_sku = '#realSku#'
-		    	 	)
-		    	)
-    	 	}
-    	 	{@ and s.asin = '#asin#'}
-    	)
-    	and s.supplier_id = ss.id
-    	order by s.create_time desc
+    	WHERE
+    	s.sku ='{@#realSku#}'
+    	AND s.supplier_id = ss.id
+    	UNION
+    	SELECT s.* ,
+    	ss.NAME,
+    	ss.EVALUATE,
+    	( TO_DAYS( NOW() ) - TO_DAYS(s.CREATE_TIME) ) AS DAY_NUM,
+    	(SELECT NAME FROM sc_user WHERE login_id = s.creator) AS USERNAME
+    	FROM sc_purchase_supplier_inquiry s ,
+    	sc_supplier ss,
+    	sc_product_developer spd,
+    	sc_real_product srp
+    	WHERE
+    	  s.ASIN = spd.asin
+        AND srp.id = spd.real_product_id
+    	AND s.supplier_id = ss.id
+    	AND srp.real_sku = '{@#realSku#}'
+   ) t1 ORDER BY t1.create_time DESC
     </entry>
     
     <entry key="sql_getSupplierInquiryByInquiryId">

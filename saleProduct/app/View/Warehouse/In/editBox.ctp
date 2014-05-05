@@ -29,7 +29,7 @@
 		$status = $warehoseIn['STATUS'];
 		
 		$hasEditPermission = $security->hasPermission($loginId , 'IN_STATUS0') ;
-		$isRead = $hasEditPermission?($status >= 10 ?true:false):true ;
+		$isRead = $hasEditPermission?($status > 14 ?true:false):true ;
 	?>
   
    <script type="text/javascript">

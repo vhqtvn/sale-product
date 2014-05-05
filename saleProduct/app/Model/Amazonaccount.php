@@ -912,7 +912,7 @@ EOD;
 			$product = $products[$i] ;
 
 			$sku = $product["SKU"] ;
-			$price = $product["FEED_PRICE"] ;
+			$price = sprintf("%.2f", $product["FEED_PRICE"]) ;
 		   		
 /*
 <StandardPrice currency="USD">80.00</StandardPrice>

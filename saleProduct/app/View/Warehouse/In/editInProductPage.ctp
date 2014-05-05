@@ -42,12 +42,12 @@
 		           	//{align:"center",key:"ID",label:"编号", width:"10%"},
 		           	{align:"center",key:"LISTING_SKU",label:"操作",width:"3%",format:{type:"checkbox",callback:function(record){
 							var checked = $(this).attr("checked") ;
-							var itemId = record.REAL_ID+"__"+record.LISTING_SKU ;
+							var itemId = record.REAL_ID+"__"+record.SKU ;
 							if( checked ){
-								var li = $("<li  class='item'>"+record.REAL_SKU+"("+record.LISTING_SKU+")</li>").appendTo(".selected-container ul")  ;
-								li.attr("item",record.REAL_ID+"__"+record.LISTING_SKU)
+								var li = $("<li  class='item'>"+record.REAL_SKU+"("+record.SKU+")</li>").appendTo(".selected-container ul")  ;
+								li.attr("item",record.REAL_ID+"__"+record.SKU)
 									.attr("realId",record.REAL_ID)
-									.attr("listingSku",record.LISTING_SKU) 
+									.attr("listingSku",record.SKU) 
 									.attr("accountId",record.ACCOUNT_ID)
 									.attr("quantity",record.QUANTITY||0) ;
 							}else{
