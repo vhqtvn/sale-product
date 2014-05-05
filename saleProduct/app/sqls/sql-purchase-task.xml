@@ -404,6 +404,7 @@
 			spp.* ,
 			srp.name as TITLE,
 			srp.IMAGE_URL,
+			srp.REAL_SKU,
 			(select name from sc_supplier where id = spp.PROVIDOR ) as PROVIDOR_NAME,
 			su.NAME AS EXECUTOR_NAME,
 			( select sc_user.name from sc_user where sc_user.login_id = spp.created_by ) as CREATOR_NAME
