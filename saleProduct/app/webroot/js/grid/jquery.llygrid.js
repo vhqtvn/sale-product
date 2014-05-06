@@ -1209,6 +1209,7 @@ $.llygrid.format.purchaseProductStatus = {
 					case '48':  message = "待交易";break;
 					case '49':  message = "待收货";break;
 					case '50':  message = "QC验货";break;
+					case '51':  message = "利润评估";break;
 					case '60':  message = "入库";break;
 					case '70':  message = "采购审计";break;
 					case '80':  message = "结束";break;

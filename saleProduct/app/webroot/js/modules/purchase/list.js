@@ -115,17 +115,17 @@
 						
 						return message ;
 					} },
-		           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"center",format:{type:'img'}},
-		           	{align:"center",key:"CODE",label:"编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		           	{align:"center",key:"LIMIT_PRICE",label:"采购限价",width:"5%"},
+		           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"center",format:{type:'img'}},
+		           	{align:"center",key:"CODE",label:"编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left",format:function(val,record){
 		           		var style =  record.REAL_PROVIDOR_NAME_?"":"style='color:green;'"
 		           		return "<div "+style+">"+val+"</div>" ;
 		           	}},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
 					{align:"left",key:"PROVIDOR_NAME",label:"供应商", width:"10%",group:"计划采购",format:function(val,record){
-						return "<a href='#'  supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
+						return "<a href='#'  supplier-id='"+record.PROVIDOR+"'>"+(val||"")+"</a>" ;
 					}},
 		           	{align:"center",key:"PLAN_NUM",label:"采购数量",width:"5%",group:"计划采购"},
 		           	{align:"center",key:"QUOTE_PRICE",label:"报价",width:"5%",group:"计划采购"},
@@ -135,7 +135,7 @@
 		           		return record.SHIP_FEE||"" ;
 		           	}},
 		           	{align:"left",key:"REAL_PROVIDOR_NAME_",label:"供应商", width:"10%",group:"上次采购",format:function(val,record){
-						return "<a href='#'  supplier-id='"+record.REAL_PROVIDOR_+"'>"+val+"</a>" ;
+						return "<a href='#'  supplier-id='"+record.REAL_PROVIDOR_+"'>"+(val||"")+"</a>" ;
 					}},
 		           	{align:"center",key:"QUALIFIED_PRODUCTS_NUM_",label:"采购数量",width:"5%",group:"上次采购"},
 		           	{align:"center",key:"REAL_QUOTE_PRICE_",label:"采购价",width:"5%",group:"上次采购"},

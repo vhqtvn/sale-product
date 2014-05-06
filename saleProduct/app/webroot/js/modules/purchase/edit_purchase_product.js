@@ -395,7 +395,7 @@ var Flow = function(){
 		$(_data).each(function(index,node){
 			if( node.format ) node.format(node) ;
 			if(!isContinue) return ;
- 			var statusClass = node.statusClass||(current == this.status ?"active":(this.status < current?"passed":"disabled")) ;
+ 			var statusClass =current == this.status ?"active":"disabled" ;// node.statusClass||(current == this.status ?"active":(this.status < current?"passed":"disabled")) ;
 			var status = this.status ;
 			var isMemo = this.memo ;
 			var label = this.label ;
@@ -439,6 +439,15 @@ var Flow = function(){
 				var tdlast = $(".flow-table td:last") ;
 				if(tdlast.hasClass("flow-split")) tdlast.remove() ;
 			}  ;
+		}) ;
+		
+		var __ = false ;
+		flowContainer.find(".flow-node").each(function(){
+			if( $(this).hasClass("disabled") ){
+				if(!__) $(this).removeClass("disabled").addClass("passed") ;
+			}else if( $(this).hasClass("active") ){
+				__ = true ;
+			}
 		}) ;
 	}
 } ;

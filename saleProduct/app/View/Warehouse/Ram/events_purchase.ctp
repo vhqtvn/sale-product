@@ -92,8 +92,6 @@
 				<tr>						
 					<td><div class="flow-node disabled" status="10">编辑中</div></td>
 					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="20">待审批</div></td>
-					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="30">退货标签确认</div></td>
 					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="40">退货确认</div></td>

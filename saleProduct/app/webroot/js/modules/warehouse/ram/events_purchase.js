@@ -66,12 +66,8 @@ $(function(){
 			}},
 			{key:"IMAGE_URL",label:"",width:"4%",forzen:false,align:"center",format:{type:"img"}},
 			{key:"STATUS",label:"状态",width:"5%",forzen:false,align:"left",format:{type:"json",content:{'10':"编辑中",20:"待审批",30:"退货标签确认",40:"退货确认",50:"退货入库",60:"退款",70:"重发配置",75:"重发确认",78:"重发收货确认",79:"Feedback",80:"结束"}}},
-			{key:"TRACK_MEMO",label:"最新轨迹",width:"10%",forzen:false,align:"left",format:function(val,record){
-				if(!val) return "" ;
-				if( val.indexOf(")") >0 ) return val.split(")")[1] ;
-				return val ;
-			}},
-			{key:"TRACK_TIME",label:"更新时间",width:"10%",forzen:false,align:"left"},
+           	{key:"CAUSE_NAME",label:"原因",width:"13%",align:"left"},
+           	{key:"POLICY_NAME",label:"决策",width:"10%",align:"left"},
 			{key:"CODE",label:"RMA编号",width:"14%",forzen:false,align:"center"},
 			//http://localhost/saleProduct/index.php/page/forward/Purchase.edit_purchase_product/4EFCF5E9-AFB6-F5BB-AF5B-A5A5022C8643
 			{key:"PURCHASE_CODE",label:"采购编号",width:"14%",forzen:false,align:"center",format:function(val,record){
@@ -81,8 +77,12 @@ $(function(){
 			{align:"center",key:"REAL_SKU",label:"货品SKU",width:"8%",forzen:false,align:"left",format:function(val){
            		return "<a href='#' product-realsku='"+val+"'>"+(val||"")+"</a>" ;
            	}},
-           	{key:"CAUSE_NAME",label:"原因",width:"13%",align:"left"},
-           	{key:"POLICY_NAME",label:"决策",width:"10%",align:"left"},
+           	{key:"TRACK_MEMO",label:"最新轨迹",width:"10%",forzen:false,align:"left",format:function(val,record){
+				if(!val) return "" ;
+				if( val.indexOf(")") >0 ) return val.split(")")[1] ;
+				return val ;
+			}},
+			{key:"TRACK_TIME",label:"更新时间",width:"10%",forzen:false,align:"left"},
            	{key:"USER_NAME",label:"创建用户",width:"6%",align:"left"},
            	{key:"PROPOSED_TIME",label:"提出时间",width:"10%",align:"left"},
            	{key:"END_TIME",label:"结束时间",width:"10%",align:"left",format:function(val,record){
@@ -93,7 +93,7 @@ $(function(){
 		 limit:20,
 		 pageSizes:[5,10,20,30],
 		 height:function(){
-		 	return $(window).height()-230 ;
+		 	return $(window).height()-180 ;
 		 },
 		 title:"采购RAM事件列表",
 		 indexColumn:false,

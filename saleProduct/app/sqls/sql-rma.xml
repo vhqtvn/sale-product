@@ -6,7 +6,9 @@
 			    spp.CODE as PURCHASE_CODE,
 			    srp.NAME as REAL_NAME,
 			    srp.IMAGE_URL,
-			    srp.REAL_SKU
+			    srp.REAL_SKU,
+			    (SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = sre.cause_code ) AS CAUSE_NAME,
+		  		(SELECT s2.name FROM sc_ram_options s2 WHERE s2.code = sre.policy_code ) AS POLICY_NAME
 			FROM sc_ram_event sre,
 			     sc_purchase_product spp,
 			     sc_real_product srp

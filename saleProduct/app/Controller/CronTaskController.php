@@ -384,6 +384,9 @@ class CronTaskController extends AppController {
 						echo $index.'---'.$item['SKU'].'<br>' ;
 						$mItem = $this->_marketingItemV20($item, $isLimitStrategy, $isLimitStart, $isLimitEnd, $isLimiting,$uams ,$isNoSaleTime ) ;
 						if(!empty($mItem)){
+							$feedPrice = $mItem['FEED_PRICE'] ;
+							$listPrice 			= $item['LIST_PRICE'] ;
+							if( $feedPrice == $listPrice ) continue ;
 							$_products[] = $mItem;
 						}
 					}
@@ -465,6 +468,15 @@ class CronTaskController extends AppController {
 			}
 		}
 		
+		//计算最低价卖家数为多少，如果小于2，则设置价格为最低价
+		$secondPriceCount = 0 ;
+		foreach( $fixFbaPriceArray as $fixFbaPrice ){
+			$_price = $fixFbaPrice['price'] ;
+			if( $secondPrice == $_price  ){
+				$secondPriceCount++ ;
+			}
+		}
+		
 		echo '<br/>'.$secondPrice.'           '.$listPrice.'<br/>' ;
 
 		/**
@@ -524,6 +536,10 @@ class CronTaskController extends AppController {
 		 */
 		if( $listPrice > $secondPrice ){
 			if( $secondPrice >  $execPrice  ){//如果最低价格大于限价
+				if( $secondPriceCount <=2 ){
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice  ) ;
+				}
+				
 				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice - 0.01 ) ;
 				}else{
@@ -568,6 +584,10 @@ class CronTaskController extends AppController {
 			}
 			
 			if( $listPrice > $execPrice ){
+				if( $secondPriceCount <=2 ){
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice  ) ;
+				}
+				
 				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$listPrice - 0.01 ) ;//最低价格-0.01
 				}else{
@@ -577,6 +597,10 @@ class CronTaskController extends AppController {
 		}
 		
 		if( $listPrice < $secondPrice ){
+			if( $secondPriceCount <=2 ){
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice  ) ;
+			}
+			
 			if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
 				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice - 0.01 ) ;//最低价格-0.01
 			}else{

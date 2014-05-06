@@ -153,88 +153,54 @@
 						});
 				});	
 			}
-		}
-<?php if( !empty($result['ID']) ){ ?>
+		} 
 		var flowData = [] ;
-		flowData.push( {status:10,label:"编辑中",memo:true ,actions:[ 
+		flowData.push( {status:10,label:"RMA决策",memo:true ,actions:[ 
 			    {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 		        {label:"保存",action:function(){ AuditAction(10,"保存") } },
-		        {label:"提交审批",action:function(){ AuditAction(20,"提交审批") } } 
+		        {label:"提交",action:function(){ AuditAction('',"提交审批") } } 
 		]} ) ;
 
-		flowData.push( {status:20,label:"审批确认",memo:true ,actions:[ 
-			     	{label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-		 		  {label:"保存轨迹",action:function(){ AuditAction(20,"保存轨迹") } },
-		          {label:"审批确认",action:function(){ AuditAction('<?php echo $nextStatus;?>',"审批确认") } },
-		          {label:"审批不通过，继续编辑",action:function(){ AuditAction(10,"审批不通过，继续编辑") } }
-		]} ) ;
-		
+		<?php if( $selectedPolicy['IS_BACK'] == 1 ){//退货 ?>
+		    /*退货*/
 			flowData.push( {status:40,label:"退货发货",memo:true,actions:[
 			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-			   {label:"保存轨迹",action:function(){ AuditAction(40,"保存轨迹") } },
-			   {label:"确认退货发货",action:function(){ AuditAction(55,"确认已经退货发货",{isReceive:1}) } }
+			   {label:"保存",action:function(){ AuditAction(40,"保存") } }
 			] } ) ;
 
-			flowData.push( {status:45,label:"客户确认收到退货",memo:true,actions:[
+			flowData.push( {status:45,label:"客户确认退货",memo:true,actions:[
 			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-			   {label:"保存轨迹",action:function(){ AuditAction(40,"保存轨迹") } },
-			   {label:"客户确认收到退货",action:function(){ AuditAction(50,"客户确认收到退货",{isReceive:1}) } }
+			   {label:"保存轨迹",action:function(){ AuditAction(45,"保存轨迹") } },
+			   {label:"客户确认收到退货",action:function(){ AuditAction(60,"客户确认收到退货",{isReceive:1}) } }
 			] } ) ;
+		<?php } ?>
 
-			flowData.push( {status:50,label:"退货入库",memo:true,actions:[ 
-			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-			   {label:"保存轨迹",action:function(){ AuditAction(50,"保存轨迹") } },
-			   {label:"确认入库完成",action:function(){ AuditAction( nextStatus1,nextStatusText1,{inStatus:1}) } }
-			] } ) ;
-			
+		<?php if( $selectedPolicy['IS_REFUND'] == 1 ){//退款 ?>
+			/*退款*/
 			flowData.push( {status:60 ,label:"退款",memo:true,actions:[ 
-				                                             			<?php if( $rmaForceFinish ){ ?>
-					                                       				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-					                                       			<?php }?>
-			<?php if( $rmaRefund ){ ?>
+			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 			   {label:"保存轨迹",action:function(){ AuditAction(60,"保存轨迹") } },
-			            {label:"确认退款完成",action:function(){ AuditAction( nextStatus,nextStatusText,{refundStatus:1}) } }
-		 <?php }?>
+			   {label:"确认退款完成",action:function(){ AuditAction( 70,"确认退款完成",{refundStatus:1}) } }
 			]  } ) ;
-		<?php }; ?>
-	
+		<?php } ?>
+
 		<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//重发 ?>
-			flowData.push( {status:70,label:"重发配置",memo:true,actions:[ 
-				                                              			<?php if( $rmaForceFinish ){ ?>
-					                                       				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-					                                       			<?php }?>
-			<?php if( $rmaResendConfig ){ ?>
-			   {label:"保存轨迹",action:function(){ AuditAction(70,"保存轨迹") } },
-				      {label:"确认重发配置完成",action:function(){ ResendConfig(75 ,"重发配置完成",{resendStatus:1}) } }
-		 <?php }?>
-			 ]  } ) ;
+			/*重发补货*/
 			flowData.push( {status:75,label:"确认重发",memo:true,actions:[ 
-			<?php if( $rmaForceFinish ){ ?>
 				     {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-			<?php }?>
-			<?php if( $rmaResendConfirm ){ ?>
 			   		 {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } },
 			         {label:"确认重发完成",action:function(){ AuditAction(78 ,"确认重发完成！") }
 			    }
-		 <?php }?>
 			]  } ) ;
 
 			flowData.push( {status:78,label:"确认客户收货",memo:true,actions:[ 
-                                              			<?php if( $rmaForceFinish ){ ?>
                                               				     {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-                                              			<?php }?>
-                                              			<?php if( $rmaResendConfirm ){ ?>
                                               			   		 {label:"保存轨迹",action:function(){ AuditAction(78,"保存轨迹") } },
                                               			         {label:"确认客户收货",action:function(){ AuditAction(79 ,"确认客户收货，填写Feedback！") }
                                               			    }
-                                              		 <?php }?>
-                                              			]  } ) ;
-		<?php }; ?>
-
-		flowData.push( {status:79,label:"Feedback",memo:true,actions:[ 
-		           {label:"保存Feedback",action:function(){ AuditAction('80',"保存Feedback,结束！") } }
-		 ]  } ) ;
-	
+            ]  } ) ;
+		<?php } ?>
+			
 		flowData.push({status:80,label:'结束'}) ;
 	
 		$(function(){
@@ -248,8 +214,7 @@
 				t = ts[1] ;
 			}
 			document.title = ( $(".flow-node.active").text()+(t?"|":"")+t );
-		}) ;
-<?php }?>			
+		}) ; 		
 	</script>
 </head>
 
@@ -285,7 +250,7 @@
 						<!-- 数据列表样式 -->
 						<table class="form-table "  style="margin-top:10px;">
 							<caption>
-								RMA事件编辑
+								RMA基本信息
 							</caption>
 								<tr>
 									<th>RMA编码：</th><td  colspan=3><input data-validator="required"
@@ -317,11 +282,14 @@
 										<?php echo !$isInit?"readOnly":"" ;?>
 										value="<?php  echo $result['PURCHASE_ID'] ; ?>"/>
 										<a href="#"  purchase-product="<?php echo $result['PURCHASE_ID'] ;?>"><?php echo $result['PURCHASE_CODE'] ;?></a>
-										(<a href="#"  product-realsku="<?php echo $result['REAL_SKU'] ;?>"><?php echo $result['REAL_NAME'] ;?></a>)
 									</td>
-									
 								</tr>
-								
+								<tr>
+									<th>货品：</th>
+									<td > <a href="#"  product-realsku="<?php echo $result['REAL_SKU'] ;?>"><?php echo $result['REAL_NAME'] ;?></a></td>
+									<th>数量：</th>
+									<td > <?php echo  $result['RMA_NUM'] ;?></td>
+								</tr>
 								<tr>
 									<th>RMA原因：</th>
 									<td>
@@ -368,74 +336,38 @@
 									</td>
 								</tr>
 							</table>
-							
-							<?php if(  $status >=79  ){?>
-								<table class="form-table" >
-									<tr>
-										<th>Feedback：</th>
-										<td  colspan=3>
-											<select id="feedBack" <?php  echo  $status==79?'data-validator="required"':"disabled" ;?>>
-												<option value="">请选择</option>
-												<option value="1"  <?php echo $result['FEED_BACK']==1?"selected":"";?>>失败</option>
-												<option value="2" <?php echo $result['FEED_BACK']==2?"selected":"";?>>好评</option>
-												<option value="3" <?php echo $result['FEED_BACK']==3?"selected":"";?>>中评</option>
-												<option value="4" <?php echo $result['FEED_BACK']==4?"selected":"";?>>差评</option>
-												<option value="5" <?php echo $result['FEED_BACK']==5?"selected":"";?>>不适合邀请</option>
-											</select>
-										</td>
-									</tr>
-								</table>
-							<?php }?>
-							
-							<?php
-							$isScored = empty($result['SCORE'])?false:true ;
-							if( $status==80  ){?>
-								<table class="form-table " >	
-									<caption>客服评分 <?php  if( !$isScored && $rmaCommitScore ){ ?><button class="btn btn-primary save-score">保存评分</button><?php } ?></caption>
-									<tr>
-										<th>评分：</th><td  colspan=3><input type="text" data-validator="required"  id="score"
-											<?php  echo  !$isScored &&$rmaCommitScore?'':"disabled" ;?>
-											 value="<?php echo $result['SCORE']?>"/></td>
-									</tr>
-									<tr>
-										<th>评分备注：</th><td  colspan=3>
-											<textarea id="scoreMemo" data-validator="required"  
-											<?php  echo  !$isScored &&$rmaCommitScore?'':"disabled" ;?>
-											style="width:90%;height:40px;"><?php echo $result['SCORE_MEMO']?></textarea>
-										</td>
-									</tr>
-									<?php if(  $isScored ){ ?>
-									<tr>
-										<th>评分时间：</th><td  colspan=3><?php echo $result['SCORE_TIME'];?></td>
-									</tr>
-									<?php } ?>
-								</table>
-							<?php }?>
-							
-							<?php if( $selectedPolicy['IS_BACK'] == 1 && $status >=30  ){?>
+					<?php if( $selectedPolicy['IS_BACK'] == 1 ){//退货 ?>
 								<table class="form-table " >	
 									<caption>退货信息</caption>
 									<tr>
-										<th>是否收到退货：</th><td  colspan=3>
-											<?php  if( $result['IS_RECEIVE'] == 1 ){ ?>
-												<?php if($result['IN_STATUS'] != 1 ){?>
-													<button class="btn  ram-in">RMA入库</button>
-												<?php }else {
-													echo "<span class='alert alert-success' style='padding:5px 10px;'>入库完成</span>" ;
-												}?>
-											<?php  }else{
-												echo "<span class='alert alert-danger' style='padding:5px 10px;'>未收到退货</span>" ;
-											}?>
+										<th>退货时间：</th>
+										<td>
+											<button class="btn btn-primary  confirm-back">确认退货</button>
+										</td>
+										<th>客户收货时间：</th>
+										<td>
+											<button class="btn btn-primary  custom-receive-back">客户确认收货</button>
+										</td>
+									</tr>
+									<tr>
+										<th>退货物流商：</th>
+										<td>
+											<input type="text"  id="backLogisticsProvider"  value="" />
+										</td>
+										<th>物流跟踪码：</th>
+										<td>
+											<input type="text"  id="backLogisticsTrackCode"  value="" />
 										</td>
 									</tr>
 								</table>
-							<?php }?>
-							
-							<?php if( $selectedPolicy['IS_REFUND'] == 1  && $status >=60 ){?>
+					<?php } ?>		
+					
+					<?php if( $selectedPolicy['IS_REFUND'] == 1 ){//退货 ?>
 							 <table class="form-table " >
-								<caption>退款信息</caption>
+								<caption>退款信息
+								</caption>
 									<tr>
-										<th>是否已经退款：</th><td  colspan=3>
+										<th>是否收到退款：</th><td  colspan=3>
 											<?php if( $result['REFUND_STATUS'] != 1 ){ ?>
 											是<input type="radio" name="refundStatus"
 											<?php if(!$rmaRefund) echo 'disabled';?>
@@ -448,7 +380,9 @@
 												<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
 											 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
 											 <span class="refund-action" style="display:none;">
-											 <input type="text" name="refundValue" <?php if(!$rmaRefund) echo 'disabled';?> placeHolder="请输入退款金额"/>
+											 	<input type="text" name="refundValue"  style="width:100px;"  <?php if(!$rmaRefund) echo 'disabled';?> placeHolder="请输入退款金额"/>
+											 	<input type="text" placeHolder="退款备注"  style="width:50%;;"  ></input>
+											 	<button class="btn btn-primary save-refund">确认退款</button>
 											 </span>
 											 
 											<?php }?> 
@@ -456,65 +390,68 @@
 										</td>
 									</tr>
 								</table>
-							<?php }?>
-								
+							<?php } ?>
+							
+							<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//退货 ?>	
 							<table class="form-table " >
-							<?php if( $selectedPolicy['IS_RESEND'] == 1  && $status >=70 ){?>
-								<caption>重发货配置 
-									<?php if( $result['RESEND_STATUS'] < 1 ){ ?><button class="btn save-reship">保存重发货设置</button><?php }?>
-								</caption>
-							<?php }?>	
-								<tr>
-								<td colspan=4 style="text-align:left;">
-									<div class="row-fluid">
-										<div class="span12">
-											<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//需要重发货
-												echo '<input type="hidden"  id="_reSend" value="'.$result['RESEND_STATUS'].'"/>' ;
-											}?>
-
-											<table style="width:100%;">
-												<tr style="padding:0px;margin:0px;">
-													<th style="padding:0px;text-align:center;">货品SKU</th>
-													<th style="padding:0px;text-align:center;">货品名称</th>
-													<th style="padding:0px;text-align:center;">货品图片</th>
-													<th style="padding:0px;text-align:center;">购买数量</th>
-													<?php if(  $selectedPolicy['IS_RESEND'] == 1 && $status >=70 ){?>
-													<th style="padding:0px;text-align:center;width:100px;">重发货数量</th>
-													<?php }?>
-												</tr>
-												<?php
-													foreach( $orderItems as $order ){
-														$order = $SqlUtils->formatObject($order) ;
-														$imageUrl = $order['IMAGE_URL'] ;
-														$imageUrl = str_replace("%" , "%25",$imageUrl) ;
-														?>
-														<tr style="padding:0px;margin:0px;">
-															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['REAL_SKU']?></td>
-															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['NAME']?></td>
-															<td style="padding-top:0px;padding-bottom:0px;"><?php echo "<img style='width:25px;height:25px;' src='/".$fileContextPath."/".$imageUrl."'>"?></td>
-															<td style="padding-top:0px;padding-bottom:0px;"><?php echo $order['Quantity_Ordered']?></td>
-															<?php if( $selectedPolicy['IS_RESEND'] == 1  && $status >=70 ){?>
-															<td style="padding-top:0px;padding-bottom:0px;">
-																<input type="text" class="alert alert-danger" style="width:85px;" 
-																	<?php if( !$rmaResendConfig ) echo 'disabled';?>
-																	<?php echo $result['RESEND_STATUS'] == 1?"disabled":"";?>
-																	orderId="<?php echo $order['Order_ID']?>"
-																	orderItemId="<?php echo $order['Order_Item_Id']?>"
-																	name="rmaReship" value="<?php echo $order['RMA_RESHIP']?>"/>
-															</td>
-															<?php }?>
-														</tr>
-														<?php
-														//debug($order);
-													}
-												?>
-											</table>
-										</div>
-									</div>	
-								</td>
-								</tr>
-							</tbody>
+								<caption>重发补货信息</caption>
+								<thead>
+									<tr>
+										<th>标签</th>
+										<th  style="font-weight:bold;">账号</th>
+										<th style="font-weight:bold;">Listing SKU</th>
+										<th style="font-weight:bold;">FNSKU</th>
+										<th style="font-weight:bold;">渠道</th>
+										<th style="font-weight:bold;">重发数量</th>
+										<th style="font-weight:bold;">当前库存</th>
+										<th style="font-weight:bold;">最近14天销量</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php 
+										$sqlId = "sql_supplychain_requirement_plan_product_details_list_ALL" ;
+										$reqList = $SqlUtils->exeSqlWithFormat($sqlId,array("realId"=>$result['REAL_ID'],"reqProductId"=>$result['REQ_PRODUCT_ID'])) ;
+										$count  = count( $reqList ) ;
+										$planNum = 0 ;
+										$rmaNum = $result['RMA_NUM'] ;
+										
+										foreach( $reqList as $req){
+											$IS_ANALYSIS = $req['IS_ANALYSIS'] ;
+											if( $IS_ANALYSIS == 0 ) continue ;
+											$purchaseQuantity = $req['PURCHASE_QUANTITY'] ;
+											$fixQuantity = 0 ;
+											if( $purchaseQuantity > $rmaNum  ){
+												$fixQuantity = $rmaNum ;
+											}else{
+												$fixQuantity = $purchaseQuantity ;
+											}
+											$rmaNum = $rmaNum -  $fixQuantity;
+										?>
+									  <tr   class="edit-data-row">
+										<td>
+											<?php  if( $fixQuantity >0  ) { ?>
+										  <input type='text'  class="print-num no-disabled" style='width:35px;height:20px;margin-top:2px;padding:0px;' value='<?php echo $fixQuantity+5 ;?>'  title='输入打印数量'>
+										  &nbsp;<button class='btn print-btn  no-disabled'>打印</button>
+										  <?php  }?>
+										</td>
+										<td><?php echo $req['ACCOUNT_NAME'] ;?></td>
+										<td><?php echo $req['LISTING_SKU'] ;?></td>
+										<td><?php echo $req['FC_SKU'] ;?></td>
+										<td><?php echo $req['FULFILLMENT_CHANNEL'] ;?></td>
+										<td>
+											<input type="hidden" class="fulfillment"   value='<?php echo $req['FULFILLMENT_CHANNEL'] ;?>'/>
+											<input type="hidden" class="accountId"   value='<?php echo $req['ACCOUNT_ID'] ;?>'/>
+											<input type="hidden" class="supplyQuantity"   value='<?php echo $req['TOTAL_SUPPLY_QUANTITY'] ;?>'/>
+											<input type="hidden" class="listingSku"   value='<?php echo $req['LISTING_SKU'] ;?>'/>
+											<input type="text" 	   class="purchaseQuantity input 45-input"  value='<?php echo $fixQuantity ;?>' style="width:50px;"/>
+										</td>
+										<td><?php echo $req['TOTAL_SUPPLY_QUANTITY'] ;?></td>
+										<td><?php echo $req['SALES_FOR_THELAST14DAYS'] ;?></td>
+									</tr>
+									<?php  } ?>
+								</tbody>
 						</table>
+						<?php } ?>
 					</div>
 			
 				</div>

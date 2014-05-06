@@ -56,7 +56,9 @@
   		SELECT sre.*,
        spp.CODE AS PURCHASE_CODE,
        srp.NAME AS REAL_NAME,
-       srp.REAL_SKU
+       srp.REAL_SKU,
+       srp.id as REAL_ID,
+       spp.REQ_PRODUCT_ID
   		 FROM sc_ram_event sre, 
   		 sc_purchase_product spp,
   		 sc_real_product srp
