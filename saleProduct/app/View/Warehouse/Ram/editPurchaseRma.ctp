@@ -26,14 +26,14 @@
 		echo $this->Html->script('validator/jquery.validation');	
 		echo $this->Html->script('tab/jquery.ui.tabs');
 		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
-		echo $this->Html->script('modules/warehouse/ram/editEvent');
+		echo $this->Html->script('modules/warehouse/ram/editPurchaseRma');
 		echo $this->Html->script('calendar/WdatePicker');
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		
 		$loginId   = $user['LOGIN_ID'] ;
-		$orderId =$params['arg1'] ;
+		$ramId =$params['arg1'] ;
 		
 		$rmaEdit 	= $security->hasPermission($loginId , 'RMA_EDIT') ;
 		$rmaAudit 	= $security->hasPermission($loginId , 'RMA_AUDIT') ;
@@ -49,13 +49,8 @@
 		
 		$result  = null ;
 		
-		if( !empty($orderId) ){
-			$result = $SqlUtils->getObject("sql_ram_event_getById",array('id'=>$orderId) ) ;
-			if(empty($result)){
-				$result = $SqlUtils->getObject("sql_ram_event_getByOrderId",array('orderId'=>$orderId) ) ;
-			}else{
-				$orderId = $result['ORDER_ID'] ;
-			}
+		if( !empty($ramId) ){
+			$result = $SqlUtils->getObject("sql_ram_event_getById",array('id'=>$ramId) ) ;
 		}
 		
 		//1、提交审批 2、审批通过  3、重新编辑 
@@ -81,13 +76,6 @@
 		}
 		
 		$isInit  = $status == '' || $status == '10' ;
-		
-		$order = null ;
-		$orderItems = null ;
-		if(!empty($orderId)){
-			$order = $SqlUtils->getObject("sql_sc_order_list",array('orderId'=>$orderId) ) ;
-			$orderItems = $SqlUtils->exeSql("sql_sc_order_item_list",array('orderId'=>$orderId) ) ;
-		}
 		
 		//决策原因
 		$policys = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'policy',"rmaType"=>"P")) ;
@@ -169,71 +157,35 @@
 <?php if( !empty($result['ID']) ){ ?>
 		var flowData = [] ;
 		flowData.push( {status:10,label:"编辑中",memo:true ,actions:[ 
-			<?php if( $rmaForceFinish ){ ?>
-			          {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
-			<?php }?>             
-		<?php if( $rmaEdit ){ ?>
+			    {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 		        {label:"保存",action:function(){ AuditAction(10,"保存") } },
 		        {label:"提交审批",action:function(){ AuditAction(20,"提交审批") } } 
-		<?php }?>
 		]} ) ;
 
-		<?php 
-			$nextStatus = $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:79 ) ; 
-			if( $selectedPolicy['IS_BACK'] == 1   ){
-				$nextStatus = 30 ;
-			}
-		?>
-		
 		flowData.push( {status:20,label:"审批确认",memo:true ,actions:[ 
-		<?php if( $rmaForceFinish ){ ?>
 			     	{label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-		<?php }?>                                    
-		<?php if( $rmaAudit ){ ?>
 		 		  {label:"保存轨迹",action:function(){ AuditAction(20,"保存轨迹") } },
 		          {label:"审批确认",action:function(){ AuditAction('<?php echo $nextStatus;?>',"审批确认") } },
 		          {label:"审批不通过，继续编辑",action:function(){ AuditAction(10,"审批不通过，继续编辑") } }
-		 <?php }?>
 		]} ) ;
 		
-		<?php if( $selectedPolicy['IS_BACK'] == 1 ){//退货 ?>
-			flowData.push( {status:30,label:"退货标签确认",memo:true ,actions:[ 
-			<?php if( $rmaForceFinish ){ ?>
-				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-			<?php }?>   
-			<?php if( $rmaTagConfirm ){ ?>
-					   {label:"保存轨迹",action:function(){ AuditAction(30,"保存轨迹") } },
-                       {label:"确认退货标签发送",action:function(){ AuditAction(40,"确认退货标签发送，等待收到退货") } } 
-		 <?php }?>
-              ]} ) ;
-			flowData.push( {status:40,label:"退货确认",memo:true,actions:[
-				                                              			<?php if( $rmaForceFinish ){ ?>
-				                                              				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-				                                              			<?php }?> 
-			<?php if( $rmaBackConfirm ){ ?>
+			flowData.push( {status:40,label:"退货发货",memo:true,actions:[
+			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
 			   {label:"保存轨迹",action:function(){ AuditAction(40,"保存轨迹") } },
-					{label:"确认收退货",action:function(){ AuditAction(50,"确认收到退货，等待入库",{isReceive:1}) } }
-		 <?php }?>
+			   {label:"确认退货发货",action:function(){ AuditAction(55,"确认已经退货发货",{isReceive:1}) } }
 			] } ) ;
 
-			//下一步状态
-			var nextStatus1 = <?php echo $selectedPolicy['IS_REFUND'] == 1?60:($selectedPolicy['IS_RESEND'] == 1?70:79 ) ; ?> ;
-			var nextStatusText1 = "<?php echo $selectedPolicy['IS_REFUND'] == 1?'入库完成，等待退款！':($selectedPolicy['IS_RESEND'] == 1?'入库完成，等待重发！':'入库完成，填写Feedback！' ) ; ?>";
-			
-			flowData.push( {status:50,label:"退货入库",memo:true,actions:[ 
-				                                              			<?php if( $rmaForceFinish ){ ?>
-					                                       				 {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-					                                       			<?php }?>
-			<?php if( $rmaWhIn ){ ?>
-			   {label:"保存轨迹",action:function(){ AuditAction(50,"保存轨迹") } },
-				    {label:"确认入库完成",action:function(){ AuditAction( nextStatus1,nextStatusText1,{inStatus:1}) } }
-		 <?php }?>
+			flowData.push( {status:45,label:"客户确认收到退货",memo:true,actions:[
+			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
+			   {label:"保存轨迹",action:function(){ AuditAction(40,"保存轨迹") } },
+			   {label:"客户确认收到退货",action:function(){ AuditAction(50,"客户确认收到退货",{isReceive:1}) } }
 			] } ) ;
-		<?php }; ?>
-	
-		<?php if( $selectedPolicy['IS_REFUND'] == 1 ){//退款 ?>
-			var nextStatus = <?php echo  $selectedPolicy['IS_RESEND'] == 1?70:79   ; ?> ;
-			var nextStatusText = "<?php echo  $selectedPolicy['IS_RESEND'] == 1?'退款完成，等待重发！':'确认退款完成，填写Feedback！'   ; ?>";
+
+			flowData.push( {status:50,label:"退货入库",memo:true,actions:[ 
+			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
+			   {label:"保存轨迹",action:function(){ AuditAction(50,"保存轨迹") } },
+			   {label:"确认入库完成",action:function(){ AuditAction( nextStatus1,nextStatusText1,{inStatus:1}) } }
+			] } ) ;
 			
 			flowData.push( {status:60 ,label:"退款",memo:true,actions:[ 
 				                                             			<?php if( $rmaForceFinish ){ ?>
@@ -255,7 +207,7 @@
 			   {label:"保存轨迹",action:function(){ AuditAction(70,"保存轨迹") } },
 				      {label:"确认重发配置完成",action:function(){ ResendConfig(75 ,"重发配置完成",{resendStatus:1}) } }
 		 <?php }?>
-			]  } ) ;
+			 ]  } ) ;
 			flowData.push( {status:75,label:"确认重发",memo:true,actions:[ 
 			<?php if( $rmaForceFinish ){ ?>
 				     {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
@@ -360,17 +312,12 @@
 									<?php 	}  ?>
 								</tr>
 								<tr>
-									<th>采购单：</th><td colspan="3"><input data-validator="required" 
-										type="text" id="orderId"
+									<th>采购单：</th><td colspan="3"><input data-validator="required"  
+										type="hidden" id="purchaseId"
 										<?php echo !$isInit?"readOnly":"" ;?>
-										value="<?php if(empty($result['PURCHASE_ID'])){
-											echo $order['PURCHASE_ID'] ;
-										}else{
-											echo $result['PURCHASE_ID'] ;
-										};?>"/>
-										<button class="btn btn-order"
-										<?php echo !$isInit?"style='display:none;'":"" ;?>
-										>选择</button>
+										value="<?php  echo $result['PURCHASE_ID'] ; ?>"/>
+										<a href="#"  purchase-product="<?php echo $result['PURCHASE_ID'] ;?>"><?php echo $result['PURCHASE_CODE'] ;?></a>
+										(<a href="#"  product-realsku="<?php echo $result['REAL_SKU'] ;?>"><?php echo $result['REAL_NAME'] ;?></a>)
 									</td>
 									
 								</tr>
@@ -413,22 +360,6 @@
 										</select>
 									</td>
 								</tr>
-								<?php if( !empty($result['ID']) ){ ?>
-								<tr>
-											<?php 
-												$email =  $order['BUYER_EMAIL'] ;
-												$Customer = $SqlUtils->getObject("sql_saleuser_findByEmail",array("email"=>$email)) ;
-												$clz = $Customer['STATUS'] == 'danger'?"alert-danger":"" ;
-											?>
-												<th>客户：</th>
-												<td colspan="3" >
-													<?php echo $email;?>
-											<?php if($Customer['STATUS'] != 'danger'  && $rmaRiskCustomer ){?>
-													<button email="<?php echo $order['BUYER_EMAIL']?>" class="btn btn-danger btn-dangerUser">加入风险客户</button>
-											<?php }?>
-												</td>
-								</tr>
-								<?php }?>
 								<tr>
 									<th>备注：</th><td  colspan=3>
 										<textarea name="memo"  
@@ -527,7 +458,6 @@
 								</table>
 							<?php }?>
 								
-							<?php if( !empty($orderItems) ){?>
 							<table class="form-table " >
 							<?php if( $selectedPolicy['IS_RESEND'] == 1  && $status >=70 ){?>
 								<caption>重发货配置 
@@ -583,7 +513,6 @@
 									</div>	
 								</td>
 								</tr>
-								<?php } ?>
 							</tbody>
 						</table>
 					</div>
@@ -597,9 +526,6 @@
 		<div class="grid-content-track" id="tab-track" style="margin-top:5px;"></div>
 		
 		<div class="grid-content-rma" id="tab-rma" style="margin-top:5px;zoom:1;"></div>
-		
-		<div class="grid-content-rma-rel" id="tab-rma-rel" style="margin-top:5px;zoom:1;"></div>
-	
 	</div>
 </body>
 </html>

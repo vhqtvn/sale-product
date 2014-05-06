@@ -555,15 +555,6 @@ html{-webkit-text-size-adjust: none;}
 		?>
 		</div>
 		<hr style="margin:0px;clear:both;padding-top:3px;"/>
-
-		<ul style="list-style: none;" class="flag_container">
-			<li><a href="#flag1" class="alert alert-info">开发标题</a></li>
-			<li><a href="#flag2" class="alert alert-info">基本信息分析</a></li>
-			<li><a href="#flag3" class="alert alert-info">产品风险分析</a></li>
-			<li><a href="#flag4" class="alert alert-info">产品关键字分析</a></li>
-			<li><a href="#flag5" class="alert alert-info">产品方案</a></li>
-			<li><a href="#flag6" class="alert alert-info">营销计划与策略</a></li>
-		</ul>
 		<div style="clear:both;"></div>
 	 <div style="height:480px;overflow:auto;"  class="apply-panel">	
 		<table class="form-table"  style="margin:5px 2px;" id="flag1">
@@ -704,6 +695,46 @@ html{-webkit-text-size-adjust: none;}
 						</table>
 					</div>
 				</div>
+				
+		<table class="form-table "   id="flag2">
+				<caption>
+				产品属性
+				<?php if( $PD_REEDIT_BASE){ 
+					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
+				}?>
+				</caption>
+				<tbody>	
+					<tr>
+						<th>销售单元</th>
+						<td><input type="text"    class="input 10-input"   id="P_SALE_UNIT"  value="<?php echo $productDev['P_SALE_UNIT'];?>" /></td>
+						<th>包装</th>
+						<td><input type="text"    class="input 10-input"   id="P_PACKAGE"  value="<?php echo $productDev['P_PACKAGE'];?>" /></td>
+					</tr>
+					<tr>
+						<th>尺寸</th>
+						<td colspan="3">
+							<input type="text"    class="input 10-input"   id="P_SIZES"  value="<?php echo $productDev['P_SIZES'];?>" />
+							<select id="P_SIZES_UNIT"   class="input 10-input"  style="width:60px;">
+								<option value="cm"  <?php echo $productDev['P_SIZES_UNIT']=='cm'?"selected":"";?>>CM</option>
+								<option value="inch"  <?php echo $productDev['P_SIZES_UNIT']=='inch'?"selected":"";?>>英寸</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>颜色</th>
+						<td><input type="text"    class="input 10-input"   id="P_COLOR"  value="<?php echo $productDev['P_COLOR'];?>" /></td>
+					
+						<th>材质</th>
+						<td><input type="text"    class="input 10-input"   id="P_MATERIAL"  value="<?php echo $productDev['P_MATERIAL'];?>" /></td>
+					</tr>
+					<tr>
+						<th>注意事项</th>
+						<td colspan="3">
+							<textarea  id="P_CAUTIONS"  class="input 10-input"  style="width:90%;height:60px;"><?php echo $productDev['P_CAUTIONS'];?></textarea>
+						</td>
+					</tr>
+				</tbody>
+		</table>		
 		
 		<table class="form-table "   id="flag2">
 				<caption>
@@ -726,159 +757,17 @@ html{-webkit-text-size-adjust: none;}
 				</tbody>
 			</table>
 			
-			<table class="form-table "   id="flag3">
+			<table class="form-table "   id="flag2">
 				<caption>
-				产品风险分析
-				<?php if( $PD_REEDIT_GM){ 
-					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-				}?>
-				</caption>
-				<tbody>
-					<tr>
-						<th>产品风险：</th>
-						<td><textarea id="FOLLOW_RISK_PRODUCT"    class="input 10-input"  
-							style="width:90%;height:60px;"><?php echo $productDev['FOLLOW_RISK_PRODUCT']?></textarea></td>
-					</tr>
-					<tr>
-						<th>品牌风险：</th>
-						<td><textarea id="FOLLOW_RISK_BRAND"      class="input 10-input"  
-							style="width:90%;height:60px;"><?php echo  $productDev['FOLLOW_RISK_BRAND']?></textarea></td>
-					</tr>
-					<tr>
-						<th>供应商风险：</th>
-						<td><textarea id="FOLLOW_RISK_SUPPLIER"      class="input 10-input"  
-							style="width:90%;height:60px;"><?php echo  $productDev['FOLLOW_RISK_SUPPLIER']?></textarea></td>
-					</tr>
-				</tbody>
-			</table>
-			
-			<table class="form-table "   id="flag4">
-				<caption>
-					产品关键字分析
-					<?php if( $PD_REEDIT_ZY){ 
+				开发备注
+				<?php if( $PD_REEDIT_BASE){ 
 					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 				}?>
 				</caption>
 				<tbody>	
 					<tr>
-						<th style="width:15%;"></th>
-						<th>关键字</th>
-						<th style="width:9%;">渠道有效竞争数</th>
-						<th style="width:9%;">搜索量VOLUMN</th>
-						<th style="width:9%;">竞争COM</th>
-						<th style="width:9%;">竞价CPC</th>
-					</tr>
-					<tr>
-						<th>核心关键字：</th>
-						<td><input type="text" id="CORE_KEY"   placeHolder="不能超过50个字符"  maxlength="50"   class=" ae_key input 10-input"   style="width:85%;" value="<?php echo $productDev['CORE_KEY']?>"/></td>
-						<td>	<input type="text" id="CK_VALID_COMP"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_VALID_COMP']?>"/></td>
-						<td>	<input type="text" id="CK_SR_SEARCH"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_SEARCH']?>" /></td>
-						<td>	<input type="text" id="CK_SR_COM"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_COM']?>"/></td>
-						<td>	<input type="text" id="CK_SR_CPC"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['CK_SR_CPC']?>"/></td>
-					</tr>
-					<tr>
-						<th>Amazon/Ebay关键字1：</th>
-						<td><input type="text" id="OP_KEY1"  placeHolder="不能超过50个字符"  maxlength="50" class="ae_key input 10-input"  style="width:85%;"  value="<?php echo $productDev['OP_KEY1']?>"/></td>
-						<td>	<input type="text" id="OK_VALID_COMP1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP1']?>"/></td>
-						<td>	<input type="text" id="OK_SR_SEARCH1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH1']?>"/></td>
-						<td>	<input type="text" id="OK_SR_COM1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM1']?>"/></td>
-						<td>	<input type="text" id="OK_SR_CPC1"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC1']?>"/></td>
-					</tr>
-					<tr>
-						<th>Amazon/Ebay关键字2：</th>
-						<td><input type="text" id="OP_KEY2"     placeHolder="不能超过50个字符"  maxlength="50"    class="ae_key input 10-input"  style="width:85%;"  value="<?php echo $productDev['OP_KEY2']?>"/></td>
-						<td>	<input type="text" id="OK_VALID_COMP2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP2']?>"/></td>
-						<td>	<input type="text" id="OK_SR_SEARCH2"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_SEARCH2']?>" /></td>
-						<td>	<input type="text" id="OK_SR_COM2"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM2']?>"/></td>
-						<td>	<input type="text" id="OK_SR_CPC2"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OK_SR_CPC2']?>" /></td>
-					</tr>
-					<tr>
-						<th>Amazon/Ebay关键字3：</th>
-						<td><input type="text" id="OP_KEY3"     placeHolder="不能超过50个字符"  maxlength="50"    class="ae_key input 10-input"  style="width:85%;" value="<?php echo $productDev['OP_KEY3']?>" /></td>
-						<td>	<input type="text" id="OK_VALID_COMP3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_VALID_COMP3']?>"/></td>
-						<td>	<input type="text" id="OK_SR_SEARCH3"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH3']?>"/></td>
-						<td>	<input type="text" id="OK_SR_COM3"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_COM3']?>" /></td>
-						<td>	<input type="text" id="OK_SR_CPC3"     class="input 10-input"   style="width:80%;"  value="<?php echo $productDev['OK_SR_CPC3']?>"/></td>
-					</tr>
-					<tr>
-						<th>Amazon/Ebay关键字4：</th>
-						<td><input type="text" id="OP_KEY4"    placeHolder="不能超过50个字符"  maxlength="50"     class="ae_key input 10-input"  style="width:85%;"  value="<?php echo $productDev['OP_KEY4']?>"/></td>
-						<td>	<input type="text" id="OK_VALID_COMP4"      class="input 10-input"  style="width:80%;" value="<?php echo $productDev['OK_VALID_COMP4']?>" /></td>
-						<td>	<input type="text" id="OK_SR_SEARCH4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_SEARCH4']?>"/></td>
-						<td>	<input type="text" id="OK_SR_COM4"      class="input 10-input"  style="width:80%;"  value="<?php echo $productDev['OK_SR_COM4']?>"/></td>
-						<td>	<input type="text" id="OK_SR_CPC4"     class="input 10-input"   style="width:80%;" value="<?php echo $productDev['OK_SR_CPC4']?>" /></td>
-					</tr>
-					<tr>
-						<th>其他关键字：</th><td colspan=5>
-								<textarea id="EBAY_KEY"   class="input 10-input"    
-									style="width:98%;height:50px;"><?php echo $productDev['EBAY_KEY'];?></textarea></td>
-					</tr>
-					<tr>
-						<th>eBay销售数量：</th>
-						<td  colspan=5><textarea id="EBAY_SALE_MEMO"   class="input 10-input"    
-							style="width:98%;height:50px;"><?php echo $productDev['EBAY_SALE_MEMO'];?></textarea></td>
-					</tr>
-				</tbody>
-			</table>
-	
-			<table class="form-table"  style="margin:5px 2px;"  id="flag5">
-				<caption>产品方案<?php if( $PD_REEDIT_YX){ 
-					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-				}?></caption>
-				<tbody>
-					<tr>
 						<td>
-							<textarea id="PRODUCTS_SOLUTIONS"  class="input 10-input 30-input 40-input" 
-								style="margin-top:2px;width:95%;height:100px;"><?php echo  $productDev['PRODUCTS_SOLUTIONS']?></textarea>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			
-			<table class="form-table "   id="flag6">
-				<caption>
-				营销计划与策略
-				<?php if( $PD_REEDIT_YX){ 
-					echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
-				}?>
-				</caption>
-				<tbody>
-					<tr>
-						<th style="width:33%;">竞价排名策略</th>
-						<th style="width:33%;">物流策略</th>
-						<th style="width:34%;">推广策略</th>
-					</tr>
-					<tr>
-						<td>
-							<select id="PPC_STRATEGY"    style="width:97%;" class="input 10-input" >
-								<option value="">--选择策略--</option>
-							<?php 
-								$strategys = $SqlUtils->exeSql("sql_rule_item_config",array('type'=>'devStrategy')) ;
-								foreach( $strategys as $s){
-									$s = $SqlUtils->formatObject($s) ;
-									$selected = '' ;
-									if( $s['ID'] == $productDev['PPC_STRATEGY'] ){
-										$selected = "selected" ;
-									}
-									echo "<option $selected value='".$s['ID']."'>".$s['LABEL']."</option>" ;
-								}
-							?>
-							</select>
-							<textarea id="PPC_STRATEGY_MEMO" class="input 10-input"  style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['PPC_STRATEGY_MEMO']?></textarea>
-						</td>
-						<td>
-							<select id="LOGI_STRATEGY" style="width:97%;"    class="input 10-input" >
-								<option value="">--选择--</option>
-								<option value="FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBM'?"selected":"" ?>>FBM</option>
-								<option value="FBA"  <?php echo $productDev['LOGI_STRATEGY']=='FBA'?"selected":"" ?>>FBA</option>
-								<option value="FBA_FBM"  <?php echo $productDev['LOGI_STRATEGY']=='FBA_FBM'?"selected":"" ?>>FBM和FMA</option>
-								<option value="FROM_CHINA"  <?php echo $productDev['LOGI_STRATEGY']=='FROM_CHINA'?"selected":"" ?>>中国发货</option>
-							</select>
-							<textarea id="LOGI_STRATEGY_MEMO"  class="input 10-input" 
-								style="margin-top:2px;width:95%;height:50px;"><?php echo  $productDev['LOGI_STRATEGY_MEMO']?></textarea>
-						</td>
-						<td>
-							
+						<textarea  id="DEV_MEMO"  class="input 10-input"  style="width:90%;height:160px;"><?php echo $productDev['DEV_MEMO'];?></textarea>
 						</td>
 					</tr>
 				</tbody>

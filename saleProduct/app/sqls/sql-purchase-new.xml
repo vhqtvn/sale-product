@@ -59,6 +59,7 @@
 				   (SELECT NAME FROM sc_user WHERE login_id = spp.CREATED_BY  ) AS  CREATOR_NAME,
 				   (SELECT NAME FROM sc_supplier WHERE id = spp.PROVIDOR ) AS PROVIDOR_NAME,
 				   (SELECT spp1.REAL_QUOTE_PRICE FROM sc_purchase_product spp1 WHERE spp1.is_termination =0 AND spp1.status = 80
+				   		and spp1.real_id = spp.real_id
 				       ORDER BY spp1.last_updated_date DESC
 				       LIMIT 0,1   
 				   ) AS REAL_QUOTE_PRICE_,
@@ -69,22 +70,27 @@
 				   ) AS REAL_PROVIDOR_,
 				   (SELECT ss.NAME FROM sc_purchase_product spp1,sc_supplier ss
 				   				 WHERE spp1.is_termination =0 AND spp1.status = 80 and spp1.REAL_PROVIDOR = ss.id
+				   		and spp1.real_id = spp.real_id
 				       ORDER BY spp1.last_updated_date DESC
 				       LIMIT 0,1   
 				   ) AS REAL_PROVIDOR_NAME_,
 				   (SELECT spp1.QUALIFIED_PRODUCTS_NUM FROM sc_purchase_product spp1 WHERE spp1.is_termination =0 AND spp1.status = 80
+				   		and spp1.real_id = spp.real_id
 				       ORDER BY spp1.last_updated_date DESC
 				       LIMIT 0,1   
 				   ) AS QUALIFIED_PRODUCTS_NUM_,
 				   (SELECT spp1.REAL_SHIP_FEE_TYPE FROM sc_purchase_product spp1 WHERE spp1.is_termination =0 AND spp1.status = 80
+				   		and spp1.real_id = spp.real_id
 				       ORDER BY spp1.last_updated_date DESC
 				       LIMIT 0,1   
 				   ) AS REAL_SHIP_FEE_TYPE_,
 				   (SELECT spp1.REAL_SHIP_FEE FROM sc_purchase_product spp1 WHERE spp1.is_termination =0 AND spp1.status = 80
+				   		and spp1.real_id = spp.real_id
 				       ORDER BY spp1.last_updated_date DESC
 				       LIMIT 0,1   
 				   ) AS REAL_SHIP_FEE_,
 				   (SELECT spp1.REAL_PURCHASE_DATE FROM sc_purchase_product spp1 WHERE spp1.is_termination =0 AND spp1.status = 80
+				   		and spp1.real_id = spp.real_id
 				       ORDER BY spp1.last_updated_date DESC
 				       LIMIT 0,1   
 				   ) AS REAL_PURCHASE_DATE_

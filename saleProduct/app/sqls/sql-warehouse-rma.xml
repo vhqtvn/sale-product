@@ -53,7 +53,16 @@
    </entry>
    
    <entry key="sql_ram_event_getById">
-  		select * from sc_ram_event where id = '{@#id#}'
+  		SELECT sre.*,
+       spp.CODE AS PURCHASE_CODE,
+       srp.NAME AS REAL_NAME,
+       srp.REAL_SKU
+  		 FROM sc_ram_event sre, 
+  		 sc_purchase_product spp,
+  		 sc_real_product srp
+  		 WHERE sre.id = '{@#id#}'
+  		 AND sre.PURCHASE_ID = spp.ID
+  		 AND spp.REAL_ID = srp.ID
    </entry>
    
    <entry key="sql_ram_event_getByCode">

@@ -22,6 +22,11 @@
 		<entry key="sql_productDev_new_loadStativcs">
 				SELECT FLOW_STATUS AS STATUS,COUNT(1) AS COUNT FROM sc_product_developer spfd WHERE FLOW_STATUS !=80
 				 {@ #$VIEW_PRODUCT_DEV# }
+				 {@ and spfd.asin not in (
+									select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
+					)
+					and #untag# = #untag#
+			     }
 				GROUP BY FLOW_STATUS
 		</entry>
 		
@@ -83,36 +88,41 @@ WHERE   spfd.flow_status =80
    </entry>
 		
 		<entry key="sql_pdev_new_list">
-SELECT 
-    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE   spfd.asin = spdt.asin 
-			ORDER BY spdt.create_time DESC LIMIT 0,1 ) AS MEMO,
-	( select sp.name from sc_platform sp where  sp.ID = spfd.platform_id ) as PLATFORM_NAME,
-	(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = spfd.asin LIMIT 0,1 ) AS LOCAL_URL , 
-	spfd.*,
-	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
-	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.dev_charger ) AS DEV_CHARGER_NAME,
-	( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME,
-	( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
-FROM  
-			sc_product_developer spfd
-WHERE   spfd.dev_status !='3'
-     and spfd.flow_status !=80
-     {@  and spfd.category_id = '#categoryId#'}
-     {@  and spfd.flow_status in ( #status#) }
-     {@  and spfd.dev_status in ( #devStatus#) }
-     {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
-     {@  and (spfd.asin like '%#searchKey#%' or spfd.title like '%#searchKey#%')}
-     {@ and spfd.asin  in (
-							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
-						and ste.tag_id = '#tagId#'
-			)
-	  }
-	  {@ #$VIEW_PRODUCT_DEV# }
-	  order by spfd.CREATE_TIME desc
+		SELECT 
+		    ( SELECT spdt.MEMO FROM sc_product_dev_track spdt WHERE   spfd.asin = spdt.asin 
+					ORDER BY spdt.create_time DESC LIMIT 0,1 ) AS MEMO,
+			( select sp.name from sc_platform sp where  sp.ID = spfd.platform_id ) as PLATFORM_NAME,
+			(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = spfd.asin LIMIT 0,1 ) AS LOCAL_URL , 
+			spfd.*,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.creator ) AS USERNAME,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.dev_charger ) AS DEV_CHARGER_NAME,
+			( SELECT sc_user.name FROM sc_user WHERE sc_user.login_id = spfd.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME,
+			( SELECT sac.LABEL FROM sc_config sac WHERE  PPC_STRATEGY  = sac.ID ) AS PPC_STRATEGY_NAME
+		FROM
+					sc_product_developer spfd
+		WHERE   spfd.dev_status !='3'
+		     and spfd.flow_status !=80
+		     {@  and spfd.category_id = '#categoryId#'}
+		     {@  and spfd.flow_status in ( #status#) }
+		     {@  and spfd.dev_status in ( #devStatus#) }
+		     {@  and ( spfd.dev_status != 3 or spfd.dev_status is null or spfd.dev_status = '' ) and  #devStatus1# =  #devStatus1#  }
+		     {@  and (spfd.asin like '%#searchKey#%' or spfd.title like '%#searchKey#%')}
+		     {@ and spfd.asin  in (
+									select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
+								and ste.tag_id = '#tagId#'
+					)
+			  }
+			  {@ and spfd.asin not in (
+									select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
+					)
+					and #untag# = #untag#
+			  }
+			  {@ #$VIEW_PRODUCT_DEV# }
+			  order by spfd.CREATE_TIME desc
    </entry>
    
-   <entry key="sql_pdev_new_update">
-UPDATE sc_product_developer
+   <!-- 
+   UPDATE sc_product_developer
 	SET
 			ASIN = '{@#ASIN#}' , 
 			{@ REAL_PRODUCT_ID = '#REAL_PRODUCT_ID#',}
@@ -177,6 +187,56 @@ UPDATE sc_product_developer
 			OK_SR_SEARCH4 = '{@#OK_SR_SEARCH4#}' , 
 			OK_SR_COM4 = '{@#OK_SR_COM4#}' , 
 			OK_SR_CPC4 = '{@#OK_SR_CPC4#}'
+			WHERE
+			DEV_ID = '{@#DEV_ID#}'
+    -->
+   <entry key="sql_pdev_new_update">
+	UPDATE sc_product_developer
+		SET
+			ASIN = '{@#ASIN#}' , 
+			{@ REAL_PRODUCT_ID = '#REAL_PRODUCT_ID#',}
+			{@ LISTING_SKU = '#LISTING_SKU#',}
+			{@ PRODUCTS_SOLUTIONS = '#PRODUCTS_SOLUTIONS#',}
+			{@ TITLE = '#TITLE#',}
+			{@ INQUIRY_CHARGER = '#INQUIRY_CHARGER#',}
+			{@ TRY_PURCHASE_NUM = '#TRY_PURCHASE_NUM#',}
+			END_TIME = NOW() , 
+			RANK = '{@#RANK#}' , 
+			{@FLOW_STATUS = '#FLOW_STATUS#',}
+			ESTIMATE_TRAFFIC = '{@#ESTIMATE_TRAFFIC#}' , 
+			ESTIMATE_COST = '{@#ESTIMATE_COST#}' , 
+			ESTIMATE_PROFIT = '{@#ESTIMATE_PROFIT#}' , 
+			HOT_SELL_PERIOD = '{@#HOT_SELL_PERIOD#}' , 
+			{@ DEV_STATUS = '#DEV_STATUS#' , }
+			{@ DEV_STATUS_FLOW = '#DEV_STATUS_FLOW#' , }
+			{@ SAMPLE_EVALUATE = '#SAMPLE_EVALUATE#' , } 
+			{@ CATEGORY_ID = '#categoryId#' , } 
+			{@ SAMPLE_CHECK_DETAILS = '#SAMPLE_CHECK_DETAILS#' ,} 
+			{@ SAMPLE_ORDER_TIME = '#SAMPLE_ORDER_TIME#' , }
+			{@ SAMPLE_ARRIVE_TIME = '#SAMPLE_ARRIVE_TIME#',}
+			FOLLOW_RISK_PRODUCT = '{@#FOLLOW_RISK_PRODUCT#}' , 
+			FOLLOW_RISK_BRAND = '{@#FOLLOW_RISK_BRAND#}' , 
+			FOLLOW_RISK_SUPPLIER = '{@#FOLLOW_RISK_SUPPLIER#}' , 
+			PPC_STRATEGY = '{@#PPC_STRATEGY#}' , 
+			LOGI_STRATEGY = '{@#LOGI_STRATEGY#}' , 
+			PPC_STRATEGY_MEMO = '{@#PPC_STRATEGY_MEMO#}' , 
+			LOGI_STRATEGY_MEMO = '{@#LOGI_STRATEGY_MEMO#}' , 
+			SPREAD_STRATEGY = '{@#SPREAD_STRATEGY#}' , 
+			EBAY_KEY = '{@#EBAY_KEY#}' , 
+			EBAY_SALE_MEMO = '{@#EBAY_SALE_MEMO#}' , 
+			CORE_KEY = '{@#CORE_KEY#}' , 
+			CK_VALID_COMP = '{@#CK_VALID_COMP#}' , 
+			CK_SR_SEARCH = '{@#CK_SR_SEARCH#}' , 
+			CK_SR_COM = '{@#CK_SR_COM#}' , 
+			CK_SR_CPC = '{@#CK_SR_CPC#}' 
+			{@,P_SALE_UNIT = '#P_SALE_UNIT#'}
+			{@,P_PACKAGE = '#P_PACKAGE#'}
+			{@,P_SIZES = '#P_SIZES#'}
+			{@,P_SIZES_UNIT = '#P_SIZES_UNIT#'}
+			{@,P_COLOR = '#P_COLOR#'}
+			{@,P_MATERIAL = '#P_MATERIAL#'}
+			{@,P_CAUTIONS = '#P_CAUTIONS#'}
+			{@,DEV_MEMO = '#DEV_MEMO#'}
 			WHERE
 			DEV_ID = '{@#DEV_ID#}'
      </entry>

@@ -32,9 +32,9 @@ var currentId = '' ;
 					}
 					
 					if( id == 'root' ){
-						$(".grid-content-details").llygrid("reload",{categoryId:"",uncategory:uncategory}) ;
+						$(".grid-content-details").llygrid("reload",{categoryId:"",uncategory:uncategory,"untag":1}) ;
 					}else{
-						$(".grid-content-details").llygrid("reload",{categoryId:id,uncategory:uncategory}) ;
+						$(".grid-content-details").llygrid("reload",{categoryId:id,uncategory:uncategory,"untag":1}) ;
 					}
 				}
 	       }) ;
@@ -81,7 +81,7 @@ var currentId = '' ;
 				var status = $(this).attr("status");
 				$(".flow-node").removeClass("active").addClass("disabled");
 				$(this).removeClass("disabled").addClass("active");
-				$(".grid-content-details").llygrid("reload",{status:status});
+				$(".grid-content-details").llygrid("reload",{status:status,"untag":1});
 			}) ;
 			
 			//开发新产品
@@ -166,7 +166,7 @@ var currentId = '' ;
 				 },
 				 //title:"产品列表",
 				 indexColumn: false,
-				 querys:{taskView:'1',sqlId:'sql_pdev_new_list'},//status:$("[name='status']").val(),type:type,
+				 querys:{taskView:'1',sqlId:'sql_pdev_new_list',"untag":1},//status:$("[name='status']").val(),type:type,
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(records){
 					    var asins = [] ;

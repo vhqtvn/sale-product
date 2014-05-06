@@ -35,7 +35,7 @@
 
 	   $(function(){
 		   DynTag.listByType("productDevTag",function(entityType,tagId){
-		    	 $(".grid-content-details").llygrid("reload",{tagId:tagId},true) ;
+		    	 $(".grid-content-details").llygrid("reload",{tagId:tagId,"untag":""}) ;
 			}) ;
 		}) ;
    </script>
