@@ -75,7 +75,7 @@
 			$policy = $SqlUtils->getObject("sql_ram_options_getByCode",array('code'=>$policyCode) ) ;
 		}
 		
-		$isInit  = $status == '' || $status == '10' ;
+		$isInit  =  $status == '' || $status == '10' ;
 		
 		//决策原因
 		$policys = $SqlUtils->exeSql("sql_ram_options_getByType",array('type'=>'policy',"rmaType"=>"P")) ;
@@ -102,6 +102,8 @@
 	<script type="text/javascript">
 		var lastTrack = '' ;
 		var currentStatus = '<?php echo $status;?>';
+		var rmaId = '<?php echo $ramId ;?>' ;
+		var policyCode = '<?php echo $policyCode;?>' ;
 		var AuditAction = function(status ,statusLabel,fixParams){
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				if(window.confirm("确认【"+statusLabel+"】吗？")){
@@ -157,47 +159,58 @@
 		var flowData = [] ;
 		flowData.push( {status:10,label:"RMA决策",memo:true ,actions:[ 
 			    {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
-		        {label:"保存",action:function(){ AuditAction(10,"保存") } },
-		        {label:"提交",action:function(){ AuditAction('',"提交审批") } } 
+		        {label:"编辑保存",action:function(){ AuditAction(10,"编辑保存") } }
+		        <?php if( !empty( $selectedPolicy )){ 
+		        		$nextStatus = 10 ;
+		        		$nextText    = "" ;
+		        		if( $selectedPolicy['IS_BACK'] == 1 ){
+		        			$nextStatus = 40 ;
+		        			$nextText = "" ;
+		        		}else if( $selectedPolicy['IS_REFUND'] == 1 ){
+		        			$nextStatus = 60 ;
+		        		}else if( $selectedPolicy['IS_RESEND'] == 1 ){
+		        			$nextStatus = 75 ;
+		        		}
+		        	?>
+		        ,{label:"提交",action:function(){ AuditAction('<?php echo $nextStatus;?>',"决策完成，提交下一步") } } 
+		        <?php } ?>
 		]} ) ;
 
 		<?php if( $selectedPolicy['IS_BACK'] == 1 ){//退货 ?>
 		    /*退货*/
 			flowData.push( {status:40,label:"退货发货",memo:true,actions:[
-			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
+			   {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 			   {label:"保存",action:function(){ AuditAction(40,"保存") } }
 			] } ) ;
 
-			flowData.push( {status:45,label:"客户确认退货",memo:true,actions:[
-			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-			   {label:"保存轨迹",action:function(){ AuditAction(45,"保存轨迹") } },
-			   {label:"客户确认收到退货",action:function(){ AuditAction(60,"客户确认收到退货",{isReceive:1}) } }
+			flowData.push( {status:45,label:"供应商确认退货",memo:true,actions:[
+			   {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+			   {label:"保存轨迹",action:function(){ AuditAction(45,"保存轨迹") } }
 			] } ) ;
 		<?php } ?>
 
 		<?php if( $selectedPolicy['IS_REFUND'] == 1 ){//退款 ?>
 			/*退款*/
 			flowData.push( {status:60 ,label:"退款",memo:true,actions:[ 
-			   {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-			   {label:"保存轨迹",action:function(){ AuditAction(60,"保存轨迹") } },
-			   {label:"确认退款完成",action:function(){ AuditAction( 70,"确认退款完成",{refundStatus:1}) } }
+			   {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+			   {label:"保存轨迹",action:function(){ AuditAction(60,"保存轨迹") } }
 			]  } ) ;
 		<?php } ?>
 
 		<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//重发 ?>
 			/*重发补货*/
 			flowData.push( {status:75,label:"确认重发",memo:true,actions:[ 
-				     {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
+				     {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 			   		 {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } },
 			         {label:"确认重发完成",action:function(){ AuditAction(78 ,"确认重发完成！") }
 			    }
 			]  } ) ;
 
 			flowData.push( {status:78,label:"确认客户收货",memo:true,actions:[ 
-                                              				     {label:"强制结束",action:function(){ AuditAction('79',"强制结束") } },
-                                              			   		 {label:"保存轨迹",action:function(){ AuditAction(78,"保存轨迹") } },
-                                              			         {label:"确认客户收货",action:function(){ AuditAction(79 ,"确认客户收货，填写Feedback！") }
-                                              			    }
+                     {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
+                     {label:"保存轨迹",action:function(){ AuditAction(78,"保存轨迹") } },
+                     {label:"确认客户收货",action:function(){ AuditAction(79 ,"确认客户收货，填写Feedback！") }
+            	}
             ]  } ) ;
 		<?php } ?>
 			
@@ -254,19 +267,18 @@
 							</caption>
 								<tr>
 									<th>RMA编码：</th><td  colspan=3><input data-validator="required"
-										<?php echo !$isInit?"readOnly":"" ;?>
+										<?php echo !empty( $result['PURCHASE_ID'] )?"readOnly":"" ;?>
 										 type="text" id="code"
 										value="<?php  
 										if(empty($result['CODE'])){
 											echo $defaultCode ;
 										}else echo $result['CODE'];?>"/></td>
-									 
 								</tr>
 								<tr>
 								<th>提出时间：</th>
 									 <td colspan="<?php echo $status == 80?"1":"3" ;?>">
-									 	<input data-validator="required" data-widget="calendar"
-										<?php echo !$isInit?"readOnly":"" ;?>
+									 	<input data-validator="required" 
+										<?php echo !empty( $result['PURCHASE_ID'] )?"readOnly":"" ;?>
 										 type="text" id="proposedTime"
 										value="<?php echo   $result['PROPOSED_TIME'];?>"/>
 									 </td>
@@ -293,7 +305,7 @@
 								<tr>
 									<th>RMA原因：</th>
 									<td>
-										<select name="causeCode" data-validator="required" <?php echo !$isInit?"disabled":"" ;?>>
+										<select name="causeCode" data-validator="required" <?php echo empty( $result['PURCHASE_ID'] )?"":"disabled" ;?>>
 											<option value="">请选择</option>
 										<?php
 											$causeCode = $result['CAUSE_CODE'];
@@ -336,19 +348,14 @@
 									</td>
 								</tr>
 							</table>
-					<?php if( $selectedPolicy['IS_BACK'] == 1 ){//退货 ?>
+					<?php 
+					/**
+					 * 退货操作区域
+					 */
+					if( $selectedPolicy['IS_BACK'] == 1 && !$isInit ){//退货 ?>
 								<table class="form-table " >	
 									<caption>退货信息</caption>
-									<tr>
-										<th>退货时间：</th>
-										<td>
-											<button class="btn btn-primary  confirm-back">确认退货</button>
-										</td>
-										<th>客户收货时间：</th>
-										<td>
-											<button class="btn btn-primary  custom-receive-back">客户确认收货</button>
-										</td>
-									</tr>
+									<?php /*
 									<tr>
 										<th>退货物流商：</th>
 										<td>
@@ -359,40 +366,77 @@
 											<input type="text"  id="backLogisticsTrackCode"  value="" />
 										</td>
 									</tr>
+									*/?>
+									<tr>
+										<th>退货时间：</th>
+										<td>
+											<?php 
+												if( !empty($result['BACK_DATE']) ){
+													echo  $result['BACK_DATE'] ;
+												}else{?>
+												<button class="btn btn-primary  confirm-back">确认退货</button>	
+										<?php  } ?>
+										</td>
+										<th>供应商收货时间：</th>
+										<td>
+										<?php 
+												if( !empty($result['BACK_CUSTOM_RECEVICE_DATE']) ){
+													echo  $result['BACK_CUSTOM_RECEVICE_DATE'] ;
+												}else{?>
+												<button class="btn btn-primary  custom-receive-back">客户确认收货</button>
+										<?php  } ?>
+										</td>
+									</tr>
+									<tr>
+										<th>退货备注：</th>
+										<td colspan="3">
+										<?php 
+												if( !empty($result['BACK_CUSTOM_RECEVICE_DATE']) ){
+													echo $result['BACK_MEMO'];
+												}else{?>
+												<textarea style="width:80%;height:50px;" name="backMemo"><?php echo $result['BACK_MEMO'];?></textarea>
+										<?php  } ?>
+											
+										</td>
+									</tr>
 								</table>
 					<?php } ?>		
 					
-					<?php if( $selectedPolicy['IS_REFUND'] == 1 ){//退货 ?>
+					<?php
+					/**
+					 * 退款操作区域
+					 */
+					 if( $selectedPolicy['IS_REFUND'] == 1 && $status >=60  ){ ?>
 							 <table class="form-table " >
-								<caption>退款信息
-								</caption>
+								<caption>退款信息</caption>
 									<tr>
 										<th>是否收到退款：</th><td  colspan=3>
-											<?php if( $result['REFUND_STATUS'] != 1 ){ ?>
-											是<input type="radio" name="refundStatus"
-											<?php if(!$rmaRefund) echo 'disabled';?>
-											<?php  echo $result['REFUND_STATUS'] == 1?'checked':"" ?>
-											<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
+										<?php  if( empty( $result['REFUND_DATE'] ) ){ ?>
+												是<input type="radio" name="refundStatus" > 
 											 value="1" />&nbsp;&nbsp;&nbsp;&nbsp;
-											否<input type="radio" name="refundStatus"
-												<?php if(!$rmaRefund) echo 'disabled';?>
-												<?php  echo $result['REFUND_STATUS'] == 0?'checked':"" ?>
-												<?php  echo $result['REFUND_STATUS'] == 1?' disabled':"" ?>
+											否<input type="radio" name="refundStatus" 
 											 value="0" />&nbsp;&nbsp;&nbsp;&nbsp;
 											 <span class="refund-action" style="display:none;">
 											 	<input type="text" name="refundValue"  style="width:100px;"  <?php if(!$rmaRefund) echo 'disabled';?> placeHolder="请输入退款金额"/>
-											 	<input type="text" placeHolder="退款备注"  style="width:50%;;"  ></input>
-											 	<button class="btn btn-primary save-refund">确认退款</button>
+											 	<input type="text" placeHolder="退款备注"  name="refundMemo" style="width:50%;;"  ></input>
+											 	<button class="btn btn-primary refundConfirm">确认退款</button>
 											 </span>
-											 
-											<?php }?> 
-											 <?php  echo $result['REFUND_STATUS'] == 1?'<span class="alert alert-info"  style="padding:5px 10px;">退款金额:'.$result['REFUND_VALUE'].'</span>' :"" ?>
+										<?php  }else{  ?>
+											<span class="alert alert-info"  style="padding:5px 10px;">退款金额:<?php echo $result['REFUND_VALUE']; ?></span>
+											<?php echo $result['REFUND_MEMO']; ?>
+											&nbsp;&nbsp;
+											<?php echo $result['REFUND_DATE']; ?>
+										<?php } ?>
 										</td>
 									</tr>
 								</table>
 							<?php } ?>
 							
-							<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//退货 ?>	
+						<?php
+						/**
+						 * 重发补货操作区域
+						 */
+						 if( $selectedPolicy['IS_RESEND'] == 1 && !$isInit  ){//退货 ?>	
 							<table class="form-table " >
 								<caption>重发补货信息</caption>
 								<thead>

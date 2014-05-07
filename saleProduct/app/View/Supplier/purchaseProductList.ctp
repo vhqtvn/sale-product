@@ -53,8 +53,13 @@
 					}},
 					{align:"left",key:"STATUS",label:"状态",forzen:false,width:"5%",format:{type:'purchaseProductStatus'}},
 					{align:"center",key:"REAL_PURCHASE_DATE",label:"采购时间",width:"15%"},
+					{align:"center",key:"CODE",label:"采购编号",width:"10%",format:function(val,record){
+						return "<a href='#' purchase-product='"+record.ID+"'>"+val+"<a>";
+					}},
 		        	{align:"center",key:"QUOTE_PRICE",label:"计划采购价",width:"10%"},
+		        	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"合格数量" ,width:"5%"},
 		           	{align:"center",key:"REAL_QUOTE_PRICE",label:"实际采购价",width:"10%"},
+		        	{align:"center",key:"REAL_SHIP_FEE",label:"运费" ,width:"5%"},
 		        	{align:"center",key:"PROVIDOR_NAME",label:"采购供应商",width:"10%",format:function(val,record){
 									return "<a supplier-id='"+record.PROVIDOR+"'>"+val+"</a>" ;
 			        	}},
@@ -63,7 +68,6 @@
 		           	{align:"center",key:"TITLE",label:"标题",width:"10%",forzen:false,align:"left"},
 		        	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"8%",forzen:false,align:"left"},
 		        	{align:"center",key:"CREATOR_NAME",label:"发起人",width:"6%",forzen:false,align:"left"},
-		        	{align:"center",key:"QUALIFIED_PRODUCTS_NUM",label:"合格数量" ,width:"5%"},
 		        	{align:"center",key:"BAD_PRODUCTS_NUM",label:"不合格数量" ,width:"5%"},
 		           	{align:"center",key:"AREA",label:"采购地区",width:"6%",
 		           			format:{type:"json",content:{"china":"大陆","taiwan":"台湾","american":"美国"}}}

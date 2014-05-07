@@ -136,6 +136,7 @@
    <entry key="sql_ram_event_insert">	
 	INSERT INTO sc_ram_event 
 		( 
+		ID,
 		CODE, 
 		ORDER_ID, 
 		ORDER_NO, 
@@ -153,6 +154,7 @@
 		)
 		VALUES
 		( 
+		'{@#id#}', 
 		'{@#code#}', 
 		'{@#orderId#}', 
 		'{@#orderNo#}', 

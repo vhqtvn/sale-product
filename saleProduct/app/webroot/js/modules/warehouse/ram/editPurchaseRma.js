@@ -1,18 +1,73 @@
 $(function(){
 		var isAdd = false ;
 		
-		$(".save-score").click(function(){
-			if( !$.validation.validate('#personForm').errorInfo ) {
-				if(window.confirm("确认保存评分吗，保存后将不能修改？")){
-					var json = $("#personForm").toJson() ;
-					//保存基本信息
-					$.dataservice("model:Warehouse.Ram.doSaveScore",json,function(result){
-							window.location.reload();
-					});
-				}
+		/**
+		 * 退货确认
+		 */
+		$(".confirm-back").click(function(){
+			//保存基本信息
+			if( window.confirm("是否确认已经退货？") ){
+				var json = {rmaId:rmaId} ;
+				json.backMemo = $("[name='backMemo']").val() ;
+				$.dataservice("model:RamPurchase.confirmBack",json,function(result){
+						if( !result ){
+							window.location.reload() ;
+						}else{
+							alert("保存出现异常") ;
+						}
+				});
+			}
+		}) ;
+		/**
+		 * 供应商收退货确认
+		 */
+		$(".custom-receive-back").click(function(){
+			//保存基本信息
+			if( window.confirm("确认供应商已经收货？") ){
+				var json = {rmaId:rmaId,policyCode:policyCode} ;
+				json.backMemo = $("[name='backMemo']").val() ;
+				$.dataservice("model:RamPurchase.customReceiveBack",json,function(result){
+						if( !result ){
+							window.location.reload() ;
+						}else{
+							alert("保存出现异常") ;
+						}
+				});
+			}
+		}) ;
+		/**
+		 * 退货确认
+		 */
+		$(".refundConfirm").click(function(){
+			var json = {rmaId:rmaId,policyCode:policyCode} ;
+			json.refundValue = $("[name='refundValue']").val() ;
+			json.refundMemo = $("[name='refundMemo']").val() ;
+
+			if(window.confirm("确认已经退款完成?")){
+				$.dataservice("model:RamPurchase.doRefundConfrim",json,function(result){
+						window.location.reload();
+				});
 			}
 		}) ;
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
 		$(".btn-save").click(function(){
 			if(isAdd)return ;
 			if( !$.validation.validate('#personForm').errorInfo ) {
@@ -32,81 +87,7 @@ $(function(){
 			
 			return false ;
 		}) ;
-		
-		$(".btn-save-audit").click(function(){
-			if( !$.validation.validate('#personForm').errorInfo ) {
-				if(window.confirm("确认保存并提交审批吗?")){
-					
-					var json = $("#personForm").toJson() ;
-					json.status = 1 ;//等待shengpi
-					
-					//保存基本信息
-					$.dataservice("model:Warehouse.Ram.doSaveAndAuditEvent",json,function(result){
-							window.opener.openCallback('editPlan') ;
-							window.close();
-					});
-				}
-			};
-			
-			return false ;
-		}) ;
-		
-		//审计通过
-		$(".btn-aduitPass").click(function(){
-			if( !$.validation.validate('#personForm').errorInfo ) {
-				if(window.confirm("确认审批痛过吗?")){
-					
-					var json = $("#personForm").toJson() ;
-					
-					//保存基本信息
-					$.dataservice("model:Warehouse.Ram.doAuditPass",json,function(result){
-							window.opener.openCallback('editPlan') ;
-							window.close();
-					});
-				}
-			};
-			
-			return false ;
-		}) ;
-		
-		$(".btn-delete").click(function(){
-			if( !$.validation.validate('#personForm').errorInfo ) {
-				if(window.confirm("确认删除RMA事件吗?")){
-					
-					var json = $("#personForm").toJson() ;
-					
-					//保存基本信息
-					$.dataservice("model:Warehouse.Ram.deleteEvent",json,function(result){
-							window.opener.openCallback('editPlan') ;
-							window.close();
-					});
-				}
-			};
-			
-			return false ;
-		}) ;
-		
-		$(".btn-aduitNotPass").click(function(){
-			if( !$.validation.validate('#personForm').errorInfo ) {
-				var json = $("#personForm").toJson() ;
-				if(!json.trackMemo){
-					alert("请填写审批意见！") ;
-					return ;
-				}
-				
-				if(window.confirm("确认审批不通过吗?")){
-					
-					
-					//保存基本信息
-					$.dataservice("model:Warehouse.Ram.doAuditNotPass",json,function(result){
-							window.opener.openCallback('editPlan') ;
-							window.close();
-					});
-				}
-			};
-			return false ;
-		}) ;
-		
+
 		$(".btn-save-track").click(function(){
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
@@ -125,29 +106,7 @@ $(function(){
 			};
 			return false ;
 		}) ;
-		
-		
-		/*
-		$("[name='isReceive']").click(function(){
-			
-			var val = $(this).val() ;
-			if( val==1 ){
-				if(window.confirm("确认收到退货,编辑后将不能修改？")){
-					$("[name='isReceive']").attr("disabled","disabled") ;
-					$(".ram-in").removeClass("disabled").removeAttr("disabled") ;
-					
-					var json = $("#personForm").toJson() ;
-					$.dataservice("model:Warehouse.Ram.doUpdateRecevie",json,function(result){
-							//window.opener.openCallback('editPlan') ;
-							//window.close();
-					});
-				}else{
-					$("[name='isReceive'][value='0']").attr("checked",'checked');
-					$(".ram-in").addClass("disabled").addClass("disabled") ;
-				}
-			}
-		}) ;*/
-		
+
 		$("[name='refundStatus']").click(function(){
 			var val = $(this).val() ;
 			if( val==1 ){
@@ -156,16 +115,7 @@ $(function(){
 				$(".refund-action").hide();
 			}
 		}) ;
-		
-		
-		$(".refundConfirm").click(function(){
-			var json = $("#personForm").toJson() ;
-			if(window.confirm("确认已经退款完成?")){
-				$.dataservice("model:Warehouse.Ram.doRefundConfrim",json,function(result){
-						window.location.reload();
-				});
-			}
-		}) ;
+
 		
 		$(".btn-finish").click(function(){
 			//检查该RMA是否处理完成
@@ -231,37 +181,6 @@ $(function(){
 			}
 		}) ;
 		
-		var orderGridSelect = {
-			title:'订单选择',
-			labelField:"#orderNo",
-			valueField:"#orderId",
-			key:{value:'ORDER_ID',label:'ORDER_NUMBER'},//对应value和label的key
-			multi:false,
-			grid:{
-				title:"订单选择",
-				params:{
-					sqlId:"sql_sc_order_list",
-					status:"shipped"
-				},
-				ds:{type:"url",content:contextPath+"/grid/query"},
-				pagesize:10,
-				columns:[//显示列
-					{align:"center",key:"ORDER_ID",label:"订单编号",width:"150",query:true},
-					{align:"center",key:"ORDER_NUMBER",label:"内部订单号",sort:true,width:"150",query:true},
-					{align:"left",key:"ACCOUNT_NAME",label:"账号", width:"8%"},
-					{align:"left",key:"ORDER_PRODUCTS",label:"订单货品", width:"10%",format:function(val,record){
-			      		val = val||"" ;
-			      		var html = [] ;
-			      		$( val.split(";") ).each(function(index,item){
-			      			var array = item.split("|") ;
-			      			item&& html.push("<img src='/"+fileContextPath+""+array[0]+"' style='width:25px;height:25px;'>") ;
-			      		})  ;
-			      		return html.join("") ;
-			      	}}
-				]
-			}
-	    } ;
-	    
 	    window.renderProductImg = function(val,record){
        		if(val){
        			val = val.replace(/%/g,'%25') ;
@@ -270,7 +189,6 @@ $(function(){
        		return "" ;
        	}
 	   
-		$(".btn-order").listselectdialog( orderGridSelect ) ;
 		if( $("#id").val() ){
 			var tab = $('#tabs-default').tabs( {//$this->layout="index";
 				tabs:[
