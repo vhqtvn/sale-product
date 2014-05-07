@@ -214,7 +214,7 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 		window.print() ;
 	}
 </script>
-	<div style="position:fixed;top:5px;right:10px;width:100px;height:20px;" id="printLabelDiv"><button style="width:50px;height:30px;" onclick="printLabel()">打印</button></div>
+	<div style="position:fixed;top:5px;right:10px;width:100px;height:20px;display:none;" id="printLabelDiv"><button style="width:50px;height:30px;" onclick="printLabel()">打印</button></div>
 	<table border="0" style="width:100%;height:100%;border:0;">
 		<tbody>
 		<?php for($i=0 ;$i<$row ;$i++){ 

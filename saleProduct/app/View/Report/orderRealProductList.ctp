@@ -91,7 +91,7 @@
 	<div style="clear:both;height:1px;" ></div>
 	<div class="toolbar toolbar-auto">
 	  <div class="row-fluid">
-	  	<div class="span3">
+	  	<div class="span12">
 		<table class="toolbar1">
 			<tr>
 				<th>
@@ -99,12 +99,27 @@
 				</th>
 				<td>
 					<input type="text" id="purchaseDate"   data-widget="calendar"  value='<?php echo $printTime;?>'  style="width:100px;"/>
-				</td>								
+				</td>
+				<th>账号：</th>
+						<td>
+						<select name="accountId" data-validator="required"  style="width:100px;">
+				     		<option value="">--选择--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     		} ;
+					     	?>
+							</select>
+					</td>							
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
 				</td>
 		</table>
 		</div>
+		<?php /*
 		<div class="span9">
 		<table class="asyn-form"  data-widget="validator">
 				<th>账号：</th>
@@ -138,6 +153,7 @@
 			</tr>						
 		</table>
 		</div>
+		*/?>
 		</div>
 	</div>	
 	<div class="grid-content" style="margin-top:5px;">

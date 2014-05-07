@@ -378,11 +378,11 @@
 										<?php  } ?>
 										</td>
 										<th>供应商收货时间：</th>
-										<td>
+										<td style="width:30%;">
 										<?php 
 												if( !empty($result['BACK_CUSTOM_RECEVICE_DATE']) ){
 													echo  $result['BACK_CUSTOM_RECEVICE_DATE'] ;
-												}else{?>
+												}else if( !empty($result['BACK_DATE']) ){?>
 												<button class="btn btn-primary  custom-receive-back">客户确认收货</button>
 										<?php  } ?>
 										</td>
@@ -396,7 +396,6 @@
 												}else{?>
 												<textarea style="width:80%;height:50px;" name="backMemo"><?php echo $result['BACK_MEMO'];?></textarea>
 										<?php  } ?>
-											
 										</td>
 									</tr>
 								</table>

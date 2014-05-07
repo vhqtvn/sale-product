@@ -82,6 +82,7 @@
 			WHERE 
 			soi.REAL_ID = srp.id
 			AND soi.PURCHASE_DATE LIKE '{@%#purchaseDate#%}'
+			{@ and soi.account_id = '#accountId#'}
 			group by soi.seller_sku,soi.account_id
     </entry>
 </properties>
