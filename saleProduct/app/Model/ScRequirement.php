@@ -255,6 +255,11 @@ class ScRequirement extends AppModel {
 		$limit = 200 ;
 		$planId= null  ;
 		$itemCount = 0 ;
+		
+		//中止清除没有处理的需求
+		$sql = "update sc_supplychain_requirement_plan_product set status=2 where status = 0" ;
+		$this->exeSql($sql, array() ) ;
+		
 		while(true){
 			$sql = "SELECT 
 			    	        saap.*,
