@@ -16,7 +16,7 @@
 			     AND sre.PURCHASE_ID = spp.ID
 			     AND srp.ID = spp.REAL_ID
 			     
-			     AND spp.status = '{@#status#}'
+			     AND sre.status = '{@#status#}'
 			     {@
 			       and ( srp.name like '%searchKey%'
 			       			or srp.real_sku  like '%searchKey%'

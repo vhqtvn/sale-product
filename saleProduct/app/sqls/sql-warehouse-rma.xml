@@ -165,7 +165,7 @@
 		'{@#policyCode#}', 
 		'{@#loginId#}', 
 		NOW(), 
-		'{@#status#}', 
+		10, 
 		'{@#memo#}', 
 		'{@#charger#}', 
 		{@#proposedTime:NOW()#}
