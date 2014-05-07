@@ -266,7 +266,6 @@ class NewPurchaseService extends AppModel {
 					$sql = "update sc_supplychain_requirement_plan_product set status = 6  where req_product_id = '{@#reqProductId#}'" ;
 					$this->exeSql($sql , array("reqProductId"=>$purchaseProduct['REQ_PRODUCT_ID']) ) ;
 				}
-				
 			}
 			
 			if( $isTerminal  ){
