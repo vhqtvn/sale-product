@@ -231,6 +231,13 @@
 		DECLARATION_PRICE = '{@#declarationPrice#}',
 		{@SPECIFICATION_UNIT = '#specificationUnit#',}
 		{@SPECIFICATION_WEIGHT = '#specificationWeight#',}
+		{@P_SALE_UNIT = '#P_SALE_UNIT#' , }
+		{@P_PACKAGE = '#P_PACKAGE#' , }
+		{@P_SIZES = '#P_SIZES#' , }
+		{@P_SIZES_UNIT = '#P_SIZES_UNIT#' , }
+		{@P_COLOR = '#P_COLOR#' , }
+		{@P_MATERIAL = '#P_MATERIAL#' , }
+		{@P_CAUTIONS = '#P_CAUTIONS#' , }
 		S_KEYS = '{@#keys#}'
 	WHERE
 	 	ID = '{@#id#}'

@@ -7,7 +7,7 @@ class Listing extends AppModel {
 						SET
 						SUPPLY_CYCLE = '{@#SUPPLY_CYCLE:0#}' , 
 						REQ_ADJUST = '{@#REQ_ADJUST:0#}'
-						
+						{@ ,LIMIT_PRICE = '#LIMIT_PRICE#'}
 						WHERE
 						ID = '{@#ID#}'" ;
 		$this->exeSql($sql, $params) ;

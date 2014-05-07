@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+
+		<entry key="sql_productDev_propCopyToRealProduct">
+	    <![CDATA[
+				UPDATE sc_real_product 
+					SET
+					P_SALE_UNIT = '{@#P_SALE_UNIT#}' , 
+					P_PACKAGE = '{@#P_PACKAGE#}' , 
+					P_SIZES = '{@#P_SIZES#}' , 
+					P_SIZES_UNIT = '{@#P_SIZES_UNIT#}' , 
+					P_COLOR = '{@#P_COLOR#}' , 
+					P_MATERIAL = '{@#P_MATERIAL#}' , 
+					P_CAUTIONS = '{@#P_CAUTIONS#}',
+					P_ISCOPY= 1
+				WHERE
+					ID = '{@#REAL_PRODUCT_ID#}'
+					and P_ISCOPY = 0
+		]]>	      
+	    </entry>
 		<entry key="sql_productDev_new_categorytree">
 	    <![CDATA[
 	        select sc_product_category.*,
@@ -7,6 +25,10 @@
 	              (select count(*) from sc_product_developer spfd where spfd.category_id = sc_product_category.id
 	              	{@ #$VIEW_PRODUCT_DEV# }
 	                 and spfd.flow_status  not in ( 80,26)
+	                 and spfd.DEV_STATUS != 3
+	                 and spfd.asin not in (
+									select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
+					)
 	               ) as TOTAL
 	              from sc_product_category
 		]]>	      

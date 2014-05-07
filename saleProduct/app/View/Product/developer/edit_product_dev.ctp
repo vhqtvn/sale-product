@@ -635,7 +635,7 @@ html{-webkit-text-size-adjust: none;}
 					<?php  if( ($pdStatus >=50) ||  !empty($productDev['REAL_PRODUCT_ID']) ){  ?>
 					<tr>
 						<th style="width:20%;">
-							<?php  if( $pdStatus ==50 ){  ?>
+							<?php  if( $pdStatus ==50||$pdStatus==60 ){  ?>
 							<button class="btn btn-primary select-real-product">选择货品</button>
 							<?php 	} ?>
 							<input type="hidden" id="REAL_PRODUCT_ID" value="<?php echo $productDev['REAL_PRODUCT_ID'];?>"/>
@@ -723,7 +723,6 @@ html{-webkit-text-size-adjust: none;}
 					<tr>
 						<th>颜色</th>
 						<td><input type="text"    class="input 10-input"   id="P_COLOR"  value="<?php echo $productDev['P_COLOR'];?>" /></td>
-					
 						<th>材质</th>
 						<td><input type="text"    class="input 10-input"   id="P_MATERIAL"  value="<?php echo $productDev['P_MATERIAL'];?>" /></td>
 					</tr>

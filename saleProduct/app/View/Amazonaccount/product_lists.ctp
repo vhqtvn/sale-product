@@ -142,7 +142,6 @@
 						</td>
 						<td>
 							<button class="btn btn-primary query query-btn" >查询</button>
-							
 							<button class="btn btn-primary btn-mini query-reply-btn">重复产品过滤</button>
 				 			<button class="btn btn-primary btn-mini product-category-btn">编辑分类产品</button>
 						</td>

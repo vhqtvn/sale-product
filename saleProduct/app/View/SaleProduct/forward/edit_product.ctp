@@ -131,25 +131,45 @@
 									<td ><input type="text" data-validator="required" name="name" value="<?php echo $item['NAME']?>"/></td>
 								</tr>
 								<tr>
+									<th>销售单元</th>
+									<td><input type="text"    class="input 10-input"   id="P_SALE_UNIT"  value="<?php echo $item['P_SALE_UNIT'];?>" /></td>
 									<th>预警库存：</th>
 									<td><input type="text" data-validator="required" class="alert-danger"
 										name="warningQuantity" value="<?php echo $item['WARNING_QUANTITY']?>"/></td>
+								</tr>
+								<tr>
+									<th>包装</th>
+									<td><input type="text"    class="input 10-input"   id="P_PACKAGE"  value="<?php echo $item['P_PACKAGE'];?>" /></td>
 									<th>安全库存：</th>
 									<td><input type="text" data-validator="required"  class="alert-danger"
 										name="securityQuantity" value="<?php echo $item['SECURITY_QUANTITY']?>"/></td>
 								</tr>
 								<tr>
-									<th colspan=2 style="text-align:center">产品属性</th>
+									<th>尺寸</th>
+									<td>
+										<input type="text"    class="input 10-input"   id="P_SIZES"  value="<?php echo $item['P_SIZES'];?>" />
+										<select id="P_SIZES_UNIT"   class="input 10-input"  style="width:60px;">
+											<option value="cm"  <?php echo $item['P_SIZES_UNIT']=='cm'?"selected":"";?>>CM</option>
+											<option value="inch"  <?php echo $item['P_SIZES_UNIT']=='inch'?"selected":"";?>>英寸</option>
+										</select>
+									</td>
 									<th colspan=2 style="text-align:center">备注</th>
-									
 								</tr>
 								<tr>
-									<td colspan=2>
-										<textarea name="properties" style="width:90%;height:80px;"><?php echo $item['PROPERTIES']?></textarea>
-									</td>
-									<td colspan=2>
+									<th>颜色</th>
+									<td><input type="text"    class="input 10-input"   id="P_COLOR"  value="<?php echo $item['P_COLOR'];?>" /></td>
+									<td colspan=2 rowspan="3">
 										<textarea name="memo" style="width:90%;height:80px;"><?php echo $item['MEMO']?></textarea>
-										
+									</td>
+								</tr>
+								<tr>
+									<th>材质</th>
+									<td><input type="text"    class="input 10-input"   id="P_MATERIAL"  value="<?php echo $item['P_MATERIAL'];?>" /></td>
+								</tr>
+								<tr>
+									<th>注意事项</th>
+									<td>
+										<textarea  id="P_CAUTIONS"  class="input 10-input"  style="width:90%;height:60px;"><?php echo $item['P_CAUTIONS'];?></textarea>
 									</td>
 								</tr>
 								<tr>

@@ -81,6 +81,10 @@ class NewProductDev extends AppModel {
 		return $return ;
 	}
 	
+	function initDevPropToProduct(){
+		
+	}
+	
 	function doFlow( $params ){
 		ini_set('date.timezone','Asia/Shanghai');
 		$dataSource = $this->getDataSource();
@@ -94,6 +98,29 @@ class NewProductDev extends AppModel {
 		//return ;
 		try{
 			$this->exeSql("sql_pdev_new_update", $params) ;
+			
+			$sql = "select * from sc_product_developer where dev_id = '{@#DEV_ID#}'" ;
+			$productDeveloper = $this->getObject($sql, $params) ;
+			
+			if( isset( $params['isRelProduct'] ) && $params['isRelProduct'] == 1  ){
+				/**
+				 * 关联产品操作，将开发属性拷贝到开发产品中
+				 * 1、分类
+				 * 2、产品属性
+				 * 3、成本数据
+				 */
+				//1、检查分类
+				$categoryId = $productDeveloper['CATEGORY_ID'] ;
+				$sql = "select * from sc_real_product_category where product_id= '{@#productId#}' and category_id = '{@#categoryId#}'" ;
+				$productCategory= $this->getObject($sql, array("productId"=>$params['REAL_PRODUCT_ID'],"categoryId"=>$categoryId)) ;
+				if( empty($productCategory) ){//添加分类
+					$sql = "INSERT INTO sc_real_product_category  (PRODUCT_ID, CATEGORY_ID) VALUES ('{@#productId#}',  '{@#categoryId#}' )" ;
+					$this->exeSql($sql,array("productId"=>$params['REAL_PRODUCT_ID'],"categoryId"=>$categoryId)) ;
+				}
+				
+				/*保存产品属性*/
+				$this->exeSql("sql_productDev_propCopyToRealProduct", $productDeveloper) ;
+			}
 			
 			if( $params['FLOW_STATUS'] == 72 ){ //审批通过，生成采购单
 				/*$PurchaseService  = ClassRegistry::init("PurchaseService") ;

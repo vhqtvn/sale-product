@@ -141,6 +141,7 @@ $(function(){
 					json.ASIN = asin ;
 					json.FLOW_STATUS = 60 ;
 					json.DEV_ID = json.devId ;
+					json.isRelProduct = 1 ;//是关联产品操作
 					$.dataservice("model:NewProductDev.doFlow",json,function(result){
 						window.location.reload() ;
 					});
