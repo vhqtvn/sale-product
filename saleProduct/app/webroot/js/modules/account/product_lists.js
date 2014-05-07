@@ -48,7 +48,7 @@
 			
 	       var gridConfig = {
 					columns:[
-						{align:"center",key:"ID",label:"状态",width:"6%",format:function(val,record){
+						/*{align:"center",key:"ID",label:"状态",width:"6%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
 							if(record.COUNTRY >= 1){
@@ -67,14 +67,14 @@
 						{align:"center",key:"REAL_ID",label:"动态", width:"6%",format:function(val,record){
 							if(!val) return "" ;
 							return "<span class='pi-status hide popover-pl'  realId='"+(val||"")+"'  title=''>查看</span>" ;
-						}},
-						{align:"center",key:"ID",label:"操作",width:"12%",format:function(val,record){
+						}},*/
+						{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
 							html.push('<a href="#" class="edit-listing" val="'+val+'">'+getImage("edit.png","编辑")+'</a>&nbsp;') ;
-							html.push('<a href="#" class="sale-strategy" val="'+val+'">'+getImage("example.gif","价格调整")+'</a>&nbsp;') ;
-							html.push('<a href="#" class="category-set popover-pl top" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
-							html.push('<a href="#" class="list-entity-tag popover-pl top" val="'+val+'">'+getImage("tabs.gif","显示标签")+'</a>&nbsp;') ;
+							//html.push('<a href="#" class="sale-strategy" val="'+val+'">'+getImage("example.gif","价格调整")+'</a>&nbsp;') ;
+							//html.push('<a href="#" class="category-set popover-pl top" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
+							//html.push('<a href="#" class="list-entity-tag popover-pl top" val="'+val+'">'+getImage("tabs.gif","显示标签")+'</a>&nbsp;') ;
 							return html.join("") ;
 						}},
 						{align:"center",key:"IS_ANALYSIS",label:"供应需求", width:"6%",format:function(val,record){
@@ -98,32 +98,30 @@
 							return html.join("") ;
 						}},
 						{align:"center",key:"RISK_TYPE_NAME",label:"风险类型", width:"6%"},
-						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
-						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
-								return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/saleProduct/details/"+val+"/sku#ui-tabs-5'>"+(val||"")+"</a>"
+						{align:"left",key:"SKU",label:"Listing SKU",width:"10%"},
+						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"10%",format:function(val,record){
+								return "<a href='#' product-realsku='"+val+"'>"+(val||"")+"</a>"
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
-			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||"")+"</a>" ;
+			           		return "<a href='#' offer-listing='"+record.ASIN+"'>"+(val||"")+"</a>" ;
 			           	}},
 			           	{align:"center",key:"P_LOCAL_URL",label:"图片",width:"6%",forzen:false,align:"left",format:{type:'img'}},
-			           	{align:"center",key:"P_TITLE",label:"产品标题",width:"10%",forzen:false,align:"left",format:function(val,record){
-			           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+val+"</a>" ;
-			           	}},
-			           	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
+			           	{align:"center",key:"P_TITLE",label:"产品标题",width:"10%",forzen:false,align:"left"},
+			           /*	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
 			           		if(!val) return '-' ;
 			           		return Math.round(val) ;
-			           	}},
+			           	}},*/
 			           	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
 			           	{align:"center",key:"ITEM_CONDITION",label:"使用程度",width:"8%",format:function(val){
 			           		if(val == 1) return "Used" ;
 			           		if(val == 11) return 'New' ;
 			           		return '' ;
 			           	}},
-			           	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
+			           //	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
 			           	{align:"center",key:"QUANTITY",label:"库存",width:"6%"},
-			           	 {align:"center",key:"PRICE",label:"Price",group:"价格",width:"6%"},
-			           {align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
+			           	 {align:"center",key:"PRICE",label:"Price",width:"6%"},
+			          /* {align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
 			           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"8%",format:function(val,record){
 			           		var pm = '' ;
 			           		if(record.FULFILLMENT_CHANNEL != 'Merchant') pm = record.FBA_PM  ;
@@ -139,8 +137,8 @@
 			           		if( record.IS_FM == 'FM' ) return  record.FBM_F_PRICE ;
 			           		if( record.IS_FM == 'NEW' ) return  record.FBM_N_PRICE ;
 			           		return "" ;
-			           	}},
-			           	{align:"center",key:"EXEC_PRICE",label:"最低限价",group:"价格",width:"8%"},
+			           	}},*/
+			           	{align:"center",key:"LIMIT_PRICE",label:"最低限价",width:"8%"},
 			        	{align:"center",key:"SUPPLY_CYCLE",label:"供应周期",width:"8%" },
 			        	{align:"center",key:"REQ_ADJUST",label:"需求调整系数",width:"8%" }
 			         ],
