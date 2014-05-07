@@ -183,7 +183,7 @@
 			   {label:"保存",action:function(){ AuditAction(40,"保存") } }
 			] } ) ;
 
-			flowData.push( {status:45,label:"供应商确认退货",memo:true,actions:[
+			flowData.push( {status:45,label:"供应商确认收退货",memo:true,actions:[
 			   {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
 			   {label:"保存轨迹",action:function(){ AuditAction(45,"保存轨迹") } }
 			] } ) ;
@@ -383,7 +383,7 @@
 												if( !empty($result['BACK_CUSTOM_RECEVICE_DATE']) ){
 													echo  $result['BACK_CUSTOM_RECEVICE_DATE'] ;
 												}else if( !empty($result['BACK_DATE']) ){?>
-												<button class="btn btn-primary  custom-receive-back">客户确认收货</button>
+												<button class="btn btn-primary  custom-receive-back">供应商确认收货</button>
 										<?php  } ?>
 										</td>
 									</tr>
@@ -439,6 +439,23 @@
 							<table class="form-table " >
 								<caption>重发补货信息</caption>
 								<thead>
+								<tr>
+										<th>供应商补货时间：</th>
+										<td>
+												<button class="btn btn-primary  confirm-back">确认供应商补货</button>
+										</td>
+										<th>供应商补货收货：</th>
+										<td style="width:30%;">
+												<button class="btn btn-primary  custom-receive-back">确认收到供应商补货</button>
+										</td>
+									</tr>
+									<tr>
+										<th>重发备注：</th>
+										<td colspan="3">
+										<textarea style="width:80%;height:50px;" name="backMemo"><?php echo $result['RESEND_MEMO'];?></textarea>
+										</td>
+									</tr>
+								<?php /* 
 									<tr>
 										<th>标签</th>
 										<th  style="font-weight:bold;">账号</th>
@@ -492,6 +509,7 @@
 										<td><?php echo $req['SALES_FOR_THELAST14DAYS'] ;?></td>
 									</tr>
 									<?php  } ?>
+								 */ ?>
 								</tbody>
 						</table>
 						<?php } ?>

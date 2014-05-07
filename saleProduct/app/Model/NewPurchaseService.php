@@ -297,13 +297,19 @@ class NewPurchaseService extends AppModel {
 		$charger = "" ;
 		$chargerName = "" ;
 		//获取分类采购负责人
-		$sql = "SELECT  spc.PURCHASE_CHARGER,
+		$sql = "
+				SELECT  spc.PURCHASE_CHARGER,
 				(SELECT NAME FROM sc_user WHERE login_id = spc.PURCHASE_CHARGER) AS PURCHASE_CHARGER_NAME,
 				srp.ID AS REAL_ID
-			FROM sc_real_product srp
-			LEFT JOIN sc_product_category spc
-			 ON srp.CATEGORY_ID = spc.ID
-			where srp.id = '{@#realId#}'" ;
+			FROM sc_real_product srp,
+			     sc_real_product_category srpc,
+			     sc_product_category spc
+			WHERE srp.ID = srpc.PRODUCT_ID
+			AND srpc.CATEGORY_ID = spc.ID
+			AND spc.PURCHASE_CHARGER IS NOT NULL 
+			AND spc.PURCHASE_CHARGER != ''
+				and srp.id = '{@#realId#}'
+			LIMIT 0,1 " ;
 		$item = $this->getObject($sql, array("realId"=>$realId)) ;
 		if( empty( $item['PURCHASE_CHARGER'] ) ){
 			//获取全局默认采购人

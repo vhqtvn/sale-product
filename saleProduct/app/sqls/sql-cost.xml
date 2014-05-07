@@ -169,6 +169,7 @@
     <entry key="sql_cost_product_insert_simple">
    	 INSERT INTO sc_product_cost 
 			( 
+			ID,
 			TYPE, 
 			PURCHASE_COST, 
 			REAL_ID ,
@@ -178,6 +179,7 @@
 			)
 			VALUES
 			(
+			'{@#ID#}', 
 			'{@#TYPE#}', 
 			'{@#PURCHASE_COST#}', 
 			'{@#REAL_ID#}', 
