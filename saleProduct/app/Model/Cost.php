@@ -314,6 +314,7 @@ class Cost extends AppModel {
 		$fbaCost = $this->getObject($Sql, $data) ;
 		if( empty($fbaCost) ){
 			$params  = array() ;
+			$params['ID'] = $this->create_guid() ;
 			$params['REAL_ID']  = $realId ;
 			$params['PURCHASE_COST'] = $purchaseCost ;
 			$this->exeSql("sql_cost_product_insert_simple",$params) ;
