@@ -60,18 +60,9 @@
 <div class="toolbar toolbar-auto">
 		<table>
 			<tr>
-				<th>
-					RMA编号:
-				</th>
 				<td>
-					<input type="text" name="rmaId" class="span2"/>
-				</td>
-				<th>
-					订单编号:
-				</th>
-				<td>
-					<input type="text" name="orderId" class="span2"/>
-				</td>								
+					<input type="text" name="searchKey"  placeHolder="货品名称、SKU"/>
+				</td>							
 				<td class="toolbar-btns">
 					<button class="query-btn btn ">查询</button>
 					<?php  if( $rmaEdit ) { ?>
@@ -90,23 +81,17 @@
 		<table class="flow-table">						
 			<tbody>
 				<tr>						
-					<td><div class="flow-node disabled" status="10">编辑中</div></td>
+					<td><div class="flow-node disabled" status="10">RMA决策</div></td>
 					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="30">退货标签确认</div></td>
+					<td><div class="flow-node disabled" status="40">退货发货</div></td>
 					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="40">退货确认</div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="50">退货入库</div></td>
+					<td><div class="flow-node disabled" status="45">供应商确认收退货</div></td>
 					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="60">退款</div></td>
 					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="70">重发配置</div></td>
+					<td><div class="flow-node disabled" status="75">供应商补货发货</div></td>
 					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="75">确认重发</div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="78">重发收货</div></td>
-					<td class="flow-split">-</td>
-					<td><div class="flow-node disabled" status="79">Feedback</div></td>
+					<td><div class="flow-node disabled" status="78">供应商补货收货</div></td>
 					<td class="flow-split">-</td>
 					<td><div class="flow-node disabled" status="80">结束</div></td>
 				</tr>					

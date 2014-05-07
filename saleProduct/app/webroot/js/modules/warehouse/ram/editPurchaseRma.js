@@ -50,7 +50,40 @@ $(function(){
 			}
 		}) ;
 		
-		
+		/**
+		 * 补货供应商发货确认
+		 */
+		$(".confirm-provider-send").click(function(){
+			//保存基本信息
+			if( window.confirm("确认供应商已经补货发货？") ){
+				var json = {rmaId:rmaId} ;
+				json.backMemo = $("[name='resendMemo']").val() ;
+				$.dataservice("model:RamPurchase.confirmProviderBack",json,function(result){
+						if( !result ){
+							window.location.reload() ;
+						}else{
+							alert("保存出现异常") ;
+						}
+				});
+			}
+		}) ;
+		/**
+		 * 供应商补货收货确认
+		 */
+		$(".confirm-receive-provider-send").click(function(){
+			//保存基本信息
+			if( window.confirm("确认已收到供应商补货？") ){
+				var json = {rmaId:rmaId,policyCode:policyCode} ;
+				json.backMemo = $("[name='resendMemo']").val() ;
+				$.dataservice("model:RamPurchase.customProviderReceiveBack",json,function(result){
+						if( !result ){
+							window.location.reload() ;
+						}else{
+							alert("保存出现异常") ;
+						}
+				});
+			}
+		}) ;
 		
 		
 		
@@ -190,7 +223,7 @@ $(function(){
        	}
 	   
 		if( $("#id").val() ){
-			var tab = $('#tabs-default').tabs( {//$this->layout="index";
+			/*var tab = $('#tabs-default').tabs( {//$this->layout="index";
 				tabs:[
 					{label:'轨迹',content:"tab-track"},
 					{label:'RMA入库',content:"tab-rma"}
@@ -205,7 +238,7 @@ $(function(){
 						$(".grid-content-rma-rel").llygrid("reload") ;
 					}
 				}
-			} ) ;
+			} ) ;*/
 			
 			$(".grid-content-track").llygrid({
 				columns:[
@@ -229,7 +262,7 @@ $(function(){
 				 }
 			}) ;
 			
-			$(".grid-content-rma").llygrid({
+			/*$(".grid-content-rma").llygrid({
 				columns:[
 					{align:"center",key:"QUALITY",label:"货品质量",width:"60",forzen:false
 		           		,format:{type:"json",content:{'good':"良品",'bad':"残品"}}},
@@ -266,7 +299,7 @@ $(function(){
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
 				 }
-			}) ;
+			}) ;*/
 			
 		}
 		

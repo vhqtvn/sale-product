@@ -37,6 +37,38 @@ class RamPurchase extends AppModel {
 		return "" ;
 	}
 	
+	public function confirmProviderBack($params){
+		try{
+			$rmaId= $params['rmaId'] ;
+			$sql = "update sc_ram_event set RESEND_DATE=NOW(),status=78,resend_Memo='{@#resendMemo#}' where id='{@#rmaId#}'" ;
+			$this->exeSql($sql, $params) ;
+			$params['id'] = $rmaId ;
+			$params['trackMemo'] = "确认供应商补货发货" ;
+			$this->doSaveTrack($params) ;
+		}catch(Exception $e){
+			ob_clean() ;
+			return $e->getMessage() ;
+		}
+		return "" ;
+	}
+	
+	public function customProviderReceiveBack($params){
+		try{
+			//获取下一步状态
+			$rmaId= $params['rmaId'] ;
+			//$policyCode = $params['policyCode'] ;
+			$sql = "update sc_ram_event set RESEND_RECEVICE_DATE=NOW(),status=80,resend_Memo='{@#resendMemo#}' where id='{@#rmaId#}'" ;
+			$this->exeSql($sql, $params) ;
+			$params['id'] = $rmaId ;
+			$params['trackMemo'] = "确认收到供应商补货" ;
+			$this->doSaveTrack($params) ;
+		}catch(Exception $e){
+			ob_clean() ;
+			return $e->getMessage() ;
+		}
+		return "" ;
+	}
+	
 	public function doRefundConfrim( $params ){
 		try{
 			//获取下一步状态

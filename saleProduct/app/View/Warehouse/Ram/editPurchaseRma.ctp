@@ -68,6 +68,9 @@
 		
 		
 		$status = $result["STATUS"] ;
+		if( empty($status) ){
+			$status = 10 ;
+		}
 		
 		//解决策略 ,确认收货完成，触动订单重发
 		$policyCode = $result['POLICY_CODE'];
@@ -199,18 +202,14 @@
 
 		<?php if( $selectedPolicy['IS_RESEND'] == 1 ){//重发 ?>
 			/*重发补货*/
-			flowData.push( {status:75,label:"确认重发",memo:true,actions:[ 
+			flowData.push( {status:75,label:"供应商补货发货",memo:true,actions:[ 
 				     {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
-			   		 {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } },
-			         {label:"确认重发完成",action:function(){ AuditAction(78 ,"确认重发完成！") }
-			    }
+			   		 {label:"保存轨迹",action:function(){ AuditAction(75,"保存轨迹") } }
 			]  } ) ;
 
-			flowData.push( {status:78,label:"确认客户收货",memo:true,actions:[ 
+			flowData.push( {status:78,label:"供应商补货收货",memo:true,actions:[ 
                      {label:"强制结束",action:function(){ AuditAction('80',"强制结束") } },
-                     {label:"保存轨迹",action:function(){ AuditAction(78,"保存轨迹") } },
-                     {label:"确认客户收货",action:function(){ AuditAction(79 ,"确认客户收货，填写Feedback！") }
-            	}
+                     {label:"保存轨迹",action:function(){ AuditAction(78,"保存轨迹") } }
             ]  } ) ;
 		<?php } ?>
 			
@@ -442,17 +441,33 @@
 								<tr>
 										<th>供应商补货时间：</th>
 										<td>
-												<button class="btn btn-primary  confirm-back">确认供应商补货</button>
+												<?php 
+												if( !empty($result['RESEND_DATE']) ){
+													echo  $result['RESEND_DATE'] ;
+												}else{?>
+												<button class="btn btn-primary  confirm-provider-send">确认供应商补货</button>
+										<?php  } ?>
 										</td>
 										<th>供应商补货收货：</th>
 										<td style="width:30%;">
-												<button class="btn btn-primary  custom-receive-back">确认收到供应商补货</button>
+												<?php 
+												if( !empty($result['RESEND_RECEVICE_DATE']) ){
+													echo  $result['RESEND_RECEVICE_DATE'] ;
+												}else if( !empty($result['RESEND_DATE']) ){?>
+													<button class="btn btn-primary  confirm-receive-provider-send">确认收到供应商补货</button>
+											<?php  } ?>
+												
 										</td>
 									</tr>
 									<tr>
 										<th>重发备注：</th>
 										<td colspan="3">
-										<textarea style="width:80%;height:50px;" name="backMemo"><?php echo $result['RESEND_MEMO'];?></textarea>
+										<?php 
+												if( !empty($result['RESEND_RECEVICE_DATE']) ){
+													echo $result['RESEND_MEMO'];
+												}else{?>
+												<textarea style="width:80%;height:50px;" name="resendMemo"><?php echo $result['RESEND_MEMO'];?></textarea>
+										<?php  } ?>
 										</td>
 									</tr>
 								<?php /* 
