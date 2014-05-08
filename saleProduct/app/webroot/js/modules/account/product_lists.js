@@ -71,31 +71,26 @@
 						{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
 							var status = record.STATUS ;
 							var html = [] ;
-							html.push('<a href="#" class="edit-listing" val="'+val+'">'+getImage("edit.png","编辑")+'</a>&nbsp;') ;
+							html.push('<a href="#" class="edit-listing" val="'+val+'">'+getImage("edit_2.png","Listing编辑")+'</a>&nbsp;') ;
 							//html.push('<a href="#" class="sale-strategy" val="'+val+'">'+getImage("example.gif","价格调整")+'</a>&nbsp;') ;
 							//html.push('<a href="#" class="category-set popover-pl top" val="'+val+'">'+getImage("collapse-all.gif","设置分类")+'</a>&nbsp;') ;
 							//html.push('<a href="#" class="list-entity-tag popover-pl top" val="'+val+'">'+getImage("tabs.gif","显示标签")+'</a>&nbsp;') ;
 							return html.join("") ;
 						}},
-						{align:"center",key:"IS_ANALYSIS",label:"供应需求", width:"6%",format:function(val,record){
-							var html = [] ;
-							if(val == 1){
-								html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("success.gif","可计算供应需求")+'</a>&nbsp;') ;
-							}else{
-								html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("error.gif","不可计算供应需求")+'</a>&nbsp;') ;
-							}
-							return html.join("") ;
+						{align:"center",key:"ID",label:"设置",width:"4%",format:function(val,record){
+							return '<a href="#" class="setting-ap">'+getImage("edit.png","是否计算需求设置")+'</a>&nbsp;'
 						}},
-						{align:"center",key:"IS_RISK",label:"风险", width:"6%",format:function(val,record){
-							var html = [] ;
-							if(val == 1){
-								html.push('<a href="#" class="risk" val="'+val+'">'+getImage("error.gif","存在风险")+'</a>&nbsp;') ;
-							}else if(val == 2){
-								html.push('<a href="#" class="risk" val="'+val+'">'+getImage("success.gif","不存在风险")+'</a>&nbsp;') ;
-							}else{
-								html.push('<a href="#" class="risk" title="未设置风险" val="'+val+'">-</a>&nbsp;') ;
-							}
-							return html.join("") ;
+						 {align:"center",key:"IS_ANALYSIS",label:"计算需求", width:"8%",format:function(val,record){
+								var html = [] ;
+								if(val == 1){
+									html.push(  getImage("success.gif","可计算供应需求") ) ;
+								}else{
+									html.push( getImage("error.gif","不可计算供应需求") ) ;
+								}
+								return html.join("")  ;
+						}},
+						{align:"center",key:"RISK_LABEL",label:"需求类型", width:"8%",format:function(val,record){
+								return record.RISK_LABEL||"" ;
 						}},
 						{align:"center",key:"RISK_TYPE_NAME",label:"风险类型", width:"6%"},
 						{align:"left",key:"SKU",label:"Listing SKU",width:"10%"},
@@ -276,6 +271,15 @@
 			setTimeout(function(){
 				$(".grid-content").llygrid(gridConfig) ;
 			},200) ;
+
+			$(".setting-ap").live("click",function(){
+				var record = $(this).parents("tr:first").data("record");
+				var  isRisk = record.IS_RISK||"" ;
+				var  riskType  = record.RISK_TYPE||"" ;
+				openCenterWindow(contextPath+"/page/forward/Amazonaccount.product_risk/"+record.ID+"/"+isRisk+"/"+riskType , 650,300,function(result,win){
+					if(result)$(".grid-content").llygrid("reload",{},true) ;
+				},{showType:"dialog"}) ;
+			}) ;
 			
 			
 			$(".edit-listing").live("click",function(){

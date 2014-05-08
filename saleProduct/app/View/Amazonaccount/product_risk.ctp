@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <?php echo $this->Html->charset(); ?>
-    <title>风险设置</title>
+    <title>计算需求设置</title>
     <meta http-equiv="pragma" content="no-cache"/>
 	<meta http-equiv="cache-control" content="no-cache"/>
 
@@ -38,6 +38,7 @@
 	
 	<script>
 		$(function(){
+			 $.dialogReturnValue(false) ;
 			$(".save-risk").click(function(){
 				if( !$.validation.validate('#personForm').errorInfo ) {
 					var json = $("#personForm").toJson() ;
@@ -69,7 +70,15 @@
 					<div class="panel-content">
 						<!-- 数据列表样式 -->
 						<table class="form-table" >
-							<tbody>										   
+							<tbody>
+								<tr>
+									<th>是否计算需求：</th>
+									<td>
+										计算需求<input type="radio"  name="isAnalysis" value="1"/>
+										不计算需求<input type="radio"  name="isAnalysis" value="0"/>
+									</td>
+								</tr>	
+								<?php /*								   
 								<tr>
 									<th>是否存在风险：</th>
 									<td>
@@ -79,12 +88,12 @@
 													<option value="2">不存在风险</option>
 											</select>
 									</td>
-								</tr>
+								</tr>*/?>	
 								<tr>
-									<th>风险类型：</th>
+									<th>类型：</th>
 									<td>
 										<?php 
-										$items = $SqlUtils->exeSqlWithFormat("select * from sc_config where type= 'riskType'",array()) ;
+											$items = $SqlUtils->exeSqlWithFormat("select * from sc_config where type= 'riskType'",array()) ;
 										?>
 											<select  name="riskType">
 													<option value="">-</option>

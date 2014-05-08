@@ -14,6 +14,8 @@
 				{@ and swi.warehouse_id =  '#warehouseId#'}
 		  GROUP BY srp.ID
 	) t 
+	where  1=1
+	{@ and ( t.name like '%#searchKey#%'  or t.real_sku like '%#searchKey#%' ) }
 	order by t.QUANTITY desc ,t.BAD_QUANTITY desc
 	</entry>
 	

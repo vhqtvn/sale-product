@@ -263,6 +263,7 @@
 								<th>其他成本</th>
 							</tr>
 							<?php  	foreach( $listing as $item  ){ 
+									
 							//debug($item) ;
 								?>
 							
@@ -291,11 +292,12 @@
 											
 								?></td>
 								<td>
-								<?php if( $item['TYPE'] == 'FBM' ){ ?>
-									<input type="text" class="_cost " 
-										name="_TRANSFER_COST" value="<?php echo round($item['TRANSFER_COST'],2);?>" style="width:50px!important;"/>
-								<?php }else{
-									echo "-" ;
+								<?php 
+								$tf = round($item['TRANSFER_COST'],2) ;
+								if( empty(  $tf ) || $tf <=0 ){
+									echo "重量缺失！" ;
+								}else{
+									echo $tf;
 								} ?>
 								</td>
 								<td>

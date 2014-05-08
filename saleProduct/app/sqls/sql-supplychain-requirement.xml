@@ -100,7 +100,8 @@
 	    	  ( select count(1) from sc_supplychain_reqitem_in where req_item_id =ssri.id ) as IN_FLAG,
 	    	  (select sfsi.TOTAL_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where sfsi.account_id = saap.account_id and 
 	    	     sfsi.seller_sku = saap.sku
-	    	  ) as REALTIME_QUANTITY
+	    	  ) as REALTIME_QUANTITY,
+	    	  (select sc.label from sc_config sc where sc.type = 'riskType' and sc.key = saap.risk_type) as RISK_LABEL
 		 FROM 
 		     sc_supplychain_requirement_item ssri,
 		     sc_supplychain_requirement_plan_product ssrpp,

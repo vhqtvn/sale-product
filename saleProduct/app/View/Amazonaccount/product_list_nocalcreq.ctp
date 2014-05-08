@@ -20,12 +20,7 @@
 
    var accountId = '' ;
    $(function(){
-	   /**
-          产品需求标签
-	   */
-	   DynTag.listByType("productRequirementTypeTag",function(entityType,tagId){
-	    	 $(".grid-content").llygrid("reload",{tagId:tagId},true) ;
-		}) ;
+	   
 	}) ;
    </script>
    
@@ -104,59 +99,32 @@
 			<div class="toolbar toolbar-auto query-bar">
 				<table style="width:100%;" class="query-table">	
 					<tr>
-						<th>ASIN:</th>
 						<td>
-							<input type="text" name="asin" style="width:100px"/>
-						</td>
-						<th>名称:</th>
-						<td>
-							<input type="text" name="title" style="width:100px"/>
-						</td>
-						<th>价格:</th>
-						<td>
-							从<input type="text" name="price1" style="width:50px"/>到<input type="text" name="price2" style="width:50px"/>
-						</td>
-						<th>销售渠道:</th>
-						<td>
-							<select name='fulfillmentChannel'  class="span2">
-								<option value=''>全部</option>
-								<option value='AMAZON_NA'>Amazon</option>
-								<option value='Merchant'>Merchant</option>
-								<option value='-'>未知</option>
+							<input type="text" name="searchKey"  placeHolder="SKU,NAME"/>
+							<?php 
+							$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+											$items = $SqlUtils->exeSqlWithFormat("select * from sc_config where type= 'riskType'",array()) ;
+										?>
+											<select  name="riskType" style="width:120px;">
+													<option value="">-选择类型-</option>
+													<?php  foreach( $items as $item ){ ?>
+															<option value="<?php echo $item['KEY']?>"><?php echo $item['LABEL']?></option>
+													<?php  } ?>
+													
+										    </select>
+										    
+										    <select name="accountId" style="width:120px">
+				     		<option value="">--选择账号--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     		} ;
+					     	?>
 							</select>
-						</td>
-					</tr>
-					<tr>	
-						<th>使用程度:</th>
-						<td>
-							<select name='itemCondition'  style="width:100px">
-								<option value=''>全部</option>
-								<option value=11>New</option>
-								<option value=1>Used</option>
-								<option value='-'>未知</option>
-							</select>
-						</td>
-						<th>FM商品:</th>
-						<td>
-							<select name='isFM'   style="width:100px">
-								<option value=''>全部</option>
-								<option value="FM">FM</option>
-								<option value="NEW">NEW</option>
-							</select>
-						</td>
-						<th>排名:</th>
-						<td>
-							<select name='pm'   style="width:100px">
-								<option value=''>全部</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="other">其他</option>
-							</select>
-						</td>
-						<td colspan="2">
+						
 							<button class="btn btn-primary query query-btn" >查询</button>
 						</td>
 					</tr>						

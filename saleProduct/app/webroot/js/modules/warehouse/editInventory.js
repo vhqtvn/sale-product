@@ -35,6 +35,7 @@ $(function(){
 	
 	$("[name='listingSku']").live("change",function(){
 		var channel = $(this).find("option:selected").attr("channel");
+		channel = $.trim(channel) ;
 		if( channel== 'AMAZON_NA' ){
 			$(this).closest("tr").find("[name='inventoryType']").val(2).attr("disabled","disabled");
 		}else if( channel== 'Merchant' ){

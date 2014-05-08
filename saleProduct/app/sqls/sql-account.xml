@@ -29,7 +29,8 @@
 					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.ASIN LIMIT 0,1)
 					) ELSE sc_amazon_account_product.LOCAL_URL END ) AS P_LOCAL_URL,
 					srpr.REAL_ID,
-					srpr.REAL_SKU
+					srpr.REAL_SKU,
+					(select label from sc_config where type='riskType' and sc_config.key=sc_amazon_account_product.RISK_TYPE limit 0,1) as RISK_LABEL
 					FROM sc_amazon_account_product 
 					LEFT JOIN sc_product sp
 					ON sp.ASIN = sc_amazon_account_product.ASIN
@@ -435,61 +436,28 @@
     <entry key="sql_account_product_list_nocalcreq">
     <![CDATA[	
 		SELECT  sc_amazon_account_product.* ,
-					(case when ( sc_amazon_account_product.title is  null  or sc_amazon_account_product.title = '') then sp.title else sc_amazon_account_product.title end ) as P_TITLE,
-					(CASE WHEN ( sc_amazon_account_product.title IS  NULL  OR sc_amazon_account_product.title = '') 
-					THEN (
-					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.ASIN LIMIT 0,1)
-					) ELSE sc_amazon_account_product.LOCAL_URL END ) AS P_LOCAL_URL,
+					srp.NAME as REAL_NAME,
+					srp.IMAGE_URL,
 					srpr.REAL_ID,
-					srpr.REAL_SKU
+					srpr.REAL_SKU,
+					saa.name as ACCOUNT_NAME,
+					 (select sc.label from sc_config sc where sc.type = 'riskType' and sc.key = sc_amazon_account_product.risk_type) as RISK_LABEL
 					FROM sc_amazon_account saa,
 					sc_amazon_account_product 
-					LEFT JOIN sc_product sp
-					ON sp.ASIN = sc_amazon_account_product.ASIN
 					LEFT JOIN sc_real_product_rel srpr
 					on srpr.sku = sc_amazon_account_product.sku
+					left join sc_real_product srp
+					on srp.id = srpr.real_id
 					where sc_amazon_account_product.status = 'Y'
 					and saa.id = sc_amazon_account_product.account_id
 					and sc_amazon_account_product.IS_ANALYSIS = 0
 					and saa.status= 1
-					{@ and sp.title like '%#title#%' }
-					{@ and sc_amazon_account_product.asin = '#asin#' }
-					{@ and sc_amazon_account_product.sku = '#sku#' }
-					{@ and sc_amazon_account_product.quantity >= #quantity1# }
-					{@ and sc_amazon_account_product.quantity <= #quantity2# }
-					{@ and sc_amazon_account_product.price >= #price1# }
-					{@ and sc_amazon_account_product.price <= #price2# }
-					{@ and sc_amazon_account_product.account_id = '#accountId#' }
-					{@ and IS_FM = '#isFM#' }
-					{@ and country >= '#outAemricanArea#' }
-					{@ and country = '#inAemricanArea#' }
-					{@ and warning like '%#warning#%' }
-					
-					{@ and ( fulfillment_channel is null or fulfillment_channel = '' ) and 1 = #fulfillmentChannelNull# }
-					{@ and fulfillment_channel like '%#fulfillmentChannel#%' }
-					
-					{@ and ( item_condition is null or item_condition = '' ) and 1 = #itemContidtionNull# }
-					{@ and item_condition = '#itemCondition#' }
-					
-					{@ and ( feed_price <> '' and feed_price is not null ) and 1 = #isPriceQuery# }
-					{@ and ( feed_quantity <> '' and feed_quantity is not null ) and 1 = #isQuantityQuery# }
-					{@ and ( F_PM = '#pm#' or N_PM = '#pm#' or U_PM = '#pm#'  or FBA_PM = '#pm#' ) }
-					
-					{@ and sc_amazon_account_product.sku not in (
-								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '#accountId#')
-						and 1= #uncategory#
-					}
-					{@ and sc_amazon_account_product.sku in (
-								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
-								and sku is not null and account_id = '#accountId#'
+					{@ and saa.id = '#accountId#'}
+					{@ and sc_amazon_account_product.risk_type = '#riskType#'}
+					{@ and (
+					    srp.name like '%searchKey%' or srp.real_sku  like '%searchKey%' 
+					    or sc_amazon_account_product.sku  like '%searchKey%' 
 					)}
-					{@ and 
-					concat(srpr.account_id ,'$$', sc_amazon_account_product.sku ,'$$', sc_amazon_account_product.asin) 
-					  in (
-							select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productRequirementTypeTag'
-						and ste.tag_id = '#tagId#'
-					)
-					}
 			]]>	      
     </entry>
     

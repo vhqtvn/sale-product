@@ -97,25 +97,20 @@
 				    	if(val>=1)return "入库中";
 				    	return "" ;
 				    }},
-				    {align:"center",key:"IS_ANALYSIS",label:"供应需求", width:"6%",format:function(val,record){
+				    {align:"center",key:"IS_ANALYSIS",label:"",width:"3%",format:function(val,record){
+				    	return '<a href="#" class="setting-ap">'+getImage("edit.png","设置")+'</a>&nbsp;'
+				    }},
+				    {align:"center",key:"IS_ANALYSIS",label:"计算需求", width:"8%",format:function(val,record){
 						var html = [] ;
 						if(val == 1){
-							html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("success.gif","可计算供应需求")+'</a>&nbsp;') ;
+							html.push(  getImage("success.gif","可计算供应需求") ) ;
 						}else{
-							html.push('<a href="#" class="analysis" val="'+val+'">'+getImage("error.gif","不可计算供应需求")+'</a>&nbsp;') ;
+							html.push( getImage("error.gif","不可计算供应需求") ) ;
 						}
-						return html.join("") ;
+						return html.join("")  ;
 					}},
-					{align:"center",key:"IS_RISK",label:"风险", width:"6%",format:function(val,record){
-						var html = [] ;
-						if(val == 1){
-							html.push('<a href="#" class="risk" val="'+val+'">'+getImage("error.gif","存在风险")+'</a>&nbsp;') ;
-						}else if(val == 2){
-							html.push('<a href="#" class="risk" val="'+val+'">'+getImage("success.gif","不存在风险")+'</a>&nbsp;') ;
-						}else{
-							html.push('<a href="#" class="risk" title="未设置风险" val="'+val+'">-</a>&nbsp;') ;
-						}
-						return html.join("") ;
+					{align:"center",key:"RISK_LABEL",label:"需求类型", width:"8%",format:function(val,record){
+						return record.RISK_LABEL||"" ;
 					}},
 				 	{align:"center",key:"ACCOUNT_NAME",label:"账号",width:"10%"},
 		           	{align:"center",key:"LISTING_SKU",label:"Listing SKU",width:"15%",forzen:false,align:"left",format:function(val,record){
@@ -198,11 +193,11 @@
 				}
 			}) ;
 			
-			$(".risk").live("click",function(){
+			$(".setting-ap").live("click",function(){
 				var record = $(this).parents("tr:first").data("record");
 				var  isRisk = record.IS_RISK||"" ;
 				var  riskType  = record.RISK_TYPE||"" ;
-				openCenterWindow(contextPath+"/page/forward/Amazonaccount.product_risk/"+record.ACCOUNT_PRODUCT_ID+"/"+isRisk+"/"+riskType , 850,500,function(win,result){
+				openCenterWindow(contextPath+"/page/forward/Amazonaccount.product_risk/"+record.ACCOUNT_PRODUCT_ID+"/"+isRisk+"/"+riskType , 650,300,function(result,win){
 					if(result)$(".grid-content-details").llygrid("reload",{},true) ;
 				},{showType:"dialog"}) ;
 			}) ;

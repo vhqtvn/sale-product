@@ -78,6 +78,20 @@ class Cost extends AppModel {
 			$costId_ = $this->create_guid() ;
 			$this->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBC',"ID"=>$costId_,"loginId"=>$loginId)) ;
 		}
+		
+		//更新转仓库成本
+		$tranferUnit = 5.41 ;
+		$sql = "select * from sc_purchase_supplier_inquiry where asin='$asin' and weight >0" ;
+		$inquiry = $this->getObject($sql, array()) ;
+		//debug($inquiry) ;
+		if( !empty($inquiry)  ){
+			$weight = $inquiry['WEIGHT'] ;
+			$transferCost =  $tranferUnit*$weight  ;
+			if(!empty($transferCost)){
+				$sql = "update sc_product_cost_details set _TRANSFER_COST ='$transferCost'  where  asin ='$asin'";
+				$this->exeSql($sql, array()) ;
+			}
+		}
 	}
 
 	
