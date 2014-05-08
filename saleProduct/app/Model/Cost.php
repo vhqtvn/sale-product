@@ -297,15 +297,23 @@ class Cost extends AppModel {
 	public function saveCostWithPurchase($data){
 		$sku = $data['sku'] ;
 		$realId = $data['realId'] ;
-		$realQuotePrice = $data['realQuotePrice'] ;
-		$realShipFee = $data['realShipFee'] ;
+		$realQuotePrice = $data['realQuotePrice'] ;//realQuotePrice
+		$realShipFee = $data['realShipFee'] ;//realShipFee
 		$qualifiedProductsNum = $data['qualifiedProductsNum'] ;
 		if( !empty($qualifiedProductsNum) &&  $qualifiedProductsNum >0 ){
 			//
 		}else{
 			return ;
 		}
-		$purchaseCost = $realQuotePrice+round( ($realShipFee/$qualifiedProductsNum),2 );
+		$purchaseCost = $realQuotePrice ;
+
+		if( empty($purchaseCost) || $purchaseCost<=0 ) return ;
+		
+		$purchaseShipCost = 0 ;
+		if( empty($realShipFee)  &&$realShipFee>0 ){
+			$purchaseShipCost = round( ($realShipFee/$qualifiedProductsNum),2 );
+		}
+		
 		
 		//如果未创建成本数据，则新创建FBA和FBM成本
 		$Sql = "select * from sc_product_cost where REAL_ID='{@#realId#}'" ;
@@ -317,12 +325,14 @@ class Cost extends AppModel {
 			$params['ID'] = $this->create_guid() ;
 			$params['REAL_ID']  = $realId ;
 			$params['PURCHASE_COST'] = $purchaseCost ;
+			$params['LOGISTICS_COST'] = $purchaseShipCost ;
 			$this->exeSql("sql_cost_product_insert_simple",$params) ;
 		}else{
 			$params  = array() ;
 			$params['ID'] = $fbaCost['ID'] ;
 			$params['REAL_ID']  = $realId ;
 			$params['PURCHASE_COST'] = $purchaseCost ;
+			$params['LOGISTICS_COST'] = $purchaseShipCost ;
 			//$this->exeSql("sql_cost_product_update",$params) ;
 			$this->exeSql("sql_cost_update_new", $params) ;
 		}

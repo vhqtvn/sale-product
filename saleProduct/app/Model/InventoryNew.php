@@ -27,6 +27,7 @@ class InventoryNew extends AppModel {
 	var $ACTOIN_IN_BORROW = 106  ;//借调入库
 	var $ACTOIN_IN_UNPURCHASE = 107  ;//非采购入库，如免费赠送等
 	var $ACTOIN_IN_FBM = 108 ; //FBM入库
+	var $ACTOIN_IN_FIX = 109 ; //手工修正入库
 	
 	var $ACTOIN_OUT_TRANSFER = 201  ;//转仓出库
 	var $ACTOIN_OUT_ORDER    = 202 ;//订单出库
@@ -51,6 +52,59 @@ class InventoryNew extends AppModel {
 	 */
 	var $INVENTORY_TO_SELF = 1 ;//自有库存
 	var $INVENTORY_TO_DELEGATION = 2 ;//托管库存
+	
+	/**
+	 * 保存库存
+	 * @param unknown_type $params
+	 */
+	public function saveInventoryFix($params){
+		$realId = $params['realId'] ;
+		$inventorys = $params['inventorys'] ;
+		$existInventorys = $params['existInventorys'] ;
+		
+		$inventorys = json_decode($inventorys) ;
+		foreach( $inventorys as $item  ){
+			$item = get_object_vars($item) ;
+			$inventoryId =  $this->create_guid() ;
+			$item['guid'] = $inventoryId;
+			$item['realId'] = $realId;
+			$item['loginId'] = $params['loginId'] ;
+			$item['inventoryTo'] = $this->INVENTORY_TO_SELF ;
+
+			$this->exeSql("sc_warehouse_in_new_addFixed", $item) ;
+			
+			$trackParams = $item ;
+			$trackParams['guid'] =  $this->create_guid() ;
+			$trackParams['actionType'] = $this->ACTION_TYPE_IN ;
+			$trackParams['action'] = $this->ACTOIN_IN_FIX ;
+			$trackParams['inventoryId'] = $inventoryId ;
+			
+			$this->exeSql("sql_inventory_track_insert", $trackParams) ;
+		}
+		
+		$existInventorys = json_decode($existInventorys) ;
+		foreach( $existInventorys as $item  ){
+			$item = get_object_vars($item) ;
+			$item['loginId'] = $params['loginId'] ;
+			$inventory = $this->getObject("select * from sc_warehouse_inventory where inventory_id='{@#inventoryId#}'", $item) ;
+			$this->exeSql("sc_warehouse_in_new_updateFixed", $item) ;
+			
+			$trackParams = $item ;
+			$trackParams['guid'] =  $this->create_guid() ;
+			$trackParams['actionType'] = $this->ACTION_TYPE_IN ;
+			$trackParams['action'] = $this->ACTOIN_IN_FIX ;
+			$trackParams['inventoryId'] = $inventory['INVENTORY_ID'] ;
+			$trackParams['realProductId'] = $inventory['REAL_PRODUCT_ID'] ;
+			$trackParams['warehouseId'] = $inventory['WAREHOUSE_ID'] ;
+			$trackParams['listingSku'] = $inventory['LISTING_SKU'] ;
+			$trackParams['accountId'] = $inventory['ACCOUNT_ID'] ;
+			$trackParams['inventoryType'] = $inventory['INVENTORY_TYPE'] ;
+			$trackParams['inventoryStatus'] = $inventory['INVENTORY_STATUS'] ;
+			$trackParams['inventoryTo'] = $inventory['INVENTORY_TO'] ;
+			$trackParams['result'] = $inventory['QUANTITY'] .'  fix  to  '.$item['quantity'] ;
+			$this->exeSql("sql_inventory_track_insert", $trackParams) ;
+		}
+	}
 	
 	public function transferIn($params){
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
@@ -350,6 +404,7 @@ class InventoryNew extends AppModel {
 		}
 		
 		//2、库存轨迹表操作
+		$params['guid'] =  $this->create_guid() ;
 		$this->exeSql("sql_inventory_track_insert", $params) ;
 	}
 }

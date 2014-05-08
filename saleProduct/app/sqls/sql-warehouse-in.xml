@@ -14,7 +14,6 @@
 				{@ and swi.warehouse_id =  '#warehouseId#'}
 		  GROUP BY srp.ID
 	) t 
-	where t.QUANTITY >0 or t.BAD_QUANTITY >0
 	order by t.QUANTITY desc ,t.BAD_QUANTITY desc
 	</entry>
 	

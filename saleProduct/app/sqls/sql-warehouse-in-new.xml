@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	
+	<entry key="sc_warehouse_in_new_updateFixed">
+			UPDATE sc_warehouse_inventory 
+			SET
+			QUANTITY = '{@#quantity#}' , 
+			LAST_UPDATED_TIME = NOW() , 
+			LAST_UPDATOR = '{@#loginId#}'
+			WHERE
+			INVENTORY_ID = '{@#inventoryId#}'
+	</entry>
+	<!-- 手工添加库存 -->
+	<entry key="sc_warehouse_in_new_addFixed">
+		 INSERT INTO  sc_warehouse_inventory 
+						(
+						INVENTORY_ID, 
+						REAL_PRODUCT_ID, 
+						LISTING_SKU, 
+						ACCOUNT_ID, 
+						WAREHOUSE_ID, 
+						INVENTORY_TYPE, 
+						QUANTITY, 
+						INVENTORY_STATUS, 
+						INVENTORY_TO, 
+						LAST_UPDATED_TIME, 
+						LAST_UPDATOR, 
+						CREATED_TIME, 
+						CREATOR
+						)
+						VALUES
+						('{@#guid#}', 
+						'{@#realId#}', 
+						'{@#listingSku#}', 
+						'{@#accountId#}', 
+						'{@#warehouseId#}', 
+						'{@#inventoryType#}', 
+						'{@#quantity#}', 
+						'{@#inventoryStatus#}', 
+						'{@#inventoryTo#}', 
+						NOW(), 
+						'{@#loginId#}', 
+						NOW(), 
+						'{@#loginId#}'
+						)
+	</entry>
+
+
 	<entry key="sc_warehouse_in_new_listFBAProduct">
 		SELECT swi.* ,
 		       		srp.NAME AS REAL_NAME,

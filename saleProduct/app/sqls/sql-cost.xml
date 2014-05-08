@@ -56,7 +56,7 @@
      <entry  key="sql_cost_update_new">
 		    UPDATE sc_product_cost 
 			SET
-			{@LOGISTICS_COST = '#LOGISTICS_COST#' , }
+			{@LOGISTICS_COST = '#LOGISTICS_COST:0#' , }
 			{@PURCHASE_COST = '#PURCHASE_COST#' , }
 			{@OTHER_COST = '#OTHER_COST#' , }
 			{@TAG_COST = '#TAG_COST#' , }
@@ -172,6 +172,7 @@
 			ID,
 			TYPE, 
 			PURCHASE_COST, 
+			LOGISTICS_COST,
 			REAL_ID ,
 			CREATOR,
 			CREATE_TIME,
@@ -182,6 +183,7 @@
 			'{@#ID#}', 
 			'{@#TYPE#}', 
 			'{@#PURCHASE_COST#}', 
+			'{@#LOGISTICS_COST:0#}', 
 			'{@#REAL_ID#}', 
 			'{@#loginId#}',
 			NOW(),
