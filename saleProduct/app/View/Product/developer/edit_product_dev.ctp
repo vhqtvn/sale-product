@@ -398,8 +398,13 @@ html{-webkit-text-size-adjust: none;}
 		
 			flowData.push( {status:72,label:"试销采购",memo:true ,
 				actions:[ 
-		<?php if( $PD_SXCG ){ ?>
+							<?php if( $PD_SXCG ){ ?>
 				         {label:"保存",action:function(){ ForceAuditAction('72',"保存") } }
+				         <?php if( $productDev['DEV_STATUS'] == 1  ){//自有开发流程 ?>
+				        	 ,   {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
+					      <?php }else{ ?>
+					      ,   {label:"下一步",action:function(){ AuditAction('80',"试销采购完成，结束采购") } }
+					      <?php   }?>
 					//  ,   {label:"下一步",action:function(){ AuditAction('74',"试销采购完成，进入下一步") } }
 				         <?php }?>
 			     ]}

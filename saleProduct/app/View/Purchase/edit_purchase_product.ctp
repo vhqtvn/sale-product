@@ -229,7 +229,7 @@
 	        		{status:45,label:"待采购",memo:true
 	        			,actions:[{}
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(45,"保存") }}  <?php  }?>
-									<?php if( $isOwner ) { ?>,{label:"已保存采购，提交审批",action:function(){ AuditAction(47,"已保存采购，提交审批") } }<?php  }?>
+									<?php if( $isOwner ) { ?>,{label:"已保存采购，提交审批",action:function(){ AuditAction(51,"已保存采购，评估利润") } }<?php  }?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				],format:function(node){
 							if( currentStatus == 46  ){
@@ -247,23 +247,24 @@
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        		},
-	        		*/?>
+	        		
 	        		{status:47,label:"采购审批",memo:true
 	        			,actions:[{}
-									<?php if( $ppp_callback ){ ?>,{label:"回退再询价",action:function(){ ForceAuditAction(46,"回退再询价") }}<?php   } ?>
-									<?php if( $isOwner  || $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>
-									<?php if( $pptp_audit ) { ?>,{label:"审批通过",action:function(){ AuditAction(51,"审批通过") } }<?php   }   ?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
-        				]
-	        		},
+						<?php if( $ppp_callback ){ ?>,{label:"回退再询价",action:function(){ ForceAuditAction(46,"回退再询价") }}<?php   } ?>
+						<?php if( $isOwner  || $pptp_audit ) { ?>,{label:"保存",action:function(){ ForceAuditAction(47,"保存") }}<?php  } ?>
+						<?php if( $pptp_audit ) { ?>,{label:"审批通过",action:function(){ AuditAction(48,"审批通过") } }<?php   }   ?>
+						<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
+						]
+					},*/?>
 	        		{status:51,label:"利润评估",memo:true
 	        			,actions:[{}
-						<?php if( $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(47,"回退") }}<?php   } ?>
+						<?php if( $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }}<?php   } ?>
 						<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"保存",action:function(){ ForceAuditAction(51,"保存") }}<?php  } ?>
 						<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"评估完成",action:function(){ ForceAuditAction(48,"评估完成") } }<?php   }   ?>
 						<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
 						]
 					},
+	        		
 	        		{status:48,label:"待交易",memo:true
 	        			,actions:[{}
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(47,"回退") }}<?php   } ?>
@@ -301,11 +302,12 @@
 									,{label:"回退",action:function(){ ForceAuditAction(50,"回退") }},
 									<?php }?>
 									,{label:"保存",action:function(){ ForceAuditAction(60,"保存") }},
-		      	        			{label:"入库确认",action:function(){ WarehouseInAction(60,"入库确认") } }
+		      	        			{label:"入库确认",action:function(){ WarehouseInAction(80,"入库确认") } }
 								<?php };?>
 								<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
 	        		},
+	        		<?php /*
 	        		{status:75,label:"发货FBA",memo:true
 	        			
 	        			,actions:[{}
@@ -323,7 +325,7 @@
                 		}
             		}
 	        			
-	        		},
+	        		},*/?>
 	        		{status:80,label:"结束",format:function(node){
 						if( '<?php echo $purchaseProduct['IS_TERMINATION']?>' == 1  ){
 							node.label = "终止采购" ;
@@ -366,7 +368,6 @@
 					<div class="panel apply-panel">
 						<!-- panel 中间内容-->
 						<div class="panel-content">
-							<!-- 数据列表样式 -->
 							<table class="form-table" >
 								<caption>基本信息<?php if( $reedit_pp_product  && $status <= 47){ 
 								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;

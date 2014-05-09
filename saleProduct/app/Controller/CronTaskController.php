@@ -386,7 +386,7 @@ class CronTaskController extends AppController {
 						if(!empty($mItem)){
 							$feedPrice = $mItem['FEED_PRICE'] ;
 							$listPrice 			= $item['LIST_PRICE'] ;
-							if( $feedPrice == $listPrice ) continue ;
+							//if( $feedPrice == $listPrice ) continue ;
 							$_products[] = $mItem;
 						}
 					}

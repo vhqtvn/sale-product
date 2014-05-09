@@ -330,8 +330,8 @@ class InventoryNew extends AppModel {
 			
 		}
 		
-		//更新状态为已入库,开启采购审计开关
-		$this->exeSql("update sc_purchase_product set status=75,is_audit=1,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
+		//更新状态为已入库,开启采购审计开关，去掉FBA入库步骤，通过库存来标识
+		$this->exeSql("update sc_purchase_product set status=80,is_audit=1,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
 				 where id = '{@#productId#}'",
 				array(
 						'warehouseId'=>$params['warehouseId'],
@@ -341,7 +341,8 @@ class InventoryNew extends AppModel {
 		
 		//更新需求为已采购
 		if( !empty($taskProduct['REQ_PRODUCT_ID']) ){
-			$sql = "update sc_supplychain_requirement_plan_product set status = 4 where REQ_PRODUCT_ID='{@#reqProductId#}'" ;
+			//更新需求为已完成
+			$sql = "update sc_supplychain_requirement_plan_product set status = 6,last_update_time=NOW() where REQ_PRODUCT_ID='{@#reqProductId#}'" ;
 			$this->exeSql($sql, array('reqProductId'=>$taskProduct['REQ_PRODUCT_ID'])) ;
 		}
 	}

@@ -66,7 +66,7 @@ class ScRequirement extends AppModel {
 						on ssri.account_id = sfsi.account_id and ssri.listing_sku=sfsi.seller_sku
 						where ssri.req_product_id = '{@#reqProductId#}'" ;
 				$records = $this->exeSqlWithFormat($sql, array("reqProductId"=>$reqProductId)) ;
-				$isComplete = true ;
+				$isComplete = false ;
 				foreach( $records as $record ){
 					$existQuantity = $record['EXIST_QUANTITY'] ;//创建需求时存在的库存数量
 					$purchaseQuantity = $record['PURCHASE_QUANTITY'] ;
@@ -79,8 +79,7 @@ class ScRequirement extends AppModel {
 						//更新需求为已完成	
 						//$sql = "update sc_supplychain_requirement_plan_product set status=6 where req_product_id = '{@#reqProductId#}'" ;
 						//$this->exeSql($sql, array("reqProductId"=>$reqProductId)) ;
-					}else{
-						$isComplete = false ;
+						$isComplete = true ;
 					}
 				}
 				if( $isComplete ){
@@ -246,9 +245,103 @@ class ScRequirement extends AppModel {
 			$this->_createRequirement( $account);
 		}*/
 		//$this->_createRequirement();
-		$this->_createRequirementV12() ;
+		$this->_createRequirementV13() ;
+	}
+	
+	public  function _createRequirementV13(){
+		//$sql = "sql_supplychain_requirement_cancreate_list_V1.2" ;
+		$start = 0 ;
+		$limit = 200 ;
+		$planId= null  ;
+		$itemCount = 0 ;
+	
+		//中止清除没有处理的需求
+		$sql = "update sc_supplychain_requirement_plan_product set status=2 where status = 0" ;
+		$this->exeSql($sql, array() ) ;
+	
+		while(true){
+			/**
+			 *  按Listing获取待计算需求列表
+			 *  1、排除正在处理需求
+			 *  
+			 */
+			$sql = "SELECT
+					saap.*,
+					saa.name AS  ACCOUNT_ANME,
+					saa.SUPPLY_CYCLE,
+					saa.REQ_ADJUST,
+					saa.SECURITY_STOCK_DAYS,
+					saa.CONVERSION_RATE,
+					srp.ID AS REAL_ID,
+					sfsi.TOTAL_SUPPLY_QUANTITY,
+					sfsi.IN_STOCK_SUPPLY_QUANTITY
+				FROM sc_amazon_account_product saap,
+					sc_amazon_account saa,
+					sc_real_product srp,
+					sc_real_product_rel srpr
+				LEFT JOIN sc_fba_supply_inventory sfsi
+					ON sfsi.ACCOUNT_ID = srpr.ACCOUNT_ID
+					AND srpr.SKU = sfsi.SELLER_SKU
+				where saap.IS_ANALYSIS = 1
+					and saap.status = 'Y'
+					and saap.account_id=saa.id
+					and saap.fulfillment_channel like '%AMAZON%'
+					and saa.status = 1
+					and srp.is_onsale = 1
+					AND srpr.ACCOUNT_ID = saap.ACCOUNT_ID
+					AND srpr.SKU = saap.SKU
+					AND  srpr.REAL_ID = srp.ID
+					AND NOT EXISTS (
+						SELECT * FROM 
+								sc_supplychain_requirement_plan_product ssrp,
+								sc_supplychain_requirement_item ssri
+						WHERE     (    (  ssrp.status NOT IN (2,6) )
+						               OR
+						               (
+						               ssrp.status = 6
+						               AND DATEDIFF(NOW(),ssri.last_update_time)<=3
+						               )
+						             )
+								AND ssrp.real_id = srp.id
+								AND ssri.req_product_id  = ssrp.req_product_id
+								AND ssri.account_id = saap.account_id
+								AND ssri.listing_sku = saap.sku
+								AND ssri.PURCHASE_QUANTITY > 0
+					)
+				limit $start ,$limit " ;
+				$items = $this->exeSqlWithFormat($sql,array()) ;
+				$start = $start+$limit ;
+				if( empty( $items ) || count($items)<=0 ) break ;
+					
+				if( empty($planId)  ){
+					//创建需求生成批次（计划）
+					$planId = $this->create_guid() ;
+					$params['planId']  = $planId ;
+					$params['name']   = date("Ymd-His") ;
+					$this->exeSql("sql_supplychain_requirement_plan_insert", $params) ;
+				}
+				
+				foreach( $items as $item  ){
+					$ic = $this->_createItemRequirementV13($item,$planId) ;
+					$itemCount = $itemCount+$ic ;
+				}
+		}
+	
+			//预处理需求
+		$this->preProcess(array(
+			'planId'=>$planId,
+			'itemCount'=>$itemCount
+		)) ;
 	}
 
+	/**
+	 *     			
+	    	   调整计算需求算法
+	    	   1、先计算需求量（正在需求计划中的不考虑）
+	    	   2、计算出当前正在采购数量，当前库存
+	    	   3、
+	 */
+	/*
 	public  function _createRequirementV12(){
 		//$sql = "sql_supplychain_requirement_cancreate_list_V1.2" ;
 		$start = 0 ;
@@ -322,7 +415,7 @@ class ScRequirement extends AppModel {
 				'planId'=>$planId,
 				'itemCount'=>$itemCount
 		)) ;
-	}
+	}*/
 	
 	public function _createItemRequirementV13($item,$planId){
 		/**
@@ -373,8 +466,6 @@ class ScRequirement extends AppModel {
 			}
 		}
 		
-		
-	
 		if( $daySaleNum >0 ){
 			/**
 			 * 3、计算周期需求量 = $daySaleNum*供应周期*调整系数
@@ -398,8 +489,8 @@ class ScRequirement extends AppModel {
 				$ps['listingSku'] = $item['SKU'] ;
 				$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
 				$ps['existQuantity'] =  $existQuantity ;
-				$ps['calcQuantity'] =  $reqNum ;
-				$ps['quantity'] =  ceil( $accountReqNum ) ;
+				$ps['calcQuantity'] =  $reqNum ;//计算需求量
+				$ps['quantity'] =  ceil( $accountReqNum ) ;//账户需求量
 				$ps['urgency'] =  "A" ;
 				$ps['reqType'] =  "A" ;//销量需求
 			
@@ -465,378 +556,6 @@ class ScRequirement extends AppModel {
 		return 1 ;
 	}
 	
-	
-	public function _createItemRequirementV12($item,$planId){
-		//账号当前库存
-		$existQuantity=$item['QUANTITY'] ;
-		//获取当前SKU的最近7天销售数据
-		//最近7天存在销售数量的天数
-		$saleDataLast3 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,3 ) ;
-		$saleDataLast7 = $this->getLastestSaleDataDays( $item['ACCOUNT_ID']  , $item['SKU'] ,7 ) ;
-		$daySaleNum = 0 ;
-		if( $saleDataLast7 - $saleDataLast3 == 0  ){//如果只存在3天销量
-			$daySaleNum = $saleDataLast3/3 ;
-		}else{//如果只存在7天销量
-			$daySaleNum =( ($saleDataLast3/3)*0.8) +((($saleDataLast7-$saleDataLast3)/4)*0.2);
-		}
-		/*else{//如果存在14天销量
-			$daySaleNum =( ($saleDataLast3/3)*0.7) +((($saleDataLast7-$saleDataLast3)/4)*0.2)+((($saleDataLast14-$saleDataLast3)/4)*0.2);
-		}
-		/*echo 'sku:::'.$item['SKU'].'<br/>' ;
-		echo '$existQuantity:'.$existQuantity.'<br/>' ;
-		echo 'daySaleNum:'.$daySaleNum.'<br/>' ;*/
-		
-		$supplyCycle = (empty($item['SUPPLY_CYCLE'])|| $item['SUPPLY_CYCLE']==0)?14: $item['SUPPLY_CYCLE'] ;
-		$reqAdjust    = (empty($item['REQ_ADJUST'])|| $item['REQ_ADJUST']==0)?1.2 : $item['REQ_ADJUST'] ;
-		$ConversionRate = $item['CONVERSION_RATE'] ; 
-		if(empty($ConversionRate)){
-			$ConversionRate = 0.001 ;
-		}
-		
-		if( $daySaleNum >0 ){
-			//计算需求数量
-			$reqNum =$daySaleNum * $supplyCycle * $reqAdjust ;
-
-			if( $existQuantity >= $reqNum ){
-				//如果存在库存大于需求量，忽略不处理
-				return 0 ;
-			}else{
-				$ps = array() ;
-				$ps['accountId'] = $item['ACCOUNT_ID'] ;
-				$ps['id'] = $this->create_guid() ;
-				$ps['planId'] = $planId ;
-				$ps['realId'] = $item['REAL_ID'] ;
-				$ps['listingSku'] = $item['SKU'] ;
-				$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-				$ps['existQuantity'] =  $existQuantity ;
-				$ps['calcQuantity'] =  $reqNum ;
-				$ps['quantity'] =  ceil( $reqNum -  $existQuantity ) ;
-				$ps['urgency'] =  "A" ;
-				$ps['reqType'] =  "A" ;//销量需求
-			
-				$this->createReqItem($ps) ;
-				return 1 ;
-			}
-		}
-		
-		//获取流量数据
-		$flowData = $this->getLastestFlowData($item['ACCOUNT_ID']  , $item['SKU'] ) ;
-		$flowDays =  count( $flowData  ) ;
-		
-		if( $flowDays>=3  ){
-			$count = 0 ;
-			foreach( $flowData as $i ){
-				$C = $i['C'] ;
-				$count = $count + $C ;
-			}
-		
-			//计算到的需求数量
-			$reqNum = ($count/14) * $ConversionRate * $reqAdjust ;
-			if( $existQuantity >= $reqNum ){
-				//账号库存数量大于需求数量
-				return 0  ;
-			}
-		
-			$ps = array() ;
-			$ps['accountId'] = $item['ACCOUNT_ID'] ;
-			$ps['id'] = $this->create_guid() ;
-			$ps['planId'] = $planId ;
-			$ps['realId'] = $item['REAL_ID'] ;
-			$ps['listingSku'] = $item['SKU'] ;
-			$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-			$ps['existQuantity'] =  $existQuantity ;
-			$ps['calcQuantity'] =  $reqNum ;
-			$ps['quantity'] = ceil( $reqNum -  $existQuantity ) ;
-			$ps['urgency'] =  "B" ;
-			$ps['reqType'] =  "B" ;//流量需求
-			$this->createReqItem($ps) ;
-			return 1 ;
-		}
-		
-		//如果存在库存大于0，则不创建需求
-		if( $existQuantity >= 10 ) return 0 ;
-		$ps = array() ;
-		$ps['accountId'] = $item['ACCOUNT_ID'] ;
-		$ps['id'] = $this->create_guid() ;
-		$ps['planId'] = $planId ;
-		$ps['realId'] = $item['REAL_ID'] ;
-		$ps['listingSku'] = $item['SKU'] ;
-		$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-		$ps['existQuantity'] =  $existQuantity ;
-		$ps['calcQuantity'] =  0 ;
-		$ps['quantity'] =  0 ;
-		$ps['urgency'] =  "C" ;
-		$ps['reqType'] =  "E" ;//其他原因需求
-		$this->createReqItem($ps) ;
-		return 1 ;
-	}
-	
-	/**
-	 * 需求类型： 
-	 * A: 销量需求
-	 * B: 流量需求
-	 * C: 成本不完善
-	 * D: 利润不达标
-	 * E: 其他需求
-	 * @param unknown_type $account
-	 * @deprecated
-	 */
-	public function _createRequirement( $account=null ){
-		$dataSource = $this->getDataSource();
-		//$dataSource->begin();
-		//创建需求之前先初始化成本
-		
-		try{
-		//2、检测是否需要创建需求；新增加的需求产品是否都包括在未完成的需求产品里面
-			$accountId = "" ;
-			$accountName = "";
-			if( !empty($account) ){
-				$accountId = $account['ID'] ;
-				$accountName = substr($account['NAME'],0,4);
-			}
-			//1.获取可创建采购计划的Listing列表
-			$items = $this->exeSqlWithFormat("sql_supplychain_requirement_cancreate_list", array('accountId'=>$accountId)) ;
-			if( count($items) >0 ){
-				//创建需求计划
-				$planId = $this->create_guid() ;
-				$params['planId']  = $planId ;
-				$params['accountId'] = $accountId ;
-				//$time = new DateTime('now', new DateTimeZone('UTC')) ;
-				$prefix = empty($accountName)?"":( $accountName.'-' ) ;
-				$params['name']   = $prefix.date("Ymd-His") ;
-				$this->exeSql("sql_supplychain_requirement_plan_insert", $params) ;
-				
-				//如果存在可创建Listing计划的列表
-				$itemCount = 0 ;
-				foreach($items as $item){
-					$accountId = $item['ACCOUNT_ID'] ;
-					$sql= "select * from sc_amazon_account where id = '{@#accountId#}'" ;
-					$account = $this->getObject($sql, array('accountId'=>$accountId)) ;
-					
-					//计算Listing是否需要创建需求计划
-					$cost = $this->getListingCost( $item['ACCOUNT_ID']  , $item['SKU'] ) ;
-					/*if( empty( $cost ) ){
-						$this->reqLog(array(
-								'REQ_PLAN_ID'=>$planId,
-								'ACCOUNT_ID'=>$item['ACCOUNT_ID'],
-								'SKU'=>$item['SKU'],
-								'REAL_ID' => $item['REAL_ID'] ,
-								"TYPE"=>'C',
-								'MEMO'=>"未设置成本数据"
-						)) ;
-						continue ;
-					}*/
-					
-					//获取当前账户库存
-					$sql="select * from sc_amazon_account_product where account_id='{@#accountId#}' and sku='{@#sku#}'";
-					$accountProduct = $this->getObject($sql, array('accountId'=>$accountId,"sku"=>$item['SKU'] )) ;	
-					$accountQuantity=$accountProduct['QUANTITY'] ;
-					
-					$channel = $item['FULFILLMENT_CHANNEL'] ;
-					
-					//获取总成本
-					$totalCost = empty($cost)?null:$cost['TOTAL_COST'] ;
-					//获取销售价
-					$sellerPrice = null ;
-					$totalPrice = null ;
-					if( !empty($cost) ){
-						if( $channel == 'Merchant'){
-							$sellerPrice = $cost['LOWEST_PRICE'] ;
-						}else{
-							$sellerPrice = $cost['LOWEST_FBA_PRICE'] ;
-						}
-						$totalPrice = $sellerPrice ;
-					}
-					
-					//echo ">>>>>>>>>>>>>".$item['SKU']."<br/>" ;
-					
-					echo '[SKU:'.$item['SKU'].'   accountId:'.$accountId.']Price>>>["'.$totalCost.'"]["'.$totalPrice.'"]<br>' ;
-					
-					//供应周期
-					$supplyCycle = 14 ;
-					if( !empty($cost) ){
-						$supplyCycle = $cost['SUPPLY_CYCLE'] ;
-						if( empty($supplyCycle) || $supplyCycle==0 ){
-							$supplyCycle = $cost['A_SUPPLY_CYCLE'] ;
-						}
-						if(empty($supplyCycle)){
-							$supplyCycle = 14 ;
-						}
-					}
-					
-					echo 'SupplyCycle>>>["'.$supplyCycle.'"]<br>' ;
-					
-					//需求调整系数
-					$reqAdjust = 1.2 ;
-					if( !empty($cost) ){
-						$reqAdjust = $cost['REQ_ADJUST'] ;
-						if( empty($reqAdjust) || $reqAdjust==0 ){
-							$reqAdjust = $cost['A_REQ_ADJUST'] ;
-						}
-					}
-					
-					if( empty($reqAdjust) ){//获取全局的配置
-						$reqAdjust = $this->getGlobalReqAdjust($item['ACCOUNT_ID']  , $item['SKU'] ) ;
-					}
-					if( empty($reqAdjust) ){
-						$reqAdjust = 1 ;
-					}
-					echo 'Req Adjust>>>["'.$reqAdjust.'"]<br>' ;
-					
-					//最近14天存在销售数量的天数
-					$saleData = $this->getLastestSaleData($item['ACCOUNT_ID']  , $item['SKU'] ) ;
-					$saleDays = count( $saleData  ) ;
-					
-					echo 'SayDays>>>["'.$saleDays.'"]<br>' ;
-					
-					if( $saleDays >= 7 ){//超过7天存在销售数据
-						
-						$count = 0 ;
-						foreach( $saleData as $i ){
-							$C = $i['C'] ;
-							$count = $count + $C ;
-						}
-						
-						//判断当前库存是否已经满足需求，如果已经满足需求，则不需要生成需求明细
-						//计算到的需求数量
-						$reqNum = ($count/14) * $supplyCycle * $reqAdjust ;
-						
-						if( $accountQuantity >= $reqNum ){
-							continue ;
-						}
-						
-						$ps = array() ;
-						$ps['accountId'] = $item['ACCOUNT_ID'] ;
-						$ps['id'] = $this->create_guid() ;
-						$ps['planId'] = $planId ;
-						$ps['realId'] = $item['REAL_ID'] ;
-						$ps['listingSku'] = $item['SKU'] ;
-						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-						$ps['existQuantity'] =  $accountQuantity ;
-						$ps['calcQuantity'] =  $reqNum ;
-						$ps['quantity'] =  $reqNum -  $accountQuantity ;
-						$ps['urgency'] =  "A" ;
-						$ps['reqType'] =  "A" ;//销量需求
-						$itemCount++ ;
-						$this->createReqItem($ps) ;
-						continue ;
-					}
-					
-					//获取最近14天的流量数据
-					$flowData = $this->getLastestFlowData($item['ACCOUNT_ID']  , $item['SKU'] ) ;
-					$flowDays =  count( $flowData  ) ;
-					
-					echo 'FlowDays >>>["'.$flowDays.'"]<br>' ;
-					
-					if( $flowDays>=3  ){
-						$ConversionRate = $account['CONVERSION_RATE'] ;//$this->getConversionRate($item['ACCOUNT_ID']  , $item['SKU'] ) ;//CONVERSION_RATE
-						if(empty($ConversionRate)){
-							$ConversionRate = 0.001 ;
-						}
-						$count = 0 ;
-						foreach( $flowData as $i ){
-							$C = $i['C'] ;
-							$count = $count + $C ;
-						}
-						
-						//计算到的需求数量
-						$reqNum = ($count/14) * $ConversionRate * $reqAdjust ;
-						if( $accountQuantity >= $reqNum ){
-							//账号库存数量大于需求数量
-							continue ;
-						}
-						
-						$ps = array() ;
-						$ps['accountId'] = $item['ACCOUNT_ID'] ;
-						$ps['id'] = $this->create_guid() ;
-						$ps['planId'] = $planId ;
-						$ps['realId'] = $item['REAL_ID'] ;
-						$ps['listingSku'] = $item['SKU'] ;
-						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-						$ps['existQuantity'] =  $accountQuantity ;
-						$ps['calcQuantity'] =  $reqNum ;
-						$ps['quantity'] =  $reqNum -  $accountQuantity ;
-						$ps['urgency'] =  "B" ;
-						$ps['reqType'] =  "B" ;//流量需求
-						$itemCount++ ;
-						$this->createReqItem($ps) ;
-						continue ;
-					}
-					
-					//如果账户库存大于10个，则不生成需求
-					if( $accountQuantity >= 10 ) continue ;
-					
-					if( empty($cost) || empty($totalCost) || empty($totalPrice) || $totalPrice==0 ){
-						$ps = array() ;
-						$ps['accountId'] = $item['ACCOUNT_ID'] ;
-						$ps['id'] = $this->create_guid() ;
-						$ps['planId'] = $planId ;
-						$ps['realId'] = $item['REAL_ID'] ;
-						$ps['listingSku'] = $item['SKU'] ;
-						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-						$ps['existQuantity'] =  $accountQuantity ;
-						$ps['calcQuantity'] =  0 ;
-						$ps['quantity'] =  0 ;
-						$ps['urgency'] =  "C" ;
-						$ps['reqType'] =  "C" ;//成本不完整
-						$itemCount++ ;
-						$this->createReqItem($ps) ;
-						continue ;
-					}
-					
-						
-					//获取利润水平
-					$profileLevel = $this->getProfileLevel($totalCost, $totalPrice) ;
-					if( $profileLevel == 1  ){
-						//忽略，利润不达标
-						$ps = array() ;
-						$ps['accountId'] = $item['ACCOUNT_ID'] ;
-						$ps['id'] = $this->create_guid() ;
-						$ps['planId'] = $planId ;
-						$ps['realId'] = $item['REAL_ID'] ;
-						$ps['listingSku'] = $item['SKU'] ;
-						$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-						$ps['existQuantity'] =  $accountQuantity ;
-						$ps['calcQuantity'] =  0 ;
-						$ps['quantity'] =  0 ;
-						$ps['urgency'] =  "C" ;
-						$ps['reqType'] =  "D" ;//利润不达标
-						$itemCount++ ;
-						$this->createReqItem($ps) ;
-						continue;
-					}
-					
-					//创建需求，数量为0，需要用户自己指定
-					$ps = array() ;
-					$ps['accountId'] = $item['ACCOUNT_ID'] ;
-					$ps['id'] = $this->create_guid() ;
-					$ps['planId'] = $planId ;
-					$ps['realId'] = $item['REAL_ID'] ;
-					$ps['listingSku'] = $item['SKU'] ;
-					$ps['fulfillment'] = $item['FULFILLMENT_CHANNEL'] ;
-					$ps['existQuantity'] =  $accountQuantity ;
-					$ps['calcQuantity'] =  0 ;
-					$ps['quantity'] =  0 ;
-					$ps['urgency'] =  "C" ;
-					$ps['reqType'] =  "E" ;//其他原因需求
-					$itemCount++ ;
-					$this->createReqItem($ps) ;
-				}
-				
-				//预处理需求
-				$this->preProcess(array(
-							'planId'=>$planId,
-							'itemCount'=>$itemCount
-				)) ;
-			}
-			
-			//$dataSource->commit() ;
-		}catch(Exception $e){
-			//$dataSource->rollback() ;
-			print_r($e->getMessage()) ;
-		}
-	}
-	
 	/**
 	 * 需求预处理
 	 */
@@ -864,7 +583,7 @@ class ScRequirement extends AppModel {
 			//debug($reqProducts) ;
 			foreach($reqProducts as $product){
 				//判断当前采购计划是否存在该货品的采购单，如果存在，则自动关联到现在的需求单，不存在，则创建新的采购单
-				$sql = "select * from sc_purchase_product where real_id='{@#realId#}' and status <80 " ;//未完成的采购单
+				/*$sql = "select * from sc_purchase_product where real_id='{@#realId#}' and status <80 " ;//未完成的采购单
 				$purchaseProduct = $this->getObject($sql, array("realId"=>$product['ID'])) ;
 				if( !empty($purchaseProduct) ){
 					//更新采购计划单的需求单位该需求
@@ -874,7 +593,7 @@ class ScRequirement extends AppModel {
 					$sql = "update sc_supplychain_requirement_plan_product set status = 3 where req_product_id = '{@#REQ_PRODUCT_ID#}'" ;//采购中
 					$this->exeSql($sql, $product) ;
 					continue ;
-				}
+				}*/
 				
 				//采购数量
 				$quantity = $product['FIX_QUANTITY'] ;
@@ -906,12 +625,28 @@ class ScRequirement extends AppModel {
 	}
 	
 	function  createReqItem($ps){
-		//debug( $ps ) ;
-		//return ;
 		$existQuantity = $ps['existQuantity'] ;
 		$quantity = $ps['quantity'] ;
+		/**
+		 * 计算需要采购的库存
+		 * 需要采购的库存=账户需求量(quantity) - 本地库存
+		 */
+		//获取本地库存 
+		$reqWarehouseId = 1 ;//需求仓库，大陆沙井仓库
+		$sql = "SELECT sum(QUANTITY) as QUANTITY FROM sc_warehouse_inventory swi WHERE swi.ACCOUNT_ID='{@#accountId#}' AND swi.INVENTORY_TYPE = 2
+				            and warehouse_id = '{@#warehouseId#}'
+							AND listing_sku = '{@#listingSku#}' " ;
+		$ps['warehouseId'] = $reqWarehouseId ;
+		$inventory = $this->getObject($sql, $ps) ;
+		$stockQuantity = $inventory['QUANTITY'] ;//在库大陆沙井仓库库存
+		$ps['stockQuantity'] = $stockQuantity ;//仓库在库库存
 		
-		$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+		if( $quantity- $stockQuantity>0 ){//账户需求量大于在库库存量，需要采购
+			$ps['purchaseQuantity'] = $quantity- $stockQuantity ;
+			$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+		}else{
+			//存在本地库存，但是需要发货，ignore 通过quantity来区分
+		}
 	}
 	
 	function  updateReqItem($ps){

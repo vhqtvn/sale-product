@@ -193,7 +193,9 @@
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="49">待收货<span class="count"></span></div></td>
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="50">QC验货<span class="count"></span></div></td>
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="60">货品入库<span class="count"></span></div></td>
+		<!--
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="75">发货FBA<span class="count"></span></div></td>
+		  -->
 		<td class="flow-split">-</td><td><div class="flow-node disabled" status="80">结束<span class="count"></span></div></td>
 		</tr>					</tbody>
 		</table>										
