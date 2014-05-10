@@ -262,8 +262,8 @@ class ScRequirement extends AppModel {
 		while(true){
 			/**
 			 *  按Listing获取待计算需求列表
-			 *  1、排除正在处理需求
-			 *  
+			 *  1、排除正在处理采购Listing
+			 *  2、排除才采购回来的Listing
 			 */
 			$sql = "SELECT
 					saap.*,
@@ -292,16 +292,21 @@ class ScRequirement extends AppModel {
 					AND srpr.SKU = saap.SKU
 					AND  srpr.REAL_ID = srp.ID
 					AND NOT EXISTS (
+						SELECT * FROM sc_purchase_product spp,
+							sc_supplychain_requirement_item ssri
+						WHERE spp.REQ_PRODUCT_ID = ssri.REQ_PRODUCT_ID
+						AND ssri.account_id = saap.account_id
+						AND ssri.listing_sku = saap.sku
+						AND ssri.PURCHASE_QUANTITY > 0
+						AND spp.STATUS < 80
+						AND spp.IS_TERMINATION = 0
+					)
+					AND NOT EXISTS (
 						SELECT * FROM 
 								sc_supplychain_requirement_plan_product ssrp,
 								sc_supplychain_requirement_item ssri
-						WHERE     (    (  ssrp.status NOT IN (2,6) )
-						               OR
-						               (
-						               ssrp.status = 6
-						               AND DATEDIFF(NOW(),ssri.last_update_time)<=3
-						               )
-						             )
+						WHERE           ssrp.status = 6
+						                AND DATEDIFF(NOW(),ssri.last_update_time)<=3
 								AND ssrp.real_id = srp.id
 								AND ssri.req_product_id  = ssrp.req_product_id
 								AND ssri.account_id = saap.account_id
@@ -491,6 +496,7 @@ class ScRequirement extends AppModel {
 				$ps['existQuantity'] =  $existQuantity ;
 				$ps['calcQuantity'] =  $reqNum ;//计算需求量
 				$ps['quantity'] =  ceil( $accountReqNum ) ;//账户需求量
+
 				$ps['urgency'] =  "A" ;
 				$ps['reqType'] =  "A" ;//销量需求
 			
@@ -582,6 +588,7 @@ class ScRequirement extends AppModel {
 			$reqProducts = $this->exeSqlWithFormat("sql_supplychain_requirement_plan_product_list", $params) ;
 			//debug($reqProducts) ;
 			foreach($reqProducts as $product){
+				
 				//判断当前采购计划是否存在该货品的采购单，如果存在，则自动关联到现在的需求单，不存在，则创建新的采购单
 				/*$sql = "select * from sc_purchase_product where real_id='{@#realId#}' and status <80 " ;//未完成的采购单
 				$purchaseProduct = $this->getObject($sql, array("realId"=>$product['ID'])) ;

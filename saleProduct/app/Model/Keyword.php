@@ -143,7 +143,9 @@ class Keyword extends AppModel {
 		}
 	}
 	
-	public function parseKeywordRow( $row , $params , $mainGuid , $keywordType ,$count ){
+	public function parseKeywordRow( $row , $params , $mainGuid,$parentKeyword , $keywordType ,$count ){
+		debug( $row ) ;
+		
 		$array = split(";",$row ) ;
 		$record = array() ;
 		$record['guid'] = $this->create_guid() ;
@@ -161,13 +163,14 @@ class Keyword extends AppModel {
 		$record['competition'] = $array[3] ;
 		$record['result_num'] = $array[4] ;
 		$record['trends'] = $array[5] ;
-		$record['parent_id'] = $mainGuid ;
+		$record['parent_id'] = $parentKeyword ;
+		$record['main_keyword_id'] = $mainGuid ;
 		$record['site'] = $params['site'] ;
 		
 		//判断keyword是否存在，如果存在则不考虑
 		try{
 			//判断Keyword是否存在
-			$item = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword='{@#keyword#}' and site = '{@#site#}' and cpc='{@#cpc#}'", $record) ;
+			$item = $this->getObject("select * from sc_keyword where task_id = '{@#taskId#}' and keyword='{@#keyword#}' and site = '{@#site#}' ", $record) ;//and cpc='{@#cpc#}'
 			
 			//debug($item) ;
 			
@@ -176,18 +179,22 @@ class Keyword extends AppModel {
 				$count++ ;
 			}
 		}catch(Exception $e){
-			//debug( $e ) ;
+			debug( $e ) ;
 		}
 	}
 	
-	public function fetchSearchData($url , $limit , $offset ,$params ,$mainGuid , $count,$keywordType){
+	public function fetchSearchData($url , $limit , $offset ,$params ,$mainGuid ,$parentKeyword, $count,$keywordType){
 		$total = $params['total'] ;
 		
 		$_url = str_replace("{limit}", $limit, $url ) ;
 		$_url = str_replace("{offset}", $offset, $_url ) ;
-		echo $_url ;
-		$content = $this->httpcopy($_url) ;// file_get_contents($_url) ;
-		echo $content;
+		
+		$_url = str_replace(" ","%20",$_url);//
+
+		//$_url = str_replace("&amp;","&",$_url);//&amp;
+		
+		$content = file_get_contents($_url) ;//$this->httpcopy($_url) ;//
+		//debug( $content );
 		$content = split("\n", $content) ;
 		
 		
@@ -195,8 +202,9 @@ class Keyword extends AppModel {
 		//display_limit
 		//display_offset
 		foreach($content as $c){
+			debug( $c ) ;
 			if($index > 0){
-				$this->parseKeywordRow($c, $params, $mainGuid, $keywordType, $count) ;
+				$this->parseKeywordRow($c, $params, $mainGuid,$parentKeyword, $keywordType, $count) ;
 			}
 			$index++;
 		}
@@ -230,20 +238,20 @@ class Keyword extends AppModel {
 		
 		$mainKeyword = $params['mainKeyword'] ;
 		//$mainKeyword =  $mainKeyword ;
-		$parseMatchUrl = "http://$site.fullsearch-api.semrush.com/?action=report&type=phrase_fullsearch&display_sort=nq_desc&phrase=$mainKeyword&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td" ;
-		$relationUrl = "http://$site.api.semrush.com/?action=report&type=phrase_related&display_sort=nq_desc&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase=$mainKeyword" ;
+		$parseMatchUrl = 'http://'.$site.'.fullsearch-api.semrush.com/?action=report&type=phrase_fullsearch&display_sort=nq_desc&phrase='.$mainKeyword.'&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td' ;
+		$relationUrl = 'http://'.$site.'.api.semrush.com/?action=report&type=phrase_related&display_sort=nq_desc&key=240ada68082b9ad767ef984a0cfde07c&display_limit={limit}&display_offset={offset}&export=api&export_columns=Ph,Nq,Cp,Co,Nr,Td&phrase='.$mainKeyword ;
 		
 		//$parseMatchUrl = "http://$site.fullsearch.semrush.com/?action=report&database=$site&rnd_m=1378298102&key=240ada68082b9ad767ef984a0cfde07c&type=phrase_fullsearch&phrase=$mainKeyword&export_hash=b9f86033069d331ec903c42ea1c045e4&export_columns=Ph,Nq,Cp,Co,Nr,Td&export=stdcsv&gclid=CP3iudq_h7kCFcOh4Aod4zYAFQ" ;
 		//$relationUrl = "http://$site.backend.semrush.com/?action=report&database=$site&rnd_m=1378298102&key=240ada68082b9ad767ef984a0cfde07c&type=phrase_related&phrase=$mainKeyword&export_hash=88c7dd4b17c20df0a2d1524e3f9d3840&export_columns=Ph,Nq,Cp,Co,Nr,Td&export=stdcsv&gclid=CP3iudq_h7kCFcOh4Aod4zYAFQ" ;
 		
 		
-		$orgUrl = "http://$site.api.semrush.com/?action=report&type=phrase_organic&key=240ada68082b9ad767ef984a0cfde07c&display_limit=100&export=api&export_columns=Dn,Ur&phrase=$mainKeyword" ;
-	
+		$orgUrl = 'http://'.$site.'.api.semrush.com/?action=report&type=phrase_organic&key=240ada68082b9ad767ef984a0cfde07c&display_limit=100&export=api&export_columns=Dn,Ur&phrase='.$mainKeyword ;
+
 		//保存主关键字
 		$mainGuid = null ;
 		if( empty($keywordId) ){
 			$mainGuid = $this->create_guid() ;
-			
+			$parentKeyword = $mainGuid ;
 			$record = array() ;
 			$record['guid'] = $mainGuid ;
 			$record['taskId'] = $params['taskId'] ;
@@ -259,6 +267,7 @@ class Keyword extends AppModel {
 				task_id, 
 				keyword, 
 				is_main_keyword, 
+				main_keyword_id,
 				parent_id, 
 				STATUS, 
 				create_date, 
@@ -271,6 +280,7 @@ class Keyword extends AppModel {
 				'{@#taskId#}', 
 				'{@#keyword#}', 
 				'{@#is_main_keyword#}', 
+				'{@#guid#}', 
 				'{@#parent_id#}', 
 				'10', 
 				NOW(), 
@@ -279,18 +289,27 @@ class Keyword extends AppModel {
 				'{@#site#}'
 				)", $record) ;
 		}else{
-			$mainGuid = $keywordId ;
+			$parentKeyword = $keywordId ;
+			
+			$sql = "select * from sc_keyword where keyword_id =  '{@#keywordId#}'";
+			$pKeyword = $this->getObject($sql, array('keywordId'=>$parentKeyword));
+			$mainKeyword = $pKeyword['MAIN_KEYWORD_ID'] ;
+			
 			//更新设置当前关键字为主关键字
-			$this->exeSql("update sc_keyword set is_main_keyword = '1' , updated_time = NOW() where keyword_id = '{@#keywordId#}'", array('keywordId'=>$mainGuid));
+			$this->exeSql("update sc_keyword set is_main_keyword=1,updated_time = NOW() where keyword_id = '{@#keywordId#}'", array('keywordId'=>$parentKeyword));
+			//查找mainGuid
+			
 		}
-		
-		$this->fetchSearchData($parseMatchUrl , 100 , 0 ,$params ,$mainGuid , $count , "Pharse") ;
+	
+		$this->fetchSearchData($parseMatchUrl , 100 , 0 ,$params ,$mainGuid,$parentKeyword , $count , "Pharse") ;
 
 		//保存词组匹配
-		$this->fetchSearchData($relationUrl , 100 , 0 ,$params ,$mainGuid , $count , "Relation" ) ;
+		$this->fetchSearchData($relationUrl , 100 , 0 ,$params ,$mainGuid,$parentKeyword , $count , "Relation" ) ;
 	
 		//保存关联网站，关联到主关键字
+		 $orgUrl = str_replace(" ","%20",$orgUrl);
 		$content3 = file_get_contents($orgUrl) ;
+		
 		$content3 = split("\n", $content3) ;
 		$index =0 ;
 		foreach($content3 as $c){

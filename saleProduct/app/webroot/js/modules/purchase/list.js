@@ -114,6 +114,11 @@
 						if(val>25)message = "待采购" ;
 						
 						return message ;
+					},render:function(record){
+						var tsq = record.TOTAL_SUPPLY_QUANTITY ;
+						if( tsq === 0 ||  (tsq>0 && tsq<10) ){
+							$(this).find("[key='STATUS']").css("background","red").attr("title","紧急采购") ;
+						}
 					} },
 		           	{align:"center",key:"EXECUTOR_NAME",label:"执行用户",width:"6%",forzen:false,align:"left"},
 		           	{align:"center",key:"LIMIT_PRICE",label:"采购限价",width:"5%"},

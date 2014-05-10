@@ -46,7 +46,7 @@ $(function(){
 		 limit:20,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-			 return 175 ;
+			 return 200 ;
 		 },
 		 title:"Niche关键字列表",
 		 indexColumn:false,
@@ -59,55 +59,6 @@ $(function(){
 		 loadAfter:function(){
 			 currentNichKeyword =null ;
 		 }
-	}) ;
-	
-	
-	if( $(".niche-grid-group").length )$(".niche-grid-group").llygrid({
-		columns:[
-			{align:"left",key:"keyword",label:"关键字名称", width:"180px",format:function(val,record){
-				
-				var site = record.site||"us" ;
-				var amazonUrl = amazonSiteMap[site] ;
-				val = "<a href='http://"+amazonUrl+"/s/ref=nb_sb_noss?field-keywords="+val+"' target='_blank'>"+val+"</a>" ;
-				
-				if( record.is_niche == 1 ){
-					return "<img   src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"+val  ;
-				}
-				return val ;
-			}},
-			{align:"left",key:"keyword_type",label:"类型", width:"10%"},
-			{align:"left",key:"search_volume",label:"搜索量", width:"10%"},
-			{align:"left",key:"cpc",label:"CPC", width:"10%"},
-			{align:"left",key:"competition",label:"竞争", width:"10%"},
-			{align:"center",key:"site",label:"国家", width:"10%"},
-            {align:"center",key:"keyword_id",label:"操作",width:"13%",format:function(val,record){
-            	var img = "" ;
-				
-				if(record.is_niche != 1){
-					if(isDev){
-						img = img +
-						"<img class='removeKeyword' title='删除关键字' src='/"+fileContextPath+"/app/webroot/img/delete.gif'>" ;
-					}
-					
-				}
-				
-				//网址
-				img = img +
-				"<img class='getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
-				
-				return img ;
-            }} 
-         ],
-         ds:{type:"url",content:contextPath+"/grid/query"},
-		 limit:20,
-		 pageSizes:[10,20,30,40],
-		 height:function(){
-			 return 245 ;
-		 },
-		 title:'Niche分组关键字',
-		 indexColumn:false,
-		 querys:{_data:"d_list_keywordByGroup",groupId:"--"},//,parentId:keywordId
-		 loadMsg:"扩展关键字加载中，请稍候......"
 	}) ;
 	
 	$(".niche-update").live("click",function(){
@@ -152,21 +103,26 @@ $(function(){
 	var currentSite = null ;
 	
 	$(".asyn-keyword").click(function(){
-		var mainKeyword = $("#mainKeyword").val() ;
-		
-		if(window.confirm("确认获取扩展关键字？")){
-			var site  = $("#site").val() ;
-			currentSite = site ;
+		if($(".extend-keyword-form").is(":hidden")){
+			$(".extend-keyword-form").show() ;
+		}else{
+			var mainKeyword = $("#mainKeyword").val() ;
 			
-			var params = {} ;
-			params.mainKeyword = mainKeyword ;
-			params.site = site ;
-			params.taskId = taskId ;
-			params.total  = $("#total").val() ;
-			
-			$.dataservice("model:Keyword.fetchChildKeyWords",params ,function(result){
-				$(".main-keyword").llygrid("reload",{},true) ;
-			});
+			if(window.confirm("确认获取扩展关键字？")){
+				var site  = $("#site").val() ;
+				currentSite = site ;
+				
+				var params = {} ;
+				params.mainKeyword = mainKeyword ;
+				params.site = site ;
+				params.taskId = taskId ;
+				params.total  = $("#total").val() ;
+				
+				$.dataservice("model:Keyword.fetchChildKeyWords",params ,function(result){
+					$(".main-keyword").llygrid("reload",{},true) ;
+					$(".extend-keyword-form").hide() ;
+				});
+			}
 		}
 	}) ;
 	
@@ -280,9 +236,9 @@ $(function(){
 			 limit:20,
 			 pageSizes:[10,20,30,40],
 			 height:function(){
-				 return 245 ;
+				 return $(window).height() - 450 ;
 			 },
-			 title:text,
+			 title:"扩展关键字",
 			 indexColumn:false,
 			 querys:{_data:"d_list_keywordByMain",parentId:keywordId,taskId:taskId},
 			 loadMsg:"扩展关键字加载中，请稍候......"
@@ -474,10 +430,6 @@ $(function(){
 					img = img +
 					"<img class='img-action uploadKeyword' title='上传关键字列表' src='/"+fileContextPath+"/app/webroot/img/send-now.gif'>" ;
 
-					//网址
-					img = img +
-					"<img class='img-action transferKeyword' title='转移主关键字' src='/"+fileContextPath+"/app/webroot/img/retry.png'>" ;
-					
 					return img ;
 	            }} 
 	         ],
@@ -485,7 +437,7 @@ $(function(){
 			 limit:20,
 			 pageSizes:[10,20,30,40],
 			 height:function(){
-				 return 175 ;
+				 return $(window).height() - 450 ;
 			 },
 			 title:"主关键字",
 			 indexColumn:false,

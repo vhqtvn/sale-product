@@ -27,7 +27,11 @@
 		           	{align:"center",key:"LIST_PRICE",label:"List价格",width:"5%"},
 		        	{align:"center",key:"LOWEST_PRICE",label:"最低价格",width:"5%"},
 		           	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"Total Supply Quantity",width:"10%"},
-		           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"InStock Supply Quantity",width:"10%"}
+		           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"InStock Supply Quantity",width:"10%"},
+		        	{align:"center",key:"PURCHASE_ID",label:"进行中采购单",width:"15%",format:function(val,record){
+		           		if(!val)return "-" ;
+		           		return "<a href='#' purchase-product='"+val+"'>查看采购单<a>";
+		           	}}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,

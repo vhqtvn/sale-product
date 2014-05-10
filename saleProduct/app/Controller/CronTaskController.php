@@ -272,7 +272,7 @@ class CronTaskController extends AppController {
 		}
 		
 		if( $isNoSaleTime  ){ //如果非营销时段，不执行价格调整
-			return ;
+			//return ;
 		}
 		
 		//判断是不是限时调价时间
@@ -343,13 +343,13 @@ class CronTaskController extends AppController {
 			/**
 			 * 同步最低FBA价格
 			 */
-			/*try{
+			try{
 				//同步实时FBA最低价格
 				$url = $this->Utils->buildUrl( $account, "taskAsynAmazon/GetLowestOfferListingsForASIN" ) ;
 				$this->triggerRequest($url,null) ;
 			}catch(Exception $e){
 				debug($e);
-			}*/
+			}
 			
 			try{
 				$start = 0 ;
@@ -463,8 +463,9 @@ class CronTaskController extends AppController {
 				$secondPrice = $_price ;//初始化出自己联盟卖家外价格最低的
 			}
 			
-			if( $_price > $execPrice && $limitPriceLargerPrice == 0  ){
-				$limitPriceLargerPrice = $_price ;
+			if( $_price >= $execPrice && $limitPriceLargerPrice == 0  ){
+				//$limitPriceLargerPrice = $_price ;
+				$limitPriceLargerPrice = $execPrice+0.03;//临时i修改
 			}
 		}
 		
@@ -552,9 +553,9 @@ class CronTaskController extends AppController {
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
 				}
 				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
-					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;//限价后面价格-0.01
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>max($limitPriceLargerPrice - 0.01,$execPrice) ) ;//限价后面价格-0.01
 				}else{
-					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>max($limitPriceLargerPrice - 0.01,$execPrice)  ) ;
 				}
 			}
 			return null ;
@@ -576,7 +577,7 @@ class CronTaskController extends AppController {
 				if( $limitPriceLargerPrice == 0  ){
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
 				}
-				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>max($limitPriceLargerPrice - 0.01,$execPrice)  ) ;
 			}
 			
 			if( $listPrice == $execPrice ){
@@ -702,11 +703,12 @@ class CronTaskController extends AppController {
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
 				}
 				
-				if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
+				/*if(  $isLimitStrategy &&( $isLimiting || $isLimitStart ) ){//如果限时调价开始或进行中...
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
 				}else{
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice ) ;
-				}
+				}*/
 			}
 			return null ;
 		}
@@ -715,7 +717,8 @@ class CronTaskController extends AppController {
 		if($listPrice ==  $lowestFbaPrice ){
 			
 			if( $lowestFbaPrice < $execPrice ){//如果最低价格小于限价，则向上调整价格
-				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+				//return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$limitPriceLargerPrice - 0.01 ) ;
+				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$execPrice ) ;
 			}
 
 			if( $lowestCount == 1 ){//如果最低价格只有一个，则调整价格为第二

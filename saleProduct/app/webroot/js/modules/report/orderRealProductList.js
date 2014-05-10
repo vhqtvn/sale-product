@@ -19,8 +19,12 @@
 		           	}},
 		           	{align:"center",key:"NAME",label:"货品名称",width:"13%",forzen:false,align:"center"},
 		           	{align:"center",key:"C",label:"订单数量",width:"15%",forzen:false,align:"left"},
-		           	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"Total Supply Quantity",width:"10%"},
-		           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"InStock Supply Quantity",width:"10%"}
+		           	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"总库存",width:"10%"},
+		           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"在库库存",width:"10%"},
+		           	{align:"center",key:"PURCHASE_ID",label:"进行中采购单",width:"15%",format:function(val,record){
+		           		if(!val)return "-" ;
+		           		return "<a href='#' purchase-product='"+val+"'>查看采购单<a>";
+		           	}}
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
