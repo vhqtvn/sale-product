@@ -21,7 +21,15 @@
 		          ( SELECT MIN(sapb.price) 
 				FROM sc_amazon_product_bidding sapb 
 				WHERE 	sapb.asin = saap.asin 
-					AND sapb.type='FBA'  ) AS LOWEST_PRICE
+					AND sapb.type='FBA'  ) AS LOWEST_PRICE,
+				(  SELECT spp.id FROM sc_purchase_product spp,
+			             sc_supplychain_requirement_item ssri
+			             WHERE spp.req_product_id= ssri.req_product_id
+			             AND ssri.account_id = saap.ACCOUNT_ID
+			             AND ssri.listing_sku =saap.Sku
+			             AND  spp.status != 80
+			             LIMIT 0,1		   
+			    ) AS PURCHASE_ID
 		     FROM    sc_fba_supply_inventory sfsi,
 		             sc_amazon_account saa ,
 		             sc_amazon_account_product saap
@@ -61,25 +69,32 @@
 			ORDER BY spp.REAL_PROVIDOR,DATE_FORMAT(spp.REAL_PURCHASE_DATE,"%Y-%m" )  DESC 
 </entry>
     <entry key="sql_report_orderRealProductList_Items">
-    		
 			SELECT 
 			   soi.REAL_ID,
 			  srp.IMAGE_URL,
 			   soi.REAL_SKU ,
 			    srp.NAME,
 			    soi.ASIN,
-			    (select name from sc_amazon_account where id = soi.ACCOUNT_ID) as ACCOUNT_NAME,
+			    (SELECT NAME FROM sc_amazon_account WHERE id = soi.ACCOUNT_ID) AS ACCOUNT_NAME,
 			   soi.SELLER_SKU , 
 			   COUNT(1) AS C ,
 			   sfsi.TOTAL_SUPPLY_QUANTITY,
-			   sfsi.IN_STOCK_SUPPLY_QUANTITY
+			   sfsi.IN_STOCK_SUPPLY_QUANTITY,
+			   (  SELECT spp.id FROM sc_purchase_product spp,
+			             sc_supplychain_requirement_item ssri
+			             WHERE spp.req_product_id= ssri.req_product_id
+			             AND ssri.account_id = soi.ACCOUNT_ID
+			             AND ssri.listing_sku =soi.Seller_SKU
+			             AND  spp.status != 80
+			             LIMIT 0,1		   
+			    ) AS PURCHASE_ID
 			 FROM 
 			 	sc_order_item soi
-			 left join sc_real_product srp
-			 on soi.REAL_ID = srp.id
-			left join sc_fba_supply_inventory sfsi
-				on sfsi.account_id = soi.account_id
-					and sfsi.SELLER_SKU = soi.SELLER_SKU
+			 LEFT JOIN sc_real_product srp
+			 ON soi.REAL_ID = srp.id
+			LEFT JOIN sc_fba_supply_inventory sfsi
+				ON sfsi.account_id = soi.account_id
+					AND sfsi.SELLER_SKU = soi.SELLER_SKU
 			WHERE 
 			 soi.PURCHASE_DATE LIKE '{@%#purchaseDate#%}'
 			{@ and soi.account_id = '#accountId#'}

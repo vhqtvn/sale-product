@@ -77,6 +77,7 @@
 							//html.push('<a href="#" class="list-entity-tag popover-pl top" val="'+val+'">'+getImage("tabs.gif","显示标签")+'</a>&nbsp;') ;
 							return html.join("") ;
 						}},
+			           	{align:"center",key:"P_LOCAL_URL",label:"图片",width:"6%",forzen:false,align:"left",format:{type:'img'}},
 						{align:"center",key:"ID",label:"设置",width:"4%",format:function(val,record){
 							return '<a href="#" class="setting-ap">'+getImage("edit.png","是否计算需求设置")+'</a>&nbsp;'
 						}},
@@ -89,9 +90,9 @@
 								}
 								return html.join("")  ;
 						}},
-						{align:"center",key:"RISK_LABEL",label:"需求类型", width:"8%",format:function(val,record){
+						/*{align:"center",key:"RISK_LABEL",label:"需求类型", width:"8%",format:function(val,record){
 								return record.RISK_LABEL||"" ;
-						}},
+						}},*/
 						{align:"center",key:"RISK_TYPE_NAME",label:"风险类型", width:"6%"},
 						{align:"left",key:"SKU",label:"Listing SKU",width:"10%"},
 						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"10%",format:function(val,record){
@@ -101,21 +102,21 @@
 			           		var memo = record.MEMO||"" ;
 			           		return "<a href='#' offer-listing='"+record.ASIN+"'>"+(val||"")+"</a>" ;
 			           	}},
-			           	{align:"center",key:"P_LOCAL_URL",label:"图片",width:"6%",forzen:false,align:"left",format:{type:'img'}},
 			           	{align:"center",key:"P_TITLE",label:"产品标题",width:"10%",forzen:false,align:"left"},
 			           /*	{align:"center",key:"DAY_PAGEVIEWS",label:"每日PV",width:"8%",format:function(val){
 			           		if(!val) return '-' ;
 			           		return Math.round(val) ;
 			           	}},*/
 			           	{align:"center",key:"FULFILLMENT_CHANNEL",label:"销售渠道",width:"8%"},
-			           	{align:"center",key:"ITEM_CONDITION",label:"使用程度",width:"8%",format:function(val){
+			           /*	{align:"center",key:"ITEM_CONDITION",label:"使用程度",width:"8%",format:function(val){
 			           		if(val == 1) return "Used" ;
 			           		if(val == 11) return 'New' ;
 			           		return '' ;
-			           	}},
+			           	}},*/
 			           //	{align:"center",key:"IS_FM",label:"FM产品",width:"8%" },
 			           	{align:"center",key:"QUANTITY",label:"库存",width:"6%"},
-			           	 {align:"center",key:"PRICE",label:"Price",width:"6%"},
+			        	{align:"center",key:"C",label:"当天订单数",width:"6%"},
+			          // 	 {align:"center",key:"PRICE",label:"Price",width:"6%"},
 			          /* {align:"center",key:"SHIPPING_PRICE",label:"Ship",group:"价格",width:"6%"},
 			           	{align:"center",key:"FBM_PRICE__",label:"排名",group:"价格",width:"8%",format:function(val,record){
 			           		var pm = '' ;
@@ -133,9 +134,9 @@
 			           		if( record.IS_FM == 'NEW' ) return  record.FBM_N_PRICE ;
 			           		return "" ;
 			           	}},*/
-			           	{align:"center",key:"LIMIT_PRICE",label:"最低限价",width:"8%"},
-			        	{align:"center",key:"SUPPLY_CYCLE",label:"供应周期",width:"8%" },
-			        	{align:"center",key:"REQ_ADJUST",label:"需求调整系数",width:"8%" }
+			           	{align:"center",key:"LIMIT_PRICE",label:"最低限价",width:"8%"}//,
+			        //	{align:"center",key:"SUPPLY_CYCLE",label:"供应周期",width:"8%" },
+			       // 	{align:"center",key:"REQ_ADJUST",label:"需求调整系数",width:"8%" }
 			         ],
 			         //ds:{type:"url",content:contextPath+"/amazongrid/product/"+accountId},
 			         ds:{type:"url",content:contextPath+"/grid/query"},

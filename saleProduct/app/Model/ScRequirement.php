@@ -481,6 +481,7 @@ class ScRequirement extends AppModel {
 			 * 4、计算账户需求量 = 周期需求量（$reqNum） - 当前有效库存（$validStockQuantity）
 			 */
 			$accountReqNum = $reqNum - $validStockQuantity ;
+			
 
 			if(  $accountReqNum <=0  ){
 				//如果账户需求量小于0，不存在供应需求
@@ -646,6 +647,12 @@ class ScRequirement extends AppModel {
 		$ps['warehouseId'] = $reqWarehouseId ;
 		$inventory = $this->getObject($sql, $ps) ;
 		$stockQuantity = $inventory['QUANTITY'] ;//在库大陆沙井仓库库存
+		
+		/**
+		 * 格式化需求数量四舍五入，保留10的倍数
+		 */
+		$stockQuantity = round($stockQuantity,-1) ;
+		
 		$ps['stockQuantity'] = $stockQuantity ;//仓库在库库存
 		
 		if( $quantity- $stockQuantity>0 ){//账户需求量大于在库库存量，需要采购

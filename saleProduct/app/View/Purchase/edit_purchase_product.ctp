@@ -54,6 +54,8 @@
 		$ppp_export							= $security->hasPermission($loginId , 'ppp_export') ;
 		$ppp_audit							= $security->hasPermission($loginId , 'ppp_audit') ;
 		$pptp_audit							= $security->hasPermission($loginId , 'pptp_audit') ;//采购产品任务审批
+		//修改采购数量
+		$pptp_quantity							= $security->hasPermission($loginId , 'pptp_updateQuantity') ;//采购产品任务审批
 		
 		$ppp_deal								= $security->hasPermission($loginId , 'pptp_deal') ;//采购产品任务审批
 		$ppp_receviced					= $security->hasPermission($loginId , 'pptp_receviced') ;//采购产品任务审批
@@ -407,7 +409,7 @@
 						</table>
 						
 						<table class="form-table" >
-								<caption>采购需求<?php if( $reedit_pp_product  && $status <= 50){ 
+								<caption>采购需求<?php if( ($reedit_pp_product)  && $status <= 50){ 
 								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 								}?></caption>
 								<thead>

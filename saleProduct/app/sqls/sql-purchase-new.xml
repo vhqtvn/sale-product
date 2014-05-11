@@ -93,7 +93,14 @@
 				   		and spp1.real_id = spp.real_id
 				       ORDER BY spp1.last_updated_date DESC
 				       LIMIT 0,1   
-				   ) AS REAL_PURCHASE_DATE_
+				   ) AS REAL_PURCHASE_DATE_,
+				   (SELECT SUM(sfsi.total_supply_quantity) FROM sc_fba_supply_inventory sfsi,
+                                                  sc_supplychain_requirement_item ssri
+                                                  WHERE sfsi.account_id = ssri.account_id
+                                                  AND sfsi.seller_sku=ssri.listing_sku
+                                                  AND ssri.req_product_id = spp.REQ_PRODUCT_ID
+                                                  AND ssri.purchase_quantity >0				   
+				   ) AS TOTAL_SUPPLY_QUANTITY
 			 FROM 
 			sc_purchase_product spp,
 			sc_real_product srp

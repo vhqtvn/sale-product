@@ -22,6 +22,7 @@
 		     sc_supplychain_requirement_plan_product ssrpp,
 			 sc_real_product srp
 		WHERE   ssrpp.REAL_ID = srp.ID
+		{@ and ssrpp.plan_id = '#planId#'}
 		{@ 
 		   and exists (
 		      select  1 from sc_supplychain_requirement_item ssri 

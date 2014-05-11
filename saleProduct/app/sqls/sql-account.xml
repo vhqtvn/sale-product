@@ -30,7 +30,11 @@
 					) ELSE sc_amazon_account_product.LOCAL_URL END ) AS P_LOCAL_URL,
 					srpr.REAL_ID,
 					srpr.REAL_SKU,
-					(select label from sc_config where type='riskType' and sc_config.key=sc_amazon_account_product.RISK_TYPE limit 0,1) as RISK_LABEL
+					(select label from sc_config where type='riskType' and sc_config.key=sc_amazon_account_product.RISK_TYPE limit 0,1) as RISK_LABEL,
+					(select count(1) from sc_order_item soi where soi.account_id =sc_amazon_account_product.account_id and 
+					         soi.SELLER_SKU =sc_amazon_account_product.sku  and 
+					         TO_DAYS( NOW( ) ) - TO_DAYS(soi.purchase_date) <= 1
+					          ) as C
 					FROM sc_amazon_account_product 
 					LEFT JOIN sc_product sp
 					ON sp.ASIN = sc_amazon_account_product.ASIN
@@ -82,7 +86,7 @@
 							select ste.entity_id  from sc_tag_entity ste where ste.entity_type like 'listingTag%'
 						and ste.tag_id = '#tagId#'
 					)
-		            order by cast(sc_amazon_account_product.DAY_PAGEVIEWS as signed) desc
+		            order by sc_amazon_account_product.QUANTITY desc
 	]]>	      
     </entry>
     

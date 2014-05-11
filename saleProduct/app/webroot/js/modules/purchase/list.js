@@ -125,7 +125,7 @@
 		           	{align:"center",key:"IMAGE_URL",label:"",width:"3%",forzen:false,align:"center",format:{type:'img'}},
 		           	{align:"center",key:"CODE",label:"编号",width:"15%",forzen:false,align:"left"},
 		           	{align:"center",key:"TITLE",label:"标题",width:"15%",forzen:false,align:"left",format:function(val,record){
-		           		var style =  record.REAL_PROVIDOR_NAME_?"":"style='color:green;'"
+		           		var style =  record.REAL_PROVIDOR_NAME_?"":"style='color:blue;'"
 		           		return "<div "+style+">"+val+"</div>" ;
 		           	}},
 					{align:"left",key:"REAL_SKU",label:"货品SKU", width:"8%",format:{type:'realSku'}},
