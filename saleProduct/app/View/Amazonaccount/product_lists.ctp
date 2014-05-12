@@ -104,46 +104,15 @@
 				<table style="width:100%;" class="query-table">	
 					<tr>
 						
-						<th>销售渠道:</th>
-						<td>
-							<select name='fulfillmentChannel'  class="span2">
-								<option value=''>全部</option>
-								<option value='AMAZON_NA'>Amazon</option>
-								<option value='Merchant'>Merchant</option>
-								<option value='-'>未知</option>
-							</select>
-						</td>
 						<th>关键字:</th>
 						<td colspan="2">
 							<input type="text" name="searchKey" placeHolder="ASIN、SKU、名称"  style="width:400px"/>
-						</td>
-					</tr>
-					<tr>	
-						<th>使用程度:</th>
-						<td>
-							<select name='itemCondition'  style="width:100px">
-								<option value=''>全部</option>
-								<option value=11>New</option>
-								<option value=1>Used</option>
-								<option value='-'>未知</option>
-							</select>
-						</td>
-						<th>排名:</th>
-						<td>
-							<select name='pm'   style="width:100px">
-								<option value=''>全部</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="other">其他</option>
-							</select>
-						</td>
-						<td>
+						
 							<button class="btn btn-primary query query-btn" >查询</button>
+							<!--
 							<button class="btn btn-primary btn-mini query-reply-btn">重复产品过滤</button>
 				 			<button class="btn btn-primary btn-mini product-category-btn">编辑分类产品</button>
+				 			  -->
 						</td>
 					</tr>						
 				</table>

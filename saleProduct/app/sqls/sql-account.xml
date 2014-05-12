@@ -43,18 +43,10 @@
 					LEFT JOIN sc_real_product_rel srpr
 					on srpr.sku = sc_amazon_account_product.sku
 					where status = 'Y'
-					{@ and sp.title like '%#title#%' }
-					{@ and sc_amazon_account_product.asin = '#asin#' }
-					{@ and sc_amazon_account_product.sku = '#sku#' }
-					{@ and sc_amazon_account_product.quantity >= #quantity1# }
-					{@ and sc_amazon_account_product.quantity <= #quantity2# }
-					{@ and sc_amazon_account_product.price >= #price1# }
-					{@ and sc_amazon_account_product.price <= #price2# }
 					{@ and sc_amazon_account_product.account_id = '#accountId#' }
 					{@ and IS_FM = '#isFM#' }
 					{@ and country >= '#outAemricanArea#' }
 					{@ and country = '#inAemricanArea#' }
-					{@ and warning like '%#warning#%' }
 					{@ and 
 					   (
 					      sc_amazon_account_product.asin like '%#searchKey#%' 
@@ -67,20 +59,21 @@
 					{@ and ( fulfillment_channel is null or fulfillment_channel = '' ) and 1 = #fulfillmentChannelNull# }
 					{@ and fulfillment_channel like '%#fulfillmentChannel#%' }
 					
-					{@ and ( item_condition is null or item_condition = '' ) and 1 = #itemContidtionNull# }
-					{@ and item_condition = '#itemCondition#' }
-					
-					{@ and ( feed_price <> '' and feed_price is not null ) and 1 = #isPriceQuery# }
-					{@ and ( feed_quantity <> '' and feed_quantity is not null ) and 1 = #isQuantityQuery# }
-					{@ and ( F_PM = '#pm#' or N_PM = '#pm#' or U_PM = '#pm#'  or FBA_PM = '#pm#' ) }
-					
 					{@ and sc_amazon_account_product.sku not in (
-								select sku from sc_amazon_product_category_rel where sku is not null and account_id = '#accountId#')
+								select srpr.sku from sc_real_product_rel srpr ,
+							    sc_real_product_category srpc
+							    where srpr.real_id = srpc.product_id
+							    and  srpr.account_id = '#accountId#'
+								)
 						and 1= #uncategory#
 					}
 					{@ and sc_amazon_account_product.sku in (
-								select sku from sc_amazon_product_category_rel where category_id = '#categoryId#'
-								and sku is not null and account_id = '#accountId#'
+							   select srpr.sku from sc_real_product_rel srpr ,
+							    sc_real_product_category srpc
+							    where srpr.real_id = srpc.product_id
+							    and srpc.category_id = '#categoryId#'
+							    and  srpr.account_id = '#accountId#'
+							    and srpr.sku = sc_amazon_account_product.sku
 					)}
 					{@ and 
 					concat(srpr.account_id ,'$$', sc_amazon_account_product.sku ,'$$', sc_amazon_account_product.asin) 
