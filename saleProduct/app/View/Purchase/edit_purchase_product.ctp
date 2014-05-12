@@ -266,7 +266,6 @@
 						<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
 						]
 					},
-	        		
 	        		{status:48,label:"待交易",memo:true
 	        			,actions:[{}
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(51,"回退") }}<?php   } ?>
