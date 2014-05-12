@@ -2,15 +2,26 @@
 
 	var currentId = '' ;
 	$(function(){
-		$(".print-btn").live("click",function(){
-			var tr = $(this).closest("tr") ;
-			var record = $(this).closest("tr").data("record") ;
-			var printNum = tr.find(".print-num").val() ;//$(this).prev().val() ;
-			var accountId = record.ACCOUNT_ID ;//record.ACCOUNT_ID ;
-			var listingSku =  record.LISTING_SKU ;//record.SKU ;
-			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
-	 });
-		
+			$(".print-btn").live("click",function(){
+					var tr = $(this).closest("tr") ;
+					var record = $(this).closest("tr").data("record") ;
+					var printNum = tr.find(".print-num").val() ;//$(this).prev().val() ;
+					var accountId = record.ACCOUNT_ID ;//record.ACCOUNT_ID ;
+					var listingSku =  record.LISTING_SKU ;//record.SKU ;
+					openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
+			 });
+
+			var currenetRecords = null ;
+			
+			$(".findKey-btn").click(function(){
+				var val = $(".findKey").val() ;
+				$(currenetRecords||[]).each(function(){
+					if( this.LISTING_SKU == val ){
+						$(".findKey-alert").html( this.QUANTITY ) ;
+					}
+				}) ;
+			}) ;
+			
 			$(".grid-content-details").llygrid({
 				columns:[
 					{align:"center",key:"ID",label:"操作",width:"3%",permission:function(){
@@ -50,13 +61,14 @@
 				 limit:200,
 				 pageSizes:[200],
 				 height:function(){
-					 return $(window).height() -120 ;
+					 return $(window).height() -150 ;
 				 },
 				 title:"货品列表",
 				 autoWidth:true,
 				 querys:{sqlId:"sql_warehouse_new_in_products",inId:inId},
 				 loadMsg:"数据加载中，请稍候......",
 				 loadAfter:function(records){
+					 currenetRecords = records ;
 					 var q = 0 ;
 					 var t = 0 ;
 					 $(records).each(function(){

@@ -53,7 +53,7 @@
 </head>
 <body>
 	<div class="toolbar toolbar-auto" style="padding:0px;">
-		<table>
+		<table style="width:100%;">
 			<tr>
 				<th>
 				</th>
@@ -64,6 +64,10 @@
 					<button class="add-in-product btn btn-primary"  >添加入库产品</button>
 				</td>
 				<?php } ?>
+				<td style="text-align:right;">
+					<span class="findKey-alert"  style="background:none;border:none;;font-size:20px;color:red;font-weight:bold;margin-top:10px;"></span>
+					<input type="text"   class="findKey"/>&nbsp;<button class="btn findKey-btn no-disabled">查找</button>
+				</td>
 			</tr>						
 		</table>					
 
