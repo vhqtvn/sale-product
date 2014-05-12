@@ -229,6 +229,51 @@ class InventoryNew extends AppModel {
 		$this->exeSql("sql_supplychain_requirement_complete", array('inId'=>$inId)) ;
 	}
 	
+	public function purchaseInFix(){
+		$dataSource = $this->getDataSource();
+		$dataSource->begin();
+		try{
+				$sql = "SELECT * FROM sc_purchase_product WHERE STATUS = 80 AND IS_TERMINATION = 0 AND is_audit =1
+						AND last_updated_date >'2014-05-10'
+						UNION
+						SELECT * FROM sc_purchase_product WHERE id IN (
+						    SELECT pd_id FROM sc_purchase_plan_details_track  WHERE STATUS = 2 AND create_time  LIKE '2014-05-11%'
+						)" ;
+				$items = $this->exeSqlWithFormat($sql, array()) ;
+				foreach($items as $item){
+					$qualifiedProductsNum = $item['QUALIFIED_PRODUCTS_NUM'] ;
+					$reqProductId = $item['REQ_PRODUCT_ID'] ;
+					//获取需求
+					$sql = "select * from sc_supplychain_requirement_item where req_product_id = '{@#reqProductId#}' and (purchase_quantity != null and purchase_quantity>0)" ;
+					$records = $this->exeSqlWithFormat($sql, array("reqProductId"=>$reqProductId)) ;
+					foreach($records as $record){
+						
+						$inventoryParams = array() ;
+						$inventoryParams['guid'] = $this->create_guid() ;
+							
+						$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
+						$inventoryParams['action'] = 101;
+						$inventoryParams['realProductId'] = $record['REAL_ID'] ;
+						$inventoryParams['warehouseId'] = 4 ;
+						$inventoryParams['loginId'] = "system" ;
+							
+						$inventoryParams['quantity'] 		= $record['PURCHASE_QUANTITY'] ;
+						$inventoryParams['listingSku'] 		= $record['LISTING_SKU'] ;
+						$inventoryParams['accountId'] 		= $record['ACCOUNT_ID'] ;
+							
+						$inventoryParams['inventoryType'] = 2 ;
+						$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
+						$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
+						debug($inventoryParams) ;
+						//$this->_doSave($inventoryParams) ;
+					}
+				}
+				$dataSource->commit() ;
+		}catch(Exception $e){
+			$dataSource->rollback() ;
+		}
+	}
+	
 	public function purchaseIn($params){
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
@@ -402,8 +447,8 @@ class InventoryNew extends AppModel {
 				$quantity = $quantity - $changeQuantity ;
 			}
 			
-			//如果小于0，则修正为0
-			if( $quantity <0 ) $quantity = 0 ;
+			//如果小于0，则修正为0,不修正
+			//if( $quantity <0 ) $quantity = 0 ;
 			
 			//更新库存
 			$this->exeSql("sql_inventory_update", array(

@@ -10,7 +10,11 @@ class TestController extends AppController {
 		'Form'
 	); //,'Ajax','Javascript
 	
-	var $uses = array("GatherData");
+	var $uses = array("GatherData","InventoryNew");
+	
+	public  function purchaseInFix(){
+		$this->InventoryNew->purchaseInFix(  ) ;
+	}
 	
 	/**
 	 * tab也
