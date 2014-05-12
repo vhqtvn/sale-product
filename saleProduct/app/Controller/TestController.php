@@ -13,13 +13,16 @@ class TestController extends AppController {
 	var $uses = array("GatherData","InventoryNew");
 	
 	public  function purchaseInFix(){
+		return ;
+		debug(111111);
 		$this->InventoryNew->purchaseInFix(  ) ;
 	}
-	
+
 	/**
 	 * tab也
 	 */
 	public function test($asin,$platformId){
+		
 		$gatherParams = array(
 						"asin"=>$asin,
 						"platformId"=>$platformId,
