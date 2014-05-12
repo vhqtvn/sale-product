@@ -345,7 +345,7 @@ class InventoryNew extends AppModel {
 			//更新需求为已采购
 			if( !empty($taskProduct['REQ_PRODUCT_ID']) ){
 				//更新需求为已完成
-				$sql = "update sc_supplychain_requirement_plan_product set status = 6,last_update_time=NOW() where REQ_PRODUCT_ID='{@#reqProductId#}'" ;
+				$sql = "update sc_supplychain_requirement_plan_product set status = 6,last_update_date=NOW() where REQ_PRODUCT_ID='{@#reqProductId#}'" ;
 				$this->exeSql($sql, array('reqProductId'=>$taskProduct['REQ_PRODUCT_ID'])) ;
 			}
 			$dataSource->commit() ;

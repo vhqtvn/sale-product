@@ -288,7 +288,8 @@ function WarehouseInAction(status , statusLabel){
 			if( !$.validation.validate('#personForm').errorInfo ) {
 				var json = $("#personForm").toJson() ;
 				json1 = $.extend(json,json1) ;
-				json1.purchaseDetails = getEditData() ;
+				//json1.purchaseDetails = getEditData() ;
+				json1.status = "" ;
 				$.dataservice("model:NewPurchaseService.savePurchaseProduct",json,function(){
 					//执行状态更新
 					openCenterWindow(contextPath+"/page/forward/Inventory.in_purchase/"+id+"/"+realId+"/"+reqProductId,800,600,function(){

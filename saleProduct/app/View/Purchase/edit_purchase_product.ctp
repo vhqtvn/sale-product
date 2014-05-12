@@ -232,7 +232,7 @@
 	        			,actions:[{}
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(45,"保存") }}  <?php  }?>
 									<?php if( $isOwner ) { ?>,{label:"已保存采购，提交审批",action:function(){ AuditAction(51,"已保存采购，评估利润") } }<?php  }?>
-									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
+									<?php if(  $endPurchase || $isOwner ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				],format:function(node){
 							if( currentStatus == 46  ){
 								node.label = "再询价" ;

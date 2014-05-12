@@ -120,6 +120,7 @@ class NewPurchaseService extends AppModel {
 				if( $status == 2 ){
 					$data['status'] = "" ;
 				}
+				
 				$this->exeSql("sql_purchase_new_update" , $data ) ;
 				$purchaseProduct = $this->getPurchaseProductById( $data['id'] ) ; 
 				$data['status'] 		 = $status ;
