@@ -651,12 +651,29 @@ class ScRequirement extends AppModel {
 		/**
 		 * 格式化需求数量四舍五入，保留10的倍数
 		 */
-		$stockQuantity = round($stockQuantity,-1) ;
+		//$stockQuantity = $stockQuantity
 		
 		$ps['stockQuantity'] = $stockQuantity ;//仓库在库库存
 		
-		if( $quantity- $stockQuantity>0 ){//账户需求量大于在库库存量，需要采购
-			$ps['purchaseQuantity'] = $quantity- $stockQuantity ;
+		if( $quantity- $stockQuantity>=0 ){//账户需求量大于在库库存量，需要采购
+			$fixPurchaseQuantity = round($quantity- $stockQuantity,-1) ;
+			 
+			/**
+			 * 如果当前存在库存较大并切采购量较小，暂时不采购，避免因为竞争环境变化，导致销量变小，积压库存
+			 */
+			if( $existQuantity > 50 && $fixPurchaseQuantity <=10   ){
+				return ;
+			}
+			
+			if( $existQuantity > 100 && $fixPurchaseQuantity =20   ){
+				return ;
+			}
+			
+			if( $existQuantity > 200 && $fixPurchaseQuantity =50   ){
+				return ;
+			}
+			$ps['purchaseQuantity'] = $fixPurchaseQuantity ;
+			
 			$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
 		}else{
 			//存在本地库存，但是需要发货，ignore 通过quantity来区分

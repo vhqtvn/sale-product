@@ -244,7 +244,7 @@ class InventoryNew extends AppModel {
 					$qualifiedProductsNum = $item['QUALIFIED_PRODUCTS_NUM'] ;
 					$reqProductId = $item['REQ_PRODUCT_ID'] ;
 					//获取需求
-					$sql = "select * from sc_supplychain_requirement_item where req_product_id = '{@#reqProductId#}' and (purchase_quantity != null and purchase_quantity>0)" ;
+					$sql = "select * from sc_supplychain_requirement_item where req_product_id = '{@#reqProductId#}' and PURCHASE_QUANTITY>0" ;
 					$records = $this->exeSqlWithFormat($sql, array("reqProductId"=>$reqProductId)) ;
 					foreach($records as $record){
 						
@@ -255,7 +255,7 @@ class InventoryNew extends AppModel {
 						$inventoryParams['action'] = 101;
 						$inventoryParams['realProductId'] = $record['REAL_ID'] ;
 						$inventoryParams['warehouseId'] = 4 ;
-						$inventoryParams['loginId'] = "system" ;
+						$inventoryParams['loginId'] = "system_" ;
 							
 						$inventoryParams['quantity'] 		= $record['PURCHASE_QUANTITY'] ;
 						$inventoryParams['listingSku'] 		= $record['LISTING_SKU'] ;
@@ -265,12 +265,13 @@ class InventoryNew extends AppModel {
 						$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
 						$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
 						debug($inventoryParams) ;
-						//$this->_doSave($inventoryParams) ;
+						$this->_doSave($inventoryParams) ;
 					}
 				}
 				$dataSource->commit() ;
 		}catch(Exception $e){
 			$dataSource->rollback() ;
+			debug( $e ) ;
 		}
 	}
 	
