@@ -333,7 +333,7 @@ function getEditData(){
 		var purchaseQuantity  = $(this).find(".purchaseQuantity").val() ;
 		var supplyQuantity  = $(this).find(".supplyQuantity").val() ;
 		var fulfillment =  $(this).find(".fulfillment").val() ;
-		result.push({accountId:accountId,sku:listingSku,quantity:purchaseQuantity}) ;//,fulfillment:fulfillment,supplyQuantity:supplyQuantity
+		result.push({accountId:accountId,sku:listingSku,quantity:purchaseQuantity,fulfillment:fulfillment,supplyQuantity:supplyQuantity}) ;//,fulfillment:fulfillment,supplyQuantity:supplyQuantity
 	}) ;
 	return result ;
 }

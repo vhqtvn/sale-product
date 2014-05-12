@@ -230,75 +230,32 @@ class InventoryNew extends AppModel {
 	}
 	
 	public function purchaseIn($params){
-		//debug($params) ;
-		//$this->_doSave($params) ;
-		$inventoryItem = $params['inventoryItem'] ;
-		$inventoryItem = json_decode($inventoryItem) ;
-		//debug() ;
-		
-		//获取对应货品
-		/*$taskProduct =  $this->getObject("select s1.*,s2.REQ_PLAN_ID from sc_purchase_task_products s1,
-				sc_purchase_plan_details s2
-				 where s1.product_id = s2.id and s1.task_id = '{@#taskId#}' and s1.product_id = '{@#productId#}'",
-				array("taskId"=> $params['taskId'],"productId"=>$params['planProductId'])) ;*/
-		$taskProduct =  $this->getObject("select  spp.* from sc_purchase_product spp
-				 where spp.id = '{@#productId#}'",
-				array("productId"=>$params['purchaseProductId'])) ;
-		
-		//70 入库确认
-		if( $taskProduct['STATUS'] >= 70 ){//已经入库
-			return "已经入库，不能再进行操作入库！" ;
-		}
-		
-		//保存自由库存
-		$freeQuantity = $params['freeQuantity'] ;
-		if( $freeQuantity && $freeQuantity >0 ){
-			$inventoryParams = array() ;
-			$inventoryParams['guid'] = $this->create_guid() ;
+		$dataSource = $this->getDataSource();
+		$dataSource->begin();
+		try{
+			//debug($params) ;
+			//$this->_doSave($params) ;
+			$inventoryItem = $params['inventoryItem'] ;
+			$inventoryItem = json_decode($inventoryItem) ;
+			//debug() ;
 				
-			$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
-			$inventoryParams['action'] = $params['action'] ;
-			$inventoryParams['realProductId'] = $params['realId'] ;
-			$inventoryParams['warehouseId'] = $params['warehouseId'] ;
-			$inventoryParams['loginId'] = $params['loginId'] ;
+			//获取对应货品
+			/*$taskProduct =  $this->getObject("select s1.*,s2.REQ_PLAN_ID from sc_purchase_task_products s1,
+			 sc_purchase_plan_details s2
+					where s1.product_id = s2.id and s1.task_id = '{@#taskId#}' and s1.product_id = '{@#productId#}'",
+					array("taskId"=> $params['taskId'],"productId"=>$params['planProductId'])) ;*/
+			$taskProduct =  $this->getObject("select  spp.* from sc_purchase_product spp
+					 where spp.id = '{@#productId#}'",
+					array("productId"=>$params['purchaseProductId'])) ;
 				
-			$inventoryParams['quantity'] = $freeQuantity ;
-			$inventoryParams['listingSku'] = '' ;
-			$inventoryParams['accountId'] = '' ;
+			//70 入库确认
+			if( $taskProduct['STATUS'] >= 70 ){//已经入库
+				return "已经入库，不能再进行操作入库！" ;
+			}
 				
-			$inventoryParams['inventoryType'] = $this->INVENTORY_TYPE_FREE ;
-			$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
-			$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
-			$this->_doSave($inventoryParams) ;
-		}
-
-		//保存残品
-		$badProductsNum = $params['badProductsNum'] ;
-		if( $badProductsNum && $badProductsNum >0 ){
-			$inventoryParams = array() ;
-			$inventoryParams['guid'] = $this->create_guid() ;
-		
-			$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
-			$inventoryParams['action'] = $params['action'] ;
-			$inventoryParams['realProductId'] = $params['realId'] ;
-			$inventoryParams['warehouseId'] = $params['warehouseId'] ;
-			$inventoryParams['loginId'] = $params['loginId'] ;
-		
-			$inventoryParams['quantity'] = $badProductsNum ;
-			$inventoryParams['listingSku'] = '' ;
-			$inventoryParams['accountId'] = '' ;
-		
-			$inventoryParams['inventoryType'] = $this->INVENTORY_TYPE_DAMAGED ;
-			$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
-			$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
-			$this->_doSave($inventoryParams) ;
-		}
-		
-		//保存listing库存
-		foreach( $inventoryItem as $item ){
-			$item = get_object_vars($item) ;
-			
-			if( $item['purchaseQuantity'] && $item['purchaseQuantity'] > 0 ) {
+			//保存自由库存
+			$freeQuantity = $params['freeQuantity'] ;
+			if( $freeQuantity && $freeQuantity >0 ){
 				$inventoryParams = array() ;
 				$inventoryParams['guid'] = $this->create_guid() ;
 					
@@ -308,43 +265,95 @@ class InventoryNew extends AppModel {
 				$inventoryParams['warehouseId'] = $params['warehouseId'] ;
 				$inventoryParams['loginId'] = $params['loginId'] ;
 					
-				$inventoryParams['quantity'] = $item['purchaseQuantity'] ;
-				$inventoryParams['listingSku'] = $item['listingSku'] ;
-				$inventoryParams['accountId'] = $item['accountId'] ;
+				$inventoryParams['quantity'] = $freeQuantity ;
+				$inventoryParams['listingSku'] = '' ;
+				$inventoryParams['accountId'] = '' ;
 					
-				$inventoryParams['inventoryType'] = $this->getInventoryType(  $item['channel'] ) ;
+				$inventoryParams['inventoryType'] = $this->INVENTORY_TYPE_FREE ;
 				$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
 				$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
-					
 				$this->_doSave($inventoryParams) ;
-			}else{
-				$item['purchaseQuantity'] = 0 ;
 			}
-			//更新需求实际采购数量
-			$sql = "update sc_supplychain_requirement_item set real_purchase_quantity = '{@#quantity#}' 
-								where account_id='{@#accountId#}' and listing_sku='{@#listingSku#}' and plan_id = '{@#planId#}'" ;
-			$this->exeSql($sql, array("quantity"=> $item['purchaseQuantity'],
+			
+			//保存残品
+			$badProductsNum = $params['badProductsNum'] ;
+			if( $badProductsNum && $badProductsNum >0 ){
+				$inventoryParams = array() ;
+				$inventoryParams['guid'] = $this->create_guid() ;
+					
+				$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
+				$inventoryParams['action'] = $params['action'] ;
+				$inventoryParams['realProductId'] = $params['realId'] ;
+				$inventoryParams['warehouseId'] = $params['warehouseId'] ;
+				$inventoryParams['loginId'] = $params['loginId'] ;
+					
+				$inventoryParams['quantity'] = $badProductsNum ;
+				$inventoryParams['listingSku'] = '' ;
+				$inventoryParams['accountId'] = '' ;
+					
+				$inventoryParams['inventoryType'] = $this->INVENTORY_TYPE_DAMAGED ;
+				$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
+				$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
+				$this->_doSave($inventoryParams) ;
+			}
+				
+			//保存listing库存
+			foreach( $inventoryItem as $item ){
+				$item = get_object_vars($item) ;
+			
+				if( $item['purchaseQuantity'] && $item['purchaseQuantity'] > 0 ) {
+					$inventoryParams = array() ;
+					$inventoryParams['guid'] = $this->create_guid() ;
+			
+					$inventoryParams['actionType'] = $this->ACTION_TYPE_IN ;
+					$inventoryParams['action'] = $params['action'] ;
+					$inventoryParams['realProductId'] = $params['realId'] ;
+					$inventoryParams['warehouseId'] = $params['warehouseId'] ;
+					$inventoryParams['loginId'] = $params['loginId'] ;
+			
+					$inventoryParams['quantity'] = $item['purchaseQuantity'] ;
+					$inventoryParams['listingSku'] = $item['listingSku'] ;
+					$inventoryParams['accountId'] = $item['accountId'] ;
+			
+					$inventoryParams['inventoryType'] = $this->getInventoryType(  $item['channel'] ) ;
+					$inventoryParams['inventoryStatus'] = $this->INVENTORY_STATUS_LIBRARY ;
+					$inventoryParams['inventoryTo'] = $this->INVENTORY_TO_SELF ;
+			
+					$this->_doSave($inventoryParams) ;
+				}else{
+					$item['purchaseQuantity'] = 0 ;
+				}
+				//更新需求实际采购数量
+				$sql = "update sc_supplychain_requirement_item set real_purchase_quantity = '{@#quantity#}'
+									where account_id='{@#accountId#}' and listing_sku='{@#listingSku#}' and plan_id = '{@#planId#}'" ;
+				$this->exeSql($sql, array("quantity"=> $item['purchaseQuantity'],
 						'accountId'=>$item['accountId'],
 						'listingSku'=>$item['listingSku'] ,
 						"planId"=>$item['planId'])) ;
 			
+			}
+				
+			//更新状态为已入库,开启采购审计开关，去掉FBA入库步骤，通过库存来标识
+			$this->exeSql("update sc_purchase_product set status=80,is_audit=1,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
+					 where id = '{@#productId#}'",
+					array(
+							'warehouseId'=>$params['warehouseId'],
+							'warehouseTime'=>$params['warehouseTime'],
+							"productId"=>$params['purchaseProductId'])) ;
+				
+				
+			//更新需求为已采购
+			if( !empty($taskProduct['REQ_PRODUCT_ID']) ){
+				//更新需求为已完成
+				$sql = "update sc_supplychain_requirement_plan_product set status = 6,last_update_time=NOW() where REQ_PRODUCT_ID='{@#reqProductId#}'" ;
+				$this->exeSql($sql, array('reqProductId'=>$taskProduct['REQ_PRODUCT_ID'])) ;
+			}
+			$dataSource->commit() ;
+		}catch(Exception $e){
+			$dataSource->rollback() ;
+			debug( $e ) ;
 		}
-		
-		//更新状态为已入库,开启采购审计开关，去掉FBA入库步骤，通过库存来标识
-		$this->exeSql("update sc_purchase_product set status=80,is_audit=1,warehouse_id='{@#warehouseId#}',warehouse_time = '{@#warehouseTime#}'
-				 where id = '{@#productId#}'",
-				array(
-						'warehouseId'=>$params['warehouseId'],
-						'warehouseTime'=>$params['warehouseTime'],
-						"productId"=>$params['purchaseProductId'])) ;
-		
-		
-		//更新需求为已采购
-		if( !empty($taskProduct['REQ_PRODUCT_ID']) ){
-			//更新需求为已完成
-			$sql = "update sc_supplychain_requirement_plan_product set status = 6,last_update_time=NOW() where REQ_PRODUCT_ID='{@#reqProductId#}'" ;
-			$this->exeSql($sql, array('reqProductId'=>$taskProduct['REQ_PRODUCT_ID'])) ;
-		}
+			
 	}
 	
 	private function getInventoryType( $channel ){

@@ -13,6 +13,55 @@ $(function(){
 			"us.bing":"www.amazon.com"
 	};
 	
+	function loadTree(){
+		$('#default-tree').tree({//tree为容器ID
+			//source:'array',
+			//data:treeData ,
+			rootId  : 'root',
+			rootText : '产品分类',
+			expandLevel:2,
+			asyn:false,
+			CommandName : 'sqlId:sql_productDev_new_categorytree',
+			recordFormat:true,
+			dataFormat:function(data){
+				//data.push({id:'uncategory',text:'未分类产品',memo:'',isExpand:true});
+				return data;
+			},
+			nodeFormat:function(record){
+				if(record.id=='root' ||record.id == 'uncategory') return record ;
+				record.text = record.text+"("+record.TOTAL+")";
+				return record ;
+			},
+			params : {
+				//accountId: accountId
+			},
+			onNodeClick:function(id,text,record){
+				var uncategory = "" ;
+				if(id == 'uncategory'){
+					id="" ;
+					uncategory = 1 ;
+				}else{
+					uncategory = "" ;
+				}
+				
+				if( id == 'root' ){
+					$(".grid-content-details").llygrid("reload",{categoryId:"",uncategory:uncategory,"untag":1}) ;
+				}else{
+					$(".grid-content-details").llygrid("reload",{categoryId:id,uncategory:uncategory,"untag":1}) ;
+				}
+			}
+       }) ;
+	}
+	
+	loadTree() ;
+	
+	$(".flow-node").click(function(){
+		var status = $(this).attr("status");
+		$(".flow-node").removeClass("active").addClass("disabled");
+		$(this).removeClass("disabled").addClass("active");
+		$(".niche-grid").llygrid("reload",{status:status,"untag":1});
+	}) ;
+	
 	$(".niche-grid").llygrid({
 		columns:[
 				{align:"center",key:"keyword_id",label:"操作", width:"10%",format:function(val,record){

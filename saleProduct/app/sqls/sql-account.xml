@@ -19,6 +19,13 @@
     	pm:other ==>0
     	
     	uncategory：1
+    	
+    	,
+					(select label from sc_config where type='riskType' and sc_config.key=sc_amazon_account_product.RISK_TYPE limit 0,1) as RISK_LABEL,
+					(select count(1) from sc_order_item soi where soi.account_id =sc_amazon_account_product.account_id and 
+					         soi.SELLER_SKU =sc_amazon_account_product.sku  and 
+					         TO_DAYS( NOW( ) ) - TO_DAYS(soi.purchase_date) <= 1
+					          ) as C
     -->
     <entry key="sql_account_product_list">
     <![CDATA[	
@@ -29,12 +36,7 @@
 					(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.ASIN LIMIT 0,1)
 					) ELSE sc_amazon_account_product.LOCAL_URL END ) AS P_LOCAL_URL,
 					srpr.REAL_ID,
-					srpr.REAL_SKU,
-					(select label from sc_config where type='riskType' and sc_config.key=sc_amazon_account_product.RISK_TYPE limit 0,1) as RISK_LABEL,
-					(select count(1) from sc_order_item soi where soi.account_id =sc_amazon_account_product.account_id and 
-					         soi.SELLER_SKU =sc_amazon_account_product.sku  and 
-					         TO_DAYS( NOW( ) ) - TO_DAYS(soi.purchase_date) <= 1
-					          ) as C
+					srpr.REAL_SKU
 					FROM sc_amazon_account_product 
 					LEFT JOIN sc_product sp
 					ON sp.ASIN = sc_amazon_account_product.ASIN
@@ -85,7 +87,7 @@
 					  in (
 							select ste.entity_id  from sc_tag_entity ste where ste.entity_type like 'listingTag%'
 						and ste.tag_id = '#tagId#'
-					)
+					)}
 		            order by sc_amazon_account_product.QUANTITY desc
 	]]>	      
     </entry>

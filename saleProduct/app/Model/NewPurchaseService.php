@@ -152,6 +152,18 @@ class NewPurchaseService extends AppModel {
 				
 				if( isset( $data['purchaseDetails'] ) ){
 					if( !empty( $reqProductId ) ){
+						//判断需求产品是否存在
+						$sql = "select * from sc_supplychain_requirement_plan_product ssri where  req_product_id = '{@#reqProductId#}'" ;
+						$planProduct = $this->getObject($sql, array("reqProductId"=>$reqProductId)) ;
+						if( empty($planProduct) ){
+							$params1 = array() ;
+							$params1['PLAN_ID'] = "__auto__" ;
+							$params1['REAL_ID'] = $data['realId'] ;
+							$params1['REQ_PRODUCT_ID'] = $reqProductId ;
+							$params1['STATUS'] = 3 ;
+							$params1['status'] = 3 ;
+							$this->exeSql("sql_supplychain_requirement_product_insert", $params1) ;
+						}
 						//创建需求产品
 						$purchaseDetails = json_decode($data['purchaseDetails']) ;
 						foreach( $purchaseDetails as $item  ){
@@ -160,14 +172,33 @@ class NewPurchaseService extends AppModel {
 							$sku = $item['sku'] ;
 							$accountId = $item['accountId'] ;
 							$quantity = $item['quantity'] ;
-						
-							//创建需求明细
+							
 							$ps = array() ;
 							$ps['accountId'] = $accountId ;
 							$ps['reqProductId'] = $reqProductId ;
 							$ps['sku'] = $sku ;
 							$ps['quantity'] =  $item['quantity'] ;
-							$ScRequirement->updateReqItem($ps) ;
+							
+							//查找Item是否存在
+							$sql = "select * from sc_supplychain_requirement_item ssri where ssri.account_id = '{@#accountId#}' and listing_sku='{@#sku#}' and req_product_id = '{@#reqProductId#}'" ;
+						
+							$item_ = $this->getObject($sql, $ps) ;
+							if( empty($item_) ){
+								//不存在添加明细
+								$ps['id'] = $this->create_guid() ;
+								$ps['planId'] = "__auto__" ;
+								$ps['realId'] = $data['realId'] ;
+								$ps['listingSku'] = $sku ;
+								$ps['fulfillment'] = $item['fulfillment'] ;
+								$ps['existQuantity'] =  $item['supplyQuantity'] ;
+								$ps['calcQuantity'] = ((int)$item['supplyQuantity'])+( (int)$item['quantity'] )  ;
+								$ps['quantity'] =  $item['quantity'] ;
+								$ps['urgency'] =  "A" ;
+								$ps['reqType'] =  "A" ;//销量需求
+								$ScRequirement->createReqItem($ps) ;
+							}else{
+								$ScRequirement->updateReqItem($ps) ;
+							}
 						}
 					}else{
 						$reqProductId =  $this->create_guid() ;
