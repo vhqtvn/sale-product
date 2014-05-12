@@ -40,7 +40,16 @@
    	var $isInRead = <?php echo $isInRead?"true":"false" ; ?> ;	
    	var warehouse = <?php echo  json_encode($warehoseIn) ; ?> ;	
    </script>
-
+	<style type="">
+   		.total{
+			text-align:right;
+			font-weight:bold;
+			float:right;
+			font-size:20px;
+			padding:5px;
+			margin-right:150px;
+   		}
+   </style>
 </head>
 <body>
 	<div class="toolbar toolbar-auto" style="padding:0px;">
@@ -62,5 +71,6 @@
 
 	<div class="grid-content-details" style="width:99.5%">
 	</div>
+	<div><span class="total"></span></div>
 </body>
 </html>

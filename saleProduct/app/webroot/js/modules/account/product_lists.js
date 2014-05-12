@@ -64,7 +64,7 @@
 						return record ;
 					},
 					params : {
-						//accountId: accountId
+						accountId: accountId
 					},
 					onNodeClick:function(id,text,record){
 						var uncategory = "" ;

@@ -457,15 +457,20 @@
     
         <entry key="sql_saleproduct_account_categorytree">
     <![CDATA[
-        select sc_product_category.*,
-        		sc_product_category.name as TEXT,
-              (select count(*) from sc_real_product_category  srpc,
-                          sc_real_product_rel srpr
-              	where srpc.product_id = sc_product_category.id
-              	     and srpr.real_id = srpc.product_id
-              	 ) as TOTAL,
+      SELECT sc_product_category.*,
+        		sc_product_category.name AS TEXT,
+              (SELECT COUNT(*) FROM sc_real_product_category  srpc,
+                          sc_real_product_rel srpr,
+				sc_amazon_account_product saap
+              	WHERE srpc.category_id = sc_product_category.id
+              	     AND srpr.real_id = srpc.product_id
+              	     AND srpr.sku = saap.sku
+              	     AND srpr.account_id = saap.account_id
+              	     AND saap.status = 'Y'
+              	     AND saap.account_id = '{@#accountId#}'
+              	 ) AS TOTAL,
               (SELECT NAME FROM sc_user su WHERE su.login_id = sc_product_category.INQUIRY_CHARGER ) AS INQUIRY_CHARGER_NAME
-              from sc_product_category
+              FROM sc_product_category
    
 	]]>	      
     </entry>

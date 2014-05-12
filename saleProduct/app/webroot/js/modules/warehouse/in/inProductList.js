@@ -47,8 +47,8 @@
 	           		{align:"center",key:"MEMO",label:"备注",width:"6%" }
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
-				 limit:30,
-				 pageSizes:[10,20,30,40],
+				 limit:200,
+				 pageSizes:[200],
 				 height:function(){
 					 return $(window).height() -120 ;
 				 },
@@ -56,7 +56,14 @@
 				 autoWidth:true,
 				 querys:{sqlId:"sql_warehouse_new_in_products",inId:inId},
 				 loadMsg:"数据加载中，请稍候......",
-				 loadAfter:function(){
+				 loadAfter:function(records){
+					 var q = 0 ;
+					 var t = 0 ;
+					 $(records).each(function(){
+						 q = q+parseInt(this.QUANTITY) ;
+						 t++;
+					 }) ;
+					 $(".total").html("货品种类（"+t+"）,数量总计（"+q+"）") ;
 					 $(".delete-in-product").bind("click",function(event){
 							event.stopPropagation() ;
 							if(window.confirm("确认删除？")){
