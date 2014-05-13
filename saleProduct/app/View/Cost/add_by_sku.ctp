@@ -213,6 +213,8 @@
 				$(".COMMISSION_FEE","#"+rowId).html( cost.getChannelFee() +"("+cost.getChannelFeeRatioFormat()+")") ;
 				$(".transferCost","#"+rowId).html( cost.getTransferCost() ) ;
 				$(".totalCost","#"+rowId).html( _cost ) ;
+				$(".payCost","#"+rowId).html( cost.getCalcCostAbale() ) ;
+				
 				$(".totalProfile","#"+rowId).html( totalProfile+"["+profileRate+"]" ) ;//profile profileRatio
 			 }) ;
    	   	}
@@ -291,6 +293,7 @@
 								<th>FBM发货仓库</th>
 								<th>售价</th>
 								<th>总成本</th>
+								<th>支付成本</th>
 								<th>利润</th>
 								<th>转仓物流成本</th>
 								<th>订单物流成本</th>
@@ -339,6 +342,7 @@
 									<input type="text"   name="TOTAL_PRICE"  value="<?php echo $_ ; ?>" style="width:50px;"/><br/>
 								</td>
 								<td  class="totalCost"></td>
+								<td  class="payCost"></td>
 								<td  class="totalProfile"></td>
 								<td class="transferCost">
 								</td>

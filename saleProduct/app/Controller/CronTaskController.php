@@ -359,6 +359,7 @@ class CronTaskController extends AppController {
 				while(true){
 					$_products = array() ;
 					//库存大于0的才进行自动营销
+					//在库库存为0的也可能进行提前销售
 					$sql = "select saap.* ,
 					                   saa.name as ACCOUNT_NAME
 								from sc_amazon_account_product  saap,
@@ -369,7 +370,7 @@ class CronTaskController extends AppController {
 					and saap.FULFILLMENT_CHANNEL like 'AMAZON%'
 					and saap.account_id = sfsi.account_id
 					and saap.sku =sfsi.seller_sku
-					and sfsi.IN_STOCK_SUPPLY_QUANTITY >0 
+					and sfsi.TOTAL_SUPPLY_QUANTITY >0 
 					and saap.account_id = '{@#accountId#}'
 					and saap.limit_price > 0
 					and saap.status = 'Y'

@@ -18,6 +18,7 @@ var  Cost = function(){
 	var _productProps = {} ;
 	var _wlUnitPrice = 0 ;
 	var _channel = null ;
+	var  _calcCostAbale = 0 ; 
 	
 	this.setChannel = function(channel){
 		_channel= channel ;
@@ -66,6 +67,10 @@ var  Cost = function(){
 		return (parseFloat( _productProps.weight*_wlUnitPrice )).toFixed(2) ;
 	};
 	
+	this.getCalcCostAbale = function(){
+		return (_calcCostAbale).toFixed(2) ;
+	};
+	
 	this.evlate  = function(){
 		var _cost = parseFloat(_productCost/_exchangeRate) ;
 		_cost += parseFloat( _fbaCost ) ;
@@ -75,7 +80,9 @@ var  Cost = function(){
 		var weight = _productProps.weight ;
 		_cost += parseFloat( weight*_wlUnitPrice ) ;
 		var totalProfile = _sellPrice - _cost ;
-		var profileRatio = ((totalProfile/_cost)*100).toFixed(2)+"%" ;
-		return { cost: _cost , profile: totalProfile,profileRatio:profileRatio } ;
+		var  calcCostAbale = _cost -  parseFloat( _fbaCost ) - parseFloat( _variableCloseFee )  - parseFloat( _sellPrice*_channelFeeRatio ) ;
+		_calcCostAbale = calcCostAbale;
+		var profileRatio = ((totalProfile/calcCostAbale)*100).toFixed(2)+"%" ;
+		return { cost: _cost , profile: totalProfile,profileRatio:profileRatio,calcCostAbale:calcCostAbale } ;
 	};
 };

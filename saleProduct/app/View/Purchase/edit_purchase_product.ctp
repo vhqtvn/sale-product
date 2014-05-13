@@ -413,7 +413,7 @@
 								}?></caption>
 								<thead>
 									<tr>
-										<th>标签</th>
+										<th style="width:200px;">标签</th>
 										<th  style="font-weight:bold;">账号</th>
 										<th style="font-weight:bold;">Listing SKU</th>
 										<th style="font-weight:bold;">FNSKU</th>
@@ -442,6 +442,10 @@
 										<td>
 											<?php  if( $purchaseQuantity >0  ) { ?>
 										  <input type='text'  class="print-num no-disabled" style='width:35px;height:20px;margin-top:2px;padding:0px;' value='<?php echo $purchaseQuantity+5 ;?>'  title='输入打印数量'>
+										  <select style="width:40px;padding:0px;height:22px;" class="no-disabled  paper-type">
+										  	<option value='A4'>A4</option>
+										  	<option value='A2'>A2</option>
+										  </select>
 										  &nbsp;<button class='btn print-btn  no-disabled'>打印</button>
 										  <?php  }?>
 										</td>

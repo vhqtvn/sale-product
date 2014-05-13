@@ -109,6 +109,13 @@
 			and ( spp.executor is not null and spp.executor !='' )
 			and ( spp.status != 80 and spp.status != 25)
 			and (spp.status > 45 or ( spp.limit_price is not null and spp.limit_price !=0 ))
+			{@  and  EXISTS ( 
+			        select * from sc_supplychain_requirement_item ssri
+			        where ssri.req_product_id = spp.req_product_id
+			        AND ssri.purchase_quantity >0	
+			        and ssri.real_id = spp.real_id
+			        and ssri.account_id = '#accountId#'
+			) }
 			{@ #$purchaseTask_view: and 1=0# }
 			{@ and spp.id = '#id#'}
 			{@ and spp.status in (#status#)}
@@ -153,6 +160,13 @@
 			{@ #$purchaseTask_view: and 1=0# }
 			{@ and spp.id = '#id#'}
 			{@ and spp.status = '#status#'}
+			{@  and  EXISTS ( 
+			        select * from sc_supplychain_requirement_item ssri
+			        where ssri.req_product_id = spp.req_product_id
+			        AND ssri.purchase_quantity >0	
+			        and ssri.real_id = spp.real_id
+			        and ssri.account_id = '#accountId#'
+			) }
 		) t
 		where 
 		  1=1
@@ -201,6 +215,13 @@
 			  {@ #$purchaseTask_view: and 1=0# }
 			{@ and spp.id = '#id#'}
 			{@ and spp.status = '#status#'}
+			{@  and  EXISTS ( 
+			        select * from sc_supplychain_requirement_item ssri
+			        where ssri.req_product_id = spp.req_product_id
+			        AND ssri.purchase_quantity >0	
+			        and ssri.real_id = spp.real_id
+			        and ssri.account_id = '#accountId#'
+			) }
 		) t
 		where 
 		  1=1

@@ -174,7 +174,21 @@
 				</th>
 				<td>
 					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题、执行人" style="width:400px;"/>
-				</td>								
+				</td>	
+				<th>账号：</th>
+						<td>
+						<select name="accountId" data-validator="required"  style="width:100px;">
+				     		<option value="">--选择--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     		} ;
+					     	?>
+							</select>
+					</td>							
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content-details',qc:'.toolbar1'}">查询</button>
 				</td>

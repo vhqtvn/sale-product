@@ -272,9 +272,10 @@ $(function(){
 	 $(".print-btn").live("click",function(){
 			var tr = $(this).closest("tr") ;
 			var printNum = tr.find(".print-num").val() ;//$(this).prev().val() ;
+			var paperType = tr.find(".paper-type").val() ;//$(this).prev().val() ;
 			var accountId =  tr.find(".accountId").val() ;//record.ACCOUNT_ID ;
 			var listingSku =  tr.find(".listingSku").val() ;//record.SKU ;
-			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum ,850,700) ;
+			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum+"/"+paperType ,850,700) ;
 	 });
 	
 }) ;
