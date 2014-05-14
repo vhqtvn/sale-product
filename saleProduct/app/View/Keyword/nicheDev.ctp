@@ -15,6 +15,7 @@
    		echo $this->Html->css('default/style');
    		echo $this->Html->css('../js/grid/jquery.llygrid');
    		echo $this->Html->css('../js/tab/jquery.ui.tabs');
+		echo $this->Html->css('../js/dialog/jquery.dialog');
    		echo $this->Html->css('../js/listselectdialog/jquery.listselectdialog');
    		
    		echo $this->Html->script('jquery');
@@ -23,6 +24,7 @@
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('grid/query');
+		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('tab/jquery.ui.tabs');
    		echo $this->Html->script('validator/jquery.validation');
    		echo $this->Html->script('listselectdialog/jquery.listselectdialog');
@@ -217,7 +219,7 @@
 	}
 
 	 var flowData = [
-	        		{status:10,label:"开发中",memo:true
+	        		{status:10,label:"Niche分析",memo:true
 	        			,actions:[
 		      	        	<?php if( $niche_kw_dev ){?>
 								{label:"保存",action:function(){ ForceAuditAction(10,"保存") }},
@@ -226,7 +228,7 @@
 							<?php }?>
         				]
 	        		},
-	        		{status:20,label:"审批",memo:true
+	        		{status:20,label:"Niche审批",memo:true
 	        			,actions:[
 <?php if( $audit_niche ){?>
 									{label:"保存",action:function(){ ForceAuditAction(20,"保存") }},
@@ -235,18 +237,10 @@
 									<?php }?>
         				]
 	        		},
-	        		{status:30,label:"分配负责人",memo:true
+	        		{status:30,label:"产品开发中",memo:true
 	        			,actions:[
-<?php if( $assign_kw_charger ){?>
+									<?php if( $kw_relation_product){?>
 									{label:"保存",action:function(){ ForceAuditAction(30,"保存") }},
-									{label:"保存责任人",action:function(){ AuditAction(40,"保存责任人") }}
-									<?php }?>
-        				]
-	        		},
-	        		{status:40,label:"关联开发产品",memo:true
-	        			,actions:[
-<?php if( $kw_relation_product){?>
-									{label:"保存",action:function(){ ForceAuditAction(40,"保存") }},
 									{label:"结束开发",action:function(){ AuditAction(50,"结束开发") }}
 									<?php }?>
     					]
@@ -310,7 +304,15 @@
 									<td colspan="3"><?php echo $kw['trends'] ;?></td>
 								</tr>
 								<tr>
-									<th>开发负责人：</th><td colspan="3">
+									<th>产品分类：</th>
+									<td>
+										<input type="hidden"  id="categoryId" name="categoryId" value="<?php echo $kw['category_id']?>"/>
+										<input type="text" id="categoryName"  class="input 10-input"   
+										  data-validator="required" 
+										  name="categoryName" value="<?php echo $kw['CATEGORY_NAME']?>"/>
+										<button class="btn select-category">选择</button>
+									</td>
+									<th>开发负责人：</th><td>
 											<input type="hidden"   id="dev_charger"  class="40-input input"
 											value="<?php echo $kw['dev_charger'];?>"/>
 											<input type="text"  class="40-input input span2"  id="dev_charger_name"  readonly
@@ -372,32 +374,44 @@
 													
 													foreach( $asins as $asin ){
 														$_asin = $asin['asin'] ;
-														//获取是否已经关联账号产品
-														$obj = $keyword->getObject("d_getAsinDetailsByASIN",array("asin"=>$_asin)) ;
+														//获取ASIN开发任务
+														$sql = "select * from sc_product_developer spd where asin = '{@#asin#}'" ;
+														$obj = $keyword->getObject( $sql , array("asin"=>$_asin)) ;
 														
-														if( empty($obj) ){ 
-															echo  "<li><span class='asin-span alert'>
-																<a target='_blank' href='http://$siteUrl/gp/product/".$_asin."'>".$_asin."</a>$img" ;
+														
+														if( empty($obj) ){
+															echo  "<li  asin='".$_asin."'><span class='asin-span alert'>
+															<a  offer-listing='$_asin' href='#'>".$_asin."</a>$img" ;
 															echo "未关联开发产品！" ;
 															echo "</span></li>" ;
-														}else{
-															
-															echo  "<li><span class='asin-span alert alert-success'>
-																<a target='_blank' href='http://$siteUrl/gp/product/".$_asin."'>".$_asin."(".$obj['SKU'].")</a>$img" ;
-															
-															if( $obj['REAL_SKU'] ){
-																echo '<a data-widget="dialog" data-options="{width:1000,height:650}" href="/'.$fileContextPath.'/index.php/saleProduct/details/'.$obj['REAL_SKU'].'/sku">' ;
-																if( $obj['IMAGE_URL'] ){
-																	echo "&nbsp;<img src='/".$fileContextPath."/".$obj['IMAGE_URL'] ."' style='width:20px;height:16px;'>" ;
-																}
-																echo $obj['REAL_SKU'] ;
-																echo "</a>" ;
-															}else{
-																echo "暂未关联到货品" ;
-															}
-															
+														}else {
+															$devId = $obj['DEV_ID'] ;
+															echo  "<li  asin='".$_asin."'><span class='asin-span alert'>
+															<a  offer-listing='$_asin' href='#'>".$_asin."</a>" ;
+															echo "&nbsp;<a href='#'  product-dev='$devId'>开发任务</a>" ;
 															echo "</span></li>" ;
 														}
+														
+														//获取是否已经关联账号产品
+														/*$obj = $keyword->getObject("d_getAsinDetailsByASIN",array("asin"=>$_asin)) ;
+														
+															if( empty($obj) ){ 
+															}else{
+																echo  "<li  asin='".$_asin."'><span class='asin-span alert alert-success'>
+																	<a  offer-listing='$_asin' href='#'>".$_asin."(".$obj['SKU'].")</a>$img" ;
+																
+																if( $obj['REAL_SKU'] ){
+																	echo "<a  product-realsku='".$obj['REAL_SKU']."' href='#'>" ;
+																	if( $obj['IMAGE_URL'] ){
+																		echo "&nbsp;<img src='/".$fileContextPath."/".$obj['IMAGE_URL'] ."' style='width:20px;height:16px;'>" ;
+																	}
+																	echo $obj['REAL_SKU'] ;
+																	echo "</a>" ;
+																}else{
+																	echo "暂未关联到货品" ;
+																}
+																echo "</span></li>" ;
+															}*/
 														
 													}
 												?>
@@ -416,9 +430,6 @@
 					</div>
 				</div>
 			</form>
-			</div>
-			<div id="groupKeyword">
-				<div class="niche-grid-group" style="width:880px;"></div>
 			</div>
 			<div id="tracks">
 				<div class="grid-track" style="width:880px;"></div>

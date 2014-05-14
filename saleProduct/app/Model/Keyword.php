@@ -103,7 +103,54 @@ class Keyword extends AppModel {
 	}
 	 
 	public function saveNiceDev($params){
+		
 		$this->exeSql("sql_keyword_update", $params) ;
+		
+		$status = $params['status'] ;
+		if( $status == 30 ){//审批通过，将Niche Asin添加到产品开发列表
+			//获取platformId
+			$sql = "select * from sc_keyword sk where sk.keyword_id = '{@#keyword_id#}'" ;
+			$keyword = $this->getObject($sql, $params) ;
+			$siteCode = $keyword['site'] ;
+			$categoryId = $keyword['category_id'] ;
+			$platform = $this->getObject("select * from sc_platform where site_code = '{@#site#}' and code like '%AMAZON%'", $keyword) ;
+			$platformId = 1 ;//us default
+			if( !empty($platform) ){
+				$platformId = $platform['ID'] ;
+			}
+			//获取Asin
+			$sql = "select * from sc_keyword_asin where keyword_id = '{@#keyword_id#}'" ;
+			$keyAsins = $this->exeSqlWithFormat($sql, $params) ;
+			$asinString = "" ;
+			foreach($keyAsins as $keyAsin){
+				if(empty($asinString)){
+					$asinString = $keyAsin['asin'] ;
+				}else{
+					$asinString = $asinString.",".$keyAsin['asin'] ;
+				}
+			}
+			
+			//NewProductDev.addNewAsinDev
+			if( !empty($asinString) ){
+				$NewProductDev  = ClassRegistry::init("NewProductDev") ;
+				$params_ = array() ;
+				$params_['asins'] = $asinString ;
+				$params_['platformId'] = $platformId ;
+				$params_['loginId'] = $params['loginId'] ;
+				$params_['categoryId'] = $categoryId;
+				
+				$NewProductDev->addNewAsinDev($params_) ;
+			}
+			
+			foreach($keyAsins as $keyAsin){
+				//查找开发
+				if(empty($asinString)){
+					$asinString = $keyAsin['asin'] ;
+				}else{
+					$asinString = $asinString.",".$keyAsin['asin'] ;
+				}
+			}
+		}
 		
 		if( isset( $params['memo'] ) ){
 			$this->exeSql("INSERT INTO sc_keyword_track 

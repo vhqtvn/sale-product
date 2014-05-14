@@ -1,5 +1,18 @@
 <html>
 <head>
+<?php 
+include_once ('config/config.php');
+
+//error_reporting(0);
+$sellerSku   	=  $params['arg1']  ;
+$accountId 	=  $params['arg2']  ;
+$printNum 	=  $params['arg3']  ;
+$paperType  =  $params['arg4']  ;
+if( empty($paperType) ){
+	$paperType = "A4" ;
+}
+//1MM=3.2Pixel
+?>
  <style style="text/css">
 <!--
 	html,body{
@@ -9,11 +22,18 @@
 		-webkit-text-size-adjust:none;	
 		font-size:10px;	
 	}
-	
+	<?php  if( $paperType=='A4' ){ ?>
 	body{
 		width:828px;height:1182px;
 		background:white;
 	}
+	<?php	}else{ ?>
+	body{
+		width:600px;height:auto;
+		background:white;
+	}	
+	<?php	} ?>
+	
 
 	.text-fnsku{
 		text-align: center ;
@@ -50,6 +70,10 @@
 		font-family: Arial , sans-serif;
 	}	
 	
+	
+	
+	
+	<?php  if( $paperType=='A4' ){ ?>
 	.barcode-img{
 		width:170px;
 		height:30px;
@@ -62,26 +86,75 @@
 		padding:0px;
 		margin:0px;
 	}
-	
-	.label-item-11{
+	.label-item-last,.label-item-11{
 		height:100px;
 		width:209px;
 		border:none;
 		padding:0px;
 		margin:0px;
+	}	
+	<?php	}else{ ?>
+	.text-fnsku{
+		padding-top:1px;
+		padding-bottom:4px;
+		font-size:15px;
 	}
+	
+	.text-title{
+		margin-left: 18px;
+		width:280px;
+		font-size:15px;	
+		line-height:15px;
+		height:15px;
+		font-family: Arial Narrow, sans-serif;
+		padding-bottom:1px
+	}
+	
+	.text-condition{
+		text-align:left;
+		margin-left: 18px;
+		line-height:15px;
+		height:15px;
+		font-size:15px;	
+	}
+	
+	.text-sku{
+		text-align:left;
+		line-height:15px;
+		height:15px;	
+		margin-left:18px;
+		font-size:13px;	
+	}	
+	
+	.barcode-img{
+		width:260px;
+		height:30px;
+	}
+		
+	.label-item{
+		height:139px;
+		width:324px;
+		border:none;
+		padding-top:1px;
+		margin:0px;
+	}
+	.label-item-last{
+		height:132px;
+		width:324px;
+		border:none;
+		padding-top:1px;
+		margin:0px;
+		padding:1px;
+	}
+	<?php	} ?>
+	
+	
 -->
 </style>
 </head>
 <body>
 <center>
 <?php 
-include_once ('config/config.php');
-
-//error_reporting(0);
-$sellerSku   	=  $params['arg1']  ;
-$accountId 	=  $params['arg2']  ;
-$printNum 	=  $params['arg3']  ;
 
 $SqlUtils  = ClassRegistry::init("SqlUtils") ;
 $sqlParams = array("accountId"=>$accountId,"sku"=>$sellerSku) ;
@@ -103,10 +176,17 @@ if( empty($title) ){
 	$_result = $Amazonaccount->checkProductValid($accountId,$sellerSku)  ;
 	try{
 		$json = json_decode($_result) ;
-		$json = get_object_vars($json) ;
-		$Attributes = $json['Attributes'] ;
-		$Attributes = get_object_vars($Attributes) ;
-		$title = $Attributes['Title'] ;
+		if( !empty( $json ) ){
+			$json = get_object_vars($json) ;
+			if(isset($json['Attributes']  )){
+				$Attributes = $json['Attributes'] ;
+				if( !empty($Attributes) ){
+					$Attributes = get_object_vars($Attributes) ;
+					$title = $Attributes['Title'] ;
+				}
+			}
+		}
+		
 	}catch(Exception $e){
 	}
 }
@@ -136,7 +216,10 @@ if(empty( $printNum ))
 
 $row = ceil($printNum/4) ;
 $nullRow = (11 -  ($row%11))%11  ;
-
+if( $paperType == 'A2' ){
+	$row = ceil($printNum/2) ;
+	$nullRow = 0  ;
+}
 $basedir = dirname(__FILE__);
 
 if( empty($fnSku) ){
@@ -188,7 +271,13 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 	$isError = true ;
 }
 ?>
-
+<style>
+  body{
+	<?php if($paperType == 'A2'){
+		//echo "height:".(216*$row).'px' ;
+	}?>
+  }
+</style>
 <?php  if( empty( $fnSku ) ){  ?>
 <b>
 	<br/><br/><br/><br/>
@@ -213,18 +302,25 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 		pld.style.display = "none" ;
 		window.print() ;
 	}
+	document.oncontextmenu=function(e){return false;} 
 </script>
-	<div style="position:fixed;top:5px;right:10px;width:100px;height:20px;display:none;" id="printLabelDiv"><button style="width:50px;height:30px;" onclick="printLabel()">打印</button></div>
-	<table border="0" style="width:100%;height:100%;border:0;">
+	<div style="position:fixed;top:5px;right:10px;width:200px;height:20px;background:#FFF;" id="printLabelDiv">
+	<center>
+	<div style="color:red;font-weight:bold;font-size:15px;">必须设置为标签打印</div><br/>
+	<button style="width:50px;height:30px;" onclick="printLabel()">打印</button>
+	</center>
+	</div>
+	<table border="0" style="width:100%;border:0;">
 		<tbody>
 		<?php for($i=0 ;$i<$row ;$i++){ 
 					$clazz = "label-item" ;
-					if( ($i+1) % 11 == 0 ){
+					
+					if( ($i+1) % 11 == 0   && $paperType == 'A4'){
 						$clazz = "label-item-11" ;
 					}
 					
 					if( $i == $row -1 ){
-						$clazz = "label-item-11" ;
+						$clazz = "label-item-last" ;
 					}
 			?>
 			<tr>
@@ -241,6 +337,7 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 					<div class="text-condition"><?php echo $condition;?></div>
 					<div class="text-sku"><?php echo $sku;?></div>
 			</td>
+			<?php if( $paperType == 'A4' ){ ?>
 			<td  class="<?php echo $clazz;?>"  style="text-align:center;"><img src="/<?php echo $fileContextPath;?>/barcode/<?php echo $fnSku;?>.png"  class="barcode-img"/>
 					<div  class="text-fnsku"><?php echo $fnSku;?></div>
 					<div class="text-title"><?php echo $displayText;?></div>
@@ -253,6 +350,7 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 					<div class="text-condition"><?php echo $condition;?></div>
 					<div class="text-sku"><?php echo $sku;?></div>
 			</td>
+			 <?php  }?>
 		 </tr><?php }?>
 			<?php for($i=0 ;$i<$nullRow ;$i++){ ?>
 			<tr>

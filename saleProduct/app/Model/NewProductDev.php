@@ -4,7 +4,7 @@ class NewProductDev extends AppModel {
 	
 	function deleteProduct($params){
 		$sql = "delete  from sc_product_developer where dev_id = '{@#devId#}'" ;
-		$this->exeSql($sql, $params) ;
+		$this->exeSql($sql, $params ) ;
 	}
 	
 	function confirmSampleTime($params){
@@ -65,13 +65,22 @@ class NewProductDev extends AppModel {
 				if( !empty($p) ){
 					$return[] = $p['DEV_ID']."||".$p['ASIN'];
 				}else{
+					$devId = $this->create_guid() ;
 					$p = array(
-								'devId'=>$this->create_guid(),
+								'devId'=>$devId,
 								'asin'=>$params['ASIN'] ,
 								'loginId'=>$params['loginId'],
 								'platformId'=>$platformId
 							) ;
 					
+					if( isset($params['categoryId']) ){
+						//获取分类询价负责人
+						$categoryId= $params['categoryId'] ;
+						$inquiryCharger = $this->getCategoryInquiryCharger( $categoryId ) ;
+						//INQUIRY_CHARGER  category_id
+						$p['categoryId'] = $categoryId ;
+						$p['inquiryCharger'] = $inquiryCharger ;
+					}
 					$this->exeSql("sql_pdev_new_insert", $p) ;
 				}
 	
@@ -80,6 +89,28 @@ class NewProductDev extends AppModel {
 	
 		return $return ;
 	}
+	
+	/**
+	 * 获取分类询价负责人
+	 */
+	function getCategoryInquiryCharger( $categoryId ){
+		$inquiryCharger = $this->_getCategoryInquiryCharger($categoryId) ;
+		return $inquiryCharger;
+	}
+	
+	function _getCategoryInquiryCharger( $categoryId ){
+		$sql = "select * from SC_PRODUCT_CATEGORY where id = '{@#categoryId#}'" ;
+		$category = $this->getObject($sql, array("categoryId"=>$categoryId)) ;
+		$inquiryCharger = $category['INQUIRY_CHARGER']  ;
+		if( empty( $inquiryCharger ) ){
+			$parentId = $category['PARENT_ID'] ;
+			if( !empty($parentId) ){
+				return $this->_getCategoryInquiryCharger($parentId) ;
+			}
+		}
+		return $inquiryCharger ;
+	}
+	
 	
 	function initDevPropToProduct(){
 		

@@ -13,6 +13,41 @@ $(function(){
 			"us.bing":"www.amazon.com"
 	};
 	
+	function loadStatics(){
+		$.dataservice("sqlId:sql_keyword_nicheKey_statics",{},function(result){
+			 //$(".grid-content-details").llygrid("reload",{},true) ;
+			$(".flow-node").find(".count").html("(0)") ;
+			var count = 0 ;
+			var map = {} ;
+			$(result).each(function(index,item){
+				item = item.t ;
+				map[item.STATUS+"_"] = parseInt(item.COUNT) ;
+				count +=parseInt(item.COUNT) ;
+			}) ;
+			//alert( $.json.encode(map) ) ;
+			$(".flow-node").each(function(){
+				var status = $(this).attr("status") ;
+				var ss = (status+"").split(",") ;
+				var c = 0 ;
+				$(ss).each(function(index,item){
+					if(!item)return ;
+					c = (map[item+"_"]||0) +c;
+				}) ;
+				$(".flow-node[status='"+status+"']").find(".count").html("("+c+")") ;
+			}) ;
+			
+			$(".total").find(".count").html("("+count+")") ;
+
+			setTimeout(function(){
+				loadStatics() ;
+			},5000) ;
+			
+		 },{noblock:true});
+		
+	}
+	
+	loadStatics() ;
+	
 	function loadTree(){
 		$('#default-tree').tree({//tree为容器ID
 			//source:'array',
@@ -67,7 +102,6 @@ $(function(){
 				{align:"center",key:"keyword_id",label:"操作", width:"10%",format:function(val,record){
 					var html = [] ;
 					html.push("<a href='#' class='action niche-update' val='"+val+"'>设置</a>&nbsp;") ;
-				
 					return html.join("") ;
 				}},
 				{align:"left",key:"keyword",label:"关键字名称", width:"20%",format:function(val,record){
@@ -80,8 +114,7 @@ $(function(){
 					if( !val ) return "开发中" ;
 					if( val==10 ) return "开发中" ;
 					if( val==20 ) return "待审批" ;
-					if( val==30 ) return "待分配责任人" ;
-					if( val==40 ) return "关联开发产品" ;
+					if( val==30 ) return "产品开发中" ;
 					if( val==50 ) return "结束" ;
 					if( val==15 ) return "废弃" ;
 				}},
@@ -97,17 +130,17 @@ $(function(){
 		 limit:30,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-		 	return $(window).height() - 110 ;
+		 	return $(window).height() - 170 ;
 		 },
 		 title:"",
 		 indexColumn:false,
-		 querys:{_data :"d_list_niche_keyword",status:'20'},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
+		 querys:{_data :"d_list_niche_keyword",status:''},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......"
 	}) ;
 	
 	$(".niche-update").live("click",function(){
 		var record = $.llygrid.getRecord(this) ;
-		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,800,550,function(win,ret){
+		openCenterWindow(contextPath+"/page/forward/Keyword.nicheDev/"+record.keyword_id,1000,650,function(win,ret){
 			if(ret)$(".niche-grid").llygrid("reload",{},true) ;
 		}) ;
 	}) ;

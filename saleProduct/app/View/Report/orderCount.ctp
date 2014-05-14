@@ -21,8 +21,6 @@
 		echo $this->Html->script('highcharts/modules/exporting.src');
 		
 		$sku = $params['arg1'] ;
-		
-		
 	?>
 		<script type="text/javascript">
 			function  loadOrderCountChart(){

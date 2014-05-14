@@ -21,19 +21,15 @@ $(function(){
 	 $(".no-disabled").removeAttr("disabled") ;
 
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
-	if( $("#ref-asins").length ){
-		tabs.push({label:'关联ASIN',content:"ref-asins"}) ;
-	}
-	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
+
 	//if( currentStatus >=45 ){
 		//tabs.push( {label:'货品询价',content:"supplier-tab"} ) ;
 	//tabs.push( {label:'采购需求',iframe:true,url: contextPath+"/page/forward/SupplyChain.listReqDetails/"+realId+"/"+reqProductId} ) ;
 	tabs.push( {label:'货品询价',iframe:true,url: contextPath+"/page/forward/SaleProduct.supplierInquiryHistory/"+sku} ) ;
 	//}
 	tabs.push( {label:'供应商信息',iframe:true,url: contextPath+"/page/forward/Supplier.listsBySku/"+sku} ) ;
-	tabs.push( {label:'交易价格曲线',iframe:true,url: contextPath+"/page/forward/SaleProduct.priceChart/"+sku} ) ;
 	tabs.push( {label:'采购记录',iframe:true,url: contextPath+"//page/forward/Supplier.purchaseProductList/"+realId+"/product"} ) ;
-
+	tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
 	///page/forward/SaleProduct.priceChart/20000021
 	
 	var status = [10,20,25,30,40,45,46,47,48,50,60,70] ;
@@ -79,83 +75,6 @@ $(function(){
 	}) ;
 	
 	$purchase_cost_view = true ;
-	
-	if( $("#ref-asins").length ){
-		$(".grid-content-details").llygrid({
-			columns:[
-			    {align:"center",key:"SKU",label:"Listing SKU",width:"14%",forzen:false,align:"left"},
-	           	{align:"left",key:"ASIN",label:"ASIN", width:"11%",format:{type:'asin'}},
-	           	{align:"center",key:"LOCAL_URL",label:"Image",width:"6%",forzen:false,align:"left",format:{type:'img'}},
-	            {align:"left",key:"TITLE",label:"TITLE",width:"18%",forzen:false,align:"left",format:{type:'titleListing'}},
-	            {align:"center",key:"QUANTITY",label:"账号库存",width:"6%",forzen:false,align:"left"},
-	          
-	           	{align:"center",key:"TOTAL_COST",label:"成本",width:"6%",format:function(val,record){
-	           		return "<a href='' class='cost' type='FBA' asin='"+record.ASIN+"'>"+(val||"")+"</a>" ;
-	           	},permission:function(){ return $COST_VIEW_TOTAL; }},
-	           	{align:"center",key:"FBA_PRICE",label:"最低价",width:"6%",permission:function(){ return $purchase_cost_view; }},
-	           	{align:"center",key:"FBA_PRICE",label:"利润额",width:"6%",format:function(val,record){
-	           		var lye = parseFloat(formatMoney(record.TOTAL_PRICE))  -   parseFloat(formatMoney(record.TOTAL_COST||0)) ;
-	           		
-	           		if( !record.TOTAL_PRICE || record.TOTAL_PRICE == '0'){
-	           			return "-" ;
-	           		}
-	           		
-	           		
-	           		if( !record.TOTAL_COST || record.TOTAL_COST == '0'){
-	           			return "-" ;
-	           		}
-	           		
-	           		if(    parseFloat(formatMoney(record.TOTAL_COST||0)) <= 0 ){
-	           			return "-" ;
-	           		}
-	           		lye = lye.toFixed(2) ;
-	           		if( lye < 0 ){
-	           			return "<font color='red'>"+lye+"</font>"
-	           		}else{
-	           			return lye ;
-	           		}
-	           	},permission:function(){ return $COST_VIEW_PROFIT; }},
-	           	{align:"center",key:"TOTAL_PRICE",label:"利润率",width:"6%",format:function(val,record){
-	           		var lye = parseFloat(formatMoney(record.TOTAL_PRICE)) -   parseFloat(formatMoney(record.TOTAL_COST||0)) ;
-	           		
-	           		if( !record.TOTAL_PRICE || record.TOTAL_PRICE == '0'){ return "-" ; } 
-	           		if( !record.TOTAL_COST || record.TOTAL_COST == '0'){ return "-" ; }
-	           		
-	           		
-	           		if(    parseFloat(formatMoney(record.TOTAL_COST||0)) <= 0 ){
-	           			return "-" ;
-	           		}
-	           		
-	           		var lyl = (lye / (    parseFloat(formatMoney(record.TOTAL_COST||0)) ))*100 ;
-	           		lyl = lyl.toFixed(2) ;
-	           		if( lyl < 0 ){
-	           			return "<font color='red'>"+lyl+"%</font>"
-	           		}else{
-	           			return lyl+"%" ;
-	           		}
-	           	},permission:function(){ return $COST_VIEW_PROFIT; }}
-	           	
-	         ],
-	         ds:{type:"url",content:contextPath+"/grid/query"},
-			 limit:30,
-			 pageSizes:[10,20,30,40],
-			 height:function(){
-			 	return $(window).height() - 370 ;
-			 },
-			 title:"",
-			 indexColumn:false,
-			 querys:{id:id,sqlId:"sql_purchase_plan_getAsinFromSku"},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
-			 loadMsg:"数据加载中，请稍候......",
-			 loadAfter:function(){
-			 	$(".grid-checkbox").each(function(){
-					var val = $(this).attr("value") ;
-					if( $(".product-list ul li[asin='"+val+"']").length ){
-						$(this).attr("checked",true) ;
-					}
-				}) ;
-			 }
-		}) ;
-	}
 		
 	
 	//dom bind events

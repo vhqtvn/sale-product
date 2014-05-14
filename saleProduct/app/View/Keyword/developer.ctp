@@ -98,15 +98,17 @@ ru
 							<select  id="site" style="width:110px;">
 								<option value="us">Google.com</option>
 								<option value="uk">Google.co.uk</option>
+								<option value="de">Google.de</option>
+								<!--
 								<option value="ca">Google.ca</option>
 								<option value="ru">Google.ru</option>
-								<option value="de">Google.de</option>
 								<option value="fr">Google.fr</option>
 								<option value="es">Google.es</option>
 								<option value="it">Google.it</option>
 								<option value="br">Google.br</option>
 								<option value="au">Google.com.au</option>
 								<option value="us.bing">Bing.com</option>
+								  -->
 							</select>
 						</td>
 						<td>

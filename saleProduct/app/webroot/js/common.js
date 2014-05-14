@@ -1166,6 +1166,12 @@ $("[product-realsku]").live("click",function(){
 	return false;
 }) ;
 
+$("[product-dev]").live("click",function(){
+	var devId = $(this).attr("product-dev") ;
+	openCenterWindow(contextPath+"/page/forward/Product.developer.edit_product_dev/"+devId,1000,650) ;
+	return false;
+}) ;
+
 $(".product-realsku").live("click",function(){
 	var sku = $(this).attr("sku") ;
 	openCenterWindow(contextPath+"/saleProduct/details/"+sku+"/sku",950,650) ;

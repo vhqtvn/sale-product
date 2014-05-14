@@ -632,9 +632,21 @@ class ScRequirement extends AppModel {
 		}
 	}
 	
-	function  createReqItem($ps){
+	/**
+	 * 
+	 * @param unknown_type $ps
+	 * @param unknown_type $isForce  是否手工创建采购单，如果手工创建采购单，则不检查数量
+	 */
+	function  createReqItem($ps, $isForce = false){
 		$existQuantity = $ps['existQuantity'] ;
 		$quantity = $ps['quantity'] ;
+		
+		if( $isForce ){
+			$ps['purchaseQuantity'] = $quantity ;
+			$this->exeSql("sql_supplychain_requirement_item_insert", $ps) ;
+			return ;
+		}
+		
 		/**
 		 * 计算需要采购的库存
 		 * 需要采购的库存=账户需求量(quantity) - 本地库存

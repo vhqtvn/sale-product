@@ -231,7 +231,7 @@
 	        		{status:45,label:"待采购",memo:true
 	        			,actions:[{}
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(45,"保存") }}  <?php  }?>
-									<?php if( $isOwner ) { ?>,{label:"已保存采购，提交审批",action:function(){ AuditAction(51,"已保存采购，评估利润") } }<?php  }?>
+									<?php if( $isOwner ) { ?>,{label:"完成采购下单",action:function(){ AuditAction(51,"已保存采购") } }<?php  }?>
 									<?php if(  $endPurchase || $isOwner ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				],format:function(node){
 							if( currentStatus == 46  ){
@@ -239,7 +239,14 @@
 								node.status = 46 ;
 							}
             			}
-	        		},
+	        		},{status:51,label:"利润评估",memo:true
+						,actions:[{}
+						<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(45,"回退")  }}<?php  }?>
+						<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"保存",action:function(){ ForceAuditAction(51,"保存") }}<?php  } ?>
+						<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"评估完成",action:function(){ ForceAuditAction(48,"评估完成") } }<?php   }   ?>
+						<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
+						]
+					},
 	        		<?php /*
 	        		{status:46,label:"交易申请",memo:true
 	        			,actions:[{}
@@ -249,7 +256,6 @@
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购") } }<?php } ?>
         				]
 	        		},
-	        		
 	        		{status:47,label:"采购审批",memo:true
 	        			,actions:[{}
 						<?php if( $ppp_callback ){ ?>,{label:"回退再询价",action:function(){ ForceAuditAction(46,"回退再询价") }}<?php   } ?>
@@ -258,15 +264,8 @@
 						<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
 						]
 					},*/?>
-	        		{status:51,label:"利润评估",memo:true
-	        			,actions:[{}
-						<?php if( $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(45,"回退") }}<?php   } ?>
-						<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"保存",action:function(){ ForceAuditAction(51,"保存") }}<?php  } ?>
-						<?php if( $isOwner|| $ppp_deal ) { ?>,{label:"评估完成",action:function(){ ForceAuditAction(48,"评估完成") } }<?php   }   ?>
-						<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
-						]
-					},
-	        		{status:48,label:"待交易",memo:true
+	        		
+	        		{status:48,label:"执行交易",memo:true
 	        			,actions:[{}
 									<?php if(  $ppp_callback ){ ?>,{label:"回退",action:function(){ ForceAuditAction(51,"回退") }}<?php   } ?>
 									<?php if( $isOwner || $ppp_deal) { ?>,{label:"保存",action:function(){ ForceAuditAction(48,"保存") }}<?php  } ?>
@@ -402,13 +401,13 @@
 										<th>计划采购数量：</th>
 										<td><input type="text" disabled="disabled" name="planNum" value="<?php echo  $purchaseProduct['PLAN_NUM']  ;?>"/></td>
 										<th>采购限价：</th>
-										<td><input type="text" class="input" name="limitPrice" value="<?php echo $purchaseProduct['LIMIT_PRICE'];?>"/></td>
+										<td><input type="text" class="input 51-input" name="limitPrice" value="<?php echo $purchaseProduct['LIMIT_PRICE'];?>"/></td>
 									</tr>
 								</tbody>
 						</table>
 						
 						<table class="form-table" >
-								<caption>采购需求<?php if( ($reedit_pp_product)  && $status <= 50){ 
+								<caption>采购需求<?php if( ($reedit_pp_product)  && $status <= 51){ 
 								echo "<img src='/$fileContextPath/app/webroot/img/edit.png' class='reedit'>" ;
 								}?></caption>
 								<thead>
@@ -511,7 +510,6 @@
 										<th>计划供应商：</th>
 										<td >
 										<select id="providor"   class="45-input 46-input   input"  data-validator='required''>
-										
 											<option value="">--</option>
 										<?php
 										

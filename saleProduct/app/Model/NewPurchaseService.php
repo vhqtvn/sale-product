@@ -51,7 +51,7 @@ class NewPurchaseService extends AppModel {
 					$ps['quantity'] =  $item['quantity'] ;
 					$ps['urgency'] =  "A" ;
 					$ps['reqType'] =  "A" ;//销量需求
-					$ScRequirement->createReqItem($ps) ;
+					$ScRequirement->createReqItem($ps,true) ;
 				}
 				
 				//更新产品的REQ_PRODUCT_ID
@@ -60,6 +60,7 @@ class NewPurchaseService extends AppModel {
 			}
 			$dataSource->commit() ;
 		}catch(Exception $e){
+				debug( $e ) ;
 				$dataSource->rollback() ;
 		}
 		return $guid ;
@@ -131,6 +132,11 @@ class NewPurchaseService extends AppModel {
 				
 				$reqProductId = $data['reqProductId'] ;//reqProductId
 				//判断是否需要创建RMA计划 badProductsNum  noConsistencyNum  outOfNum
+				
+				if( $data['status'] == 49 ){//交易付款，更新付款时间
+					$sql = "update sc_purchase_product set order_date = NOW() where order_data is not null and id='{@#id#}'" ;
+					$this->exeSql($sql, $data) ;
+				}
 				
 				if( $data['status'] == 60 ){
 					if( (!empty( $data['outOfNum'] ))  && $data['outOfNum'] >0 ) {//缺货数量

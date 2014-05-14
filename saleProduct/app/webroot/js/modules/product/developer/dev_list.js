@@ -110,7 +110,7 @@ var currentId = '' ;
 						return "<a href='#' class='memo-action'>"+(val||"")+"</a>";
 					}},
 		           	{align:"center",key:"ASIN",label:"ASIN", width:"8%",format:function(val,record){
-		           		return "<a href='"+contextPath+"/page/forward/Platform.asin/"+record.ASIN+"' target='_blank'>"+(val||"产品信息页")+"</a>" ;
+		           		return "<a href='#' offer-listing='"+val+"'>"+val+"</a>" ;
 		           	}},
 		        	{align:"center",key:"LOCAL_URL",label:"",width:"3%",forzen:false,align:"left",format:{type:'img'}},
 		           	{align:"center",key:"TITLE",label:"开发标题",width:"15%",forzen:false,align:"left"},

@@ -12,6 +12,49 @@ $(function(){
 			au:"www.amazon.com.au",
 			"us.bing":"www.amazon.com"
 	}
+	
+	var categoryTreeSelect = {
+				title:'产品分类选择页面',
+				//valueField:"#categoryId",
+				//labelField:"#categoryName",
+				key:{value:'ID',label:'NAME'},//对应value和label的key
+				multi:true ,
+				tree:{
+					title:"产品分类选择页面",
+					method : 'post',
+					nodeFormat:function(node){
+						node.complete = false ;
+					},
+					asyn : false, //异步
+					cascadeCheck:false,
+					rootId  : 'root',
+					expandLevel:2,
+					rootText : '产品分类',
+					CommandName : 'sqlId:sql_saleproduct_categorytree',
+					recordFormat:true,
+					params : {
+					}
+				}
+		   } ;
+		   
+		$(".select-category").listselectdialog( categoryTreeSelect,function(){
+
+			var args = jQuery.dialogReturnValue() ;
+			
+			var value = args.value[0] ;
+			var label = args.label[0] ;
+			
+			$("#categoryId").val(value) ;
+			$("#categoryName").val(label) ;
+			//获取分类询价负责人为当前产品询价
+			var selectReocrds = args.selectReocrds[value+""] ;
+			//console.log(selectReocrds) ;
+			$("#dev_charger").val(selectReocrds.SUPPLY_CHARGER||"" ) ;
+			$("#dev_charger_name").val(selectReocrds.SUPPLY_CHARGER_NAME||"" ) ;
+		
+			return false;
+		}) ;
+	
 	var tabs = [{label:'基本信息',content:"base-info"}] ;
 		tabs.push( {label:'Amazon&Ebay Search Terms',content:"searchTerm"} ) ;
 		tabs.push( {label:'处理轨迹',content:"tracks"} ) ;
@@ -133,7 +176,7 @@ $(function(){
 	}) ;
 	
 	$(".delete-asin").click(function(){
-		var asin = $.trim( $(this).parent().text() ) ;
+		var asin =$(this).closest("li").attr("asin") ;
 		var json = {} ;
 		json.keywordId = keywordId ;
 		json.asin = asin ;

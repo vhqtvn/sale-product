@@ -331,7 +331,8 @@
 			CREATED_DATE, 
 			LAST_UPDATED_BY, 
 			LAST_UPDATED_DATE, 
-			TAGS
+			TAGS,
+			STATUS
 			)
 			VALUES
 			('{@#guid#}', 
@@ -348,7 +349,8 @@
 			NOW(), 
 			'{@#loginId#}', 
 			NOW(), 
-			'{@#tags#}'
+			'{@#tags#}',
+			51
 			)
    </entry>
    <entry key="sql_purchase_new_update">

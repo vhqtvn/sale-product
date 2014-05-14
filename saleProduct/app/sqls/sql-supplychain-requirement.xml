@@ -7,7 +7,7 @@
 	         		ssrpp.STATUS AS P_STATUS,
 	         		ssrpp.REQ_PRODUCT_ID,
 	         		ssrpp.CREATE_DATE,
-	         		( SELECT sum(ssri.QUANTITY) 
+	         		( SELECT sum(ssri.PURCHASE_QUANTITY) 
 	         		FROM  sc_supplychain_requirement_item ssri,
 	         		    sc_real_product_rel srpr,
                                     sc_amazon_account_product saap
@@ -489,11 +489,11 @@
 				'{@#listingSku#}', 
 				'{@#realId#}', 
 				'{@#fulfillment#}', 
-				'{@#existQuantity#}', 
-				'{@#calcQuantity#}', 
-				'{@#quantity#}', 
-				'{@#purchaseQuantity#}', 
-				'{@#stockQuantity#}', 
+				'{@#existQuantity:0#}', 
+				'{@#calcQuantity:0#}', 
+				'{@#quantity:0#}', 
+				'{@#purchaseQuantity:0#}', 
+				'{@#stockQuantity:0#}', 
 				'{@#id#}', 
 				NOW(), 
 				'{@#urgency#}', 

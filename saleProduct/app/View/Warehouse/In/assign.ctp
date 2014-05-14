@@ -149,106 +149,11 @@
 	<div class="box row-fluid">
 			<div class="box-content span8" style="width:96%;">
 				<table class="table" style="table-layout:fixed;">
-					<tr>
-						<td style="width:12%;">
-							<img style="width:75px;height:75px;" src="<?php echo $imgUrl;?>"/>
-						</td>
-						<td style="width:40%;">
-								<div class="product-title"><?php echo $product['NAME'] ?></div>
-								<div class="pd"><div class='pd-label'>SKU:</div><div class='pd-value'><?php echo $product['REAL_SKU'] ?></div></div>
-								<div>
-								<?php 
-									$array= $SqlUtils->exeSqlWithFormat("sql_purchase_plan_details_listForSKU",array('sku'=>$product['REAL_SKU'])) ;
-									$exists = false ;
-									$purchasing = null ;
-									foreach( $array as $a ){
-										//TASK_COUNT  IS_FINISH
-										$taskCount = $a['TASK_COUNT'] ;
-										$isFinish     = $a['IS_FINISH'] ;
-										if( $isFinish == 0 && $taskCount >0 ){ //结束
-											
-										}else{
-											$purchasing = $a ;
-											$exists = true ;//采购中
-										}
-									}
-									if( $exists ){
-								?>
-								<?php	 }else{ ?>
-								<!--判断时候在采购中-->
-								<hr/>
-								<select  class="purchase-plan">
-									<option value="">选择采购计划</option>
-									<?php //exeSqlWithFormat
-										$plans = $SqlUtils->exeSqlWithFormat("SELECT * FROM sc_purchase_plan
-														ORDER BY create_time DESC
-														LIMIT 0,20",array()) ;
-
-									foreach( $plans as $plan ){
-										echo "<option value='".$plan['ID']."'>".$plan['NAME']."</option>" ;
-									}
-									?>
-								</select>
-								<button class="btn btn-primary  add-purchase">添加采购</button>
-								<?php		
-									}
-								?>
-								</div>
-						</td>
-						<td  style="width:20%;"><?php echo $product['MEMO'] ?></td>
-						<td><div class="dyn-status"></div></td>
-					</tr>
-					<tr>
-						<td colspan=3>
-							<div class="qt">
-								<div class='qt-label'>总库存：</div>
-								<div class='qt-value total-quantity' style="color:red;font-size:15px;"><?php echo $product['QUANTITY'] ?></div>
-							</div>
-							<div class="qt">
-								<div class='qt-label'>安全库存：</div>
-								<div class='qt-value security-quantity' style="color:red;font-size:13px;"><?php echo $product['SECURITY_QUANTITY'] ?></div>
-							</div>
-							<div class="qt">
-								<div class='qt-label'>待发货数量：</div>
-								<div class='qt-value account-will-shipped-quantity' style="color:red;font-size:13px;"></div>
-							</div>
-							<div class="qt">
-								<div class='qt-label'>账号库存：</div>
-								<div class='qt-value account-quantity' ></div>
-							</div>
-							<div class="qt" style="margin-bottom:0px;">
-								<div class='qt-label'>可分配库存：</div>
-								<div class='qt-value assignable-quantity'>--</div>
-							</div>
-							<div class="qt" style="margin-bottom:0px;">
-								<div class='qt-label'>已分配库存：</div>
-								<div class='qt-value assigned-quantity'>--</div>
-							</div>
-							<div class="qt">
-								<button class="btn btn-primary assgin-btn btn-danger">分配库存</button>
-							</div>
-						</td>
-					</tr>
+					
 					<tr>
 						<td colspan=4>
 							<div class="qt">
-								<div class='qt-label'>FBA最低限价：</div>
-								<div class='qt-value SALE_LOWEST_PRICE_FBA' style="color:red;font-size:15px;"><?php echo $product['SALE_LOWEST_PRICE_FBA'] ?></div>
-							</div>
-							<div class="qt">
-								<div class='qt-label'>FBA销售建议价：</div>
-								<div class='qt-value SALE_SUGGEST_PRICE_FBA' ><?php echo $product['SALE_SUGGEST_PRICE_FBA'] ?></div>
-							</div>
-							<div class="qt">
-								<div class='qt-label'>FBM最低限价：</div>
-								<div class='qt-value SALE_LOWEST_PRICE_FBM' style="color:red;font-size:13px;"><?php echo $product['SALE_LOWEST_PRICE_FBM'] ?></div>
-							</div>
-							<div class="qt">
-								<div class='qt-label'>FBM销售建议价：</div>
-								<div class='qt-value SALE_SUGGEST_PRICE_FBM' ><?php echo $product['SALE_SUGGEST_PRICE_FBM'] ?></div>
-							</div>
-							
-							<div class="qt">
+								<button class="btn btn-primary assgin-btn btn-danger"  disabled>分配库存</button>
 								<button class="btn btn-primary price-btn btn-danger">调整价格</button>
 							</div>
 						</td>

@@ -44,11 +44,10 @@
 		<entry key="sql_productDev_new_loadStativcs">
 				SELECT FLOW_STATUS AS STATUS,COUNT(1) AS COUNT FROM sc_product_developer spfd WHERE FLOW_STATUS !=80
 				 {@ #$VIEW_PRODUCT_DEV# }
-				 {@ and spfd.asin not in (
+				  and spfd.asin not in (
 									select ste.entity_id  from sc_tag_entity ste where ste.entity_type = 'productDevTag'
 					)
-					and #untag# = #untag#
-			     }
+					and spfd.dev_status !='3' 
 				GROUP BY FLOW_STATUS
 		</entry>
 		
@@ -313,6 +312,8 @@ WHERE   spfd.flow_status =80
 						CREATE_TIME, 
 						FLOW_STATUS,
 						DEV_CHARGER,
+						INQUIRY_CHARGER,
+						CATEGORY_ID,
 						PLATFORM_ID
 					)
 					VALUES
@@ -323,6 +324,8 @@ WHERE   spfd.flow_status =80
 					NOW(), 
 					10,
 					'{@#loginId#}',
+					'{@#inquiryCharger#}',
+					'{@#categoryId#}',
 					'{@#platformId#}'
 					)
      </entry>
