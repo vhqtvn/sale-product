@@ -28,6 +28,8 @@
 			function  loadOrderCountChart(){
 				var accounts = {} ;
 
+				$(".container").height( $(window).height()-50 ) ;
+
 				$.dataservice("sqlId:sql_report_chart_forOrderAccount",{},function(result){
 
 					var categories = [] ;
@@ -79,7 +81,7 @@
 			                	//type: 'column'
 			            },
 			            title: {
-			                text: '账户订单总销量'
+			                text: '账户下单总销量'
 			            },
 			            subtitle: {
 			                text: ''
@@ -88,7 +90,10 @@
 			           	 	enabled: false
 			            },
 			            xAxis: {
-			                categories: categories
+			                categories: categories,
+			                labels: {
+			                	rotation: -90   //竖直放
+			                 }			                
 			            },
 			            yAxis: {
 			                min:0,
@@ -122,7 +127,7 @@
 	<body>
 	
 			<div  class="day-container">
-				<div class="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+				<div class="container" style="min-width: 400px; margin: 0 auto"></div>
 			</div>
 			
 	</body>
