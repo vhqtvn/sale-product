@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_report_chart_forOrderAccount">
+    <![CDATA[
+   		SELECT sa.NAME,
+   		 DATE_FORMAT( so.purchase_date, "%m%d" ) as PD , COUNT(1) AS C 
+		FROM sc_order so ,
+		sc_amazon_account sa
+	   WHERE 
+		so.ACCOUNT_ID = sa.id
+	    and DATE_SUB(CURDATE(), INTERVAL 500 DAY) <= DATE(so.PURCHASE_DATE)
+	  GROUP BY so.ACCOUNT_ID , DATE_FORMAT( so.purchase_date, "%Y-%m-%d" )
+	  order by DATE_FORMAT( so.purchase_date, "%Y-%m-%d" )
+   ]]>	      
+    </entry>
+
 	<entry key="sql_report_listingRankForFba">
 		SELECT t.* FROM ( 
 		     SELECT 
