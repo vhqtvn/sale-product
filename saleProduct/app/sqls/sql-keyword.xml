@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
 
+	<entry key="sql_keyword_nicheKey_statics">
+		SELECT sk.status AS STATUS , COUNT(1) AS COUNT FROM sc_keyword sk WHERE sk.is_niche = 1
+				GROUP BY sk.status
+	</entry>
+
 	<entry key="d_keyword_terms">
         <![CDATA[	
 			select * from sc_keyword_searchterm
@@ -76,7 +81,8 @@
 					  -->
 	<entry key="d_list_keywordByMain">
         <![CDATA[	
-			select t.* 
+			select t.* ,
+			         (select skp.is_pause from sc_keyword skp where skp.keyword_id = t.main_keyword_id ) as is_pause_p
 					from sc_keyword t
 					where 
 					t.task_id = '{@#taskId#}' 
@@ -155,8 +161,10 @@
     
     <entry key="d_sc_keyword_getById">
         <![CDATA[	
-			select * from sc_keyword
-			where keyword_id = '{@#id#}'
+			select sk.*,
+			      ( select NAME from sc_product_category spc where spc.id = sk.category_id )  as CATEGORY_NAME
+			from sc_keyword sk
+			where sk.keyword_id = '{@#id#}'
 		]]>
     </entry>
     
@@ -286,6 +294,7 @@
 			{@,dev_profile_scope = '#dev_profile_scope#'  }
 			{@,dev_price_scope = '#dev_price_scope#'  }
 			{@,dev_asin = '#dev_asin#'  }
+			{@,category_id = '#categoryId#'  }
 			{@,dev_rank = '#dev_rank#'  }
 			{@,dev_important = '#dev_important#'  }
 			{@,dev_audit_result = '#dev_audit_result#'  }
@@ -319,6 +328,7 @@
 		 where 1=1 
 			 and sk.is_niche = 1 
 		 {@ and sk.status = '#status#'}
+		 {@ and sk.category_id = '#categoryId#'}
 		 {@ and sk.keyword like '%#name#%'}
     ]]>
     </entry>

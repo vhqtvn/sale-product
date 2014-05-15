@@ -20,13 +20,15 @@
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('highcharts/modules/exporting.src');
 		
+		//echo  gmdate("Y-m-d%20H:00:00"); 
+		
 		$sku = $params['arg1'] ;
 	?>
 		<script type="text/javascript">
 			function  loadOrderCountChart(){
 				var accounts = {} ;
 
-				$(".container").height( $(window).height()-50 ) ;
+				$(".container").height( $(window).height()-80 ) ;
 
 				$.dataservice("sqlId:sql_report_chart_forOrderAccount",{},function(result){
 
@@ -114,19 +116,47 @@
 			            },
 			            series:series
 			        });
-				}) ;
+
+
+					//////////////////////////////
+					setTimeout(function(){
+						loadOrderCountChart() ;
+					},120000) ;
+			        
+				},{noblock:true}) ;
 			}
 
 			$(function(){
 				loadOrderCountChart() ;
+
+
+				$(".query-btn").click(function(){
+					var now = new Date() ;
+					var date = now.getUTCDate() ;
+					var year = now.getUTCFullYear() ;
+					var month = now.getUTCMonth() +1;
+					var hour = now.getUTCHours() ;
+					if(month <10){
+							month = "0"+month ;
+						}
+					if(hour <10){
+						hour = "0"+hour ;
+					}
+					if(date <10){
+						date = "0"+date ;
+					}
+					var _d = year+"-"+month+"-"+date+"%20"+hour+":00:00" ;
+					$("#asyncOrder").attr("src","http://cyberkin.org/saleProductService/index.php/taskAsynAmazon/listOrder/?LastUpdatedAfter="+_d) ;
+				}) ;
 			}) ;
+
+			
 		</script>
 	</head>
 	<body>
-	
 			<div  class="day-container">
 				<div class="container" style="min-width: 400px; margin: 0 auto"></div>
 			</div>
-			
+			<iframe src=""  id="asyncOrder" style="display:none;"></iframe>
 	</body>
 </html>

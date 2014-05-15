@@ -56,7 +56,7 @@ $(function(){
 			rootText : '产品分类',
 			expandLevel:2,
 			asyn:false,
-			CommandName : 'sqlId:sql_productDev_new_categorytree',
+			CommandName : 'sqlId:sql_productDev_new_niche_categorytree',
 			recordFormat:true,
 			dataFormat:function(data){
 				//data.push({id:'uncategory',text:'未分类产品',memo:'',isExpand:true});
@@ -80,9 +80,9 @@ $(function(){
 				}
 				
 				if( id == 'root' ){
-					$(".grid-content-details").llygrid("reload",{categoryId:"",uncategory:uncategory,"untag":1}) ;
+					$(".niche-grid").llygrid("reload",{categoryId:"",uncategory:uncategory,"untag":1}) ;
 				}else{
-					$(".grid-content-details").llygrid("reload",{categoryId:id,uncategory:uncategory,"untag":1}) ;
+					$(".niche-grid").llygrid("reload",{categoryId:id,uncategory:uncategory,"untag":1}) ;
 				}
 			}
        }) ;
@@ -100,8 +100,14 @@ $(function(){
 	$(".niche-grid").llygrid({
 		columns:[
 				{align:"center",key:"keyword_id",label:"操作", width:"10%",format:function(val,record){
-					var html = [] ;
+					/*var html = [] ;
 					html.push("<a href='#' class='action niche-update' val='"+val+"'>设置</a>&nbsp;") ;
+					return html.join("") ;
+					*/
+					var html = [] ;
+					//html.push("<a href='#' class='action niche-update' val='"+val+"'>设置</a>&nbsp;") ;
+					html.push("<img class='action niche-update' title='设置' val='"+val+"' src='/"+fileContextPath+"/app/webroot/img/config.gif'>") ;
+					html.push("<img class='action niche-delete' title='删除关键字' val='"+val+"' src='/"+fileContextPath+"/app/webroot/img/delete.gif'>") ;
 					return html.join("") ;
 				}},
 				{align:"left",key:"keyword",label:"关键字名称", width:"20%",format:function(val,record){
@@ -120,11 +126,11 @@ $(function(){
 				}},
 				{align:"left",key:"dev_charger_name",label:"开发负责人", width:"15%"},
 				{align:"left",key:"keyword_type",label:"关键字类型", width:"10%"},
-				{align:"center",key:"search_volume",label:"搜索量", width:"5%"},
+				{align:"center",key:"search_volume",label:"搜索量", width:"10%"},
 				
-				{align:"left",key:"cpc",label:"CPC",width:"5%",forzen:false,align:"left"},
-				{align:"left",key:"competition",label:"竞争",width:"5%"},
-				{align:"left",key:"site",label:"国家",width:"5%"}
+				{align:"left",key:"cpc",label:"CPC",width:"10%",forzen:false,align:"left"},
+				{align:"left",key:"competition",label:"竞争",width:"10%"},
+				{align:"left",key:"site",label:"国家",width:"10%"}
          ],
          ds:{type:"url",content:contextPath+"/grid/query"},
 		 limit:30,
@@ -136,6 +142,16 @@ $(function(){
 		 indexColumn:false,
 		 querys:{_data :"d_list_niche_keyword",status:''},//sql_purchase_plan_details_listForSKU sql_purchase_plan_details_list
 		 loadMsg:"数据加载中，请稍候......"
+	}) ;
+	
+	
+	$(".niche-delete").live("click",function(){
+		if(window.confirm("确认删除该niche关键字吗？")){
+			var record = $.llygrid.getRecord(this) ;
+			$.dataservice("model:Keyword.deleteNiche",{nicheId:record.keyword_id},function(result){
+				$(".niche-grid").llygrid("reload",{},true) ;
+			});
+		}
 	}) ;
 	
 	$(".niche-update").live("click",function(){

@@ -8,6 +8,17 @@ ini_set("post_max_size", "24M");
 class Keyword extends AppModel {
 	var $useTable = "sc_keyword_plan" ;
 	
+	public function pauseMainKeyword($params){
+		//设置主关键字停止开发
+		$keywordId = $params['keywordId'] ;
+		$sql = "update sc_keyword set is_pause = '1' where keyword_id ='{@#keywordId#}' " ;
+		$this->exeSql($sql, array("keywordId"=>$keywordId)) ;
+		
+		//清除扩展关键字
+		$sql = "delete from sc_keyword where ( main_keyword_id='{@#keywordId#}' or parent_id = '{@#keywordId#}' ) and is_main_keyword=0 and is_niche = 0 and is_extend=0" ;
+		$this->exeSql($sql, array("keywordId"=>$keywordId)) ;
+	}
+	
 	public function deleteNiche($params){
 		$nicheId = $params['nicheId'] ;
 		$sql = "update sc_keyword set is_niche = '0' where keyword_id = '".$nicheId."'" ;

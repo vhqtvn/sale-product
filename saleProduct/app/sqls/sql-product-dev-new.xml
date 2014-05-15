@@ -33,6 +33,17 @@
 	              from sc_product_category
 		]]>	      
 	    </entry>
+	    
+	    <entry key="sql_productDev_new_niche_categorytree">
+	    <![CDATA[
+	        select sc_product_category.*,
+	        		sc_product_category.name as TEXT,
+	              (select count(*) from sc_keyword sk where sk.category_id = sc_product_category.id
+	                 and sk.is_niche=1
+	               ) as TOTAL
+	              from sc_product_category
+		]]>	      
+	    </entry>
 
 		<entry key="sql_productDev_new_updateSampleTime">
 				update sc_product_developer set  dev_id = '{@#devId#}'

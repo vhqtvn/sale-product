@@ -92,10 +92,10 @@ ru
 				<table>
 					<tr>
 						<td>
-							<input type="text" id="mainKeyword" style="width:160px;" placeHolder="输入主关键字"/>
+							<input type="text" id="mainKeyword" style="width:140px;" placeHolder="输入主关键字"/>
 						</td>
 						<td>
-							<select  id="site" style="width:110px;">
+							<select  id="site" style="width:105px;">
 								<option value="us">Google.com</option>
 								<option value="uk">Google.co.uk</option>
 								<option value="de">Google.de</option>
@@ -112,7 +112,7 @@ ru
 							</select>
 						</td>
 						<td>
-							<select  id="total" style="width:70px;"   data-widget="tooltip" data-options="{placement:'bottom',title:'每次扩展最多扩展关键字数量！'}">
+							<select  id="total" style="width:60px;"   data-widget="tooltip" data-options="{placement:'bottom',title:'每次扩展最多扩展关键字数量！'}">
 								<option value="100">100</option>
 								<option value="200">200</option>
 								<option value="500">500</option>

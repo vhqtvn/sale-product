@@ -36,11 +36,11 @@ $(function(){
             {align:"center",key:"keyword_id",label:"操作",width:"16%",format:function(val,record){
             	var img = "" ;
 				
-				if(record.is_niche != 1){
+				if(record.is_niche != 1 &&  record.is_pause!=1){
 					if(isDev)img = "<img class='img-action setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
 				}
 				
-				if(record.c <=0 && isDev ){
+				if(record.c <=0 && isDev &&  record.is_pause!=1){
 					img = img +
 					"<img class='img-action getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 				}
@@ -48,10 +48,14 @@ $(function(){
 				//网址
 				img = img +
 				"<img class='img-action getWebsite' title='获取搜索网址' src='/"+fileContextPath+"/app/webroot/img/search.png'>" ;
+				if(  record.is_pause!=1  ){
+					//网址
+					img = img +
+					"<img class='img-action uploadKeyword' title='上传关键字列表' src='/"+fileContextPath+"/app/webroot/img/send-now.gif'>" ;
+					img = img +
+					"<img class='img-action pauseDev' title='结束开发' src='/"+fileContextPath+"/app/webroot/img/delete-row.gif'>" ;
+				}
 				
-				//网址
-				img = img +
-				"<img class='img-action uploadKeyword' title='上传关键字列表' src='/"+fileContextPath+"/app/webroot/img/send-now.gif'>" ;
 
 				return img ;
             }} 
@@ -94,19 +98,14 @@ $(function(){
             {align:"center",key:"keyword_id",label:"操作",width:"16%",format:function(val,record){
             	var img = "" ;
 				
-				if(record.is_niche != 1){
-					if(isDev){
+				if(record.is_niche != 1 && record.is_pause_p !=1 ){
+					if(isDev  ){
 						img = "<img class='setToNiche' title='设为Niche关键字' src='/"+fileContextPath+"/app/webroot/img/fav.gif'>"  ;
-						img = img +
-						"<img class='removeKeyword' title='删除关键字' src='/"+fileContextPath+"/app/webroot/img/delete.gif'>" ;
-						if( !record.group_id){
-							img = img + "<img class='groupKeyword' title='分组关键字' src='/"+fileContextPath+"/app/webroot/img/config.gif'>" ;
-						}
 					}
 					
 				}
 				
-				if( isDev ){
+				if( isDev  && record.is_pause_p !=1  ){
 					img = img +
 					"<img class='getSemrushKeyword' title='获取扩展关键字' src='/"+fileContextPath+"/app/webroot/img/expand-all.gif'>" ;
 				}
@@ -181,7 +180,16 @@ $(function(){
 	
 	
 	
-	
+	$(".pauseDev").live("click",function(){
+		if(window.confirm("确认终止该主关键字Niche开发，如确定，将自动清除所有扩展关键字吗？")){
+			var record = $.llygrid.getRecord(this) ;
+			
+			$.dataservice("model:Keyword.pauseMainKeyword",{keywordId:record.keyword_id},function(result){
+				$(".main-keyword").llygrid("reload",{},true) ;
+			});
+		}
+		
+	}) ;
 	
 	
 	

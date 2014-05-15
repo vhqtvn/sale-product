@@ -350,7 +350,7 @@
 			'{@#loginId#}', 
 			NOW(), 
 			'{@#tags#}',
-			51
+			45
 			)
    </entry>
    <entry key="sql_purchase_new_update">
