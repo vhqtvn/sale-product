@@ -134,7 +134,7 @@ class NewPurchaseService extends AppModel {
 				//判断是否需要创建RMA计划 badProductsNum  noConsistencyNum  outOfNum
 				
 				if( $data['status'] == 49 ){//交易付款，更新付款时间
-					$sql = "update sc_purchase_product set order_date = NOW() where order_data is not null and id='{@#id#}'" ;
+					$sql = "update sc_purchase_product set order_date = NOW() where order_date is not null and id='{@#id#}'" ;
 					$this->exeSql($sql, $data) ;
 				}
 				

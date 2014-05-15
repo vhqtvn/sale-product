@@ -213,19 +213,21 @@
 										?> 
 									</select>
 									</td>
-									<th>长X宽X高(cm)：</th>
-									<td><input type="text" name="length" style="width:50px;" value="<?php echo $item['LENGTH']?>"/>
-									X<input type="text" name="width" style="width:50px;" value="<?php echo $item['WIDTH']?>"/>
-									X<input type="text" name="height" style="width:50px;" value="<?php echo $item['HEIGHT']?>"/>
-									
+									<th>FBC重量：</th>
+									<td><input type="text" name="packageWeight" style="width:50px;" value="<?php echo $item['PACKAGE_WEIGHT']?>"/>
 									</td>
 								</tr>
 								<tr>
 									<th>产品规格（个/箱，KG/箱）：</th>
-									<td colspan="3">
+									<td>
 										<input type="text" name="specificationUnit" style="width:100px;" value="<?php echo $item['SPECIFICATION_UNIT']?>" placeHolder="个/箱"/>个/箱
 										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 										<input type="text" name="specificationWeight" style="width:100px;" value="<?php echo $item['SPECIFICATION_WEIGHT']?>" placeHolder="KG/箱"/>KG/箱
+									</td>
+									<th>长X宽X高(cm)：</th>
+									<td><input type="text" name="length" style="width:50px;" value="<?php echo $item['LENGTH']?>"/>
+									X<input type="text" name="width" style="width:50px;" value="<?php echo $item['WIDTH']?>"/>
+									X<input type="text" name="height" style="width:50px;" value="<?php echo $item['HEIGHT']?>"/>
 									</td>
 								</tr>
 								<tr>

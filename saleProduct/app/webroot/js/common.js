@@ -1162,7 +1162,7 @@ $("[offer-listing]").live("click",function(){
 
 $("[product-realsku]").live("click",function(){
 	var sku = $(this).attr("product-realsku") ;
-	openCenterWindow(contextPath+"/saleProduct/details/"+sku+"/sku",950,650) ;
+	openCenterWindow(contextPath+"/saleProduct/details/"+sku+"/sku",1000,650) ;
 	return false;
 }) ;
 

@@ -15,6 +15,11 @@
 		           	},render:function(record){
 		           		if( parseFloat(record.LIMIT_PRICE) < parseFloat(record.LOWEST_PRICE)  ){
 		           			$(this).find("td[key='REAL_SKU']").css("background","pink") ;
+		           			return ;
+		           		}
+		           		
+		           		if( parseFloat( record.LIMIT_PRICE ) - parseFloat(record.LOWEST_PRICE)  < 0.5  ){
+		           			$(this).find("td[key='REAL_SKU']").css("background","blue") ;
 		           		}
 		           	}},
 		            {align:"center",key:"ACCOUNT_NAME",label:"账号",width:"3%",forzen:false,align:"center"},
@@ -35,7 +40,7 @@
 		         ],
 		         ds:{type:"url",content:contextPath+"/grid/query"},
 				 limit:30,
-				 pageSizes:[10,20,30,40],
+				 pageSizes:[10,20,30,40,50,70,100],
 				 height:function(){
 				 	return $(window).height() - 150 ;
 				 },

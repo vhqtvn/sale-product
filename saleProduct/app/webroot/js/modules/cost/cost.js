@@ -19,6 +19,15 @@ var  Cost = function(){
 	var _wlUnitPrice = 0 ;
 	var _channel = null ;
 	var  _calcCostAbale = 0 ; 
+	var  _fbcOrderRate = 0 ;
+	var  _fbmOrderRate = 0 ;
+	
+	this.setFbcOrderRate = function(fbcOrderRate){
+		_fbcOrderRate= fbcOrderRate ;
+	};
+	this.setFbmOrderRate = function(fbmOrderRate){
+		_fbmOrderRate= fbmOrderRate ;
+	};
 	
 	this.setChannel = function(channel){
 		_channel= channel ;
@@ -49,8 +58,22 @@ var  Cost = function(){
 		_fbaCost = vcf ;
 	};
 	
+	this.getFbaCost = function(){
+		if( _channel != 'Merchant'){
+			return (parseFloat( _fbaCost)).toFixed(2) ;
+		}
+		return "-" ;
+	};
+	
 	this.setTransferUnitPrice = function(vcf){
 		_wlUnitPrice = vcf ;
+	};
+	
+	this.getInventoryCenterFee = function(){
+		if( _channel != 'Merchant'){
+			return 0 ;
+		}
+		return "-" ;
 	};
 	
 	this.getChannelFeeRatioFormat = function(){
@@ -64,25 +87,50 @@ var  Cost = function(){
 	};
 	
 	this.getTransferCost = function(){
-		return (parseFloat( _productProps.weight*_wlUnitPrice )).toFixed(2) ;
+		if( _channel != 'Merchant'){
+			return (parseFloat( _productProps.weight*_wlUnitPrice )).toFixed(2) ;
+		}
+		return "-" ;
 	};
 	
 	this.getCalcCostAbale = function(){
 		return (_calcCostAbale).toFixed(2) ;
 	};
 	
+	this.getOrderTransferCost = function(){
+		if( _channel != 'Merchant'){
+			return "-" ;
+		}
+		return (parseFloat( _productProps.weight*_fbcOrderRate )).toFixed(2) ;
+	};
+	
 	this.evlate  = function(){
-		var _cost = parseFloat(_productCost/_exchangeRate) ;
-		_cost += parseFloat( _fbaCost ) ;
-		_cost += parseFloat( _variableCloseFee ) ;
-		_cost += parseFloat( _sellPrice*_channelFeeRatio ) ;
-		
-		var weight = _productProps.weight ;
-		_cost += parseFloat( weight*_wlUnitPrice ) ;
+		var _cost = 0 ;
+		if( _channel != 'Merchant'){//FBA
+			_cost = parseFloat(_productCost/_exchangeRate) ;//采购成本
+			_cost += parseFloat( this.getFbaCost() );//FBA费用
+			_cost += parseFloat( _variableCloseFee ) ;//可变关闭费用
+			_cost += parseFloat( _sellPrice*_channelFeeRatio ) ;//渠道佣金
+			
+			var weight = _productProps.weight ;
+			_cost += parseFloat( weight*_wlUnitPrice ) ;
+			var totalProfile = _sellPrice - _cost ;
+			var  calcCostAbale = _cost -  parseFloat( _fbaCost ) - parseFloat( _variableCloseFee )  - parseFloat( _sellPrice*_channelFeeRatio ) ;
+			_calcCostAbale = calcCostAbale;
+			var profileRatio = ((totalProfile/calcCostAbale)*100).toFixed(2)+"%" ;
+			return { cost: _cost , profile: totalProfile,profileRatio:profileRatio,calcCostAbale:calcCostAbale } ;
+		}
+		//FBM
+		_cost = parseFloat( _productCost/_exchangeRate ) ;//采购成本
+		_cost += parseFloat( _variableCloseFee ) ;//可变关闭费用
+		_cost += parseFloat( _sellPrice*_channelFeeRatio ) ;//渠道佣金
+		var weight = _productProps.packageWeight||999 ;
+		_cost += parseFloat( weight*_fbcOrderRate ) ;
 		var totalProfile = _sellPrice - _cost ;
-		var  calcCostAbale = _cost -  parseFloat( _fbaCost ) - parseFloat( _variableCloseFee )  - parseFloat( _sellPrice*_channelFeeRatio ) ;
+		var  calcCostAbale = _cost - parseFloat( _variableCloseFee )  - parseFloat( _sellPrice*_channelFeeRatio ) ;
 		_calcCostAbale = calcCostAbale;
 		var profileRatio = ((totalProfile/calcCostAbale)*100).toFixed(2)+"%" ;
-		return { cost: _cost , profile: totalProfile,profileRatio:profileRatio,calcCostAbale:calcCostAbale } ;
+		
+		return { cost: _cost , profile: totalProfile ,profileRatio:profileRatio,calcCostAbale:calcCostAbale } ;
 	};
 };

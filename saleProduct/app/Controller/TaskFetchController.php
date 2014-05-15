@@ -30,7 +30,7 @@ class TaskFetchController extends AppController {
 	 	}
 	 	//ob_clean();
 	 }
-	 
+
 	 public function formatRealFee($realId){
 	 	//通过realId获取货品
 	 	$listings = $this->Amazonaccount->getAccountProductByRealId($realId) ;

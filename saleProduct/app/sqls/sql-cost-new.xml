@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <entry key="sql_cost_new_listingCostEvlate">
+    				SELECT saap.ACCOUNT_ID,
+							    saap.SKU,
+								saap.FULFILLMENT_CHANNEL,
+				                saap.ASIN,
+							    saap.LOWEST_PRICE,
+							    saap.LOWEST_FBA_PRICE,
+				                saa.name as ACCOUNT_NAME,
+								saa.TRANSFER_WH_PRICE,
+								saa.FBC_ORDER_RATE,
+				                saa.FBM_ORDER_RATE,
+								spcd.COMMISSION_RATIO ,
+								'' as TOTAL_COST,
+								'' as TRANSFER_COST,
+								'' as LOGISTICS_COST ,
+								saa.FEE_RATIO,
+								spcd.FBA_COST as _FBA_COST,
+								spcd.COMMISSION_RATIO,
+								spcd.VARIABLE_CLOSING_FEE,
+								saa.INVENTORY_CENTER_FEE,
+								spcd.OTHER_COST,
+								srp.ID as REAL_ID,
+				                srp.WEIGHT,
+				                srp.PACKAGE_WEIGHT,
+				                srp.LENGTH,
+				                srp.WIDTH,
+				                srp.HEIGHT,
+				              (select ser.EXCHANGE_RATE from sc_exchange_rate ser where ser.id = saa.EXCHANGE_ID ) as EXCHANGE_RATE
+					 FROM sc_amazon_account_product saap,
+				               sc_amazon_account saa,
+				               sc_real_product srp ,
+					           sc_real_product_rel srpr
+					LEFT JOIN sc_product_cost_details spcd
+					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
+					AND spcd.LISTING_SKU = srpr.SKU
+					WHERE saap.ACCOUNT_ID = srpr.ACCOUNT_ID
+					AND saap.SKU = srpr.SKU
+				   and saa.id = saap.account_id
+				   and srp.id = srpr.real_id
+				   and srpr.account_id = '{@#accountId#}'
+				   and srpr.sku = '{@#listingSku#}'
+    </entry>
+    
+    <entry key="sql_cost_new_realProductCostEvlate">
+    				SELECT saap.ACCOUNT_ID,
+							    saap.SKU,
+								saap.FULFILLMENT_CHANNEL,
+				                saap.ASIN,
+							    saap.LOWEST_PRICE,
+							    saap.LOWEST_FBA_PRICE,
+				                saa.name as ACCOUNT_NAME,
+								saa.TRANSFER_WH_PRICE,
+								saa.FBC_ORDER_RATE,
+				                saa.FBM_ORDER_RATE,
+								spcd.COMMISSION_RATIO ,
+								'' as TOTAL_COST,
+								'' as TRANSFER_COST,
+								'' as LOGISTICS_COST ,
+								saa.FEE_RATIO,
+								spcd.FBA_COST as _FBA_COST,
+								spcd.COMMISSION_RATIO,
+								spcd.VARIABLE_CLOSING_FEE,
+								saa.INVENTORY_CENTER_FEE,
+								spcd.OTHER_COST,
+								srp.ID as REAL_ID,
+				                srp.WEIGHT, 
+				                srp.PACKAGE_WEIGHT,
+				                srp.LENGTH,
+				                srp.WIDTH,
+				                srp.HEIGHT,
+				              (select ser.EXCHANGE_RATE from sc_exchange_rate ser where ser.id = saa.EXCHANGE_ID ) as EXCHANGE_RATE
+					 FROM sc_amazon_account_product saap,
+				               sc_amazon_account saa,
+				               sc_real_product srp ,
+					           sc_real_product_rel srpr
+					LEFT JOIN sc_product_cost_details spcd
+					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
+					AND spcd.LISTING_SKU = srpr.SKU
+					WHERE saap.ACCOUNT_ID = srpr.ACCOUNT_ID
+					AND saap.SKU = srpr.SKU
+				   and saa.id = saap.account_id
+				   and srp.id = srpr.real_id
+				   and srpr.real_id = '{@#realId#}'
+    </entry>
+    
+</properties>

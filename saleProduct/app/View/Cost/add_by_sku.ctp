@@ -62,6 +62,8 @@
 							       saap.LOWEST_FBA_PRICE,
 				                saa.name as ACCOUNT_NAME,
 								saa.TRANSFER_WH_PRICE,
+								saa.FBC_ORDER_RATE,
+				                saa.FBM_ORDER_RATE,
 								spcd.COMMISSION_RATIO ,
 								'' as TOTAL_COST,
 								'' as TRANSFER_COST,
@@ -73,6 +75,7 @@
 								saa.INVENTORY_CENTER_FEE,
 								spcd.OTHER_COST,
 				                srp.WEIGHT,
+								srp.PACKAGE_WEIGHT,
 				                srp.LENGTH,
 				                srp.WIDTH,
 				                srp.HEIGHT,
@@ -120,9 +123,27 @@
 		var  $listing = <?php echo  json_encode($listing) ; ?>;
 
    		$(function(){
+					$(".amazon-asyn-listing").click(function(){
+						var row = $(this).closest("tr") ;
+						var accountId = row.find("[name='ACCOUNT_ID']").val() ;
+						var listingSku = row.find("[name='LISTING_SKU']").val() ;
+						$(this).text("同步中..") ;
+						$.ajax({
+							type:"post",
+							url:contextPath+"/taskFetch/formatListingFee/"+accountId+"/"+listingSku,
+							data:{},
+							cache:false,
+							dataType:"text",
+							success:function(result,status,xhr){
+								window.location.reload() ;
+							},error:function(){
+								alert("操作出现异常！") ;
+								$(this).text("同步") ;
+							}
+						}); 
+					}) ;
+   	   		
 					$(".asyn-amazon-fee").click(function(){
-						
-
 						var productCost = $(".product-cost").toJson() ;
 						var listingCosts = [] ;
 						$(".listing-cost .data-row").each(function(index,row){
@@ -202,7 +223,9 @@
 				cost.setVariableCloseFee( item.VARIABLE_CLOSING_FEE ) ;
 				cost.setFbaCost(  item._FBA_COST ) ;
 				cost.setTransferUnitPrice( item.TRANSFER_WH_PRICE ) ;
-				cost.setTransferProperties( {weight:item.WEIGHT , length:item.LENGTH , width:item.WIDTH , height:item.HEIGHT } ) ;
+				cost.setFbcOrderRate( item.FBC_ORDER_RATE ) ;
+				cost.setFbmOrderRate( item.FBM_ORDER_RATE ) ;
+				cost.setTransferProperties( {weight:item.WEIGHT , length:item.LENGTH , width:item.WIDTH , height:item.HEIGHT,packageWeight: item.PACKAGE_WEIGHT } ) ;
 
 				var costValue = cost.evlate() ;
 
@@ -214,6 +237,9 @@
 				$(".transferCost","#"+rowId).html( cost.getTransferCost() ) ;
 				$(".totalCost","#"+rowId).html( _cost ) ;
 				$(".payCost","#"+rowId).html( cost.getCalcCostAbale() ) ;
+				$(".fbaCost","#"+rowId).html( cost.getFbaCost() ) ;
+				$(".inventoryCenterFee","#"+rowId).html( cost.getInventoryCenterFee() ) ;
+				$(".orderTransferCost","#"+rowId).html( cost.getOrderTransferCost() ) ;
 				
 				$(".totalProfile","#"+rowId).html( totalProfile+"["+profileRate+"]" ) ;//profile profileRatio
 			 }) ;
@@ -286,6 +312,7 @@
 						<table  class="form-table table  listing-cost" >
 							<caption>Listing成本</caption>
 							<tr>
+								<th>操作</th>
 								<th>Listing SKU</th>
 								<th>ASIN</th>
 								<th>账号</th>
@@ -318,6 +345,9 @@
 							
 							<tr  class="data-row"  id="<?php echo $item['ACCOUNT_ID'];?>_<?php echo $item['SKU'];?>">
 								<td>
+										<a href="#"  class="amazon-asyn-listing">同步</a>
+								</td>
+								<td>
 									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>
 									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['SKU'];?>" style="width:50px;"/>
 									<input type="hidden" name="COMMISSION_RATIO"   value="<?php echo $item['COMMISSION_RATIO'];?>" style="width:50px;"/>
@@ -339,24 +369,21 @@
 								}else{
 									$_ = round($item['LOWEST_FBA_PRICE'],3);
 								} ?>
-									<input type="text"   name="TOTAL_PRICE"  value="<?php echo $_ ; ?>" style="width:50px;"/><br/>
+									<input type="text"   name="TOTAL_PRICE"  value="<?php echo $_ ; ?>" style="width:30px;"/><br/>
 								</td>
 								<td  class="totalCost"></td>
 								<td  class="payCost"></td>
 								<td  class="totalProfile"></td>
-								<td class="transferCost">
-								</td>
-								<td>
-								<input type="text" class="_cost  <?php echo $item['FULFILLMENT_CHANNEL']=='Merchant'?"":"hide" ;?>"  
-									name="LOGISTICS_COST" value="<?php echo $item['LOGISTICS_COST'];?>" style="width:50px;"/></td>
+								<td class="transferCost"></td>
+								<td  class="orderTransferCost"></td>
 								<td class="fee"></td>
 								<td  class="COMMISSION_FEE"></td>
 								<td><?php echo round($item['VARIABLE_CLOSING_FEE'],3 ) ;?></td>
 								
-								<td><?php echo round($item['_FBA_COST'],3 ) ; ?></td>
-								<td><?php echo round( $item['INVENTORY_CENTER_FEE'],3);?></td>
+								<td  class="fbaCost"></td>
+								<td class="inventoryCenterFee"><?php echo round( $item['INVENTORY_CENTER_FEE'],3);?></td>
 								
-								<td><input type="text"  name="OTHER_COST"  value="<?php echo round($item['OTHER_COST'],2);?>" style="width:50px;"/></td>
+								<td><input type="text"  name="OTHER_COST"  value="<?php echo round($item['OTHER_COST'],2);?>" style="width:30px;"/></td>
 							</tr>
 							<?php  	} ?>
 						</table>
