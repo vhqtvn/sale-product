@@ -378,14 +378,20 @@ class Cost extends AppModel {
 		$realproducts = $this->exeSqlWithFormat($sql, array()) ;
 		foreach( $realproducts as $product ){
 			//获取当前货品最近的采购记录
-			$sql ="SELECT sptp.* FROM sc_purchase_task_products sptp
+			/*$sql ="SELECT sptp.* FROM sc_purchase_task_products sptp
 						        ,sc_purchase_plan_details sppd
 						        WHERE sptp.PRODUCT_ID = sppd.ID
 						        AND ( sppd.REAL_ID ='{@#realId#}'  OR sppd.SKU = '{@#sku#}' )
 								AND sptp.WAREHOUSE_TIME is not null
 								AND sptp.REAL_QUOTE_PRICE is not null
 						     ORDER BY sptp.WAREHOUSE_TIME  desc
-						     LIMIT 0,1" ;
+						     LIMIT 0,1" ;*/
+			
+			$sql = "select * from sc_purchase_product spp where spp.real_id = '{@#realId#}' and spp.REAL_QUOTE_PRICE is not null and spp.REAL_QUOTE_PRICE != ''
+					    and spp.QUALIFIED_PRODUCTS_NUM >0
+					    order by  spp.WAREHOUSE_TIME  desc
+						limit 0,1 " ;
+			
 			$item = $this->getObject($sql, array("realId"=>$product['ID'],"sku"=>$product['REAL_SKU'])) ;
 			
 			//debug($item) ;

@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_cost_new_getAccountListing">
+			select saap.* from sc_amazon_account_product saap,
+			                 sc_real_product_rel srpr
+			                 where saap.account_id = srpr.account_id
+			                 and saap.sku = srpr.sku
+			                 and saap.status = 'Y'
+			                 and srpr.real_id = '{@#realId#}'
+	</entry>
+	<!-- 获取最近销量7,14,30 -->
+	<entry key="sql_cost_new_getLatestSalesNum">
+	<![CDATA[
+	SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 7 AS TYPE FROM sc_order_item soi,
+   sc_real_product_rel srpr
+   WHERE soi.ACCOUNT_ID = srpr.ACCOUNT_ID
+   AND soi.Seller_SKU = srpr.SKU
+   AND srpr.REAL_ID = '{@#realId#}'
+   AND DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= DATE(soi.PURCHASE_DATE)
+   GROUP BY soi.ACCOUNT_ID,soi.Seller_SKU
+UNION
+SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 14 AS TYPE FROM sc_order_item soi,
+   sc_real_product_rel srpr
+   WHERE soi.ACCOUNT_ID = srpr.ACCOUNT_ID
+   AND soi.Seller_SKU = srpr.SKU
+   AND srpr.REAL_ID = '{@#realId#}'
+   AND DATE_SUB(CURDATE(), INTERVAL 14 DAY) <= DATE(soi.PURCHASE_DATE)
+   GROUP BY soi.ACCOUNT_ID,soi.Seller_SKU
+UNION
+SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 30 AS TYPE FROM sc_order_item soi,
+   sc_real_product_rel srpr
+   WHERE soi.ACCOUNT_ID = srpr.ACCOUNT_ID
+   AND soi.Seller_SKU = srpr.SKU
+   AND srpr.REAL_ID = '{@#realId#}'
+   AND DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= DATE(soi.PURCHASE_DATE)
+   GROUP BY soi.ACCOUNT_ID,soi.Seller_SKU
+   ]]>	      
+   </entry>
+   
     <entry key="sql_cost_new_listingCostEvlate">
     				SELECT saap.ACCOUNT_ID,
 							    saap.SKU,

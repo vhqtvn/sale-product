@@ -29,6 +29,7 @@
 		echo $this->Html->script('modules/purchase/edit_purchase_product');
 		echo $this->Html->script('dialog/jquery.dialog');
 		echo $this->Html->script('calendar/WdatePicker');
+		echo $this->Html->script('modules/cost/cost');
 		
 		$purchaseProductId = $params['arg1'] ;
 		$actionType = $params['arg2'] ;
@@ -340,6 +341,46 @@
                 		}
         			}}
 	        	] ;
+
+	 <?php  if( $user['LOGIN_ID'] == 'lixh' ){ ?>
+	 	$(function(){
+	 		Cost.get('<?php echo $purchaseProduct['REAL_ID'] ;?>',function(costs){
+                    var purchaseCost = 0 ;
+                    var logisticsCost = 0 ;
+                   $(costs).each(function(){
+                	   purchaseCost = this.purchaseCost ;
+                	   logisticsCost = this.logisticsCost ;
+                	   var salesNum = this.salesNum ;
+                	   
+                	   
+					    var accountId = this.accountId ;
+						var listingSku = this.listingSku ;
+						var listingRow = $("[rowListing='"+accountId+"_"+listingSku+"']") ;
+
+						if( listingRow.length >=1 ){
+							//var profileRateParse = parseFloat(this.profileRate) ;
+				
+							listingRow.find(".profit").html( this.costAvalibe+"/"+this.totalProfile+"/"+this.profileRate ) ;//支付成本/总利润/利润率
+
+							var salesNumMap = {} ;
+							$(salesNum).each(function(){
+									if( this.ACCOUNT_ID == accountId && this.LISTING_SKU = listingSku ){
+										salesNumMap[this.TYPE] = this.COUNT ;
+									}
+							}) ;
+
+							var saleString = (salesNumMap[7]||'-')+"/"+(salesNumMap[14]||'-')+"/"+(salesNumMap[30]||'-') ;
+							
+							listingRow.find(".lastest-sale-num").html( saleString ) ;
+						}
+                   }) ;
+
+                   $(".cost-container ul").empty() ;
+                   $("<li>上次采购价："+purchaseCost+"/"+logisticsCost +"</li>").appendTo(  $(".cost-container ul") ) ;
+                   
+		   }) ;
+		 }) ;
+		 <?php }?>
    </script>
 </head>
 
@@ -381,9 +422,12 @@
 										<th>执行人：</th><td>
 											<input type="hidden"   id="executor"   
 											value="<?php echo $purchaseProduct['EXECUTOR'];?>"/>
-											<input type="text"   id="executorName"  readonly value='<?php echo $executorName;?>'
+											<input type="text"   id="executorName"  style="width:100px;" readonly value='<?php echo $executorName;?>'
 													value=""/>
 											<button class="btn btn-charger 10-input  input"  disabled="disabled">选择</button>
+										</td>
+										<td rowspan="4" style="width:300px;"  class="cost-container">
+											<ul></ul>
 										</td>
 									</tr>
 									<tr>
@@ -399,9 +443,9 @@
 									</tr>
 									<tr>
 										<th>计划采购数量：</th>
-										<td><input type="text" disabled="disabled" name="planNum" value="<?php echo  $purchaseProduct['PLAN_NUM']  ;?>"/></td>
+										<td><input type="text" disabled="disabled" style="width:100px;" name="planNum" value="<?php echo  $purchaseProduct['PLAN_NUM']  ;?>"/></td>
 										<th>采购限价：</th>
-										<td><input type="text" class="input 51-input" name="limitPrice" value="<?php echo $purchaseProduct['LIMIT_PRICE'];?>"/></td>
+										<td><input type="text" class="input 51-input" style="width:100px;" name="limitPrice" value="<?php echo $purchaseProduct['LIMIT_PRICE'];?>"/></td>
 									</tr>
 								</tbody>
 						</table>
@@ -412,14 +456,15 @@
 								}?></caption>
 								<thead>
 									<tr>
-										<th style="width:200px;">标签</th>
+										<th style="width:250px;">标签</th>
 										<th  style="font-weight:bold;">账号</th>
 										<th style="font-weight:bold;">Listing SKU</th>
 										<th style="font-weight:bold;">FNSKU</th>
 										<th style="font-weight:bold;">渠道</th>
-										<th style="font-weight:bold;">采购数量</th>
-										<th style="font-weight:bold;">当前库存</th>
-										<th style="font-weight:bold;">最近14天销量</th>
+										<th style="font-weight:bold;" style="width:100px;">采购数量</th>
+										<th style="font-weight:bold;" >当前库存</th>
+										<th style="font-weight:bold;">总成本/利润/利润率</th>
+										<th style="font-weight:bold;">销量(7/14/30)</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -437,10 +482,10 @@
 												$purchaseQuantity = $planNum ;
 											}
 										?>
-									  <tr   class="edit-data-row">
+									  <tr   class="edit-data-row"   rowListing="<?php echo $req['ACCOUNT_ID'] ;?>_<?php echo $req['LISTING_SKU'] ;?>">
 										<td>
 											<?php  if( $purchaseQuantity >0  ) { ?>
-										  <input type='text'  class="print-num no-disabled" style='width:35px;height:20px;margin-top:2px;padding:0px;' value='<?php echo $purchaseQuantity+5 ;?>'  title='输入打印数量'>
+										  <input type='text'  class="print-num no-disabled" style='width:25px;height:20px;margin-top:2px;padding:0px;' value='<?php echo $purchaseQuantity+5 ;?>'  title='输入打印数量'>
 										  <select style="width:40px;padding:0px;height:22px;" class="no-disabled  paper-type">
 										  	<option value='A4'>A4</option>
 										  	<option value='A2'>A2</option>
@@ -460,7 +505,8 @@
 											<input type="text" 	   class="purchaseQuantity input 45-input"  value='<?php echo $purchaseQuantity ;?>' style="width:50px;"/>
 										</td>
 										<td><?php echo $req['TOTAL_SUPPLY_QUANTITY'] ;?></td>
-										<td><?php echo $req['SALES_FOR_THELAST14DAYS'] ;?></td>
+										<td class="profit"></td>
+										<td class="lastest-sale-num"></td>
 									</tr>
 									<?php  } ?>
 								</tbody>

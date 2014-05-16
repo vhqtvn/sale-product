@@ -221,6 +221,7 @@
 				cost.setSellPrice( $("[name='TOTAL_PRICE']","#"+rowId).val()   ) ;
 				cost.setChannelFeeRatio( item.COMMISSION_RATIO ) ;
 				cost.setVariableCloseFee( item.VARIABLE_CLOSING_FEE ) ;
+				cost.setCommissionLowlimit( item.COMMISSION_LOWLIMIT ) ;
 				cost.setFbaCost(  item._FBA_COST ) ;
 				cost.setTransferUnitPrice( item.TRANSFER_WH_PRICE ) ;
 				cost.setFbcOrderRate( item.FBC_ORDER_RATE ) ;
@@ -369,7 +370,7 @@
 								}else{
 									$_ = round($item['LOWEST_FBA_PRICE'],3);
 								} ?>
-									<input type="text"   name="TOTAL_PRICE"  value="<?php echo $_ ; ?>" style="width:30px;"/><br/>
+									<input type="text"   name="TOTAL_PRICE"  value="<?php echo $_ ; ?>" style="width:40px;"/><br/>
 								</td>
 								<td  class="totalCost"></td>
 								<td  class="payCost"></td>
