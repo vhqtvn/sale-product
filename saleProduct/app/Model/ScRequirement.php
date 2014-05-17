@@ -51,7 +51,7 @@ class ScRequirement extends AppModel {
 							$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 							
 							//产品开发结束流程
-							$sql = "UPDATE sc_product_dev spd SET spd.FLOW_STATUS = 80
+							$sql = "UPDATE sc_product_developer spd SET spd.FLOW_STATUS = 80
 							WHERE CONCAT(spd.ASIN,'_',spd.TASK_ID) IN (
 								SELECT DEV_ID FROM sc_purchase_product sppd  where id = '{@#productId#}'
 							) " ;
@@ -715,21 +715,6 @@ class ScRequirement extends AppModel {
 		return $orderCount/$flowCount ;
 	}
 	
-
-	/**
-	 * 获取listing成本
-	 * @param unknown_type $accountId
-	 * @param unknown_type $listingSku
-	 */
-	public function getListingCost($accountId , $listingSku){
-		return $this->getObject("sql_supplychain_requirement_getListingCostNoView", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
-	}
-	
-	//获取Listing库存
-	public function getListingInventory($accountId , $listingSku){
-		$cost = $this->getObject("sql_supplychain_requirement_getListingCost", array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
-		return $cost ;
-	}
 	
 	public function getGlobalReqAdjust($accountId , $listingSku){
 		$sql = "select * from sc_amazon_config where name='REQ_ADJUST'" ;
