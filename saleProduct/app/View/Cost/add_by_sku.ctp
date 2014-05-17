@@ -54,46 +54,8 @@
 		$productCost = $SqlUtils->getObject($sql,array()) ;
 
 		
-		$sql = "SELECT saap.ACCOUNT_ID,
-							       saap.SKU,
-								  saap.FULFILLMENT_CHANNEL,
-				                  saap.ASIN,
-							       saap.LOWEST_PRICE,
-							       saap.LOWEST_FBA_PRICE,
-				                saa.name as ACCOUNT_NAME,
-								saa.TRANSFER_WH_PRICE,
-								saa.FBC_ORDER_RATE,
-				                saa.FBM_ORDER_RATE,
-								spcd.COMMISSION_RATIO ,
-								'' as TOTAL_COST,
-								'' as TRANSFER_COST,
-								'' as LOGISTICS_COST ,
-								saa.FEE_RATIO,
-								spcd.FBA_COST as _FBA_COST,
-								spcd.COMMISSION_RATIO,
-								spcd.VARIABLE_CLOSING_FEE,
-								saa.INVENTORY_CENTER_FEE,
-								spcd.OTHER_COST,
-				                srp.WEIGHT,
-								srp.PACKAGE_WEIGHT,
-				                srp.LENGTH,
-				                srp.WIDTH,
-				                srp.HEIGHT,
-				              (select ser.EXCHANGE_RATE from sc_exchange_rate ser where ser.id = saa.EXCHANGE_ID ) as EXCHANGE_RATE
-					 FROM sc_amazon_account_product saap,
-				              sc_amazon_account saa,
-				             sc_real_product srp ,
-					        sc_real_product_rel srpr
-					LEFT JOIN sc_product_cost_details spcd
-					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
-					AND spcd.LISTING_SKU = srpr.SKU
-					WHERE saap.ACCOUNT_ID = srpr.ACCOUNT_ID
-					AND saap.SKU = srpr.SKU
-				   and saa.id = saap.account_id
-				   and srp.id = srpr.real_id
-					AND srpr.REAL_ID = '{@#realId#}' ";
+		$sql = "sql_cost_new_realProductCostEvlate ";
 		
-		//$sql = "select * from sc_view_listing_cost where id = '{@#realId#}'" ;
 		//$listing = null ;
 		$listing = $SqlUtils->exeSqlWithFormat($sql,array("realId"=>$realId)) ;
 		//debug($listing) ;
@@ -125,46 +87,21 @@
    		$(function(){
 					$(".amazon-asyn-listing").click(function(){
 						var row = $(this).closest("tr") ;
-						var accountId = row.find("[name='ACCOUNT_ID']").val() ;
-						var listingSku = row.find("[name='LISTING_SKU']").val() ;
+						var asin = row.find("[name='ASIN']").val() ;
 						$(this).text("同步中..") ;
 						$.ajax({
 							type:"post",
-							url:contextPath+"/taskFetch/formatListingFee/"+accountId+"/"+listingSku,
+							url:contextPath+"/taskFetch/formatAsinFee/"+asin,
 							data:{},
 							cache:false,
 							dataType:"text",
 							success:function(result,status,xhr){
-								window.location.reload() ;
+								//window.location.reload() ;
 							},error:function(){
 								alert("操作出现异常！") ;
 								$(this).text("同步") ;
 							}
 						}); 
-					}) ;
-   	   		
-					$(".asyn-amazon-fee").click(function(){
-						var productCost = $(".product-cost").toJson() ;
-						var listingCosts = [] ;
-						$(".listing-cost .data-row").each(function(index,row){
-							var listingCost = $(this).toJson() ;
-							listingCosts.push(listingCost) ;
-   						});
-
-						$.dataservice("model:Cost.saveCostFix" , {productCost:productCost,listingCosts:listingCosts} , function(){
-							$.ajax({
-								type:"post",
-								url:contextPath+"/taskFetch/formatRealFee/<?php echo $realId;?>",
-								data:{},
-								cache:false,
-								dataType:"text",
-								success:function(result,status,xhr){
-									//window.location.reload() ;
-								},error:function(){
-									alert("操作出现异常！") ;
-								}
-							}); 
-						}) ;
 					}) ;
    	   		
    				
@@ -351,7 +288,7 @@
 								<td>
 									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>
 									<input type="hidden" name="LISTING_SKU"   value="<?php echo $item['SKU'];?>" style="width:50px;"/>
-									<input type="hidden" name="COMMISSION_RATIO"   value="<?php echo $item['COMMISSION_RATIO'];?>" style="width:50px;"/>
+									<input type="hidden" name="ASIN"   value="<?php echo $item['ASIN'];?>" style="width:50px;"/>
 									<input type="hidden" name="FULFILLMENT_CHANNEL"   value="<?php echo $item['FULFILLMENT_CHANNEL'];?>" style="width:50px;"/>
 									<a href="#" product-detail="<?php echo $item['ASIN'];?>"><?php echo $item['SKU'];?></a>
 								</td>
@@ -395,7 +332,6 @@
 					<!-- panel脚部内容-->
                     <div class="panel-foot"  style="background:#FFF;">
 						<div class="form-actions">
-							<button type="submit" class="btn btn-primary asyn-amazon-fee">同步Amazon费用</button>
 							<button type="submit" class="btn btn-primary save-btn">保存</button>
 						</div>
 					</div>

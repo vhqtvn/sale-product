@@ -202,6 +202,11 @@
 			margin:2px 5px;
 		 	padding:2px;
 		}
+		
+		.cost-container li{
+			font-weight:bold;
+			list-style: none;
+		}
 	</style>
 
    <script type="text/javascript">
@@ -342,16 +347,26 @@
         			}}
 	        	] ;
 
-	 <?php  if( $user['LOGIN_ID'] == 'lixh' ){ ?>
+	 <?php  //if( $user['LOGIN_ID'] == 'lixh' ){ ?>
 	 	$(function(){
-	 		Cost.get('<?php echo $purchaseProduct['REAL_ID'] ;?>',function(costs){
+		 	var _lastPurchase = null ;
+	 		Cost.get('<?php echo $purchaseProduct['REAL_ID'] ;?>',function(result){
+		 		    //alert( $.json.encode(result) ) ;
+                    var costs = result.returnCosts ;
+                    var lastPurchase = result.lastPurchase|| null ;
+                    _lastPurchase = lastPurchase ;
+		 		
                     var purchaseCost = 0 ;
                     var logisticsCost = 0 ;
+                    var providorName = "" ;
+                    var providorId = "" ;
                    $(costs).each(function(){
                 	   purchaseCost = this.purchaseCost ;
                 	   logisticsCost = this.logisticsCost ;
-                	   var salesNum = this.salesNum ;
+                	   providorName = this.providorName ;
+                	   providorId = this.providorId ;
                 	   
+                	   var salesNum = this.salesNum ;
                 	   
 					    var accountId = this.accountId ;
 						var listingSku = this.listingSku ;
@@ -361,26 +376,41 @@
 							//var profileRateParse = parseFloat(this.profileRate) ;
 				
 							listingRow.find(".profit").html( this.costAvalibe+"/"+this.totalProfile+"/"+this.profileRate ) ;//支付成本/总利润/利润率
-
-							var salesNumMap = {} ;
-							$(salesNum).each(function(){
-									if( this.ACCOUNT_ID == accountId && this.LISTING_SKU = listingSku ){
-										salesNumMap[this.TYPE] = this.COUNT ;
-									}
-							}) ;
-
-							var saleString = (salesNumMap[7]||'-')+"/"+(salesNumMap[14]||'-')+"/"+(salesNumMap[30]||'-') ;
-							
-							listingRow.find(".lastest-sale-num").html( saleString ) ;
+							listingRow.find(".lastest-sale-num").html( this.saleString ) ;
 						}
                    }) ;
 
                    $(".cost-container ul").empty() ;
-                   $("<li>上次采购价："+purchaseCost+"/"+logisticsCost +"</li>").appendTo(  $(".cost-container ul") ) ;
+
+                   if( _lastPurchase ){
+                	   $("<li><b>上次采购信息</b></li>").appendTo(  $(".cost-container ul") ) ;
+	                   $("<li>单价(￥)："+ lastPurchase.REAL_QUOTE_PRICE+"</li>").appendTo(  $(".cost-container ul") ) ;
+	                   $("<li>运费(￥)："+(( lastPurchase.REAL_SHIP_FEE=='null'?"":lastPurchase.REAL_SHIP_FEE)||"") +"</li>").appendTo(  $(".cost-container ul") ) ;
+	                   $("<li>数量："+ lastPurchase.QUALIFIED_PRODUCTS_NUM +"</li>").appendTo(  $(".cost-container ul") ) ;
+	                   $("<li>时间："+ lastPurchase.WAREHOUSE_TIME +"</li>").appendTo(  $(".cost-container ul") ) ;
+	                   $("<li>供应商：<a href='#' supplier-id='"+providorId+"'>"+providorName+"</a></li>").appendTo(  $(".cost-container ul") ) ;
+	                   if( currentStatus == 45 || currentStatus == 46 ){
+	                       $("<li><button class='btn btn-success  use-providor'>直接采用</button></li>").appendTo(  $(".cost-container ul") ) ;
+	                   }
+                   }else{
+                	   $("<li><div class='alert alert-success' style='width:100px;'>首次采购</div></li>").appendTo(  $(".cost-container ul") ) ;
+                   }
                    
+	                   
 		   }) ;
+
+			 $(".use-providor").live("click",function(){
+				 if( _lastPurchase ){
+						$("#providor").val( _lastPurchase.PROVIDOR ) ;
+						$("#quotePrice").val( _lastPurchase.QUOTE_PRICE ) ;
+						$("#shipFeeType").val(_lastPurchase.SHIP_FEE_TYPE ) ;
+						$("#shipFee").val( _lastPurchase.SHIP_FEE==0?"":_lastPurchase.SHIP_FEE ) ;
+						$("#payType").val( _lastPurchase.PAY_TYPE ) ;
+						$("#promiseDeliveryDate").val( _lastPurchase.PROMISE_DELIVERY_DATE ) ;
+				 }
+			 }) ;
 		 }) ;
-		 <?php }?>
+		 <?php // }?>
    </script>
 </head>
 
@@ -422,11 +452,11 @@
 										<th>执行人：</th><td>
 											<input type="hidden"   id="executor"   
 											value="<?php echo $purchaseProduct['EXECUTOR'];?>"/>
-											<input type="text"   id="executorName"  style="width:100px;" readonly value='<?php echo $executorName;?>'
+											<input type="text"   id="executorName"  style="width:60px;" readonly value='<?php echo $executorName;?>'
 													value=""/>
 											<button class="btn btn-charger 10-input  input"  disabled="disabled">选择</button>
 										</td>
-										<td rowspan="4" style="width:300px;"  class="cost-container">
+										<td rowspan="4" style="width:300px;vertical-align: top;"  class="cost-container">
 											<ul></ul>
 										</td>
 									</tr>
@@ -494,7 +524,7 @@
 										  <?php  }?>
 										</td>
 										<td><?php echo $req['ACCOUNT_NAME'] ;?></td>
-										<td><?php echo $req['LISTING_SKU'] ;?></td>
+										<td><a href='#'  offer-listing="<?php echo $req['ASIN'] ;?>"><?php echo $req['LISTING_SKU'] ;?></a></td>
 										<td><?php echo $req['FC_SKU'] ;?></td>
 										<td><?php echo $req['FULFILLMENT_CHANNEL'] ;?></td>
 										<td>

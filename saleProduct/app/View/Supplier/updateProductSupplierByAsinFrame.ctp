@@ -246,6 +246,13 @@
 						</td>
 					</tr>
 					<tr>
+						<th>产品包装重量(kg)：</th>
+						<td colspan="3"><input type="text" id="packageWeight"  name="packageWeight"   data-validator="double"
+							value="<?php echo $productSupplier['PACKAGE_WEIGHT'];?>"/>
+							<span class="alert" style="padding:2px;">计算FBC订单物流成本需要该参数</span>	
+						</td>
+					</tr>
+					<tr>
 						<th>生产周期：</th><td>
 							<select  id="cycle" name="cycle" >
 												<option value="">--</option>

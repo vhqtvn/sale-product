@@ -24,9 +24,6 @@
 		//获取成本
 		
 		$imgUrl = '/'.$fileContextPath.'/'.$product['IMAGE_URL'] ;
-		//sql_cost_getListCostByRealId
-		$costs = $SqlUtils->exeSqlWithFormat("sql_cost_getListCostByRealId" , array("realId"=>$realProductId)) ;
-		
 		//sql_cost_product_details_list
 		//$fbaCost = $SqlUtils->getObject("sql_cost_product_details_list",array('realSku'=>$product['REAL_SKU'],'type'=>'FBA' )) ;
 		//$fbmCost = $SqlUtils->getObject("sql_cost_product_details_list",array('realSku'=>$product['REAL_SKU'],'type'=>'FBM' )) ;

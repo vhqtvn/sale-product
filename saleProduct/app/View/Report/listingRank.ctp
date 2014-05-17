@@ -22,6 +22,7 @@
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('modules/report/listingRank');
 
+		echo $this->Html->script('modules/cost/cost');
 		echo $this->Html->script('calendar/WdatePicker');
 		
 		$user = $this->Session->read("product.sale.user") ;
@@ -92,6 +93,9 @@
 						</td>						
 				<td class="toolbar-btns">
 					<button class="btn btn-primary query-btn"  data-widget="grid-query"  data-options="{gc:'.grid-content',qc:'.toolbar1'}">查询</button>
+				</td>
+				<td   class="message">
+				
 				</td>
 		</table>
 		</div>

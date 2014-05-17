@@ -17,6 +17,7 @@
 		echo $this->Html->script('common');
 		echo $this->Html->script('jquery.json');
 		echo $this->Html->script('validator/jquery.validation');
+		echo $this->Html->script('modules/cost/cost');
 		
 		$security  = ClassRegistry::init("Security") ;
 		$config  = ClassRegistry::init("Config") ;
@@ -42,8 +43,7 @@
 		$COST_EDIT = $COST_EDIT_PURCHASE || $COST_EDIT_LOGISTIC || $COST_EDIT_PRODUCT_CHANNEL || $COST_EDIT_FEE||$COST_EDIT_OTHER||$COST_EDIT_SALEPRICE||$COST_EDIT_PROFIT ;
 	
 		$asin = $params['arg1'] ;
-		$taskId = $params['arg2'] ;
-
+	
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;//COST_TAG  COST_LABOR  COST_TAX_RATE
 		$Cost  = ClassRegistry::init("Cost") ;
 		
@@ -55,41 +55,17 @@
 		$sql = "SELECT sc_product_cost.* FROM sc_product_cost where asin = '$asin'";
 		$productCost = $SqlUtils->getObject($sql,array()) ;
 		
-		/*
+		//获取开发Listing成本信息
+		//$sql = "select * from sc_view_devproduct_cost where asin = '{@#realId#}'  order by type" ;
+		$sql = "sql_cost_new_DevCostEvlate" ;
+		$listing = $SqlUtils->exeSqlWithFormat($sql,array("asin"=>$asin)) ;
 		
-		//判断是否有初始化成本数据，如果没有则初始化成本数据
-		if( empty( $productCost ) ){
-			$costId = $SqlUtils->create_guid() ;
-			$SqlUtils->exeSql("sql_cost_insert_new", array("ASIN"=>$asin,"ID"=>$costId,"loginId"=>$user['LOGIN_ID'])) ;
-		}else{
-			$costId = $productCost['ID'] ;
-		}
-		
-		//判断是否有成本明细
-		$sql = "SELECT * FROM sc_product_cost_details where asin = '$asin' and type='FBA'";
-		$productCostDetails = $SqlUtils->getObject($sql,array()) ;
-		if( empty( $productCostDetails ) ){
-			$costId_ = $SqlUtils->create_guid() ;
-			$SqlUtils->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBA',"ID"=>$costId_,"loginId"=>$user['LOGIN_ID'])) ;
-		}
-		
-		$sql = "SELECT * FROM sc_product_cost_details where asin = '$asin' and type='FBM'";
-		$productCostDetails = $SqlUtils->getObject($sql,array()) ;
-		if( empty( $productCostDetails ) ){
-			$costId_ = $SqlUtils->create_guid() ;
-			$SqlUtils->exeSql("sql_cost_details_insert_new", array("ASIN"=>$asin,'COST_ID'=>$costId,'TYPE'=>'FBM',"ID"=>$costId_,"loginId"=>$user['LOGIN_ID'])) ;
-		}
-		*/
-		
-		$sql = "select * from sc_view_devproduct_cost where asin = '{@#realId#}'  order by type" ;
-		
-		$listing = $SqlUtils->exeSqlWithFormat($sql,array("realId"=>$asin)) ;
-		
-		if( empty( $listing ) ){
-			//初始化成本数据
-			$Cost  = ClassRegistry::init("Cost") ;
-		}
-		//debug($listing) ;
+		//获取最近的询价
+		$sql = "SELECT * FROM  sc_purchase_supplier_inquiry spsi
+										WHERE spsi.ASIN = '{@#asin#}'
+										ORDER BY spsi.CREATE_TIME DESC
+										LIMIT 0,1  " ;
+		$inquiryCost = $SqlUtils->getObject($sql,array("asin"=>$asin)) ;
 	?>
    <style>
 
@@ -112,39 +88,26 @@
 
    <script>
    		var groupCode = '<?php echo $loginId;?>' ;
+		var  $listing = <?php echo  json_encode($listing) ; ?>;
 
    		$(function(){
-					$(".re-calc-fee").click(function(){
-						//重新计算成本
-						$.dataservice("model:Supplier.calcCost" , {asin:'<?php echo $asin;?>',taskId:'<?php echo $taskId;?>'} , function(){
-							//window.location.reload();
-						})
-					}) ;
-   	   		
-					$(".asyn-amazon-fee").click(function(){
-						var productCost = $(".product-cost").toJson() ;
-						var listingCosts = [] ;
-						$(".listing-cost .data-row").each(function(index,row){
-							var listingCost = $(this).toJson() ;
-							listingCosts.push(listingCost) ;
-   						});
-
-						$.dataservice("model:Cost.saveCostAsin" , {productCost:productCost,listingCosts:listingCosts} , function(){
-							$.block() ;
-							$.ajax({
-								type:"post",
-								url:contextPath+"/taskFetch/formatDevProductFee/<?php echo $asin;?>",
-								data:{},
-								cache:false,
-								dataType:"text",
-								success:function(result,status,xhr){
-									$.unblock() ;
-									window.location.reload(true) ;
-								},error:function(){
-									alert("操作出现异常！") ;
-								}
-							}); 
-						}) ;
+		   			$(".amazon-asyn-listing").click(function(){
+						var row = $(this).closest("tr") ;
+						var asin = row.find("[name='ASIN']").val() ;
+						$(this).text("同步中..") ;
+						$.ajax({
+							type:"post",
+							url:contextPath+"/taskFetch/formatAsinFee/"+asin,
+							data:{},
+							cache:false,
+							dataType:"text",
+							success:function(result,status,xhr){
+								//window.location.reload() ;
+							},error:function(){
+								alert("操作出现异常！") ;
+								$(this).text("同步") ;
+							}
+						}); 
 					}) ;
    	   		
    				
@@ -160,7 +123,7 @@
    							//alert(  $.json.encode({productCost:productCost,listingCosts:listingCosts}) ) ;
    							//return ;
    							$.dataservice("model:Cost.saveCostAsin" , {productCost:productCost,listingCosts:listingCosts} , function(){
-   								window.location.reload();
+   								//window.location.reload();
    							})
 
    						};
@@ -179,6 +142,61 @@
 				}
 			}) ;
    	   	}
+
+   		/**
+		   *实时计算
+		   */
+	   	function calcCostOntime(){
+    	 var purchaseCost = $("#PURCHASE_COST").val()||0  ;
+    	 var baseCost =parseFloat( purchaseCost )+ parseFloat($("#LOGISTICS_COST").val()||0 )+parseFloat($("#OTHER_COST").val()||0)
+    	 										 + parseFloat(<?php echo $costTag;?>)+parseFloat(<?php echo $costLabor;?>)  ;
+			 var $costTaxRate = parseFloat(<?php echo $costTaxRate ;?>) ;
+			 var purcharRate =parseFloat( (purchaseCost*$costTaxRate).toFixed(2)) ;
+			 $(".purchaseRate").html(purcharRate);
+			 baseCost = baseCost + purcharRate ;
+
+			 $( $listing  ).each(function(index,item){
+				var rowId = item.ASIN+"_"+item.TYPE ;
+				var cost = new Cost() ;
+				cost.setProductCost( baseCost , 6.04  ) ;// item.EXCHANGE_RATE
+				cost.setChannel(  item.TYPE ) ;
+				cost.setSellPrice( $("[name='SELLER_COST']","#"+rowId).val()   ) ;
+				cost.setChannelFeeRatio( item.COMMISSION_RATIO ) ;
+				cost.setVariableCloseFee( item.VARIABLE_CLOSING_FEE ) ;
+				cost.setCommissionLowlimit( item.COMMISSION_LOWLIMIT ) ;
+				cost.setFbaCost(  item._FBA_COST ) ;
+				cost.setTransferUnitPrice(5.41);// item.TRANSFER_WH_PRICE ) ;
+				cost.setFbcOrderRate(16.22);// item.FBC_ORDER_RATE ) ;
+				cost.setFbmOrderRate(16.22);// item.FBM_ORDER_RATE ) ;
+				cost.setTransferProperties( {weight: '<?php echo $inquiryCost['WEIGHT'];?>' ,packageWeight: '<?php echo $inquiryCost['PACKAGE_WEIGHT'];?>' } ) ;
+
+				var costValue = cost.evlate() ;
+				var _cost = (parseFloat(costValue.cost)).toFixed(2);
+				var  totalProfile =  (parseFloat(costValue.profile)).toFixed(2);
+				var  profileRate =   costValue.profileRatio ;
+
+				$(".COMMISSION_FEE","#"+rowId).html( cost.getChannelFee() +"("+cost.getChannelFeeRatioFormat()+")") ;
+				$(".transferCost","#"+rowId).html( cost.getTransferCost() ) ;
+				$(".totalCost","#"+rowId).html( _cost ) ;
+				$(".payCost","#"+rowId).html( cost.getCalcCostAbale() ) ;
+				$(".fbaCost","#"+rowId).html( cost.getFbaCost() ) ;
+				$(".inventoryCenterFee","#"+rowId).html( cost.getInventoryCenterFee() ) ;
+				$(".orderTransferCost","#"+rowId).html( cost.getOrderTransferCost() ) ;
+				
+				$(".totalProfile","#"+rowId).html( totalProfile+"["+profileRate+"]" ) ;//profile profileRatio
+			 }) ;
+	   	}
+
+	   	$(function(){
+	   	   	calcCostOntime() ;
+	   	   	$("input[type='text']").keyup(function(){
+	   	   	  calcCostOntime() ;
+	   	   	});
+	   	   	
+	   	 	$("input[type='text']").blur(function(){
+	   	   	  calcCostOntime() ;
+	   	   	});
+	   	}) ;
    	
    </script>
 </head>
@@ -201,31 +219,27 @@
 								<th>采购成本：</th>
 								<td colspan="5">
 								<input type="hidden" id="ASIN" value="<?php echo $asin;?>"/>
-								<input type="hidden" id="taskId" value="<?php echo $taskId;?>"/>
-								
 								
 								<input class="cost span2"  type="text" 
 									data-validator="double"
-									<?php echo $COST_EDIT_PURCHASE?'':'disabled'?>
-									id="PURCHASE_COST" value="<?php echo $productCost["PURCHASE_COST"];?>"/>
+									id="PURCHASE_COST" value="<?php echo $inquiryCost["OFFER1"];?>"/>
 								</td>
 								<th>采购物流费用 ：</th><td ><input class="_cost span2"      style="width:50px!important;"
 										data-validator="double"  type="text" id="LOGISTICS_COST" value="<?php echo $productCost["LOGISTICS_COST"];?>"/></td>
 							</tr>
 							<tr>
-									
 									<th>标签费用 ：</th><td >
 										<?php echo $costTag ; ?>
 									</td>
 									<th>人工成本：</th><td><?php echo $costLabor ; ?></td>	
-									<th>国内税费：</th><td>
-										<?php echo round( $productCost['PURCHASE_COST'] * $costTaxRate,2 )  ; ?>
-									</td>
+									<th>国内税费：</th>
+									<td class="purchaseRate"></td>
 									<th>其他成本：</th><td><input      style="width:50px!important;"
 										data-validator="double"  type="text" id="OTHER_COST" value="<?php echo $productCost["OTHER_COST"];?>"/></td>
 							</tr>
 						</table>
-						<!--  spcd.LOGISTICS_COST, 
+						<!--  
+						spcd.LOGISTICS_COST, 
 						spcd.FEE, 
 						spcd.OTHER_COST,  
 						spcd.WEIGHT_HANDLING_FEE, 
@@ -239,11 +253,12 @@
 						<table  class="form-table table  listing-cost" >
 							<caption>Listing成本</caption>
 							<tr>
-								<th>平台</th>
+								<th>操作</th>
 								<th>ASIN</th>
 								<th>渠道</th>
 								<th>售价</th>
 								<th>总成本</th>
+								<th>支付成本</th>
 								<th>利润</th>
 								<th>转仓物流成本</th>
 								<th>订单物流成本</th>
@@ -266,65 +281,30 @@
 									
 							//debug($item) ;
 								?>
-							
-							<tr  class="data-row">
+							<tr  class="data-row"  id="<?php echo $item['ASIN'];?>_<?php echo $item['TYPE'];?>">
 								<td>
-									<input type="hidden" name="ID"   value="<?php echo $item['COST_DETAIL_ID'];?>" style="width:50px;"/>
+										<a href="#"  class="amazon-asyn-listing">同步</a>
+								</td>
+								<td>
 									<input type="hidden" name="ASIN"   value="<?php echo $item['ASIN'];?>" style="width:50px;"/>
 									<input type="hidden" name="TYPE"   value="<?php echo $item['TYPE'];?>" style="width:50px;"/>
-									<?php echo $item['ACCOUNT_NAME'];?>
+									<a href="#" offer-listing="<?php echo $item['ASIN'];?>"><?php echo $item['ASIN'];?></a>
 								</td>
-								<td><?php echo $item['ASIN'];?></td>
 								<td><?php echo $item['TYPE'];?></td>
 								<td>
 								<input type="text" class="_cost " 
 										name="SELLER_COST" value="<?php echo $item['TOTAL_PRICE'];?>" style="width:50px!important;"/>
 								</td>
-								<td><?php echo round($item['TOTAL_COST'],3);?></td>
-								<td><?php 
-											$totalProfile =round(  $item['TOTAL_PRICE'] - $item['TOTAL_COST'],2)   ;
-											if( $item['TOTAL_COST'] == 0 ){
-												echo '-' ;
-											}else{
-												$totalRate = round( ( $totalProfile/$item['TOTAL_COST'] ) *100 ,2).'%' ;
-												echo $totalProfile."($totalRate)" ;
-											}
-											
-								?></td>
-								<td>
-								<?php 
-								$tf = round($item['TRANSFER_COST'],2) ;
-								if( empty(  $tf ) || $tf <=0 ){
-									echo "重量缺失！" ;
-								}else{
-									echo $tf;
-								} ?>
-								</td>
-								<td>
-								<?php if( $item['TYPE'] != 'FBA' ){ ?>
-									<input type="text" class="_cost " 
-									name="LOGISTICS_COST" value="<?php echo round($item['LOGISTICS_COST'],2); ?>" style="width:50px!important;"/></td>
-								<?php }else{
-									echo "-" ;
-								} ?>
-								
-								<td>
-									<?php 
-										echo  round( $item['FEE'],3 ) ;
-									?>
-								</td>
-								<td><?php echo round($item['COMMISSION_FEE'],3 ) ;?>(<?php 
-									echo round($item['COMMISSION_RATIO']*100,2)."%" ;   ?>)</td>
+								<td  class="totalCost"></td>
+								<td  class="payCost"></td>
+								<td  class="totalProfile"></td>
+								<td class="transferCost"></td>
+								<td  class="orderTransferCost"></td>
+								<td class="fee"></td>
+								<td  class="COMMISSION_FEE"></td>
 								<td><?php echo round($item['VARIABLE_CLOSING_FEE'],3 ) ;?></td>
-								
-								<td><?php if( $item['TYPE'] == 'FBM' ){ ?>
-											-
-										<?php  }else{
-											echo round($item['FBA_COST'],3 ) ;
-										} ?>
-										</td>
-								<td>-</td>
-								
+								<td  class="fbaCost"></td>
+								<td class="inventoryCenterFee"><?php echo round( $item['INVENTORY_CENTER_FEE'],3);?></td>
 								<td><input type="text"  name="OTHER_COST"  value="<?php echo round($item['OTHER_COST'],2);?>" style="width:50px;"/></td>
 							</tr>
 							<?php  	} ?>
@@ -332,18 +312,12 @@
 						
 					</div>
 					
-					<?php if($COST_EDIT){ ?>
 					<!-- panel脚部内容-->
                     <div class="panel-foot"  style="background:#FFF;">
 						<div class="form-actions">
-							<button type="submit" class="btn btn-primary re-calc-fee">重新计算成本</button>
-							
-							<button type="submit" class="btn btn-primary asyn-amazon-fee">同步Amazon费用</button>
-							
 							<button type="submit" class="btn btn-primary save-btn">保存</button>
 						</div>
 					</div>
-					<?php } ?>
 				</div>
 			</form>
 		</div>
