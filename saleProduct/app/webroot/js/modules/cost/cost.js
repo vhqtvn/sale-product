@@ -21,7 +21,7 @@ var  Cost = function(){
 	var  _calcCostAbale = 0 ; 
 	var  _fbcOrderRate = 0 ;
 	var  _fbmOrderRate = 0 ;
-	var _CommissionLowlimit = 0 ;
+	var _CommissionLowlimit = 1 ;
 	
 	this.setFbcOrderRate = function(fbcOrderRate){
 		_fbcOrderRate= fbcOrderRate ;
@@ -44,7 +44,7 @@ var  Cost = function(){
 	};
 	
 	this.setCommissionLowlimit = function( CommissionLowlimit ){
-		_CommissionLowlimit = CommissionLowlimit ;
+		if(CommissionLowlimit)_CommissionLowlimit = CommissionLowlimit ;
 	};
 	
 	this.setChannelFeeRatio = function(cfr){
@@ -64,7 +64,7 @@ var  Cost = function(){
 	};
 	
 	this.getFbaCost = function(){
-		if( _channel != 'Merchant'){
+		if( _channel== 'AMAZON_NA' || _channel == 'FBA'){
 			return (parseFloat( _fbaCost)).toFixed(2) ;
 		}
 		return "-" ;
@@ -75,7 +75,7 @@ var  Cost = function(){
 	};
 	
 	this.getInventoryCenterFee = function(){
-		if( _channel != 'Merchant'){
+		if( _channel == 'AMAZON_NA'|| _channel == 'FBA'){
 			return 0 ;
 		}
 		return "-" ;
@@ -96,7 +96,7 @@ var  Cost = function(){
 	};
 	
 	this.getTransferCost = function(){
-		if( _channel != 'Merchant'){
+		if( _channel == 'AMAZON_NA'|| _channel == 'FBA'){
 			return (parseFloat( _productProps.weight*_wlUnitPrice )).toFixed(2) ;
 		}
 		return "-" ;
@@ -107,7 +107,7 @@ var  Cost = function(){
 	};
 	
 	this.getOrderTransferCost = function(){
-		if( _channel != 'Merchant'){
+		if( _channel == 'AMAZON_NA'|| _channel == 'FBA'){
 			return "-" ;
 		}
 		return (parseFloat( _productProps.weight*_fbcOrderRate )).toFixed(2) ;
@@ -115,12 +115,11 @@ var  Cost = function(){
 	
 	this.evlate  = function(){
 		var _cost = 0 ;
-		if( _channel != 'Merchant'){//FBA
+		if(   (_channel == 'AMAZON_NA') || _channel == 'FBA'){//FBA
 			_cost = parseFloat(_productCost/_exchangeRate) ;//采购成本
 			_cost += parseFloat( this.getFbaCost() );//FBA费用
 			_cost += parseFloat( _variableCloseFee ) ;//可变关闭费用
 			_cost += parseFloat( this.getChannelFee() ) ;//渠道佣金
-			
 			var weight = _productProps.weight ;
 			_cost += parseFloat( weight*_wlUnitPrice ) ;
 			var totalProfile = _sellPrice - _cost ;
@@ -142,6 +141,72 @@ var  Cost = function(){
 		return { cost: _cost , profile: totalProfile ,profileRatio:profileRatio,calcCostAbale:calcCostAbale } ;
 	};
 };
+
+Cost.getListing = function(listings , callback){
+	$.dataservice("model:CostNew.readyListingCost" , {listings:listings} , function(result){
+		 var returnCosts =[] ;
+		$(result).each(function(index,item){
+			var productCost = item.productCost ;
+			var costTag = item.costTag ;
+			var costLabor = item.costLabor ;
+			var costTaxRate = item.costTaxRate ;
+			var listingCost = item.listingCost ;
+			var salesNum = item.salesNum ;
+			
+			if( !productCost ) return ;
+			
+			 var purchaseCost = productCost.PURCHASE_COST ||0  ;
+			 var logisticsCost = productCost.LOGISTICS_COST||0 ;
+	    	 var baseCost =parseFloat( purchaseCost )+ parseFloat(productCost.LOGISTICS_COST||0 )+parseFloat(productCost.OTHER_COST||0)
+	    	 										 + parseFloat(costTag)+parseFloat(costLabor)  ;
+			 var $costTaxRate = parseFloat(costTaxRate) ;
+			 var purcharRate =parseFloat( (purchaseCost*$costTaxRate).toFixed(2)) ;
+			 baseCost = baseCost + purcharRate ;
+			
+			 var cost = new Cost() ;
+				cost.setProductCost( baseCost , listingCost.EXCHANGE_RATE  ) ;
+				cost.setChannel(  listingCost.FULFILLMENT_CHANNEL ) ;
+				//LOWEST_PRICE  LOWEST_FBA_PRICE
+				cost.setSellPrice( listingCost.LOWEST_FBA_PRICE  ) ;
+				cost.setChannelFeeRatio( listingCost.COMMISSION_RATIO ) ;
+				cost.setVariableCloseFee( listingCost.VARIABLE_CLOSING_FEE ) ;
+				cost.setFbaCost(  listingCost._FBA_COST ) ;
+				cost.setTransferUnitPrice( listingCost.TRANSFER_WH_PRICE ) ;
+				cost.setCommissionLowlimit( listingCost.COMMISSION_LOWLIMIT ) ;
+				cost.setFbcOrderRate( listingCost.FBC_ORDER_RATE ) ;
+				cost.setFbmOrderRate( listingCost.FBM_ORDER_RATE ) ;
+				cost.setTransferProperties( {weight:listingCost.WEIGHT , length:listingCost.LENGTH , width:listingCost.WIDTH , height:listingCost.HEIGHT,packageWeight: listingCost.PACKAGE_WEIGHT } ) ;
+		
+				var costValue = cost.evlate() ;
+		
+				var _cost = (parseFloat(costValue.cost)).toFixed(2);
+				var  totalProfile =  (parseFloat(costValue.profile)).toFixed(2);
+				var  profileRate =   costValue.profileRatio ;
+		
+				var salesNumMap = {} ;
+				$(salesNum).each(function(index,item1){
+					item1 = item1[0] ;
+					salesNumMap[item1.TYPE] = item1.COUNT ;
+				}) ;
+				var saleString = (salesNumMap["7"]||'-')+"/"+(salesNumMap["14"]||'-')+"/"+(salesNumMap["30"]||'-') ;
+				var  returnCost = {
+						accountId:listingCost.ACCOUNT_ID,
+						listingSku:listingCost.SKU, 
+						costAvalibe:cost.getCalcCostAbale(),
+						totalCost:_cost,
+						purchaseCost:purchaseCost,
+						totalProfile:totalProfile,
+						profileRate:profileRate,
+						logisticsCost:logisticsCost,
+						saleString:saleString
+					} ;
+				
+				returnCosts.push( returnCost ) ;
+		}) ;
+		callback( returnCosts ) ;
+	},{noblock:true});
+};
+
 //return array("productCost"=>$productCost,"costTag"=>$costTag,"costLabor"=>$costLabor,"costTaxRate"=>$costTaxRate) ;
 Cost.get = function(realId,callback){
 	$.dataservice("model:CostNew.readyCost" , {realId:realId} , function(result){
@@ -151,6 +216,7 @@ Cost.get = function(realId,callback){
 		var costTaxRate = result.costTaxRate ;
 		var listingCosts = result.listingCosts ;
 		var providor = result.providor||{} ;
+		var salesNum = result.salesNum ;
 		
 		 var purchaseCost = productCost.PURCHASE_COST ||0  ;
 		 var logisticsCost = productCost.LOGISTICS_COST||0 ;
@@ -192,19 +258,37 @@ Cost.get = function(realId,callback){
 			
 			$(".totalProfile","#"+rowId).html( totalProfile+"["+profileRate+"]" ) ;//profile profileRatio
 			)*/
-			returnCosts.push( {
-				accountId:item.ACCOUNT_ID,
-				listingSku:item.SKU, 
-				costAvalibe:cost.getCalcCostAbale(),
-				totalCost:_cost,
-				purchaseCost:purchaseCost,
-				totalProfile:totalProfile,
-				profileRate:profileRate,
-				logisticsCost:logisticsCost,
-				providorName:providor.NAME
-			} ) ;
+			var salesNumMap = {} ;
+			$(salesNum).each(function(index,item1){
+				item1 = item1[0] ;
+					if( item.ACCOUNT_ID == item.ACCOUNT_ID && item1.LISTING_SKU == item.SKU ){
+						salesNumMap[item1.TYPE] = item1.COUNT ;
+					}
+			}) ;
+			var saleString = (salesNumMap["7"]||'-')+"/"+(salesNumMap["14"]||'-')+"/"+(salesNumMap["30"]||'-') ;
+			var  returnCost = {
+					accountId:item.ACCOUNT_ID,
+					listingSku:item.SKU, 
+					costAvalibe:cost.getCalcCostAbale(),
+					totalCost:_cost,
+					purchaseCost:purchaseCost,
+					totalProfile:totalProfile,
+					profileRate:profileRate,
+					logisticsCost:logisticsCost,
+					providorName:providor.NAME,
+					providorId:providor.ID,
+					saleString:saleString
+				} ;
+			
+			
+			returnCosts.push( returnCost ) ;
 		});
 		
-		callback && callback(returnCosts) ;
+		var __ = {
+				returnCosts: returnCosts,
+				lastPurchase:result.lastPurchase
+		}
+		
+		callback && callback(__) ;
 	}) ;
 };
