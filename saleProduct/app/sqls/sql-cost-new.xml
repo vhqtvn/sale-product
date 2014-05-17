@@ -37,6 +37,25 @@ SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 30 AS 
    ]]>	      
    </entry>
    
+   	<entry key="sql_cost_new_getListingSalesNum">
+	<![CDATA[
+	SELECT  COUNT(1) AS COUNT , 7 AS TYPE FROM sc_order_item soi
+   WHERE soi.ACCOUNT_ID = '{@#accountId#}'
+	and soi.Seller_SKU = '{@#listingSku#}'
+   AND DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= DATE(soi.PURCHASE_DATE)
+UNION
+SELECT  COUNT(1) AS COUNT , 14 AS TYPE FROM sc_order_item soi
+   WHERE  soi.ACCOUNT_ID = '{@#accountId#}'
+	and soi.Seller_SKU = '{@#listingSku#}'
+   AND DATE_SUB(CURDATE(), INTERVAL 14 DAY) <= DATE(soi.PURCHASE_DATE)
+UNION
+SELECT  COUNT(1) AS COUNT , 30 AS TYPE FROM sc_order_item soi
+   WHERE  soi.ACCOUNT_ID = '{@#accountId#}'
+	and soi.Seller_SKU = '{@#listingSku#}'
+   AND DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= DATE(soi.PURCHASE_DATE)
+   ]]>	      
+   </entry>
+   
     <entry key="sql_cost_new_listingCostEvlate">
     				SELECT saap.ACCOUNT_ID,
 							    saap.SKU,
@@ -48,14 +67,14 @@ SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 30 AS 
 								saa.TRANSFER_WH_PRICE,
 								saa.FBC_ORDER_RATE,
 				                saa.FBM_ORDER_RATE,
-								spcd.COMMISSION_RATIO ,
+								spca.COMMISSION_RATIO ,
 								'' as TOTAL_COST,
 								'' as TRANSFER_COST,
 								'' as LOGISTICS_COST ,
 								saa.FEE_RATIO,
-								spcd.FBA_COST as _FBA_COST,
-								spcd.COMMISSION_RATIO,
-								spcd.VARIABLE_CLOSING_FEE,
+								spca.FBA_COST as _FBA_COST,
+								spca.COMMISSION_LOWLIMIT,
+								spca.VARIABLE_CLOSING_FEE,
 								saa.INVENTORY_CENTER_FEE,
 								spcd.OTHER_COST,
 								srp.ID as REAL_ID,
@@ -72,12 +91,48 @@ SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 30 AS 
 					LEFT JOIN sc_product_cost_details spcd
 					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
 					AND spcd.LISTING_SKU = srpr.SKU
+					left join sc_product_cost_asin spca
+							on spca.asin = saap.asin
 					WHERE saap.ACCOUNT_ID = srpr.ACCOUNT_ID
 					AND saap.SKU = srpr.SKU
 				   and saa.id = saap.account_id
 				   and srp.id = srpr.real_id
 				   and srpr.account_id = '{@#accountId#}'
 				   and srpr.sku = '{@#listingSku#}'
+    </entry>
+    
+    <!-- 销售总价，从询价中获取 -->
+    <entry key="sql_cost_new_DevCostEvlate">
+    				SELECT 
+					   spc.ASIN,
+					   spcd.TYPE,
+					   spcd.SELLER_COST as TOTAL_PRICE,
+					   '' as TOTAL_COST ,
+					   '' as TRANSFER_COST,
+					   '' as FEE ,
+					   '' as COMMISSION_FEE ,
+					   '' as LOGISTICS_COST ,
+					   '' as INVENTORY_CENTER_FEE,
+					   spca.FBA_COST ,
+					   spca.COMMISSION_RATIO ,
+					   spca.FBA_COST AS _FBA_COST,
+					   spca.COMMISSION_LOWLIMIT,
+					   spca.VARIABLE_CLOSING_FEE,
+					   spcd.OTHER_COST,
+					   '' AS WEIGHT,
+					   '' AS PACKAGE_WEIGHT,
+					   '6.04'  as EXCHANGE_RATE
+					FROM 
+					   ( 
+					   sc_product_cost spc,
+					   sc_product_cost_details spcd,
+					   sc_product_developer spd
+					   )
+					   LEFT JOIN sc_product_cost_asin spca
+					   	ON spca.ASIN = spc.ASIN
+					WHERE spc.ID = spcd.COST_ID
+					  AND spc.ASIN = spd.ASIN
+				      and spc.ASIN = '{@#asin#}'
     </entry>
     
     <entry key="sql_cost_new_realProductCostEvlate">
@@ -91,14 +146,60 @@ SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 30 AS 
 								saa.TRANSFER_WH_PRICE,
 								saa.FBC_ORDER_RATE,
 				                saa.FBM_ORDER_RATE,
-								spcd.COMMISSION_RATIO ,
 								'' as TOTAL_COST,
 								'' as TRANSFER_COST,
 								'' as LOGISTICS_COST ,
 								saa.FEE_RATIO,
-								spcd.FBA_COST as _FBA_COST,
-								spcd.COMMISSION_RATIO,
-								spcd.VARIABLE_CLOSING_FEE,
+								spca.COMMISSION_RATIO ,
+								spca.FBA_COST as _FBA_COST,
+								spca.COMMISSION_LOWLIMIT,
+								spca.VARIABLE_CLOSING_FEE,
+								spcd.OTHER_COST,
+								saa.INVENTORY_CENTER_FEE,
+								srp.ID as REAL_ID,
+				                srp.WEIGHT, 
+				                srp.PACKAGE_WEIGHT,
+				                srp.LENGTH,
+				                srp.WIDTH,
+				                srp.HEIGHT,
+				              (select ser.EXCHANGE_RATE from sc_exchange_rate ser where ser.id = saa.EXCHANGE_ID ) as EXCHANGE_RATE
+					 FROM ( sc_amazon_account_product saap,
+				               sc_amazon_account saa,
+				               sc_real_product srp ,
+					           sc_real_product_rel srpr )
+					LEFT JOIN sc_product_cost_details spcd
+					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
+							AND spcd.LISTING_SKU = srpr.SKU
+					left join sc_product_cost_asin spca
+							on   saap.asin =  spca.asin
+					WHERE saap.ACCOUNT_ID = srpr.ACCOUNT_ID
+					AND saap.SKU = srpr.SKU
+				   and saa.id = saap.account_id
+				   and srp.id = srpr.real_id
+				   and srpr.real_id = '{@#realId#}'
+				   {@ and saap.account_id =  '#accountId#'}
+				   {@ and saap.sku =  '#listingSku#'}
+    </entry>
+    
+    <entry key="sql_cost_new_ListingCostEvlate">
+    				SELECT saap.ACCOUNT_ID,
+							    saap.SKU,
+								saap.FULFILLMENT_CHANNEL,
+				                saap.ASIN,
+							    saap.LOWEST_PRICE,
+							    saap.LOWEST_FBA_PRICE,
+				                saa.name as ACCOUNT_NAME,
+								saa.TRANSFER_WH_PRICE,
+								saa.FBC_ORDER_RATE,
+				                saa.FBM_ORDER_RATE,
+								spca.COMMISSION_RATIO ,
+								'' as TOTAL_COST,
+								'' as TRANSFER_COST,
+								'' as LOGISTICS_COST ,
+								saa.FEE_RATIO,
+								spca.FBA_COST as _FBA_COST,
+								spca.COMMISSION_LOWLIMIT,
+								spca.VARIABLE_CLOSING_FEE,
 								saa.INVENTORY_CENTER_FEE,
 								spcd.OTHER_COST,
 								srp.ID as REAL_ID,
@@ -115,11 +216,14 @@ SELECT soi.ACCOUNT_ID,soi.Seller_SKU AS LISTING_SKU , COUNT(1) AS COUNT , 30 AS 
 					LEFT JOIN sc_product_cost_details spcd
 					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
 					AND spcd.LISTING_SKU = srpr.SKU
+					left join sc_product_cost_asin spca
+							on spca.asin = saap.asin
 					WHERE saap.ACCOUNT_ID = srpr.ACCOUNT_ID
 					AND saap.SKU = srpr.SKU
 				   and saa.id = saap.account_id
 				   and srp.id = srpr.real_id
-				   and srpr.real_id = '{@#realId#}'
+				   and saap.account_id =  {@ '#accountId#'}
+				  and saap.sku =  {@ '#listingSku#'}
     </entry>
     
 </properties>

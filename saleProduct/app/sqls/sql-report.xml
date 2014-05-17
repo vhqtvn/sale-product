@@ -15,6 +15,7 @@
     </entry>
 
 	<entry key="sql_report_listingRankForFba">
+	<![CDATA[
 		SELECT t.* FROM ( 
 		     SELECT 
 		          srp.NAME,
@@ -62,6 +63,7 @@
 		and ( t.real_sku is not null and t.real_sku !='' )
 		and ( t.LIST_PRICE is not null and t.LIST_PRICE !='' )
 		{@ and ( t.ASIN like '%#searchKey#%'  or t.SELLER_SKU like '%#searchKey#%'   or t.REAL_SKU like '%#searchKey#%'  ) }
+		 ]]>	 
 	</entry>
   <entry key="sql_report_providor_statics">
 		SELECT

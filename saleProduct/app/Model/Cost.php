@@ -3,45 +3,6 @@ class Cost extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
 	/**
-	 * 格式化所有的Listing成本
-	 * @param unknown_type $accountId
-	 */
-	public function formatAllListingCost( $accountId ){
-		$sql = "select * from sc_view_listing_cost where  account_id = '{@#ACCOUNT_ID#}'" ;
-		$query = $this->exeSqlWithFormat($sql, array( "ACCOUNT_ID"=>$accountId)) ;
-		foreach( $query as $item ){
-			$sql = "select * from sc_listing_cost where listing_sku = '{@#LISTING_SKU#}' and account_id = '{@#ACCOUNT_ID#}'" ;
-			$result = $this->getObject($sql, $item ) ;
-			
-			if( empty($result) ){
-				//insert
-				$this->exeSql("sql_cost_listingCost_insert", $item) ;
-			}else{
-				//update
-				$this->exeSql("sql_cost_listingCost_update", $item) ;
-			}
-		}
-	}
-	
-	public function saveListingCost($listingSku,$accountId){
-		if( empty( $listingSku ) || empty( $accountId ) ) return ;
-		
-		$sql = "select * from sc_view_listing_cost where listing_sku = '{@#LISTING_SKU#}' and account_id = '{@#ACCOUNT_ID#}'" ;
-		$query = $this->getObject($sql, array("LISTING_SKU"=>$listingSku,"ACCOUNT_ID"=>$accountId)) ;
-	
-		$sql = "select * from sc_listing_cost where listing_sku = '{@#LISTING_SKU#}' and account_id = '{@#ACCOUNT_ID#}'" ;
-		$result = $this->getObject($sql, array("LISTING_SKU"=>$listingSku,"ACCOUNT_ID"=>$accountId)) ;
-
-		if( empty($result) ){
-			//insert
-			$this->exeSql("sql_cost_listingCost_insert", $query) ;
-		}else{
-			//update
-			$this->exeSql("sql_cost_listingCost_update", $query) ;
-		}
-	}
-	
-	/**
 	 * 初始化开发产品成本信息
 	 * 
 	 */
@@ -138,49 +99,50 @@ class Cost extends AppModel {
 		//清楚数据库查询缓存
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$db->_queryCache = array() ;
-		
-		$sql = "select * from sc_product_cost where real_id = '{@#realId#}'" ;
-		$cost = $this->getObject($sql, $params) ;
-		$costId = null ;
-		$params['REAL_ID'] = $params['realId'] ;
-		//如果货品成本不存在，则添加
-		if(empty($cost)){
-			$costId = $this->create_guid() ;
-			$params['ID'] = $costId ;
-			//插入
-			$this->exeSql("sql_cost_insert_new", $params) ;
-		}else{
-			//修改
-			$costId = $cost['ID'] ;
-		}
-		
-		$sql = "select * from sc_product_cost_details where ACCOUNT_ID = '{@#accountId#}' and LISTING_SKU =  '{@#listingSku#}'" ;
-		$costDetail = $this->getObject($sql, $params) ;
-		$costDetailId = null ;
-		if(empty($costDetail)){
-			$costDetailId = $this->create_guid() ;
-			$params['ID'] = $costDetailId ;
-			$params['COST_ID'] = $costId ;
-			//插入
-			$this->exeSql("sql_cost_details_insert_new_forfee", $params) ;
-		}else{
-			//修改
-			$costDetailId = $costDetail['ID'] ;
-		}
-			
-		$params['ID'] = $costDetailId ;
-		$params['COST_ID'] = $costId ;
-		
-		//debug($params) ;
-		//插入
-		$this->exeSql("sql_cost_details_update_new_forfee", $params) ;
-		
-		$this->saveListingCost($params['listingSku'], $params['accountId']) ;
+				try{
+					$sql = "INSERT INTO  sc_product_cost_asin
+									(ASIN,
+									VARIABLE_CLOSING_FEE,
+									COMMISSION_LOWLIMIT,
+									COMMISSION_RATIO,
+									FBA_COST
+									)
+									VALUES
+									('{@#asin#}',
+									'{@#variableClosingFee#}',
+									'{@#commissionLowlimit#}',
+									'{@#commissionRatio#}',
+									'{@#fbaCost#}'
+									)" ;
+					$this->exeSql($sql,$params) ;
+				}catch(Exception $e){
+					if( $params['variableClosingFee'] == 0 ){
+						$params['variableClosingFee'] = "" ;
+					}
+					if( $params['commissionLowlimit'] == 0 ){
+						$params['commissionLowlimit'] = "" ;
+					}
+					if( $params['commissionRatio'] == 0 ){
+						$params['commissionRatio'] = "" ;
+					}
+					if( $params['fbaCost'] == 0 ){
+						$params['fbaCost'] = "" ;
+					}
+					
+					$sql = "UPDATE  sc_product_cost_asin 
+									SET
+									ASIN = '{@#asin#}' 
+									{@ ,VARIABLE_CLOSING_FEE = '#variableClosingFee#'}
+									{@ ,COMMISSION_LOWLIMIT = '#commissionLowlimit#' } 
+									{@ ,COMMISSION_RATIO = '#commissionRatio#' }
+									{@ ,FBA_COST = '#fbaCost#'}
+									WHERE
+									ASIN = '{@#asin#}'" ;
+					$this->exeSql($sql,$params) ;
+		 }
 	}
 	
 	public function saveCostAsin($data){
-		//debug( $data ) ;
-		//return ;
 		$productCost = get_object_vars( json_decode($data['productCost']) )   ;
 		$_listingCosts  = json_decode( $data['listingCosts'])   ;
 		$listingCosts = array() ;
@@ -210,7 +172,7 @@ class Cost extends AppModel {
 		//2、保存listingCost
 		foreach($listingCosts as $listingCost){
 			//sql_cost_details_insert_new
-			$sql = "select * from sc_product_cost_details where id=  '{@#ID#}'" ;
+			$sql = "select * from sc_product_cost_details where asin=  '{@#ASIN#}' and type='{@#TYPE#}'" ;
 			$costDetail = $this->getObject($sql, $listingCost) ;
 			if(empty($costDetail)){
 				$costDetailId = $this->create_guid() ;
@@ -220,9 +182,6 @@ class Cost extends AppModel {
 				$listingCost['ASIN'] =$productCost['ASIN'] ;
 				//插入
 				$this->exeSql("sql_cost_details_insert_new", $listingCost) ;
-			}else{
-				//修改
-				$costDetailId = $costDetail['ID'] ;
 			}
 				
 			$listingCost['ID'] = $costDetailId ;
@@ -283,15 +242,14 @@ class Cost extends AppModel {
 			$this->exeSql("sql_cost_details_update_new", $listingCost) ;
 			
 			//更新售价
+			/*
 			if( $listingCost['FULFILLMENT_CHANNEL'] == 'Merchant' ){ //FBM
 				$sql = "update sc_amazon_account_product set lowest_price = '{@#TOTAL_PRICE#}'  where ACCOUNT_ID = '{@#ACCOUNT_ID#}' and SKU =  '{@#LISTING_SKU#}'" ;
 				$this->exeSql( $sql , $listingCost ) ;
 			}else{ //FBA
 				$sql = "update sc_amazon_account_product set lowest_fba_price = '{@#TOTAL_PRICE#}'  where ACCOUNT_ID = '{@#ACCOUNT_ID#}' and SKU =  '{@#LISTING_SKU#}'" ;
 				$this->exeSql( $sql , $listingCost ) ;
-			}
-			
-			$this->saveListingCost($listingCost['LISTING_SKU'], $listingCost['ACCOUNT_ID']) ;
+			}*/
 		}
 	}
 	

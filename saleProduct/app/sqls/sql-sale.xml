@@ -113,28 +113,6 @@
 			)
     </entry>
     
-    <entry key="sql_purchase_plan_getAsinFromSku">
-    		select  sp.* ,
-				s1.LIMIT_PRICE,
-    			s3.SKU,
-    			s3.QUANTITY,
-				(SELECT spi.local_url FROM sc_product_imgs spi WHERE spi.asin = sp.asin LIMIT 0,1 ) AS LOCAL_URL,
-			s.TOTAL_COST,	
-			s.TOTAL_PRICE
-    		FROM 
-    		   sc_product sp,
-    		   sc_purchase_plan_details s1,
-    		   sc_real_product_rel s2,
-    		   sc_amazon_account_product s3,
-    		   sc_view_listing_cost s
-    	 WHERE 
-    	 s3.asin = sp.asin
-    	 AND s1.real_id = s2.real_id
-    	 AND s2.sku = s3.sku
-    	 AND s.account_id = s3.account_id AND s.listing_sku = s3.sku
-    	 and s1.id = '{@#id#}'
-    </entry>
-    
     <entry key="sql_purchasePlanProductsIsExists">
     	select * from sc_purchase_plan_details
     	where plan_id = '{@#planId#}' and  sku = '{@#sku#}'

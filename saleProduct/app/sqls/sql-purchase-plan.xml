@@ -102,6 +102,7 @@
 				{@PRODUCT_WIDTH = '#productWidth#' , }
 				{@PRODUCT_HEIGHT = '#productHeight#' , }
 				{@weight = '#weight#' , }
+				{@package_weight = '#packageWeight#' , }
 				{@image = '#image#' , }
 				product_size = '{@#productSize#}' , 
 				package_size = '{@#packageSize#}'

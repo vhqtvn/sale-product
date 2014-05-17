@@ -518,19 +518,6 @@
 		GROUP BY srp.ID,ssri.PLAN_ID,srp.REAL_SKU
 	 </entry>
 	 
-	 <entry key="sql_supplychain_requirement_getListingCost">
-	 			select * from 
-	 			sc_view_listing_cost 
-	 			where account_id= '{@#accountId#}'
-	 			and LISTING_SKU= '{@#listingSku#}'
-		</entry>
-		
-		<entry key="sql_supplychain_requirement_getListingCostNoView">
-	 			select * from 
-	 			sc_listing_cost 
-	 			where account_id= '{@#accountId#}'
-	 			and LISTING_SKU= '{@#listingSku#}'
-		</entry>
 		
 		<entry key="sql_supplychain_requirement_getLastestSaleData">
 		  <![CDATA[	

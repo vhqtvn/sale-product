@@ -6,11 +6,7 @@ class Amazonaccount extends AppModel {
 		$sql = "update sc_amazon_account_product set is_risk='{@#isRisk:0#}',risk_type='{@#riskType#}',IS_ANALYSIS='{@#isAnalysis#}' where id = '{@#id#}'" ;
 		$this->exeSql($sql, $query) ;
 	}
-	
-	function getAmazonProductCostBySku($accountId , $listingSku){
-		$sql ="select *  from sc_view_listing_cost where account_id = '{@#accountId#}' and listing_sku='{@#listingSku#}'" ;
-		return $this->getObject($sql, array('accountId'=>$accountId,'listingSku'=>$listingSku)) ;
-	}
+
 	
 	function listInventorySupplyBySellerSKU( $accountId , $sellerSku ){
 		//检查该产品是否能够打印标签
@@ -34,11 +30,6 @@ class Amazonaccount extends AppModel {
 		$url = $url.'/'.$sellerSku ;
 		$result = file_get_contents($url  );
 		return $result ;
-	}
-	
-	function getAmazonAllAvalidProduct(){
-		$sql ="select *  from sc_view_listing_cost" ;
-		return $this->exeSqlWithFormat($sql, array()) ;
 	}
 	
 	function getAmazonProductCategoryBySKU($accountId,$sku ){

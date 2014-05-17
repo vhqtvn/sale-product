@@ -2,39 +2,7 @@
 <properties>
     <entry key="sql_">
     </entry>
-    
-    <entry  key="sql_cost_getListCostByRealId">
-		SELECT saap.SKU AS SELLER_SKU, srp.*,
-						saap.ACCOUNT_ID,
-						saa.name as ACCOUNT_NAME,
-						saap.FULFILLMENT_CHANNEL,
-				        spcd.LOGISTICS_COST, 
-				        saap.PRICE+IFNULL(saap.SHIPPING_PRICE,0) as TOTAL_PRICE,
-						spcd.OTHER_COST,  
-						spcd.WEIGHT_HANDLING_FEE, 
-						spcd.ORDER_HANDLING_FEE, 
-						spcd.FBA_DELIVERRY_SERVICES_FEE, 
-						spcd.PICK_AND_PACK_FEE, 
-						spcd.STORAGE_FEE, 
-						spcd.FBA_COST, 
-						spcd.VARIABLE_CLOSING_FEE, 
-						spcd.COMMISSION_RATIO,
-						( case saap.FULFILLMENT_CHANNEL when 'Merchant' then 0 else  saa.INVENTORY_CENTER_FEE end  ) as INVENTORY_CENTER_FEE,
-						saa.FEE_RATIO,
-						(select name from sc_warehouse sw where sw.id = saa.fbm_warehouse) as FBM_WAREHOUSE_NAME
-				 FROM sc_real_product srp,
-							sc_real_product_rel srpr,
-				            sc_amazon_account saa,
-							sc_amazon_account_product saap
-					        left join sc_product_cost_details spcd
-				           on spcd.account_id = saap.account_id
-				             and spcd.listing_sku = saap.sku
-							WHERE srp.ID = srpr.REAL_ID
-							AND srpr.SKU = saap.SKU
-							and saap.status = 'Y'
-							and saap.account_id = saa.id
-							and srp.id = '{@#realId#}'
-    </entry>
+
     
     <entry  key="sql_cost_insert_new">
 		INSERT INTO sc_product_cost 
@@ -94,7 +62,6 @@
 	</entry>
 	
 	<entry  key="sql_cost_details_update_new">
-	
 			UPDATE sc_product_cost_details 
 				SET
 				{@LOGISTICS_COST = '#LOGISTICS_COST#' ,} 
@@ -107,7 +74,8 @@
 				LAST_UPDATOR = '{@#loginId#}' , 
 				LAST_UPDATE_DATE =NOW()
 				WHERE
-				ID = '{@#ID#}'
+				ASIN = '{@#ASIN#}'
+				and TYPE = '{@#TYPE#}'
 	</entry>
 	
 	<entry  key="sql_cost_details_insert_new_forfee">
@@ -301,22 +269,6 @@
                 }
    </entry>
    
-   <entry key="sql_cost_product_details_list_new">
- 				 SELECT  * from  sc_view_listing_cost
- 				 where 1=1
- 				 {@
- 				 and (
- 				 	listing_sku like '%#searchKey#%'
- 				 	or
- 				 	real_sku like '%#searchKey#%'
- 				 	or 
- 				 	asin = '#searchKey#'
- 				 	or 
- 				 	name like '%#searchKey#%'
- 				 )
- 				 
- 				 }
-   </entry>
    
     <entry key="sql_cost_product_details_list">
  				 SELECT sc_product_cost.* ,
@@ -355,147 +307,5 @@
                 } 
              order by last_update_time desc
    </entry>
-   
-   <entry key="sql_cost_listingCost_insert">
-   	INSERT INTO  sc_listing_cost 
-			(
-			LISTING_SKU, 
-			REAL_SKU, 
-			IMAGE_URL, 
-			NAME, 
-			ASIN, 
-			LISTING_ID, 
-			ACCOUNT_ID, 
-			ACCOUNT_NAME, 
-			FULFILLMENT_CHANNEL, 
-			SUPPLY_CYCLE, 
-			REQ_ADJUST, 
-			A_SUPPLY_CYCLE, 
-			A_REQ_ADJUST, 
-			EXCHANGE_RATE, 
-			P_LABOR_COST, 
-			P_TAG_COST, 
-			P_FEE, 
-			P_LOGISTICS_COST, 
-			P_OTHER_COST, 
-			P_PURCHASE_COST, 
-			LOGISTICS_COST, 
-			TRANSFER_COST, 
-			PRICE, 
-			SHIPING_PRICE, 
-			FEE, 
-			OTHER_COST, 
-			WEIGHT_HANDLING_FEE, 
-			ORDER_HANDLING_FEE, 
-			FBA_DELIVERRY_SERVICES_FEE, 
-			COMMISSION_FEE, 
-			PICK_AND_PACK_FEE, 
-			STORAGE_FEE, 
-			FBA_COST, 
-			VARIABLE_CLOSING_FEE, 
-			COMMISSION_RATIO, 
-			FEE_RATIO, 
-			LOWEST_PRICE, 
-			LOWEST_FBA_PRICE, 
-			TOTAL_PRICE, 
-			TOTAL_COST, 
-			INVENTORY_CENTER_FEE, 
-			FBM_WAREHOUSE_NAME
-			)
-			VALUES
-			('{@#LISTING_SKU#}', 
-			'{@#REAL_SKU#}', 
-			'{@#IMAGE_URL#}', 
-			'{@#NAME#}', 
-			'{@#ASIN#}', 
-			'{@#LISTING_ID#}', 
-			'{@#ACCOUNT_ID#}', 
-			'{@#ACCOUNT_NAME#}', 
-			'{@#FULFILLMENT_CHANNEL#}', 
-			{@#SUPPLY_CYCLE:NULL#}, 
-			{@#REQ_ADJUST:NULL#}, 
-			'{@#A_SUPPLY_CYCLE#}', 
-			'{@#A_REQ_ADJUST#}', 
-			'{@#EXCHANGE_RATE#}', 
-			'{@#P_LABOR_COST#}', 
-			'{@#P_TAG_COST#}', 
-			'{@#P_FEE#}', 
-			'{@#P_LOGISTICS_COST#}', 
-			'{@#P_OTHER_COST#}', 
-			'{@#P_PURCHASE_COST#}', 
-			'{@#LOGISTICS_COST#}', 
-			'{@#TRANSFER_COST#}', 
-			'{@#PRICE#}', 
-			'{@#SHIPING_PRICE#}', 
-			'{@#FEE#}', 
-			'{@#OTHER_COST#}', 
-			'{@#WEIGHT_HANDLING_FEE#}', 
-			'{@#ORDER_HANDLING_FEE#}', 
-			'{@#FBA_DELIVERRY_SERVICES_FEE#}', 
-			'{@#COMMISSION_FEE#}', 
-			'{@#PICK_AND_PACK_FEE#}', 
-			'{@#STORAGE_FEE#}', 
-			'{@#FBA_COST#}', 
-			'{@#VARIABLE_CLOSING_FEE#}', 
-			'{@#COMMISSION_RATIO#}', 
-			'{@#FEE_RATIO#}', 
-			'{@#LOWEST_PRICE#}', 
-			'{@#LOWEST_FBA_PRICE#}', 
-			'{@#TOTAL_PRICE#}', 
-			'{@#TOTAL_COST#}', 
-			'{@#INVENTORY_CENTER_FEE#}', 
-			'{@#FBM_WAREHOUSE_NAME#}'
-			)
-   </entry>
-   
-   <entry key="sql_cost_listingCost_update">
-   UPDATE  sc_listing_cost 
-	SET
-	LISTING_SKU = '{@#LISTING_SKU#}' , 
-	REAL_SKU = '{@#REAL_SKU#}' , 
-	IMAGE_URL = '{@#IMAGE_URL#}' , 
-	NAME = '{@#NAME#}' , 
-	ASIN = '{@#ASIN#}' , 
-	LISTING_ID = '{@#LISTING_ID#}' , 
-	ACCOUNT_ID = '{@#ACCOUNT_ID#}' , 
-	ACCOUNT_NAME = '{@#ACCOUNT_NAME#}' , 
-	FULFILLMENT_CHANNEL = '{@#FULFILLMENT_CHANNEL#}' , 
-	SUPPLY_CYCLE = {@#SUPPLY_CYCLE:NULL#}, 
-	REQ_ADJUST = {@#REQ_ADJUST:NULL#}, 
-	A_SUPPLY_CYCLE = '{@#A_SUPPLY_CYCLE#}' , 
-	A_REQ_ADJUST = '{@#A_REQ_ADJUST#}' , 
-	EXCHANGE_RATE = '{@#EXCHANGE_RATE#}' , 
-	P_LABOR_COST = '{@#P_LABOR_COST#}' , 
-	P_TAG_COST = '{@#P_TAG_COST#}' , 
-	P_FEE = '{@#P_FEE#}' , 
-	P_LOGISTICS_COST = '{@#P_LOGISTICS_COST#}' , 
-	P_OTHER_COST = '{@#P_OTHER_COST#}' , 
-	P_PURCHASE_COST = '{@#P_PURCHASE_COST#}' , 
-	LOGISTICS_COST = '{@#LOGISTICS_COST#}' , 
-	TRANSFER_COST = '{@#TRANSFER_COST#}' , 
-	PRICE = '{@#PRICE#}' , 
-	SHIPING_PRICE = '{@#SHIPING_PRICE#}' , 
-	FEE = '{@#FEE#}' , 
-	OTHER_COST = '{@#OTHER_COST#}' , 
-	WEIGHT_HANDLING_FEE = '{@#WEIGHT_HANDLING_FEE#}' , 
-	ORDER_HANDLING_FEE = '{@#ORDER_HANDLING_FEE#}' , 
-	FBA_DELIVERRY_SERVICES_FEE = '{@#FBA_DELIVERRY_SERVICES_FEE#}' , 
-	COMMISSION_FEE = '{@#COMMISSION_FEE#}' , 
-	PICK_AND_PACK_FEE = '{@#PICK_AND_PACK_FEE#}' , 
-	STORAGE_FEE = '{@#STORAGE_FEE#}' , 
-	FBA_COST = '{@#FBA_COST#}' , 
-	VARIABLE_CLOSING_FEE = '{@#VARIABLE_CLOSING_FEE#}' , 
-	COMMISSION_RATIO = '{@#COMMISSION_RATIO#}' , 
-	FEE_RATIO = '{@#FEE_RATIO#}' , 
-	LOWEST_PRICE = '{@#LOWEST_PRICE#}' , 
-	LOWEST_FBA_PRICE = '{@#LOWEST_FBA_PRICE#}' , 
-	TOTAL_PRICE = '{@#TOTAL_PRICE#}' , 
-	TOTAL_COST = '{@#TOTAL_COST#}' , 
-	INVENTORY_CENTER_FEE = '{@#INVENTORY_CENTER_FEE#}' , 
-	FBM_WAREHOUSE_NAME = '{@#FBM_WAREHOUSE_NAME#}'
-	WHERE
-	LISTING_SKU = '{@#LISTING_SKU#}' AND ACCOUNT_ID = '{@#ACCOUNT_ID#}'
-   </entry>
-
    
 </properties>

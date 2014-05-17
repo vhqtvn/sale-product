@@ -305,8 +305,8 @@ class ScRequirement extends AppModel {
 						SELECT * FROM 
 								sc_supplychain_requirement_plan_product ssrp,
 								sc_supplychain_requirement_item ssri
-						WHERE           ssrp.status = 6
-						                AND DATEDIFF(NOW(),ssri.last_update_time)<=3
+						WHERE     
+						        DATEDIFF(NOW(),ssri.last_update_time)<=5
 								AND ssrp.real_id = srp.id
 								AND ssri.req_product_id  = ssrp.req_product_id
 								AND ssri.account_id = saap.account_id
