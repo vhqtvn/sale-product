@@ -32,14 +32,6 @@ class CronTaskController extends AppController {
     	$this->Utils->exeSql("delete from sc_sale_schedule",array()) ;
     }
     
-    //LOWEST_PROFIT
-    /**
-     * 定时根据成本计算限价
-     * @TODO
-     */
-    public function calcLimitPrice( ) {
-    	$sql = "select * from sc_listing_cost where fulfillment_channel='AMAZON_NA' " ;
-    }
     
     /**
      * 格式化计算货品重量

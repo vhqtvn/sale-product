@@ -58,12 +58,15 @@ class TaskFetchController extends AppController {
 	 	}
 	 }
 	 
+	 public function formatAsinFee( $asin ){
+	 	$this->_processAsinFee($asin) ;
+	 }
+	 
 	 public function formatListingFee($account,$listingSku){
 	 	$listing_ = $this->Amazonaccount->getAmazonProductCostBySku($account,$listingSku) ;
 	 	if( !empty($listing_) ){
 	 		$this->_processListingFee($listing_) ;
 	 	}
-	 	
 	 }
 	 
 	 private function _processDevProductFee($listing){
@@ -349,9 +352,160 @@ class TaskFetchController extends AppController {
 	 	}
 	 }
 	 
+	 
+	 private function _processAsinFee($asin){
+	 	$user =  $this->getCookUser() ;
+	 	$loginId = $user["LOGIN_ID"] ;
+	 	 
+	 	$url = "https://sellercentral.amazon.com/gp/fba/revenue-calculator/data/product-matches.html" ;
+	 	$afnUrl		= "https://sellercentral.amazon.com/gp/fba/revenue-calculator/data/afn-fees.html" ;
+	 	$mfnUrl   ="https://sellercentral.amazon.com/gp/fba/revenue-calculator/data/mfn-fees.html" ;
+	  
+	 	//echo '<br>111<br>';
+	 	$result = $this->send_post($url,array('method'=>'GET',
+	 			'model'=>'{"searchString":"'.$asin.'","lang":"en_US","marketPlace":"ATVPDKIKX0DER"}'
+	 	)) ; 
+	 	
+	 	$result = json_decode(trim($result)) ;
+	 	$result = get_object_vars($result) ;
+	 	 
+	 		foreach($result['data'] as  $item){
+	 			$item = get_object_vars($item) ;
+	 			//debug( $item ) ;
+	 			$item["selected"] = true ;
+	 			$item["language"] = "en_US" ;
+	 			$item["price"] = 2 ;
+	 			$item["revenueTotal"] = 2 ;
+	 			$item["undefined"] = 0 ;
+	 			$item["inbound-delivery"] = 0 ;
+	 			$item["prep-service"] = 0 ;
+	 			$item["fulfillmentTotal"] = 0 ;
+	 			try{
+	 				echo '<br>FBA<br>';
+	 				$feeResult = $this->send_post($afnUrl,array('method'=>'GET',
+	 						'model'=> json_encode($item)
+	 				)) ;
+	 
+	 				$feeResult = json_decode(trim($feeResult)) ;
+	 				$feeResult = get_object_vars($feeResult) ;
+	 				$feeResult = $feeResult['data'] ;
+	 
+	 				if( empty($feeResult) ){
+	 					echo 'FBA Error, Try It<br>';
+	 					$feeResult = $this->send_post($afnUrl,array('method'=>'GET',
+	 							'model'=> json_encode($item)
+	 					)) ;
+	 						
+	 					$feeResult = json_decode(trim($feeResult)) ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					$feeResult = $feeResult['data'] ;
+	 					if( empty($feeResult) ){
+	 						echo 'FBA Error, End<br>';
+	 						continue ;
+	 					}
+	 				}
+	 
+	 				$feeResult = get_object_vars($feeResult) ;
+	 
+	 				if( isset($feeResult['commissionFee']) ){//success
+	 					$feeResult['asin'] = $asin ;
+	 					$feeResult['loginId'] = $loginId ;
+	 					
+	 					$feeResult['fbaCost'] =
+	 					(empty($feeResult['weightHandlingFee'])?0:$feeResult['weightHandlingFee'])
+	 					+ (empty($feeResult['orderHandlingFee'])?0:$feeResult['orderHandlingFee'])
+	 					+ (empty($feeResult['fbaDeliveryServicesFee'])?0:$feeResult['fbaDeliveryServicesFee'])
+	 					+ (empty($feeResult['pickAndPackFee'])?0:$feeResult['pickAndPackFee'])
+	 					+ (empty($feeResult['storageFee'])?0:$feeResult['storageFee']) ;
+	 						
+	 					if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
+	 						$feeResult['commissionLowlimit'] = 1 ;
+	 						//重新计算一次
+	 						$item["price"] = 100 ;
+	 						$item["revenueTotal"] = 100 ;
+	 						$feeResult_ = $this->send_post($afnUrl,array('method'=>'GET',
+	 								'model'=> json_encode($item)
+	 						)) ;
+	 						$feeResult_ = json_decode(trim($feeResult_)) ;
+	 						$feeResult_ = get_object_vars($feeResult_) ;
+	 						$feeResult_ = $feeResult_['data'] ;
+	 						$feeResult_ = get_object_vars($feeResult_) ;
+	 
+	 						if( isset($feeResult_['commissionFee']) ){//success
+	 							$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 						}
+	 					}else{
+	 						$feeResult['commissionRatio'] = round($feeResult['commissionFee']/2,4) ;
+	 					}
+	 						
+	 					$this->Cost->saveCostByFee($feeResult) ;
+	 				}else{//执行失败
+	 					echo 'ERROR:'. json_encode($item).'<br>';
+	 					echo 'Try ReGet :::<br>' ;
+	 					$feeResult = $this->send_post($mfnUrl,array('method'=>'GET',
+	 							'model'=> json_encode($item)
+	 					)) ;
+	 
+	 					$feeResult = json_decode(trim($feeResult)) ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 					$feeResult = $feeResult['data'] ;
+	 					$feeResult = get_object_vars($feeResult) ;
+	 						
+	 					$feeResult['fbaCost'] =
+	 					(empty($feeResult['weightHandlingFee'])?0:$feeResult['weightHandlingFee'])
+	 					+ (empty($feeResult['orderHandlingFee'])?0:$feeResult['orderHandlingFee'])
+	 					+ (empty($feeResult['fbaDeliveryServicesFee'])?0:$feeResult['fbaDeliveryServicesFee'])
+	 					+ (empty($feeResult['pickAndPackFee'])?0:$feeResult['pickAndPackFee'])
+	 					+ (empty($feeResult['storageFee'])?0:$feeResult['storageFee']) ;
+	 
+	 					if( isset($feeResult['commissionFee']) ){//success
+	 						$feeResult['asin'] = $asin ;
+	 						$feeResult['loginId'] = $loginId ;
+	 						$feeResult['fbaCost'] = 0 ;
+	 							
+	 						if( $feeResult['commissionFee'] == 1 ){ //存在最低价限制
+	 							$feeResult['commissionLowlimit'] = 1 ;
+	 							//重新计算一次
+	 							$item["price"] = 100 ;
+	 							$item["revenueTotal"] = 100 ;
+	 							$feeResult_ = $this->send_post($afnUrl,array('method'=>'GET',
+	 									'model'=> json_encode($item)
+	 							)) ;
+	 							$feeResult_ = json_decode(trim($feeResult_)) ;
+	 							$feeResult_ = get_object_vars($feeResult_) ;
+	 							$feeResult_ = $feeResult_['data'] ;
+	 							$feeResult_ = get_object_vars($feeResult_) ;
+	 								
+	 							if( isset($feeResult_['commissionFee']) ){//success
+	 								$feeResult['commissionRatio'] = round($feeResult_['commissionFee']/100,4) ;
+	 							}
+	 						}else{
+	 							$feeResult['commissionRatio'] = round($feeResult['commissionFee']/100,4) ;
+	 						}
+	 							
+	 						$this->Cost->saveCostByFee($feeResult) ;
+	 						echo 'Try Success<br>';
+	 					}else{
+	 						echo 'Try ERROR......<br>';
+	 					}
+	 				}
+	 			}catch(Exception $e){
+	 			}
+	 		}
+	 }
+	 
 	 private function _processListingFee($listing){
 	 	$user =  $this->getCookUser() ;
 	 	$loginId = $user["LOGIN_ID"] ;
+	 	
+	 	//查找对应的Listing是否已经同步完成，如果已经同步完成，则直接取已经存在的数据
+	 	/*$sql = "select * from sc_product_cost_details spcd where 
+	 			      (   ( spcd.account_id = '{@#accountId#}' and spcd.listing_sku='{@#listingSku#}' 
+	 			           and spcd.account_id !='' and spcd.listing_sku !=''
+	 			       ) or (spcd.asin = '{@#asin#}' and spcd.asin is not null and spcd.asin !='')
+	 			  ) and 
+	 			" ;*/
+	 	
 	 	
 	 	$url = "https://sellercentral.amazon.com/gp/fba/revenue-calculator/data/product-matches.html" ;
 	 	$afnUrl		= "https://sellercentral.amazon.com/gp/fba/revenue-calculator/data/afn-fees.html" ;
