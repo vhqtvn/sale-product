@@ -3,7 +3,9 @@
 	<comment>库存管理Sql文件</comment>
 	
 	<!--  and
-			SOURCE_ID = '{@#sourceId#}' -->
+			SOURCE_ID = '{@#sourceId#}' 
+			INVENTORY_TYPE = '{@#inventoryType#}' and
+			-->
 	<entry key="sql_inventory_exists">
 		select * from 
 			sc_warehouse_inventory
@@ -12,7 +14,6 @@
 			LISTING_SKU = '{@#listingSku#}' and
 			ACCOUNT_ID = '{@#accountId#}' and
 			WAREHOUSE_ID = '{@#warehouseId#}' and
-			INVENTORY_TYPE = '{@#inventoryType#}' and
 			INVENTORY_STATUS = '{@#inventoryStatus#}' and
 			INVENTORY_TO = '{@#inventoryTo#}'
 	</entry>

@@ -84,10 +84,10 @@ SELECT  COUNT(1) AS COUNT , 30 AS TYPE FROM sc_order_item soi
 				                srp.WIDTH,
 				                srp.HEIGHT,
 				              (select ser.EXCHANGE_RATE from sc_exchange_rate ser where ser.id = saa.EXCHANGE_ID ) as EXCHANGE_RATE
-					 FROM sc_amazon_account_product saap,
+					 FROM (sc_amazon_account_product saap,
 				               sc_amazon_account saa,
 				               sc_real_product srp ,
-					           sc_real_product_rel srpr
+					           sc_real_product_rel srpr)
 					LEFT JOIN sc_product_cost_details spcd
 					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
 					AND spcd.LISTING_SKU = srpr.SKU
@@ -209,10 +209,10 @@ SELECT  COUNT(1) AS COUNT , 30 AS TYPE FROM sc_order_item soi
 				                srp.WIDTH,
 				                srp.HEIGHT,
 				              (select ser.EXCHANGE_RATE from sc_exchange_rate ser where ser.id = saa.EXCHANGE_ID ) as EXCHANGE_RATE
-					 FROM sc_amazon_account_product saap,
+					 FROM (sc_amazon_account_product saap,
 				               sc_amazon_account saa,
 				               sc_real_product srp ,
-					           sc_real_product_rel srpr
+					           sc_real_product_rel srpr)
 					LEFT JOIN sc_product_cost_details spcd
 					       ON spcd.ACCOUNT_ID = srpr.ACCOUNT_ID
 					AND spcd.LISTING_SKU = srpr.SKU

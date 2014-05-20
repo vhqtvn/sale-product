@@ -72,6 +72,7 @@
 		       srp.IMAGE_URL,
 		       srp.REAL_SKU,
 		       srp.ID as REAL_ID,
+		       saap.ACCOUNT_ID as _ACCOUNT_ID,
 		       saap.SKU,
 		        (select  sfsi.IN_STOCK_SUPPLY_QUANTITY from sc_fba_supply_inventory sfsi where  sfsi.account_id = saap.account_id
 			 and sfsi.SELLER_SKU = saap.sku ) as IN_STOCK_SUPPLY_QUANTITY,
