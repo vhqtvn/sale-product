@@ -31,6 +31,7 @@ var  Cost = function(){
 	};
 	
 	this.setChannel = function(channel){
+		if(channel) channel = $.trim(channel) ;
 		_channel= channel ;
 	};
 	
@@ -88,10 +89,11 @@ var  Cost = function(){
 	
 	this.getChannelFee = function(){
 		var fee =  parseFloat( _sellPrice*_channelFeeRatio ) ; 
-		if( _CommissionLowlimit >0 && fee < _CommissionLowlimit  ){
+		/*if( _CommissionLowlimit >0 && fee < _CommissionLowlimit  ){
 			return _CommissionLowlimit ;
-		}
+		}*/
 		fee = fee.toFixed(2) ;
+		if( fee <= 1 ) return 1 ;
 		return fee ;
 	};
 	

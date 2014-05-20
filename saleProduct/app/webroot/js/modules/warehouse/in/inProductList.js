@@ -119,6 +119,12 @@
 					$(".grid-content-details").llygrid("reload",{},true);
 				}) ;
 			});
+			
+			$(".export").live("click",function(){
+				window.location.href = contextPath+"/excel/inListing/"+inId ;
+			});
+			
+			
    	 });
    	 
    	 function openCallback(type){
