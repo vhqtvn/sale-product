@@ -434,17 +434,21 @@ class InventoryNew extends AppModel {
 	 */
 	private function _doSave($params){
 		//1、库存主数据表操作
-		
+		//判断是入库还是出库
+		$actionType = $params['actionType'] ;
 		//判断改状态库存是否存在
 		$inventoryObj = $this->getObject("sql_inventory_exists", $params) ;
 		
 		if( empty($inventoryObj) ){//执行插入操作
-			$this->exeSql("sql_inventory_insert", $params) ;
+			if( $this->ACTION_TYPE_IN ==$actionType  ){//入库
+				$this->exeSql("sql_inventory_insert", $params) ;
+			}else if( $this->ACTION_TYPE_OUT ==$actionType  ){
+				$params['quantity'] = 0 - $params['quantity'] ;
+				$this->exeSql("sql_inventory_insert", $params) ;
+			}
 		}else{ //更新当前库存操作
 			$quantity = $inventoryObj['QUANTITY'] ;//获取当前库存数量
-			
-			//判断是入库还是出库
-			$actionType = $params['actionType'] ;
+	
 			$changeQuantity = $params['quantity'] ;
 			if( $this->ACTION_TYPE_IN ==$actionType  ){//入库
 				$quantity = $quantity + $changeQuantity ;

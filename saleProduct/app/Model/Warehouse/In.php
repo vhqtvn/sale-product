@@ -18,12 +18,15 @@ class In extends AppModel {
 	
 	public  function saveInProduct($params){
 		$inId = $params['inId'] ;
+		$result = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+		$accountId = $result['ACCOUNT_ID'] ;
 		$items = $params['items'] ;
 		$items = json_decode($items) ;
 		foreach($items as $item){
 			$item = get_object_vars($item) ;
 			$item['id'] = $this->create_guid() ;
 			$item['inId'] = $inId ;
+			$item['accountId'] = $accountId ;
 			$this->exeSql("sc_warehouse_in_new_insertInProduct", $item) ;
 		}
 	}

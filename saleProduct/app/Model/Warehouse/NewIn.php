@@ -62,6 +62,7 @@ class NewIn extends AppModel {
 				$inventoryParams['inventoryStatus'] =  $InventoryNew->INVENTORY_STATUS_LIBRARY ;
 				$inventoryParams['inventoryTo']       =  $InventoryNew->INVENTORY_TO_SELF ;
 				$inventoryParams['sourceId'] = "" ;
+				//debug($inventoryParams) ;
 				$InventoryNew->doSave( $inventoryParams ) ;
 			}
 			
