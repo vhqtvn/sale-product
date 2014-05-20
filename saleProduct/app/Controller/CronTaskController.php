@@ -530,7 +530,7 @@ class CronTaskController extends AppController {
 		 */
 		if( $listPrice > $secondPrice ){
 			if( $secondPrice >  $execPrice  ){//如果最低价格大于限价
-				if( $secondPriceCount <=2 ){
+				if( !$isLimitStart &&  $secondPriceCount <=2 ){
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice  ) ;
 				}
 				
@@ -578,7 +578,7 @@ class CronTaskController extends AppController {
 			}
 			
 			if( $listPrice > $execPrice ){
-				if( $secondPriceCount <=2 ){
+				if(  !$isLimitStart &&  $secondPriceCount <=2 ){
 					return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice  ) ;
 				}
 				
@@ -591,7 +591,7 @@ class CronTaskController extends AppController {
 		}
 		
 		if( $listPrice < $secondPrice ){
-			if( $secondPriceCount <=2 ){
+			if(  !$isLimitStart && $secondPriceCount <=2 ){
 				return array("SKU"=>$item['SKU'],"FEED_PRICE"=>$secondPrice  ) ;
 			}
 			

@@ -154,6 +154,31 @@ class ExcelController extends AppController {
 		exit;
 	}
 	
+	public function inListing($id){
+		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+		$in = $SqlUtils->getObject("sql_warehouse_in_getById",array('id'=> $id)) ;
+		$inProducts = $SqlUtils->exeSqlWithFormat("sql_warehouse_new_in_products",array('inId'=>$id)) ;
+	
+		$products = array() ;
+		$total = 0 ;
+		foreach($inProducts as $p){
+			$products[] = $p ;
+		} ;
+	
+		$params = array('in'=>$in , 'p'=>$products) ;
+	
+		$inputFileName = 'app/template/in_listing.xls';
+	
+		$this->ExcelUtils->export( $inputFileName , $params , '货品入库Listing-'.$in['IN_NUMBER'] ,function($sheet , $row , $isNew){
+			if( $isNew ){
+				$sheet->mergeCells("A$row:B$row") ;
+				$sheet->mergeCells("C$row:F$row") ;
+				$sheet->mergeCells("H$row:I$row") ;
+				$sheet->mergeCells("J$row:K$row") ;
+			}
+		} ) ;
+	}
+	
 	public function read($id){
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$in = $SqlUtils->getObject("sql_warehouse_in_getById",array('id'=> $id)) ;

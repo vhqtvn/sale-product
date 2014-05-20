@@ -26,7 +26,7 @@ class TestController extends AppController {
 			//获取成本
 			$sql = "SELECT * FROM sc_product_cost_details WHERE ( ASIN = '{@#asin#}'
 								OR ( account_id = '{@#accountId#}' AND listing_sku = '{@#listingSku#}' )
-					)   " ;
+					)   ORDER BY fba_cost DESC LIMIT 0,1 " ;
 			$product = $this->InventoryNew->getObject($sql , array("asin"=>$ASIN,
 					"accountId"=>$record['ACCOUNT_ID']
 					,"listingSku"=>$record['SKU'] )
