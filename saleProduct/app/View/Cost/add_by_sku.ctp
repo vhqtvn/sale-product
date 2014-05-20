@@ -103,6 +103,14 @@
 							}
 						}); 
 					}) ;
+
+					$(".amazon-asin-cost").click(function(){
+						var row = $(this).closest("tr") ;
+						var asin = row.find("[name='ASIN']").val() ;
+		   				openCenterWindow(contextPath+"/page/forward/Cost.editAsinCost/"+asin,1000,650,function(){
+							window.location.reload() ;
+						}) ;
+					}) ;
    	   		
    				
    					$(".save-btn").click(function(){
@@ -284,6 +292,7 @@
 							<tr  class="data-row"  id="<?php echo $item['ACCOUNT_ID'];?>_<?php echo $item['SKU'];?>">
 								<td>
 										<a href="#"  class="amazon-asyn-listing">同步</a>
+										<a href="#"  class="amazon-asin-cost">编辑</a>
 								</td>
 								<td>
 									<input type="hidden" name="ACCOUNT_ID"   value="<?php echo $item['ACCOUNT_ID'];?>" style="width:50px;"/>

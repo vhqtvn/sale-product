@@ -22,13 +22,12 @@
 		
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$warehoseIn = $SqlUtils->getObject("sql_warehouse_in_getById",array("id"=>$inId)) ;
-
 		$sourceWarehoueId = $warehoseIn['SOURCE_WAREHOUSE_ID'] ;
-		$accountId = $warehoseIn['ACCOUNT_ID'] ;
+		$accountId = $warehoseIn['ACCOUNT_ID'] ;//ACCOUNT_ID
 	?>
   
    <script type="text/javascript">
-		var accountId = '' ;
+		var accountId = '<?php echo $accountId;?>' ;
 
 		$(function(){
 			
@@ -48,7 +47,7 @@
 								li.attr("item",record.REAL_ID+"__"+record.SKU)
 									.attr("realId",record.REAL_ID)
 									.attr("listingSku",record.SKU) 
-									.attr("accountId",record.ACCOUNT_ID)
+									.attr("accountId",record._ACCOUNT_ID)
 									.attr("quantity",record.QUANTITY||0) ;
 							}else{
 								$(".selected-container ul") .find("li[item='"+itemId+"']").remove();

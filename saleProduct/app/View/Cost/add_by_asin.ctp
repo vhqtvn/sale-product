@@ -102,12 +102,21 @@
 							cache:false,
 							dataType:"text",
 							success:function(result,status,xhr){
-								//window.location.reload() ;
+								window.location.reload() ;
 							},error:function(){
 								alert("操作出现异常！") ;
 								$(this).text("同步") ;
 							}
 						}); 
+					}) ;
+
+		   			
+		   			$(".amazon-asin-cost").click(function(){
+						var row = $(this).closest("tr") ;
+						var asin = row.find("[name='ASIN']").val() ;
+		   				openCenterWindow(contextPath+"/page/forward/Cost.editAsinCost/"+asin,600,350,function(){
+							window.location.reload() ;
+						}) ;
 					}) ;
    	   		
    				
@@ -123,7 +132,7 @@
    							//alert(  $.json.encode({productCost:productCost,listingCosts:listingCosts}) ) ;
    							//return ;
    							$.dataservice("model:Cost.saveCostAsin" , {productCost:productCost,listingCosts:listingCosts} , function(){
-   								//window.location.reload();
+   								window.location.reload();
    							})
 
    						};
@@ -284,6 +293,7 @@
 							<tr  class="data-row"  id="<?php echo $item['ASIN'];?>_<?php echo $item['TYPE'];?>">
 								<td>
 										<a href="#"  class="amazon-asyn-listing">同步</a>
+										<a href="#"  class="amazon-asin-cost">编辑</a>
 								</td>
 								<td>
 									<input type="hidden" name="ASIN"   value="<?php echo $item['ASIN'];?>" style="width:50px;"/>
