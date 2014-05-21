@@ -23,6 +23,13 @@ class NewIn extends AppModel {
 		try{
 			$inId = $params['inId'] ;
 			$result = $this->getObject("sql_warehouse_in_getById",array('id'=>$inId)) ;
+			
+			if( $result['STATUS'] >= 20 ){
+				//已经入库
+				$dataSource->rollback() ;
+				return ;
+			}
+			
 			/**
 			 * 出库仓库ID
 			 */

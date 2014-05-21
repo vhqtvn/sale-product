@@ -41,9 +41,9 @@
 					isSaved = true ;
 					$.dataservice("model:Warehouse.In.doSave",json,function(result){
 						if( $("#id").val() ){
-							//window.location.reload() ;
+							window.location.reload() ;
 						}else{
-							//window.close() ;
+							window.close() ;
 						}
 						
 					});

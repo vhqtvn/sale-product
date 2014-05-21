@@ -98,8 +98,13 @@
     }
 
     //转仓出库
+    var  isTransfer = false ;
     function transOutInventoryFBA( status , statusLabel  ){
     	if(window.confirm("确认【"+statusLabel+"】？")){
+        	if( isTransfer ){
+				return ;
+            } 
+    		isTransfer = true ;
 			var json = {inId:inId,status:status,memo:$(".memo").val()} ;
 			$.dataservice("model:Warehouse.NewIn.transOutInventory",json,function(result){
 				window.location.reload();

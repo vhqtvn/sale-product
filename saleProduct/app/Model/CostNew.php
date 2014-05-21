@@ -194,5 +194,28 @@ class CostNew extends AppModel {
 			) ;
 	}
 	
+	/**
+	 * 计算lisitng成本
+	 */
+	public function calculate($params){
+		$listingSku  = $params['listingSku'] ;
+		$accountId = $params['accountId'] ;
+		//通用成本
+		$costTag = $this->getAmazonConfig("COST_TAG",0) ;
+		$costLabor = $this->getAmazonConfig("COST_LABOR",0) ;
+		$costTaxRate = $this->getAmazonConfig("COST_TAX_RATE",0.0) ;
+		
+		//获取采购成本
+		$sql = "select * from sc_real_product_rel where account_id = '{@#accountId#}' and sku='{@#listingSku#}'" ;
+		$real= $this->getObject($sql, $params) ;
+		$realId = $real['REAL_ID'] ;
+		$productCost = $this->getLatestPurchase(array("realId"=>$realId)) ; //产品采购成本
+		
+		
+		
+		//Listing成本数据
+		$listingCost 	= $this->getObject("sql_cost_new_ListingCostEvlate", $params) ;
+		
+	}
 	
 }
