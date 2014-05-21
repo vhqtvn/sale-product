@@ -22,6 +22,7 @@ var  Cost = function(){
 	var  _fbcOrderRate = 0 ;
 	var  _fbmOrderRate = 0 ;
 	var _CommissionLowlimit = 1 ;
+	var _ProductCostOnly = 0 ;
 	
 	this.setFbcOrderRate = function(fbcOrderRate){
 		_fbcOrderRate= fbcOrderRate ;
@@ -33,6 +34,10 @@ var  Cost = function(){
 	this.setChannel = function(channel){
 		if(channel) channel = $.trim(channel) ;
 		_channel= channel ;
+	};
+	
+	this.setProductCostOnly = function(t){
+		_ProductCostOnly = t ;
 	};
 	
 	this.setProductCost = function(pc,er){
@@ -116,7 +121,7 @@ var  Cost = function(){
 	};
 	
 	this.check = function(){
-		if(  !_productCost  ){
+		if(  !_productCost ||( !_ProductCostOnly  && _productCost<=2  )  ){
 			return {error:"采购成本缺失"} ;
 		}
 		
@@ -256,6 +261,7 @@ Cost.get = function(realId,callback){
 		 var returnCosts =[] ;
 		$( listingCosts ).each(function(index,item){
 			var cost = new Cost() ;
+			cost.setProductCostOnly(purchaseCost) ;
 			cost.setProductCost( baseCost , item.EXCHANGE_RATE  ) ;
 			cost.setChannel(  item.FULFILLMENT_CHANNEL ) ;
 			//LOWEST_PRICE  LOWEST_FBA_PRICE
