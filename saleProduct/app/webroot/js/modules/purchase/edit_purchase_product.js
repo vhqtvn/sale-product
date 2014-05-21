@@ -188,13 +188,18 @@ $(function(){
 
 	 $(".no-disabled").removeAttr("disabled") ;
 	 
-	 $(".print-btn").live("click",function(){
+	 $(".print-btn-a2").live("click",function(){
 			var tr = $(this).closest("tr") ;
-			var printNum = tr.find(".print-num").val() ;//$(this).prev().val() ;
-			var paperType = tr.find(".paper-type").val() ;//$(this).prev().val() ;
 			var accountId =  tr.find(".accountId").val() ;//record.ACCOUNT_ID ;
 			var listingSku =  tr.find(".listingSku").val() ;//record.SKU ;
-			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/"+printNum+"/"+paperType ,850,700) ;
+			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/2/A2" ,850,700) ;
+	 });
+	 
+	 $(".print-btn-a4").live("click",function(){
+			var tr = $(this).closest("tr") ;
+			var accountId =  tr.find(".accountId").val() ;//record.ACCOUNT_ID ;
+			var listingSku =  tr.find(".listingSku").val() ;//record.SKU ;
+			openCenterWindow(contextPath+"/page/forward/Barcode.barcode/"+listingSku+"/"+accountId+"/44/A4" ,850,700) ;
 	 });
 	
 }) ;

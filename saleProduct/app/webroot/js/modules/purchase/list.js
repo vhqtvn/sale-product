@@ -42,6 +42,30 @@
 		}
 		
 		loadStatics() ;
+		
+		setTimeout(function(){
+			$('.providor-container').animate({ right: '-100' }, 500, function() {  
+	            	//$(this).css({display:'none', top:'-100px'});  
+		        	$('#img_jiantou').attr("src", "Images/down.gif");  
+		        	$('#sqjt').attr("title", "展开搜索框");  
+	        });  
+		}) ;
+		
+		function out() {  
+		    if ($('#img_jiantou').attr("src") == "Images/up.gif") {  
+		        $('#note').animate({ top: '-50' }, 500, function() {  
+		            //$(this).css({display:'none', top:'-100px'});  
+		        $('#img_jiantou').attr("src", "Images/down.gif");  
+		        $('#sqjt').attr("title", "展开搜索框");  
+		        });  
+		    }  
+		    else {  
+		        $('#note').animate({ top: '0' }, 500, function() {  
+		        $('#img_jiantou').attr("src", "Images/up.gif");  
+		        $('#sqjt').attr("title", "隐藏搜索框");  
+		        });  
+		    }  
+		} 
 
 		$(".create-purchase-product").live("click",function(){
 			openCenterWindow(contextPath+"/page/forward/Purchase.create_purchase_product/",980,620,function(win,ret){

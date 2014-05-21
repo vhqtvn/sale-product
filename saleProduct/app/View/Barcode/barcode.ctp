@@ -70,9 +70,6 @@ if( empty($paperType) ){
 		font-family: Arial , sans-serif;
 	}	
 	
-	
-	
-	
 	<?php  if( $paperType=='A4' ){ ?>
 	.barcode-img{
 		width:170px;
@@ -106,7 +103,7 @@ if( empty($paperType) ){
 		font-size:15px;	
 		line-height:15px;
 		height:15px;
-		font-family: Arial Narrow, sans-serif;
+		font-family:Arial Narrow,Verdana;
 		padding-bottom:1px
 	}
 	
@@ -115,7 +112,7 @@ if( empty($paperType) ){
 		margin-left: 18px;
 		line-height:15px;
 		height:15px;
-		font-size:15px;	
+		font-size:15px;		
 	}
 	
 	.text-sku{
@@ -127,7 +124,7 @@ if( empty($paperType) ){
 	}	
 	
 	.barcode-img{
-		width:260px;
+		width:240px;
 		height:30px;
 	}
 		
@@ -217,7 +214,7 @@ if(empty( $printNum ))
 $row = ceil($printNum/4) ;
 $nullRow = (11 -  ($row%11))%11  ;
 if( $paperType == 'A2' ){
-	$row = ceil($printNum/2) ;
+	$row = 1;//ceil($printNum/2) ;
 	$nullRow = 0  ;
 }
 $basedir = dirname(__FILE__);
@@ -302,7 +299,7 @@ if( isset( $json['ProductCount'] ) && $json['ProductCount'] == 0 ){
 		pld.style.display = "none" ;
 		window.print() ;
 	}
-	document.oncontextmenu=function(e){return false;} 
+	//document.oncontextmenu=function(e){return false;} 
 </script>
 	<div style="position:fixed;top:5px;right:10px;width:200px;height:20px;background:#FFF;" id="printLabelDiv">
 	<center>

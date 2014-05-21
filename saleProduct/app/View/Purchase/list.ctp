@@ -217,5 +217,7 @@
 	<div class="grid-content-details" style="margin-top:5px;">
 	</div>
 	<iframe src="" id="exportIframe" style="display:none"></iframe>
+	
+	<div class="providor-container "  style="color:red;" >XXXXXXXXXXXX</div>
 </body>
 </html>

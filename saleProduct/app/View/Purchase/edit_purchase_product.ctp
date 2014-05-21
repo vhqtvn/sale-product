@@ -535,12 +535,9 @@
 									  <tr   class="edit-data-row"   rowListing="<?php echo $req['ACCOUNT_ID'] ;?>_<?php echo $req['LISTING_SKU'] ;?>">
 										<td>
 											<?php  if( $purchaseQuantity >0  ) { ?>
-										  <input type='text'  class="print-num no-disabled" style='width:25px;height:20px;margin-top:2px;padding:0px;' value='<?php echo $purchaseQuantity+5 ;?>'  title='输入打印数量'>
-										  <select style="width:40px;padding:0px;height:22px;" class="no-disabled  paper-type">
-										  	<option value='A4'>A4</option>
-										  	<option value='A2'>A2</option>
-										  </select>
-										  &nbsp;<button class='btn print-btn  no-disabled'>打印</button>
+										  <button class='btn print-btn-a2  no-disabled'>A2</button>
+										  &nbsp;
+										  <button class='btn print-btn-a4  no-disabled'>A4</button>
 										  <?php  }?>
 										</td>
 										<td><?php echo $req['ACCOUNT_NAME'] ;?></td>

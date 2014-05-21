@@ -161,6 +161,7 @@
 				var rowId = item.ACCOUNT_ID+"_"+item.SKU ;
 
 				var cost = new Cost() ;
+				cost.setProductCostOnly(purchaseCost) ;
 				cost.setProductCost( baseCost , item.EXCHANGE_RATE  ) ;
 				cost.setChannel(  item.FULFILLMENT_CHANNEL ) ;
 				cost.setSellPrice( $("[name='TOTAL_PRICE']","#"+rowId).val()   ) ;
@@ -315,7 +316,11 @@
 									$_ = round($item['LOWEST_PRICE'],3);
 								}else{
 									$_ = round($item['LOWEST_FBA_PRICE'],3);
-								} ?>
+								}
+								if( $_ == 0 ){
+									$_ = round( $item['LIMIT_PRICE'],3 ) ;//限价
+								}
+								?>
 									<input type="text"   name="TOTAL_PRICE"  value="<?php echo $_ ; ?>" style="width:40px;"/><br/>
 								</td>
 								<td  class="totalCost"></td>
