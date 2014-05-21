@@ -351,6 +351,9 @@
 	 	$(function(){
 		 	var _lastPurchase = null ;
 	 		Cost.get('<?php echo $purchaseProduct['REAL_ID'] ;?>',function(result){
+
+	 				$(".cost-container ul").empty() ;
+		 			
 		 		    //alert( $.json.encode(result) ) ;
                     var costs = result.returnCosts ;
                     var lastPurchase = result.lastPurchase|| null ;
@@ -360,6 +363,7 @@
                     var logisticsCost = 0 ;
                     var providorName = "" ;
                     var providorId = "" ;
+                    var profileInfo = null ;
                    $(costs).each(function(){
                 	   purchaseCost = this.purchaseCost ;
                 	   logisticsCost = this.logisticsCost ;
@@ -371,16 +375,30 @@
 					    var accountId = this.accountId ;
 						var listingSku = this.listingSku ;
 						var listingRow = $("[rowListing='"+accountId+"_"+listingSku+"']") ;
+						var purchaseQuantity = listingRow.find(".purchaseQuantity").val() ;
 
 						if( listingRow.length >=1 ){
 							//var profileRateParse = parseFloat(this.profileRate) ;
-				
-							listingRow.find(".profit").html( this.costAvalibe+"/"+this.totalProfile+"/"+this.profileRate ) ;//支付成本/总利润/利润率
 							listingRow.find(".lastest-sale-num").html( this.saleString ) ;
+							if( this.error ){
+								listingRow.find(".profit").html("<span class='alert-danger'>" +this.error+"</span>" ) ;//支付成本/总利润/利润率
+						 	}else{
+						 		listingRow.find(".profit").html( this.costAvalibe+"/"+this.totalProfile+"/"+this.profileRate ) ;//支付成本/总利润/利润率
+						 		if( purchaseQuantity>0 ){
+									var profileRate = parseFloat(this.profileRate) ;
+									if(  profileRate < -20 ){
+										profileInfo = {message:"利润率不正常，需要人工检查！"} ;
+									}else if(  profileRate < 8 ){
+										profileInfo = {message:"低利润，不建议采购！"} ;
+									}else if(  profileRate < 12 ){
+										profileInfo = {message:"利润较低，量大可采购！"} ;
+									}else{
+										profileInfo = {message:"利润正常，可采购！"} ;
+									}
+							 	}
+							}
 						}
                    }) ;
-
-                   $(".cost-container ul").empty() ;
 
                    if( _lastPurchase ){
                 	   $("<li><b>上次采购信息</b></li>").appendTo(  $(".cost-container ul") ) ;
@@ -395,8 +413,9 @@
                    }else{
                 	   $("<li><div class='alert alert-success' style='width:100px;'>首次采购</div></li>").appendTo(  $(".cost-container ul") ) ;
                    }
-                   
-	                   
+                   if( profileInfo ){
+                	   $("<li><div class='alert alert-message'>"+profileInfo.message+"</div></li>").appendTo(  $(".cost-container ul") ) ;
+                   }
 		   }) ;
 
 			 $(".use-providor").live("click",function(){

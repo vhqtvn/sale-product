@@ -115,7 +115,32 @@ var  Cost = function(){
 		return (parseFloat( _productProps.weight*_fbcOrderRate )).toFixed(2) ;
 	};
 	
+	this.check = function(){
+		if(  !_productCost  ){
+			return {error:"采购成本缺失"} ;
+		}
+		
+		if(  !_productProps.weight   ){
+			return {error:"重量缺失"} ;
+		}
+		
+		if(   !_sellPrice ){
+			return {error:"售价缺失"} ;
+		}
+		if(   (_channel == 'AMAZON_NA') || _channel == 'FBA'){
+			if( !_fbaCost ){
+				return {error:"FBA成本缺失"} ;
+			}
+		}
+		return null ;
+	};
+	
 	this.evlate  = function(){
+		var checkInfo= this.check() ;
+		if( checkInfo ){
+			return checkInfo ;
+		}
+		
 		var _cost = 0 ;
 		if(   (_channel == 'AMAZON_NA') || _channel == 'FBA'){//FBA
 			_cost = parseFloat(_productCost/_exchangeRate) ;//采购成本
@@ -227,7 +252,7 @@ Cost.get = function(realId,callback){
 		 var $costTaxRate = parseFloat(costTaxRate) ;
 		 var purcharRate =parseFloat( (purchaseCost*$costTaxRate).toFixed(2)) ;
 		 baseCost = baseCost + purcharRate ;
-		
+		 
 		 var returnCosts =[] ;
 		$( listingCosts ).each(function(index,item){
 			var cost = new Cost() ;
@@ -245,45 +270,44 @@ Cost.get = function(realId,callback){
 			cost.setTransferProperties( {weight:item.WEIGHT , length:item.LENGTH , width:item.WIDTH , height:item.HEIGHT,packageWeight: item.PACKAGE_WEIGHT } ) ;
 	
 			var costValue = cost.evlate() ;
-	
-			var _cost = (parseFloat(costValue.cost)).toFixed(2);
-			var  totalProfile =  (parseFloat(costValue.profile)).toFixed(2);
-			var  profileRate =   costValue.profileRatio ;
-			/*
-			$(".COMMISSION_FEE","#"+rowId).html( cost.getChannelFee() +"("+cost.getChannelFeeRatioFormat()+")") ;
-			$(".transferCost","#"+rowId).html( cost.getTransferCost() ) ;
-			$(".totalCost","#"+rowId).html( _cost ) ;
-			$(".payCost","#"+rowId).html( cost.getCalcCostAbale() ) ;
-			$(".fbaCost","#"+rowId).html( cost.getFbaCost() ) ;
-			$(".inventoryCenterFee","#"+rowId).html( cost.getInventoryCenterFee() ) ;
-			$(".orderTransferCost","#"+rowId).html( cost.getOrderTransferCost() ) ;
 			
-			$(".totalProfile","#"+rowId).html( totalProfile+"["+profileRate+"]" ) ;//profile profileRatio
-			)*/
-			var salesNumMap = {} ;
-			$(salesNum).each(function(index,item1){
-				item1 = item1[0] ;
-					if( item.ACCOUNT_ID == item.ACCOUNT_ID && item1.LISTING_SKU == item.SKU ){
-						salesNumMap[item1.TYPE] = item1.COUNT ;
-					}
-			}) ;
-			var saleString = (salesNumMap["7"]||'-')+"/"+(salesNumMap["14"]||'-')+"/"+(salesNumMap["30"]||'-') ;
-			var  returnCost = {
-					accountId:item.ACCOUNT_ID,
-					listingSku:item.SKU, 
-					costAvalibe:cost.getCalcCostAbale(),
-					totalCost:_cost,
-					purchaseCost:purchaseCost,
-					totalProfile:totalProfile,
-					profileRate:profileRate,
-					logisticsCost:logisticsCost,
-					providorName:providor.NAME,
-					providorId:providor.ID,
-					saleString:saleString
+			if(costValue.error){
+				var  returnCost = {
+						accountId:item.ACCOUNT_ID,
+						listingSku:item.SKU, 
+						error:costValue.error
 				} ;
-			
-			
-			returnCosts.push( returnCost ) ;
+				returnCosts.push( returnCost ) ;
+			}else{
+				var _cost = (parseFloat(costValue.cost)).toFixed(2);
+				var  totalProfile =  (parseFloat(costValue.profile)).toFixed(2);
+				var  profileRate =   costValue.profileRatio ;
+
+				var salesNumMap = {} ;
+				$(salesNum).each(function(index,item1){
+					item1 = item1[0] ;
+						if( item.ACCOUNT_ID == item.ACCOUNT_ID && item1.LISTING_SKU == item.SKU ){
+							salesNumMap[item1.TYPE] = item1.COUNT ;
+						}
+				}) ;
+				var saleString = (salesNumMap["7"]||'-')+"/"+(salesNumMap["14"]||'-')+"/"+(salesNumMap["30"]||'-') ;
+				var  returnCost = {
+						accountId:item.ACCOUNT_ID,
+						listingSku:item.SKU, 
+						costAvalibe:cost.getCalcCostAbale(),
+						totalCost:_cost,
+						purchaseCost:purchaseCost,
+						totalProfile:totalProfile,
+						profileRate:profileRate,
+						logisticsCost:logisticsCost,
+						providorName:providor.NAME,
+						providorId:providor.ID,
+						saleString:saleString
+					} ;
+				
+				
+				returnCosts.push( returnCost ) ;
+			}
 		});
 		
 		var __ = {
