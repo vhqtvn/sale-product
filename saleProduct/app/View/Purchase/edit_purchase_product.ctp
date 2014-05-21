@@ -386,14 +386,14 @@
 						 		listingRow.find(".profit").html( this.costAvalibe+"/"+this.totalProfile+"/"+this.profileRate ) ;//支付成本/总利润/利润率
 						 		if( purchaseQuantity>0 ){
 									var profileRate = parseFloat(this.profileRate) ;
-									if(  profileRate < -20 ){
-										profileInfo = {message:"利润率不正常，需要人工检查！"} ;
+									if(  profileRate < -20 || profileRate > 100 ){
+										profileInfo = {style:"alert-danger",message:"利润率不正常，需要检查！"} ;
 									}else if(  profileRate < 8 ){
-										profileInfo = {message:"低利润，不建议采购！"} ;
+										profileInfo = {style:"alert-danger",message:"低利润，不建议采购！"} ;
 									}else if(  profileRate < 12 ){
-										profileInfo = {message:"利润较低，量大可采购！"} ;
+										profileInfo = {style:"alert-message",message:"利润较低，量大可采购！"} ;
 									}else{
-										profileInfo = {message:"利润正常，可采购！"} ;
+										profileInfo = {style:"alert-success",message:"利润正常，可采购！"} ;
 									}
 							 	}
 							}
@@ -414,7 +414,7 @@
                 	   $("<li><div class='alert alert-success' style='width:100px;'>首次采购</div></li>").appendTo(  $(".cost-container ul") ) ;
                    }
                    if( profileInfo ){
-                	   $("<li><div class='alert alert-message'>"+profileInfo.message+"</div></li>").appendTo(  $(".cost-container ul") ) ;
+                	   $("<li><div class='alert "+profileInfo.style+"' style='width:150px;padding:4px;'>"+profileInfo.message+"</div></li>").appendTo(  $(".cost-container ul") ) ;
                    }
 		   }) ;
 
@@ -475,7 +475,8 @@
 													value=""/>
 											<button class="btn btn-charger 10-input  input"  disabled="disabled">选择</button>
 										</td>
-										<td rowspan="4" style="width:300px;vertical-align: top;"  class="cost-container">
+										<td rowspan="4" style="width:270px;vertical-align: top;"  class="cost-container">
+											<div  class="alert" style="padding:1px;font-size:11px;width:230px;margin-bottom:0px;">利润过低或过高可能是由于成本数据缺失</div>
 											<ul></ul>
 										</td>
 									</tr>
