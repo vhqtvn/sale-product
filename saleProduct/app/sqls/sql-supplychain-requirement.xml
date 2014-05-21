@@ -170,7 +170,8 @@
 	    	  sar.SALES_FOR_THELAST14DAYS,
 	    	  sar.SALES_FOR_THELAST30DAYS,
 	    	  ssri.QUANTITY ,
-	    	  ssri.PURCHASE_QUANTITY  
+	    	  ssri.PURCHASE_QUANTITY,
+	    	  ssri.FIX_QUANTITY
           from 
              sc_real_product srp,
              sc_real_product_rel srpr , 
@@ -475,6 +476,7 @@
 				EXIST_QUANTITY,
 				CALC_QUANTITY,
 				QUANTITY, 
+				FIX_QUANTITY,
 				PURCHASE_QUANTITY,
 				STOCK_QUANTITY,
 				ID, 
@@ -492,6 +494,7 @@
 				'{@#existQuantity:0#}', 
 				'{@#calcQuantity:0#}', 
 				'{@#quantity:0#}', 
+				'{@#purchaseQuantity:0#}', 
 				'{@#purchaseQuantity:0#}', 
 				'{@#stockQuantity:0#}', 
 				'{@#id#}', 

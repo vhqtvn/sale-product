@@ -188,6 +188,7 @@ SELECT  COUNT(1) AS COUNT , 30 AS TYPE FROM sc_order_item soi
 								saap.FULFILLMENT_CHANNEL,
 				                saap.ASIN,
 							    saap.LOWEST_PRICE,
+				                saap.LIMIT_PRICE,
 							    saap.LOWEST_FBA_PRICE,
 				                saa.name as ACCOUNT_NAME,
 								saa.TRANSFER_WH_PRICE,

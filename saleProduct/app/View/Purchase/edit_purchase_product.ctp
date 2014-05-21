@@ -506,12 +506,13 @@
 								}?></caption>
 								<thead>
 									<tr>
-										<th style="width:250px;">标签</th>
+										<th style="width:160px;">标签</th>
 										<th  style="font-weight:bold;">账号</th>
 										<th style="font-weight:bold;">Listing SKU</th>
 										<th style="font-weight:bold;">FNSKU</th>
 										<th style="font-weight:bold;">渠道</th>
-										<th style="font-weight:bold;" style="width:100px;">采购数量</th>
+										<th style="font-weight:bold;">采购数量</th>
+										<th style="font-weight:bold;" style="width:100px;">采购数量(修正)</th>
 										<th style="font-weight:bold;" >当前库存</th>
 										<th style="font-weight:bold;">总成本/利润/利润率</th>
 										<th style="font-weight:bold;">销量(7/14/30)</th>
@@ -544,6 +545,9 @@
 										<td><a href='#'  offer-listing="<?php echo $req['ASIN'] ;?>"><?php echo $req['LISTING_SKU'] ;?></a></td>
 										<td><?php echo $req['FC_SKU'] ;?></td>
 										<td><?php echo $req['FULFILLMENT_CHANNEL'] ;?></td>
+										<td>
+											<?php echo $req['FIX_QUANTITY'];?>
+										</td>
 										<td>
 											<input type="hidden" class="fulfillment"   value='<?php echo $req['FULFILLMENT_CHANNEL'] ;?>'/>
 											<input type="hidden" class="accountId"   value='<?php echo $req['ACCOUNT_ID'] ;?>'/>

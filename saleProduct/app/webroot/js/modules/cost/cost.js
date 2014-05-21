@@ -198,8 +198,10 @@ Cost.getListing = function(listings , callback){
 			 var cost = new Cost() ;
 				cost.setProductCost( baseCost , listingCost.EXCHANGE_RATE  ) ;
 				cost.setChannel(  listingCost.FULFILLMENT_CHANNEL ) ;
-				//LOWEST_PRICE  LOWEST_FBA_PRICE
-				cost.setSellPrice( listingCost.LOWEST_FBA_PRICE  ) ;
+				
+				var lowerPrice = item.LOWEST_FBA_PRICE?item.LOWEST_FBA_PRICE:item.LIMT_PRICE ;
+				cost.setSellPrice(lowerPrice ) ;
+				
 				cost.setChannelFeeRatio( listingCost.COMMISSION_RATIO ) ;
 				cost.setVariableCloseFee( listingCost.VARIABLE_CLOSING_FEE ) ;
 				cost.setFbaCost(  listingCost._FBA_COST ) ;
@@ -265,7 +267,10 @@ Cost.get = function(realId,callback){
 			cost.setProductCost( baseCost , item.EXCHANGE_RATE  ) ;
 			cost.setChannel(  item.FULFILLMENT_CHANNEL ) ;
 			//LOWEST_PRICE  LOWEST_FBA_PRICE
-			cost.setSellPrice( item.LOWEST_FBA_PRICE  ) ;
+			
+			var lowerPrice = item.LOWEST_FBA_PRICE?item.LOWEST_FBA_PRICE:item.LIMT_PRICE ;
+			cost.setSellPrice(lowerPrice ) ;
+			
 			cost.setChannelFeeRatio( item.COMMISSION_RATIO ) ;
 			cost.setVariableCloseFee( item.VARIABLE_CLOSING_FEE ) ;
 			cost.setFbaCost(  item._FBA_COST ) ;
