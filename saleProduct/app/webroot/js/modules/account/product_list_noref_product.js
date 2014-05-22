@@ -9,22 +9,33 @@
 	       var gridConfig = {
 					columns:[
 						
-						{align:"center",key:"IS_ANALYSIS",label:"供应需求", width:"10%",format:function(val,record){
+						{align:"center",key:"ID",label:"操作",width:"5%",format:function(val,record){
+							var status = record.STATUS ;
 							var html = [] ;
-							if(val == 1){
-								return "<span style='color:green'>可计算</span>" ;
-							}else{
-								return "<span style='color:green'>不可计算</span>" ;
-							}
+							html.push('<a href="#" class="edit-listing" val="'+val+'">'+getImage("edit_2.png","Listing编辑")+'</a>&nbsp;') ;
 							return html.join("") ;
 						}},
+			           	{align:"center",key:"P_LOCAL_URL",label:"图片",width:"6%",forzen:false,align:"left",format:{type:'img'}},
+						{align:"center",key:"ID",label:"设置",width:"4%",format:function(val,record){
+							return '<a href="#" class="setting-ap">'+getImage("edit.png","是否计算需求设置")+'</a>&nbsp;'
+						}},
+						 {align:"center",key:"IS_ANALYSIS",label:"计算需求", width:"8%",format:function(val,record){
+								var html = [] ;
+								if(val == 1){
+									html.push(  getImage("success.gif","可计算供应需求") ) ;
+								}else{
+									html.push( getImage("error.gif","不可计算供应需求") ) ;
+								}
+								return html.join("")  ;
+						}},
+						{align:"center",key:"RISK_TYPE_NAME",label:"风险类型", width:"6%"},
 						{align:"left",key:"SKU",label:"产品SKU",width:"8%"},
-						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"8%",format:function(val,record){
-								return "<a data-widget='dialog' data-options='{width:1000,height:650}' href='"+contextPath+"/saleProduct/details/"+val+"/sku#ui-tabs-5'>"+(val||"")+"</a>"
+						{align:"left",key:"REAL_SKU",label:"货品SKU",width:"10%",format:function(val,record){
+							return "<a href='#' product-realsku='"+val+"'>"+(val||"")+"</a>";
 						}},
 			           	{align:"left",key:"ASIN",label:"ASIN", width:"90",format:function(val,record){
 			           		var memo = record.MEMO||"" ;
-			           		return "<a href='#' class='product-detail' title='"+memo+"' asin='"+val+"' sku='"+record.SKU+"'>"+(val||"")+"</a>" ;
+			           		return "<a href='#' offer-listing='"+record.ASIN+"'>"+(val||"")+"</a>" ;
 			           	}},
 			           	{align:"center",key:"P_LOCAL_URL",label:"图片",width:"6%",forzen:false,align:"left",format:{type:'img'}},
 			           	{align:"center",key:"P_TITLE",label:"产品标题",width:"10%",forzen:false,align:"left",format:function(val,record){
@@ -71,6 +82,20 @@
 				$(".grid-content").llygrid(gridConfig) ;
 			},200) ;
 			
+			$(".setting-ap").live("click",function(){
+				var record = $(this).parents("tr:first").data("record");
+				var  isRisk = record.IS_RISK||"" ;
+				var  riskType  = record.RISK_TYPE||"" ;
+				openCenterWindow(contextPath+"/page/forward/Amazonaccount.product_risk/"+record.ID+"/"+isRisk+"/"+riskType , 650,300,function(result,win){
+					if(result)$(".grid-content").llygrid("reload",{},true) ;
+				},{showType:"dialog"}) ;
+			}) ;
+			
+			
+			$(".edit-listing").live("click",function(){
+				var record = $(this).closest("tr").data("record") ;
+				openCenterWindow(contextPath+"/page/forward/Amazonaccount.edit_listing/"+record.ID,600,480) ;
+			}) ;
 			
 			$(".analysis").live("click",function(){
 				

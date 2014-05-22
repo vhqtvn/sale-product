@@ -1,5 +1,9 @@
 <?php
+ignore_user_abort(1);
+set_time_limit(0);
 
+ini_set("memory_limit", "62M");
+ini_set("post_max_size", "24M");
 /**
  * 执行任务列表
  */
@@ -18,7 +22,52 @@ class TestController extends AppController {
 		$this->InventoryNew->purchaseInFix(  ) ;
 	}
 	
+	
+	public function formatDevProduct(){
+		$sql = "SELECT * FROM sc_product_developer WHERE account_id = 4 AND listing_sku IS NOT NULL  AND listing_sku!=''" ;
+		$records = $this->InventoryNew->exeSqlWithFormat($sql,array()) ;
+		foreach( $records as $record ){
+			$accountId = $record['ACCOUNT_ID'] ;
+			$listingSku = $record['LISTING_SKU'] ;
+			echo $accountId.'   '.$listingSku.'<br/>' ;
+			
+			//自动关联
+			//1、自动关联listing
+			$realId = $record['REAL_PRODUCT_ID'] ;
+			$sql = "select * from sc_real_product where id='{@#realId#}'" ;
+			$real = $this->InventoryNew->getObject($sql, array("realId"=>$realId)) ;
+			$realSku = $real['REAL_SKU'] ;
+			//判断关联是否存在
+			$sql ="select * from sc_real_product_rel where real_id='{@#realId#}' and real_sku='{@#realSku#}' and account_id='{@#accountId#}' and sku='{@#sku#}'" ;
+			$_params = array("realId"=>$realId,"reslSku"=>$realSku,"accountId"=>$accountId,"sku"=>$listingSku) ;
+			$realRel =$this->InventoryNew->getObject($sql, $_params) ;
+			if( empty($realRel) ){
+				try{
+					$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+					$Amazonaccount->checkProductValid($accountId,$listingSku)  ;
+				}catch(Exception $e){}
+				
+				try{
+				$sql = " INSERT INTO sc_real_product_rel
+										(REAL_SKU,
+										SKU,
+										ACCOUNT_ID,
+										REAL_ID
+										)
+										VALUES
+										('{@#realSku#}',
+										'{@#sku#}',
+										'{@#accountId#}',
+										'{@#realId#}'
+										)";
+				$this->InventoryNew->exeSql($sql, $_params) ;
+				}catch(Exception $e){}
+			}
+		}
+	}
+	
 	public function initAsinCost(){
+		return ;
 		$sql = "select  ASIN,ACCOUNT_ID,SKU from sc_amazon_account_product" ;
 		$records = $this->InventoryNew->exeSqlWithFormat($sql,array()) ;
 		foreach( $records as $record ){

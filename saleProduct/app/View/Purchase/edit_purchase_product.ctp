@@ -337,6 +337,9 @@
 							node.label = "终止采购" ;
 							node.status = 80 ;
 							node.statusClass = "end-danger" ;
+							<?php  if( $user['LOGIN_ID'] == 'lixh' ){ ?>
+							node.actions = [ {label:"恢复采购",action:function(){ AuditAction(45,"恢复采购") } }] ;
+							<?php } ?>
 						}
 
 						if( currentStatus==80 ){

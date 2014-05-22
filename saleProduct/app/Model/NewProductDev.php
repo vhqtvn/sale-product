@@ -161,12 +161,12 @@ class NewProductDev extends AppModel {
 				if( !empty($listingSku) && !empty($accountId) ){
 					//1、自动关联listing
 					$sql = "select * from sc_real_product where id='{@#realId#}'" ;
-					$real = $this->exeSql($sql, array("realId"=>$realId)) ;
+					$real = $this->getObject($sql, array("realId"=>$realId)) ;
 					$realSku = $real['REAL_SKU'] ;
 					//判断关联是否存在
 					$sql ="select * from sc_real_product_rel where real_id='{@#realId#}' and real_sku='{@#realSku#}' and account_id='{@#accountId#}' and sku='{@#sku#}'" ;
-					$_params = array("realId"=>$realId,"reslSku"=>$realSku,"accountId"=>$accountId,"sku"=>$listingSku) ;
-					$realRel = $this->exeSql($sql, $_params) ;
+					$_params = array("realId"=>$realId,"realSku"=>$realSku,"accountId"=>$accountId,"sku"=>$listingSku) ;
+					$realRel = $this->getObject($sql, $_params) ;
 					if( empty($realRel) ){
 						$sql = " INSERT INTO sc_real_product_rel 
 										(REAL_SKU, 

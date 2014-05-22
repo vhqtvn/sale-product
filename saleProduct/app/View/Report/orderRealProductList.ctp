@@ -21,6 +21,7 @@
 		echo $this->Html->script('grid/jquery.llygrid');
 		echo $this->Html->script('calendar/WdatePicker');
 		echo $this->Html->script('modules/report/orderRealProductList');
+		echo $this->Html->script('modules/cost/cost');
 
 		echo $this->Html->script('calendar/WdatePicker');
 		

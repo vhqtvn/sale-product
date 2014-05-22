@@ -211,8 +211,6 @@ class CostNew extends AppModel {
 		$realId = $real['REAL_ID'] ;
 		$productCost = $this->getLatestPurchase(array("realId"=>$realId)) ; //产品采购成本
 		
-		
-		
 		//Listing成本数据
 		$listingCost 	= $this->getObject("sql_cost_new_ListingCostEvlate", $params) ;
 		
