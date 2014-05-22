@@ -153,15 +153,44 @@ class NewProductDev extends AppModel {
 				$this->exeSql("sql_productDev_propCopyToRealProduct", $productDeveloper) ;
 			}
 			
+			if( $params['FLOW_STATUS'] == 60 ||  $params['FLOW_STATUS']  == 70){
+				//自动关联listing与货品
+				$realId = $params['REAL_PRODUCT_ID'] ;
+				$listingSku = $params['LISTING_SKU'] ;
+				$accountId = $params['ACCOUNT_ID'] ;
+				if( !empty($listingSku) && !empty($accountId) ){
+					//1、自动关联listing
+					$sql = "select * from sc_real_product where id='{@#realId#}'" ;
+					$real = $this->exeSql($sql, array("realId"=>$realId)) ;
+					$realSku = $real['REAL_SKU'] ;
+					//判断关联是否存在
+					$sql ="select * from sc_real_product_rel where real_id='{@#realId#}' and real_sku='{@#realSku#}' and account_id='{@#accountId#}' and sku='{@#sku#}'" ;
+					$_params = array("realId"=>$realId,"reslSku"=>$realSku,"accountId"=>$accountId,"sku"=>$listingSku) ;
+					$realRel = $this->exeSql($sql, $_params) ;
+					if( empty($realRel) ){
+						$sql = " INSERT INTO sc_real_product_rel 
+										(REAL_SKU, 
+										SKU, 
+										ACCOUNT_ID, 
+										REAL_ID
+										)
+										VALUES
+										('{@#realSku#}', 
+										'{@#sku#}', 
+										'{@#accountId#}', 
+										'{@#realId#}'
+										)";
+						$this->exeSql($sql, $_params) ;
+					}
+					//自动同步listing
+					try{
+						$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+						$Amazonaccount->checkProductValid($accountId,$listingSku)  ;
+					}catch(Exception $e){}
+				}
+			} 
+			
 			if( $params['FLOW_STATUS'] == 72 ){ //审批通过，生成采购单
-				/*$PurchaseService  = ClassRegistry::init("PurchaseService") ;
-				
-				$p = array('realId'=>$params['REAL_PRODUCT_ID'],
-						'planNum'=>$params['TRY_PURCHASE_NUM'],
-						'loginId'=>$params['loginId'],
-						'devId'=>$params['ASIN'].'_'.$params['TASK_ID']
-				) ;
-				$PurchaseService->createItemForProductDev($p) ;*/
 				$realId = $params['REAL_PRODUCT_ID'] ;
 				$NewPurchaseService  = ClassRegistry::init("NewPurchaseService") ;
 				
@@ -184,7 +213,42 @@ class NewProductDev extends AppModel {
 						'devId'=>$params['ASIN'].'_'.$params['TASK_ID'],
 						'loginId'=>'auto'
 				);
+				
+				$sql = "select * from sc_amazon_account_product where account_id = '{@#ACCOUNT_ID#}' and sku = '{@#LISTING_SKU#}'" ;
+				$accountProduct = $this->getObject($sql, $productDeveloper) ;
+				
+				$channel = 'AMAZON_NA' ;
+				if(!empty($accountProduct)){
+					$channel = $accountProduct['FULFILLMENT_CHANNEL'] ;
+				}else{
+					try{
+						$Amazonaccount  = ClassRegistry::init("Amazonaccount") ;
+						$Amazonaccount->checkProductValid($accountId,$listingSku)  ;
+					}catch(Exception $e){}
+				}
+				
+				$purchaseDetails= array() ;
+				$purchaseDetails['sku'] 		  = $productDeveloper['LISTING_SKU'] ;
+				$purchaseDetails['accountId'] = $productDeveloper['ACCOUNT_ID'] ;
+				$purchaseDetails['quantity'] = $params['TRY_PURCHASE_NUM'];
+				$purchaseDetails['asin'] = $productDeveloper['ASIN'] ;
+				
+				$purchaseDetails['fulfillment'] = $channel ;
+				$purchaseDetails['supplyQuantity'] = '0' ;
+				$_ = array() ;
+				$_[] = $purchaseDetails ;
+				$params['purchaseDetails'] = json_encode($_) ;
+				
 				$NewPurchaseService->createNewPurchaseProduct($params) ;
+				
+				/*
+				sku:record.LISTING_SKU,
+				accountId:record.ACCOUNT_ID,
+				quantity:pq,
+				asin:record.ASIN,
+				fulfillment:record.FULFILLMENT_CHANNEL,
+				supplyQuantity:record.TOTAL_SUPPLY_QUANTITY||'0'}
+				*/
 
 			}
 			//保存轨迹

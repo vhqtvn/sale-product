@@ -206,7 +206,9 @@
 				var record = $(this).data("record");
 				var pq = parseInt($(this).find(".edit-purchase-quantity").val()||0) ;
 				 purchaseQuantity  += pq ;
-				 data.push({sku:record.LISTING_SKU,accountId:record.ACCOUNT_ID,
+				 data.push({
+					 sku:record.LISTING_SKU,
+					 accountId:record.ACCOUNT_ID,
 					 quantity:pq,
 					 asin:record.ASIN,
 					 fulfillment:record.FULFILLMENT_CHANNEL,

@@ -227,6 +227,7 @@ WHERE   spfd.flow_status =80
 		SET
 			ASIN = '{@#ASIN#}' , 
 			{@ REAL_PRODUCT_ID = '#REAL_PRODUCT_ID#',}
+			{@ ACCOUNT_ID = '#ACCOUNT_ID#',}
 			{@ LISTING_SKU = '#LISTING_SKU#',}
 			{@ PRODUCTS_SOLUTIONS = '#PRODUCTS_SOLUTIONS#',}
 			{@ TITLE = '#TITLE#',}

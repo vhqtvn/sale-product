@@ -374,12 +374,13 @@ html{-webkit-text-size-adjust: none;}
 		     ) ;
 			flowData.push( {status:60,label:"制作Listing",memo:true ,
 				actions:[ 
-							<?php if( $PD_MADE_LISTING ){ ?>
+						<?php if( $PD_MADE_LISTING ){ ?>
 			          {label:"保存",action:function(){ ForceAuditAction('60',"保存") } },
 				      {label:"确认Listing制作完成",action:function(){ AuditAction('70',"确认Listing制作完成") },validate:function(){
-				    	  var val = $("#LISTING_SKU").val() ;
-				        	 if(!val){
-									alert("必须关联Listing SKU！") ;
+				    	     var val = $("#LISTING_SKU").val() ;
+				    	     var accountId = $("#ACCOUNT_ID").val() ;
+				        	 if(!val || !accountId){
+									alert("必须关联Listing SKU并且选择账户！") ;
 									return false ;
 					        	} 
 					        	return true ;
@@ -661,12 +662,27 @@ html{-webkit-text-size-adjust: none;}
 					<?php  if( $pdStatus >=60 ){  ?>
 					<tr>
 						<th style="width:20%;">
-							关联Listing SKU（逗号分隔）
+							关联Listing SKU
 						</th>
 						<td colspan="3">
+							<select id="ACCOUNT_ID"   class="input 60-input"   style="width:100px;">
+				     		<option value="">--选择账号--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+					     		 $accountId = $productDev['ACCOUNT_ID'] ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			if( $account['ID'] ==  $accountId ){
+					     				echo "<option value='".$account['ID']."'  selected>".$account['NAME']."</option>" ;
+					     			}else{
+					     				echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     			}
+					     		} ;
+					     	?>
+							</select>
 							<input type="text"  id="LISTING_SKU" 
-								 class="input 60-input" 
-								style="width:80%;" placeHolder="输入关联ListingSKU" value="<?php echo $productDev['LISTING_SKU']?>" />
+								 class="input 60-input"  style="width:40%;" placeHolder="输入关联ListingSKU" value="<?php echo $productDev['LISTING_SKU']?>" />
 						</td>
 					</tr>		
 					<?php 	} ?>
