@@ -25,6 +25,11 @@
 		$sku = $params['arg1'] ;
 	?>
 		<script type="text/javascript">
+			var formatJson = {10:'新增开发产品',20:'产品分析完成',30:'询价完成',50:'审批完成',
+					60:'货品录入完成',70:'制作Listing完成',72:'Listing审批完成',80:'已采购'} ;
+			/*var formatJson = {10:'新增开发产品',15:'废弃',20:'产品分析完成',25:'成本利润分析',30:'产品经理审批',40:'总监审批',42:"样品检测",44:"检测审批",50:'录入货品',
+			60:'制作Listing',70:'Listing审批',72:'采购试销',74:'库存到达',76:'营销展开',78:'开发总结',80:'处理完成'} ;*/
+		
 			function  loadOrderCountChart(){
 				var accounts = {} ;
 
@@ -41,6 +46,7 @@
 							categories.push(item.PD) ;
 						}
 						categoryMap[item.PD] = true ;
+						item.NAME = formatJson[item.NAME] ;
 					}) ;
 
 					//init series type
@@ -92,7 +98,10 @@
 			            xAxis: {
 			                categories: categories,
 			                labels: {
-			                	rotation: -90   //竖直放
+			                	rotation: -45 ,  //竖直放
+			                	style: {  
+		                     		 font: 'normal 11px Verdana, sans-serif'  
+		                	 	}
 			                 }			                
 			            },
 			            yAxis: {

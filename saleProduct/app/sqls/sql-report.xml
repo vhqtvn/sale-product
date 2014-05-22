@@ -4,13 +4,16 @@
 	<entry key="sql_report_productDev_static">
 	<![CDATA[
 			SELECT t.ACTION_TIME as PD,t.STATUS as NAME, COUNT(1) AS C  FROM (    
-			    SELECT DATE_FORMAT( spdt.CREATE_TIME, "%Y-%m-%d" ) AS ACTION_TIME, 
+			    SELECT DATE_FORMAT( spdt.CREATE_TIME, "%y%m%d" ) AS ACTION_TIME, 
 					spdt.ASIN , spdt.STATUS FROM sc_product_developer spd,
 			          sc_product_dev_track spdt
 			    WHERE spd.ASIN = spdt.asin
 			      AND spdt.status != ''
+			      and spdt.status in (
+			      10,20,30,50,60,70,72,80
+			      )
 			      and DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= DATE(spdt.CREATE_TIME)
-			      GROUP BY spdt.ASIN,DATE_FORMAT(spdt.CREATE_TIME,"%Y-%m-%d"),spdt.STATUS
+			      GROUP BY spdt.ASIN,DATE_FORMAT(spdt.CREATE_TIME,"%y%m%d"),spdt.STATUS
 			) t
 			GROUP BY t.ACTION_TIME,t.STATUS
 			order by t.ACTION_TIME
