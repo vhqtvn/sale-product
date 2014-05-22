@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<entry key="sql_customer_amazon_feedback_list">
+			SELECT sasf.*,
+			   soi.seller_sku as SELLER_SKU,
+			   soi.ASIN,
+		       saa.NAME AS ACCOUNT_NAME, 
+		       srp.name AS  REAL_NAME,
+		       srp.IMAGE_URL,
+		       srp.REAL_SKU
+		FROM sc_amazon_seller_feedback sasf,
+		     sc_amazon_account saa,
+		     sc_order_item soi,
+		     sc_real_product srp
+		WHERE sasf.ACCOUNT_ID = saa.ID
+		     AND sasf.ORDER_ID = soi.Order_ID
+		     AND soi.REAL_ID = srp.ID
+		     {@ and sasf.account_id =  '#accountId#'}
+		     {@ and (
+		         srp.name like '%#searchKey#%'  or   srp.real_sku like '%#searchKey#%' 
+		     )}
+		ORDER BY DATE desc
+   </entry>
+   
+ </properties>
