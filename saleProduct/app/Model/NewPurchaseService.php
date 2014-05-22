@@ -293,7 +293,7 @@ class NewPurchaseService extends AppModel {
 			
 			if( $status == 80 || $isTerminal ){ //采购结束
 				//产品开发结束流程
-				$sql = "UPDATE sc_product_dev spd SET spd.FLOW_STATUS = 80
+				$sql = "UPDATE sc_product_developer spd SET spd.FLOW_STATUS = 80
 						WHERE CONCAT(spd.ASIN,'_',spd.TASK_ID) IN (
 							SELECT DEV_ID FROM sc_purchase_product sppd  where id = '{@#productId#}'
 						) " ;

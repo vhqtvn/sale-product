@@ -103,6 +103,7 @@ SELECT  COUNT(1) AS COUNT , 30 AS TYPE FROM sc_order_item soi
     
     <!-- 销售总价，从询价中获取 -->
     <entry key="sql_cost_new_DevCostEvlate">
+    	<![CDATA[
     				SELECT 
 					   spc.ASIN,
 					   spcd.TYPE,
@@ -132,7 +133,9 @@ SELECT  COUNT(1) AS COUNT , 30 AS TYPE FROM sc_order_item soi
 					   	ON spca.ASIN = spc.ASIN
 					WHERE spc.ID = spcd.COST_ID
 					  AND spc.ASIN = spd.ASIN
+					  and spd.flow_status <80
 				      and spc.ASIN = '{@#asin#}'
+	   ]]>	 
     </entry>
     
     <entry key="sql_cost_new_realProductCostEvlate">

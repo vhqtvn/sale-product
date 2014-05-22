@@ -189,7 +189,7 @@ html{-webkit-text-size-adjust: none;}
 
  	jQuery.dialogReturnValue(false) ;
 
- 	function  ForceAuditAction(status , statusLabel,fixParams){
+ 	function  ForceAuditAction(status , statusLabel,fixParams, isFlow ){
 			if(window.confirm("确认【"+statusLabel+"】吗？")){
 				var json = $("#personForm").toJson() ;
 				json = $.extend({},json,fixParams) ;
@@ -203,6 +203,12 @@ html{-webkit-text-size-adjust: none;}
 					json.FLOW_STATUS = 15 ;
 				}
 
+				if(isFlow){
+					json.isFlow = 1 ;
+				}else{
+					json.isFlow = 0 ;
+				}
+				
 				var devStatusFlow = {} ;
 				$(".dev_status_flow").each(function(){
 					var key = $(this).attr("key") ;
@@ -230,7 +236,7 @@ html{-webkit-text-size-adjust: none;}
 
  	function AuditAction(status , statusLabel,fixParams){
  		if( !$.validation.validate('#personForm').errorInfo ) {
- 			ForceAuditAction(status , statusLabel,fixParams) ;
+ 			ForceAuditAction(status , statusLabel,fixParams,true) ;
 		}
  	 }
 

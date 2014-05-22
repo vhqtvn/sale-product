@@ -31,20 +31,19 @@
 		</entry>
 		
 		<entry key="sql_pdev_track_insert">
-			INSERT INTO  sc_product_dev_track 
-					(  
+			INSERT INTO  sc_product_dev_track (  
 					ASIN, 
 					TASK_ID,
 					MEMO, 
 					CREATOR, 
+					STATUS,
 					CREATE_TIME
-					)
-					VALUES
-					( 
+				) VALUES ( 
 					'{@#ASIN#}', 
 					'{@#TASK_ID#}', 
 					'{@#trackMemo#}', 
 					'{@#loginId#}', 
+					'{@#status#}',
 					NOW()
 					)
      </entry>

@@ -20,21 +20,7 @@ class ProductDev extends AppModel {
 		return $this->getObject("select * from sc_product_dev where id='{@#id#}'", array("id"=>$id)) ;
 	}
 	
-	//迁移
-	function taskProductTransfer($params){
-		//get source task
-		$sourceTask = $this->getObject("select * from sc_product_filter where id = '{@#taskId#}'", $params) ;
-		$targetTask = $this->getObject("select * from sc_product_filter where id = '{@#toTaskId#}'", $params) ;
-		
-		$this->exeSql("update sc_product_dev set task_id = '{@#toTaskId#}' where task_id = '{@#taskId#}' and asin = '{@#asin#}'", $params) ;
-		//处理轨迹迁移
-		$this->exeSql("update sc_product_dev_track set task_id = '{@#toTaskId#}' where task_id = '{@#taskId#}' and asin = '{@#asin#}'", $params) ;
-		
-		$params['TASK_ID'] = $params['toTaskId'] ;
-		$params['ASIN'] = $params['asin'] ;
-		$params['trackMemo'] = "从任务【".$sourceTask['CODE']."】迁移到任务【".$targetTask['CODE']."】" ;
-		$this->exeSql("sql_pdev_track_insert", $params) ;
-	}
+
 	
 	function addAsinToTask($params){
 		$params['FLOW_STATUS'] = 10 ;//默认状态
@@ -64,24 +50,6 @@ class ProductDev extends AppModel {
 		}
 		
 		return $return ;
-	}
-	
-	function deleteTaskProduct($params){
-		$id = $params['id'] ;
-		$this->exeSql("delete from sc_product_dev where task_id = '{@#taskId#}' and asin = '{@#asin#}'", $params) ;
-	}
-	
-	function deleteTask($params){
-		$taskId = $params['taskId'] ;
-		$this->exeSql("delete from sc_product_filter where id = '{@#taskId#}'", $params) ;
-	}
-	
-	function savePlan($params ){
-		if( empty($params['id']) ){
-			$this->exeSql("sql_pdev_plan_insert", $params) ;
-		}else{
-			$this->exeSql("sql_pdev_plan_update", $params) ;
-		}
 	}
 	
 	function getLowestLimitPrice($goodsId){

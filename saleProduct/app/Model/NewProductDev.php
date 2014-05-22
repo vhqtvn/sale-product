@@ -8,6 +8,7 @@ class NewProductDev extends AppModel {
 	}
 	
 	function confirmSampleTime($params){
+		$this->exeSql(" SET time_zone = '+8:00'",array()) ;
 		ini_set('date.timezone','Asia/Shanghai');
 		$printTime = date('Y-m-d H:i:s');
 		
@@ -29,6 +30,7 @@ class NewProductDev extends AppModel {
 			$this->exeSql("sql_pdev_track_insert", array(
 						'ASIN'=>$productDeveloper['ASIN'],
 						'TASK_ID'=>$params['devId'],
+						'status'=>42,
 						'trackMemo'=>'样品下单确认',
 						'loginId'=>$params['loginId']
 					)) ;
@@ -40,6 +42,7 @@ class NewProductDev extends AppModel {
 			$this->exeSql("sql_pdev_track_insert", array(
 						'ASIN'=>$productDeveloper['ASIN'],
 						'TASK_ID'=>$params['devId'],
+						'status'=>43,
 						'trackMemo'=>'样品到达确认',
 						'loginId'=>$params['loginId']
 					)) ;
@@ -112,11 +115,11 @@ class NewProductDev extends AppModel {
 	}
 	
 	
-	function initDevPropToProduct(){
-		
-	}
+	function initDevPropToProduct(){}
 	
 	function doFlow( $params ){
+		$this->exeSql(" SET time_zone = '+8:00'",array()) ;
+		
 		ini_set('date.timezone','Asia/Shanghai');
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
@@ -252,6 +255,11 @@ class NewProductDev extends AppModel {
 
 			}
 			//保存轨迹
+			if( $params['isFlow'] == 1 ){
+				$params['status'] = $params['FLOW_STATUS'] ;
+			}else{
+				$params['status'] = '' ;
+			}
 			
 			$this->exeSql("sql_pdev_track_insert", $params) ;
 			$dataSource->commit() ;

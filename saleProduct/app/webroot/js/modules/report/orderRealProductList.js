@@ -44,12 +44,12 @@
 				 loadMsg:"数据加载中，请稍候......",
 				 rowClick:function(row,record){
 				 },
-				 loadAfter:function(){
+				 loadAfter:function(records){
 					 var listings = [] ;
 					 $(records).each(function(index,item){
 						 listings.push({accountId:item.ACCOUNT_ID,listingSku:item.SELLER_SKU}) ;
 					 }) ;
-					// alert( $.json.encode(listings) ) ;
+					//alert( $.json.encode(listings) ) ;
 					 $(".message").html("销售数据计算中......") ;
 					 Cost.getListing(listings,function(result){
 						 $(".message").html("") ;
