@@ -196,10 +196,11 @@ Cost.getListing = function(listings , callback){
 			 baseCost = baseCost + purcharRate ;
 			
 			 var cost = new Cost() ;
+			 	cost.setProductCostOnly(purchaseCost) ;
 				cost.setProductCost( baseCost , listingCost.EXCHANGE_RATE  ) ;
 				cost.setChannel(  listingCost.FULFILLMENT_CHANNEL ) ;
 				
-				var lowerPrice = item.LOWEST_FBA_PRICE?item.LOWEST_FBA_PRICE:item.LIMT_PRICE ;
+				var lowerPrice = listingCost.LOWEST_FBA_PRICE?listingCost.LOWEST_FBA_PRICE:listingCost.LIMT_PRICE ;//LOWEST_FBA_PRICE
 				cost.setSellPrice(lowerPrice ) ;
 				
 				cost.setChannelFeeRatio( listingCost.COMMISSION_RATIO ) ;
@@ -212,6 +213,7 @@ Cost.getListing = function(listings , callback){
 				cost.setTransferProperties( {weight:listingCost.WEIGHT , length:listingCost.LENGTH , width:listingCost.WIDTH , height:listingCost.HEIGHT,packageWeight: listingCost.PACKAGE_WEIGHT } ) ;
 		
 				var costValue = cost.evlate() ;
+				//console.log(costValue) ;
 		
 				var _cost = (parseFloat(costValue.cost)).toFixed(2);
 				var  totalProfile =  (parseFloat(costValue.profile)).toFixed(2);
