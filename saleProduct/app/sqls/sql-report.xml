@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<!-- 产品开发轨迹图 -->
+	<entry key="sql_report_productDev_static">
+	<![CDATA[
+			SELECT t.ACTION_TIME as PD,t.STATUS as NAME, COUNT(1) AS C  FROM (    
+			    SELECT DATE_FORMAT( spdt.CREATE_TIME, "%Y-%m-%d" ) AS ACTION_TIME, 
+					spdt.ASIN , spdt.STATUS FROM sc_product_developer spd,
+			          sc_product_dev_track spdt
+			    WHERE spd.ASIN = spdt.asin
+			      AND spdt.status != ''
+			      and DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= DATE(spdt.CREATE_TIME)
+			      GROUP BY spdt.ASIN,DATE_FORMAT(spdt.CREATE_TIME,"%Y-%m-%d"),spdt.STATUS
+			) t
+			GROUP BY t.ACTION_TIME,t.STATUS
+			order by t.ACTION_TIME
+		 ]]>	     
+	</entry>
+
 	<entry key="sql_report_chart_forOrderAccount">
 	    <![CDATA[
 	   		SELECT sa.NAME,

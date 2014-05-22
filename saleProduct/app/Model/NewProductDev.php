@@ -50,6 +50,7 @@ class NewProductDev extends AppModel {
 	}
 	
 	function addNewAsinDev($params){
+		$this->exeSql(" SET time_zone = '+8:00'",array()) ;
 		$params['FLOW_STATUS'] = 10 ;//默认状态
 		$asins = $params['asins'] ;
 		$platformId = $params['platformId'] ;
@@ -85,6 +86,21 @@ class NewProductDev extends AppModel {
 						$p['inquiryCharger'] = $inquiryCharger ;
 					}
 					$this->exeSql("sql_pdev_new_insert", $p) ;
+					
+					//写入轨迹
+					/*'{@#ASIN#}', 
+					'{@#TASK_ID#}', 
+					'{@#trackMemo#}', 
+					'{@#loginId#}', 
+					'{@#status#}',*/
+					$trackparams = array(
+						"ASIN"=>$params['ASIN'] ,
+						"TASK_ID"=>"",
+						"trackMemo"=>"新增加开发ASIN",
+						"loginId"=>$params['loginId'],
+						"status"=>"10",
+					) ;
+					$this->exeSql("sql_pdev_track_insert", $trackparams) ;
 				}
 	
 			}
