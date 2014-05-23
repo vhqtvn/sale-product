@@ -8,6 +8,7 @@ class NewPurchaseService extends AppModel {
 	var $useTable = "sc_product_cost" ;
 	
 	public function createNewPurchaseProduct($params){
+		$this->exeSql(" SET time_zone = '+8:00'",array()) ;
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
 		$guid = $this->create_guid() ;
@@ -113,6 +114,7 @@ class NewPurchaseService extends AppModel {
 			'{@#tags#}'
 	 */
 	public function savePurchaseProduct($data){
+		$this->exeSql(" SET time_zone = '+8:00'",array()) ;
 		$dataSource = $this->getDataSource();
 		$dataSource->begin();
 		try{

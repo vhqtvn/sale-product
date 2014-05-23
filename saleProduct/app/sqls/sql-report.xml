@@ -1,5 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<entry key="sql_report_productPurchase_user_static">
+	<![CDATA[
+SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
+
+  SELECT t.STATUS AS NAME, COUNT(1) AS C, 'Total' AS U  FROM (  	
+	SELECT DISTINCT DATE_FORMAT( sppdt.CREATE_TIME, "%y%m%d" ) AS ACTION_TIME, 
+		sppdt.PD_ID , 
+		sppdt.STATUS 
+	FROM 
+	  sc_purchase_product spp,
+	  sc_purchase_plan_details_track sppdt
+	WHERE spp.ID = sppdt.PD_ID
+	 AND sppdt.STATUS IN (45,51,49,50,60,80)
+	 AND sppdt.CREATE_TIME >= '{@#startTime#}'
+	 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+	ORDER BY create_time DESC 
+  ) t
+  GROUP BY t.STATUS
+  
+  UNION
+  
+  SELECT t.STATUS AS NAME, COUNT(1) AS C, t.NAME AS U  FROM (  	
+	SELECT DISTINCT DATE_FORMAT( sppdt.CREATE_TIME, "%y%m%d" ) AS ACTION_TIME, 
+		sppdt.PD_ID , 
+                su.NAME,
+		sppdt.STATUS 
+	FROM 
+	  sc_purchase_product spp,
+	  sc_purchase_plan_details_track sppdt,
+	  sc_user su
+	WHERE spp.ID = sppdt.PD_ID
+	and su.login_id = sppdt.creator
+	 AND sppdt.STATUS IN (45,51,49,50,60,80)
+	 AND sppdt.CREATE_TIME >= '{@#startTime#}'
+	 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+	ORDER BY create_time DESC 
+  ) t
+  GROUP BY t.STATUS,t.NAME
+) t1
+ORDER BY t1.U
+ 	 ]]>	  
+	</entry>
+	
+	
 	<entry key="sql_report_productPurchase_static">
 	<![CDATA[
 	SELECT t.ACTION_TIME AS PD,t.STATUS AS NAME, COUNT(1) AS C  FROM (  	
