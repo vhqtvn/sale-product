@@ -287,7 +287,6 @@
 									<?php if( $isOwner || $ppp_receviced) { ?>,{label:"已到货",action:function(){ AuditAction(50,"已到货") } }<?php } ?>
 									<?php if(  $endPurchase ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				]
-	        			
 	        		},{status:50,label:"QC验货",memo:true
 	        			,actions:[{}
 		      	        		<?php if( $ppp_qc) { ?>

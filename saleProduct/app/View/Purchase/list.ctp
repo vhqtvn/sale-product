@@ -170,7 +170,7 @@
 					关键字:
 				</th>
 				<td>
-					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题、执行人、编号" style="width:400px;"/>
+					<input type="text" id="searchKey" placeHolder="输入货品SKU、标题、执行人、供应商、编号" style="width:400px;"/>
 				</td>	
 				<th>账号：</th>
 						<td>
@@ -218,6 +218,5 @@
 	</div>
 	<iframe src="" id="exportIframe" style="display:none"></iframe>
 	
-	<div class="providor-container "  style="color:red;" >XXXXXXXXXXXX</div>
 </body>
 </html>

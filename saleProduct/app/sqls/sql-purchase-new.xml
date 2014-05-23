@@ -127,6 +127,7 @@
 				or t.EXECUTOR_NAME like '%#searchKey#%'
 				or t.TRACK_MEMO  like '%#searchKey#%'
 				or t.CODE   like '%#searchKey#%'
+				or t.PROVIDOR_NAME   like '%#searchKey#%'
 			)}
    </entry>
    
