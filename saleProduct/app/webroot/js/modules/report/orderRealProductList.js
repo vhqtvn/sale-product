@@ -18,7 +18,7 @@
 		           		return "<a href='#' offer-listing='"+val+"'>"+val+"</a>" ;
 		           	}},
 		           	{align:"center",key:"NAME",label:"货品名称",width:"13%",forzen:false,align:"center"},
-		           	{align:"center",key:"C",label:"订单数量",width:"15%",forzen:false,align:"left"},
+		           	{align:"center",key:"C",label:"订单数量",width:"5%",forzen:false,align:"left"},
 		           	{align:"center",key:"TOTAL_SUPPLY_QUANTITY",label:"总库存",width:"10%"},
 		           	{align:"center",key:"IN_STOCK_SUPPLY_QUANTITY",label:"在库库存",width:"10%"},
 		           	{align:"center",key:"COST_PROFIT",label:"成本/利润/利润率",width:"10%",format:function(val,record){

@@ -173,6 +173,7 @@ ORDER BY t1.U
     <entry key="sql_report_orderRealProductList_Items">
 			SELECT 
 			   soi.REAL_ID,
+			   soi.ACCOUNT_ID,
 			  srp.IMAGE_URL,
 			   soi.REAL_SKU ,
 			    srp.NAME,

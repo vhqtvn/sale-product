@@ -47,11 +47,18 @@
 
 					var categories = [] ;
 					var categoryMap = {} ;
+					categories.push('新增采购单') ;
+					categories.push('下单完成') ;
+					categories.push('交易完成') ;
+					categories.push('完成收货') ;
+					categories.push('完成验货') ;
+					categories.push('完成入库') ;
 					//init category
 					$(result).each(function(index,item){
 						item = item.t ;
+						item.PD = formatJson[item.PD] ;
 						if( !categoryMap[item.PD] ){
-							categories.push(item.PD) ;
+							//categories.push(item.PD) ;
 						}
 						categoryMap[item.PD] = true ;
 						item.NAME = item.NAME;//formatJson[item.NAME] ;

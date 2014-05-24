@@ -58,6 +58,7 @@
     <entry key="sql_inventory_update">
 		update sc_warehouse_inventory set 
 			quantity= {@#quantity#},
+			STUB_QUANTITY=  {@#stubQuantity:0#},
 			LAST_UPDATED_TIME = NOW(),
 			LAST_UPDATOR = '{@#loginId#}'
 		where 

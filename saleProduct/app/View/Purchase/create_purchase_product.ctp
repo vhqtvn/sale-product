@@ -87,6 +87,7 @@
 											<input type="text"   id="realName"  readonly
 													value=""/>
 											<button class="btn btn-real-product">选择</button>
+											&nbsp;<a href="#"   product-realsku=""></a>
 										</td>
 									</tr>										   
 									<tr>

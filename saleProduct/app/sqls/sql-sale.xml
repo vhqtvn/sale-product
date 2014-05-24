@@ -106,7 +106,7 @@
 			)
 			VALUES
 			('{@#id#}', 
-			'{@#status#}', 
+			'{@#trackStatus#}', 
 			'{@#memo#}', 
 			'{@#loginId#}', 
 			NOW()

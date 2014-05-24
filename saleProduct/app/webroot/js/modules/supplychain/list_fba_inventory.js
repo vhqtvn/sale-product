@@ -38,7 +38,7 @@ $(function(){
 		 limit:10,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-			 return 150 ;
+			 return $(window).height() - 380 ;
 		 },
 		 title:"FBA库存列表",
 		 indexColumn:false,
@@ -72,7 +72,7 @@ $(function(){
 		 limit:10,
 		 pageSizes:[10,20,30,40],
 		 height:function(){
-			 return $(window).height() - 380 ;
+			 return 150 ;
 		 },
 		 title:"FBA入库明细列表",
 		 indexColumn:false,

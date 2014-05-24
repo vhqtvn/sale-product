@@ -155,7 +155,12 @@ $(function(){
 		var label = args.label ;
 		
 		value = value[0] ;
-		
+		var selectReocrds = args.selectReocrds[value] ;
+		var realSku = selectReocrds['REAL_SKU'] ;
+		if( realSku ){
+			$("[product-realsku]").attr("product-realsku",realSku).html(realSku) ;
+		}
+			
 		$("#realId").val(value) ;
 		$("#realName").val(label) ;
 		$.dataservice("model:NewPurchaseService.loadDefault",{"realId":value},function(result){

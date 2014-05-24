@@ -135,11 +135,6 @@ class NewPurchaseService extends AppModel {
 				$reqProductId = $data['reqProductId'] ;//reqProductId
 				//判断是否需要创建RMA计划 badProductsNum  noConsistencyNum  outOfNum
 				
-				if( $data['status'] == 49 ){//交易付款，更新付款时间
-					$sql = "update sc_purchase_product set order_date = NOW() where order_date is not null and id='{@#id#}'" ;
-					$this->exeSql($sql, $data) ;
-				}
-				
 				if( $data['status'] == 60 ){
 					if( (!empty( $data['outOfNum'] ))  && $data['outOfNum'] >0 ) {//缺货数量
 						$RamPurchase->createRam( array( "purchaseId"=>$data['id'] , "rmaNum"=>$data['outOfNum'] ,
@@ -257,6 +252,69 @@ class NewPurchaseService extends AppModel {
 		}
 	}
 	
+	/**
+	 * 评估交期是否正常
+	 */
+	public function evalDelivery($purchaseProduct){
+		//承诺交期
+		$promiseDeliveryDate 	= $purchaseProduct['PROMISE_DELIVERY_DATE'] ;
+		$orderDate 					= $purchaseProduct['ORDER_DATE'] ;
+		ini_set('date.timezone','Asia/Shanghai');
+		//实际交货天数
+		$deliverydays = abs( strtotime( $orderDate ) - strtotime( date("Y-m-d")))/86400;
+		if( $promiseDeliveryDate == 1 || $promiseDeliveryDate==2 ){
+			$promiseDeliveryDate = 3 ;
+		}
+		
+		if( $deliverydays - $promiseDeliveryDate >0   ){ //超出交货日期
+			return 1 ;
+		}else{
+			return 2 ;
+		}
+	}
+	
+	/**
+	 * 评估成本是否正常 1正常 2良好 3不正常（高于上次价格）
+	 */
+	public function evalCost( $purchaseProduct ){
+		//采购价格
+		$quotePrice 		= $purchaseProduct['QUOTE_PRICE'] ;//hdfk  mjds
+		$shipFeeType 	= $purchaseProduct['SHIP_FEE_TYPE'] ;
+		$shipFee		 	= $purchaseProduct['SHIP_FEE'] ;
+		$planNum	 	= $purchaseProduct['PLAN_NUM'] ;
+		$preShipFee 	= 0 ;//单个运费
+		
+		if( $shipFeeType == 'hdfk' || $shipFeeType == 'mjds' ){
+			$preShipFee = $shipFee/$planNum ;
+		}
+		
+		//当前单价总成本
+		$totalCost = $quotePrice + $preShipFee ;
+		
+		//获取最近一次采购成本
+		$cost  = ClassRegistry::init("CostNew") ;
+		$latestPurchase = $cost->getLatestPurchase(array("realId"=>$purchaseProduct['REAL_ID'])) ;
+		//PURCHASE_COST  LOGISTICS_COST
+		if( empty( $latestPurchase ) ){
+			return 1 ;//第一次采购
+		}
+		$LOGISTICS_COST = $latestPurchase['LOGISTICS_COST'] ;
+		if( empty($LOGISTICS_COST) ){
+			$LOGISTICS_COST = 0 ;
+		}
+		//最近采购成本
+		$latestCost = $latestPurchase['PURCHASE_COST'] + $LOGISTICS_COST ;
+		if( $totalCost ==  $latestCost ){
+			return 1 ;
+		}
+		if( $totalCost >  $latestCost ){
+			return 3 ;
+		}
+		if( $totalCost <  $latestCost ){
+			return 2 ;
+		}
+	}
+	
 	public function getPurchaseProductById($id){
 		return $this->getObject("select * from sc_purchase_product where id ='{@#id#}'", array("id"=>$id)) ;
 	}
@@ -278,20 +336,47 @@ class NewPurchaseService extends AppModel {
 			$memo =   $data["memo"] ;
 			$status = $data["status"] ;
 			$data['productId'] = $id ;
+			$notFlow = false ;
+			if( isset($data['notFlow']) ){
+				$notFlow = true ;
+			}
+			
+			if( $status == 49 && !$notFlow ){
+				//交易付款，更新付款时间，交易评估为1（正常交易）
+				$sql = "update sc_purchase_product set order_date = NOW(),eval_deal=1 where eval_deal is null and id='{@#id#}'" ;
+				$this->exeSql($sql, $data) ;
+			}
+			
+			if( $status == 51 && !$notFlow  ){//下单完成，评估采购成本
+				$evalCost = $this->evalCost($purchaseProduct) ;
+				$sql = "update sc_purchase_product set  eval_cost=$evalCost where eval_cost is null and id='{@#id#}'" ;
+				$this->exeSql($sql, $data) ;
+			}
+			
+			if( $status == 50 && !$notFlow  ){
+				//收货，设置交期是否正常交货
+				$evalDelivery = $this->evalDelivery($purchaseProduct) ;
+				$sql = "update sc_purchase_product set EVAL_DELIVERY='$evalDelivery' where EVAL_DELIVERY is null and id='{@#id#}'" ;
+				$this->exeSql($sql, $data) ;
+			}
+			
+			if( $notFlow ){ //非流程
+				$data['trackStatus'] = '' ;
+			}else{
+				$data['trackStatus'] = $data['status'] ;
+			}
+			$data['memo'] = $data['trackMemo'] ;
+			$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 			
 			if($status == 2){
 				$sql = "update sc_purchase_product set is_audit=2 where id='{@#id#}'" ;
 				$this->exeSql($sql, $data) ;
-				$data['memo'] = $data['trackMemo'] ;
-				$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 				return ;
 			}
 			
 			//更新状态
 			$this->exeSql("sql_purchase_new_product_updateStatus", $data) ;
 			//添加轨迹
-			$data['memo'] = $data['trackMemo'] ;
-			$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 			
 			if( $status == 80 || $isTerminal ){ //采购结束
 				//产品开发结束流程
@@ -312,12 +397,13 @@ class NewPurchaseService extends AppModel {
 				//终止采购
 				$sql = "update sc_purchase_product set IS_TERMINATION = 1 where  id = '{@#productId#}'" ;
 				$this->exeSql($sql, $data) ;
+				
+				//交易付款，更新付款时间，交易评估为2（终止交易）
+				$sql = "update sc_purchase_product set order_date = NOW(),eval_deal=2 where eval_deal is null and id='{@#id#}'" ;
+				$this->exeSql($sql, $data) ;
 			}
 			
 			//更新采购价格到货品成本区域 "realQuotePrice":"90","realShipFee":"10"
-			/*$sku = $data['sku'] ;
-			 $realQuotePrice = $data['realQuotePrice'] ;
-			$realShipFee = $data['realShipFee'] ;*/
 			$cost  = ClassRegistry::init("Cost") ;
 			$cost->saveCostWithPurchase($data) ;
 		}

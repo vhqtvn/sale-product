@@ -295,6 +295,8 @@ class ScRequirement extends AppModel {
 						SELECT * FROM sc_purchase_product spp,
 							sc_supplychain_requirement_item ssri
 						WHERE spp.REQ_PRODUCT_ID = ssri.REQ_PRODUCT_ID
+						AND spp.REQ_PRODUCT_ID IS NOT NULL 
+						AND spp.REQ_PRODUCT_ID !=''
 						AND ssri.account_id = saap.account_id
 						AND ssri.listing_sku = saap.sku
 						AND ssri.PURCHASE_QUANTITY > 0
@@ -652,7 +654,7 @@ class ScRequirement extends AppModel {
 		 * 需要采购的库存=账户需求量(quantity) - 本地库存
 		 */
 		//获取本地库存 
-		$reqWarehouseId = 1 ;//需求仓库，大陆沙井仓库
+		$reqWarehouseId = 4 ;//需求仓库，大陆沙井仓库
 		$sql = "SELECT sum(QUANTITY) as QUANTITY FROM sc_warehouse_inventory swi WHERE swi.ACCOUNT_ID='{@#accountId#}' AND swi.INVENTORY_TYPE = 2
 				            and warehouse_id = '{@#warehouseId#}'
 							AND listing_sku = '{@#listingSku#}' " ;
@@ -667,7 +669,7 @@ class ScRequirement extends AppModel {
 		
 		$ps['stockQuantity'] = $stockQuantity ;//仓库在库库存
 		
-		if( $quantity- $stockQuantity>=0 ){//账户需求量大于在库库存量，需要采购
+		if(  $quantity- $stockQuantity>=0 ){//账户需求量大于在库库存量，需要采购
 			$fixPurchaseQuantity = round($quantity- $stockQuantity,-1) ;
 			 
 			/**

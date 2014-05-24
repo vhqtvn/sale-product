@@ -456,15 +456,17 @@ class InventoryNew extends AppModel {
 				$quantity = $quantity - $changeQuantity ;
 			}
 			
-			//如果小于0，则修正为0,不修正
-			//if( $quantity <0 ) $quantity = 0 ;
-			
-			//更新库存
-			$this->exeSql("sql_inventory_update", array(
+			$p = array(
 					'inventoryId'=>$inventoryObj['INVENTORY_ID'],
 					'loginId'=>$params['loginId'],
-					'quantity'=>$quantity
-			)) ;
+					'stubQuantity'=>$quantity
+			) ;
+			
+			//如果小于0，则修正为0,不修正
+			if( $quantity <0 ) $quantity = 0 ;
+			$p['quantity'] = $quantity ;
+			//更新库存
+			$this->exeSql("sql_inventory_update", $p ) ;
 		}
 		
 		//2、库存轨迹表操作

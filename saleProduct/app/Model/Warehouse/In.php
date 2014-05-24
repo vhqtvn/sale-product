@@ -23,11 +23,14 @@ class In extends AppModel {
 		$items = $params['items'] ;
 		$items = json_decode($items) ;
 		foreach($items as $item){
-			$item = get_object_vars($item) ;
-			$item['id'] = $this->create_guid() ;
-			$item['inId'] = $inId ;
-			$item['accountId'] = $accountId ;
-			$this->exeSql("sc_warehouse_in_new_insertInProduct", $item) ;
+			try{
+				$item = get_object_vars($item) ;
+				$item['id'] = $this->create_guid() ;
+				$item['inId'] = $inId ;
+				$item['accountId'] = $accountId ;
+				//accountId  listingSku
+				$this->exeSql("sc_warehouse_in_new_insertInProduct", $item) ;
+			}catch(Exception $e){}
 		}
 	}
 	

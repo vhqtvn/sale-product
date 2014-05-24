@@ -237,7 +237,7 @@
 	        		{status:45,label:"待采购",memo:true
 	        			,actions:[{}
 									<?php if( $isOwner || $ppp_assign_executor) { ?>,{label:"保存",action:function(){ ForceAuditAction(45,"保存") }}  <?php  }?>
-									<?php if( $isOwner ) { ?>,{label:"完成采购下单",action:function(){ AuditAction(51,"已保存采购") } }<?php  }?>
+									<?php if( $isOwner || $ppp_callback ) { ?>,{label:"完成采购下单",action:function(){ AuditAction(51,"已保存采购") } }<?php  }?>
 									<?php if(  $endPurchase || $isOwner ) { ?>,{label:"终止采购",clazz:"btn-danger",action:function(){ ForceAuditAction(80,"终止采购",true) } }<?php } ?>
         				],format:function(node){
 							if( currentStatus == 46  ){
@@ -529,7 +529,7 @@
 										
 										foreach( $reqList as $req){
 											$IS_ANALYSIS = $req['IS_ANALYSIS'] ;
-											if( $IS_ANALYSIS == 0 ) continue ;
+											//if( $IS_ANALYSIS == 0 ) continue ;
 											$purchaseQuantity = $req['PURCHASE_QUANTITY'] ;
 											if( $count == 1 && ( empty($req['PURCHASE_QUANTITY']) || $req['PURCHASE_QUANTITY'] == 0)  ){
 												$purchaseQuantity = $planNum ;
