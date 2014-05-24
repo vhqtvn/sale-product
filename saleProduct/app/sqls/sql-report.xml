@@ -75,7 +75,6 @@ ORDER BY t1.U
 			      and spdt.status in (
 			      10,20,30,50,60,70,72,80
 			      )
-			      {@ and spdt.creator = '#loginId#'}
 			      and DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= DATE(spdt.CREATE_TIME)
 			      GROUP BY spdt.ASIN,DATE_FORMAT(spdt.CREATE_TIME,"%y%m%d"),spdt.STATUS
 			) t
