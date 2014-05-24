@@ -19,6 +19,18 @@ class NewPurchaseService extends AppModel {
 			$params['guid'] = $guid ;
 			$params['code'] = $this->getUserDefaultCode("PT")  ;
 			$this->exeSql("sql_purchase_new_create", $params) ;
+		
+			$loginId = "system" ;
+			if( isset($params['loginId']) ){
+				$loginId = $params['loginId'] ;
+			}
+			
+			$data = array() ;
+			$data['id']  = $guid ;
+			$data['trackStatus']  = 45 ;
+			$data['loginId']  = $loginId ;
+			$data['memo'] = "新增采购单" ;
+			$this->exeSql("sql_purchase_plan_product_insertTrack", $data) ;
 			
 			if( isset( $params['purchaseDetails'] ) ){
 				//创建需求产品
