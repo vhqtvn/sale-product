@@ -1,18 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
+	<!-- 
+	/*未处理*/
+/*在处理期限内下单*/
+	 -->
+	<entry key="sql_rp_loadTotal">
+	<![CDATA[
+	select count(*) as C from (
+		SELECT spp.ID AS PD_ID FROM sc_purchase_product spp WHERE spp.CREATED_DATE < '{@#endTime# 24:00:00}' AND spp.STATUS <=46
+		UNION
+		SELECT DISTINCT  sppdt.PD_ID  
+			 FROM 
+			sc_purchase_product spp,
+			sc_purchase_plan_details_track sppdt
+		 WHERE spp.ID = sppdt.PD_ID
+			AND sppdt.STATUS IN (51)
+			AND sppdt.CREATE_TIME >= '{@#startTime#}'
+			{@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+	) t
+	 ]]>	  
+    </entry>
+    
+    <entry key="sql_rp_loadUser">
+	<![CDATA[
+	select t.NAME,count(1) as C from (
+		SELECT spp.ID AS PD_ID   ,
+		            su.NAME
+		FROM sc_purchase_product spp,
+			  sc_user su
+			   WHERE spp.CREATED_DATE < '{@#endTime# 24:00:00}' AND spp.STATUS <=46
+			AND spp.executor = su.login_id
+		UNION
+		SELECT DISTINCT  sppdt.PD_ID  ,
+		            su.NAME
+			 FROM 
+			sc_purchase_product spp,
+			sc_purchase_plan_details_track sppdt,
+			  sc_user su
+		 WHERE spp.ID = sppdt.PD_ID
+			AND sppdt.STATUS IN (51)
+			AND spp.executor = su.login_id
+			AND sppdt.CREATE_TIME >= '{@#startTime#}'
+			{@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+	) t
+	group by t.NAME
+	 ]]>	  
+    </entry>
 	
-    <entry key="sql_rp_loadTotal">
+    <entry key="sql_rp_load51Total">
 	<![CDATA[
 		SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
 		  SELECT t.STATUS AS NAME, COUNT(1) AS C, 'Total' AS U  FROM (  	
-			SELECT DISTINCT DATE_FORMAT( sppdt.CREATE_TIME, "%y%m%d" ) AS ACTION_TIME, 
+			SELECT DISTINCT  
 				sppdt.PD_ID , 
 				sppdt.STATUS 
 			FROM 
 			  sc_purchase_product spp,
 			  sc_purchase_plan_details_track sppdt
 			WHERE spp.ID = sppdt.PD_ID
-			 AND sppdt.STATUS IN (45,51,49,50,60,80)
+			 AND sppdt.STATUS IN (51)
 			 AND sppdt.CREATE_TIME >= '{@#startTime#}'
 			 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
 			ORDER BY create_time DESC 
@@ -22,11 +68,35 @@
 	 ]]>	  
     </entry>
     
+    <entry key="sql_rp_load51User">
+	<![CDATA[
+		SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
+		  SELECT t.STATUS AS NAME, COUNT(1) AS C, t.NAME AS U  FROM (  	
+			SELECT DISTINCT  
+				sppdt.PD_ID , 
+		                su.NAME,
+				sppdt.STATUS 
+			FROM 
+			  sc_purchase_product spp,
+			  sc_purchase_plan_details_track sppdt,
+			  sc_user su
+			WHERE spp.ID = sppdt.PD_ID
+			and su.login_id = sppdt.creator
+			 AND sppdt.STATUS IN (51)
+			 AND sppdt.CREATE_TIME >= '{@#startTime#}'
+			 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+			ORDER BY create_time DESC 
+		  ) t
+		  GROUP BY t.STATUS,t.NAME
+	) t1
+	 ]]>	  
+    </entry>
+    
     <entry key="sql_rp_loadCostTotal">
 	<![CDATA[
 	SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
 		  SELECT t.STATUS AS NAME, COUNT(1) AS C, 'Total' AS U  FROM (  	
-			SELECT DISTINCT DATE_FORMAT( sppdt.CREATE_TIME, "%y%m%d" ) AS ACTION_TIME, 
+			SELECT DISTINCT 
 				sppdt.PD_ID,
 				spp.EVAL_COST AS STATUS
 			FROM 
@@ -43,12 +113,36 @@
 	 ]]>	  
     </entry>
     
+     <entry key="sql_rp_loadCostUser">
+	<![CDATA[
+	SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
+		  SELECT t.STATUS AS NAME, COUNT(1) AS C, t.NAME AS U  FROM (  	
+			SELECT DISTINCT 
+				sppdt.PD_ID,
+				spp.EVAL_COST AS STATUS,
+				su.NAME
+			FROM 
+			  sc_purchase_product spp,
+			  sc_purchase_plan_details_track sppdt,
+			  sc_user su
+			WHERE spp.ID = sppdt.PD_ID
+			 AND sppdt.STATUS IN (51)
+			 AND sppdt.creator = su.login_id
+			 and spp.EVAL_COST>0
+			 AND sppdt.CREATE_TIME >= '{@#startTime#}'
+			 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+			ORDER BY create_time DESC 
+		  ) t
+		  GROUP BY t.STATUS,t.NAME
+	) t1
+	 ]]>	  
+    </entry>
+    
     <!-- 中止采购交易 -->
     <entry key="sql_rp_loadTerminalDeal">
 	<![CDATA[
   	select count(1) as C from (
-			SELECT DISTINCT  
-				sppdt.PD_ID
+			SELECT DISTINCT  sppdt.PD_ID
 			FROM 
 			  sc_purchase_product spp,
 			  sc_purchase_plan_details_track sppdt
@@ -61,24 +155,67 @@
 	 ]]>	  
     </entry>
     
+    <entry key="sql_rp_loadTerminalDealUser">
+	<![CDATA[
+  	select count(1) as C,t.NAME from (
+			SELECT DISTINCT  sppdt.PD_ID,
+			  su.NAME
+			FROM 
+			  sc_purchase_product spp,
+			  sc_purchase_plan_details_track sppdt,
+			  sc_user su
+			WHERE spp.ID = sppdt.PD_ID
+			 AND sppdt.STATUS IN (80)
+			 AND spp.IS_TERMINATION = 1
+			 AND spp.executor = su.login_id
+			 AND sppdt.CREATE_TIME >= '{@#startTime#}'
+			 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+  ) t  group by t.NAME
+	 ]]>	  
+    </entry>
+    
     <!-- 交期统计交易 -->
     <entry key="sql_rp_loadDelivery">
 	<![CDATA[
-  	SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
-		  SELECT t.STATUS AS NAME, COUNT(1) AS C, 'Total' AS U  FROM (  	
-			SELECT DISTINCT DATE_FORMAT( sppdt.CREATE_TIME, "%y%m%d" ) AS ACTION_TIME, 
+	  	SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
+			  SELECT t.STATUS AS NAME, COUNT(1) AS C, 'Total' AS U  FROM (  	
+				SELECT DISTINCT DATE_FORMAT( sppdt.CREATE_TIME, "%y%m%d" ) AS ACTION_TIME, 
+					sppdt.PD_ID,
+					spp.EVAL_DELIVERY AS STATUS
+				FROM
+				  sc_purchase_product spp,
+				  sc_purchase_plan_details_track sppdt
+				WHERE spp.ID = sppdt.PD_ID
+				 AND sppdt.STATUS IN (50)
+				 AND sppdt.CREATE_TIME >= '{@#startTime#}'
+				 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
+				ORDER BY create_time DESC 
+			  ) t
+			  GROUP BY t.STATUS
+		) t1
+	 ]]>	  
+    </entry>
+    
+    <entry key="sql_rp_loadDeliveryUser">
+	<![CDATA[
+		SELECT t1.NAME AS PD,t1.U AS NAME,t1.C FROM  (
+		  SELECT t.STATUS AS NAME, COUNT(1) AS C, t.NAME AS U  FROM (  	
+			SELECT DISTINCT 
 				sppdt.PD_ID,
-				spp.EVAL_DELIVERY AS STATUS
-			FROM
+				spp.EVAL_DELIVERY AS STATUS,
+				su.NAME
+			FROM 
 			  sc_purchase_product spp,
-			  sc_purchase_plan_details_track sppdt
+			  sc_purchase_plan_details_track sppdt,
+			  sc_user su
 			WHERE spp.ID = sppdt.PD_ID
-			 AND sppdt.STATUS IN (51)
+			 AND sppdt.STATUS IN (50)
+			 AND spp.executor = su.login_id
 			 AND sppdt.CREATE_TIME >= '{@#startTime#}'
 			 {@ AND sppdt.CREATE_TIME <= '#endTime# 24:00:00'}
 			ORDER BY create_time DESC 
 		  ) t
-		  GROUP BY t.STATUS
+		  GROUP BY t.STATUS,t.NAME
 	) t1
 	 ]]>	  
     </entry>

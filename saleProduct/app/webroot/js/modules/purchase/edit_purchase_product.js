@@ -267,20 +267,58 @@ function getEditData(){
 	return result ;
 }
 
+/**
+ * 终止采购
+ */
+function PausePurchase(status , statusLabel,isTerminal){
+	if( $(".extend-container").find(".pause-cause").length <=0  ){
+		$(".extend-container").html("<select class='pause-cause' style='margin:3px;'>" +
+				"<option value=''>--选择终止原因--</option>" +
+				"</select>") ;
+		
+		$(riskTypeItems).each(function(){
+			var value = this.KEY ;
+			var text = this.LABEL ;
+			$(".extend-container").find(".pause-cause").append("<option value='"+value+"'>"+text+"</option>") ;
+		}) ;
+		
+		$(".extend-container").find(".pause-cause").append("<option value='100'>其他</option>") ;
+		setTimeout(function(){
+			$(".flow-bar .btn-danger").removeAttr("disabled");
+			$(".flow-bar .btn-danger").html("终止确认") ;
+		},200) ;
+		$(".flow-bar .memo").css("top","125px") ;
+	}else{
+		//执行终止
+		ForceAuditAction(status , statusLabel,isTerminal ) ;
+	}
+}
+
 function ForceAuditAction(status , statusLabel,isTerminal ){
+	var terminalCause = "" ;
+	if( isTerminal ){
+		terminalCause = $(".extend-container").find(".pause-cause").val() ;
+		if( !terminalCause ){
+			alert("终止原因必须选择！") ;
+			return ;
+		}
+	}
+	
 	if(window.confirm("确认【"+statusLabel+"】？")){
-				var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
-				var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus,isTerminal:isTerminal} ;
-				var json = $("#personForm").toJson() ;
-				json1 = $.extend(json,json1) ;
-				if( statusLabel == "保存"  ){
-					json1.notFlow = 1 ; 
-				}
-				json1.purchaseDetails = getEditData() ;
-				$.dataservice("model:NewPurchaseService.savePurchaseProduct",json1,function(){
-					//执行状态更新
-					window.location.reload();
-				}) ;
+			var memo = "("+statusLabel+")" + ($(".memo").val()||"") ;
+			var json1 = {id:id,status:status,trackMemo:memo,currentStatus:currentStatus,isTerminal:isTerminal} ;
+			var json = $("#personForm").toJson() ;
+			json1 = $.extend(json,json1) ;
+			if( statusLabel == "保存"  ){
+				json1.notFlow = 1 ; 
+			}
+			
+			json1.purchaseDetails = getEditData() ;
+			json1.terminationType = terminalCause;//终止原因
+			$.dataservice("model:NewPurchaseService.savePurchaseProduct",json1,function(){
+				//执行状态更新
+				window.location.reload();
+			}) ;
 	}
 }
 
@@ -308,6 +346,7 @@ var Flow = function(){
 					</table>\
 					<div class="flow-action">\
 						<div class="btn-container"></div>\
+						<div class="extend-container"></div>\
 						<a href="#" class="memo-control">附加备注</a>\
 					</div>\
 					<textarea class="memo" placeHolder="输入附加备注信息"></textarea>' ;

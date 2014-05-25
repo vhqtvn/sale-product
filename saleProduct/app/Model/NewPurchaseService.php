@@ -407,7 +407,7 @@ class NewPurchaseService extends AppModel {
 			
 			if( $isTerminal  ){
 				//终止采购
-				$sql = "update sc_purchase_product set IS_TERMINATION = 1 where  id = '{@#productId#}'" ;
+				$sql = "update sc_purchase_product set IS_TERMINATION = 1,TERMINATION_TYPE='{@#terminationType#}' where  id = '{@#productId#}'" ;
 				$this->exeSql($sql, $data) ;
 				
 				//交易付款，更新付款时间，交易评估为2（终止交易）

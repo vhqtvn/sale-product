@@ -50,6 +50,9 @@
 		if( empty($startTime) ){
 			$startTime = date('Y-m-d');
 		}
+		if( empty($endTime) ){
+			$endTime = date('Y-m-d');
+		}
 	?>
 	<script type="text/javascript">
 		function loadCount(){
@@ -90,7 +93,7 @@
 	</div>	
 	<center>
 		<div>
-				<h3><?php echo $startTime;?>&nbsp;<?php echo $endTime;?>采购统计报表</h3>
+				<h3>采购绩效统计【<?php echo $startTime;?>&nbsp;<?php echo $endTime;?>】</h3>
 		</div>
 	</center>
 	<div class="panel apply-panel">
@@ -98,60 +101,138 @@
 		<thead>
 			<tr>
 				<th rowspan="2"></th>
-				<th rowspan="2">新增采购单</th>
+				<th rowspan="2">总量</th>
 				<th rowspan="2">完成下单</th>
-				<th rowspan="2">完成交易</th>
-				<th rowspan="2">完成收货</th>
-				<th rowspan="2">完成验货</th>
-				<th rowspan="2">完成入库</th>
 				<th rowspan="2">中止采购</th>
 				<th colspan="3">成本</th>
 				<th colspan="2">交期</th>
 			</tr>
 			<tr>
-				<th>A</th>
-				<th>B</th>
-				<th>C</th>
+				<th>下降</th>
+				<th>持平</th>
+				<th>上升</th>
 				<th>正常</th>
 				<th>逾期</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php 
+				$SqlUtils  = ClassRegistry::init("SqlUtils") ;
+				//获取总计
+				$total = $SqlUtils->getObject("sql_rp_loadTotal",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				$userTotal = $SqlUtils->exeSqlWithFormat("sql_rp_loadUser",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				$groupMap = array() ;
+				foreach(  $userTotal as  $r ){
+					$groupMap[ $r['NAME'] ] = true ;
+				}
+				$userTotalMap = array() ;
+				foreach(  $groupMap as $g=>$v ){
+					$userTotalMap[$g] = '-' ;
+					foreach($userTotal as $r){
+						if( $r['NAME'] ==$g  ){
+							$userTotalMap[ $g ] = $r['C'] ;
+							break ;
+						}
+					}
+				}
+				
 				//{45:'新增采购单',51:'下单完成',49:'交易完成',50:'完成收货',60:'完成验货',80:'完成入库'} ;
 			    // 获取总采购相关统计数据
-				$SqlUtils  = ClassRegistry::init("SqlUtils") ;
-				$result = $SqlUtils->exeSqlWithFormat("sql_rp_loadTotal",array("startTime"=>$startTime)) ;
-				$totalMap = array('45'=>0,'51'=>0,'49'=>0,'50'=>0,'60'=>0,'80'=>0) ;
+				
+				$result = $SqlUtils->exeSqlWithFormat("sql_rp_load51Total",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				$totalMap = array('45'=>'-','51'=>'-','49'=>'-','50'=>'-','60'=>'-','80'=>'-') ;
 				foreach($result as $r){
 					$totalMap[ $r['PD'] ] = $r['C'] ;
 				} 
 				
+				$result = $SqlUtils->exeSqlWithFormat("sql_rp_load51User",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+	
+				
+				foreach(  $result as  $r ){
+					$groupMap[ $r['NAME'] ] = true ;
+				}
+			
+				$userMap = array() ;
+				foreach(  $groupMap as $g=>$v ){
+					$_Map = array('45'=>'-','51'=>'-','49'=>'-','50'=>'-','60'=>'-','80'=>'-') ;
+					foreach($result as $r){
+						if( $r['NAME'] ==$g  ){
+							$_Map[ $r['PD'] ] = $r['C'] ;
+						}
+					}
+					$userMap[$g] = $_Map ;
+				}
+			
 				//获取成本控制统计  1=  2小于上次成本  3大于上次成本
-				$result = $SqlUtils->exeSqlWithFormat("sql_rp_loadCostTotal",array("startTime"=>$startTime)) ;
-				$costMap = array('1'=>0,'2'=>0,'3'=>0) ;
+				$result = $SqlUtils->exeSqlWithFormat("sql_rp_loadCostTotal",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				$costMap = array('1'=>'-','2'=>'-','3'=>'-') ;
 				foreach($result as $r){
 					$costMap[ $r['PD'] ] = $r['C'] ;
 				}
+				
+				$result = $SqlUtils->exeSqlWithFormat("sql_rp_loadCostUser",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				foreach(  $result as  $r ){
+					$groupMap[ $r['NAME'] ] = true ;
+				}
+				
+				$userCostMap = array() ;
+				foreach(  $groupMap as $g=>$v ){
+					$_Map = array('1'=>'-','2'=>'-','3'=>'-') ;
+					foreach($result as $r){
+						if( $r['NAME'] ==$g  ){
+							$_Map[ $r['PD'] ] = $r['C'] ;
+						}
+					}
+					$userCostMap[$g] = $_Map ;
+				}
+				
 				//获取中止交易数据
-				$terminalMap = $SqlUtils->getObject("sql_rp_loadTerminalDeal",array("startTime"=>$startTime)) ;
+				$terminalMap = $SqlUtils->getObject("sql_rp_loadTerminalDeal",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				
+				$userTerminalResult = $SqlUtils->exeSqlWithFormat("sql_rp_loadTerminalDealUser",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				foreach(  $userTerminalResult as  $r ){
+					$groupMap[ $r['NAME'] ] = true ;
+				}
+				$userTerminalMap = array() ;
+				foreach(  $groupMap as $g=>$v ){
+                    $userTerminalMap[$g] = '-' ;
+					foreach($result as $r){
+						if( $r['NAME'] ==$g  ){
+							$userTerminalMap[ $g ] = $r['C'] ;
+							break ;
+						}
+					}
+				}
+				
 				
 				//交期  2：正常 1：逾期
-				$result = $SqlUtils->exeSqlWithFormat("sql_rp_loadDelivery",array("startTime"=>$startTime)) ;
-				$DeliveryMap = array('1'=>0,'2'=>0) ;
+				$result = $SqlUtils->exeSqlWithFormat("sql_rp_loadDelivery",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				$DeliveryMap = array('1'=>'-','2'=>'-') ;
 				foreach($result as $r){
 					$DeliveryMap[ $r['PD'] ] = $r['C'] ;
+				}
+				
+				$result = $SqlUtils->exeSqlWithFormat("sql_rp_loadDeliveryUser",array("startTime"=>$startTime,"endTime"=>$endTime)) ;
+				foreach(  $result as  $r ){
+					$groupMap[ $r['NAME'] ] = true ;
+				}
+				
+				$userDeliveryMap = array() ;
+				foreach(  $groupMap as $g=>$v ){
+					$_Map = array('1'=>'-','2'=>'-') ;
+					foreach($result as $r){
+						if( $r['NAME'] ==$g  ){
+							$_Map[ $r['PD'] ] = $r['C'] ;
+						}
+					}
+					$userDeliveryMap[$g] = $_Map ;
 				}
 			?>
 			<tr>
 				<td>总计</td>
+				<td><?php echo $total['C'] ;?></td>
 				<!-- 统计总量 -->
-				<td><?php  echo $totalMap['45']?></td>
 				<td><?php  echo $totalMap['51']?></td>
-				<td><?php  echo $totalMap['49']?></td>
-				<td><?php  echo $totalMap['50']?></td>
-				<td><?php  echo $totalMap['60']?></td>
-				<td><?php  echo $totalMap['80']?></td>
 				<!-- 中止交易 -->
 				<td><?php echo $terminalMap['C'];?></td>
 				<!-- 成本控制 -->
@@ -162,6 +243,38 @@
 				<td><?php  echo $DeliveryMap['2']?></td>
 				<td><?php  echo $DeliveryMap['1']?></td>
 			</tr>
+			<?php foreach( $userMap as $userName=>$valueMap ){
+							$_userCostMap =  array('1'=>'-','2'=>'-','3'=>'-') ;
+							if( isset($userCostMap[$userName]) ){
+								$_userCostMap = $userCostMap[$userName] ;
+							}
+							
+							$_userDeliveryMap =array('1'=>'-','2'=>'-') ;
+							if( isset($userDeliveryMap[$userName]) ){
+								$_userDeliveryMap = $userDeliveryMap[$userName] ;
+							}
+							
+							$_userTotal = '-';
+							if( isset($userTotalMap[$userName]) ){
+								$_userTotal = $userTotalMap[$userName] ;
+							}
+				?>
+			<tr>
+				<td><?php echo $userName;?></td>
+				<td><?php  echo $_userTotal?></td>
+				<!-- 统计总量 -->
+				<td><?php  echo $valueMap['51']?></td>
+				<!-- 中止交易 -->
+				<td><?php echo $userTerminalMap[$userName];?></td>
+				<!-- 成本控制 -->
+				<td><?php  echo $_userCostMap['2']?></td>
+				<td><?php  echo $_userCostMap['1']?></td>
+				<td><?php  echo $_userCostMap['3']?></td>
+				<!-- 交期控制 -->
+				<td><?php  echo $_userDeliveryMap['2']?></td>
+				<td><?php  echo $_userDeliveryMap['1']?></td>
+			</tr>
+			<?php }?>
 		</tbody>
 	</table>
 	</div>
