@@ -671,7 +671,8 @@ html{-webkit-text-size-adjust: none;}
 							关联Listing SKU
 						</th>
 						<td colspan="3">
-							<select id="ACCOUNT_ID"   class="input 60-input"   style="width:100px;">
+							Listing1：
+							<select id="ACCOUNT_ID"   class="input 60-input"   style="width:150px;">
 				     		<option value="">--选择账号--</option>
 					     	<?php
 					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
@@ -688,7 +689,48 @@ html{-webkit-text-size-adjust: none;}
 					     	?>
 							</select>
 							<input type="text"  id="LISTING_SKU" 
-								 class="input 60-input"  style="width:40%;" placeHolder="输入关联ListingSKU" value="<?php echo $productDev['LISTING_SKU']?>" />
+								 class="input 60-input"  style="width:300px;" placeHolder="输入关联ListingSKU" 
+								 value="<?php echo $productDev['LISTING_SKU']?>" /><br/>
+							Listing2：
+							<select id="ACCOUNT_ID2"   class="input 60-input"   style="width:150px;">
+				     		<option value="">--选择账号--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+					     		 $accountId = $productDev['ACCOUNT_ID2'] ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			if( $account['ID'] ==  $accountId ){
+					     				echo "<option value='".$account['ID']."'  selected>".$account['NAME']."</option>" ;
+					     			}else{
+					     				echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     			}
+					     		} ;
+					     	?>
+							</select>
+							<input type="text"  id="LISTING_SKU2" 
+								 class="input 60-input"  style="width:300px;" placeHolder="输入关联ListingSKU" 
+								 value="<?php echo $productDev['LISTING_SKU2']?>" /><br/>
+							Listing3：
+							<select id="ACCOUNT_ID3"   class="input 60-input"   style="width:150px;">
+				     		<option value="">--选择账号--</option>
+					     	<?php
+					     		 $amazonAccount  = ClassRegistry::init("Amazonaccount") ;
+					     		 $accountId = $productDev['ACCOUNT_ID3'] ;
+				   				 $accounts = $amazonAccount->getAllAccounts(); 
+					     		foreach($accounts as $account ){
+					     			$account = $account['sc_amazon_account'] ;
+					     			if( $account['ID'] ==  $accountId ){
+					     				echo "<option value='".$account['ID']."'  selected>".$account['NAME']."</option>" ;
+					     			}else{
+					     				echo "<option value='".$account['ID']."'>".$account['NAME']."</option>" ;
+					     			}
+					     		} ;
+					     	?>
+							</select>
+							<input type="text"  id="LISTING_SKU3" 
+								 class="input 60-input"  style="width:300px;" placeHolder="输入关联ListingSKU" 
+								 value="<?php echo $productDev['LISTING_SKU3']?>" />
 						</td>
 					</tr>		
 					<?php 	} ?>
