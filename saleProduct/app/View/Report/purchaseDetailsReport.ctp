@@ -44,22 +44,63 @@
 		$SqlUtils  = ClassRegistry::init("SqlUtils") ;
 		$security  = ClassRegistry::init("Security") ;
 		ini_set('date.timezone','Asia/Shanghai');
-		$startTime = $params['arg1'] ;
-		$endTime  = $params['arg2'] ;
 		
-		if( empty($startTime) ){
-			$startTime = date('Y-m-d');
+		$type = $params['arg1'] ;
+		
+		if(empty($type)){
+			$type = '1' ;
 		}
-		if( empty($endTime) ){
-			$endTime = date('Y-m-d');
+		
+		$startTime = date('Y-m-d');
+		$endTime = date('Y-m-d');
+		
+		if( $type == 1 ){ //当天
+			//
+		}else if( $type == 2 ){ //本周
+			$startTime = date("Y-m-d",strtotime("+0 week Monday"));
+			$endTime = date("Y-m-d",strtotime("+0 week Sunday")) ;
+		}else if( $type == 3 ){ //本周
+			$startTime = date("Y-m-d",strtotime("-1 week Monday"));
+			$endTime = date("Y-m-d",strtotime("-1 week Sunday")) ;
+		}else if( $type == 4 ){ //本月
+			$startTime = date("Y-m-d",mktime(0, 0 , 0,date("m"),1,date("Y")));
+			$endTime  = date("Y-m-d",mktime(23,59,59,date("m"),date("t"),date("Y")));
+		}else if( $type == 5 ){ //上月
+			$startTime = date("Y-m-d",mktime(0, 0 , 0,date("m")-1,1,date("Y"))) ;
+			$endTime = date("Y-m-d",mktime(23,59,59,date("m") ,0,date("Y"))) ;
+		}else if( $type == 10 ){ //指定时间
+			$startTime =  $params['arg2']  ;
+			$endTime =   $params['arg3']  ;
+			if( empty($startTime) ){
+				$startTime = date('Y-m-d');
+			}
+			if( empty($endTime) ){
+				$endTime = date('Y-m-d');
+			}
 		}
 	?>
 	<script type="text/javascript">
 		function loadCount(){
 			var startTime = $(".start-time").val() ;
 			var endTime = $(".end-time").val() ;
-			window.location.href = "<?php echo $contextPath?>/page/forward/Report.purchaseDetailsReport/"+startTime+"/"+endTime ;
+			var dayType = $(".dayType").val() ;
+			var url =  "<?php echo $contextPath?>/page/forward/Report.purchaseDetailsReport/"+dayType;
+			if(dayType == 10){
+				url = url+"/"+startTime+"/"+endTime ;
+			}
+			window.location.href = url ;
 		}
+
+		$(function(){
+			$(".dayType").change(function(){
+				var val = $(this).val() ;
+				if(val == 10){
+					$(".area").show() ;
+				}else{
+					$(".area").hide() ;
+				}
+			}).trigger("change") ;
+		}) ;
 	</script>
 
 	 <style type="text/css">
@@ -77,16 +118,26 @@
 	<div class="toolbar toolbar-auto query-bar">
 					<table  class="query-table">	
 						<tr>
-							<th>开始时间:</th>
 							<td>
+								<select  class="dayType" style="width:100px;">
+									<option value="1" <?php echo $type==1?"selected":"";?>>当天</option>
+									<option value="2" <?php echo $type==2?"selected":"";?>>本周</option>
+									<option value="3" <?php echo $type==3?"selected":"";?>>上周</option>
+									<option value="4" <?php echo $type==4?"selected":"";?>>本月</option>
+									<option value="5" <?php echo $type==5?"selected":"";?>>上月</option>
+									<option value="10" <?php echo $type==10?"selected":"";?>>时间区间</option>
+								</select>
+							</td>
+							<th  class="area">开始时间:</th>
+							<td  class="area">
 								<input  type="text" class="Wdate  start-time"  value="<?php echo $startTime;?>" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly="readonly" />
 							</td>
-							<th>结束时间:</th>
-							<td>
-								<input  type="text" class="Wdate  end-time"  value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly="readonly" />
+							<th  class="area">结束时间:</th>
+							<td  class="area">
+								<input  type="text" class="Wdate  end-time"  value="<?php echo $endTime;?>" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly="readonly" />
 							</td>
 							<td>
-								<button class="btn  reload-daychart no-disabled"  onclick="loadCount()">确定</button>
+								<button class="btn btn-primary reload-daychart no-disabled"  onclick="loadCount()">确定</button>
 							</td>
 						</tr>						
 					</table>
