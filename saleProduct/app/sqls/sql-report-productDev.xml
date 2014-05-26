@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+	<!-- 
+	/*未处理*/
+/*在处理期限内下单*/
+	 -->
+	 <entry key="sql_rpd_loadTotal">
+	<![CDATA[
+		SELECT t.STATUS , COUNT(1) AS C  FROM (    
+			   SELECT 
+			        DISTINCT spdt.STATUS,spdt.ASIN
+			   FROM sc_product_developer spd,
+			          sc_product_dev_track spdt
+			    WHERE spd.ASIN = spdt.asin
+			      AND spdt.status != ''
+			      AND spdt.status IN (
+			      	10,20,30,50,60,70,72,80
+			      ) 
+			      AND spdt.CREATE_TIME >= '{@#startTime#}'
+				 {@ AND spdt.CREATE_TIME <= '#endTime# 24:00:00'}
+			) t
+			GROUP BY t.STATUS
+	 ]]>	  
+    </entry>
+    
+    
+	<entry key="sql_rpd_loadUser">
+	<![CDATA[
+		SELECT t.STATUS,t.NAME , COUNT(1) AS C  FROM (    
+			   SELECT 
+			        DISTINCT spdt.STATUS,su.NAME,spdt.ASIN
+			   FROM sc_product_developer spd,
+			          sc_product_dev_track spdt,
+			          sc_user su
+			    WHERE spd.ASIN = spdt.asin
+			      AND spd.DEV_CHARGER = su.LOGIN_ID
+			      AND spdt.status != ''
+			      AND spdt.status IN (
+			      	10,20,30,50,60,70,72,80
+			      ) 
+			      AND spdt.CREATE_TIME >= '{@#startTime#}'
+				 {@ AND spdt.CREATE_TIME <= '#endTime# 24:00:00'}
+			) t
+			GROUP BY t.STATUS,t.NAME
+	 ]]>	  
+    </entry>
+  
+</properties>
