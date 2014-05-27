@@ -20,6 +20,13 @@ class Amazonaccount extends AppModel {
 		return $result ;
 	}
 	
+	function getAccountProductAsyn( $params ){
+		$accountId = $params['accountId'] ;
+		$listingSku = $params['listingSku'] ;
+		
+		return $this->checkProductValid($accountId, $listingSku) ;
+	}
+	
 	function checkProductValid( $accountId , $sellerSku ){
 		//检查该产品是否能够打印标签
 		$account = $this->getAccountIngoreDomainById($accountId)  ;
