@@ -92,6 +92,19 @@ class AmazonGatherImpl extends AppModel {
 								$sellerName =  $sellerNameEl->alt  ;
 							}
 						}
+						
+						//获取Listing的描述信息olpAvailability  Back-ordered
+						$olpAvailability = trim( $e->find(".olpAvailability",0)->plaintext )  ;
+						if( !empty($olpAvailability) &&  strpos( $olpAvailability , "Back-ordered" ) >0 ){
+							//竞争对手不存在库存，则忽略改竞争对手
+							continue ;
+						}
+						
+						//如果卖家为Amazon本身，忽略  Amazon.com
+						if( !empty($sellerName) &&  strpos( $sellerName , "Amazon." ) ===0 ){
+							continue ;
+						}
+						
 						$arrays[] = array("price"=>$price,"seller"=>$sellerName,"index"=>$index) ;
 					}
 					
